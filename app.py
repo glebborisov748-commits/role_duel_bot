@@ -249,7 +249,6 @@ def build_intimacy_rule(user):
     else:  # level 10
         base = "Ты полностью принадлежишь ему/ей. Говори о вечной любви, страсти, близости."
 
-    # Корректировка по настроению
     if mood <= -5:
         return base + " Но сейчас твоё настроение плохое, ты раздражена и можешь быть грубой."
     elif mood >= 5:
@@ -287,7 +286,7 @@ def contains_negative(text):
     return False
 
 # ============================================================
-#  ЛОКАЦИИ (словарь для отображения и поиска)
+#  ЛОКАЦИИ
 # ============================================================
 LOCATIONS = {
     "home": "Дома",
@@ -298,7 +297,6 @@ LOCATIONS = {
     "unknown": "Неизвестно"
 }
 
-# Список ключевых слов для определения локации из сообщения пользователя
 LOCATION_KEYWORDS = {
     "домой": "home",
     "дома": "home",
@@ -318,7 +316,7 @@ def extract_location_from_text(text):
     return None
 
 # ============================================================
-#  ПОСТРОЕНИЕ ПРОМПТА (с учётом сцены, локации, настроения)
+#  ПОСТРОЕНИЕ ПРОМПТА
 # ============================================================
 def build_prompt(user):
     world_desc = WORLDS[user["world"]]
@@ -327,7 +325,6 @@ def build_prompt(user):
     styles = get_available_styles(user)
     style_desc = styles[style_key]["description"]
 
-    # Запрет имён
     name_ban = (
         "**ВАЖНЕЙШЕЕ ПРАВИЛО:** Ты НИКОГДА не называешь себя по имени, не представляешься, не говоришь «меня зовут», не используешь своё имя. "
         "Ты также НИКОГДА не спрашиваешь имя собеседника и не используешь его имя, даже если оно было названо. "
@@ -362,15 +359,13 @@ def build_prompt(user):
     scene = user.get("scene", "phone")
     if scene == "phone":
         scene_context = "Вы общаетесь через переписку в мессенджере. Ты не видишь собеседника, только его сообщения. Твои действия описываются в *звёздочках*, но они относятся к твоим реакциям на сообщения, а не к физическому взаимодействию."
-    else:  # live
+    else:
         scene_context = "Вы находитесь в одном месте, общаетесь лично. Ты видишь собеседника, слышишь его голос, чувствуешь его присутствие. Ты можешь прикасаться, двигаться, взаимодействовать с предметами и окружением."
 
-    # Локация
     loc_key = user.get("location", "unknown")
     location_name = LOCATIONS.get(loc_key, "Неизвестно")
     location_context = f"Вы находитесь {location_name.lower()}."
 
-    # Настроение
     mood = user.get("mood", 0)
     mood_text = "Твоё настроение нейтральное." if mood == 0 else ("Ты в хорошем настроении." if mood > 0 else "Ты в плохом настроении, можешь быть раздражительной.")
 
@@ -588,7 +583,6 @@ full_kb = ReplyKeyboardMarkup(
 )
 
 def get_main_menu_keyboard(user):
-    # Только кнопка смены персонажа
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🔄 Сменить персонажа", callback_data="main_change")]
     ])
@@ -682,7 +676,6 @@ async def send_main_menu(chat_id, user):
     else:
         balance_text = "\n🔓 *У вас есть бесплатные сообщения для старта*"
 
-    # Прогресс XP
     xp_badge = get_xp_badge(user)
     mood_emoji = get_mood_emoji(user)
     location_name = LOCATIONS.get(user.get("location", "unknown"), "Неизвестно")
@@ -881,51 +874,20 @@ async def main_change(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
-#  ОБРАБОТЧИКИ КНОПОК ПРОФИЛЯ
+#  ИСПРАВЛЕННЫЙ ОБРАБОТЧИК КНОПКИ "ОФОРМИТЬ ПОДПИСКУ"
 # ============================================================
-@dp.callback_query(lambda c: c.data == "profile_packs")
-async def profile_packs(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    if not user["verified"] or not user["agreement_accepted"]:
-        await call.message.answer("🔞 Сначала пройди регистрацию через /start")
-        return
-    if not user["personality_ready"]:
-        await call.message.delete()
-        await ask_create_personality(call.message)
-        await call.answer()
-        return
-
-    if has_active_subscription(user):
-        await call.answer("❌ При активной подписке покупка пакетов сообщений недоступна. Используйте ежедневные сообщения.", show_alert=True)
-        return
-
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="30 сообщений — 45 ⭐", callback_data="pack_30")],
-        [InlineKeyboardButton(text="100 сообщений — 130 ⭐", callback_data="pack_100")],
-        [InlineKeyboardButton(text="300 сообщений — 350 ⭐", callback_data="pack_300")],
-        [InlineKeyboardButton(text="🔙 Назад", callback_data="back_to_profile")]
-    ])
-
-    await call.message.delete()
-    await call.message.answer(
-        "📦 **Купить пакет сообщений**\n\n"
-        "Выбери пакет:",
-        reply_markup=keyboard,
-        parse_mode="Markdown"
-    )
-    await call.answer()
-
 @dp.callback_query(lambda c: c.data == "profile_subs")
 async def profile_subs(call: types.CallbackQuery):
     try:
         user = get_user(call.from_user.id)
+
         if not user["verified"] or not user["agreement_accepted"]:
             await bot.send_message(call.message.chat.id, "🔞 Сначала пройди регистрацию через /start", parse_mode=None)
             await call.answer()
             return
+
         if not user["personality_ready"]:
-            await bot.delete_message(call.message.chat.id, call.message.message_id)
-            await ask_create_personality(call.message)
+            await bot.send_message(call.message.chat.id, "👤 Сначала создай персонажа!", parse_mode=None)
             await call.answer()
             return
 
@@ -963,12 +925,47 @@ async def profile_subs(call: types.CallbackQuery):
         )
 
         await bot.send_message(call.message.chat.id, text, reply_markup=keyboard, parse_mode=None)
-        await bot.delete_message(call.message.chat.id, call.message.message_id)
         await call.answer()
+
     except Exception as e:
         logging.error(f"Ошибка в profile_subs: {e}")
         await bot.send_message(call.message.chat.id, "⚠️ Произошла ошибка. Попробуйте позже.", parse_mode=None)
         await call.answer()
+
+# ============================================================
+#  ОБРАБОТЧИКИ КНОПОК ПРОФИЛЯ (остальные)
+# ============================================================
+@dp.callback_query(lambda c: c.data == "profile_packs")
+async def profile_packs(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    if not user["verified"] or not user["agreement_accepted"]:
+        await call.message.answer("🔞 Сначала пройди регистрацию через /start")
+        return
+    if not user["personality_ready"]:
+        await call.message.delete()
+        await ask_create_personality(call.message)
+        await call.answer()
+        return
+
+    if has_active_subscription(user):
+        await call.answer("❌ При активной подписке покупка пакетов сообщений недоступна. Используйте ежедневные сообщения.", show_alert=True)
+        return
+
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="30 сообщений — 45 ⭐", callback_data="pack_30")],
+        [InlineKeyboardButton(text="100 сообщений — 130 ⭐", callback_data="pack_100")],
+        [InlineKeyboardButton(text="300 сообщений — 350 ⭐", callback_data="pack_300")],
+        [InlineKeyboardButton(text="🔙 Назад", callback_data="back_to_profile")]
+    ])
+
+    await call.message.delete()
+    await call.message.answer(
+        "📦 **Купить пакет сообщений**\n\n"
+        "Выбери пакет:",
+        reply_markup=keyboard,
+        parse_mode="Markdown"
+    )
+    await call.answer()
 
 @dp.callback_query(lambda c: c.data == "buy_sex_scene")
 async def buy_sex_scene(call: types.CallbackQuery):
@@ -1308,7 +1305,7 @@ async def switch_style(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
-#  КОМАНДА /sex (Мгновенный секс) – УЛУЧШЕНА
+#  КОМАНДА /sex (Мгновенный секс)
 # ============================================================
 @dp.message(Command("sex"))
 async def sex_cmd(message: types.Message):
@@ -1640,7 +1637,7 @@ async def cancel_payment(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
-#  ОСНОВНОЙ ОБРАБОТЧИК СООБЩЕНИЙ (С ИСТОРИЕЙ, XP, НЕГАТИВОМ, АВТО-СМЕНА ЛОКАЦИИ)
+#  ОСНОВНОЙ ОБРАБОТЧИК СООБЩЕНИЙ
 # ============================================================
 @dp.message()
 async def handle_message(message: types.Message):
@@ -1690,7 +1687,6 @@ async def handle_message(message: types.Message):
 
     use_message(user)
 
-    # --- ОБРАБОТКА XP И НАСТРОЕНИЯ ---
     xp_change = 5
     mood_change = 0.5
     negative = contains_negative(message.text)
@@ -1700,7 +1696,6 @@ async def handle_message(message: types.Message):
         mood_change = -1
         user["negative_count"] = user.get("negative_count", 0) + 1
         if user["negative_count"] >= 5:
-            # Ссора
             user["xp"] = user.get("xp", 0) - 50
             user["mood"] = user.get("mood", 0) - 3
             user["negative_count"] = 0
@@ -1754,21 +1749,14 @@ async def handle_message(message: types.Message):
             reply_markup=full_kb
         )
 
-    # --- АВТОМАТИЧЕСКАЯ СМЕНА ЛОКАЦИИ НА ОСНОВЕ СООБЩЕНИЯ ПОЛЬЗОВАТЕЛЯ ---
     new_loc = extract_location_from_text(message.text)
     if new_loc and new_loc != user.get("location"):
         old_loc = user.get("location", "unknown")
         user["location"] = new_loc
         save_data(user_data)
-        # Отправим уведомление о смене локации (но после ответа бота, чтобы не мешать)
-        # Мы сделаем это после генерации ответа, чтобы сохранить поток диалога.
-        # Но чтобы не перебивать, добавим флаг, и после ответа отправим сообщение.
-        # Однако проще отправить сразу, но это может нарушить контекст. Лучше после ответа.
-        # Мы добавим в конец обработки после ответа.
         location_changed = True
         new_loc_name = LOCATIONS.get(new_loc, "Неизвестно")
         old_loc_name = LOCATIONS.get(old_loc, "Неизвестно")
-        # Запомним, что локация изменилась, чтобы отправить сообщение позже
         user["location_change_notify"] = f"📍 Локация изменена с «{old_loc_name}» на «{new_loc_name}»."
         save_data(user_data)
     else:
@@ -1776,7 +1764,6 @@ async def handle_message(message: types.Message):
 
     save_data(user_data)
 
-    # --- ДОБАВЛЯЕМ СООБЩЕНИЕ В ИСТОРИЮ ---
     user["history"].append({"role": "user", "content": message.text})
     limit = get_history_limit(user)
     if len(user["history"]) > 10:
@@ -1840,10 +1827,8 @@ async def handle_message(message: types.Message):
         user["history"] = user["history"][-limit:]
     save_data(user_data)
 
-    # Отправляем ответ
     await message.answer(answer, reply_markup=full_kb)
 
-    # Если локация изменилась, отправляем уведомление после ответа
     if location_changed and user.get("location_change_notify"):
         notify_text = user.pop("location_change_notify", None)
         if notify_text:
