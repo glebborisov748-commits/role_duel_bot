@@ -888,12 +888,11 @@ async def main_change(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
-#  ИСПРАВЛЕННЫЙ ПРОФИЛЬ_ПОДПИСОК (отправляет новое сообщение, удаляет старое, answer() в начале)
+#  ИСПРАВЛЕННЫЙ ПРОФИЛЬ_ПОДПИСОК (отправляет новое сообщение, не удаляет)
 # ============================================================
 @dp.callback_query(lambda c: c.data == "profile_subs")
 async def profile_subs(call: types.CallbackQuery):
     try:
-        # Закрываем callback, чтобы убрать загрузку
         await call.answer()
         user = get_user(call.from_user.id)
 
@@ -937,13 +936,7 @@ async def profile_subs(call: types.CallbackQuery):
             "Выбери подписку:"
         )
 
-        # Отправляем новое сообщение
         await bot.send_message(call.message.chat.id, text, reply_markup=keyboard, parse_mode=None)
-        # Удаляем старое сообщение, если возможно
-        try:
-            await bot.delete_message(call.message.chat.id, call.message.message_id)
-        except Exception:
-            pass  # Если не удалось удалить, ничего страшного
 
     except Exception as e:
         logging.error(f"Ошибка в profile_subs: {e}")
@@ -1020,7 +1013,10 @@ async def back_to_profile(call: types.CallbackQuery):
         await ask_create_personality(call.message)
         await call.answer()
         return
+    # Удаляем текущее сообщение и показываем профиль заново
+    await call.message.delete()
     await show_profile(call.message, user)
+    await call.answer()
 
 async def show_profile(msg, user):
     level = get_subscription_level(user)
@@ -1082,14 +1078,32 @@ async def show_profile(msg, user):
 
     caption += f"\n\n🎭 **Доступные стили:**\n{styles_text}"
 
+    chat_id = msg.chat.id
+    old_msg_id = msg.message_id
     if level == "pro" and PRO_GIF_URL:
-        media = InputMediaAnimation(media=PRO_GIF_URL, caption=caption, parse_mode="Markdown")
-        await msg.edit_media(media, reply_markup=get_profile_keyboard(user))
+        await bot.send_animation(
+            chat_id=chat_id,
+            animation=PRO_GIF_URL,
+            caption=caption,
+            reply_markup=get_profile_keyboard(user),
+            parse_mode="Markdown"
+        )
     elif level == "super_pro" and SUPER_PRO_GIF_URL:
-        media = InputMediaAnimation(media=SUPER_PRO_GIF_URL, caption=caption, parse_mode="Markdown")
-        await msg.edit_media(media, reply_markup=get_profile_keyboard(user))
+        await bot.send_animation(
+            chat_id=chat_id,
+            animation=SUPER_PRO_GIF_URL,
+            caption=caption,
+            reply_markup=get_profile_keyboard(user),
+            parse_mode="Markdown"
+        )
     else:
-        await msg.edit_text(caption, reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
+        await bot.send_message(chat_id, caption, reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
+
+    # Удаляем старое сообщение
+    try:
+        await bot.delete_message(chat_id, old_msg_id)
+    except Exception:
+        pass
 
 # ============================================================
 #  ОБРАБОТЧИКИ ПОКУПОК
