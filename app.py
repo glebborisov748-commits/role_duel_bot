@@ -205,25 +205,30 @@ def get_history_limit(user):
 # ============================================================
 #  УРОВНИ СБЛИЖЕНИЯ НА ОСНОВЕ ОПЫТА (XP)
 # ============================================================
+XP_PER_LEVEL = 75  # 15 сообщений * 5 XP = 75
+
 def get_intimacy_level(user):
     xp = user.get("xp", 0)
-    level = xp // 100 + 1
+    level = xp // XP_PER_LEVEL + 1
     return min(10, level)
 
 def get_xp_progress(user):
     xp = user.get("xp", 0)
     level = get_intimacy_level(user)
     if level >= 10:
-        return 100
-    xp_in_level = xp % 100
-    return xp_in_level
+        return XP_PER_LEVEL
+    return xp % XP_PER_LEVEL
 
 def get_xp_badge(user):
     level = get_intimacy_level(user)
     filled = "❤️" * level
     empty = "🤍" * (10 - level)
     progress = get_xp_progress(user)
-    return f"Уровень {level}/10 {filled}{empty}\nОпыт: {progress}/100 XP"
+    # Прогресс-бар из символов ▓ и ░
+    bar_length = 10
+    filled_bar = int((progress / XP_PER_LEVEL) * bar_length)
+    bar = "▓" * filled_bar + "░" * (bar_length - filled_bar)
+    return f"Уровень {level}/10 {filled}{empty}\n{bar} {progress}/{XP_PER_LEVEL} XP"
 
 def build_intimacy_rule(user):
     level = get_intimacy_level(user)
@@ -628,7 +633,10 @@ def get_style_kb(user):
     for key, style in STYLES.items():
         label = f"{style['emoji']} {style['label']}"
         if key in PREMIUM_STYLES:
-            if key == "magnetic":
+            if key == "passionate":
+                if not has_active_subscription(user) or get_subscription_level(user) not in ["pro", "super_pro"]:
+                    label += " 🔒"
+            elif key == "magnetic":
                 if not has_active_subscription(user) or get_subscription_level(user) not in ["pro", "super_pro"]:
                     label += " 🔒"
             elif key in ["vulgar", "seduction"]:
@@ -802,7 +810,11 @@ async def profile_reply(message: types.Message):
     styles_text = ""
     for key, style in STYLES.items():
         if key in PREMIUM_STYLES:
-            if key == "magnetic":
+            if key == "passionate":
+                if not has_active_subscription(user) or get_subscription_level(user) not in ["pro", "super_pro"]:
+                    styles_text += f"{style['emoji']} {style['label']} 🔒\n"
+                    continue
+            elif key == "magnetic":
                 if not has_active_subscription(user) or get_subscription_level(user) not in ["pro", "super_pro"]:
                     styles_text += f"{style['emoji']} {style['label']} 🔒\n"
                     continue
@@ -1022,7 +1034,11 @@ async def show_profile(msg, user):
     styles_text = ""
     for key, style in STYLES.items():
         if key in PREMIUM_STYLES:
-            if key == "magnetic":
+            if key == "passionate":
+                if not has_active_subscription(user) or get_subscription_level(user) not in ["pro", "super_pro"]:
+                    styles_text += f"{style['emoji']} {style['label']} 🔒\n"
+                    continue
+            elif key == "magnetic":
                 if not has_active_subscription(user) or get_subscription_level(user) not in ["pro", "super_pro"]:
                     styles_text += f"{style['emoji']} {style['label']} 🔒\n"
                     continue
@@ -1416,7 +1432,11 @@ async def choose_style(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     style_key = call.data.split("_")[1]
 
-    if style_key == "magnetic":
+    if style_key == "passionate":
+        if not has_active_subscription(user) or get_subscription_level(user) not in ["pro", "super_pro"]:
+            await call.answer("❤️‍🔥 Стиль «Страстный» доступен по подпискам PRO (430⭐/мес) и SUPER PRO (777⭐/мес).\n\nОформите подписку в разделе «Мой профиль».", show_alert=True)
+            return
+    elif style_key == "magnetic":
         if not has_active_subscription(user) or get_subscription_level(user) not in ["pro", "super_pro"]:
             await call.answer("💫 Стиль «Магнетический» доступен по подпискам PRO (430⭐/мес) и SUPER PRO (777⭐/мес).\n\nОформите подписку в разделе «Мой профиль».", show_alert=True)
             return
@@ -1554,7 +1574,7 @@ async def profile_cmd(message: types.Message):
     await show_profile(message, user)
 
 # ============================================================
-#  КОМАНДА /grant (С ВОЗМОЖНОСТЬЮ ВЫДАТЬ PRO)
+#  КОМАНДА /grant
 # ============================================================
 @dp.message(Command("grant"))
 async def grant_cmd(message: types.Message):
@@ -1596,7 +1616,6 @@ async def grant_cmd(message: types.Message):
 
     user = get_user(user_id)
 
-    # Если есть аргумент "pro" — выдаём PRO
     if len(args) >= 3 and args[2].lower() == "pro":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
@@ -1607,7 +1626,6 @@ async def grant_cmd(message: types.Message):
         await message.answer(f"✅ Пользователю {target} выдана PRO подписка на месяц.")
         return
 
-    # Если есть аргумент "sex" — выдаём секс-сцены
     if len(args) >= 3 and args[2].lower() == "sex":
         count = 1
         if len(args) >= 4:
@@ -1620,7 +1638,6 @@ async def grant_cmd(message: types.Message):
         await message.answer(f"✅ Пользователю {target} выдано {count} секс-сцен(а).")
         return
 
-    # По умолчанию — выдаём SUPER PRO
     user["subscription"]["active"] = True
     user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
     user["subscription"]["level"] = "super_pro"
@@ -1884,12 +1901,12 @@ async def main():
     print("⬆️ Апгрейд: 395⭐ (PRO → SUPER PRO)")
     print(f"🎁 Акция: бесплатная PRO на 1 час для новых пользователей до {PROMO_PRO_END.strftime('%d.%m.%Y %H:%M')}")
     print("🎁 Бонус 30 сообщений для существующих подписчиков (однократно)")
-    print("💕 Уровни сближения на основе опыта (XP): +5 XP за сообщение, -10 за негатив.")
+    print("💕 Уровни сближения: 15 сообщений на уровень (75 XP), прогресс-бар ▓▓▓░░")
     print("💢 При накоплении негатива (5 раз) – ссора, -50 XP.")
-    print("📍 Локация меняется автоматически, когда пользователь предлагает пойти куда-то (кафе, парк, кино и т.д.)")
+    print("📍 Локация меняется автоматически, когда пользователь предлагает пойти куда-то")
     print("🔥 Мгновенный секс: 180⭐ за сцену, только для подписчиков PRO/SUPER PRO (команда /sex)")
     print("🎁 Команда /grant для выдачи SUPER PRO, PRO и секс-сцен (/grant @username pro|sex N)")
-    print("💾 Данные сохраняются в data.json")
+    print("💾 Данные сохраняются в data.json — при перезапуске прогресс не теряется (проверь права на запись на сервере)")
     print("📌 Админ: /maintenance on/off для техобслуживания")
     await dp.start_polling(bot)
 
