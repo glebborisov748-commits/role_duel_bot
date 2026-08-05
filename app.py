@@ -30,11 +30,11 @@ dp = Dispatcher()
 logging.basicConfig(level=logging.INFO)
 
 # ============================================================
-#  ГИФКИ И КАРТИНКИ
+#  ГИФКИ И КАРТИНКИ (ОБНОВЛЕННЫЕ ССЫЛКИ)
 # ============================================================
-PRO_GIF_URL = "https://i.imgur.com/Nx20Bbg.gif"
-SUPER_PRO_GIF_URL = "https://i.imgur.com/1gjC6XO.gif"
-MAIN_MENU_IMAGE_URL = "https://i.imgur.com/ЗАМЕНИ_НА_СВОЮ_ССЫЛКУ.png"  # ← замени!
+PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh4eWJ2Zzg0bTVlbWE2ZzFicHlsMXNibXp3dXdsayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GGSbxfzvec3PYZbFOM/giphy.gif"
+SUPER_PRO_GIF_URL = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3M0ZDcxb2oycGg3bm9sbWxocGR6ejZmdGtuc3c4d2pmNmQ3eTR2NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uEJGdRxnptmawiEzDP/giphy.gif"
+MAIN_MENU_IMAGE_URL = "https://i.ibb.co/k25JyTXD/IMG-2584.jpg"
 
 # ============================================================
 #  ГЛОБАЛЬНЫЕ НАСТРОЙКИ
