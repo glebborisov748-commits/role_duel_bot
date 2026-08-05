@@ -888,21 +888,21 @@ async def main_change(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
-#  ИСПРАВЛЕННЫЙ ПРОФИЛЬ_ПОДПИСОК (редактирует, не удаляет)
+#  ИСПРАВЛЕННЫЙ ПРОФИЛЬ_ПОДПИСОК (отправляет новое сообщение, удаляет старое, answer() в начале)
 # ============================================================
 @dp.callback_query(lambda c: c.data == "profile_subs")
 async def profile_subs(call: types.CallbackQuery):
     try:
+        # Закрываем callback, чтобы убрать загрузку
+        await call.answer()
         user = get_user(call.from_user.id)
 
         if not user["verified"] or not user["agreement_accepted"]:
-            await call.message.edit_text("🔞 Сначала пройди регистрацию через /start", parse_mode=None)
-            await call.answer()
+            await bot.send_message(call.message.chat.id, "🔞 Сначала пройди регистрацию через /start", parse_mode=None)
             return
 
         if not user["personality_ready"]:
-            await call.message.edit_text("👤 Сначала создай персонажа!", parse_mode=None)
-            await call.answer()
+            await bot.send_message(call.message.chat.id, "👤 Сначала создай персонажа!", parse_mode=None)
             return
 
         keyboard = InlineKeyboardMarkup(
@@ -937,13 +937,17 @@ async def profile_subs(call: types.CallbackQuery):
             "Выбери подписку:"
         )
 
-        await call.message.edit_text(text, reply_markup=keyboard, parse_mode=None)
-        await call.answer()
+        # Отправляем новое сообщение
+        await bot.send_message(call.message.chat.id, text, reply_markup=keyboard, parse_mode=None)
+        # Удаляем старое сообщение, если возможно
+        try:
+            await bot.delete_message(call.message.chat.id, call.message.message_id)
+        except Exception:
+            pass  # Если не удалось удалить, ничего страшного
 
     except Exception as e:
         logging.error(f"Ошибка в profile_subs: {e}")
-        await call.message.edit_text("⚠️ Произошла ошибка. Попробуйте позже.", parse_mode=None)
-        await call.answer()
+        await bot.send_message(call.message.chat.id, "⚠️ Произошла ошибка. Попробуйте позже.", parse_mode=None)
 
 # ============================================================
 #  ОБРАБОТЧИКИ КНОПОК ПРОФИЛЯ
