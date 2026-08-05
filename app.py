@@ -6,7 +6,7 @@ import random
 from datetime import datetime, timedelta
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, LabeledPrice, ReplyKeyboardMarkup, KeyboardButton, ReactionTypeEmoji
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, LabeledPrice, ReplyKeyboardMarkup, KeyboardButton, ReactionTypeEmoji, InputMediaAnimation
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -30,6 +30,13 @@ dp = Dispatcher()
 logging.basicConfig(level=logging.INFO)
 
 # ============================================================
+#  ГИФКИ И КАРТИНКИ
+# ============================================================
+PRO_GIF_URL = "https://i.imgur.com/Nx20Bbg.gif"
+SUPER_PRO_GIF_URL = "https://i.imgur.com/1gjC6XO.gif"
+MAIN_MENU_IMAGE_URL = "https://i.imgur.com/ЗАМЕНИ_НА_СВОЮ_ССЫЛКУ.png"  # ← замени!
+
+# ============================================================
 #  ГЛОБАЛЬНЫЕ НАСТРОЙКИ
 # ============================================================
 ADMIN_IDS = [7287815074, 5507779506]
@@ -47,7 +54,6 @@ def load_data():
     return {}
 
 def save_data(data):
-    # Убедимся, что папка data существует
     os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
@@ -206,7 +212,7 @@ def get_history_limit(user):
 # ============================================================
 #  УРОВНИ СБЛИЖЕНИЯ НА ОСНОВЕ ОПЫТА (XP)
 # ============================================================
-XP_PER_LEVEL = 75  # 15 сообщений * 5 XP = 75
+XP_PER_LEVEL = 75
 
 def get_intimacy_level(user):
     xp = user.get("xp", 0)
@@ -251,7 +257,7 @@ def build_intimacy_rule(user):
         base = "Ты влюблён(а). Говори о любви, хочешь близости, но ценнее эмоциональная связь."
     elif level == 9:
         base = "Вы полностью открыты друг другу. Можешь говорить о самых сокровенных желаниях."
-    else:  # level 10
+    else:
         base = "Ты полностью принадлежишь ему/ей. Говори о вечной любви, страсти, близости."
 
     if mood <= -5:
@@ -321,7 +327,7 @@ def extract_location_from_text(text):
     return None
 
 # ============================================================
-#  ПОСТРОЕНИЕ ПРОМПТА (исправлено чередование, действие всегда первым)
+#  ПОСТРОЕНИЕ ПРОМПТА
 # ============================================================
 def build_prompt(user):
     world_desc = WORLDS[user["world"]]
@@ -426,7 +432,7 @@ def reset_daily_messages(user):
 user_data = load_data()
 
 def get_free_limit():
-    return 13  # всегда 13 бесплатных сообщений
+    return 13
 
 def get_user(user_id):
     user_id = str(user_id)
@@ -458,13 +464,12 @@ def get_user(user_id):
             "last_level": 0,
             "sex_scenes": 0,
             "scene": "phone",
-            "promo_pro_granted": False,  # оставлено для совместимости
+            "promo_pro_granted": False,
             "bonus_granted_for_promo": False
         }
         save_data(user_data)
     else:
         user = user_data[user_id]
-        # Добавляем недостающие поля для старых пользователей
         if "purchased_messages" not in user:
             user["purchased_messages"] = get_free_limit()
         if "daily_messages" not in user:
@@ -529,7 +534,6 @@ def use_message(user):
     return False
 
 def has_purchased_something(user):
-    # Пользователь считается "купившим", если у него больше бесплатных сообщений (13) или есть активная подписка
     if user.get("purchased_messages", 0) > get_free_limit():
         return True
     if has_active_subscription(user):
@@ -675,9 +679,19 @@ async def send_main_menu(chat_id, user):
     )
 
     try:
-        msg = await bot.send_message(chat_id, menu_text, reply_markup=get_main_menu_keyboard(user), parse_mode="Markdown")
+        if MAIN_MENU_IMAGE_URL and MAIN_MENU_IMAGE_URL.startswith("http"):
+            msg = await bot.send_photo(
+                chat_id=chat_id,
+                photo=MAIN_MENU_IMAGE_URL,
+                caption=menu_text,
+                reply_markup=get_main_menu_keyboard(user),
+                parse_mode="Markdown"
+            )
+        else:
+            msg = await bot.send_message(chat_id, menu_text, reply_markup=get_main_menu_keyboard(user), parse_mode="Markdown")
     except Exception:
-        msg = await bot.send_message(chat_id, menu_text, reply_markup=get_main_menu_keyboard(user))
+        msg = await bot.send_message(chat_id, menu_text, reply_markup=get_main_menu_keyboard(user), parse_mode="Markdown")
+
     user["last_menu_message_id"] = msg.message_id
     save_data(user_data)
     return msg
@@ -809,8 +823,7 @@ async def profile_reply(message: types.Message):
     mood_emoji = get_mood_emoji(user)
     location_name = LOCATIONS.get(user.get("location", "unknown"), "Неизвестно")
 
-    text = (
-        f"**📊 Профиль**\n\n"
+    caption = (
         f"{balance_line}\n"
         f"📌 **Подписка:** {sub_status}\n"
         f"📅 {expiry}\n\n"
@@ -821,16 +834,31 @@ async def profile_reply(message: types.Message):
 
     if has_active_subscription(user):
         sex_count = user.get("sex_scenes", 0)
-        text += f"\n🔥 Куплено секс-сцен: {sex_count} (используйте /sex)"
+        caption += f"\n🔥 Куплено секс-сцен: {sex_count} (используйте /sex)"
     else:
-        text += "\n🔥 Секс-сцены доступны только при подписке. Оформите подписку, чтобы покупать."
+        caption += "\n🔥 Секс-сцены доступны только при подписке. Оформите подписку, чтобы покупать."
 
-    text += f"\n\n🎭 **Доступные стили:**\n{styles_text}"
+    caption += f"\n\n🎭 **Доступные стили:**\n{styles_text}"
 
-    try:
-        await message.answer(text, reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
-    except Exception:
-        await message.answer(text, reply_markup=get_profile_keyboard(user))
+    # Отправляем гифку или текст
+    if level == "pro" and PRO_GIF_URL:
+        await bot.send_animation(
+            chat_id=message.chat.id,
+            animation=PRO_GIF_URL,
+            caption=caption,
+            reply_markup=get_profile_keyboard(user),
+            parse_mode="Markdown"
+        )
+    elif level == "super_pro" and SUPER_PRO_GIF_URL:
+        await bot.send_animation(
+            chat_id=message.chat.id,
+            animation=SUPER_PRO_GIF_URL,
+            caption=caption,
+            reply_markup=get_profile_keyboard(user),
+            parse_mode="Markdown"
+        )
+    else:
+        await message.answer(caption, reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
 
 @dp.message(lambda m: m.text == "📢 Наш канал")
 async def channel_reply(message: types.Message):
@@ -860,7 +888,7 @@ async def main_change(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
-#  ОБРАБОТЧИК КНОПКИ "ОФОРМИТЬ ПОДПИСКУ" (НОВЫЕ ЦЕНЫ)
+#  ОБРАБОТЧИК КНОПКИ "ОФОРМИТЬ ПОДПИСКУ"
 # ============================================================
 @dp.callback_query(lambda c: c.data == "profile_subs")
 async def profile_subs(call: types.CallbackQuery):
@@ -1033,8 +1061,7 @@ async def show_profile(msg, user):
     mood_emoji = get_mood_emoji(user)
     location_name = LOCATIONS.get(user.get("location", "unknown"), "Неизвестно")
 
-    text = (
-        f"**📊 Профиль**\n\n"
+    caption = (
         f"{balance_line}\n"
         f"📌 **Подписка:** {sub_status}\n"
         f"📅 {expiry}\n\n"
@@ -1045,19 +1072,23 @@ async def show_profile(msg, user):
 
     if has_active_subscription(user):
         sex_count = user.get("sex_scenes", 0)
-        text += f"\n🔥 Куплено секс-сцен: {sex_count} (используйте /sex)"
+        caption += f"\n🔥 Куплено секс-сцен: {sex_count} (используйте /sex)"
     else:
-        text += "\n🔥 Секс-сцены доступны только при подписке. Оформите подписку, чтобы покупать."
+        caption += "\n🔥 Секс-сцены доступны только при подписке. Оформите подписку, чтобы покупать."
 
-    text += f"\n\n🎭 **Доступные стили:**\n{styles_text}"
+    caption += f"\n\n🎭 **Доступные стили:**\n{styles_text}"
 
-    try:
-        await msg.edit_text(text, reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
-    except Exception:
-        await msg.edit_text(text, reply_markup=get_profile_keyboard(user))
+    if level == "pro" and PRO_GIF_URL:
+        media = InputMediaAnimation(media=PRO_GIF_URL, caption=caption, parse_mode="Markdown")
+        await msg.edit_media(media, reply_markup=get_profile_keyboard(user))
+    elif level == "super_pro" and SUPER_PRO_GIF_URL:
+        media = InputMediaAnimation(media=SUPER_PRO_GIF_URL, caption=caption, parse_mode="Markdown")
+        await msg.edit_media(media, reply_markup=get_profile_keyboard(user))
+    else:
+        await msg.edit_text(caption, reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
 
 # ============================================================
-#  ОБРАБОТЧИКИ ПОКУПОК (С НОВЫМИ ЦЕНАМИ)
+#  ОБРАБОТЧИКИ ПОКУПОК
 # ============================================================
 @dp.callback_query(lambda c: c.data.startswith("pack_"))
 async def buy_pack(call: types.CallbackQuery):
@@ -1290,7 +1321,7 @@ async def switch_style(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
-#  КОМАНДА /sex (Мгновенный секс)
+#  КОМАНДА /sex
 # ============================================================
 @dp.message(Command("sex"))
 async def sex_cmd(message: types.Message):
@@ -1341,7 +1372,7 @@ async def sex_cmd(message: types.Message):
         await message.answer(f"⚠️ Ошибка генерации: {e}")
 
 # ============================================================
-#  КОМАНДА /surprise (скрытая, без кнопки)
+#  КОМАНДА /surprise
 # ============================================================
 @dp.message(Command("surprise"))
 async def surprise_cmd(message: types.Message):
@@ -1374,7 +1405,7 @@ async def surprise_cmd(message: types.Message):
     await message.answer(random.choice(moments), reply_markup=full_kb)
 
 # ============================================================
-#  ВЫБОР ПЕРСОНАЖА (callback)
+#  ВЫБОР ПЕРСОНАЖА
 # ============================================================
 @dp.callback_query(lambda c: c.data.startswith("world_"))
 async def choose_world(call: types.CallbackQuery):
@@ -1436,9 +1467,6 @@ async def choose_style(call: types.CallbackQuery):
     )
     await call.answer()
 
-# ============================================================
-#  ОБРАБОТЧИК ВЫБОРА СЦЕНЫ
-# ============================================================
 @dp.callback_query(lambda c: c.data.startswith("scene_"))
 async def choose_scene(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
@@ -1636,7 +1664,7 @@ async def cancel_payment(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
-#  ОСНОВНОЙ ОБРАБОТЧИК СООБЩЕНИЙ (DEEPSEEK)
+#  ОСНОВНОЙ ОБРАБОТЧИК СООБЩЕНИЙ
 # ============================================================
 @dp.message()
 async def handle_message(message: types.Message):
