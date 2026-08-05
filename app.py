@@ -30,7 +30,7 @@ dp = Dispatcher()
 logging.basicConfig(level=logging.INFO)
 
 # ============================================================
-#  ГИФКИ И КАРТИНКИ (ОБНОВЛЕННЫЕ ССЫЛКИ)
+#  ГИФКИ И КАРТИНКИ
 # ============================================================
 PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh4eWJ2Zzg0bTVlbWE2ZzFicHlsMXNibXp3dXdsayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GGSbxfzvec3PYZbFOM/giphy.gif"
 SUPER_PRO_GIF_URL = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3M0ZDcxb2oycGg3bm9sbWxocGR6ejZmdGtuc3c4d2pmNmQ3eTR2NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uEJGdRxnptmawiEzDP/giphy.gif"
@@ -888,7 +888,7 @@ async def main_change(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
-#  ОБРАБОТЧИК КНОПКИ "ОФОРМИТЬ ПОДПИСКУ"
+#  ИСПРАВЛЕННЫЙ ПРОФИЛЬ_ПОДПИСОК (редактирует, не удаляет)
 # ============================================================
 @dp.callback_query(lambda c: c.data == "profile_subs")
 async def profile_subs(call: types.CallbackQuery):
@@ -896,12 +896,12 @@ async def profile_subs(call: types.CallbackQuery):
         user = get_user(call.from_user.id)
 
         if not user["verified"] or not user["agreement_accepted"]:
-            await bot.send_message(call.message.chat.id, "🔞 Сначала пройди регистрацию через /start", parse_mode=None)
+            await call.message.edit_text("🔞 Сначала пройди регистрацию через /start", parse_mode=None)
             await call.answer()
             return
 
         if not user["personality_ready"]:
-            await bot.send_message(call.message.chat.id, "👤 Сначала создай персонажа!", parse_mode=None)
+            await call.message.edit_text("👤 Сначала создай персонажа!", parse_mode=None)
             await call.answer()
             return
 
@@ -937,12 +937,12 @@ async def profile_subs(call: types.CallbackQuery):
             "Выбери подписку:"
         )
 
-        await bot.send_message(call.message.chat.id, text, reply_markup=keyboard, parse_mode=None)
+        await call.message.edit_text(text, reply_markup=keyboard, parse_mode=None)
         await call.answer()
 
     except Exception as e:
         logging.error(f"Ошибка в profile_subs: {e}")
-        await bot.send_message(call.message.chat.id, "⚠️ Произошла ошибка. Попробуйте позже.", parse_mode=None)
+        await call.message.edit_text("⚠️ Произошла ошибка. Попробуйте позже.", parse_mode=None)
         await call.answer()
 
 # ============================================================
