@@ -888,7 +888,7 @@ async def main_change(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
-#  ИСПРАВЛЕННЫЙ ПРОФИЛЬ_ПОДПИСОК (отправляет новое сообщение, не удаляет)
+#  ОБРАБОТЧИК КНОПКИ "ОФОРМИТЬ ПОДПИСКУ" — МАКСИМАЛЬНО ПРОСТОЙ
 # ============================================================
 @dp.callback_query(lambda c: c.data == "profile_subs")
 async def profile_subs(call: types.CallbackQuery):
@@ -897,11 +897,11 @@ async def profile_subs(call: types.CallbackQuery):
         user = get_user(call.from_user.id)
 
         if not user["verified"] or not user["agreement_accepted"]:
-            await bot.send_message(call.message.chat.id, "🔞 Сначала пройди регистрацию через /start", parse_mode=None)
+            await bot.send_message(call.message.chat.id, "🔞 Сначала пройди регистрацию через /start")
             return
 
         if not user["personality_ready"]:
-            await bot.send_message(call.message.chat.id, "👤 Сначала создай персонажа!", parse_mode=None)
+            await bot.send_message(call.message.chat.id, "👤 Сначала создай персонажа!")
             return
 
         keyboard = InlineKeyboardMarkup(
@@ -936,11 +936,10 @@ async def profile_subs(call: types.CallbackQuery):
             "Выбери подписку:"
         )
 
-        await bot.send_message(call.message.chat.id, text, reply_markup=keyboard, parse_mode=None)
-
+        await bot.send_message(call.message.chat.id, text, reply_markup=keyboard)
     except Exception as e:
         logging.error(f"Ошибка в profile_subs: {e}")
-        await bot.send_message(call.message.chat.id, "⚠️ Произошла ошибка. Попробуйте позже.", parse_mode=None)
+        await bot.send_message(call.message.chat.id, "⚠️ Произошла ошибка. Попробуйте позже.")
 
 # ============================================================
 #  ОБРАБОТЧИКИ КНОПОК ПРОФИЛЯ
@@ -1013,7 +1012,6 @@ async def back_to_profile(call: types.CallbackQuery):
         await ask_create_personality(call.message)
         await call.answer()
         return
-    # Удаляем текущее сообщение и показываем профиль заново
     await call.message.delete()
     await show_profile(call.message, user)
     await call.answer()
@@ -1099,7 +1097,6 @@ async def show_profile(msg, user):
     else:
         await bot.send_message(chat_id, caption, reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
 
-    # Удаляем старое сообщение
     try:
         await bot.delete_message(chat_id, old_msg_id)
     except Exception:
