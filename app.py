@@ -34,7 +34,6 @@ logging.basicConfig(level=logging.INFO)
 # ============================================================
 ADMIN_IDS = [7287815074, 5507779506]
 maintenance_mode = False
-PROMO_PRO_END = (datetime.now() + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
 
 # ============================================================
 #  РАБОТА С ДАННЫМИ
@@ -224,7 +223,6 @@ def get_xp_badge(user):
     filled = "❤️" * level
     empty = "🤍" * (10 - level)
     progress = get_xp_progress(user)
-    # Прогресс-бар из символов ▓ и ░
     bar_length = 10
     filled_bar = int((progress / XP_PER_LEVEL) * bar_length)
     bar = "▓" * filled_bar + "░" * (bar_length - filled_bar)
@@ -419,44 +417,13 @@ def reset_daily_messages(user):
     user["last_daily_reset"] = datetime.now().isoformat()
     save_data(user_data)
 
-def grant_promo_pro_if_needed(user):
-    now = datetime.now()
-    if now > PROMO_PRO_END:
-        return False
-    if user.get("promo_pro_granted", False):
-        return False
-    if has_active_subscription(user):
-        return False
-    user["subscription"]["active"] = True
-    user["subscription"]["expires_at"] = (datetime.now() + timedelta(hours=1)).isoformat()
-    user["subscription"]["level"] = "pro"
-    user["purchased_messages"] += 30
-    user["daily_messages"] = 50
-    user["last_daily_reset"] = datetime.now().isoformat()
-    user["promo_pro_granted"] = True
-    save_data(user_data)
-    return True
-
-def grant_bonus_for_subscribers_if_needed(user):
-    now = datetime.now()
-    if now > PROMO_PRO_END:
-        return False
-    if not has_active_subscription(user):
-        return False
-    if user.get("bonus_granted_for_promo", False):
-        return False
-    user["purchased_messages"] += 30
-    user["bonus_granted_for_promo"] = True
-    save_data(user_data)
-    return True
-
 # ============================================================
 #  ДАННЫЕ ПОЛЬЗОВАТЕЛЕЙ
 # ============================================================
 user_data = load_data()
 
 def get_free_limit():
-    return 15
+    return 13  # всегда 13 бесплатных сообщений
 
 def get_user(user_id):
     user_id = str(user_id)
@@ -481,19 +448,20 @@ def get_user(user_id):
             "pending_invoice_id": None,
             "last_menu_message_id": None,
             "last_inline_message_id": None,
-            "promo_pro_granted": False,
-            "bonus_granted_for_promo": False,
             "xp": 0,
             "mood": 0,
             "location": "unknown",
             "negative_count": 0,
             "last_level": 0,
             "sex_scenes": 0,
-            "scene": "phone"
+            "scene": "phone",
+            "promo_pro_granted": False,  # оставлено для совместимости, но не используется
+            "bonus_granted_for_promo": False
         }
         save_data(user_data)
     else:
         user = user_data[user_id]
+        # Добавляем недостающие поля для старых пользователей
         if "purchased_messages" not in user:
             user["purchased_messages"] = get_free_limit()
         if "daily_messages" not in user:
@@ -514,10 +482,6 @@ def get_user(user_id):
                 "expires_at": None,
                 "level": None
             }
-        if "promo_pro_granted" not in user:
-            user["promo_pro_granted"] = False
-        if "bonus_granted_for_promo" not in user:
-            user["bonus_granted_for_promo"] = False
         if "xp" not in user:
             user["xp"] = 0
         if "mood" not in user:
@@ -532,6 +496,10 @@ def get_user(user_id):
             user["sex_scenes"] = 0
         if "scene" not in user:
             user["scene"] = "phone"
+        if "promo_pro_granted" not in user:
+            user["promo_pro_granted"] = False
+        if "bonus_granted_for_promo" not in user:
+            user["bonus_granted_for_promo"] = False
         save_data(user_data)
     return user_data[user_id]
 
@@ -558,6 +526,7 @@ def use_message(user):
     return False
 
 def has_purchased_something(user):
+    # Пользователь считается "купившим", если у него больше бесплатных сообщений (13) или есть активная подписка
     if user.get("purchased_messages", 0) > get_free_limit():
         return True
     if has_active_subscription(user):
@@ -684,6 +653,7 @@ async def send_main_menu(chat_id, user):
         if available <= 0:
             balance_text += " (закончились)"
     else:
+        # Для бесплатных пользователей баланс не показываем
         balance_text = "\n🔓 *У вас есть бесплатные сообщения для старта*"
 
     xp_badge = get_xp_badge(user)
@@ -1452,9 +1422,6 @@ async def choose_style(call: types.CallbackQuery):
 
     user["style"] = style_key
     user["personality_ready"] = True
-
-    granted = grant_promo_pro_if_needed(user)
-    bonus_granted = grant_bonus_for_subscribers_if_needed(user)
     save_data(user_data)
 
     await call.message.delete()
@@ -1899,14 +1866,13 @@ async def main():
     print("🔥 PRO: 430⭐/мес (50 сообщений/день, память 60 сообщ)")
     print("✨ SUPER PRO: 777⭐/мес (100 сообщений/день, память 100 сообщ)")
     print("⬆️ Апгрейд: 395⭐ (PRO → SUPER PRO)")
-    print(f"🎁 Акция: бесплатная PRO на 1 час для новых пользователей до {PROMO_PRO_END.strftime('%d.%m.%Y %H:%M')}")
-    print("🎁 Бонус 30 сообщений для существующих подписчиков (однократно)")
+    print("🎁 Бесплатных сообщений: 13 (баланс скрыт до первой покупки)")
     print("💕 Уровни сближения: 15 сообщений на уровень (75 XP), прогресс-бар ▓▓▓░░")
     print("💢 При накоплении негатива (5 раз) – ссора, -50 XP.")
     print("📍 Локация меняется автоматически, когда пользователь предлагает пойти куда-то")
     print("🔥 Мгновенный секс: 180⭐ за сцену, только для подписчиков PRO/SUPER PRO (команда /sex)")
     print("🎁 Команда /grant для выдачи SUPER PRO, PRO и секс-сцен (/grant @username pro|sex N)")
-    print("💾 Данные сохраняются в data.json — при перезапуске прогресс не теряется (проверь права на запись на сервере)")
+    print("💾 Данные сохраняются в data.json")
     print("📌 Админ: /maintenance on/off для техобслуживания")
     await dp.start_polling(bot)
 
