@@ -659,9 +659,6 @@ async def show_profile(msg, user):
     try: await bot.delete_message(chat_id, old_msg_id)
     except: pass
 
-# Обработчики подписок, платежей, /sex, /surprise, /clear, /grant и т.д. остаются без изменений
-# (привожу их в сокращённом виде, чтобы не дублировать)
-
 @dp.callback_query(lambda c: c.data == "profile_subs")
 async def profile_subs(call: types.CallbackQuery):
     try:
@@ -1158,7 +1155,8 @@ async def grant_cmd(message: types.Message):
                 await message.answer("❌ Не удалось найти пользователя по юзернейму.")
                 return
     else:
-        try: user_id = int(target)
+        try:
+            user_id = int(target)
         except:
             await message.answer("❌ Неверный формат. Используй @username или числовой ID.")
             return
@@ -1177,8 +1175,190 @@ async def grant_cmd(message: types.Message):
     if len(args) >= 3 and args[2].lower() == "sex":
         count = 1
         if len(args) >= 4:
-            try: count = int(args[3])
-            except: count = 1
+            try:
+                count = int(args[3])
+            except:
+                count = 1
         user["sex_scenes"] = user.get("sex_scenes", 0) + count
         save_data(user_data)
-        await message.answer(f"✅ Пользователю {target} выдано {count} секс-сцен
+        await message.answer(f"✅ Пользователю {target} выдано {count} секс-сцен.")
+        return
+    # по умолчанию выдаём SUPER PRO
+    user["subscription"]["active"] = True
+    user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
+    user["subscription"]["level"] = "super_pro"
+    user["purchased_messages"] += 50
+    user["daily_messages"] = 100
+    user["last_daily_reset"] = datetime.now().isoformat()
+    user["free_sex_scenes_super"] = 8
+    user["free_sex_scenes_pro"] = 0
+    save_data(user_data)
+    await message.answer(f"✅ Пользователю {target} выдана SUPER PRO подписка на месяц.")
+
+@dp.callback_query(lambda c: c.data == "cancel_payment")
+async def cancel_payment(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    pending_id = user.get("pending_invoice_id")
+    if pending_id:
+        try: await bot.delete_message(chat_id=call.message.chat.id, message_id=pending_id)
+        except: pass
+        user["pending_invoice_id"] = None
+        save_data(user_data)
+    await call.message.delete()
+    await send_main_menu(call.message.chat.id, user)
+    await call.answer()
+
+@dp.message()
+async def handle_message(message: types.Message):
+    global maintenance_mode
+    user = get_user(message.from_user.id)
+    if maintenance_mode and message.from_user.id not in ADMIN_IDS:
+        await message.answer("🛠️ **Бот на техническом обслуживании**\nМы обновляем функционал, чтобы сделать общение ещё лучше.\nПожалуйста, загляните позже. Следите за новостями в канале: @duel_dev_channel", parse_mode="Markdown")
+        return
+    if not user["verified"] or not user["agreement_accepted"]:
+        await message.answer("🔞 Сначала пройди регистрацию через /start")
+        return
+    if not user["personality_ready"]:
+        await message.answer("Сначала создай персонажа через /start")
+        return
+    if message.text in ["📋 Главное меню", "👤 Мой профиль", "📢 Наш канал"]:
+        return
+    available = get_available_messages(user)
+    if available <= 0:
+        await message.answer("🔄 Выберите действие:", reply_markup=full_kb)
+        await send_main_menu(message.chat.id, user)
+        action_buttons = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="👑 Оформить подписку", callback_data="profile_subs")],
+            [InlineKeyboardButton(text="📦 Купить пакеты", callback_data="profile_packs")]
+        ])
+        await message.answer("😔 *К сожалению у вас закончились сообщения.*\n\nВы можете:\n📦 Купить пакет сообщений через профиль\n👑 Оформить подписку через профиль\n\n🔥 PRO — 250⭐/мес (50 сообщений/день, память 60 сообщ)\n✨ SUPER PRO ✨ — 450⭐/мес (100 сообщений/день, память 100 сообщ)",
+                             reply_markup=action_buttons, parse_mode="Markdown")
+        return
+    use_message(user)
+    xp_change = 5
+    mood_change = 0.5
+    negative = contains_negative(message.text)
+    if negative:
+        xp_change = -10
+        mood_change = -1
+        user["negative_count"] = user.get("negative_count", 0) + 1
+        if user["negative_count"] >= 5:
+            user["xp"] = user.get("xp", 0) - 50
+            user["mood"] = user.get("mood", 0) - 3
+            user["negative_count"] = 0
+            save_data(user_data)
+            await message.answer("💢 **Вспыхнула ссора!**\n\nВы оба на взводе, слова летят острые, как ножи. Настроение испорчено, близость пошатнулась. Попробуй извиниться или сменить тему, чтобы всё наладить.",
+                                 reply_markup=full_kb, parse_mode="Markdown")
+            user["negative_count"] = 0
+            save_data(user_data)
+            new_level = get_intimacy_level(user)
+            await message.answer(f"💔 Уровень сближения снижен до {new_level}. Постарайтесь помириться.", reply_markup=full_kb)
+            user["history"].append({"role": "assistant", "content": "💢 Ссора! Настроение упало, уровень близости снижен."})
+            save_data(user_data)
+            return
+    else:
+        if user.get("negative_count", 0) > 0:
+            user["negative_count"] = user.get("negative_count", 0) - 1
+            if user["negative_count"] < 0: user["negative_count"] = 0
+    user["xp"] = user.get("xp", 0) + xp_change
+    user["mood"] = user.get("mood", 0) + mood_change
+    if user["mood"] > 10: user["mood"] = 10
+    elif user["mood"] < -10: user["mood"] = -10
+    if user["xp"] < 0: user["xp"] = 0
+    new_level = get_intimacy_level(user)
+    old_level = user.get("last_level", 0)
+    if new_level > old_level:
+        user["last_level"] = new_level
+        save_data(user_data)
+        level_congrats = get_level_congratulation(new_level)
+        if level_congrats:
+            await message.answer(level_congrats, reply_markup=full_kb, parse_mode="Markdown")
+    elif new_level < old_level:
+        user["last_level"] = new_level
+        save_data(user_data)
+        await message.answer(f"💔 Уровень сближения упал до {new_level}. Постарайтесь быть добрее.", reply_markup=full_kb)
+    new_loc = extract_location_from_text(message.text)
+    if new_loc and new_loc != user.get("location"):
+        user["location"] = new_loc
+        save_data(user_data)
+    save_data(user_data)
+    user["history"].append({"role": "user", "content": message.text})
+    limit = get_history_limit(user)
+    if len(user["history"]) > 10:
+        user["history"] = user["history"][-10:]
+    save_data(user_data)
+    await bot.send_chat_action(message.chat.id, "typing")
+    async def keep_typing():
+        while True:
+            await bot.send_chat_action(message.chat.id, "typing")
+            await asyncio.sleep(4)
+    typing_task = asyncio.create_task(keep_typing())
+    if get_subscription_level(user) == "super_pro":
+        reaction = get_reaction(message.text)
+        if reaction:
+            try:
+                await bot.set_message_reaction(chat_id=message.chat.id, message_id=message.message_id,
+                                               reaction=[ReactionTypeEmoji(emoji=reaction)])
+            except: pass
+    system_prompt = build_prompt(user)
+    messages_for_api = [{"role": "system", "content": system_prompt}]
+    messages_for_api.extend(user["history"])
+    try:
+        response = client.chat.completions.create(
+            model="deepseek/deepseek-v4-pro",
+            messages=messages_for_api,
+            temperature=0.9,
+            max_tokens=1000
+        )
+        answer = response.choices[0].message.content
+    except Exception as e:
+        if typing_task:
+            typing_task.cancel()
+            try: await typing_task
+            except asyncio.CancelledError: pass
+        await message.answer(f"⚠️ Ошибка: {e}")
+        logging.error(f"Ошибка DeepSeek: {e}")
+        return
+    finally:
+        if typing_task:
+            typing_task.cancel()
+            try: await typing_task
+            except asyncio.CancelledError: pass
+    user["history"].append({"role": "assistant", "content": answer})
+    if len(user["history"]) > limit:
+        user["history"] = user["history"][-limit:]
+    save_data(user_data)
+    await message.answer(answer, reply_markup=full_kb)
+
+def get_level_congratulation(level):
+    if level == 2: return "🎉 Ты заметил(а), что между вами пробежала искра! Уровень сближения — 2. Теперь вы можете флиртовать."
+    elif level == 3: return "💞 Вы стали ближе! Уровень 3. Теперь вы можете обниматься и делиться секретами."
+    elif level == 4: return "🔥 Напряжение растёт! Уровень 4. Ты чувствуешь, что он/она хочет тебя."
+    elif level == 5: return "💋 Уровень 5! Вы готовы к поцелую. Собеседник уже не скрывает своих чувств."
+    elif level == 6: return "🌹 Уровень 6. Ты влюблён(а)! Теперь вы можете говорить о страсти."
+    elif level == 7: return "💕 Уровень 7. Интимная близость уже близка. Собеседник открыто говорит о желании."
+    elif level == 8: return "❤️‍🔥 Уровень 8! Вы признались друг другу в любви. Теперь вы — пара."
+    elif level == 9: return "🔥 Уровень 9! Вы полностью открыты друг другу. Никаких тайн."
+    elif level == 10: return "💖 Уровень 10! Вы — единое целое. Настоящая душевная близость."
+    return ""
+
+async def main():
+    print("🚀 Role Duel финальная версия запущена (DeepSeek V4 Pro)!")
+    print("🧠 Модель: deepseek/deepseek-v4-pro (лучшее цена/качество)")
+    print("📦 Пакеты: 30⭐/30, 80⭐/100, 200⭐/300")
+    print("🔥 PRO: 250⭐/мес (50 сообщений/день, память 60 сообщ)")
+    print("✨ SUPER PRO: 450⭐/мес (100 сообщений/день, память 100 сообщ)")
+    print("⬆️ Апгрейд: 230⭐ (PRO → SUPER PRO)")
+    print("🎁 Бесплатных сообщений: 13 (баланс скрыт до первой покупки)")
+    print("💕 Уровни сближения: 15 сообщений на уровень (75 XP), прогресс-бар ▓▓▓░░")
+    print("💢 При накоплении негатива (5 раз) – ссора, -50 XP.")
+    print("📍 Локация меняется автоматически, но не отображается в меню.")
+    print("🔥 Мгновенный секс: 45⭐ за сцену (доступно всем), бесплатные сцены для подписчиков")
+    print("🎁 Команда /grant для выдачи SUPER PRO, PRO и секс-сцен (/grant @username pro|sex N)")
+    print("📌 Админ: /revoke_subscription @username для отзыва подписки")
+    print("💾 Данные сохраняются в data/data.json (постоянное хранилище)")
+    print("📌 Админ: /maintenance on/off для техобслуживания")
+    await dp.start_polling(bot)
+
+if __name__ == "__main__":
+    asyncio.run(main())
