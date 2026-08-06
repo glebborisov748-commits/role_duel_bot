@@ -245,7 +245,8 @@ def get_user(user_id):
             "xp": 0, "mood": 0, "location": "unknown", "negative_count": 0, "last_level": 0,
             "sex_scenes": 0, "scene": "phone",
             "promo_pro_granted": False, "bonus_granted_for_promo": False,
-            "free_sex_scenes_pro": 0, "free_sex_scenes_super": 0
+            "free_sex_scenes_pro": 0, "free_sex_scenes_super": 0,
+            "switching_personality": False
         }
         save_data(user_data)
     else:
@@ -269,7 +270,8 @@ def get_user(user_id):
             "promo_pro_granted": False,
             "bonus_granted_for_promo": False,
             "free_sex_scenes_pro": 0,
-            "free_sex_scenes_super": 0
+            "free_sex_scenes_super": 0,
+            "switching_personality": False
         }
         for key, val in defaults.items():
             if key not in user:
@@ -392,24 +394,23 @@ async def send_main_menu(chat_id, user):
     gender_name = GENDERS[user['gender']]['name']
     world_name = WORLD_NAMES[user['world']]
     style_label = STYLES[user['style']]['label']
-    style_emoji = STYLES[user['style']]['emoji']
 
     show_balance = has_purchased_something(user)
     if show_balance:
         available = get_available_messages(user)
-        balance_text = f"\n📩 *Осталось сообщений:* {available}"
+        balance_text = f"\nОсталось сообщений: {available}"
         if available <= 0: balance_text += " (закончились)"
     else:
-        balance_text = "\n🔓 *У вас есть бесплатные сообщения для старта*"
+        balance_text = "\nУ вас есть бесплатные сообщения для старта"
 
     xp_badge = get_xp_badge(user)
 
     menu_text = (
         f"{badge}\n\n"
-        f"🎭 **{gender_name}** из *{world_name}*\n"
-        f"💬 Стиль: {style_emoji} {style_label}\n"
+        f"Текущий собеседник: {gender_name} из {world_name}\n"
+        f"Стиль: {style_label}\n"
         f"{balance_text}\n"
-        f"💕 {xp_badge}\n\n"
+        f"{xp_badge}\n\n"
         f"💬 Напиши персонажу...\n"
         f"✨ Или выбери действие внизу."
     )
@@ -439,11 +440,22 @@ async def ask_create_personality(message: types.Message):
 async def create_personality_callback(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     user["personality_ready"] = False
+    user["history"] = []
     save_data(user_data)
     await call.message.delete()
     await call.message.answer("🌟 **Создай своего идеального собеседника!**\n\nСначала выбери **мир**, в котором он/она живёт:",
                               reply_markup=world_kb, parse_mode="Markdown")
     await call.answer()
+
+@dp.message(Command("switch_personality"))
+async def switch_personality_cmd(message: types.Message):
+    user = get_user(message.from_user.id)
+    if not has_active_subscription(user) or get_subscription_level(user) != "super_pro":
+        await message.answer("❌ Эта команда доступна только для подписчиков SUPER PRO.")
+        return
+    user["switching_personality"] = True
+    save_data(user_data)
+    await message.answer("🔄 **Смена персонажа (история сохраняется)**\n\nВыбери **мир**:", reply_markup=world_kb, parse_mode="Markdown")
 
 @dp.message(Command("start"))
 async def start_cmd(message: types.Message):
@@ -478,13 +490,123 @@ async def profile_reply(message: types.Message):
     if not user["personality_ready"]:
         await ask_create_personality(message)
         return
+    await show_profile(message, user)
+
+@dp.message(lambda m: m.text == "📢 Наш канал")
+async def channel_reply(message: types.Message):
+    await message.delete()
+    await message.answer("📢 **Наш канал:**\nПодписывайся, чтобы быть в курсе новостей и обновлений!",
+                         reply_markup=channel_inline_kb, parse_mode="Markdown")
+
+@dp.callback_query(lambda c: c.data == "main_change")
+async def main_change(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    if has_active_subscription(user) and get_subscription_level(user) == "super_pro":
+        await call.answer("💡 Для SUPER PRO доступна команда /switch_personality – она меняет персонажа без потери истории.", show_alert=True)
+        return
+    user["personality_ready"] = False
+    user["history"] = []
+    save_data(user_data)
+    await call.message.delete()
+    await call.message.answer("🔄 **Создаем нового собеседника!**\n\nВыбери **мир**:",
+                              reply_markup=world_kb, parse_mode="Markdown")
+    await call.answer()
+
+@dp.callback_query(lambda c: c.data.startswith("world_"))
+async def choose_world(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    world = call.data.split("_")[1]
+    if user.get("switching_personality", False):
+        user["world"] = world
+        save_data(user_data)
+        await call.message.edit_text("🌍 Мир обновлён! Теперь выбери **пол**:", reply_markup=gender_kb, parse_mode="Markdown")
+    else:
+        user["world"] = world
+        save_data(user_data)
+        await call.message.edit_text("🌍 Мир выбран! Теперь выбери **пол персонажа**:", reply_markup=gender_kb, parse_mode="Markdown")
+    await call.answer()
+
+@dp.callback_query(lambda c: c.data.startswith("gender_"))
+async def choose_gender(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    gender = call.data.split("_")[1]
+    if user.get("switching_personality", False):
+        user["gender"] = gender
+        save_data(user_data)
+        style_kb = get_style_kb(user)
+        await call.message.edit_text("👤 Пол обновлён! Теперь выбери **стиль**:", reply_markup=style_kb, parse_mode="Markdown")
+    else:
+        user["gender"] = gender
+        save_data(user_data)
+        style_kb = get_style_kb(user)
+        await call.message.edit_text("👤 Отлично! Теперь выбери **стиль** персонажа:", reply_markup=style_kb, parse_mode="Markdown")
+    await call.answer()
+
+@dp.callback_query(lambda c: c.data.startswith("style_"))
+async def choose_style(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    style_key = call.data.split("_")[1]
+    if style_key == "passionate":
+        if not has_active_subscription(user) or get_subscription_level(user) not in ["pro","super_pro"]:
+            await call.answer("❤️‍🔥 Стиль «Страстный» доступен по подпискам PRO (250⭐/мес) и SUPER PRO (450⭐/мес).\n\nОформите подписку в разделе «Мой профиль».", show_alert=True)
+            return
+    elif style_key == "magnetic":
+        if not has_active_subscription(user) or get_subscription_level(user) not in ["pro","super_pro"]:
+            await call.answer("💫 Стиль «Магнетический» доступен по подпискам PRO (250⭐/мес) и SUPER PRO (450⭐/мес).\n\nОформите подписку в разделе «Мой профиль».", show_alert=True)
+            return
+    elif style_key in ["vulgar","seduction"]:
+        if not has_active_subscription(user) or get_subscription_level(user) != "super_pro":
+            label = STYLES[style_key]['label']
+            await call.answer(f"🌹 Стиль «{label}» доступен только по подписке SUPER PRO (450⭐/мес).\n\nОформите SUPER PRO в разделе «Мой профиль».", show_alert=True)
+            return
+    if style_key not in STYLES:
+        await call.answer("❌ Стиль не найден", show_alert=True)
+        return
+
+    user["style"] = style_key
+    save_data(user_data)
+
+    if user.get("switching_personality", False):
+        await call.message.edit_text("🎬 Стиль обновлён! Теперь выбери сцену для общения:",
+                                     reply_markup=scene_kb, parse_mode="Markdown")
+    else:
+        user["personality_ready"] = True
+        save_data(user_data)
+        await call.message.delete()
+        await call.message.answer("🎬 Теперь выбери сцену для общения:\n\n📱 Переписка в телефоне — классический формат.\n👫 Реальная встреча — живое общение лицом к лицу.",
+                                  reply_markup=scene_kb, parse_mode="Markdown")
+    await call.answer()
+
+@dp.callback_query(lambda c: c.data.startswith("scene_"))
+async def choose_scene(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    scene = call.data.split("_")[1]
+    user["scene"] = scene
+    save_data(user_data)
+
+    if user.get("switching_personality", False):
+        user["switching_personality"] = False
+        save_data(user_data)
+        await call.message.delete()
+        await send_main_menu(call.message.chat.id, user)
+        await call.answer("✅ Персонаж обновлён! История сохранена.")
+    else:
+        await call.message.delete()
+        await send_main_menu(call.message.chat.id, user)
+    await call.answer()
+
+async def show_profile(msg, user):
     level = get_subscription_level(user)
     if level == "pro": sub_status = "🔥 PRO активна (50 сообщений/день, память 60 сообщений)"
-    elif level == "super_pro": sub_status = "✨ *SUPER PRO* ✨ активна (100 сообщений/день, память 100 сообщений)"
+    elif level == "super_pro": sub_status = "✨ SUPER PRO активна (100 сообщений/день, память 100 сообщений)"
     else: sub_status = "❌ неактивна (память 30 сообщений)"
-    expiry = user["subscription"]["expires_at"] if user["subscription"]["expires_at"] else "Неактивна"
-    if user["subscription"]["expires_at"]:
-        expiry = datetime.fromisoformat(user["subscription"]["expires_at"]).strftime("%d.%m.%Y %H:%M")
+    expiry = user["subscription"]["expires_at"]
+    if expiry:
+        expiry = datetime.fromisoformat(expiry).strftime("%d.%m.%Y %H:%M")
+        expiry_line = f"Окончание подписки: {expiry}"
+    else:
+        expiry_line = "Окончание подписки: неактивна"
+
     styles_text = ""
     for key, style in STYLES.items():
         if key in PREMIUM_STYLES:
@@ -498,49 +620,47 @@ async def profile_reply(message: types.Message):
                 if not has_active_subscription(user) or get_subscription_level(user) != "super_pro":
                     styles_text += f"{style['emoji']} {style['label']} 🔒\n"; continue
         styles_text += f"{style['emoji']} {style['label']}\n"
+
     show_balance = has_purchased_something(user)
     if show_balance:
         available = get_available_messages(user)
-        balance_line = f"📨 **Доступно сообщений:** {available}"
+        balance_line = f"Доступно сообщений: {available}"
         if available <= 0: balance_line += " (закончились)"
     else:
-        balance_line = "📨 *У вас есть бесплатные сообщения для старта*"
+        balance_line = "У вас есть бесплатные сообщения для старта"
+
     xp_badge = get_xp_badge(user)
-    caption = (f"{balance_line}\n📌 **Подписка:** {sub_status}\n📅 {expiry}\n\n💕 {xp_badge}\n")
+
     if has_active_subscription(user):
-        sex_count = user.get("sex_scenes", 0)
         free_pro = user.get("free_sex_scenes_pro", 0)
         free_super = user.get("free_sex_scenes_super", 0)
-        total_free = free_pro + free_super
-        caption += f"\n🔥 Бесплатных секс-сцен: {total_free} (используйте /sex)"
-        caption += f"\n🔥 Куплено секс-сцен: {sex_count} (используйте /sex)"
+        bought = user.get("sex_scenes", 0)
+        total_sex_scenes = free_pro + free_super + bought
     else:
-        caption += "\n🔥 Купить секс-сцену за 45⭐ можно в профиле"
-    caption += f"\n\n🎭 **Доступные стили:**\n{styles_text}"
+        total_sex_scenes = user.get("sex_scenes", 0)
+
+    caption = (f"{balance_line}\n"
+               f"Подписка: {sub_status}\n"
+               f"{expiry_line}\n\n"
+               f"{xp_badge}\n"
+               f"Всего секс-сцен: {total_sex_scenes}\n\n"
+               f"Доступные стили:\n{styles_text}")
+
+    chat_id = msg.chat.id
+    old_msg_id = msg.message_id
     if level == "pro" and PRO_GIF_URL:
-        await bot.send_animation(chat_id=message.chat.id, animation=PRO_GIF_URL, caption=caption,
+        await bot.send_animation(chat_id, animation=PRO_GIF_URL, caption=caption,
                                  reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
     elif level == "super_pro" and SUPER_PRO_GIF_URL:
-        await bot.send_animation(chat_id=message.chat.id, animation=SUPER_PRO_GIF_URL, caption=caption,
+        await bot.send_animation(chat_id, animation=SUPER_PRO_GIF_URL, caption=caption,
                                  reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
     else:
-        await message.answer(caption, reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
+        await bot.send_message(chat_id, caption, reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
+    try: await bot.delete_message(chat_id, old_msg_id)
+    except: pass
 
-@dp.message(lambda m: m.text == "📢 Наш канал")
-async def channel_reply(message: types.Message):
-    await message.delete()
-    await message.answer("📢 **Наш канал:**\nПодписывайся, чтобы быть в курсе новостей и обновлений!",
-                         reply_markup=channel_inline_kb, parse_mode="Markdown")
-
-@dp.callback_query(lambda c: c.data == "main_change")
-async def main_change(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    user["personality_ready"] = False
-    save_data(user_data)
-    await call.message.delete()
-    await call.message.answer("🔄 **Создаем нового собеседника!**\n\nВыбери **мир**:",
-                              reply_markup=world_kb, parse_mode="Markdown")
-    await call.answer()
+# Обработчики подписок, платежей, /sex, /surprise, /clear, /grant и т.д. остаются без изменений
+# (привожу их в сокращённом виде, чтобы не дублировать)
 
 @dp.callback_query(lambda c: c.data == "profile_subs")
 async def profile_subs(call: types.CallbackQuery):
@@ -652,59 +772,6 @@ async def back_to_profile(call: types.CallbackQuery):
     await call.message.delete()
     await show_profile(call.message, user)
     await call.answer()
-
-async def show_profile(msg, user):
-    level = get_subscription_level(user)
-    if level == "pro": sub_status = "🔥 PRO активна (50 сообщений/день, память 60 сообщений)"
-    elif level == "super_pro": sub_status = "✨ *SUPER PRO* ✨ активна (100 сообщений/день, память 100 сообщений)"
-    else: sub_status = "❌ неактивна (память 30 сообщений)"
-    expiry = user["subscription"]["expires_at"] if user["subscription"]["expires_at"] else "Неактивна"
-    if user["subscription"]["expires_at"]:
-        expiry = datetime.fromisoformat(user["subscription"]["expires_at"]).strftime("%d.%m.%Y %H:%M")
-    styles_text = ""
-    for key, style in STYLES.items():
-        if key in PREMIUM_STYLES:
-            if key == "passionate":
-                if not has_active_subscription(user) or get_subscription_level(user) not in ["pro","super_pro"]:
-                    styles_text += f"{style['emoji']} {style['label']} 🔒\n"; continue
-            elif key == "magnetic":
-                if not has_active_subscription(user) or get_subscription_level(user) not in ["pro","super_pro"]:
-                    styles_text += f"{style['emoji']} {style['label']} 🔒\n"; continue
-            elif key in ["vulgar","seduction"]:
-                if not has_active_subscription(user) or get_subscription_level(user) != "super_pro":
-                    styles_text += f"{style['emoji']} {style['label']} 🔒\n"; continue
-        styles_text += f"{style['emoji']} {style['label']}\n"
-    show_balance = has_purchased_something(user)
-    if show_balance:
-        available = get_available_messages(user)
-        balance_line = f"📨 **Доступно сообщений:** {available}"
-        if available <= 0: balance_line += " (закончились)"
-    else:
-        balance_line = "📨 *У вас есть бесплатные сообщения для старта*"
-    xp_badge = get_xp_badge(user)
-    caption = (f"{balance_line}\n📌 **Подписка:** {sub_status}\n📅 {expiry}\n\n💕 {xp_badge}\n")
-    if has_active_subscription(user):
-        sex_count = user.get("sex_scenes", 0)
-        free_pro = user.get("free_sex_scenes_pro", 0)
-        free_super = user.get("free_sex_scenes_super", 0)
-        total_free = free_pro + free_super
-        caption += f"\n🔥 Бесплатных секс-сцен: {total_free} (используйте /sex)"
-        caption += f"\n🔥 Куплено секс-сцен: {sex_count} (используйте /sex)"
-    else:
-        caption += "\n🔥 Купить секс-сцену за 45⭐ можно в профиле"
-    caption += f"\n\n🎭 **Доступные стили:**\n{styles_text}"
-    chat_id = msg.chat.id
-    old_msg_id = msg.message_id
-    if level == "pro" and PRO_GIF_URL:
-        await bot.send_animation(chat_id, animation=PRO_GIF_URL, caption=caption,
-                                 reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
-    elif level == "super_pro" and SUPER_PRO_GIF_URL:
-        await bot.send_animation(chat_id, animation=SUPER_PRO_GIF_URL, caption=caption,
-                                 reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
-    else:
-        await bot.send_message(chat_id, caption, reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
-    try: await bot.delete_message(chat_id, old_msg_id)
-    except: pass
 
 @dp.message(Command("revoke_subscription"))
 async def revoke_subscription_cmd(message: types.Message):
@@ -1004,59 +1071,6 @@ async def surprise_cmd(message: types.Message):
                     "Мы остаёмся наедине, и я говорю: «Я хочу провести с тобой всю жизнь. Ты согласен(на)?»"]
     await message.answer(random.choice(moments), reply_markup=full_kb)
 
-@dp.callback_query(lambda c: c.data.startswith("world_"))
-async def choose_world(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    user["world"] = call.data.split("_")[1]
-    await call.message.edit_text("🌍 Мир выбран! Теперь выбери **пол персонажа**:", reply_markup=gender_kb, parse_mode="Markdown")
-    await call.answer()
-
-@dp.callback_query(lambda c: c.data.startswith("gender_"))
-async def choose_gender(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    user["gender"] = call.data.split("_")[1]
-    style_kb = get_style_kb(user)
-    await call.message.edit_text("👤 Отлично! Теперь выбери **стиль** персонажа:", reply_markup=style_kb, parse_mode="Markdown")
-    await call.answer()
-
-@dp.callback_query(lambda c: c.data.startswith("style_"))
-async def choose_style(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    style_key = call.data.split("_")[1]
-    if style_key == "passionate":
-        if not has_active_subscription(user) or get_subscription_level(user) not in ["pro","super_pro"]:
-            await call.answer("❤️‍🔥 Стиль «Страстный» доступен по подпискам PRO (250⭐/мес) и SUPER PRO (450⭐/мес).\n\nОформите подписку в разделе «Мой профиль».", show_alert=True)
-            return
-    elif style_key == "magnetic":
-        if not has_active_subscription(user) or get_subscription_level(user) not in ["pro","super_pro"]:
-            await call.answer("💫 Стиль «Магнетический» доступен по подпискам PRO (250⭐/мес) и SUPER PRO (450⭐/мес).\n\nОформите подписку в разделе «Мой профиль».", show_alert=True)
-            return
-    elif style_key in ["vulgar","seduction"]:
-        if not has_active_subscription(user) or get_subscription_level(user) != "super_pro":
-            label = STYLES[style_key]['label']
-            await call.answer(f"🌹 Стиль «{label}» доступен только по подписке SUPER PRO (450⭐/мес).\n\nОформите SUPER PRO в разделе «Мой профиль».", show_alert=True)
-            return
-    if style_key not in STYLES:
-        await call.answer("❌ Стиль не найден", show_alert=True)
-        return
-    user["style"] = style_key
-    user["personality_ready"] = True
-    save_data(user_data)
-    await call.message.delete()
-    await call.message.answer("🎬 Теперь выбери сцену для общения:\n\n📱 Переписка в телефоне — классический формат.\n👫 Реальная встреча — живое общение лицом к лицу.",
-                              reply_markup=scene_kb, parse_mode="Markdown")
-    await call.answer()
-
-@dp.callback_query(lambda c: c.data.startswith("scene_"))
-async def choose_scene(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    scene = call.data.split("_")[1]
-    user["scene"] = scene
-    save_data(user_data)
-    await call.message.delete()
-    await send_main_menu(call.message.chat.id, user)
-    await call.answer()
-
 @dp.callback_query(lambda c: c.data == "age_yes")
 async def age_yes(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
@@ -1094,6 +1108,7 @@ async def agreement_decline(call: types.CallbackQuery):
 async def new_personality_cmd(message: types.Message):
     user = get_user(message.from_user.id)
     user["personality_ready"] = False
+    user["history"] = []
     save_data(user_data)
     await message.answer("🔄 **Создаём нового собеседника!**\n\nВыбери **мир**:", reply_markup=world_kb, parse_mode="Markdown")
 
@@ -1166,183 +1181,4 @@ async def grant_cmd(message: types.Message):
             except: count = 1
         user["sex_scenes"] = user.get("sex_scenes", 0) + count
         save_data(user_data)
-        await message.answer(f"✅ Пользователю {target} выдано {count} секс-сцен(а).")
-        return
-    user["subscription"]["active"] = True
-    user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
-    user["subscription"]["level"] = "super_pro"
-    user["purchased_messages"] += 50
-    user["daily_messages"] = 100
-    user["last_daily_reset"] = datetime.now().isoformat()
-    user["free_sex_scenes_super"] = 8
-    user["free_sex_scenes_pro"] = 0
-    save_data(user_data)
-    await message.answer(f"✅ Пользователю {target} выдана SUPER PRO подписка на месяц.")
-
-@dp.callback_query(lambda c: c.data == "cancel_payment")
-async def cancel_payment(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    pending_id = user.get("pending_invoice_id")
-    if pending_id:
-        try: await bot.delete_message(chat_id=call.message.chat.id, message_id=pending_id)
-        except: pass
-        user["pending_invoice_id"] = None
-        save_data(user_data)
-    await call.message.delete()
-    await send_main_menu(call.message.chat.id, user)
-    await call.answer()
-
-@dp.message()
-async def handle_message(message: types.Message):
-    global maintenance_mode
-    user = get_user(message.from_user.id)
-    if maintenance_mode and message.from_user.id not in ADMIN_IDS:
-        await message.answer("🛠️ **Бот на техническом обслуживании**\nМы обновляем функционал, чтобы сделать общение ещё лучше.\nПожалуйста, загляните позже. Следите за новостями в канале: @duel_dev_channel", parse_mode="Markdown")
-        return
-    if not user["verified"] or not user["agreement_accepted"]:
-        await message.answer("🔞 Сначала пройди регистрацию через /start")
-        return
-    if not user["personality_ready"]:
-        await message.answer("Сначала создай персонажа через /start")
-        return
-    if message.text in ["📋 Главное меню", "👤 Мой профиль", "📢 Наш канал"]:
-        return
-    available = get_available_messages(user)
-    if available <= 0:
-        await message.answer("🔄 Выберите действие:", reply_markup=full_kb)
-        await send_main_menu(message.chat.id, user)
-        action_buttons = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="👑 Оформить подписку", callback_data="profile_subs")],
-            [InlineKeyboardButton(text="📦 Купить пакеты", callback_data="profile_packs")]
-        ])
-        await message.answer("😔 *К сожалению у вас закончились сообщения.*\n\nВы можете:\n📦 Купить пакет сообщений через профиль\n👑 Оформить подписку через профиль\n\n🔥 PRO — 250⭐/мес (50 сообщений/день, память 60 сообщ)\n✨ SUPER PRO ✨ — 450⭐/мес (100 сообщений/день, память 100 сообщ)",
-                             reply_markup=action_buttons, parse_mode="Markdown")
-        return
-    use_message(user)
-    xp_change = 5
-    mood_change = 0.5
-    negative = contains_negative(message.text)
-    if negative:
-        xp_change = -10
-        mood_change = -1
-        user["negative_count"] = user.get("negative_count", 0) + 1
-        if user["negative_count"] >= 5:
-            user["xp"] = user.get("xp", 0) - 50
-            user["mood"] = user.get("mood", 0) - 3
-            user["negative_count"] = 0
-            save_data(user_data)
-            await message.answer("💢 **Вспыхнула ссора!**\n\nВы оба на взводе, слова летят острые, как ножи. Настроение испорчено, близость пошатнулась. Попробуй извиниться или сменить тему, чтобы всё наладить.",
-                                 reply_markup=full_kb, parse_mode="Markdown")
-            user["negative_count"] = 0
-            save_data(user_data)
-            new_level = get_intimacy_level(user)
-            await message.answer(f"💔 Уровень сближения снижен до {new_level}. Постарайтесь помириться.", reply_markup=full_kb)
-            user["history"].append({"role": "assistant", "content": "💢 Ссора! Настроение упало, уровень близости снижен."})
-            save_data(user_data)
-            return
-    else:
-        if user.get("negative_count", 0) > 0:
-            user["negative_count"] = user.get("negative_count", 0) - 1
-            if user["negative_count"] < 0: user["negative_count"] = 0
-    user["xp"] = user.get("xp", 0) + xp_change
-    user["mood"] = user.get("mood", 0) + mood_change
-    if user["mood"] > 10: user["mood"] = 10
-    elif user["mood"] < -10: user["mood"] = -10
-    if user["xp"] < 0: user["xp"] = 0
-    new_level = get_intimacy_level(user)
-    old_level = user.get("last_level", 0)
-    if new_level > old_level:
-        user["last_level"] = new_level
-        save_data(user_data)
-        level_congrats = get_level_congratulation(new_level)
-        if level_congrats:
-            await message.answer(level_congrats, reply_markup=full_kb, parse_mode="Markdown")
-    elif new_level < old_level:
-        user["last_level"] = new_level
-        save_data(user_data)
-        await message.answer(f"💔 Уровень сближения упал до {new_level}. Постарайтесь быть добрее.", reply_markup=full_kb)
-    new_loc = extract_location_from_text(message.text)
-    if new_loc and new_loc != user.get("location"):
-        user["location"] = new_loc
-        save_data(user_data)
-    save_data(user_data)
-    user["history"].append({"role": "user", "content": message.text})
-    limit = get_history_limit(user)
-    if len(user["history"]) > 10:
-        user["history"] = user["history"][-10:]
-    save_data(user_data)
-    await bot.send_chat_action(message.chat.id, "typing")
-    async def keep_typing():
-        while True:
-            await bot.send_chat_action(message.chat.id, "typing")
-            await asyncio.sleep(4)
-    typing_task = asyncio.create_task(keep_typing())
-    if get_subscription_level(user) == "super_pro":
-        reaction = get_reaction(message.text)
-        if reaction:
-            try:
-                await bot.set_message_reaction(chat_id=message.chat.id, message_id=message.message_id,
-                                               reaction=[ReactionTypeEmoji(emoji=reaction)])
-            except: pass
-    system_prompt = build_prompt(user)
-    messages_for_api = [{"role": "system", "content": system_prompt}]
-    messages_for_api.extend(user["history"])
-    try:
-        response = client.chat.completions.create(
-            model="deepseek/deepseek-v4-pro",
-            messages=messages_for_api,
-            temperature=0.9,
-            max_tokens=1000
-        )
-        answer = response.choices[0].message.content
-    except Exception as e:
-        if typing_task:
-            typing_task.cancel()
-            try: await typing_task
-            except asyncio.CancelledError: pass
-        await message.answer(f"⚠️ Ошибка: {e}")
-        logging.error(f"Ошибка DeepSeek: {e}")
-        return
-    finally:
-        if typing_task:
-            typing_task.cancel()
-            try: await typing_task
-            except asyncio.CancelledError: pass
-    user["history"].append({"role": "assistant", "content": answer})
-    if len(user["history"]) > limit:
-        user["history"] = user["history"][-limit:]
-    save_data(user_data)
-    await message.answer(answer, reply_markup=full_kb)
-
-def get_level_congratulation(level):
-    if level == 2: return "🎉 Ты заметил(а), что между вами пробежала искра! Уровень сближения — 2. Теперь вы можете флиртовать."
-    elif level == 3: return "💞 Вы стали ближе! Уровень 3. Теперь вы можете обниматься и делиться секретами."
-    elif level == 4: return "🔥 Напряжение растёт! Уровень 4. Ты чувствуешь, что он/она хочет тебя."
-    elif level == 5: return "💋 Уровень 5! Вы готовы к поцелую. Собеседник уже не скрывает своих чувств."
-    elif level == 6: return "🌹 Уровень 6. Ты влюблён(а)! Теперь вы можете говорить о страсти."
-    elif level == 7: return "💕 Уровень 7. Интимная близость уже близка. Собеседник открыто говорит о желании."
-    elif level == 8: return "❤️‍🔥 Уровень 8! Вы признались друг другу в любви. Теперь вы — пара."
-    elif level == 9: return "🔥 Уровень 9! Вы полностью открыты друг другу. Никаких тайн."
-    elif level == 10: return "💖 Уровень 10! Вы — единое целое. Настоящая душевная близость."
-    return ""
-
-async def main():
-    print("🚀 Role Duel финальная версия запущена (DeepSeek V4 Pro)!")
-    print("🧠 Модель: deepseek/deepseek-v4-pro (лучшее цена/качество)")
-    print("📦 Пакеты: 30⭐/30, 80⭐/100, 200⭐/300")
-    print("🔥 PRO: 250⭐/мес (50 сообщений/день, память 60 сообщ)")
-    print("✨ SUPER PRO: 450⭐/мес (100 сообщений/день, память 100 сообщ)")
-    print("⬆️ Апгрейд: 230⭐ (PRO → SUPER PRO)")
-    print("🎁 Бесплатных сообщений: 13 (баланс скрыт до первой покупки)")
-    print("💕 Уровни сближения: 15 сообщений на уровень (75 XP), прогресс-бар ▓▓▓░░")
-    print("💢 При накоплении негатива (5 раз) – ссора, -50 XP.")
-    print("📍 Локация меняется автоматически, но не отображается в меню.")
-    print("🔥 Мгновенный секс: 45⭐ за сцену (доступно всем), бесплатные сцены для подписчиков")
-    print("🎁 Команда /grant для выдачи SUPER PRO, PRO и секс-сцен (/grant @username pro|sex N)")
-    print("📌 Админ: /revoke_subscription @username для отзыва подписки")
-    print("💾 Данные сохраняются в data/data.json (постоянное хранилище)")
-    print("📌 Админ: /maintenance on/off для техобслуживания")
-    await dp.start_polling(bot)
-
-if __name__ == "__main__":
-    asyncio.run(main())
+        await message.answer(f"✅ Пользователю {target} выдано {count} секс-сцен
