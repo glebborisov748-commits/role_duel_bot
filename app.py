@@ -327,7 +327,7 @@ def extract_location_from_text(text):
     return None
 
 # ============================================================
-#  ПОСТРОЕНИЕ ПРОМПТА
+#  ПОСТРОЕНИЕ ПРОМПТА (ОБНОВЛЁННЫЙ – УБРАНЫ СЦЕНА И ЛОКАЦИЯ)
 # ============================================================
 def build_prompt(user):
     world_desc = WORLDS[user["world"]]
@@ -355,7 +355,6 @@ def build_prompt(user):
         "- Не смягчай конфликты и негативные эмоции, отыгрывай их честно.\n"
         "**СТИЛЬ:** Обращайся на «ты», давай живые, эмоциональные ответы с чувствами, намёками, лёгкой провокацией.\n"
         "**ПАМЯТЬ:** Учитывай предыдущие сообщения, настроение меняется плавно.\n"
-        "**КОНТЕКСТ:** Если диалог идёт в сцене «реальная встреча» — описывай физические действия (прикосновения, взгляды, запахи). Если «переписка» — акцент на эмоциях и тексте.\n"
         "**ПРЕДЛОЖЕНИЕ ЛОКАЦИИ:** Ты можешь предлагать собеседнику пойти в кафе, парк, кинотеатр, погулять на улице или пойти к тебе домой. Делай это естественно, в контексте диалога.\n"
     )
 
@@ -370,16 +369,8 @@ def build_prompt(user):
             "Это должно работать только в соответствующих контекстах.\n"
         )
 
-    scene = user.get("scene", "phone")
-    if scene == "phone":
-        scene_context = "Вы общаетесь через переписку в мессенджере. Ты не видишь собеседника, только его сообщения. Твои действия описываются в *звёздочках*, но они относятся к твоим реакциям на сообщения, а не к физическому взаимодействию."
-    else:
-        scene_context = "Вы находитесь в одном месте, общаетесь лично. Ты видишь собеседника, слышишь его голос, чувствуешь его присутствие. Ты можешь прикасаться, двигаться, взаимодействовать с предметами и окружением."
-
-    loc_key = user.get("location", "unknown")
-    location_name = LOCATIONS.get(loc_key, "Неизвестно")
-    location_context = f"Вы находитесь {location_name.lower()}."
-
+    # Убрали scene_context и location_context – ИИ не знает, переписка это или встреча, и не знает текущей локации.
+    # Оставлено только настроение.
     mood = user.get("mood", 0)
     mood_text = "Твоё настроение нейтральное." if mood == 0 else ("Ты в хорошем настроении." if mood > 0 else "Ты в плохом настроении, можешь быть раздражительной.")
 
@@ -390,8 +381,6 @@ def build_prompt(user):
         f"{style_desc} "
         f"{rules}"
         f"{style_specific}"
-        f"{scene_context} "
-        f"{location_context} "
         f"{mood_text} "
         f"Ты не признаёшься в любви с первого сообщения — у тебя есть характер и самоуважение. "
         f"Ты не соглашаешься на секс с незнакомцами, даже если они тебе симпатичны. "
@@ -633,7 +622,7 @@ channel_inline_kb = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 # ============================================================
-#  ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ОТПРАВКИ ГЛАВНОГО МЕНЮ
+#  ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ОТПРАВКИ ГЛАВНОГО МЕНЮ (ОБНОВЛЕНА)
 # ============================================================
 async def send_main_menu(chat_id, user):
     if user.get("last_menu_message_id"):
@@ -669,17 +658,14 @@ async def send_main_menu(chat_id, user):
         balance_text = "\n🔓 *У вас есть бесплатные сообщения для старта*"
 
     xp_badge = get_xp_badge(user)
-    mood_emoji = get_mood_emoji(user)
-    location_name = LOCATIONS.get(user.get("location", "unknown"), "Неизвестно")
 
+    # Убрали локацию и настроение, убрали заголовок "Главное меню"
     menu_text = (
-        f"📋 **Главное меню** {badge}\n\n"
+        f"{badge}\n\n" if badge else ""
         f"🎭 **{gender_name}** из *{world_name}*\n"
         f"💬 Стиль: {style_emoji} {style_label}\n"
         f"{balance_text}\n"
-        f"💕 {xp_badge}\n"
-        f"📍 Локация: {location_name}\n"
-        f"😊 Настроение: {mood_emoji}\n\n"
+        f"💕 {xp_badge}\n\n"
         f"💬 Напиши персонажу...\n"
         f"✨ Или выбери действие внизу."
     )
@@ -1208,7 +1194,6 @@ async def revoke_subscription_cmd(message: types.Message):
     user["subscription"]["active"] = False
     user["subscription"]["expires_at"] = None
     user["subscription"]["level"] = None
-    # Обнуляем бесплатные сцены, так как подписка отозвана
     user["free_sex_scenes_pro"] = 0
     user["free_sex_scenes_super"] = 0
     save_data(user_data)
@@ -1435,7 +1420,7 @@ async def switch_style(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
-#  КОМАНДА /sex – с выбором типа и бесплатными сценами
+#  КОМАНДА /sex – с выбором типа и бесплатными сценами (ОБНОВЛЕНО – увеличена длина)
 # ============================================================
 @dp.message(Command("sex"))
 async def sex_cmd(message: types.Message):
@@ -1464,7 +1449,6 @@ async def sex_cmd(message: types.Message):
         )
         return
 
-    # Сохраняем информацию о доступных сценах
     user["sex_total_available"] = total_available
     user["sex_free_pro"] = free_pro
     user["sex_free_super"] = free_super
@@ -1508,7 +1492,6 @@ async def sex_type_choice(call: types.CallbackQuery):
         await call.message.edit_text("❌ У вас больше нет доступных секс-сцен.")
         return
 
-    # Списываем одну сцену
     if level == "super_pro" and free_super > 0:
         user["free_sex_scenes_super"] = free_super - 1
     elif level == "pro" and free_pro > 0:
@@ -1517,10 +1500,9 @@ async def sex_type_choice(call: types.CallbackQuery):
         user["sex_scenes"] = bought - 1
 
     save_data(user_data)
-
     await call.message.delete()
-
     await bot.send_chat_action(call.message.chat.id, "typing")
+
     gender_info = GENDERS[user['gender']]
     style_key = user['style']
     style_desc = STYLES[style_key]['description']
@@ -1547,7 +1529,7 @@ async def sex_type_choice(call: types.CallbackQuery):
         f"Ты — {gender_info['name']}, тебе {gender_info['age']} лет. Твой стиль: {style_desc}. "
         f"Сейчас вы общаетесь через {scene_text}. "
         f"{prompt_text} "
-        f"Сцена должна быть длиной 5–7 предложений, компактной, но детализированной. "
+        f"Сцена должна быть развёрнутой, детализированной, не менее 10–15 предложений, с диалогами и эмоциями. "
         f"Не обрывай на полуслове. Используй формат: действие в *звёздочках* с новой строки, затем реплика с новой строки. "
         f"Между действием и репликой – пустая строка. Минимум 2 действия и 2 реплики."
     )
@@ -1559,8 +1541,8 @@ async def sex_type_choice(call: types.CallbackQuery):
                 {"role": "system", "content": "Ты – виртуальный собеседник, пишешь откровенные секс-сцены. Ты должен создавать детализированные, страстные и завершённые тексты. Запрещено использовать любые имена."},
                 {"role": "user", "content": full_prompt}
             ],
-            temperature=0.95,
-            max_tokens=500
+            temperature=1.0,
+            max_tokens=1500  # Увеличено с 500 до 1500
         )
         scene_text_result = response.choices[0].message.content
         await bot.send_message(call.message.chat.id, scene_text_result, reply_markup=full_kb)
