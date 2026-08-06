@@ -238,7 +238,7 @@ def get_xp_badge(user):
 
 def build_intimacy_rule(user):
     level = get_intimacy_level(user)
-    mood = user.get("mood", 0)
+    mood = user.get("mood", 0)  # mood всё ещё используется для правил, но не показывается в меню
     if level == 1:
         base = "Вы только знакомитесь, будь вежлив(а) и дружелюбен(на), не переходи границы."
     elif level == 2:
@@ -267,17 +267,6 @@ def build_intimacy_rule(user):
     else:
         return base
 
-def get_mood_emoji(user):
-    mood = user.get("mood", 0)
-    if mood >= 5:
-        return "😊"
-    elif mood >= 0:
-        return "🙂"
-    elif mood >= -5:
-        return "😐"
-    else:
-        return "😠"
-
 # ============================================================
 #  ПРОВЕРКА НА НЕГАТИВ
 # ============================================================
@@ -297,7 +286,7 @@ def contains_negative(text):
     return False
 
 # ============================================================
-#  ЛОКАЦИИ
+#  ЛОКАЦИИ (оставляем для внутренней логики, но не показываем)
 # ============================================================
 LOCATIONS = {
     "home": "Дома",
@@ -327,7 +316,7 @@ def extract_location_from_text(text):
     return None
 
 # ============================================================
-#  ПОСТРОЕНИЕ ПРОМПТА (ОБНОВЛЁННЫЙ – УБРАНЫ СЦЕНА И ЛОКАЦИЯ)
+#  ПОСТРОЕНИЕ ПРОМПТА (без упоминания переписки и локации)
 # ============================================================
 def build_prompt(user):
     world_desc = WORLDS[user["world"]]
@@ -355,7 +344,8 @@ def build_prompt(user):
         "- Не смягчай конфликты и негативные эмоции, отыгрывай их честно.\n"
         "**СТИЛЬ:** Обращайся на «ты», давай живые, эмоциональные ответы с чувствами, намёками, лёгкой провокацией.\n"
         "**ПАМЯТЬ:** Учитывай предыдущие сообщения, настроение меняется плавно.\n"
-        "**ПРЕДЛОЖЕНИЕ ЛОКАЦИИ:** Ты можешь предлагать собеседнику пойти в кафе, парк, кинотеатр, погулять на улице или пойти к тебе домой. Делай это естественно, в контексте диалога.\n"
+        "**ПРЕДЛОЖЕНИЕ ЛОКАЦИИ:** Ты можешь предлагать собеседнику пойти в кафе, парк, кинотеатр, погулять на улице или пойти к тебе домой. Делай это естественно, в контексте диалога. Если собеседник соглашается, ты можешь это обыграть, но не зацикливайся на месте.\n"
+        "**СЦЕНА:** Вы общаетесь как два человека, без упоминания того, что это переписка или встреча – просто разговор. Ты не говоришь, где вы находитесь, если только это не следует из контекста твоего предложения.\n"
     )
 
     intimacy_rule = build_intimacy_rule(user)
@@ -369,8 +359,10 @@ def build_prompt(user):
             "Это должно работать только в соответствующих контекстах.\n"
         )
 
-    # Убрали scene_context и location_context – ИИ не знает, переписка это или встреча, и не знает текущей локации.
-    # Оставлено только настроение.
+    # Убираем упоминание переписки и локации – просто нейтральное описание
+    scene_context = "Вы общаетесь друг с другом."
+    # location_context убираем полностью – не говорим, где находятся
+
     mood = user.get("mood", 0)
     mood_text = "Твоё настроение нейтральное." if mood == 0 else ("Ты в хорошем настроении." if mood > 0 else "Ты в плохом настроении, можешь быть раздражительной.")
 
@@ -381,6 +373,7 @@ def build_prompt(user):
         f"{style_desc} "
         f"{rules}"
         f"{style_specific}"
+        f"{scene_context} "
         f"{mood_text} "
         f"Ты не признаёшься в любви с первого сообщения — у тебя есть характер и самоуважение. "
         f"Ты не соглашаешься на секс с незнакомцами, даже если они тебе симпатичны. "
@@ -452,7 +445,7 @@ def get_user(user_id):
             "negative_count": 0,
             "last_level": 0,
             "sex_scenes": 0,
-            "scene": "phone",
+            "scene": "phone",  # оставляем для совместимости, но не используем в промпте
             "promo_pro_granted": False,
             "bonus_granted_for_promo": False,
             "free_sex_scenes_pro": 0,
@@ -622,7 +615,7 @@ channel_inline_kb = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 # ============================================================
-#  ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ОТПРАВКИ ГЛАВНОГО МЕНЮ (ОБНОВЛЕНА)
+#  ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ОТПРАВКИ ГЛАВНОГО МЕНЮ (без локации и настроения, без заголовка)
 # ============================================================
 async def send_main_menu(chat_id, user):
     if user.get("last_menu_message_id"):
@@ -659,9 +652,9 @@ async def send_main_menu(chat_id, user):
 
     xp_badge = get_xp_badge(user)
 
-    # Убрали локацию и настроение, убрали заголовок "Главное меню"
+    # Убрали локацию и настроение
     menu_text = (
-        f"{badge}\n\n" if badge else ""
+        f"{badge}\n\n"
         f"🎭 **{gender_name}** из *{world_name}*\n"
         f"💬 Стиль: {style_emoji} {style_label}\n"
         f"{balance_text}\n"
@@ -812,16 +805,12 @@ async def profile_reply(message: types.Message):
         balance_line = "📨 *У вас есть бесплатные сообщения для старта*"
 
     xp_badge = get_xp_badge(user)
-    mood_emoji = get_mood_emoji(user)
-    location_name = LOCATIONS.get(user.get("location", "unknown"), "Неизвестно")
-
+    # Убираем локацию и настроение из профиля тоже (по желанию)
     caption = (
         f"{balance_line}\n"
         f"📌 **Подписка:** {sub_status}\n"
         f"📅 {expiry}\n\n"
         f"💕 {xp_badge}\n"
-        f"📍 Локация: {location_name}\n"
-        f"😊 Настроение: {mood_emoji}\n"
     )
 
     if has_active_subscription(user):
@@ -884,7 +873,7 @@ async def main_change(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
-#  ОБРАБОТЧИК КНОПКИ "ОФОРМИТЬ ПОДПИСКУ" (НОВЫЕ ЦЕНЫ)
+#  ОБРАБОТЧИК КНОПКИ "ОФОРМИТЬ ПОДПИСКУ"
 # ============================================================
 @dp.callback_query(lambda c: c.data == "profile_subs")
 async def profile_subs(call: types.CallbackQuery):
@@ -939,7 +928,7 @@ async def profile_subs(call: types.CallbackQuery):
         await bot.send_message(call.message.chat.id, "⚠️ Произошла ошибка. Попробуйте позже.")
 
 # ============================================================
-#  ОБРАБОТЧИК КНОПКИ АПГРЕЙД (С ПРОВЕРКАМИ И СООБЩЕНИЯМИ)
+#  ОБРАБОТЧИК КНОПКИ АПГРЕЙД
 # ============================================================
 @dp.callback_query(lambda c: c.data == "upgrade_to_super")
 async def upgrade_to_super(call: types.CallbackQuery):
@@ -1031,7 +1020,7 @@ async def buy_sex_scene(call: types.CallbackQuery):
             payload="sex_scene",
             provider_token="",
             currency="XTR",
-            prices=[LabeledPrice(label="Секс-сцена", amount=45)]  # цена осталась без изменений
+            prices=[LabeledPrice(label="Секс-сцена", amount=45)]
         )
         await call.answer()
     except Exception as e:
@@ -1097,16 +1086,12 @@ async def show_profile(msg, user):
         balance_line = "📨 *У вас есть бесплатные сообщения для старта*"
 
     xp_badge = get_xp_badge(user)
-    mood_emoji = get_mood_emoji(user)
-    location_name = LOCATIONS.get(user.get("location", "unknown"), "Неизвестно")
 
     caption = (
         f"{balance_line}\n"
         f"📌 **Подписка:** {sub_status}\n"
         f"📅 {expiry}\n\n"
         f"💕 {xp_badge}\n"
-        f"📍 Локация: {location_name}\n"
-        f"😊 Настроение: {mood_emoji}\n"
     )
 
     if has_active_subscription(user):
@@ -1201,7 +1186,7 @@ async def revoke_subscription_cmd(message: types.Message):
     await message.answer(f"✅ Подписка {old_level.upper()} у пользователя {target} отозвана.")
 
 # ============================================================
-#  ОБРАБОТЧИКИ ПОКУПОК (С НОВЫМИ ЦЕНАМИ)
+#  ОБРАБОТЧИКИ ПОКУПОК
 # ============================================================
 @dp.callback_query(lambda c: c.data.startswith("pack_"))
 async def buy_pack(call: types.CallbackQuery):
@@ -1211,7 +1196,7 @@ async def buy_pack(call: types.CallbackQuery):
         return
 
     pack_map = {"30": 30, "100": 100, "300": 300}
-    price_map = {"30": 30, "100": 80, "300": 200}  # новые цены
+    price_map = {"30": 30, "100": 80, "300": 200}
 
     period = call.data.split("_")[1]
     amount = pack_map[period]
@@ -1251,7 +1236,7 @@ async def subscribe_pro(call: types.CallbackQuery):
             payload="subscribe_pro",
             provider_token="",
             currency="XTR",
-            prices=[LabeledPrice(label="PRO месяц", amount=250)]  # новая цена
+            prices=[LabeledPrice(label="PRO месяц", amount=250)]
         )
         await call.answer()
     except Exception as e:
@@ -1278,7 +1263,7 @@ async def subscribe_super(call: types.CallbackQuery):
             payload="subscribe_super",
             provider_token="",
             currency="XTR",
-            prices=[LabeledPrice(label="SUPER PRO месяц", amount=450)]  # новая цена
+            prices=[LabeledPrice(label="SUPER PRO месяц", amount=450)]
         )
         await call.answer()
     except Exception as e:
@@ -1420,7 +1405,7 @@ async def switch_style(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
-#  КОМАНДА /sex – с выбором типа и бесплатными сценами (ОБНОВЛЕНО – увеличена длина)
+#  КОМАНДА /sex – с выбором типа и бесплатными сценами
 # ============================================================
 @dp.message(Command("sex"))
 async def sex_cmd(message: types.Message):
@@ -1506,8 +1491,7 @@ async def sex_type_choice(call: types.CallbackQuery):
     gender_info = GENDERS[user['gender']]
     style_key = user['style']
     style_desc = STYLES[style_key]['description']
-    scene = user.get("scene", "phone")
-    scene_text = "переписка в мессенджере" if scene == "phone" else "личная встреча, вы находитесь в одном месте"
+    scene = user.get("scene", "phone")  # больше не используется в промпте, но оставляем
 
     type_prompts = {
         "bed": "Опиши страстную секс-сцену в постели. Подробно, чувственно, с диалогами.",
@@ -1527,10 +1511,9 @@ async def sex_type_choice(call: types.CallbackQuery):
     full_prompt = (
         f"ЖЁСТКИЙ ЗАПРЕТ: Ты НИКОГДА не используешь своё имя и не называешь имя собеседника. Обращайся только на «ты».\n"
         f"Ты — {gender_info['name']}, тебе {gender_info['age']} лет. Твой стиль: {style_desc}. "
-        f"Сейчас вы общаетесь через {scene_text}. "
         f"{prompt_text} "
-        f"Сцена должна быть развёрнутой, детализированной, не менее 10–15 предложений, с диалогами и эмоциями. "
-        f"Не обрывай на полуслове. Используй формат: действие в *звёздочках* с новой строки, затем реплика с новой строки. "
+        f"Сцена должна быть развёрнутой, детализированной, с диалогами и эмоциями. Не обрывай на полуслове. "
+        f"Используй формат: действие в *звёздочках* с новой строки, затем реплика с новой строки. "
         f"Между действием и репликой – пустая строка. Минимум 2 действия и 2 реплики."
     )
 
@@ -1542,7 +1525,7 @@ async def sex_type_choice(call: types.CallbackQuery):
                 {"role": "user", "content": full_prompt}
             ],
             temperature=1.0,
-            max_tokens=1500  # Увеличено с 500 до 1500
+            max_tokens=1500  # увеличено, чтобы не обрывалось
         )
         scene_text_result = response.choices[0].message.content
         await bot.send_message(call.message.chat.id, scene_text_result, reply_markup=full_kb)
@@ -1959,16 +1942,9 @@ async def handle_message(message: types.Message):
 
     new_loc = extract_location_from_text(message.text)
     if new_loc and new_loc != user.get("location"):
-        old_loc = user.get("location", "unknown")
         user["location"] = new_loc
         save_data(user_data)
-        location_changed = True
-        new_loc_name = LOCATIONS.get(new_loc, "Неизвестно")
-        old_loc_name = LOCATIONS.get(old_loc, "Неизвестно")
-        user["location_change_notify"] = f"📍 Локация изменена с «{old_loc_name}» на «{new_loc_name}»."
-        save_data(user_data)
-    else:
-        location_changed = False
+        # убираем уведомление о смене локации – больше не отправляем
 
     save_data(user_data)
 
@@ -2037,11 +2013,7 @@ async def handle_message(message: types.Message):
 
     await message.answer(answer, reply_markup=full_kb)
 
-    if location_changed and user.get("location_change_notify"):
-        notify_text = user.pop("location_change_notify", None)
-        if notify_text:
-            await message.answer(notify_text, reply_markup=full_kb)
-        save_data(user_data)
+    # Убираем уведомление о смене локации
 
 # ============================================================
 #  ФУНКЦИЯ ДЛЯ ПОЗДРАВЛЕНИЯ С НОВЫМ УРОВНЕМ
@@ -2076,11 +2048,11 @@ async def main():
     print("📦 Пакеты: 30⭐/30, 80⭐/100, 200⭐/300")
     print("🔥 PRO: 250⭐/мес (50 сообщений/день, память 60 сообщ)")
     print("✨ SUPER PRO: 450⭐/мес (100 сообщений/день, память 100 сообщ)")
-    print("⬆️ Апгрейд: 230⭐ (PRO → SUPER PRO) — дороже разницы, чтобы стимулировать выбор SUPER PRO сразу")
+    print("⬆️ Апгрейд: 230⭐ (PRO → SUPER PRO)")
     print("🎁 Бесплатных сообщений: 13 (баланс скрыт до первой покупки)")
     print("💕 Уровни сближения: 15 сообщений на уровень (75 XP), прогресс-бар ▓▓▓░░")
     print("💢 При накоплении негатива (5 раз) – ссора, -50 XP.")
-    print("📍 Локация меняется автоматически, когда пользователь предлагает пойти куда-то")
+    print("📍 Локация меняется автоматически, но не отображается в меню.")
     print("🔥 Мгновенный секс: 45⭐ за сцену (доступно всем), бесплатные сцены для подписчиков")
     print("🎁 Команда /grant для выдачи SUPER PRO, PRO и секс-сцен (/grant @username pro|sex N)")
     print("📌 Админ: /revoke_subscription @username для отзыва подписки")
