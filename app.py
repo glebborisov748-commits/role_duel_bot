@@ -26,7 +26,7 @@ PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh
 SUPER_PRO_GIF_URL = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3M0ZDcxb2oycGg3bm9sbWxocGR6ejZmdGtuc3c4d2pmNmQ3eTR2NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uEJGdRxnptmawiEzDP/giphy.gif"
 MAIN_MENU_IMAGE_URL = "https://i.ibb.co/k25JyTXD/IMG-2584.jpg"
 
-ADMIN_IDS = [7287815074]
+ADMIN_IDS = [7287815074]  # замени на свой ID
 maintenance_mode = False
 
 DATA_FILE = "data/data.json"
@@ -124,7 +124,8 @@ def get_history_limit(user):
     elif level == "pro": return 60
     else: return 30
 
-XP_PER_LEVEL = 75
+XP_PER_LEVEL = 200  # увеличено с 75 до 200
+
 def get_intimacy_level(user):
     xp = user.get("xp", 0)
     level = xp // XP_PER_LEVEL + 1
@@ -246,7 +247,9 @@ def get_user(user_id):
             "sex_scenes": 0, "scene": "phone",
             "promo_pro_granted": False, "bonus_granted_for_promo": False,
             "free_sex_scenes_pro": 0, "free_sex_scenes_super": 0,
-            "switching_personality": False
+            "switching_personality": False,
+            "sex_scene_unlocked": False,   # бесплатная сцена за уровень
+            "sex_scene_used": False        # использована ли бесплатная сцена
         }
         save_data(user_data)
     else:
@@ -271,7 +274,9 @@ def get_user(user_id):
             "bonus_granted_for_promo": False,
             "free_sex_scenes_pro": 0,
             "free_sex_scenes_super": 0,
-            "switching_personality": False
+            "switching_personality": False,
+            "sex_scene_unlocked": False,
+            "sex_scene_used": False
         }
         for key, val in defaults.items():
             if key not in user:
@@ -405,12 +410,21 @@ async def send_main_menu(chat_id, user):
 
     xp_badge = get_xp_badge(user)
 
+    # Отображаем бонус XP для подписчиков
+    multiplier_text = ""
+    sub_level = get_subscription_level(user)
+    if sub_level == "pro":
+        multiplier_text = "Бонус XP: x1.5"
+    elif sub_level == "super_pro":
+        multiplier_text = "Бонус XP: x2.0"
+
     menu_text = (
         f"{badge}\n\n"
         f"Текущий собеседник: {gender_name} из {world_name}\n"
         f"Стиль: {style_label}\n"
         f"{balance_text}\n"
-        f"{xp_badge}\n\n"
+        f"{xp_badge}\n"
+        f"{multiplier_text}\n\n"
         f"💬 Напиши персонажу...\n"
         f"✨ Или выбери действие внизу."
     )
@@ -501,9 +515,7 @@ async def channel_reply(message: types.Message):
 @dp.callback_query(lambda c: c.data == "main_change")
 async def main_change(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
-    if has_active_subscription(user) and get_subscription_level(user) == "super_pro":
-        await call.answer("💡 Для SUPER PRO доступна команда /switch_personality – она меняет персонажа без потери истории.", show_alert=True)
-        return
+    # Для всех сбрасываем персонажа и историю (без предупреждения)
     user["personality_ready"] = False
     user["history"] = []
     save_data(user_data)
@@ -631,18 +643,37 @@ async def show_profile(msg, user):
 
     xp_badge = get_xp_badge(user)
 
-    if has_active_subscription(user):
-        free_pro = user.get("free_sex_scenes_pro", 0)
-        free_super = user.get("free_sex_scenes_super", 0)
-        bought = user.get("sex_scenes", 0)
-        total_sex_scenes = free_pro + free_super + bought
+    # Бонус XP для подписок
+    multiplier_text = ""
+    sub_level = get_subscription_level(user)
+    if sub_level == "pro":
+        multiplier_text = "Бонус XP: x1.5"
+    elif sub_level == "super_pro":
+        multiplier_text = "Бонус XP: x2.0"
+
+    # Статус бесплатной сцены
+    if user.get("sex_scene_unlocked", False):
+        if user.get("sex_scene_used", False):
+            sex_scene_status = "Бесплатная секс-сцена: использована"
+        else:
+            sex_scene_status = "Бесплатная секс-сцена: доступна (используй /sex)"
     else:
-        total_sex_scenes = user.get("sex_scenes", 0)
+        sex_scene_status = f"Бесплатная секс-сцена: откроется на 8 уровне (сейчас {get_intimacy_level(user)})"
+
+    # Общее количество секс-сцен (купленные + бесплатные по подписке + бесплатная за уровень, если использована)
+    free_pro = user.get("free_sex_scenes_pro", 0)
+    free_super = user.get("free_sex_scenes_super", 0)
+    bought = user.get("sex_scenes", 0)
+    total_sex_scenes = free_pro + free_super + bought
+    # Если бесплатная сцена использована, она не входит в общее количество (она разовая)
+    # Но для простоты можем не добавлять её, т.к. это разовая акция.
 
     caption = (f"{balance_line}\n"
                f"Подписка: {sub_status}\n"
                f"{expiry_line}\n\n"
                f"{xp_badge}\n"
+               f"{multiplier_text}\n"
+               f"{sex_scene_status}\n"
                f"Всего секс-сцен: {total_sex_scenes}\n\n"
                f"Доступные стили:\n{styles_text}")
 
@@ -951,27 +982,56 @@ async def switch_style(call: types.CallbackQuery):
                                  parse_mode="Markdown")
     await call.answer()
 
+# Новая логика /sex с бесплатной сценой на 8 уровне
 @dp.message(Command("sex"))
 async def sex_cmd(message: types.Message):
     user = get_user(message.from_user.id)
-    level = get_subscription_level(user)
+    level = get_intimacy_level(user)
+    
+    # Проверяем разблокировку бесплатной сцены за достижение 8 уровня
+    if level >= 8 and not user.get("sex_scene_unlocked", False):
+        user["sex_scene_unlocked"] = True
+        user["sex_scene_used"] = False
+        save_data(user_data)
+        await message.answer("🎉 Ты достиг 8 уровня близости! Тебе открылась бесплатная секс-сцена. Используй /sex ещё раз, чтобы выбрать тип.")
+        return
+    
+    # Если бесплатная доступна и ещё не использована
+    if user.get("sex_scene_unlocked", False) and not user.get("sex_scene_used", False):
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="🛏 В постели", callback_data="sex_type_bed")],
+            [InlineKeyboardButton(text="💋 Страстный поцелуй", callback_data="sex_type_kiss")],
+            [InlineKeyboardButton(text="⛓ БДСМ", callback_data="sex_type_bdsm")],
+            [InlineKeyboardButton(text="👅 Минет", callback_data="sex_type_blowjob")],
+            [InlineKeyboardButton(text="👗 Раздевание", callback_data="sex_type_strip")],
+            [InlineKeyboardButton(text="🎲 Случайный", callback_data="sex_type_random")],
+        ])
+        await message.answer("🔥 У тебя есть бесплатная секс-сцена! Выбери тип:", reply_markup=keyboard)
+        return
+    
+    # Если бесплатная уже использована или не разблокирована — платная логика
+    sub_level = get_subscription_level(user)
     free_pro = user.get("free_sex_scenes_pro", 0)
     free_super = user.get("free_sex_scenes_super", 0)
     bought = user.get("sex_scenes", 0)
     total_available = 0
-    if level == "super_pro": total_available = free_super + bought
-    elif level == "pro": total_available = free_pro + bought
+    if sub_level == "super_pro": total_available = free_super + bought
+    elif sub_level == "pro": total_available = free_pro + bought
     else: total_available = bought
+    
     if total_available <= 0:
-        await message.answer("❌ У вас нет доступных секс-сцен.\n\nВы можете:\n• Купить сцену за 45⭐ в профиле (доступно всем)\n• Оформить подписку PRO (4 бесплатные сцены) или SUPER PRO (8 бесплатных сцен)",
+        await message.answer("❌ У тебя нет доступных секс-сцен.\n\nТы можешь:\n• Купить сцену за 45⭐ в профиле (доступно всем)\n• Оформить подписку PRO (4 бесплатные сцены) или SUPER PRO (8 бесплатных сцен)\n• Достичь 8 уровня близости для одной бесплатной сцены.",
                              reply_markup=full_kb)
         return
+    
+    # Сохраняем данные для платной сцены
     user["sex_total_available"] = total_available
     user["sex_free_pro"] = free_pro
     user["sex_free_super"] = free_super
     user["sex_bought"] = bought
-    user["sex_level"] = level
+    user["sex_level"] = sub_level
     save_data(user_data)
+    
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🛏 В постели", callback_data="sex_type_bed")],
         [InlineKeyboardButton(text="💋 Страстный поцелуй", callback_data="sex_type_kiss")],
@@ -980,13 +1040,24 @@ async def sex_cmd(message: types.Message):
         [InlineKeyboardButton(text="👗 Раздевание", callback_data="sex_type_strip")],
         [InlineKeyboardButton(text="🎲 Случайный", callback_data="sex_type_random")],
     ])
-    await message.answer("🔥 Выберите тип секс-сцены:", reply_markup=keyboard)
+    await message.answer("🔥 Выбери тип секс-сцены:", reply_markup=keyboard)
 
 @dp.callback_query(lambda c: c.data.startswith("sex_type_"))
 async def sex_type_choice(call: types.CallbackQuery):
     await call.answer()
     user = get_user(call.from_user.id)
     sex_type = call.data.split("_")[2]
+    
+    # Проверка на бесплатную сцену (уровень и не использована)
+    if user.get("sex_scene_unlocked", False) and not user.get("sex_scene_used", False):
+        # Бесплатная сцена
+        user["sex_scene_used"] = True
+        save_data(user_data)
+        # Генерируем сцену (без списания)
+        await generate_sex_scene(call, user, sex_type, free=True)
+        return
+    
+    # Платная логика (как раньше)
     level = user.get("sex_level")
     free_pro = user.get("sex_free_pro", 0)
     free_super = user.get("sex_free_super", 0)
@@ -1006,6 +1077,9 @@ async def sex_type_choice(call: types.CallbackQuery):
         user["sex_scenes"] = bought - 1
     save_data(user_data)
     await call.message.delete()
+    await generate_sex_scene(call, user, sex_type, free=False)
+
+async def generate_sex_scene(call, user, sex_type, free=False):
     await bot.send_chat_action(call.message.chat.id, "typing")
     gender_info = GENDERS[user['gender']]
     style_key = user['style']
@@ -1235,9 +1309,17 @@ async def handle_message(message: types.Message):
                              reply_markup=action_buttons, parse_mode="Markdown")
         return
     use_message(user)
-    xp_change = 5
-    mood_change = 0.5
+    
+    # XP с множителем для подписок
     negative = contains_negative(message.text)
+    base_xp = 5
+    multiplier = 1.0
+    sub_level = get_subscription_level(user)
+    if sub_level == "pro":
+        multiplier = 1.5
+    elif sub_level == "super_pro":
+        multiplier = 2.0
+
     if negative:
         xp_change = -10
         mood_change = -1
@@ -1257,14 +1339,18 @@ async def handle_message(message: types.Message):
             save_data(user_data)
             return
     else:
+        xp_change = int(base_xp * multiplier + 0.5)  # округление
+        mood_change = 0.5
         if user.get("negative_count", 0) > 0:
             user["negative_count"] = user.get("negative_count", 0) - 1
             if user["negative_count"] < 0: user["negative_count"] = 0
+
     user["xp"] = user.get("xp", 0) + xp_change
     user["mood"] = user.get("mood", 0) + mood_change
     if user["mood"] > 10: user["mood"] = 10
     elif user["mood"] < -10: user["mood"] = -10
     if user["xp"] < 0: user["xp"] = 0
+    
     new_level = get_intimacy_level(user)
     old_level = user.get("last_level", 0)
     if new_level > old_level:
@@ -1277,29 +1363,42 @@ async def handle_message(message: types.Message):
         user["last_level"] = new_level
         save_data(user_data)
         await message.answer(f"💔 Уровень сближения упал до {new_level}. Постарайтесь быть добрее.", reply_markup=full_kb)
+    
+    # Обновление локации (без уведомления)
     new_loc = extract_location_from_text(message.text)
     if new_loc and new_loc != user.get("location"):
         user["location"] = new_loc
         save_data(user_data)
+    
     save_data(user_data)
+    
+    # История
     user["history"].append({"role": "user", "content": message.text})
     limit = get_history_limit(user)
     if len(user["history"]) > 10:
         user["history"] = user["history"][-10:]
     save_data(user_data)
+    
     await bot.send_chat_action(message.chat.id, "typing")
     async def keep_typing():
         while True:
             await bot.send_chat_action(message.chat.id, "typing")
             await asyncio.sleep(4)
     typing_task = asyncio.create_task(keep_typing())
+    
+    # Кастомные реакции для SUPER PRO
     if get_subscription_level(user) == "super_pro":
         reaction = get_reaction(message.text)
         if reaction:
             try:
-                await bot.set_message_reaction(chat_id=message.chat.id, message_id=message.message_id,
-                                               reaction=[ReactionTypeEmoji(emoji=reaction)])
-            except: pass
+                await bot.set_message_reaction(
+                    chat_id=message.chat.id,
+                    message_id=message.message_id,
+                    reaction=[types.ReactionTypeEmoji(emoji=reaction)]
+                )
+            except Exception as e:
+                logging.warning(f"Не удалось поставить реакцию: {e}")
+    
     system_prompt = build_prompt(user)
     messages_for_api = [{"role": "system", "content": system_prompt}]
     messages_for_api.extend(user["history"])
@@ -1324,10 +1423,12 @@ async def handle_message(message: types.Message):
             typing_task.cancel()
             try: await typing_task
             except asyncio.CancelledError: pass
+    
     user["history"].append({"role": "assistant", "content": answer})
     if len(user["history"]) > limit:
         user["history"] = user["history"][-limit:]
     save_data(user_data)
+    
     await message.answer(answer, reply_markup=full_kb)
 
 def get_level_congratulation(level):
@@ -1350,10 +1451,11 @@ async def main():
     print("✨ SUPER PRO: 450⭐/мес (100 сообщений/день, память 100 сообщ)")
     print("⬆️ Апгрейд: 230⭐ (PRO → SUPER PRO)")
     print("🎁 Бесплатных сообщений: 13 (баланс скрыт до первой покупки)")
-    print("💕 Уровни сближения: 15 сообщений на уровень (75 XP), прогресс-бар ▓▓▓░░")
+    print("💕 Уровни сближения: XP на уровень = 200, бонус XP для PRO x1.5, для SUPER PRO x2.0")
     print("💢 При накоплении негатива (5 раз) – ссора, -50 XP.")
     print("📍 Локация меняется автоматически, но не отображается в меню.")
     print("🔥 Мгновенный секс: 45⭐ за сцену (доступно всем), бесплатные сцены для подписчиков")
+    print("🎁 Бесплатная секс-сцена открывается на 8 уровне близости (один раз)")
     print("🎁 Команда /grant для выдачи SUPER PRO, PRO и секс-сцен (/grant @username pro|sex N)")
     print("📌 Админ: /revoke_subscription @username для отзыва подписки")
     print("💾 Данные сохраняются в data/data.json (постоянное хранилище)")
