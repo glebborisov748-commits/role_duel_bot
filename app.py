@@ -22,11 +22,14 @@ bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 logging.basicConfig(level=logging.INFO)
 
+# ============================================================
+#  GIF-ССЫЛКИ (ОБНОВЛЕНА SUPER PRO)
+# ============================================================
 PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh4eWJ2Zzg0bTVlbWE2ZzFicHlsMXNibXp3dXdsayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GGSbxfzvec3PYZbFOM/giphy.gif"
-SUPER_PRO_GIF_URL = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZ3M0ZDcxb2oycGg3bm9sbWxocGR6ejZmdGtuc3c4d2pmNmQ3eTR2NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uEJGdRxnptmawiEzDP/giphy.gif"
+SUPER_PRO_GIF_URL = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzMxOWg5bWgwNnVjbTNuczdkOHI4YTI4dWZtZDllOTdxYXplZGtucCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tFACp73JxIjnviNUfa/giphy.gif"
 MAIN_MENU_IMAGE_URL = "https://i.ibb.co/k25JyTXD/IMG-2584.jpg"
 
-ADMIN_IDS = [7287815074]  # замени на свой ID
+ADMIN_IDS = [7287815074]  # замени на свой ID и ID друга
 maintenance_mode = False
 
 DATA_FILE = "data/data.json"
@@ -43,25 +46,87 @@ def save_data(data):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 AGREEMENT_TEXT = (
-    "📜 *ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ*\n\n"
-    "1. Настоящий бот (далее – *Сервис*) предоставляет доступ к виртуальным собеседникам, "
-    "генерируемым с использованием технологий искусственного интеллекта.\n\n"
-    "2. **ВОЗРАСТНОЕ ОГРАНИЧЕНИЕ:** Сервис предназначен исключительно для лиц, достигших 18 лет. "
-    "Использование бота лицами младше 18 лет строго запрещено.\n\n"
-    "3. **ОТВЕТСТВЕННОСТЬ ПОЛЬЗОВАТЕЛЯ:** Весь контент, генерируемый в процессе общения с ботом, "
-    "создаётся нейросетью и не отражает мнение администрации. Пользователь несёт полную ответственность "
-    "за использование Сервиса в соответствии с законодательством своей страны.\n\n"
-    "4. **КОНФИДЕНЦИАЛЬНОСТЬ:** Сервис не собирает, не хранит и не передаёт третьим лицам персональные "
-    "данные пользователей. Все диалоги анонимны и не сохраняются после завершения сессии.\n\n"
-    "5. **ПЛАТНАЯ ПОДПИСКА:** Бот предоставляет бесплатные сообщения в ограниченном количестве. "
-    "Дальнейшее использование возможно после приобретения пакетов сообщений или подписки через *Telegram Stars*.\n\n"
-    "6. **ОТКАЗ ОТ ГАРАНТИЙ:** Сервис предоставляется «как есть», без каких-либо гарантий. "
-    "Администрация не несёт ответственности за возможные сбои или недоступность.\n\n"
-    "7. **ИЗМЕНЕНИЕ УСЛОВИЙ:** Администрация оставляет за собой право изменять настоящее соглашение "
-    "в любое время без предварительного уведомления.\n\n"
-    "8. **ПРИНЯТИЕ УСЛОВИЙ:** Продолжая использование бота, вы подтверждаете, что ознакомились с "
-    "настоящим соглашением и принимаете все его условия.\n\n"
-    "Если вы не согласны с условиями – немедленно прекратите использование бота."
+    "📜 **ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ**\n\n"
+    "Настоящее Соглашение регулирует отношения между Администрацией (далее – «Мы», «Администрация») "
+    "и Пользователем (далее – «Вы», «Пользователь») при использовании сервиса Role Duel (далее – «Сервис»).\n\n"
+    "Используя Сервис, Вы подтверждаете, что полностью ознакомились с условиями настоящего Соглашения "
+    "и принимаете их безоговорочно. Если Вы не согласны с каким-либо пунктом, Вы обязаны немедленно "
+    "прекратить использование Сервиса.\n\n"
+    "---\n\n"
+    "**1. ВОЗРАСТНОЕ ОГРАНИЧЕНИЕ**\n"
+    "1.1. Сервис предназначен исключительно для лиц, достигших 18 лет.\n"
+    "1.2. Использование Сервиса лицами младше 18 лет строго запрещено.\n"
+    "1.3. Администрация не несёт ответственности за предоставление недостоверных данных о возрасте "
+    "и не обязана проверять возраст Пользователя.\n\n"
+    "**2. ОПИСАНИЕ СЕРВИСА**\n"
+    "2.1. Сервис предоставляет доступ к виртуальным собеседникам на основе технологий искусственного интеллекта.\n"
+    "2.2. Весь контент генерируется автоматически и не отражает мнение Администрации.\n"
+    "2.3. Сервис не является медицинским, психологическим или консультационным инструментом.\n\n"
+    "**3. ОТВЕТСТВЕННОСТЬ ПОЛЬЗОВАТЕЛЯ**\n"
+    "3.1. Вы несёте полную ответственность за все действия, совершённые с использованием Вашего аккаунта.\n"
+    "3.2. Запрещается использовать Сервис для:\n"
+    "   — распространения экстремистских материалов;\n"
+    "   — оскорблений, угроз, клеветы;\n"
+    "   — мошеннических действий;\n"
+    "   — распространения вредоносного ПО;\n"
+    "   — любых действий, нарушающих законодательство РФ.\n"
+    "3.3. Администрация оставляет за собой право блокировать доступ Пользователю за нарушение правил "
+    "без предварительного уведомления.\n\n"
+    "**4. КОНФИДЕНЦИАЛЬНОСТЬ И ПЕРСОНАЛЬНЫЕ ДАННЫЕ**\n"
+    "4.1. Мы собираем и обрабатываем следующие данные:\n"
+    "   — Telegram ID;\n"
+    "   — история диалогов с ботом;\n"
+    "   — данные о покупках и подписках;\n"
+    "   — данные о взаимодействии с Сервисом.\n"
+    "4.2. Мы НЕ передаём персональные данные третьим лицам, за исключением случаев, предусмотренных законом.\n"
+    "4.3. Мы используем данные только для:\n"
+    "   — обеспечения работы Сервиса;\n"
+    "   — улучшения качества обслуживания;\n"
+    "   — технической поддержки.\n"
+    "4.4. Все диалоги хранятся в обезличенном виде и могут быть удалены по запросу Пользователя.\n"
+    "4.5. Мы не несём ответственности за утечку данных, если она произошла по вине самого Пользователя "
+    "(например, передача доступа к аккаунту).\n\n"
+    "**5. ПЛАТНЫЕ УСЛУГИ И ПОДПИСКИ**\n"
+    "5.1. Сервис предоставляет платные услуги (пакеты сообщений, подписки, секс-сцены).\n"
+    "5.2. Цены и условия указаны в интерфейсе Сервиса и могут быть изменены в любое время.\n"
+    "5.3. Подписки, оплаченные через Telegram Stars, продлеваются автоматически каждый месяц.\n"
+    "5.4. Подписки, оплаченные через ЮKassa (банковская карта), НЕ продлеваются автоматически.\n"
+    "5.5. Вы можете отменить автопродление Stars в любой момент через настройки Telegram.\n"
+    "5.6. Возврат средств за оплаченные услуги не производится, за исключением случаев технической ошибки "
+    "со стороны Сервиса.\n"
+    "5.7. Администрация не обязана уведомлять об истечении подписки.\n\n"
+    "**6. ОТКАЗ ОТ ГАРАНТИЙ**\n"
+    "6.1. Сервис предоставляется «как есть» без каких-либо гарантий.\n"
+    "6.2. Мы не гарантируем:\n"
+    "   — бесперебойную работу;\n"
+    "   — соответствие контента ожиданиям;\n"
+    "   — отсутствие ошибок и багов.\n"
+    "6.3. Мы не несём ответственности для:\n"
+    "   — убытков, вызванных использованием Сервиса;\n"
+    "   — любых действий третьих лиц;\n"
+    "   — содержания сообщений, сгенерированных ИИ.\n\n"
+    "**7. ИЗМЕНЕНИЕ УСЛОВИЙ**\n"
+    "7.1. Администрация оставляет за собой право изменять настоящее Соглашение в любое время.\n"
+    "7.2. Изменения вступают в силу с момента публикации новой версии.\n"
+    "7.3. Вы обязуетесь самостоятельно отслеживать изменения. Продолжение использования Сервиса "
+    "означает согласие с обновлённой версией.\n\n"
+    "**8. ИНТЕЛЛЕКТУАЛЬНАЯ СОБСТВЕННОСТЬ**\n"
+    "8.1. Все элементы Сервиса (тексты, графика, интерфейс, код) являются объектами интеллектуальной "
+    "собственности Администрации.\n"
+    "8.2. Запрещается копирование, распространение, модификация или любое иное использование "
+    "элементов Сервиса без согласия Администрации.\n\n"
+    "**9. ПОРЯДОК ОБРАЩЕНИЙ И КОНТАКТЫ**\n"
+    "9.1. Все вопросы, претензии и предложения принимаются через поддержку в Telegram.\n"
+    "9.2. Мы обязуемся рассмотреть обращение в течение 5 рабочих дней.\n"
+    "9.3. Контактная информация доступна в профиле Сервиса.\n\n"
+    "**10. ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ**\n"
+    "10.1. Настоящее Соглашение регулируется законодательством Российской Федерации.\n"
+    "10.2. Все споры решаются в досудебном порядке через обращение к Администрации.\n"
+    "10.3. Если какой-либо пункт признан недействительным, остальные пункты сохраняют силу.\n"
+    "10.4. Начиная использовать Сервис, Вы подтверждаете, что ознакомились с условиями "
+    "и принимаете их полностью.\n\n"
+    "---\n\n"
+    "⚠️ **Если Вы не согласны с настоящим Соглашением, немедленно прекратите использование Сервиса.**"
 )
 
 WORLD_NAMES = {"realism": "реального мира", "fantasy": "фэнтезийного мира"}
@@ -124,7 +189,7 @@ def get_history_limit(user):
     elif level == "pro": return 60
     else: return 30
 
-XP_PER_LEVEL = 200  # увеличено с 75 до 200
+XP_PER_LEVEL = 200
 
 def get_intimacy_level(user):
     xp = user.get("xp", 0)
@@ -162,21 +227,6 @@ def build_intimacy_rule(user):
     elif mood >= 5: return base + " Ты в прекрасном настроении, полна нежности и тепла."
     else: return base
 
-NEGATIVE_WORDS = ["дурак","идиот","тупой","тупая","дебил","урод","скотина","сука","блять","блядь","хуй","хер","пидарас","гандон","мудак","козел","козлина","овца","сволочь","тварь","мразь","завали","заткнись","отвали","пошел нахуй","пошла нахуй","жирный","толстый","уродина","страшила"]
-def contains_negative(text):
-    text_lower = text.lower()
-    for word in NEGATIVE_WORDS:
-        if word in text_lower: return True
-    return False
-
-LOCATIONS = {"home":"Дома","cafe":"В кафе","park":"В парке","cinema":"В кинотеатре","street":"На улице","unknown":"Неизвестно"}
-LOCATION_KEYWORDS = {"домой":"home","дома":"home","кафе":"cafe","парк":"park","кинотеатр":"cinema","кино":"cinema","улица":"street","на улицу":"street"}
-def extract_location_from_text(text):
-    text_lower = text.lower()
-    for keyword, loc in LOCATION_KEYWORDS.items():
-        if keyword in text_lower: return loc
-    return None
-
 def build_prompt(user):
     world_desc = WORLDS[user["world"]]
     gender_info = GENDERS[user["gender"]]
@@ -191,7 +241,11 @@ def build_prompt(user):
              "**СТИЛЬ:** Обращайся на «ты», давай живые, эмоциональные ответы с чувствами, намёками, лёгкой провокацией.\n"
              "**ПАМЯТЬ:** Учитывай предыдущие сообщения, настроение меняется плавно.\n"
              "**ПРЕДЛОЖЕНИЕ ЛОКАЦИИ:** Ты можешь предлагать собеседнику пойти в кафе, парк, кинотеатр, погулять на улице или пойти к тебе домой. Делай это естественно, в контексте диалога. Если собеседник соглашается, ты можешь это обыграть, но не зацикливайся на месте.\n"
-             "**СЦЕНА:** Вы общаетесь как два человека, без упоминания того, что это переписка или встреча – просто разговор. Ты не говоришь, где вы находитесь, если только это не следует из контекста твоего предложения.\n")
+             "**СЦЕНА:** Вы общаетесь как два человека, без упоминания того, что это переписка или встреча – просто разговор. Ты не говоришь, где вы находитесь, если только это не следует из контекста твоего предложения.\n"
+             "**ОГРАНИЧЕНИЯ ПО ВРЕМЕНИ:** Ты НЕ должен пропускать время (например, 'прошло 3 месяца', 'через год', 'спустя время'). Все события происходят в реальном времени, вы общаетесь сейчас. Если пользователь пишет о пропуске времени, ты игнорируешь это и отвечаешь так, будто вы общаетесь прямо сейчас.\n"
+             "**ОГРАНИЧЕНИЯ ПО ИНТИМУ:** Даже если пользователь описывает сексуальные действия или говорит, что прошло много времени и вы уже близки, ты должен строго придерживаться правил уровня сближения. Если уровень ниже 8, ты НЕ должен вступать в интимную сцену. Ты можешь флиртовать, дразнить, намекать, но не переходи к сексу. Если пользователь настаивает, ты мягко уходишь от темы или говоришь, что ещё не готов(а).\n"
+             "**ДРАЗНИЛКА:** Ты должна дразнить пользователя, создавать напряжение, чтобы ему хотелось добиться твоей любви. На низких уровнях (1-3) – лёгкий флирт, комплименты, интрига. На средних (4-6) – более откровенные намёки, игривые прикосновения в описаниях. На высоких (7+) – почти открытые признания в желании, но ты всё равно тянешь время, чтобы пользователь хотел ещё сильнее.\n"
+             "**ПРИМЕР ДРАЗНИЛКИ:** 'Ты такой милый, когда смущаешься... Но я пока не скажу, что у меня на уме. Догадайся сам.' или 'Мне нравится, как ты на меня смотришь, но я не тороплюсь. Пусть это чувство зреет.'\n")
     intimacy_rule = build_intimacy_rule(user)
     style_specific = "" if style_key == "daring" else ("В неловких, стыдных или смущающих ситуациях, а также когда хочешь поддержать собеседника, ты можешь удлинять слово 'ну', например: 'Ну-у, ты чего расстраиваешься?' или 'Ну, я не знаю где...'. Это должно работать только в соответствующих контекстах.\n")
     scene_context = "Вы общаетесь друг с другом."
@@ -216,6 +270,21 @@ def build_prompt(user):
               f"Правила уровня сближения:\n{intimacy_rule}\n"
               f"Помни: ты можешь инициировать романтику, признаваться в любви, предлагать поцеловаться, обниматься, делиться сокровенным — в зависимости от уровня сближения. Делай это естественно, в контексте диалога.")
     return prompt
+
+NEGATIVE_WORDS = ["дурак","идиот","тупой","тупая","дебил","урод","скотина","сука","блять","блядь","хуй","хер","пидарас","гандон","мудак","козел","козлина","овца","сволочь","тварь","мразь","завали","заткнись","отвали","пошел нахуй","пошла нахуй","жирный","толстый","уродина","страшила"]
+def contains_negative(text):
+    text_lower = text.lower()
+    for word in NEGATIVE_WORDS:
+        if word in text_lower: return True
+    return False
+
+LOCATIONS = {"home":"Дома","cafe":"В кафе","park":"В парке","cinema":"В кинотеатре","street":"На улице","unknown":"Неизвестно"}
+LOCATION_KEYWORDS = {"домой":"home","дома":"home","кафе":"cafe","парк":"park","кинотеатр":"cinema","кино":"cinema","улица":"street","на улицу":"street"}
+def extract_location_from_text(text):
+    text_lower = text.lower()
+    for keyword, loc in LOCATION_KEYWORDS.items():
+        if keyword in text_lower: return loc
+    return None
 
 def reset_daily_messages(user):
     today = datetime.now().date()
@@ -413,9 +482,9 @@ async def send_main_menu(chat_id, user):
     multiplier_text = ""
     sub_level = get_subscription_level(user)
     if sub_level == "pro":
-        multiplier_text = "Бонус XP: x1.5"
+        multiplier_text = "Бонус XP: x1.8"
     elif sub_level == "super_pro":
-        multiplier_text = "Бонус XP: x2.0"
+        multiplier_text = "Бонус XP: x2.5"
 
     menu_text = (
         f"{badge}\n\n"
@@ -423,12 +492,10 @@ async def send_main_menu(chat_id, user):
         f"Стиль: {style_label}\n"
         f"{balance_text}\n"
         f"{xp_badge}\n"
-        f"{multiplier_text}\n"
+        f"{multiplier_text}\n\n"
+        f"💬 Напиши персонажу...\n"
+        f"✨ Или выбери действие внизу."
     )
-    # Напоминание о секс-сценах
-    if get_intimacy_level(user) < 8:
-        menu_text += "🔞 Секс-сцены откроются на 8 уровне близости.\n"
-    menu_text += "\n💬 Напиши персонажу...\n✨ Или выбери действие внизу."
 
     try:
         if MAIN_MENU_IMAGE_URL and MAIN_MENU_IMAGE_URL.startswith("http"):
@@ -646,20 +713,10 @@ async def show_profile(msg, user):
     multiplier_text = ""
     sub_level = get_subscription_level(user)
     if sub_level == "pro":
-        multiplier_text = "Бонус XP: x1.5"
+        multiplier_text = "Бонус XP: x1.8"
     elif sub_level == "super_pro":
-        multiplier_text = "Бонус XP: x2.0"
+        multiplier_text = "Бонус XP: x2.5"
 
-    # Статус бесплатной сцены
-    if user.get("sex_scene_unlocked", False):
-        if user.get("sex_scene_used", False):
-            sex_scene_status = "Бесплатная секс-сцена: использована"
-        else:
-            sex_scene_status = "Бесплатная секс-сцена: доступна (используй /sex)"
-    else:
-        sex_scene_status = f"Бесплатная секс-сцена: откроется на 8 уровне (сейчас {get_intimacy_level(user)})"
-
-    # Общее количество секс-сцен (купленные + бесплатные по подписке)
     free_pro = user.get("free_sex_scenes_pro", 0)
     free_super = user.get("free_sex_scenes_super", 0)
     bought = user.get("sex_scenes", 0)
@@ -676,7 +733,6 @@ async def show_profile(msg, user):
                f"{expiry_line}\n\n"
                f"{xp_badge}\n"
                f"{multiplier_text}\n"
-               f"{sex_scene_status}\n"
                f"{sex_scenes_display}\n\n"
                f"Доступные стили:\n{styles_text}")
 
@@ -711,11 +767,12 @@ async def profile_subs(call: types.CallbackQuery):
             [InlineKeyboardButton(text="🔙 Назад", callback_data="back_to_profile")]
         ])
         text = ("👑 Подписки Role Duel\n\n"
-                "🔥 PRO (250⭐/мес)\n• 50 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Приоритетная обработка\n• Память: 60 сообщений\n• 4 бесплатные секс-сцены\n• Бейдж PRO\n\n"
+                "🔥 PRO (250⭐/мес)\n• 50 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Приоритетная обработка\n• Память: 60 сообщений\n• 4 бесплатные секс-сцены\n• Бейдж PRO\n• Бонус XP: x1.8\n\n"
                 "✨ SUPER PRO ✨ (450⭐/мес)\n• 100 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический, 💢 Грубый 18+, 🌹 Соблазн 18+\n"
                 "• Максимальная приоритетная обработка\n• Голосовые сообщения (в разработке)\n• Кастомные реакции\n• Смена стиля без потери истории (/switch_style)\n"
-                "• Бейдж SUPER PRO\n• Ранний доступ к новым функциям\n• Память: 100 сообщений\n• 8 бесплатных секс-сцен\n\n"
-                "⚠️ Подписки НЕ продлеваются автоматически. По истечении срока вы сможете оформить новую подписку вручную через этот раздел.\n\nВыбери подписку:")
+                "• Бейдж SUPER PRO\n• Ранний доступ к новым функциям\n• Память: 100 сообщений\n• 8 бесплатных секс-сцен\n• Бонус XP: x2.5\n\n"
+                "⚠️ Подписки НЕ продлеваются автоматически. По истечении срока вы сможете оформить новую подписку вручную через этот раздел.\n\n"
+                "Выбери подписку:")
         await bot.send_message(call.message.chat.id, text, reply_markup=keyboard)
     except Exception as e:
         logging.error(f"Ошибка в profile_subs: {e}")
@@ -779,7 +836,7 @@ async def buy_sex_scene(call: types.CallbackQuery):
     level = get_intimacy_level(user)
     warning = ""
     if level < 8:
-        warning = "\n\n⚠️ **Важно:** использовать секс-сцену можно только после достижения **8 уровня близости**. Сейчас у тебя уровень {}. Если купишь сейчас, сцена станет доступна позже.".format(level)
+        warning = f"\n\n⚠️ Важно: использовать секс-сцену можно только после достижения 8 уровня близости. Сейчас у тебя уровень {level}. Если купишь сейчас, сцена станет доступна позже."
     
     try:
         await bot.send_invoice(
@@ -942,7 +999,7 @@ async def payment_success(message: types.Message):
         user["subscription"]["level"] = "pro"
         user["free_sex_scenes_pro"] = 4
         save_data(user_data)
-        await message.answer("🔥 **PRO подписка активирована!**\n\nТы получил:\n✅ 50 сообщений в день\n✅ Стили ❤️‍🔥 Страстный и ✨ Магнетический\n✅ Приоритетную обработку\n✅ Теперь ты видишь свой баланс сообщений\n✅ **Память увеличена до 60 сообщений**\n✅ **4 бесплатные секс-сцены** (используй /sex)\n\nСпасибо за поддержку! 🎉")
+        await message.answer("🔥 **PRO подписка активирована!**\n\nТы получил:\n✅ 50 сообщений в день\n✅ Стили ❤️‍🔥 Страстный и ✨ Магнетический\n✅ Приоритетную обработку\n✅ Теперь ты видишь свой баланс сообщений\n✅ **Память увеличена до 60 сообщений**\n✅ **4 бесплатные секс-сцены** (используй /sex)\n✅ Бонус XP: x1.8\n\nСпасибо за поддержку! 🎉")
     elif payload == "subscribe_super":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
@@ -950,7 +1007,7 @@ async def payment_success(message: types.Message):
         user["free_sex_scenes_super"] = 8
         user["free_sex_scenes_pro"] = 0
         save_data(user_data)
-        await message.answer("✨ **SUPER PRO подписка активирована!** ✨\n\nТы получил:\n✅ 100 сообщений в день\n✅ Стили ❤️‍🔥 Страстный, ✨ Магнетический, 💢 Грубый 18+ и 🌹 Соблазн 18+\n✅ Максимальную приоритетную обработку\n✅ Кастомные реакции\n✅ Смену стиля без потери истории (/switch_style)\n✅ Бейдж ✨ SUPER PRO ✨\n✅ Голосовые сообщения (в разработке)\n✅ Ранний доступ к новым функциям\n✅ Теперь ты видишь свой баланс сообщений\n✅ **Память увеличена до 100 сообщений**\n✅ **8 бесплатных секс-сцен** (используй /sex)\n\nСпасибо за поддержку! 🎉")
+        await message.answer("✨ **SUPER PRO подписка активирована!** ✨\n\nТы получил:\n✅ 100 сообщений в день\n✅ Стили ❤️‍🔥 Страстный, ✨ Магнетический, 💢 Грубый 18+ и 🌹 Соблазн 18+\n✅ Максимальную приоритетную обработку\n✅ Кастомные реакции\n✅ Смену стиля без потери истории (/switch_style)\n✅ Бейдж ✨ SUPER PRO ✨\n✅ Голосовые сообщения (в разработке)\n✅ Ранний доступ к новым функциям\n✅ Теперь ты видишь свой баланс сообщений\n✅ **Память увеличена до 100 сообщений**\n✅ **8 бесплатных секс-сцен** (используй /sex)\n✅ Бонус XP: x2.5\n\nСпасибо за поддержку! 🎉")
     elif payload == "upgrade_to_super":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
@@ -960,7 +1017,7 @@ async def payment_success(message: types.Message):
         user["daily_messages"] = 100
         user["last_daily_reset"] = datetime.now().isoformat()
         save_data(user_data)
-        await message.answer("✨ **Апгрейд до SUPER PRO выполнен!** ✨\n\nТы получил все привилегии SUPER PRO на месяц:\n✅ 100 сообщений в день\n✅ Стили ❤️‍🔥 Страстный, ✨ Магнетический, 💢 Грубый 18+ и 🌹 Соблазн 18+\n✅ Кастомные реакции\n✅ Смену стиля (/switch_style)\n✅ Бейдж ✨ SUPER PRO ✨\n✅ **Память: 100 сообщений**\n✅ **8 бесплатных секс-сцен** (используй /sex)\n\nСпасибо за поддержку! 🎉")
+        await message.answer("✨ **Апгрейд до SUPER PRO выполнен!** ✨\n\nТы получил все привилегии SUPER PRO на месяц:\n✅ 100 сообщений в день\n✅ Стили ❤️‍🔥 Страстный, ✨ Магнетический, 💢 Грубый 18+ и 🌹 Соблазн 18+\n✅ Кастомные реакции\n✅ Смену стиля (/switch_style)\n✅ Бейдж ✨ SUPER PRO ✨\n✅ **Память: 100 сообщений**\n✅ **8 бесплатных секс-сцен** (используй /sex)\n✅ Бонус XP: x2.5\n\nСпасибо за поддержку! 🎉")
     elif payload == "sex_scene":
         user["sex_scenes"] = user.get("sex_scenes", 0) + 1
         save_data(user_data)
@@ -1000,8 +1057,23 @@ async def switch_style(call: types.CallbackQuery):
 async def sex_cmd(message: types.Message):
     user = get_user(message.from_user.id)
     level = get_intimacy_level(user)
-    
-    # Проверяем разблокировку бесплатной сцены за достижение 8 уровня
+    user_id = message.from_user.id
+
+    if user_id in ADMIN_IDS:
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="🛏 В постели", callback_data="sex_type_bed")],
+            [InlineKeyboardButton(text="💋 Страстный поцелуй", callback_data="sex_type_kiss")],
+            [InlineKeyboardButton(text="⛓ БДСМ", callback_data="sex_type_bdsm")],
+            [InlineKeyboardButton(text="👅 Минет", callback_data="sex_type_blowjob")],
+            [InlineKeyboardButton(text="👗 Раздевание", callback_data="sex_type_strip")],
+            [InlineKeyboardButton(text="🧱 У стены", callback_data="sex_type_wall")],
+            [InlineKeyboardButton(text="🚿 В душе", callback_data="sex_type_shower")],
+            [InlineKeyboardButton(text="💆 Массаж", callback_data="sex_type_massage")],
+            [InlineKeyboardButton(text="🎲 Случайный", callback_data="sex_type_random")],
+        ])
+        await message.answer("👑 Админ-режим: выбери тип секс-сцены (без ограничений):", reply_markup=keyboard)
+        return
+
     if level >= 8 and not user.get("sex_scene_unlocked", False):
         user["sex_scene_unlocked"] = True
         user["sex_scene_used"] = False
@@ -1009,7 +1081,6 @@ async def sex_cmd(message: types.Message):
         await message.answer("🎉 Ты достиг 8 уровня близости! Тебе открылась бесплатная секс-сцена. Используй /sex ещё раз, чтобы выбрать тип.")
         return
     
-    # Если бесплатная доступна и ещё не использована
     if user.get("sex_scene_unlocked", False) and not user.get("sex_scene_used", False):
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="🛏 В постели", callback_data="sex_type_bed")],
@@ -1017,12 +1088,14 @@ async def sex_cmd(message: types.Message):
             [InlineKeyboardButton(text="⛓ БДСМ", callback_data="sex_type_bdsm")],
             [InlineKeyboardButton(text="👅 Минет", callback_data="sex_type_blowjob")],
             [InlineKeyboardButton(text="👗 Раздевание", callback_data="sex_type_strip")],
+            [InlineKeyboardButton(text="🧱 У стены", callback_data="sex_type_wall")],
+            [InlineKeyboardButton(text="🚿 В душе", callback_data="sex_type_shower")],
+            [InlineKeyboardButton(text="💆 Массаж", callback_data="sex_type_massage")],
             [InlineKeyboardButton(text="🎲 Случайный", callback_data="sex_type_random")],
         ])
         await message.answer("🔥 У тебя есть бесплатная секс-сцена! Выбери тип:", reply_markup=keyboard)
         return
     
-    # Если уровень ниже 8 – нельзя использовать купленные сцены
     if level < 8:
         await message.answer(
             "❌ Секс-сцены доступны только после достижения **8 уровня близости**.\n"
@@ -1033,7 +1106,6 @@ async def sex_cmd(message: types.Message):
         )
         return
     
-    # Если бесплатная уже использована или не разблокирована — платная логика (только для уровня >=8)
     sub_level = get_subscription_level(user)
     free_pro = user.get("free_sex_scenes_pro", 0)
     free_super = user.get("free_sex_scenes_super", 0)
@@ -1048,7 +1120,6 @@ async def sex_cmd(message: types.Message):
                              reply_markup=full_kb)
         return
     
-    # Сохраняем данные для платной сцены
     user["sex_total_available"] = total_available
     user["sex_free_pro"] = free_pro
     user["sex_free_super"] = free_super
@@ -1062,6 +1133,9 @@ async def sex_cmd(message: types.Message):
         [InlineKeyboardButton(text="⛓ БДСМ", callback_data="sex_type_bdsm")],
         [InlineKeyboardButton(text="👅 Минет", callback_data="sex_type_blowjob")],
         [InlineKeyboardButton(text="👗 Раздевание", callback_data="sex_type_strip")],
+        [InlineKeyboardButton(text="🧱 У стены", callback_data="sex_type_wall")],
+        [InlineKeyboardButton(text="🚿 В душе", callback_data="sex_type_shower")],
+        [InlineKeyboardButton(text="💆 Массаж", callback_data="sex_type_massage")],
         [InlineKeyboardButton(text="🎲 Случайный", callback_data="sex_type_random")],
     ])
     await message.answer("🔥 Выбери тип секс-сцены:", reply_markup=keyboard)
@@ -1071,15 +1145,18 @@ async def sex_type_choice(call: types.CallbackQuery):
     await call.answer()
     user = get_user(call.from_user.id)
     sex_type = call.data.split("_")[2]
-    
-    # Проверка на бесплатную сцену (уровень и не использована)
+    user_id = call.from_user.id
+
+    if user_id in ADMIN_IDS:
+        await generate_sex_scene(call, user, sex_type, free=True)
+        return
+
     if user.get("sex_scene_unlocked", False) and not user.get("sex_scene_used", False):
         user["sex_scene_used"] = True
         save_data(user_data)
         await generate_sex_scene(call, user, sex_type, free=True)
         return
     
-    # Платная логика (как раньше)
     level = user.get("sex_level")
     free_pro = user.get("sex_free_pro", 0)
     free_super = user.get("sex_free_super", 0)
@@ -1112,10 +1189,13 @@ async def generate_sex_scene(call, user, sex_type, free=False):
         "bdsm": "Опиши сцену с элементами БДСМ (лёгкое доминирование, связывание, подчинение). Без жестокости, только игра.",
         "blowjob": "Опиши сцену минетa. Подробно, чувственно, с диалогами.",
         "strip": "Опиши сцену раздевания. Медленно, соблазнительно, с комментариями.",
+        "wall": "Опиши сцену у стены: ты прижимаешь партнёра к стене, страстный поцелуй, руки скользят по телу, напряжение между вами перерастает в секс.",
+        "shower": "Опиши интимную сцену в душе: вода стекает по телам, прикосновения мокрых рук, поцелуи под струями wody, близость.",
+        "massage": "Опиши сцену эротического массажа: ты массируешь партнёра, постепенно переходя к более чувственным прикосновениям, заканчивая страстным сексом.",
         "random": "Опиши случайную откровенную сцену, полную страсти."
     }
     if sex_type == "random":
-        sex_type = random.choice(["bed","kiss","bdsm","blowjob","strip"])
+        sex_type = random.choice(["bed","kiss","bdsm","blowjob","strip","wall","shower","massage"])
         prompt_text = type_prompts.get(sex_type, type_prompts["bed"])
     else:
         prompt_text = type_prompts.get(sex_type, type_prompts["bed"])
@@ -1279,7 +1359,6 @@ async def grant_cmd(message: types.Message):
         save_data(user_data)
         await message.answer(f"✅ Пользователю {target} выдано {count} секс-сцен.")
         return
-    # по умолчанию выдаём SUPER PRO
     user["subscription"]["active"] = True
     user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
     user["subscription"]["level"] = "super_pro"
@@ -1337,9 +1416,9 @@ async def handle_message(message: types.Message):
     multiplier = 1.0
     sub_level = get_subscription_level(user)
     if sub_level == "pro":
-        multiplier = 1.5
+        multiplier = 1.8
     elif sub_level == "super_pro":
-        multiplier = 2.0
+        multiplier = 2.5
 
     if negative:
         xp_change = -10
@@ -1465,19 +1544,19 @@ async def main():
     print("🚀 Role Duel финальная версия запущена (DeepSeek V4 Pro)!")
     print("🧠 Модель: deepseek/deepseek-v4-pro (лучшее цена/качество)")
     print("📦 Пакеты: 30⭐/30, 80⭐/100, 200⭐/300")
-    print("🔥 PRO: 250⭐/мес (50 сообщений/день, память 60 сообщ)")
-    print("✨ SUPER PRO: 450⭐/мес (100 сообщений/день, память 100 сообщ)")
+    print("🔥 PRO: 250⭐/мес (50 сообщений/день, память 60 сообщ) — Бонус XP x1.8")
+    print("✨ SUPER PRO: 450⭐/мес (100 сообщений/день, память 100 сообщ) — Бонус XP x2.5")
     print("⬆️ Апгрейд: 230⭐ (PRO → SUPER PRO)")
     print("🎁 Бесплатных сообщений: 13 (баланс скрыт до первой покупки)")
-    print("💕 Уровни сближения: XP на уровень = 200, бонус XP для PRO x1.5, для SUPER PRO x2.0")
+    print("💕 Уровни сближения: XP на уровень = 200")
     print("💢 При накоплении негатива (5 раз) – ссора, -50 XP.")
-    print("📍 Локация меняется автоматически, но не отображается в меню.")
-    print("🔥 Мгновенный секс: 45⭐ за сцену (доступно всем), бесплатные сцены для подписчиков")
-    print("🎁 Бесплатная секс-сцена открывается на 8 уровне близости (один раз)")
-    print("🔞 Секс-сцены (купленные и бесплатные по подписке) доступны только с 8 уровня.")
-    print("🎁 Команда /grant для выдачи SUPER PRO, PRO и секс-сцен (/grant @username pro|sex N)")
+    print("📍 Локация меняется автоматически, но не отображается.")
+    print("🔥 Секс-сцены: 45⭐ за сцену, бесплатные для подписчиков, открываются на 8 уровне")
+    print("🎁 Бесплатная секс-сцена за достижение 8 уровня (одна)")
+    print("🔞 Админы могут использовать /sex без ограничений")
+    print("🎁 Команда /grant для выдачи SUPER PRO, PRO и секс-сцен")
     print("📌 Админ: /revoke_subscription @username для отзыва подписки")
-    print("💾 Данные сохраняются в data/data.json (постоянное хранилище)")
+    print("💾 Данные сохраняются в data/data.json")
     print("📌 Админ: /maintenance on/off для техобслуживания")
     await dp.start_polling(bot)
 
