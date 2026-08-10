@@ -39,7 +39,7 @@ logging.basicConfig(level=logging.INFO)
 #  GIF-ССЫЛКИ
 # ============================================================
 PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh4eWJ2Zzg0bTVlbWE2ZzFicHlsMXNibXp3dXdsayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GGSbxfzvec3PYZbFOM/giphy.gif"
-SUPER_PRO_GIF_URL = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzMxOWg5bWgwNnVjbTNuczdkOHI4YTI4dWZtZDllOTdxYXplZGtucCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tFACp73JxIjnviNUfa/giphy.gif"
+SUPER_PRO_GIF_URL = "https://media.giphy.com/media/DbHZXBo5WFPZX7QpXj/giphy.gif"
 MAIN_MENU_IMAGE_URL = "https://i.ibb.co/k25JyTXD/IMG-2584.jpg"
 
 ADMIN_IDS = [7287815074]  # замени на свой ID
@@ -143,7 +143,7 @@ AGREEMENT_TEXT = (
 )
 
 # ============================================================
-#  МИРЫ: РЕАЛИЗМ И АНИМЕ (ВМЕСТО ФЭНТЕЗИ)
+#  МИРЫ: РЕАЛИЗМ И АНИМЕ
 # ============================================================
 WORLD_NAMES = {"realism": "реального мира", "anime": "аниме-мира"}
 WORLDS = {
@@ -195,6 +195,19 @@ PREMIUM_STYLES = {
 
 STYLES = {**BASE_STYLES, **PREMIUM_STYLES}
 
+BASE_STYLE_KEYS = ["warm", "daring", "shy"]          # бесплатные
+PREMIUM_STYLE_KEYS = ["passionate", "magnetic", "vulgar", "seduction"]
+
+def get_display_style(user):
+    style = user.get("style", "warm")
+    if style in PREMIUM_STYLE_KEYS and not has_active_subscription(user):
+        return "warm"
+    return style
+
+def ensure_valid_style(user):
+    style = user.get("style", "warm")
+    return style in PREMIUM_STYLE_KEYS and not has_active_subscription(user)
+
 def get_available_styles(user): return STYLES
 def get_subscription_level(user):
     if not has_active_subscription(user): return None
@@ -205,7 +218,10 @@ def get_history_limit(user):
     elif level == "pro": return 60
     else: return 30
 
-XP_PER_LEVEL = 200
+# ============================================================
+#  XP_PER_LEVEL = 100 (было 200)
+# ============================================================
+XP_PER_LEVEL = 100
 
 def get_intimacy_level(user):
     xp = user.get("xp", 0)
@@ -246,7 +262,7 @@ def build_intimacy_rule(user):
 def build_prompt(user):
     world_desc = WORLDS[user["world"]]
     gender_info = GENDERS[user["gender"]]
-    style_key = user["style"]
+    style_key = get_display_style(user)  # используем актуальный стиль
     styles = get_available_styles(user)
     style_desc = styles[style_key]["description"]
     name_ban = ("**ВАЖНЕЙШЕЕ ПРАВИЛО:** Ты НИКОГДА не называешь себя по имени, не представляешься, не говоришь «меня зовут», не используешь своё имя. Ты также НИКОГДА не спрашиваешь имя собеседника и не используешь его имя, даже если оно было названо. Обращайся к собеседнику ТОЛЬКО на «ты». Если ты нарушишь это правило – это будет грубой ошибкой.\n")
@@ -372,8 +388,10 @@ def get_user(user_id):
     return user_data[user_id]
 
 def has_active_subscription(user):
-    if not user["subscription"]["active"]: return False
-    if user["subscription"]["expires_at"] is None: return False
+    if not user["subscription"]["active"]:
+        return False
+    if user["subscription"]["expires_at"] is None:
+        return False
     expiry = datetime.fromisoformat(user["subscription"]["expires_at"])
     return datetime.now() < expiry
 
@@ -495,7 +513,7 @@ async def send_voice_message(chat_id, text):
         logging.error(f"Ошибка генерации голоса: {e}")
 
 # ============================================================
-#  ОСТАЛЬНЫЕ ОБРАБОТЧИКИ (БЕЗ ИЗМЕНЕНИЙ)
+#  ОСНОВНЫЕ ОБРАБОТЧИКИ
 # ============================================================
 async def send_main_menu(chat_id, user):
     if user.get("last_menu_message_id"):
@@ -512,7 +530,8 @@ async def send_main_menu(chat_id, user):
 
     gender_name = GENDERS[user['gender']]['name']
     world_name = WORLD_NAMES[user['world']]
-    style_label = STYLES[user['style']]['label']
+    current_style = get_display_style(user)
+    style_label = STYLES[current_style]['label']
 
     show_balance = has_purchased_something(user)
     if show_balance:
@@ -807,6 +826,7 @@ async def profile_subs(call: types.CallbackQuery):
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="🔥 PRO — 250 ⭐/мес", callback_data="subscribe_pro")],
             [InlineKeyboardButton(text="✨ SUPER PRO ✨ — 450 ⭐/мес", callback_data="subscribe_super")],
+            [InlineKeyboardButton(text="🧪 Тест SUPER PRO (1⭐/мес) — для проверки автопродления", callback_data="subscribe_test")],
             [InlineKeyboardButton(text="⬆️ Апгрейд до SUPER PRO (230⭐)", callback_data="upgrade_to_super")],
             [InlineKeyboardButton(text="🔙 Назад", callback_data="back_to_profile")]
         ])
@@ -815,13 +835,45 @@ async def profile_subs(call: types.CallbackQuery):
                 "✨ SUPER PRO ✨ (450⭐/мес)\n• 100 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический, 💢 Грубый 18+, 🌹 Соблазн 18+\n"
                 "• Максимальная приоритетная обработка\n• Голосовые сообщения\n• Кастомные реакции\n• Смена стиля без потери истории (/switch_style)\n"
                 "• Бейдж SUPER PRO\n• Ранний доступ к новым функциям\n• Память: 100 сообщений\n• 8 бесплатных секс-сцен\n• Бонус XP: x2.5\n\n"
-                "✅ **Подписка продлевается автоматически каждый месяц через Telegram Stars.**\n"
+                "🧪 **Тест SUPER PRO (1⭐/мес)** — для проверки работы автопродления. Действует как обычная SUPER PRO, но всего за 1 звезду. Подписка продлевается автоматически.\n\n"
+                "✅ Подписка продлевается автоматически каждый месяц через Telegram Stars.\n"
                 "Вы можете отменить автопродление в любой момент в настройках Telegram.\n\n"
                 "Выбери подписку:")
         await bot.send_message(call.message.chat.id, text, reply_markup=keyboard)
     except Exception as e:
         logging.error(f"Ошибка в profile_subs: {e}")
         await bot.send_message(call.message.chat.id, "⚠️ Произошла ошибка. Попробуйте позже.")
+
+@dp.callback_query(lambda c: c.data == "subscribe_test")
+async def subscribe_test(call: types.CallbackQuery):
+    try:
+        user = get_user(call.from_user.id)
+        if has_active_subscription(user):
+            level = get_subscription_level(user)
+            if level == "super_pro":
+                await call.answer("❌ У вас уже есть SUPER PRO.", show_alert=True)
+                return
+            elif level == "pro":
+                await call.answer("❌ У вас уже активна PRO. Вы можете оформить тест только при отсутствии подписки.", show_alert=True)
+                return
+        invoice_link = await bot.create_invoice_link(
+            title="Тест SUPER PRO (1⭐)",
+            description="Тестовая подписка SUPER PRO на месяц за 1 звезду. Автопродление включено.",
+            payload="subscribe_test",
+            provider_token="",
+            currency="XTR",
+            prices=[LabeledPrice(label="Тест SUPER PRO", amount=1)],
+            subscription_period=2592000
+        )
+        await call.message.answer(
+            f"💳 Оплати тестовую подписку по ссылке:\n{invoice_link}\n\n"
+            "После оплаты подписка активируется автоматически (SUPER PRO). Автопродление включено."
+        )
+        await call.answer()
+    except Exception as e:
+        logging.error(f"Ошибка в subscribe_test: {e}")
+        await call.message.answer(f"⚠️ Ошибка: {e}")
+        await call.answer()
 
 @dp.callback_query(lambda c: c.data == "upgrade_to_super")
 async def upgrade_to_super(call: types.CallbackQuery):
@@ -837,8 +889,7 @@ async def upgrade_to_super(call: types.CallbackQuery):
             await call.answer("❌ Неизвестный уровень подписки. Обратитесь в поддержку.", show_alert=True)
         return
     try:
-        await bot.send_invoice(
-            chat_id=call.message.chat.id,
+        invoice_link = await bot.create_invoice_link(
             title="Апгрейд до SUPER PRO",
             description="Повысьте PRO до SUPER PRO на 30 дней. Стоимость 230⭐. Подписка продлевается автоматически через Stars.",
             payload="upgrade_to_super",
@@ -846,6 +897,10 @@ async def upgrade_to_super(call: types.CallbackQuery):
             currency="XTR",
             prices=[LabeledPrice(label="Апгрейд до SUPER PRO", amount=230)],
             subscription_period=2592000
+        )
+        await call.message.answer(
+            f"💳 Оплати апгрейд по ссылке:\n{invoice_link}\n\n"
+            "После оплаты подписка SUPER PRO активируется автоматически."
         )
         await call.answer()
     except Exception as e:
@@ -997,8 +1052,7 @@ async def subscribe_pro(call: types.CallbackQuery):
             elif level == "pro":
                 await call.answer("❌ У вас уже активна PRO подписка. Она продлится до окончания срока.", show_alert=True)
                 return
-        await bot.send_invoice(
-            chat_id=call.message.chat.id,
+        invoice_link = await bot.create_invoice_link(
             title="PRO подписка на месяц",
             description="50 сообщений в день, память 60 сообщений, стили Страстный и Магнетический, 4 бесплатные секс-сцены. Подписка продлевается автоматически через Telegram Stars.",
             payload="subscribe_pro",
@@ -1007,10 +1061,14 @@ async def subscribe_pro(call: types.CallbackQuery):
             prices=[LabeledPrice(label="PRO месяц", amount=250)],
             subscription_period=2592000
         )
+        await call.message.answer(
+            f"💳 Оплати подписку по ссылке:\n{invoice_link}\n\n"
+            "После оплаты подписка активируется автоматически."
+        )
         await call.answer()
     except Exception as e:
         logging.error(f"Ошибка в subscribe_pro: {e}")
-        await call.message.answer(f"⚠️ Ошибка при создании счёта: {e}")
+        await call.message.answer(f"⚠️ Ошибка: {e}")
         await call.answer()
 
 @dp.callback_query(lambda c: c.data == "subscribe_super")
@@ -1025,8 +1083,7 @@ async def subscribe_super(call: types.CallbackQuery):
             elif level == "pro":
                 await call.answer("💡 У вас активна PRO. Воспользуйтесь кнопкой «Апгрейд до SUPER PRO» (230⭐).", show_alert=True)
                 return
-        await bot.send_invoice(
-            chat_id=call.message.chat.id,
+        invoice_link = await bot.create_invoice_link(
             title="SUPER PRO подписка на месяц",
             description="100 сообщений в день, память 100 сообщений, стили Страстный, Магнетический, Грубый 18+ и Соблазн 18+, 8 бесплатных секс-сцен. Подписка продлевается автоматически через Telegram Stars.",
             payload="subscribe_super",
@@ -1035,10 +1092,14 @@ async def subscribe_super(call: types.CallbackQuery):
             prices=[LabeledPrice(label="SUPER PRO месяц", amount=450)],
             subscription_period=2592000
         )
+        await call.message.answer(
+            f"💳 Оплати подписку по ссылке:\n{invoice_link}\n\n"
+            "После оплаты подписка активируется автоматически."
+        )
         await call.answer()
     except Exception as e:
         logging.error(f"Ошибка в subscribe_super: {e}")
-        await call.message.answer(f"⚠️ Ошибка при создании счёта: {e}")
+        await call.message.answer(f"⚠️ Ошибка: {e}")
         await call.answer()
 
 @dp.pre_checkout_query()
@@ -1060,8 +1121,8 @@ async def payment_success(message: types.Message):
         save_data(user_data)
         await message.answer(f"✅ Куплено {amount} сообщений! Теперь ты видишь свой баланс.")
 
-    elif payload in ["subscribe_pro", "subscribe_super", "upgrade_to_super"]:
-        level = "super_pro" if "super" in payload else "pro"
+    elif payload in ["subscribe_pro", "subscribe_super", "upgrade_to_super", "subscribe_test"]:
+        level = "super_pro" if ("super" in payload or "test" in payload) else "pro"
         if payload == "upgrade_to_super":
             level = "super_pro"
         if is_first or not has_active_subscription(user):
@@ -1249,7 +1310,7 @@ async def sex_type_choice(call: types.CallbackQuery):
 async def generate_sex_scene(call, user, sex_type, free=False):
     await bot.send_chat_action(call.message.chat.id, "typing")
     gender_info = GENDERS[user['gender']]
-    style_key = user['style']
+    style_key = get_display_style(user)
     style_desc = STYLES[style_key]['description']
     type_prompts = {
         "bed": "Опиши страстную секс-сцену в постели. Подробно, чувственно, с диалогами.",
@@ -1456,6 +1517,24 @@ async def cancel_payment(call: types.CallbackQuery):
 async def handle_message(message: types.Message):
     global maintenance_mode
     user = get_user(message.from_user.id)
+    
+    # Проверка на необходимость выбора стиля при истекшей подписке
+    if ensure_valid_style(user):
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="🪶 Нежный", callback_data="fix_style_warm")],
+            [InlineKeyboardButton(text="🔥 Дерзкий", callback_data="fix_style_daring")],
+            [InlineKeyboardButton(text="😊 Стеснительный", callback_data="fix_style_shy")],
+        ])
+        await message.answer(
+            "⚠️ Твоя подписка закончилась, а у тебя выбран премиум-стиль.\n"
+            "Выбери один из бесплатных стилей, чтобы продолжить общение (история сохранится):\n\n"
+            "🪶 Нежный — мягкий и тёплый\n"
+            "🔥 Дерзкий — уверенный и игривый\n"
+            "😊 Стеснительный — робкий и искренний",
+            reply_markup=keyboard
+        )
+        return
+
     if maintenance_mode and message.from_user.id not in ADMIN_IDS:
         await message.answer("🛠️ **Бот на техническом обслуживании**\nМы обновляем функционал, чтобы сделать общение ещё лучше.\nПожалуйста, загляните позже. Следите за новостями в канале: @duel_dev_channel", parse_mode="Markdown")
         return
@@ -1553,6 +1632,7 @@ async def handle_message(message: types.Message):
             await asyncio.sleep(4)
     typing_task = asyncio.create_task(keep_typing())
     
+    # Реакции для SUPER PRO
     if get_subscription_level(user) == "super_pro":
         reaction = get_reaction(message.text)
         if reaction:
@@ -1601,6 +1681,20 @@ async def handle_message(message: types.Message):
     if get_subscription_level(user) == "super_pro" and VOICE_ENABLED:
         await send_voice_message(message.chat.id, answer)
 
+@dp.callback_query(lambda c: c.data.startswith("fix_style_"))
+async def fix_style_callback(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    style_key = call.data.split("_")[2]  # warm, daring, shy
+    if style_key in BASE_STYLE_KEYS:
+        user["style"] = style_key
+        save_data(user_data)
+        await call.message.edit_text(f"✅ Стиль изменён на: {STYLES[style_key]['label']}\nТеперь ты можешь продолжать общение.\n\n"
+                                      "💡 Чтобы сменить стиль без потери истории в будущем, нужна подписка SUPER PRO (команда /switch_style).")
+        await call.answer()
+        await send_main_menu(call.message.chat.id, user)
+    else:
+        await call.answer("❌ Недопустимый стиль", show_alert=True)
+
 def get_level_congratulation(level):
     if level == 2: return "🎉 Ты заметил(а), что между вами пробежала искра! Уровень сближения — 2. Теперь вы можете флиртовать."
     elif level == 3: return "💞 Вы стали ближе! Уровень 3. Теперь вы можете обниматься и делиться секретами."
@@ -1619,19 +1713,19 @@ async def main():
     print("📦 Пакеты: 30⭐/30, 80⭐/100, 200⭐/300")
     print("🔥 PRO: 250⭐/мес (50 сообщений/день, память 60 сообщ) — Бонус XP x1.8")
     print("✨ SUPER PRO: 450⭐/мес (100 сообщений/день, память 100 сообщ) — Бонус XP x2.5")
+    print("🧪 Тест SUPER PRO: 1⭐/мес (для проверки автопродления)")
     print("⬆️ Апгрейд: 230⭐ (PRO → SUPER PRO)")
     print("🎁 Бесплатных сообщений: 13 (баланс скрыт до первой покупки)")
-    print("💕 Уровни сближения: XP на уровень = 200")
+    print("💕 Уровни сближения: XP на уровень = 100 (визуально), базовый XP = 5, множители x1.8 / x2.5")
     print("💢 При накоплении негатива (5 раз) – ссора, -50 XP.")
     print("📍 Локация меняется автоматически, но не отображается.")
     print("🔥 Секс-сцены: 45⭐ за сцену, бесплатные для подписчиков, открываются на 8 уровне")
     print("🎁 Бесплатная секс-сцена за достижение 8 уровня (одна)")
     print("🔞 Админы могут использовать /sex без ограничений")
-    print("🎁 Команда /grant для выдачи SUPER PRO, PRO и секс-сцен")
+    print("🎙️ Голосовые сообщения включены для SUPER PRO" if VOICE_ENABLED else "🎙️ Голосовые сообщения отключены (библиотеки не найдены)")
     print("📌 Админ: /revoke_subscription @username для отзыва подписки")
     print("💾 Данные сохраняются в data/data.json")
     print("📌 Админ: /maintenance on/off для техобслуживания")
-    print("🎙️ Голосовые сообщения включены для SUPER PRO" if VOICE_ENABLED else "🎙️ Голосовые сообщения отключены (библиотеки не найдены)")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
