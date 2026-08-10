@@ -195,7 +195,7 @@ PREMIUM_STYLES = {
 
 STYLES = {**BASE_STYLES, **PREMIUM_STYLES}
 
-BASE_STYLE_KEYS = ["warm", "daring", "shy"]          # бесплатные
+BASE_STYLE_KEYS = ["warm", "daring", "shy"]
 PREMIUM_STYLE_KEYS = ["passionate", "magnetic", "vulgar", "seduction"]
 
 def get_display_style(user):
@@ -219,28 +219,32 @@ def get_history_limit(user):
     else: return 30
 
 # ============================================================
-#  XP_PER_LEVEL = 100 (было 200)
+#  XP: реальный PER_LEVEL = 200, но показываем шкалу 0–100
 # ============================================================
-XP_PER_LEVEL = 100
+XP_PER_LEVEL = 200
 
 def get_intimacy_level(user):
     xp = user.get("xp", 0)
     level = xp // XP_PER_LEVEL + 1
     return min(10, level)
+
 def get_xp_progress(user):
     xp = user.get("xp", 0)
     level = get_intimacy_level(user)
-    if level >= 10: return XP_PER_LEVEL
+    if level >= 10:
+        return XP_PER_LEVEL
     return xp % XP_PER_LEVEL
+
 def get_xp_badge(user):
     level = get_intimacy_level(user)
     filled = "❤️" * level
     empty = "🤍" * (10 - level)
-    progress = get_xp_progress(user)
+    progress = get_xp_progress(user)  # 0–200
+    scaled_progress = int((progress / XP_PER_LEVEL) * 100)
     bar_length = 10
     filled_bar = int((progress / XP_PER_LEVEL) * bar_length)
     bar = "▓" * filled_bar + "░" * (bar_length - filled_bar)
-    return f"Уровень {level}/10 {filled}{empty}\n{bar} {progress}/{XP_PER_LEVEL} XP"
+    return f"Уровень {level}/10 {filled}{empty}\n{bar} {scaled_progress}/100 XP"
 
 def build_intimacy_rule(user):
     level = get_intimacy_level(user)
@@ -262,7 +266,7 @@ def build_intimacy_rule(user):
 def build_prompt(user):
     world_desc = WORLDS[user["world"]]
     gender_info = GENDERS[user["gender"]]
-    style_key = get_display_style(user)  # используем актуальный стиль
+    style_key = get_display_style(user)
     styles = get_available_styles(user)
     style_desc = styles[style_key]["description"]
     name_ban = ("**ВАЖНЕЙШЕЕ ПРАВИЛО:** Ты НИКОГДА не называешь себя по имени, не представляешься, не говоришь «меня зовут», не используешь своё имя. Ты также НИКОГДА не спрашиваешь имя собеседника и не используешь его имя, даже если оно было названо. Обращайся к собеседнику ТОЛЬКО на «ты». Если ты нарушишь это правило – это будет грубой ошибкой.\n")
@@ -509,6 +513,7 @@ async def send_voice_message(chat_id, text):
             voice=types.BufferedInputFile(ogg_fp.read(), filename="voice.ogg"),
             caption="🎧 Голосовая версия"
         )
+        logging.info("🎙️ Голосовое отправлено")
     except Exception as e:
         logging.error(f"Ошибка генерации голоса: {e}")
 
@@ -595,8 +600,8 @@ async def create_personality_callback(call: types.CallbackQuery):
 @dp.message(Command("switch_personality"))
 async def switch_personality_cmd(message: types.Message):
     user = get_user(message.from_user.id)
-    if not has_active_subscription(user) or get_subscription_level(user) != "super_pro":
-        await message.answer("❌ Эта команда доступна только для подписчиков SUPER PRO.")
+    if get_subscription_level(user) != "super_pro":
+        await message.answer("❌ Команда /switch_personality доступна только для подписчиков SUPER PRO (PRO не подходит).")
         return
     user["switching_personality"] = True
     save_data(user_data)
@@ -1018,6 +1023,29 @@ async def revoke_subscription_cmd(message: types.Message):
     user["free_sex_scenes_super"] = 0
     save_data(user_data)
     await message.answer(f"✅ Подписка {old_level.upper()} у пользователя {target} отозвана.")
+
+@dp.message(Command("maintenance"))
+async def maintenance_cmd(message: types.Message):
+    global maintenance_mode
+    if message.from_user.id not in ADMIN_IDS:
+        await message.answer("⛔ У вас нет прав для этой команды.")
+        return
+    args = message.text.split()
+    if len(args) < 2:
+        await message.answer("ℹ️ Текущий режим: " + ("ВКЛЮЧЁН" if maintenance_mode else "ВЫКЛЮЧЁН") + 
+                             "\nИспользуйте: /maintenance on  или  /maintenance off")
+        return
+    if args[1].lower() == "on":
+        maintenance_mode = True
+        await message.answer("🛠️ Режим технического обслуживания **ВКЛЮЧЁН**.\n"
+                             "Все пользователи, кроме админов, будут видеть уведомление о техработах.")
+    elif args[1].lower() == "off":
+        maintenance_mode = False
+        await message.answer("✅ Режим технического обслуживания **ВЫКЛЮЧЁН**.\n"
+                             "Бот работает в обычном режиме.")
+    else:
+        await message.answer("❌ Неверный параметр. Используйте on или off.\n"
+                             "Текущий режим: " + ("ВКЛЮЧЁН" if maintenance_mode else "ВЫКЛЮЧЁН"))
 
 @dp.callback_query(lambda c: c.data.startswith("pack_"))
 async def buy_pack(call: types.CallbackQuery):
@@ -1513,10 +1541,16 @@ async def cancel_payment(call: types.CallbackQuery):
     await send_main_menu(call.message.chat.id, user)
     await call.answer()
 
+# ============================================================
+#  ОСНОВНОЙ ОБРАБОТЧИК
+# ============================================================
 @dp.message()
 async def handle_message(message: types.Message):
     global maintenance_mode
     user = get_user(message.from_user.id)
+    
+    # === ДИАГНОСТИКА ===
+    logging.info(f"📩 Сообщение от {message.from_user.id}, уровень подписки: {get_subscription_level(user)}, стиль: {user.get('style')}")
     
     # Проверка на необходимость выбора стиля при истекшей подписке
     if ensure_valid_style(user):
@@ -1632,7 +1666,7 @@ async def handle_message(message: types.Message):
             await asyncio.sleep(4)
     typing_task = asyncio.create_task(keep_typing())
     
-    # Реакции для SUPER PRO
+    # === РЕАКЦИИ (исправлено) ===
     if get_subscription_level(user) == "super_pro":
         reaction = get_reaction(message.text)
         if reaction:
@@ -1640,10 +1674,15 @@ async def handle_message(message: types.Message):
                 await bot.set_message_reaction(
                     chat_id=message.chat.id,
                     message_id=message.message_id,
-                    reaction=[ReactionTypeEmoji(emoji=reaction)]
+                    reaction=[{"type": "emoji", "emoji": reaction}]
                 )
+                logging.info(f"✅ Реакция {reaction} поставлена на сообщение {message.message_id}")
             except Exception as e:
-                logging.warning(f"Не удалось поставить реакцию: {e}")
+                logging.error(f"❌ Ошибка при установке реакции: {e}")
+        else:
+            logging.info("🤔 Реакция не подобрана")
+    else:
+        logging.info(f"⛔ Реакции не ставятся: уровень подписки = {get_subscription_level(user)}")
     
     system_prompt = build_prompt(user)
     messages_for_api = [{"role": "system", "content": system_prompt}]
@@ -1677,9 +1716,12 @@ async def handle_message(message: types.Message):
     
     sent_msg = await message.answer(answer, reply_markup=full_kb)
 
-    # Голосовое для SUPER PRO
+    # === ГОЛОСОВЫЕ ===
     if get_subscription_level(user) == "super_pro" and VOICE_ENABLED:
+        logging.info("🎙️ Попытка отправить голосовое...")
         await send_voice_message(message.chat.id, answer)
+    else:
+        logging.info(f"⛔ Голосовое не отправлено: уровень={get_subscription_level(user)}, VOICE_ENABLED={VOICE_ENABLED}")
 
 @dp.callback_query(lambda c: c.data.startswith("fix_style_"))
 async def fix_style_callback(call: types.CallbackQuery):
@@ -1716,7 +1758,7 @@ async def main():
     print("🧪 Тест SUPER PRO: 1⭐/мес (для проверки автопродления)")
     print("⬆️ Апгрейд: 230⭐ (PRO → SUPER PRO)")
     print("🎁 Бесплатных сообщений: 13 (баланс скрыт до первой покупки)")
-    print("💕 Уровни сближения: XP на уровень = 100 (визуально), базовый XP = 5, множители x1.8 / x2.5")
+    print("💕 Уровни сближения: XP на уровень = 200 (реально), шкала 0–100 (визуально)")
     print("💢 При накоплении негатива (5 раз) – ссора, -50 XP.")
     print("📍 Локация меняется автоматически, но не отображается.")
     print("🔥 Секс-сцены: 45⭐ за сцену, бесплатные для подписчиков, открываются на 8 уровне")
@@ -1724,8 +1766,8 @@ async def main():
     print("🔞 Админы могут использовать /sex без ограничений")
     print("🎙️ Голосовые сообщения включены для SUPER PRO" if VOICE_ENABLED else "🎙️ Голосовые сообщения отключены (библиотеки не найдены)")
     print("📌 Админ: /revoke_subscription @username для отзыва подписки")
-    print("💾 Данные сохраняются в data/data.json")
     print("📌 Админ: /maintenance on/off для техобслуживания")
+    print("💾 Данные сохраняются в data/data.json")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
