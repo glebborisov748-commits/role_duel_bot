@@ -10,6 +10,19 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, LabeledPri
 from dotenv import load_dotenv
 from openai import OpenAI
 
+# ============================================================
+#  ГОЛОСОВЫЕ СООБЩЕНИЯ (gTTS + pydub)
+# ============================================================
+try:
+    import io
+    from gtts import gTTS
+    from pydub import AudioSegment
+    VOICE_ENABLED = True
+    logging.info("✅ Голосовые сообщения включены (gTTS + pydub найдены)")
+except ImportError as e:
+    VOICE_ENABLED = False
+    logging.warning(f"⚠️ Голосовые отключены: {e}")
+
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 PROVOD_API_KEY = os.getenv("PROVOD_API_KEY")
@@ -23,13 +36,13 @@ dp = Dispatcher()
 logging.basicConfig(level=logging.INFO)
 
 # ============================================================
-#  GIF-ССЫЛКИ (ОБНОВЛЕНА SUPER PRO)
+#  GIF-ССЫЛКИ
 # ============================================================
 PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh4eWJ2Zzg0bTVlbWE2ZzFicHlsMXNibXp3dXdsayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GGSbxfzvec3PYZbFOM/giphy.gif"
 SUPER_PRO_GIF_URL = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZzMxOWg5bWgwNnVjbTNuczdkOHI4YTI4dWZtZDllOTdxYXplZGtucCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/tFACp73JxIjnviNUfa/giphy.gif"
 MAIN_MENU_IMAGE_URL = "https://i.ibb.co/k25JyTXD/IMG-2584.jpg"
 
-ADMIN_IDS = [7287815074]  # замени на свой ID и ID друга
+ADMIN_IDS = [7287815074]  # замени на свой ID
 maintenance_mode = False
 
 DATA_FILE = "data/data.json"
@@ -89,7 +102,7 @@ AGREEMENT_TEXT = (
     "**5. ПЛАТНЫЕ УСЛУГИ И ПОДПИСКИ**\n"
     "5.1. Сервис предоставляет платные услуги (пакеты сообщений, подписки, секс-сцены).\n"
     "5.2. Цены и условия указаны в интерфейсе Сервиса и могут быть изменены в любое время.\n"
-    "5.3. Подписки, оплаченные через Telegram Stars, продлеваются автоматически каждый месяц.\n"
+    "5.3. Подписки, оплаченные через Telegram Stars, **продлеваются автоматически** каждый месяц.\n"
     "5.4. Подписки, оплаченные через ЮKassa (банковская карта), НЕ продлеваются автоматически.\n"
     "5.5. Вы можете отменить автопродление Stars в любой момент через настройки Telegram.\n"
     "5.6. Возврат средств за оплаченные услуги не производится, за исключением случаев технической ошибки "
@@ -129,10 +142,13 @@ AGREEMENT_TEXT = (
     "⚠️ **Если Вы не согласны с настоящим Соглашением, немедленно прекратите использование Сервиса.**"
 )
 
-WORLD_NAMES = {"realism": "реального мира", "fantasy": "фэнтезийного мира"}
+# ============================================================
+#  МИРЫ: РЕАЛИЗМ И АНИМЕ (ВМЕСТО ФЭНТЕЗИ)
+# ============================================================
+WORLD_NAMES = {"realism": "реального мира", "anime": "аниме-мира"}
 WORLDS = {
     "realism": "реального мира, современная эпоха. Ты живёшь в большом городе, у тебя есть работа, друзья и свои привычки.",
-    "fantasy": "фэнтезийного мира, где есть магия, драконы и древние пророчества. Ты живёшь в мире, где возможно всё."
+    "anime": "аниме-мира, где всё выглядит как в японской анимации. У тебя яркие волосы, большие выразительные глаза, ты носишь стильную одежду. В этом мире есть школы, клубы, магия и романтика, как в лучших аниме-сериалах."
 }
 GENDERS = {"female": {"name": "Девушка", "age": 22}, "male": {"name": "Парень", "age": 24}}
 
@@ -318,7 +334,8 @@ def get_user(user_id):
             "free_sex_scenes_pro": 0, "free_sex_scenes_super": 0,
             "switching_personality": False,
             "sex_scene_unlocked": False,
-            "sex_scene_used": False
+            "sex_scene_used": False,
+            "subscription_id": None
         }
         save_data(user_data)
     else:
@@ -345,7 +362,8 @@ def get_user(user_id):
             "free_sex_scenes_super": 0,
             "switching_personality": False,
             "sex_scene_unlocked": False,
-            "sex_scene_used": False
+            "sex_scene_used": False,
+            "subscription_id": None
         }
         for key, val in defaults.items():
             if key not in user:
@@ -419,7 +437,7 @@ agreement_kb = InlineKeyboardMarkup(inline_keyboard=[
 ])
 world_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="🌍 Реализм", callback_data="world_realism")],
-    [InlineKeyboardButton(text="🧙 Фэнтези", callback_data="world_fantasy")]
+    [InlineKeyboardButton(text="🎌 Аниме", callback_data="world_anime")]
 ])
 gender_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="👩 Девушка", callback_data="gender_female")],
@@ -452,6 +470,33 @@ channel_inline_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="📢 Перейти в канал", url="https://t.me/duel_dev_channel")]
 ])
 
+# ============================================================
+#  ФУНКЦИЯ ДЛЯ ГОЛОСОВЫХ СООБЩЕНИЙ
+# ============================================================
+async def send_voice_message(chat_id, text):
+    if not VOICE_ENABLED:
+        return
+    try:
+        tts = gTTS(text=text, lang='ru')
+        mp3_fp = io.BytesIO()
+        tts.write_to_fp(mp3_fp)
+        mp3_fp.seek(0)
+        # Конвертация MP3 -> OGG (нужен ffmpeg)
+        audio = AudioSegment.from_file(mp3_fp, format="mp3")
+        ogg_fp = io.BytesIO()
+        audio.export(ogg_fp, format="ogg")
+        ogg_fp.seek(0)
+        await bot.send_voice(
+            chat_id=chat_id,
+            voice=types.BufferedInputFile(ogg_fp.read(), filename="voice.ogg"),
+            caption="🎧 Голосовая версия"
+        )
+    except Exception as e:
+        logging.error(f"Ошибка генерации голоса: {e}")
+
+# ============================================================
+#  ОСТАЛЬНЫЕ ОБРАБОТЧИКИ (БЕЗ ИЗМЕНЕНИЙ)
+# ============================================================
 async def send_main_menu(chat_id, user):
     if user.get("last_menu_message_id"):
         try: await bot.delete_message(chat_id, user["last_menu_message_id"])
@@ -478,7 +523,6 @@ async def send_main_menu(chat_id, user):
         balance_text = "\nУ вас есть бесплатные сообщения для старта"
 
     xp_badge = get_xp_badge(user)
-
     multiplier_text = ""
     sub_level = get_subscription_level(user)
     if sub_level == "pro":
@@ -738,11 +782,11 @@ async def show_profile(msg, user):
 
     chat_id = msg.chat.id
     old_msg_id = msg.message_id
-    if level == "pro" and PRO_GIF_URL:
-        await bot.send_animation(chat_id, animation=PRO_GIF_URL, caption=caption,
-                                 reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
-    elif level == "super_pro" and SUPER_PRO_GIF_URL:
+    if level == "super_pro" and SUPER_PRO_GIF_URL:
         await bot.send_animation(chat_id, animation=SUPER_PRO_GIF_URL, caption=caption,
+                                 reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
+    elif level == "pro" and PRO_GIF_URL:
+        await bot.send_animation(chat_id, animation=PRO_GIF_URL, caption=caption,
                                  reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
     else:
         await bot.send_message(chat_id, caption, reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
@@ -769,9 +813,10 @@ async def profile_subs(call: types.CallbackQuery):
         text = ("👑 Подписки Role Duel\n\n"
                 "🔥 PRO (250⭐/мес)\n• 50 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Приоритетная обработка\n• Память: 60 сообщений\n• 4 бесплатные секс-сцены\n• Бейдж PRO\n• Бонус XP: x1.8\n\n"
                 "✨ SUPER PRO ✨ (450⭐/мес)\n• 100 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический, 💢 Грубый 18+, 🌹 Соблазн 18+\n"
-                "• Максимальная приоритетная обработка\n• Голосовые сообщения (в разработке)\n• Кастомные реакции\n• Смена стиля без потери истории (/switch_style)\n"
+                "• Максимальная приоритетная обработка\n• Голосовые сообщения\n• Кастомные реакции\n• Смена стиля без потери истории (/switch_style)\n"
                 "• Бейдж SUPER PRO\n• Ранний доступ к новым функциям\n• Память: 100 сообщений\n• 8 бесплатных секс-сцен\n• Бонус XP: x2.5\n\n"
-                "⚠️ Подписки НЕ продлеваются автоматически. По истечении срока вы сможете оформить новую подписку вручную через этот раздел.\n\n"
+                "✅ **Подписка продлевается автоматически каждый месяц через Telegram Stars.**\n"
+                "Вы можете отменить автопродление в любой момент в настройках Telegram.\n\n"
                 "Выбери подписку:")
         await bot.send_message(call.message.chat.id, text, reply_markup=keyboard)
     except Exception as e:
@@ -792,10 +837,16 @@ async def upgrade_to_super(call: types.CallbackQuery):
             await call.answer("❌ Неизвестный уровень подписки. Обратитесь в поддержку.", show_alert=True)
         return
     try:
-        await bot.send_invoice(chat_id=call.message.chat.id, title="Апгрейд до SUPER PRO",
-                               description="Повысьте PRO до SUPER PRO на 30 дней. Стоимость 230⭐ — это выгоднее, чем покупать SUPER PRO отдельно, но дороже разницы, чтобы стимулировать выбор SUPER PRO сразу.",
-                               payload="upgrade_to_super", provider_token="", currency="XTR",
-                               prices=[LabeledPrice(label="Апгрейд до SUPER PRO", amount=230)])
+        await bot.send_invoice(
+            chat_id=call.message.chat.id,
+            title="Апгрейд до SUPER PRO",
+            description="Повысьте PRO до SUPER PRO на 30 дней. Стоимость 230⭐. Подписка продлевается автоматически через Stars.",
+            payload="upgrade_to_super",
+            provider_token="",
+            currency="XTR",
+            prices=[LabeledPrice(label="Апгрейд до SUPER PRO", amount=230)],
+            subscription_period=2592000
+        )
         await call.answer()
     except Exception as e:
         await call.message.answer(f"⚠️ Ошибка при создании счёта: {e}")
@@ -946,10 +997,16 @@ async def subscribe_pro(call: types.CallbackQuery):
             elif level == "pro":
                 await call.answer("❌ У вас уже активна PRO подписка. Она продлится до окончания срока.", show_alert=True)
                 return
-        await bot.send_invoice(chat_id=call.message.chat.id, title="PRO подписка на месяц",
-                               description="50 сообщений в день, память 60 сообщений, стили Страстный и Магнетический, 4 бесплатные секс-сцены.",
-                               payload="subscribe_pro", provider_token="", currency="XTR",
-                               prices=[LabeledPrice(label="PRO месяц", amount=250)])
+        await bot.send_invoice(
+            chat_id=call.message.chat.id,
+            title="PRO подписка на месяц",
+            description="50 сообщений в день, память 60 сообщений, стили Страстный и Магнетический, 4 бесплатные секс-сцены. Подписка продлевается автоматически через Telegram Stars.",
+            payload="subscribe_pro",
+            provider_token="",
+            currency="XTR",
+            prices=[LabeledPrice(label="PRO месяц", amount=250)],
+            subscription_period=2592000
+        )
         await call.answer()
     except Exception as e:
         logging.error(f"Ошибка в subscribe_pro: {e}")
@@ -968,10 +1025,16 @@ async def subscribe_super(call: types.CallbackQuery):
             elif level == "pro":
                 await call.answer("💡 У вас активна PRO. Воспользуйтесь кнопкой «Апгрейд до SUPER PRO» (230⭐).", show_alert=True)
                 return
-        await bot.send_invoice(chat_id=call.message.chat.id, title="SUPER PRO подписка на месяц",
-                               description="100 сообщений в день, память 100 сообщений, стили Страстный, Магнетический, Грубый 18+ и Соблазн 18+, 8 бесплатных секс-сцен.",
-                               payload="subscribe_super", provider_token="", currency="XTR",
-                               prices=[LabeledPrice(label="SUPER PRO месяц", amount=450)])
+        await bot.send_invoice(
+            chat_id=call.message.chat.id,
+            title="SUPER PRO подписка на месяц",
+            description="100 сообщений в день, память 100 сообщений, стили Страстный, Магнетический, Грубый 18+ и Соблазн 18+, 8 бесплатных секс-сцен. Подписка продлевается автоматически через Telegram Stars.",
+            payload="subscribe_super",
+            provider_token="",
+            currency="XTR",
+            prices=[LabeledPrice(label="SUPER PRO месяц", amount=450)],
+            subscription_period=2592000
+        )
         await call.answer()
     except Exception as e:
         logging.error(f"Ошибка в subscribe_super: {e}")
@@ -986,6 +1049,9 @@ async def pre_checkout(query: types.PreCheckoutQuery):
 async def payment_success(message: types.Message):
     user = get_user(message.from_user.id)
     payload = message.successful_payment.invoice_payload
+    is_recurring = message.successful_payment.is_recurring
+    is_first = message.successful_payment.is_first_recurring
+
     if payload.startswith("pack_"):
         period = payload.split("_")[1]
         pack_map = {"30":30,"100":100,"300":300}
@@ -993,31 +1059,33 @@ async def payment_success(message: types.Message):
         user["purchased_messages"] += amount
         save_data(user_data)
         await message.answer(f"✅ Куплено {amount} сообщений! Теперь ты видишь свой баланс.")
-    elif payload == "subscribe_pro":
-        user["subscription"]["active"] = True
-        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
-        user["subscription"]["level"] = "pro"
-        user["free_sex_scenes_pro"] = 4
-        save_data(user_data)
-        await message.answer("🔥 **PRO подписка активирована!**\n\nТы получил:\n✅ 50 сообщений в день\n✅ Стили ❤️‍🔥 Страстный и ✨ Магнетический\n✅ Приоритетную обработку\n✅ Теперь ты видишь свой баланс сообщений\n✅ **Память увеличена до 60 сообщений**\n✅ **4 бесплатные секс-сцены** (используй /sex)\n✅ Бонус XP: x1.8\n\nСпасибо за поддержку! 🎉")
-    elif payload == "subscribe_super":
-        user["subscription"]["active"] = True
-        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
-        user["subscription"]["level"] = "super_pro"
-        user["free_sex_scenes_super"] = 8
-        user["free_sex_scenes_pro"] = 0
-        save_data(user_data)
-        await message.answer("✨ **SUPER PRO подписка активирована!** ✨\n\nТы получил:\n✅ 100 сообщений в день\n✅ Стили ❤️‍🔥 Страстный, ✨ Магнетический, 💢 Грубый 18+ и 🌹 Соблазн 18+\n✅ Максимальную приоритетную обработку\n✅ Кастомные реакции\n✅ Смену стиля без потери истории (/switch_style)\n✅ Бейдж ✨ SUPER PRO ✨\n✅ Голосовые сообщения (в разработке)\n✅ Ранний доступ к новым функциям\n✅ Теперь ты видишь свой баланс сообщений\n✅ **Память увеличена до 100 сообщений**\n✅ **8 бесплатных секс-сцен** (используй /sex)\n✅ Бонус XP: x2.5\n\nСпасибо за поддержку! 🎉")
-    elif payload == "upgrade_to_super":
-        user["subscription"]["active"] = True
-        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
-        user["subscription"]["level"] = "super_pro"
-        user["free_sex_scenes_super"] = 8
-        user["free_sex_scenes_pro"] = 0
-        user["daily_messages"] = 100
-        user["last_daily_reset"] = datetime.now().isoformat()
-        save_data(user_data)
-        await message.answer("✨ **Апгрейд до SUPER PRO выполнен!** ✨\n\nТы получил все привилегии SUPER PRO на месяц:\n✅ 100 сообщений в день\n✅ Стили ❤️‍🔥 Страстный, ✨ Магнетический, 💢 Грубый 18+ и 🌹 Соблазн 18+\n✅ Кастомные реакции\n✅ Смену стиля (/switch_style)\n✅ Бейдж ✨ SUPER PRO ✨\n✅ **Память: 100 сообщений**\n✅ **8 бесплатных секс-сцен** (используй /sex)\n✅ Бонус XP: x2.5\n\nСпасибо за поддержку! 🎉")
+
+    elif payload in ["subscribe_pro", "subscribe_super", "upgrade_to_super"]:
+        level = "super_pro" if "super" in payload else "pro"
+        if payload == "upgrade_to_super":
+            level = "super_pro"
+        if is_first or not has_active_subscription(user):
+            user["subscription"]["active"] = True
+            user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
+            user["subscription"]["level"] = level
+            if level == "super_pro":
+                user["free_sex_scenes_super"] = 8
+                user["free_sex_scenes_pro"] = 0
+                user["daily_messages"] = 100
+            else:
+                user["free_sex_scenes_pro"] = 4
+                user["free_sex_scenes_super"] = 0
+                user["daily_messages"] = 50
+            user["last_daily_reset"] = datetime.now().isoformat()
+            save_data(user_data)
+            await message.answer(f"✅ Подписка {level.upper()} активирована! Она будет продлеваться автоматически каждый месяц.")
+        else:
+            current_expiry = datetime.fromisoformat(user["subscription"]["expires_at"])
+            new_expiry = current_expiry + timedelta(days=30)
+            user["subscription"]["expires_at"] = new_expiry.isoformat()
+            save_data(user_data)
+            await message.answer("✅ Подписка продлена на месяц! Спасибо, что с нами.")
+
     elif payload == "sex_scene":
         user["sex_scenes"] = user.get("sex_scenes", 0) + 1
         save_data(user_data)
@@ -1143,6 +1211,7 @@ async def sex_cmd(message: types.Message):
 @dp.callback_query(lambda c: c.data.startswith("sex_type_"))
 async def sex_type_choice(call: types.CallbackQuery):
     await call.answer()
+    await call.message.delete()
     user = get_user(call.from_user.id)
     sex_type = call.data.split("_")[2]
     user_id = call.from_user.id
@@ -1166,7 +1235,7 @@ async def sex_type_choice(call: types.CallbackQuery):
     elif level == "pro": total_available = free_pro + bought
     else: total_available = bought
     if total_available <= 0:
-        await call.message.edit_text("❌ У вас больше нет доступных секс-сцен.")
+        await call.message.answer("❌ У вас больше нет доступных секс-сцен.")
         return
     if level == "super_pro" and free_super > 0:
         user["free_sex_scenes_super"] = free_super - 1
@@ -1175,7 +1244,6 @@ async def sex_type_choice(call: types.CallbackQuery):
     else:
         user["sex_scenes"] = bought - 1
     save_data(user_data)
-    await call.message.delete()
     await generate_sex_scene(call, user, sex_type, free=False)
 
 async def generate_sex_scene(call, user, sex_type, free=False):
@@ -1190,7 +1258,7 @@ async def generate_sex_scene(call, user, sex_type, free=False):
         "blowjob": "Опиши сцену минетa. Подробно, чувственно, с диалогами.",
         "strip": "Опиши сцену раздевания. Медленно, соблазнительно, с комментариями.",
         "wall": "Опиши сцену у стены: ты прижимаешь партнёра к стене, страстный поцелуй, руки скользят по телу, напряжение между вами перерастает в секс.",
-        "shower": "Опиши интимную сцену в душе: вода стекает по телам, прикосновения мокрых рук, поцелуи под струями wody, близость.",
+        "shower": "Опиши интимную сцену в душе: вода стекает по телам, прикосновения мокрых рук, поцелуи под струями воды, близость.",
         "massage": "Опиши сцену эротического массажа: ты массируешь партнёра, постепенно переходя к более чувственным прикосновениям, заканчивая страстным сексом.",
         "random": "Опиши случайную откровенную сцену, полную страсти."
     }
@@ -1213,7 +1281,7 @@ async def generate_sex_scene(call, user, sex_type, free=False):
                 {"role": "user", "content": full_prompt}
             ],
             temperature=1.0,
-            max_tokens=1500
+            max_tokens=2000
         )
         scene_text_result = response.choices[0].message.content
         await bot.send_message(call.message.chat.id, scene_text_result, reply_markup=full_kb)
@@ -1345,6 +1413,7 @@ async def grant_cmd(message: types.Message):
         user["daily_messages"] = 50
         user["last_daily_reset"] = datetime.now().isoformat()
         user["free_sex_scenes_pro"] = 4
+        user["free_sex_scenes_super"] = 0
         save_data(user_data)
         await message.answer(f"✅ Пользователю {target} выдана PRO подписка на месяц.")
         return
@@ -1526,7 +1595,11 @@ async def handle_message(message: types.Message):
         user["history"] = user["history"][-limit:]
     save_data(user_data)
     
-    await message.answer(answer, reply_markup=full_kb)
+    sent_msg = await message.answer(answer, reply_markup=full_kb)
+
+    # Голосовое для SUPER PRO
+    if get_subscription_level(user) == "super_pro" and VOICE_ENABLED:
+        await send_voice_message(message.chat.id, answer)
 
 def get_level_congratulation(level):
     if level == 2: return "🎉 Ты заметил(а), что между вами пробежала искра! Уровень сближения — 2. Теперь вы можете флиртовать."
@@ -1558,6 +1631,7 @@ async def main():
     print("📌 Админ: /revoke_subscription @username для отзыва подписки")
     print("💾 Данные сохраняются в data/data.json")
     print("📌 Админ: /maintenance on/off для техобслуживания")
+    print("🎙️ Голосовые сообщения включены для SUPER PRO" if VOICE_ENABLED else "🎙️ Голосовые сообщения отключены (библиотеки не найдены)")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
