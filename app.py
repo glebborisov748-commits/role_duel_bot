@@ -288,7 +288,6 @@ def build_prompt(user):
     mood = user.get("mood", 0)
     mood_text = "Твоё настроение нейтральное." if mood == 0 else ("Ты в хорошем настроении." if mood > 0 else "Ты в плохом настроении, можешь быть раздражительной.")
     
-    # Обращение к пользователю в правильном роде
     user_gender = user.get("user_gender", "male")
     if user_gender == "male":
         gender_context = "Ты обращаешься к нему в мужском роде (ты, он, ему, его). Используй 'ты' и 'он' в своих мыслях и описаниях."
@@ -472,7 +471,6 @@ world_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="🌍 Реализм", callback_data="world_realism")],
     [InlineKeyboardButton(text="🎌 Аниме", callback_data="world_anime")]
 ])
-# Новая клавиатура для выбора СВОЕГО пола
 user_gender_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="👨 Я парень", callback_data="user_gender_male")],
     [InlineKeyboardButton(text="👩 Я девушка", callback_data="user_gender_female")]
@@ -630,7 +628,6 @@ async def start_cmd(message: types.Message):
         await message.answer(AGREEMENT_TEXT, reply_markup=agreement_kb, parse_mode="Markdown")
         return
     if not user.get("user_gender"):
-        # Если пользователь ещё не выбрал свой пол, предлагаем
         await message.answer("👤 Для начала выбери свой пол:", reply_markup=user_gender_kb)
         return
     if not user["personality_ready"]:
@@ -694,11 +691,10 @@ async def choose_user_gender(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     user_gender = call.data.split("_")[2]  # male или female
     user["user_gender"] = user_gender
-    # Автоматически назначаем персонажа противоположного пола
     if user_gender == "male":
-        user["gender"] = "female"  # персонаж — девушка
+        user["gender"] = "female"
     else:
-        user["gender"] = "male"    # персонаж — парень
+        user["gender"] = "male"
     save_data(user_data)
     style_kb = get_style_kb(user)
     await call.message.edit_text(
@@ -1163,7 +1159,6 @@ async def payment_success(message: types.Message):
             user["free_sex_scenes_super"] = 8
             user["free_sex_scenes_pro"] = 0
             user["daily_messages"] = 100
-            # Убираем subscription_id, чтобы автопродление не работало (если оно было)
             user["subscription_id"] = None
             save_data(user_data)
             await message.answer(
@@ -1573,10 +1568,8 @@ async def handle_message(message: types.Message):
     global maintenance_mode
     user = get_user(message.from_user.id)
     
-    # === ДИАГНОСТИКА ===
     logging.info(f"📩 Сообщение от {message.from_user.id}, уровень подписки: {get_subscription_level(user)}, стиль: {user.get('style')}")
     
-    # Проверка на необходимость выбора стиля при истекшей подписке
     if ensure_valid_style(user):
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="🪶 Нежный", callback_data="fix_style_warm")],
@@ -1690,7 +1683,6 @@ async def handle_message(message: types.Message):
             await asyncio.sleep(4)
     typing_task = asyncio.create_task(keep_typing())
     
-    # === РЕАКЦИИ (исправлено) ===
     if get_subscription_level(user) == "super_pro":
         reaction = get_reaction(message.text)
         if reaction:
@@ -1740,7 +1732,6 @@ async def handle_message(message: types.Message):
     
     sent_msg = await message.answer(answer, reply_markup=full_kb)
 
-    # === ГОЛОСОВЫЕ ===
     if get_subscription_level(user) == "super_pro" and VOICE_ENABLED:
         logging.info("🎙️ Попытка отправить голосовое...")
         await send_voice_message(message.chat.id, answer)
@@ -1750,7 +1741,7 @@ async def handle_message(message: types.Message):
 @dp.callback_query(lambda c: c.data.startswith("fix_style_"))
 async def fix_style_callback(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
-    style_key = call.data.split("_")[2]  # warm, daring, shy
+    style_key = call.data.split("_")[2]
     if style_key in BASE_STYLE_KEYS:
         user["style"] = style_key
         save_data(user_data)
