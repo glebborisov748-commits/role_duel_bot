@@ -11,17 +11,9 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 # ============================================================
-#  ГОЛОСОВЫЕ СООБЩЕНИЯ (gTTS + pydub)
+#  ГОЛОСОВЫЕ ОТКЛЮЧЕНЫ (библиотеки не используются)
 # ============================================================
-try:
-    import io
-    from gtts import gTTS
-    from pydub import AudioSegment
-    VOICE_ENABLED = True
-    logging.info("✅ Голосовые сообщения включены (gTTS + pydub найдены)")
-except ImportError as e:
-    VOICE_ENABLED = False
-    logging.warning(f"⚠️ Голосовые отключены: {e}")
+VOICE_ENABLED = False  # ← голосовые полностью отключены
 
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -501,29 +493,11 @@ channel_inline_kb = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 # ============================================================
-#  ФУНКЦИЯ ДЛЯ ГОЛОСОВЫХ СООБЩЕНИЙ
+#  ФУНКЦИЯ ДЛЯ ГОЛОСОВЫХ ОТКЛЮЧЕНА (заглушка)
 # ============================================================
 async def send_voice_message(chat_id, text):
-    if not VOICE_ENABLED:
-        return
-    try:
-        tts = gTTS(text=text, lang='ru')
-        mp3_fp = io.BytesIO()
-        tts.write_to_fp(mp3_fp)
-        mp3_fp.seek(0)
-        # Конвертация MP3 -> OGG (нужен ffmpeg)
-        audio = AudioSegment.from_file(mp3_fp, format="mp3")
-        ogg_fp = io.BytesIO()
-        audio.export(ogg_fp, format="ogg")
-        ogg_fp.seek(0)
-        await bot.send_voice(
-            chat_id=chat_id,
-            voice=types.BufferedInputFile(ogg_fp.read(), filename="voice.ogg"),
-            caption="🎧 Голосовая версия"
-        )
-        logging.info("🎙️ Голосовое отправлено")
-    except Exception as e:
-        logging.error(f"Ошибка генерации голоса: {e}")
+    # голосовые отключены
+    pass
 
 # ============================================================
 #  ОСНОВНЫЕ ОБРАБОТЧИКИ
@@ -860,7 +834,6 @@ async def profile_subs(call: types.CallbackQuery):
                 "• 100 сообщений в день\n"
                 "• Стили: ❤️‍🔥 Страстный, ✨ Магнетический, 💢 Грубый 18+, 🌹 Соблазн 18+\n"
                 "• Максимальная приоритетная обработка\n"
-                "• Голосовые сообщения\n"
                 "• Кастомные реакции\n"
                 "• Смена стиля без потери истории (/switch_style)\n"
                 "• Бейдж SUPER PRO\n"
@@ -1150,7 +1123,6 @@ async def payment_success(message: types.Message):
 
     elif payload in ["subscribe_pro", "subscribe_super"]:
         level = "super_pro" if "super" in payload else "pro"
-        # Всегда активируем с нуля (разовый платёж)
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
         user["subscription"]["level"] = level
@@ -1708,11 +1680,7 @@ async def handle_message(message: types.Message):
     
     sent_msg = await message.answer(answer, reply_markup=full_kb)
 
-    if get_subscription_level(user) == "super_pro" and VOICE_ENABLED:
-        logging.info("🎙️ Попытка отправить голосовое...")
-        await send_voice_message(message.chat.id, answer)
-    else:
-        logging.info(f"⛔ Голосовое не отправлено: уровень={get_subscription_level(user)}, VOICE_ENABLED={VOICE_ENABLED}")
+    # Голосовые отключены – ничего не отправляем
 
 @dp.callback_query(lambda c: c.data.startswith("fix_style_"))
 async def fix_style_callback(call: types.CallbackQuery):
@@ -1754,7 +1722,7 @@ async def main():
     print("🔥 Секс-сцены: 45⭐ за сцену, бесплатные для подписчиков, открываются на 8 уровне")
     print("🎁 Бесплатная секс-сцена за достижение 8 уровня (одна)")
     print("🔞 Админы могут использовать /sex без ограничений")
-    print("🎙️ Голосовые сообщения включены для SUPER PRO" if VOICE_ENABLED else "🎙️ Голосовые сообщения отключены (библиотеки не найдены)")
+    print("🎙️ Голосовые сообщения ОТКЛЮЧЕНЫ")
     print("📌 Админ: /revoke_subscription @username для отзыва подписки")
     print("📌 Админ: /maintenance on/off для техобслуживания")
     print("💾 Данные сохраняются в data/data.json")
