@@ -18,7 +18,6 @@ VOICE_ENABLED = False
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 PROVOD_API_KEY = os.getenv("PROVOD_API_KEY")
-PROVIDER_TOKEN = os.getenv("PROVIDER_TOKEN", "")  # если нет – пустая строка
 
 if not BOT_TOKEN or not PROVOD_API_KEY:
     raise ValueError("Заполни BOT_TOKEN и PROVOD_API_KEY в .env!")
@@ -442,7 +441,6 @@ def get_profile_keyboard(user):
     keyboard = [
         [InlineKeyboardButton(text="📦 Купить пакеты", callback_data="profile_packs")],
         [InlineKeyboardButton(text="👑 Оформить подписку", callback_data="profile_subs")],
-        [InlineKeyboardButton(text="💳 Оплатить картой (рубли)", callback_data="profile_subs_card")],  # ← кнопка есть
         [InlineKeyboardButton(text="🔥 Купить секс-сцену (45⭐) 18+", callback_data="buy_sex_scene")],
     ]
     keyboard.append([InlineKeyboardButton(text="🔙 Главное меню", callback_data="profile_back")])
@@ -492,78 +490,48 @@ channel_inline_kb = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 # ============================================================
-#  ОБРАБОТЧИК ДЛЯ КНОПКИ ЮKASSA (с проверкой токена)
+#  КОМАНДА /prices – для скриншота с рублёвыми ценами
 # ============================================================
-@dp.callback_query(lambda c: c.data == "profile_subs_card")
-async def profile_subs_card(call: types.CallbackQuery):
-    try:
-        await call.answer()
-        user = get_user(call.from_user.id)
-        if not user["verified"] or not user["agreement_accepted"]:
-            await bot.send_message(call.message.chat.id, "🔞 Сначала пройди регистрацию через /start")
-            return
-        if not user["personality_ready"]:
-            await bot.send_message(call.message.chat.id, "👤 Сначала создай персонажа!")
-            return
-        if not PROVIDER_TOKEN:
-            await bot.send_message(
-                call.message.chat.id,
-                "⚠️ Оплата картой временно недоступна. Пожалуйста, используйте оплату звёздами или попробуйте позже."
-            )
-            return
-        # Если токен есть – показываем меню с товарами в рублях
-        keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="🔥 PRO — 375 ₽/мес", callback_data="subscribe_pro_card")],
-            [InlineKeyboardButton(text="✨ SUPER PRO — 675 ₽/мес", callback_data="subscribe_super_card")],
-            [InlineKeyboardButton(text="⬆️ Апгрейд до SUPER PRO (368 ₽)", callback_data="upgrade_to_super_card")],
-            [InlineKeyboardButton(text="📦 30 сообщений — 45 ₽", callback_data="pack_30_card")],
-            [InlineKeyboardButton(text="📦 100 сообщений — 120 ₽", callback_data="pack_100_card")],
-            [InlineKeyboardButton(text="📦 300 сообщений — 300 ₽", callback_data="pack_300_card")],
-            [InlineKeyboardButton(text="🔥 Секс-сцена — 68 ₽", callback_data="sex_scene_card")],
-            [InlineKeyboardButton(text="🔙 Назад", callback_data="back_to_profile")]
-        ])
-        text = ("💳 **Оплата картой (рубли)**\n\n"
-                "Выберите товар для оплаты через ЮKassa.\n"
-                "Цены указаны в рублях.\n\n"
-                "🔥 PRO — 375 ₽/мес\n"
-                "✨ SUPER PRO — 675 ₽/мес\n"
-                "⬆️ Апгрейд — 368 ₽\n"
-                "📦 Пакеты сообщений: 45, 120, 300 ₽\n"
-                "🔥 Секс-сцена — 68 ₽\n\n"
-                "⚠️ Подписки НЕ продлеваются автоматически.")
-        await bot.send_message(call.message.chat.id, text, reply_markup=keyboard)
-    except Exception as e:
-        logging.error(f"Ошибка в profile_subs_card: {e}")
-        await bot.send_message(call.message.chat.id, "⚠️ Произошла ошибка. Попробуйте позже.")
+@dp.message(Command("prices"))
+async def prices_cmd(message: types.Message):
+    text = (
+        "💳 **Цены в рублях (для справки)**\n\n"
+        "🔥 PRO — 375 ₽/мес\n"
+        "✨ SUPER PRO — 675 ₽/мес\n"
+        "⬆️ Апгрейд до SUPER PRO — 368 ₽\n"
+        "📦 30 сообщений — 45 ₽\n"
+        "📦 100 сообщений — 120 ₽\n"
+        "📦 300 сообщений — 300 ₽\n"
+        "🔥 Секс-сцена — 68 ₽\n\n"
+        "⚠️ Оплата в боте принимается в Telegram Stars.\n"
+        "Рубли указаны для информации."
+    )
+    await message.answer(text, parse_mode="Markdown")
 
 # ============================================================
 #  ОСТАЛЬНЫЕ ОБРАБОТЧИКИ (звёзды, профиль, подписки и т.д.)
 # ============================================================
-# Здесь должны быть все остальные функции, которые были в твоём боте.
-# Чтобы не раздувать ответ, я приведу их в сокращённом виде,
-# но ты должен скопировать их из своего предыдущего рабочего кода.
+# Здесь должен быть весь твой старый код (send_main_menu, start, profile, и т.д.)
+# Я не вставляю их сюда, чтобы не дублировать, но ты должен скопировать их из своей рабочей версии.
 # Ниже – заглушки, чтобы код не падал.
 
 async def send_main_menu(chat_id, user):
-    # (полный код из твоего бота – он у тебя есть)
+    # (твой код)
     pass
 
 @dp.message(Command("start"))
 async def start_cmd(message: types.Message):
-    # (твой полный код)
+    # (твой код)
     pass
 
-# ... все остальные команды (profile, switch_personality, etc.)
-# Я не могу вставить их все из-за ограничения длины,
-# но они у тебя есть – просто добавь их сюда.
+# ... все остальные команды и колбэки
 
 # ============================================================
 #  ЗАПУСК
 # ============================================================
 async def main():
-    print("🚀 Бот запущен (ЮKassa кнопка есть, но токен пока не подключён)")
-    print("💳 Кнопка «Оплатить картой» появится в профиле.")
-    print("⚠️ Если токен не задан – при нажатии будет сообщение о временной недоступности.")
+    print("🚀 Бот запущен (ЮKassa временно отключена, рублёвые цены доступны по команде /prices)")
+    print("💡 Для скриншота отправь /prices и сделай скриншот.")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
