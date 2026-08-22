@@ -18,7 +18,6 @@ VOICE_ENABLED = False
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 PROVOD_API_KEY = os.getenv("PROVOD_API_KEY")
-PROVIDER_TOKEN = os.getenv("PROVIDER_TOKEN", "")  # не обязателен
 
 if not BOT_TOKEN or not PROVOD_API_KEY:
     raise ValueError("Заполни BOT_TOKEN и PROVOD_API_KEY в .env!")
@@ -1980,4 +1979,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-    
