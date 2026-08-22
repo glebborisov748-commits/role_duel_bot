@@ -18,7 +18,7 @@ VOICE_ENABLED = False
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 PROVOD_API_KEY = os.getenv("PROVOD_API_KEY")
-PROVIDER_TOKEN = os.getenv("PROVIDER_TOKEN", "")
+PROVIDER_TOKEN = os.getenv("PROVIDER_TOKEN", "")  # не обязателен
 
 if not BOT_TOKEN or not PROVOD_API_KEY:
     raise ValueError("Заполни BOT_TOKEN и PROVOD_API_KEY в .env!")
@@ -27,10 +27,13 @@ client = OpenAI(api_key=PROVOD_API_KEY, base_url="https://api.provod.ai/v1")
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
-# Устанавливаем логирование на DEBUG для видимости всех ошибок
+# Настройка логирования для отлова ошибок
 logging.basicConfig(
     level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler()
+    ]
 )
 
 # ============================================================
@@ -56,6 +59,9 @@ def save_data(data):
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
+# ============================================================
+#  СОГЛАШЕНИЕ
+# ============================================================
 AGREEMENT_TEXT = (
     "📜 <b>ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</b>\n\n"
     "Настоящее Соглашение регулирует отношения между Администрацией (далее – «Мы», «Администрация») "
@@ -406,18 +412,6 @@ def get_user(user_id):
         for key, val in defaults.items():
             if key not in user:
                 user[key] = val
-
-        # === ДОБАВЛЕНО: принудительная установка значений по умолчанию, если они None ===
-        if user.get("gender") is None:
-            user["gender"] = "female"
-            logging.warning(f"Поле gender было None, установлено female для {user_id}")
-        if user.get("world") is None:
-            user["world"] = "realism"
-            logging.warning(f"Поле world было None, установлено realism для {user_id}")
-        if user.get("user_gender") is None:
-            user["user_gender"] = "male"
-            logging.warning(f"Поле user_gender было None, установлено male для {user_id}")
-
         save_data(user_data)
     return user_data[user_id]
 
@@ -485,7 +479,8 @@ def get_profile_keyboard(user):
     keyboard = [
         [InlineKeyboardButton(text="📦 Купить пакеты", callback_data="profile_packs")],
         [InlineKeyboardButton(text="👑 Оформить подписку", callback_data="profile_subs")],
-        [InlineKeyboardButton(text="💳 Оплатить картой (рубли)", callback_data="profile_subs_card")],
+        # Кнопка оплаты картой временно убрана, т.к. нет PROVIDER_TOKEN
+        # [InlineKeyboardButton(text="💳 Оплатить картой (рубли)", callback_data="profile_subs_card")],
         [InlineKeyboardButton(text="🔥 Купить секс-сцену (45⭐) 18+", callback_data="buy_sex_scene")],
     ]
     keyboard.append([InlineKeyboardButton(text="🔙 Главное меню", callback_data="profile_back")])
@@ -774,6 +769,15 @@ async def cancel_edit_cmd(message: types.Message):
 # ============================================================
 async def send_main_menu(chat_id, user):
     try:
+        # Проверяем наличие обязательных полей
+        if user.get("gender") is None or user.get("world") is None:
+            logging.warning(f"User {user.get('user_id', 'unknown')} has no gender or world, setting defaults")
+            if user.get("gender") is None:
+                user["gender"] = "female"
+            if user.get("world") is None:
+                user["world"] = "realism"
+            save_data(user_data)
+
         if user.get("last_menu_message_id"):
             try: await bot.delete_message(chat_id, user["last_menu_message_id"])
             except: pass
@@ -785,12 +789,6 @@ async def send_main_menu(chat_id, user):
         badge = ""
         if level == "pro": badge = "🔥 PRO"
         elif level == "super_pro": badge = "✨ <b>SUPER PRO</b> ✨"
-
-        # === ДОБАВЛЕНА ПРОВЕРКА НА НАЛИЧИЕ ПОЛЕЙ ===
-        if user.get("gender") is None or user.get("world") is None:
-            logging.error(f"Не хватает полей у пользователя {user.get('user_id', 'unknown')}: gender={user.get('gender')}, world={user.get('world')}")
-            await bot.send_message(chat_id, "⚠️ Похоже, данные персонажа повреждены. Давай создадим заново – напиши /start")
-            return
 
         gender_name = GENDERS[user['gender']]['name']
         world_name = WORLD_NAMES[user['world']]
@@ -831,7 +829,7 @@ async def send_main_menu(chat_id, user):
             else:
                 msg = await bot.send_message(chat_id, menu_text, reply_markup=get_main_menu_keyboard(user), parse_mode="HTML")
         except Exception as e:
-            logging.error(f"Ошибка при отправке меню: {e}")
+            logging.error(f"Ошибка при отправке главного меню (фото/текст): {e}")
             msg = await bot.send_message(chat_id, menu_text, reply_markup=get_main_menu_keyboard(user), parse_mode="HTML")
 
         await bot.send_message(chat_id, "🔁 Клавиатура обновлена", reply_markup=get_reply_keyboard(user))
@@ -839,57 +837,43 @@ async def send_main_menu(chat_id, user):
         save_data(user_data)
         return msg
     except Exception as e:
-        logging.error(f"Критическая ошибка в send_main_menu: {e}", exc_info=True)
-        await bot.send_message(chat_id, "⚠️ Произошла непредвиденная ошибка. Пожалуйста, напишите /start для перезапуска.")
+        logging.error(f"КРИТИЧЕСКАЯ ОШИБКА в send_main_menu: {e}", exc_info=True)
+        await bot.send_message(chat_id, f"⚠️ Произошла ошибка при загрузке меню. Пожалуйста, напишите /start заново.\nОшибка: {e}")
 
 @dp.message(Command("start"))
 async def start_cmd(message: types.Message):
-    try:
-        user = get_user(message.from_user.id)
-        args = message.text.split()
-        if len(args) > 1:
-            ref_code = args[1]
-            if ref_code.startswith("ref_"):
-                referrer_id = ref_code.split("_")[1]
-                if str(message.from_user.id) != referrer_id:
-                    referrer = get_user(referrer_id)
-                    if referrer and not user.get("referred_by"):
-                        referrer["purchased_messages"] = referrer.get("purchased_messages", 0) + 10
-                        referrer["sex_scenes"] = referrer.get("sex_scenes", 0) + 1
-                        user["purchased_messages"] = user.get("purchased_messages", 0) + 5
-                        user["referred_by"] = referrer_id
-                        save_data(user_data)
-                        await message.answer("🎉 Ты пришёл по реферальной ссылке! Тебе начислено +5 бесплатных сообщений, а твой друг получил +10 сообщений и +1 секс-сцену.")
-        # Стандартная логика start
-        if not user["verified"]:
-            await message.answer("🔞 <b>ВНИМАНИЕ!</b>\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
-                                 reply_markup=age_kb, parse_mode="HTML")
-            return
-        if not user["agreement_accepted"]:
-            await message.answer(AGREEMENT_TEXT, reply_markup=agreement_kb, parse_mode="HTML")
-            return
-        if not user.get("user_gender"):
-            await message.answer("👤 Для начала выбери свой пол:", reply_markup=user_gender_kb)
-            return
-        if not user["personality_ready"]:
-            await message.answer("🌟 <b>Создай своего идеального собеседника!</b>\n\nСначала выбери <b>мир</b>, в котором он/она живёт:",
-                                 reply_markup=world_kb, parse_mode="HTML")
-            return
-
-        # === ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА ===
-        if user.get("gender") is None or user.get("world") is None:
-            logging.warning(f"У пользователя {message.from_user.id} не хватает полей, сбрасываем персонажа.")
-            user["personality_ready"] = False
-            save_data(user_data)
-            await message.answer("⚠️ Обнаружены повреждённые данные. Давай создадим персонажа заново.",
-                                 reply_markup=world_kb)
-            return
-
-        await message.answer("👋 Добро пожаловать!", reply_markup=get_reply_keyboard(user))
-        await send_main_menu(message.chat.id, user)
-    except Exception as e:
-        logging.error(f"Ошибка в start_cmd: {e}", exc_info=True)
-        await message.answer("⚠️ Произошла ошибка при запуске. Пожалуйста, попробуйте позже или свяжитесь с поддержкой.")
+    user = get_user(message.from_user.id)
+    args = message.text.split()
+    if len(args) > 1:
+        ref_code = args[1]
+        if ref_code.startswith("ref_"):
+            referrer_id = ref_code.split("_")[1]
+            if str(message.from_user.id) != referrer_id:
+                referrer = get_user(referrer_id)
+                if referrer and not user.get("referred_by"):
+                    referrer["purchased_messages"] = referrer.get("purchased_messages", 0) + 10
+                    referrer["sex_scenes"] = referrer.get("sex_scenes", 0) + 1
+                    user["purchased_messages"] = user.get("purchased_messages", 0) + 5
+                    user["referred_by"] = referrer_id
+                    save_data(user_data)
+                    await message.answer("🎉 Ты пришёл по реферальной ссылке! Тебе начислено +5 бесплатных сообщений, а твой друг получил +10 сообщений и +1 секс-сцену.")
+    # Стандартная логика
+    if not user["verified"]:
+        await message.answer("🔞 <b>ВНИМАНИЕ!</b>\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
+                             reply_markup=age_kb, parse_mode="HTML")
+        return
+    if not user["agreement_accepted"]:
+        await message.answer(AGREEMENT_TEXT, reply_markup=agreement_kb, parse_mode="HTML")
+        return
+    if not user.get("user_gender"):
+        await message.answer("👤 Для начала выбери свой пол:", reply_markup=user_gender_kb)
+        return
+    if not user["personality_ready"]:
+        await message.answer("🌟 <b>Создай своего идеального собеседника!</b>\n\nСначала выбери <b>мир</b>, в котором он/она живёт:",
+                             reply_markup=world_kb, parse_mode="HTML")
+        return
+    await message.answer("👋 Добро пожаловать!", reply_markup=get_reply_keyboard(user))
+    await send_main_menu(message.chat.id, user)
 
 @dp.message(lambda m: m.text == "📋 Главное меню")
 async def main_menu_reply(message: types.Message):
@@ -1041,82 +1025,78 @@ async def create_personality_callback(call: types.CallbackQuery):
     await call.answer()
 
 async def show_profile(msg, user):
-    try:
-        level = get_subscription_level(user)
-        if level == "pro": sub_status = "🔥 PRO активна (50 сообщений/день, память 60 сообщений)"
-        elif level == "super_pro": sub_status = "✨ SUPER PRO активна (100 сообщений/день, память 100 сообщений)"
-        else: sub_status = "❌ неактивна (память 30 сообщений)"
-        expiry = user["subscription"]["expires_at"]
-        if expiry:
-            expiry = datetime.fromisoformat(expiry).strftime("%d.%m.%Y %H:%M")
-            expiry_line = f"Окончание подписки: {expiry}"
-        else:
-            expiry_line = "Окончание подписки: неактивна"
+    level = get_subscription_level(user)
+    if level == "pro": sub_status = "🔥 PRO активна (50 сообщений/день, память 60 сообщений)"
+    elif level == "super_pro": sub_status = "✨ SUPER PRO активна (100 сообщений/день, память 100 сообщений)"
+    else: sub_status = "❌ неактивна (память 30 сообщений)"
+    expiry = user["subscription"]["expires_at"]
+    if expiry:
+        expiry = datetime.fromisoformat(expiry).strftime("%d.%m.%Y %H:%M")
+        expiry_line = f"Окончание подписки: {expiry}"
+    else:
+        expiry_line = "Окончание подписки: неактивна"
 
-        styles_text = ""
-        for key, style in STYLES.items():
-            if key in PREMIUM_STYLES:
-                if key == "passionate":
-                    if not has_active_subscription(user) or get_subscription_level(user) not in ["pro","super_pro"]:
-                        styles_text += f"{style['emoji']} {style['label']} 🔒\n"; continue
-                elif key == "magnetic":
-                    if not has_active_subscription(user) or get_subscription_level(user) not in ["pro","super_pro"]:
-                        styles_text += f"{style['emoji']} {style['label']} 🔒\n"; continue
-                elif key in ["vulgar","seduction"]:
-                    if not has_active_subscription(user) or get_subscription_level(user) != "super_pro":
-                        styles_text += f"{style['emoji']} {style['label']} 🔒\n"; continue
-            styles_text += f"{style['emoji']} {style['label']}\n"
+    styles_text = ""
+    for key, style in STYLES.items():
+        if key in PREMIUM_STYLES:
+            if key == "passionate":
+                if not has_active_subscription(user) or get_subscription_level(user) not in ["pro","super_pro"]:
+                    styles_text += f"{style['emoji']} {style['label']} 🔒\n"; continue
+            elif key == "magnetic":
+                if not has_active_subscription(user) or get_subscription_level(user) not in ["pro","super_pro"]:
+                    styles_text += f"{style['emoji']} {style['label']} 🔒\n"; continue
+            elif key in ["vulgar","seduction"]:
+                if not has_active_subscription(user) or get_subscription_level(user) != "super_pro":
+                    styles_text += f"{style['emoji']} {style['label']} 🔒\n"; continue
+        styles_text += f"{style['emoji']} {style['label']}\n"
 
-        show_balance = has_purchased_something(user)
-        if show_balance:
-            available = get_available_messages(user)
-            balance_line = f"Доступно сообщений: {available}"
-            if available <= 0: balance_line += " (закончились)"
-        else:
-            balance_line = "У вас есть бесплатные сообщения для старта"
+    show_balance = has_purchased_something(user)
+    if show_balance:
+        available = get_available_messages(user)
+        balance_line = f"Доступно сообщений: {available}"
+        if available <= 0: balance_line += " (закончились)"
+    else:
+        balance_line = "У вас есть бесплатные сообщения для старта"
 
-        xp_badge = get_xp_badge(user)
-        multiplier_text = ""
-        sub_level = get_subscription_level(user)
-        if sub_level == "pro":
-            multiplier_text = "Бонус XP: x1.8"
-        elif sub_level == "super_pro":
-            multiplier_text = "Бонус XP: x2.5"
+    xp_badge = get_xp_badge(user)
+    multiplier_text = ""
+    sub_level = get_subscription_level(user)
+    if sub_level == "pro":
+        multiplier_text = "Бонус XP: x1.8"
+    elif sub_level == "super_pro":
+        multiplier_text = "Бонус XP: x2.5"
 
-        free_pro = user.get("free_sex_scenes_pro", 0)
-        free_super = user.get("free_sex_scenes_super", 0)
-        bought = user.get("sex_scenes", 0)
-        total_sex_scenes = free_pro + free_super + bought
+    free_pro = user.get("free_sex_scenes_pro", 0)
+    free_super = user.get("free_sex_scenes_super", 0)
+    bought = user.get("sex_scenes", 0)
+    total_sex_scenes = free_pro + free_super + bought
 
-        current_level = get_intimacy_level(user)
-        if current_level < 8:
-            sex_scenes_display = f"Всего секс-сцен: {total_sex_scenes} (доступны после 8 уровня)"
-        else:
-            sex_scenes_display = f"Всего секс-сцен: {total_sex_scenes}"
+    current_level = get_intimacy_level(user)
+    if current_level < 8:
+        sex_scenes_display = f"Всего секс-сцен: {total_sex_scenes} (доступны после 8 уровня)"
+    else:
+        sex_scenes_display = f"Всего секс-сцен: {total_sex_scenes}"
 
-        caption = (f"{balance_line}\n"
-                   f"Подписка: {sub_status}\n"
-                   f"{expiry_line}\n\n"
-                   f"{xp_badge}\n"
-                   f"{multiplier_text}\n"
-                   f"{sex_scenes_display}\n\n"
-                   f"Доступные стили:\n{styles_text}")
+    caption = (f"{balance_line}\n"
+               f"Подписка: {sub_status}\n"
+               f"{expiry_line}\n\n"
+               f"{xp_badge}\n"
+               f"{multiplier_text}\n"
+               f"{sex_scenes_display}\n\n"
+               f"Доступные стили:\n{styles_text}")
 
-        chat_id = msg.chat.id
-        old_msg_id = msg.message_id
-        if level == "super_pro" and SUPER_PRO_GIF_URL:
-            await bot.send_animation(chat_id, animation=SUPER_PRO_GIF_URL, caption=caption,
-                                     reply_markup=get_profile_keyboard(user), parse_mode="HTML")
-        elif level == "pro" and PRO_GIF_URL:
-            await bot.send_animation(chat_id, animation=PRO_GIF_URL, caption=caption,
-                                     reply_markup=get_profile_keyboard(user), parse_mode="HTML")
-        else:
-            await bot.send_message(chat_id, caption, reply_markup=get_profile_keyboard(user), parse_mode="HTML")
-        try: await bot.delete_message(chat_id, old_msg_id)
-        except: pass
-    except Exception as e:
-        logging.error(f"Ошибка в show_profile: {e}", exc_info=True)
-        await bot.send_message(msg.chat.id, "⚠️ Ошибка при отображении профиля. Попробуйте позже.")
+    chat_id = msg.chat.id
+    old_msg_id = msg.message_id
+    if level == "super_pro" and SUPER_PRO_GIF_URL:
+        await bot.send_animation(chat_id, animation=SUPER_PRO_GIF_URL, caption=caption,
+                                 reply_markup=get_profile_keyboard(user), parse_mode="HTML")
+    elif level == "pro" and PRO_GIF_URL:
+        await bot.send_animation(chat_id, animation=PRO_GIF_URL, caption=caption,
+                                 reply_markup=get_profile_keyboard(user), parse_mode="HTML")
+    else:
+        await bot.send_message(chat_id, caption, reply_markup=get_profile_keyboard(user), parse_mode="HTML")
+    try: await bot.delete_message(chat_id, old_msg_id)
+    except: pass
 
 # ============================================================
 #  ПОДПИСКИ, ПАКЕТЫ, СЕКС-СЦЕНЫ С ПСЕВДОСКИДКАМИ
@@ -1219,7 +1199,7 @@ async def buy_sex_scene(call: types.CallbackQuery):
             title="Секс-сцена (18+)",
             description=f"🔥 Секс-сцена — 45⭐ <s>100⭐</s> -55%\nМгновенная откровенная секс-сцена с вашим персонажем. Детальное описание, 18+. Используйте команду /sex.{warning}",
             payload="sex_scene",
-            provider_token="",
+            provider_token="",  # Для звезд токен не нужен
             currency="XTR",
             prices=[LabeledPrice(label="Секс-сцена", amount=45)]
         )
@@ -1994,9 +1974,10 @@ async def main():
     print("   - Псевдоскидки на все товары (зачёркнутые цены)")
     print("   - ИИ говорит откровенные слова")
     print("   - Динамическая клавиатура (кнопка 'Редактировать' при наличии истории)")
-    print("   - ЮKassa подключена (токен получен)")
+    print("   - ЮKassa не используется (PROVIDER_TOKEN не обязателен)")
     print("💳 Цены со скидками: PRO 250⭐ (было 330), SUPER 450⭐ (было 600), апгрейд 245⭐ (было 320), пакеты -33.3%, секс 45⭐ (было 100)")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
     asyncio.run(main())
+    
