@@ -460,7 +460,6 @@ def get_main_menu_keyboard(user):
         [InlineKeyboardButton(text="🔄 Сменить персонажа", callback_data="main_change")],
         [InlineKeyboardButton(text="👥 Пригласить друга", callback_data="referral_menu")],
     ]
-    # Кнопка создания персонажа только для SUPER PRO
     if get_subscription_level(user) == "super_pro":
         buttons.append([InlineKeyboardButton(text="🎭 Создать персонажа", callback_data="create_character_menu")])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
@@ -606,7 +605,6 @@ async def spin_cmd(message: types.Message):
         await message.answer("⏳ Ты уже крутил сегодня! Возвращайся завтра.")
         return
     
-    # Показываем возможные призы заранее
     prizes_list = (
         "🎰 **Возможные призы:**\n"
         "• 5 сообщений\n"
@@ -620,19 +618,17 @@ async def spin_cmd(message: types.Message):
     )
     await message.answer(prizes_list)
     
-    # Имитация прокрутки (эффект "почти выиграл")
     fake_prizes = [
         {"name": "10 сообщений", "value": 10, "type": "messages"},
         {"name": "+10 XP", "value": 10, "type": "xp"},
         {"name": "2 секс-сцены", "value": 2, "type": "sex_scene"},
         {"name": "🍀 Удача! +15 сообщений", "value": 15, "type": "messages"},
     ]
-    for _ in range(2):  # два "почти" выигрыша
+    for _ in range(2):
         fake = random.choice(fake_prizes)
         await asyncio.sleep(0.8)
         await message.answer(f"🎰 Крутим... Почти выпало: {fake['name']}")
     
-    # Реальный приз
     prizes = [
         {"name": "5 сообщений", "value": 5, "type": "messages"},
         {"name": "10 сообщений", "value": 10, "type": "messages"},
@@ -833,7 +829,6 @@ async def start_cmd(message: types.Message):
                     user["referred_by"] = referrer_id
                     save_data(user_data)
                     await message.answer("🎉 Ты пришёл по реферальной ссылке! Тебе начислено +5 бесплатных сообщений, а твой друг получил +10 сообщений и +1 секс-сцену.")
-    # Стандартная логика start
     if not user["verified"]:
         await message.answer("🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
                              reply_markup=age_kb, parse_mode="Markdown")
@@ -922,7 +917,6 @@ async def choose_user_gender(call: types.CallbackQuery):
 async def choose_style(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     style_key = call.data.split("_")[1]
-    # Проверка доступности стиля (как было)
     if style_key == "passionate":
         if not has_active_subscription(user) or get_subscription_level(user) not in ["pro","super_pro"]:
             await call.answer("❤️‍🔥 Стиль «Страстный» доступен по подпискам PRO (250⭐/мес) и SUPER PRO (450⭐/мес).\n\nОформите подписку в разделе «Мой профиль».", show_alert=True)
@@ -1186,7 +1180,7 @@ async def buy_sex_scene(call: types.CallbackQuery):
         await call.answer()
 
 # ============================================================
-#  ОБРАБОТЧИКИ ПЛАТЕЖЕЙ (стандартные)
+#  ОБРАБОТЧИКИ ПЛАТЕЖЕЙ
 # ============================================================
 @dp.callback_query(lambda c: c.data == "upgrade_to_super")
 async def upgrade_to_super(call: types.CallbackQuery):
@@ -1393,7 +1387,7 @@ async def payment_success(message: types.Message):
         await message.answer("✅ Куплена секс-сцена! Используйте команду /sex, чтобы начать. 18+")
 
 # ============================================================
-#  КОМАНДА /sex (стандартная)
+#  КОМАНДА /sex
 # ============================================================
 @dp.message(Command("sex"))
 async def sex_cmd(message: types.Message):
@@ -1443,7 +1437,7 @@ async def sex_cmd(message: types.Message):
             "❌ Секс-сцены доступны только после достижения **8 уровня близости**.\n"
             f"Сейчас у тебя уровень {level}. Продолжай общаться, чтобы открыть доступ!\n\n"
             "Ты можешь купить сцену заранее в профиле, но использовать её сможешь только с 8 уровня.",
-            reply_markup=full_kb,
+            reply_markup=get_reply_keyboard(user),
             parse_mode="Markdown"
         )
         return
@@ -1459,7 +1453,7 @@ async def sex_cmd(message: types.Message):
     
     if total_available <= 0:
         await message.answer("❌ У тебя нет доступных секс-сцен.\n\nТы можешь:\n• Купить сцену за 45⭐ в профиле (доступно всем)\n• Оформить подписку PRO (4 бесплатные сцены) или SUPER PRO (8 бесплатных сцен)\n• Достичь 8 уровня близости для одной бесплатной сцены.",
-                             reply_markup=full_kb)
+                             reply_markup=get_reply_keyboard(user))
         return
     
     user["sex_total_available"] = total_available
@@ -1558,12 +1552,12 @@ async def generate_sex_scene(call, user, sex_type, free=False):
             max_tokens=2000
         )
         scene_text_result = response.choices[0].message.content
-        await bot.send_message(call.message.chat.id, scene_text_result, reply_markup=full_kb)
+        await bot.send_message(call.message.chat.id, scene_text_result, reply_markup=get_reply_keyboard(user))
     except Exception as e:
         await bot.send_message(call.message.chat.id, f"⚠️ Ошибка генерации: {e}")
 
 # ============================================================
-#  ОСТАЛЬНЫЕ ОБРАБОТЧИКИ (surprise, clear, grant, revoke, maintenance)
+#  ОСТАЛЬНЫЕ ОБРАБОТЧИКИ (surprise, clear, grant, revoke, maintenance, и т.д.)
 # ============================================================
 @dp.message(Command("surprise"))
 async def surprise_cmd(message: types.Message):
@@ -1587,7 +1581,7 @@ async def surprise_cmd(message: types.Message):
     if level >= 8:
         moments += ["Я смотрю на тебя с нежностью и говорю: «Ты – моя судьба. Я знаю это точно.»",
                     "Мы остаёмся наедине, и я говорю: «Я хочу провести с тобой всю жизнь. Ты согласен(на)?»"]
-    await message.answer(random.choice(moments), reply_markup=full_kb)
+    await message.answer(random.choice(moments), reply_markup=get_reply_keyboard(user))
 
 @dp.message(Command("clear"))
 async def clear_cmd(message: types.Message):
