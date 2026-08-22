@@ -18,6 +18,7 @@ VOICE_ENABLED = False
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 PROVOD_API_KEY = os.getenv("PROVOD_API_KEY")
+PROVIDER_TOKEN = os.getenv("PROVIDER_TOKEN", "")  # НЕ ОБЯЗАТЕЛЕН
 
 if not BOT_TOKEN or not PROVOD_API_KEY:
     raise ValueError("Заполни BOT_TOKEN и PROVOD_API_KEY в .env!")
@@ -26,7 +27,7 @@ client = OpenAI(api_key=PROVOD_API_KEY, base_url="https://api.provod.ai/v1")
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
-# Настройка логирования для отлова ошибок
+# НАСТРОЙКА ЛОГИРОВАНИЯ (теперь видно все ошибки)
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -195,7 +196,6 @@ PREMIUM_STYLES = {
 }
 
 STYLES = {**BASE_STYLES, **PREMIUM_STYLES}
-
 BASE_STYLE_KEYS = ["warm", "daring", "shy"]
 PREMIUM_STYLE_KEYS = ["passionate", "magnetic", "vulgar", "seduction"]
 
@@ -788,6 +788,12 @@ async def send_main_menu(chat_id, user):
         badge = ""
         if level == "pro": badge = "🔥 PRO"
         elif level == "super_pro": badge = "✨ <b>SUPER PRO</b> ✨"
+
+        # Дополнительная защита: если gender или world всё ещё None (подстраховка)
+        if user.get("gender") is None:
+            user["gender"] = "female"
+        if user.get("world") is None:
+            user["world"] = "realism"
 
         gender_name = GENDERS[user['gender']]['name']
         world_name = WORLD_NAMES[user['world']]
