@@ -18,7 +18,7 @@ VOICE_ENABLED = False
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 PROVOD_API_KEY = os.getenv("PROVOD_API_KEY")
-PROVIDER_TOKEN = os.getenv("PROVIDER_TOKEN", "")
+PROVIDER_TOKEN = os.getenv("PROVIDER_TOKEN", "")  # не обязателен
 
 if not BOT_TOKEN or not PROVOD_API_KEY:
     raise ValueError("Заполни BOT_TOKEN и PROVOD_API_KEY в .env!")
@@ -40,7 +40,7 @@ PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh
 SUPER_PRO_GIF_URL = "https://media.giphy.com/media/DbHZXBo5WFPZX7QpXj/giphy.gif"
 MAIN_MENU_IMAGE_URL = "https://i.ibb.co/k25JyTXD/IMG-2584.jpg"
 
-ADMIN_IDS = [7287815074]
+ADMIN_IDS = [7287815074]  # замени на свой ID
 maintenance_mode = False
 DATA_FILE = "data/data.json"
 
@@ -514,7 +514,6 @@ def get_style_kb(user):
 channel_inline_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="📢 Перейти в канал", url="https://t.me/duel_dev_channel")]
 ])
-
 # ============================================================
 #  СОЗДАНИЕ ПЕРСОНАЖА (ТОЛЬКО ДЛЯ SUPER PRO)
 # ============================================================
@@ -587,9 +586,10 @@ async def referral_menu(call: types.CallbackQuery):
         "• Твой друг получит <b>+5 бесплатных сообщений</b> за регистрацию!",
         parse_mode="HTML"
     )
-    await call.answer() 
+    await call.answer()
+
 # ============================================================
-#  КОЛЕСО ФОРТУНЫ (УЛУЧШЕННОЕ)
+#  КОЛЕСО ФОРТУНЫ
 # ============================================================
 @dp.message(lambda m: m.text == "🎰 Колесо фортуны")
 async def spin_button_handler(message: types.Message):
@@ -774,6 +774,12 @@ async def send_main_menu(chat_id, user):
         badge = ""
         if level == "pro": badge = "🔥 PRO"
         elif level == "super_pro": badge = "✨ <b>SUPER PRO</b> ✨"
+
+        # дополнительная защита
+        if user.get("gender") is None:
+            user["gender"] = "female"
+        if user.get("world") is None:
+            user["world"] = "realism"
 
         gender_name = GENDERS[user['gender']]['name']
         world_name = WORLD_NAMES[user['world']]
