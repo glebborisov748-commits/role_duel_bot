@@ -92,7 +92,7 @@ AGREEMENT_TEXT = (
     "4.5. Мы не несём ответственности за утечку данных, если она произошла по вине самого Пользователя "
     "(например, передача доступа к аккаунту).\n\n"
     "**5. ПЛАТНЫЕ УСЛУГИ И ПОДПИСКИ**\n"
-    "5.1. Сервис предоставляет платные услуги (пакеты сообщений, подписки, секс-сцены).\n"
+    "5.1. Сервис предоставляет платные услуги (пакеты сообщений, подписки, секс-сцены, колесо фортуны).\n"
     "5.2. Цены и условия указаны в интерфейсе Сервиса и могут быть изменены в любое время.\n"
     "5.3. Подписки **НЕ продлеваются автоматически**. По истечении срока действия нужно будет оформить новую подписку вручную.\n"
     "5.4. Возврат средств за оплаченные услуги не производится, за исключением случаев технической ошибки "
@@ -260,6 +260,7 @@ def build_prompt(user):
     rules = ("**ФОРМАТИРОВАНИЕ:** Каждое действие в *звёздочках* с новой строки, затем реплика с новой строки. Между действием и репликой – пустая строка.\n"
              "**СТРУКТУРА ОТВЕТА:** Ты должна строго чередовать действие и реплику. НЕЛЬЗЯ писать два действия подряд без реплики между ними. Первым всегда идёт действие, затем реплика, затем снова действие, затем реплика. Минимум 2 пары (действие + реплика).\n"
              "**ОБЪЁМ:** Не ограничивай себя, пиши развёрнуто (3–5 предложений на реплику).\n"
+             "**СТИЛЬ ОБЩЕНИЯ:** Добавляй редкие и уместные эмодзи в свои реплики (😊,🔥,😉,❤️,✨,😏,🌟,💕). Не перебарщивай — максимум 1-2 эмодзи на сообщение. Используй их, чтобы передать эмоции.\n"
              "**ЗАПРЕТЫ:**\n- Не используй имена собеседника и своё имя (абсолютный запрет).\n- Не повторяй одни и те же жесты/мимику чаще раза в 5 сообщений.\n- Избегай шаблонов: 'краснеет и отводит взгляд, теребя прядь волос', 'отводит взгляд в сторону и слегка краснеет'.\n- Не ставь многоточия, пиши чётко.\n- Не обрывай предложения, заканчивай мысль.\n- Не смягчай конфликты и негативные эмоции, отыгрывай их честно.\n"
              "**СТИЛЬ:** Обращайся на «ты», давай живые, эмоциональные ответы с чувствами, намёками, лёгкой провокацией.\n"
              "**ПАМЯТЬ:** Учитывай предыдущие сообщения, настроение меняется плавно.\n"
@@ -352,7 +353,11 @@ def get_user(user_id):
             "sex_scene_unlocked": False,
             "sex_scene_used": False,
             "subscription_id": None,
-            "last_free_spin": None  # ДОБАВЛЕНО ДЛЯ КОЛЕСА
+            "last_free_spin": None,
+            "editing_message": False,
+            "edit_index": None,
+            "referral_code": None,
+            "referred_by": None
         }
         save_data(user_data)
     else:
@@ -382,7 +387,11 @@ def get_user(user_id):
             "sex_scene_used": False,
             "subscription_id": None,
             "user_gender": None,
-            "last_free_spin": None  # ДОБАВЛЕНО
+            "last_free_spin": None,
+            "editing_message": False,
+            "edit_index": None,
+            "referral_code": None,
+            "referred_by": None
         }
         for key, val in defaults.items():
             if key not in user:
@@ -427,7 +436,7 @@ def get_reaction(text):
     return None
 
 # ============================================================
-#  КЛАВИАТУРА (ОБНОВЛЕНА С КНОПКОЙ КОЛЕСА И РЕДАКТИРОВАНИЯ)
+#  КЛАВИАТУРА
 # ============================================================
 full_kb = ReplyKeyboardMarkup(
     keyboard=[
@@ -440,7 +449,8 @@ full_kb = ReplyKeyboardMarkup(
 
 def get_main_menu_keyboard(user):
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🔄 Сменить персонажа", callback_data="main_change")]
+        [InlineKeyboardButton(text="🔄 Сменить персонажа", callback_data="main_change")],
+        [InlineKeyboardButton(text="👥 Пригласить друга", callback_data="referral_menu")]
     ])
 
 def get_profile_keyboard(user):
@@ -494,27 +504,8 @@ def get_style_kb(user):
 channel_inline_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="📢 Перейти в канал", url="https://t.me/duel_dev_channel")]
 ])
-
 # ============================================================
-#  КОМАНДА /prices – для скриншота с рублёвыми ценами
-# ============================================================
-@dp.message(Command("prices"))
-async def prices_cmd(message: types.Message):
-    text = (
-        "💳 **Цены в рублях (для справки)**\n\n"
-        "🔥 PRO — 375 ₽/мес\n"
-        "✨ SUPER PRO — 675 ₽/мес\n"
-        "⬆️ Апгрейд до SUPER PRO — 368 ₽\n"
-        "📦 30 сообщений — 45 ₽\n"
-        "📦 100 сообщений — 120 ₽\n"
-        "📦 300 сообщений — 300 ₽\n"
-        "🔥 Секс-сцена — 68 ₽\n\n"
-        "⚠️ Оплата в боте принимается в Telegram Stars.\n"
-        "Рубли указаны для информации."
-    )
-    await message.answer(text, parse_mode="Markdown")
-    # ============================================================
-#  ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ ОБРАБОТЧИКОВ
+#  ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 # ============================================================
 async def send_main_menu(chat_id, user):
     if user.get("last_menu_message_id"):
@@ -529,7 +520,6 @@ async def send_main_menu(chat_id, user):
     if level == "pro": badge = "🔥 PRO"
     elif level == "super_pro": badge = "✨ *SUPER PRO* ✨"
 
-    # защита от None
     if user.get("gender") is None:
         user["gender"] = "female"
     if user.get("world") is None:
@@ -613,6 +603,23 @@ async def switch_personality_cmd(message: types.Message):
 @dp.message(Command("start"))
 async def start_cmd(message: types.Message):
     user = get_user(message.from_user.id)
+    
+    # Реферальная ссылка
+    args = message.text.split()
+    if len(args) > 1:
+        ref_code = args[1]
+        if ref_code.startswith("ref_"):
+            referrer_id = ref_code.split("_")[1]
+            if str(message.from_user.id) != referrer_id:
+                referrer = get_user(referrer_id)
+                if referrer and not user.get("referred_by"):
+                    referrer["purchased_messages"] = referrer.get("purchased_messages", 0) + 10
+                    referrer["sex_scenes"] = referrer.get("sex_scenes", 0) + 1
+                    user["purchased_messages"] = user.get("purchased_messages", 0) + 5
+                    user["referred_by"] = referrer_id
+                    save_data(user_data)
+                    await message.answer("🎉 Ты пришёл по реферальной ссылке!\nТебе начислено +5 бесплатных сообщений.\nТвой друг получил +10 сообщений и +1 секс-сцену!")
+    
     if not user["verified"]:
         await message.answer("🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
                              reply_markup=age_kb, parse_mode="Markdown")
@@ -682,7 +689,7 @@ async def choose_world(call: types.CallbackQuery):
 @dp.callback_query(lambda c: c.data.startswith("user_gender_"))
 async def choose_user_gender(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
-    user_gender = call.data.split("_")[2]  # male или female
+    user_gender = call.data.split("_")[2]
     user["user_gender"] = user_gender
     if user_gender == "male":
         user["gender"] = "female"
@@ -785,7 +792,6 @@ async def show_profile(msg, user):
         balance_line = "У вас есть бесплатные сообщения для старта"
 
     xp_badge = get_xp_badge(user)
-
     multiplier_text = ""
     sub_level = get_subscription_level(user)
     if sub_level == "pro":
@@ -826,7 +832,7 @@ async def show_profile(msg, user):
     except: pass
 
 # ============================================================
-#  ПОДПИСКИ, ПАКЕТЫ, СЕКС-СЦЕНЫ (ПОЛНЫЙ ОРИГИНАЛ)
+#  ПОДПИСКИ, ПАКЕТЫ, СЕКС-СЦЕНЫ
 # ============================================================
 @dp.callback_query(lambda c: c.data == "profile_subs")
 async def profile_subs(call: types.CallbackQuery):
@@ -1205,7 +1211,7 @@ async def switch_style(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
-#  КОМАНДА /sex (ПОЛНЫЙ ОРИГИНАЛ)
+#  КОМАНДА /sex
 # ============================================================
 @dp.message(Command("sex"))
 async def sex_cmd(message: types.Message):
@@ -1375,7 +1381,7 @@ async def generate_sex_scene(call, user, sex_type, free=False):
         await bot.send_message(call.message.chat.id, f"⚠️ Ошибка генерации: {e}")
 
 # ============================================================
-#  КОЛЕСО ФОРТУНЫ (БЕСПЛАТНО 1/ДЕНЬ + ПЛАТНО 20⭐)
+#  КОЛЕСО ФОРТУНЫ
 # ============================================================
 @dp.message(lambda m: m.text == "🎰 Колесо фортуны")
 async def spin_button_handler(message: types.Message):
@@ -1402,11 +1408,10 @@ async def spin_button_handler(message: types.Message):
         "💎 Платное вращение — **20⭐** (≈25 ₽)\n\n"
         "🔥 **Что можно выиграть:**\n"
         "• 10–50 сообщений\n"
-        "• +100–250 XP\n"
+        "• 100–250 XP\n"
         "• Секс-сцены\n"
         "• 🎁 PRO на 5 дней\n"
-        "• ✨ SUPER PRO на 3 дня\n"
-        "• и другие призы!\n\n"
+        "• ✨ SUPER PRO на 3 дня\n\n"
         "Выбери вариант:",
         reply_markup=keyboard,
         parse_mode="Markdown"
@@ -1459,9 +1464,9 @@ async def spin_result(message: types.Message, user, free=False):
         {"name": "10 сообщений", "value": 10, "type": "messages", "weight": 14},
         {"name": "15 сообщений", "value": 15, "type": "messages", "weight": 10},
         {"name": "20 сообщений", "value": 20, "type": "messages", "weight": 8},
-        {"name": "+100 XP", "value": 100, "type": "xp", "weight": 14},
-        {"name": "+150 XP", "value": 150, "type": "xp", "weight": 8},
-        {"name": "+250 XP", "value": 250, "type": "xp", "weight": 4},
+        {"name": "100 XP", "value": 100, "type": "xp", "weight": 14},
+        {"name": "150 XP", "value": 150, "type": "xp", "weight": 8},
+        {"name": "250 XP", "value": 250, "type": "xp", "weight": 4},
         {"name": "1 секс-сцена 🔥", "value": 1, "type": "sex_scene", "weight": 10},
         {"name": "2 секс-сцены 🔥🔥", "value": 2, "type": "sex_scene", "weight": 3},
         {"name": "🎁 PRO на 5 дней", "value": 5, "type": "subscription_pro", "weight": 1.5},
@@ -1514,114 +1519,48 @@ async def spin_result(message: types.Message, user, free=False):
         result_text = "😢 **Ничего... В следующий раз повезёт!**"
 
     save_data(user_data)
+
+    # Кнопка "Крутить ещё"
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="💎 Крутить ещё за 20⭐", callback_data="spin_paid")],
+        [InlineKeyboardButton(text="🔙 Главное меню", callback_data="spin_back")]
+    ])
+
     await message.answer(
         f"🎰 **Результат!**\n\n"
         f"Ты выиграл: {result_text}\n"
         f"{'🎁 Бесплатное вращение' if free else '💎 Платное вращение'}\n\n"
-        "💡 Завтра будет новое бесплатное вращение!",
-        parse_mode="Markdown",
-        reply_markup=full_kb
-    )
-
-# ============================================================
-#  РЕДАКТИРОВАНИЕ ПОСЛЕДНЕГО СООБЩЕНИЯ
-# ============================================================
-@dp.message(lambda m: m.text == "✏️ Редактировать")
-async def edit_button_handler(message: types.Message):
-    await edit_message_cmd(message)
-
-@dp.message(Command("edit"))
-async def edit_message_cmd(message: types.Message):
-    user = get_user(message.from_user.id)
-    if not user["history"]:
-        await message.answer("❌ У тебя нет сообщений для редактирования.")
-        return
-    
-    last_user_msg = None
-    last_user_idx = -1
-    for i, msg in enumerate(reversed(user["history"])):
-        if msg["role"] == "user":
-            last_user_msg = msg["content"]
-            last_user_idx = len(user["history"]) - 1 - i
-            break
-    
-    if last_user_msg is None:
-        await message.answer("❌ Не найдено твоих сообщений.")
-        return
-    
-    await message.answer(
-        f"✏️ **Редактирование сообщения**\n\n"
-        f"Твой последний запрос:\n\"{last_user_msg}\"\n\n"
-        "Напиши новый текст в ответ на это сообщение. ИИ перегенерирует ответ.\n\n"
-        "Чтобы отменить редактирование, напиши /cancel_edit",
+        f"{'⏳ Завтра будет новое бесплатное вращение!' if free else 'Удачи в следующий раз!'}",
+        reply_markup=keyboard,
         parse_mode="Markdown"
     )
-    user["editing_message"] = True
-    user["edit_index"] = last_user_idx
-    save_data(user_data)
-
-@dp.message(lambda m: m.reply_to_message and m.text and "Редактирование сообщения" in m.reply_to_message.text)
-async def handle_edited_message(message: types.Message):
-    user = get_user(message.from_user.id)
-    if not user.get("editing_message"):
+    # ============================================================
+#  РЕФЕРАЛЬНАЯ СИСТЕМА (ДОБАВЛЕНА)
+# ============================================================
+@dp.callback_query(lambda c: c.data == "referral_menu")
+async def referral_menu(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    if not user["personality_ready"]:
+        await call.answer("Сначала создай персонажа!", show_alert=True)
         return
     
-    new_text = message.text
-    idx = user.get("edit_index")
-    if idx is None or idx >= len(user["history"]):
-        user["editing_message"] = False
+    if not user.get("referral_code"):
+        user["referral_code"] = str(call.from_user.id)
         save_data(user_data)
-        await message.answer("❌ Ошибка: сообщение для редактирования не найдено.")
-        return
     
-    user["history"][idx]["content"] = new_text
-    user["history"] = user["history"][:idx+1]
-    user["editing_message"] = False
-    save_data(user_data)
-    
-    await message.answer("✅ Сообщение заменено. Генерирую новый ответ...")
-    await generate_new_response(message, user)
-
-async def generate_new_response(message: types.Message, user):
-    limit = get_history_limit(user)
-    if len(user["history"]) > 10:
-        user["history"] = user["history"][-10:]
-    
-    await bot.send_chat_action(message.chat.id, "typing")
-    
-    system_prompt = build_prompt(user)
-    messages_for_api = [{"role": "system", "content": system_prompt}]
-    messages_for_api.extend(user["history"])
-    
-    try:
-        response = client.chat.completions.create(
-            model="deepseek/deepseek-v4-pro",
-            messages=messages_for_api,
-            temperature=0.9,
-            max_tokens=1000
-        )
-        answer = response.choices[0].message.content
-    except Exception as e:
-        await message.answer(f"⚠️ Ошибка: {e}")
-        logging.error(f"Ошибка DeepSeek: {e}")
-        return
-    
-    user["history"].append({"role": "assistant", "content": answer})
-    if len(user["history"]) > limit:
-        user["history"] = user["history"][-limit:]
-    save_data(user_data)
-    
-    await message.answer(answer, reply_markup=full_kb)
-
-@dp.message(Command("cancel_edit"))
-async def cancel_edit_cmd(message: types.Message):
-    user = get_user(message.from_user.id)
-    user["editing_message"] = False
-    save_data(user_data)
-    await message.answer("❌ Редактирование отменено.")
+    link = f"https://t.me/role_duel_bot?start=ref_{user['referral_code']}"
+    await call.message.answer(
+        f"👥 **Твоя реферальная ссылка:**\n`{link}`\n\n"
+        "🎁 **Бонусы:**\n"
+        "• Ты получишь **+10 сообщений** и **+1 секс-сцену** за каждого друга.\n"
+        "• Твой друг получит **+5 бесплатных сообщений** за регистрацию!\n\n"
+        "💡 Делитесь ссылкой с друзьями и получайте бонусы!",
+        parse_mode="Markdown"
+    )
+    await call.answer()
 
 # ============================================================
-#  ДОПОЛНИТЕЛЬНЫЕ КОМАНДЫ (surprise, clear, new_personality, menu, profile, grant)
+#  ДОПОЛНИТЕЛЬНЫЕ КОМАНДЫ
 # ============================================================
 @dp.message(Command("surprise"))
 async def surprise_cmd(message: types.Message):
@@ -1773,7 +1712,106 @@ async def agreement_decline(call: types.CallbackQuery):
     await call.message.edit_text("❌ Вы отказались от соглашения. Доступ закрыт.")
     await call.message.edit_reply_markup()
     await call.answer()
-    # ============================================================
+
+# ============================================================
+#  РЕДАКТИРОВАНИЕ СООБЩЕНИЙ (ИСПРАВЛЕННОЕ)
+# ============================================================
+@dp.message(lambda m: m.text == "✏️ Редактировать")
+async def edit_button_handler(message: types.Message):
+    await edit_message_cmd(message)
+
+@dp.message(Command("edit"))
+async def edit_message_cmd(message: types.Message):
+    user = get_user(message.from_user.id)
+    if not user["history"]:
+        await message.answer("❌ У тебя нет сообщений для редактирования.")
+        return
+    
+    last_user_msg = None
+    last_user_idx = -1
+    for i, msg in enumerate(reversed(user["history"])):
+        if msg["role"] == "user":
+            last_user_msg = msg["content"]
+            last_user_idx = len(user["history"]) - 1 - i
+            break
+    
+    if last_user_msg is None:
+        await message.answer("❌ Не найдено твоих сообщений.")
+        return
+    
+    await message.answer(
+        f"✏️ **Редактирование сообщения**\n\n"
+        f"Твой последний запрос:\n\"{last_user_msg}\"\n\n"
+        "Напиши новый текст в ответ на это сообщение. ИИ перегенерирует ответ.\n\n"
+        "Чтобы отменить редактирование, напиши /cancel_edit",
+        parse_mode="Markdown"
+    )
+    user["editing_message"] = True
+    user["edit_index"] = last_user_idx
+    save_data(user_data)
+
+@dp.message(lambda m: m.reply_to_message and m.text and "Редактирование сообщения" in m.reply_to_message.text)
+async def handle_edited_message(message: types.Message):
+    user = get_user(message.from_user.id)
+    if not user.get("editing_message"):
+        return
+    
+    new_text = message.text
+    idx = user.get("edit_index")
+    if idx is None or idx >= len(user["history"]):
+        user["editing_message"] = False
+        save_data(user_data)
+        await message.answer("❌ Ошибка: сообщение для редактирования не найдено.")
+        return
+    
+    # Удаляем ВСЁ, что было после отредактированного сообщения
+    user["history"] = user["history"][:idx]
+    # Добавляем новый текст как новое сообщение пользователя
+    user["history"].append({"role": "user", "content": new_text})
+    
+    limit = get_history_limit(user)
+    if len(user["history"]) > limit:
+        user["history"] = user["history"][-limit:]
+    
+    user["editing_message"] = False
+    save_data(user_data)
+    
+    await message.answer("✅ Сообщение заменено. Генерирую новый ответ...")
+    
+    await bot.send_chat_action(message.chat.id, "typing")
+    
+    system_prompt = build_prompt(user)
+    messages_for_api = [{"role": "system", "content": system_prompt}]
+    messages_for_api.extend(user["history"])
+    
+    try:
+        response = client.chat.completions.create(
+            model="deepseek/deepseek-v4-pro",
+            messages=messages_for_api,
+            temperature=0.9,
+            max_tokens=1000
+        )
+        answer = response.choices[0].message.content
+    except Exception as e:
+        await message.answer(f"⚠️ Ошибка: {e}")
+        logging.error(f"Ошибка DeepSeek: {e}")
+        return
+    
+    user["history"].append({"role": "assistant", "content": answer})
+    if len(user["history"]) > limit:
+        user["history"] = user["history"][-limit:]
+    save_data(user_data)
+    
+    await message.answer(answer, reply_markup=full_kb)
+
+@dp.message(Command("cancel_edit"))
+async def cancel_edit_cmd(message: types.Message):
+    user = get_user(message.from_user.id)
+    user["editing_message"] = False
+    save_data(user_data)
+    await message.answer("❌ Редактирование отменено.")
+
+# ============================================================
 #  ОСНОВНОЙ ОБРАБОТЧИК СООБЩЕНИЙ
 # ============================================================
 @dp.message()
@@ -1783,7 +1821,6 @@ async def handle_message(message: types.Message):
     
     logging.info(f"📩 Сообщение от {message.from_user.id}, уровень подписки: {get_subscription_level(user)}, стиль: {user.get('style')}")
     
-    # Проверка: если у пользователя премиум-стиль, но подписка кончилась
     if ensure_valid_style(user):
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="🪶 Нежный", callback_data="fix_style_warm")],
@@ -1800,12 +1837,10 @@ async def handle_message(message: types.Message):
         )
         return
 
-    # Техобслуживание
     if maintenance_mode and message.from_user.id not in ADMIN_IDS:
         await message.answer("🛠️ **Бот на техническом обслуживании**\nМы обновляем функционал, чтобы сделать общение ещё лучше.\nПожалуйста, загляните позже. Следите за новостями в канале: @duel_dev_channel", parse_mode="Markdown")
         return
     
-    # Проверка регистрации
     if not user["verified"] or not user["agreement_accepted"]:
         await message.answer("🔞 Сначала пройди регистрацию через /start")
         return
@@ -1813,11 +1848,9 @@ async def handle_message(message: types.Message):
         await message.answer("Сначала создай персонажа через /start")
         return
     
-    # Игнорируем команды-кнопки (они обрабатываются отдельно)
     if message.text in ["📋 Главное меню", "👤 Мой профиль", "📢 Наш канал", "🎰 Колесо фортуны", "✏️ Редактировать"]:
         return
     
-    # Проверка доступных сообщений
     available = get_available_messages(user)
     if available <= 0:
         await message.answer("🔄 Выберите действие:", reply_markup=full_kb)
@@ -1838,10 +1871,8 @@ async def handle_message(message: types.Message):
         )
         return
     
-    # Тратим сообщение
     use_message(user)
     
-    # Обработка негатива и XP
     negative = contains_negative(message.text)
     base_xp = 5
     multiplier = 1.0
@@ -1886,7 +1917,6 @@ async def handle_message(message: types.Message):
             if user["negative_count"] < 0:
                 user["negative_count"] = 0
 
-    # Обновляем XP и настроение
     user["xp"] = user.get("xp", 0) + xp_change
     user["mood"] = user.get("mood", 0) + mood_change
     if user["mood"] > 10:
@@ -1896,7 +1926,6 @@ async def handle_message(message: types.Message):
     if user["xp"] < 0:
         user["xp"] = 0
     
-    # Проверка уровня сближения
     new_level = get_intimacy_level(user)
     old_level = user.get("last_level", 0)
     if new_level > old_level:
@@ -1913,7 +1942,6 @@ async def handle_message(message: types.Message):
             reply_markup=full_kb
         )
     
-    # Обновляем локацию (если есть в тексте)
     new_loc = extract_location_from_text(message.text)
     if new_loc and new_loc != user.get("location"):
         user["location"] = new_loc
@@ -1921,24 +1949,20 @@ async def handle_message(message: types.Message):
     
     save_data(user_data)
     
-    # Сохраняем историю
     user["history"].append({"role": "user", "content": message.text})
     limit = get_history_limit(user)
     if len(user["history"]) > 10:
         user["history"] = user["history"][-10:]
     save_data(user_data)
     
-    # Отправляем статус "печатает"
     await bot.send_chat_action(message.chat.id, "typing")
     
-    # Запускаем бесконечный статус "печатает" (обновляется каждые 4 сек)
     async def keep_typing():
         while True:
             await bot.send_chat_action(message.chat.id, "typing")
             await asyncio.sleep(4)
     typing_task = asyncio.create_task(keep_typing())
     
-    # Для SUPER PRO — ставим реакцию на сообщение пользователя
     if get_subscription_level(user) == "super_pro":
         reaction = get_reaction(message.text)
         if reaction:
@@ -1956,7 +1980,6 @@ async def handle_message(message: types.Message):
     else:
         logging.info(f"⛔ Реакции не ставятся: уровень подписки = {get_subscription_level(user)}")
     
-    # Генерируем ответ AI
     system_prompt = build_prompt(user)
     messages_for_api = [{"role": "system", "content": system_prompt}]
     messages_for_api.extend(user["history"])
@@ -1987,13 +2010,11 @@ async def handle_message(message: types.Message):
             except asyncio.CancelledError:
                 pass
     
-    # Сохраняем ответ AI
     user["history"].append({"role": "assistant", "content": answer})
     if len(user["history"]) > limit:
         user["history"] = user["history"][-limit:]
     save_data(user_data)
     
-    # Отправляем ответ
     await message.answer(answer, reply_markup=full_kb)
 
 # ============================================================
@@ -2066,6 +2087,7 @@ async def main():
     print("💡 Для скриншота с рублёвыми ценами отправьте команду /prices")
     print("🎰 Колесо фортуны — 20⭐ за прокрутку. Призы сбалансированы.")
     print("✏️ Редактирование последнего сообщения — кнопка на клавиатуре.")
+    print("👥 Реферальная система — приглашай друзей и получай бонусы!")
     print("✅ БОТ ГОТОВ К РАБОТЕ!")
     await dp.start_polling(bot)
 
