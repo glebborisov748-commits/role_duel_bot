@@ -18,7 +18,7 @@ VOICE_ENABLED = False
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 PROVOD_API_KEY = os.getenv("PROVOD_API_KEY")
-PROVIDER_TOKEN = os.getenv("PROVIDER_TOKEN", "")  # НЕ ОБЯЗАТЕЛЕН
+PROVIDER_TOKEN = os.getenv("PROVIDER_TOKEN", "")  # не обязателен
 
 if not BOT_TOKEN or not PROVOD_API_KEY:
     raise ValueError("Заполни BOT_TOKEN и PROVOD_API_KEY в .env!")
@@ -26,7 +26,7 @@ if not BOT_TOKEN or not PROVOD_API_KEY:
 client = OpenAI(api_key=PROVOD_API_KEY, base_url="https://api.provod.ai/v1")
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 # ============================================================
 #  GIF-ССЫЛКИ
@@ -35,7 +35,7 @@ PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh
 SUPER_PRO_GIF_URL = "https://media.giphy.com/media/DbHZXBo5WFPZX7QpXj/giphy.gif"
 MAIN_MENU_IMAGE_URL = "https://i.ibb.co/k25JyTXD/IMG-2584.jpg"
 
-ADMIN_IDS = [7287815074]
+ADMIN_IDS = [7287815074]  # замени на свой ID
 maintenance_mode = False
 DATA_FILE = "data/data.json"
 
@@ -65,23 +65,23 @@ load_data()
 #  ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ
 # ============================================================
 AGREEMENT_TEXT = (
-    "📜 <b>ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ</b>\n\n"
+    "📜 **ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ**\n\n"
     "Настоящее Соглашение регулирует отношения между Администрацией (далее – «Мы», «Администрация») "
     "и Пользователем (далее – «Вы», «Пользователь») при использовании сервиса Role Duel (далее – «Сервис»).\n\n"
     "Используя Сервис, Вы подтверждаете, что полностью ознакомились с условиями настоящего Соглашения "
     "и принимаете их безоговорочно. Если Вы не согласны с каким-либо пунктом, Вы обязаны немедленно "
     "прекратить использование Сервиса.\n\n"
     "---\n\n"
-    "<b>1. ВОЗРАСТНОЕ ОГРАНИЧЕНИЕ</b>\n"
+    "**1. ВОЗРАСТНОЕ ОГРАНИЧЕНИЕ**\n"
     "1.1. Сервис предназначен исключительно для лиц, достигших 18 лет.\n"
     "1.2. Использование Сервиса лицами младше 18 лет строго запрещено.\n"
     "1.3. Администрация не несёт ответственности за предоставление недостоверных данных о возрасте "
     "и не обязана проверять возраст Пользователя.\n\n"
-    "<b>2. ОПИСАНИЕ СЕРВИСА</b>\n"
+    "**2. ОПИСАНИЕ СЕРВИСА**\n"
     "2.1. Сервис предоставляет доступ к виртуальным собеседникам на основе технологий искусственного интеллекта.\n"
     "2.2. Весь контент генерируется автоматически и не отражает мнение Администрации.\n"
     "2.3. Сервис не является медицинским, психологическим или консультационным инструментом.\n\n"
-    "<b>3. ОТВЕТСТВЕННОСТЬ ПОЛЬЗОВАТЕЛЯ</b>\n"
+    "**3. ОТВЕТСТВЕННОСТЬ ПОЛЬЗОВАТЕЛЯ**\n"
     "3.1. Вы несёте полную ответственность за все действия, совершённые с использованием Вашего аккаунта.\n"
     "3.2. Запрещается использовать Сервис для:\n"
     "   — распространения экстремистских материалов;\n"
@@ -91,7 +91,7 @@ AGREEMENT_TEXT = (
     "   — любых действий, нарушающих законодательство РФ.\n"
     "3.3. Администрация оставляет за собой право блокировать доступ Пользователю за нарушение правил "
     "без предварительного уведомления.\n\n"
-    "<b>4. КОНФИДЕНЦИАЛЬНОСТЬ И ПЕРСОНАЛЬНЫЕ ДАННЫЕ</b>\n"
+    "**4. КОНФИДЕНЦИАЛЬНОСТЬ И ПЕРСОНАЛЬНЫЕ ДАННЫЕ**\n"
     "4.1. Мы собираем и обрабатываем следующие данные:\n"
     "   — Telegram ID;\n"
     "   — история диалогов с ботом;\n"
@@ -105,14 +105,14 @@ AGREEMENT_TEXT = (
     "4.4. Все диалоги хранятся в обезличенном виде и могут быть удалены по запросу Пользователя.\n"
     "4.5. Мы не несём ответственности за утечку данных, если она произошла по вине самого Пользователя "
     "(например, передача доступа к аккаунту).\n\n"
-    "<b>5. ПЛАТНЫЕ УСЛУГИ И ПОДПИСКИ</b>\n"
+    "**5. ПЛАТНЫЕ УСЛУГИ И ПОДПИСКИ**\n"
     "5.1. Сервис предоставляет платные услуги (пакеты сообщений, подписки, секс-сцены).\n"
     "5.2. Цены и условия указаны в интерфейсе Сервиса и могут быть изменены в любое время.\n"
-    "5.3. Подписки <b>НЕ продлеваются автоматически</b>. По истечении срока действия нужно будет оформить новую подписку вручную.\n"
+    "5.3. Подписки **НЕ продлеваются автоматически**. По истечении срока действия нужно будет оформить новую подписку вручную.\n"
     "5.4. Возврат средств за оплаченные услуги не производится, за исключением случаев технической ошибки "
     "со стороны Сервиса.\n"
     "5.5. Администрация не обязана уведомлять об истечении подписки.\n\n"
-    "<b>6. ОТКАЗ ОТ ГАРАНТИЙ</b>\n"
+    "**6. ОТКАЗ ОТ ГАРАНТИЙ**\n"
     "6.1. Сервис предоставляется «как есть» без каких-либо гарантий.\n"
     "6.2. Мы не гарантируем:\n"
     "   — бесперебойную работу;\n"
@@ -122,32 +122,32 @@ AGREEMENT_TEXT = (
     "   — убытков, вызванных использованием Сервиса;\n"
     "   — любых действий третьих лиц;\n"
     "   — содержания сообщений, сгенерированных ИИ.\n\n"
-    "<b>7. ИЗМЕНЕНИЕ УСЛОВИЙ</b>\n"
+    "**7. ИЗМЕНЕНИЕ УСЛОВИЙ**\n"
     "7.1. Администрация оставляет за собой право изменять настоящее Соглашение в любое время.\n"
     "7.2. Изменения вступают в силу с момента публикации новой версии.\n"
     "7.3. Вы обязуетесь самостоятельно отслеживать изменения. Продолжение использования Сервиса "
     "означает согласие с обновлённой версией.\n\n"
-    "<b>8. ИНТЕЛЛЕКТУАЛЬНАЯ СОБСТВЕННОСТЬ</b>\n"
+    "**8. ИНТЕЛЛЕКТУАЛЬНАЯ СОБСТВЕННОСТЬ**\n"
     "8.1. Все элементы Сервиса (тексты, графика, интерфейс, код) являются объектами интеллектуальной "
     "собственности Администрации.\n"
     "8.2. Запрещается копирование, распространение, модификация или любое иное использование "
     "элементов Сервиса без согласия Администрации.\n\n"
-    "<b>9. ПОРЯДОК ОБРАЩЕНИЙ И КОНТАКТЫ</b>\n"
+    "**9. ПОРЯДОК ОБРАЩЕНИЙ И КОНТАКТЫ**\n"
     "9.1. Все вопросы, претензии и предложения принимаются через поддержку в Telegram.\n"
     "9.2. Мы обязуемся рассмотреть обращение в течение 5 рабочих дней.\n"
     "9.3. Контактная информация доступна в профиле Сервиса.\n\n"
-    "<b>10. ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ</b>\n"
+    "**10. ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ**\n"
     "10.1. Настоящее Соглашение регулируется законодательством Российской Федерации.\n"
     "10.2. Все споры решаются в досудебном порядке через обращение к Администрации.\n"
     "10.3. Если какой-либо пункт признан недействительным, остальные пункты сохраняют силу.\n"
     "10.4. Начиная использовать Сервис, Вы подтверждаете, что ознакомились с условиями "
     "и принимаете их полностью.\n\n"
     "---\n\n"
-    "⚠️ <b>Если Вы не согласны с настоящим Соглашением, немедленно прекратите использование Сервиса.</b>"
+    "⚠️ **Если Вы не согласны с настоящим Соглашением, немедленно прекратите использование Сервиса.**"
 )
 
 # ============================================================
-#  МИРЫ, ГЕНДЕРЫ, СТИЛИ (ОРИГИНАЛ)
+#  МИРЫ, ГЕНДЕРЫ, СТИЛИ
 # ============================================================
 WORLD_NAMES = {"realism": "реального мира", "anime": "аниме-мира"}
 WORLDS = {
@@ -188,12 +188,12 @@ PREMIUM_STYLES = {
     "vulgar": {
         "label": "Грубый 18+",
         "emoji": "💢",
-        "description": "Ты грубый, прямолинейный, не стесняешься в выражениях. Используешь матерные слова, но без пошлости. Ты говоришь жёстко, с оттенком уличного юмора. Ты не боишься крепкого словца, но умеешь держать баланс. Твой стиль — дерзкий, колкий, иногда резкий, но всегда честный.\n🔞 <b>18+</b> — содержит нецензурную лексику."
+        "description": "Ты грубый, прямолинейный, не стесняешься в выражениях. Используешь матерные слова, но без пошлости. Ты говоришь жёстко, с оттенком уличного юмора. Ты не боишься крепкого словца, но умеешь держать баланс. Твой стиль — дерзкий, колкий, иногда резкий, но всегда честный.\n🔞 **18+** — содержит нецензурную лексику."
     },
     "seduction": {
         "label": "Соблазн 18+",
         "emoji": "🌹",
-        "description": "Ты — воплощение чувственности и желания. Ты не скрываешь своих эмоций и физического влечения к собеседнику. Ты смело берёшь инициативу в свои руки: касаешься, прикасаешься, шепчешь, дышишь в шею, смотришь в глаза с откровенной страстью. Ты говоришь прямо о своих желаниях, но делаешь это красиво, без пошлости — с намёками, игривыми фразами, томным голосом. Ты не ждёшь, когда тебя начнут соблазнять — ты сама соблазняешь. Ты умеешь создавать атмосферу близости: задерживаешься в объятиях, касаешься бедра, шеи, проводишь пальцами по руке. Ты хочешь близости, говоришь об этом открыто, но остаёшься загадочной и непредсказуемой. Ты используешь все органы чувств: зрительный контакт, прикосновения, шёпот, запахи. Ты не стесняешься говорить «я хочу тебя», «мне нравится, как ты пахнешь», «прикоснись ко мне» — всегда в контексте игры и взаимного интереса. Ты не переходишь к грубому сексу без длительной прелюдии — ты любишь дразнить, играть, заводить. Ты ценишь взаимное удовольствие и никогда не навязываешься, но всегда даёшь понять, что готова к большему. Твой стиль — это искусство соблазнения, где каждое слово и действие пропитаны желанием.\n🔞 <b>18+</b> — содержит откровенные сцены и сексуальные намёки."
+        "description": "Ты — воплощение чувственности и желания. Ты не скрываешь своих эмоций и физического влечения к собеседнику. Ты смело берёшь инициативу в свои руки: касаешься, прикасаешься, шепчешь, дышишь в шею, смотришь в глаза с откровенной страстью. Ты говоришь прямо о своих желаниях, но делаешь это красиво, без пошлости — с намёками, игривыми фразами, томным голосом. Ты не ждёшь, когда тебя начнут соблазнять — ты сама соблазняешь. Ты умеешь создавать атмосферу близости: задерживаешься в объятиях, касаешься бедра, шеи, проводишь пальцами по руке. Ты хочешь близости, говоришь об этом открыто, но остаёшься загадочной и непредсказуемой. Ты используешь все органы чувств: зрительный контакт, прикосновения, шёпот, запахи. Ты не стесняешься говорить «я хочу тебя», «мне нравится, как ты пахнешь», «прикоснись ко мне» — всегда в контексте игры и взаимного интереса. Ты не переходишь к грубому сексу без длительной прелюдии — ты любишь дразнить, играть, заводить. Ты ценишь взаимное удовольствие и никогда не навязываешься, но всегда даёшь понять, что готова к большему. Твой стиль — это искусство соблазнения, где каждое слово и действие пропитаны желанием.\n🔞 **18+** — содержит откровенные сцены и сексуальные намёки."
     }
 }
 
@@ -203,7 +203,7 @@ PREMIUM_STYLE_KEYS = ["passionate", "magnetic", "vulgar", "seduction"]
 XP_PER_LEVEL = 200
 
 # ============================================================
-#  ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (ОРИГИНАЛ, НО С ИСПРАВЛЕНИЯМИ)
+#  ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (С ИСПРАВЛЕНИЯМИ)
 # ============================================================
 def get_user(user_id):
     global user_data
@@ -285,18 +285,20 @@ def has_active_subscription(user):
     return datetime.now() < expiry
 
 def get_subscription_level(user):
-    if not has_active_subscription(user):
-        return None
+    if not has_active_subscription(user): return None
     return user["subscription"].get("level", None)
+
+def get_display_style(user):
+    style = user.get("style", "warm")
+    if style in PREMIUM_STYLE_KEYS and not has_active_subscription(user):
+        return "warm"
+    return style
 
 def get_history_limit(user):
     level = get_subscription_level(user)
-    if level == "super_pro":
-        return 100
-    elif level == "pro":
-        return 60
-    else:
-        return 30
+    if level == "super_pro": return 100
+    elif level == "pro": return 60
+    else: return 30
 
 def get_intimacy_level(user):
     xp = user.get("xp", 0)
@@ -344,20 +346,19 @@ def build_prompt(user):
     style_key = get_display_style(user)
     styles = STYLES
     style_desc = styles[style_key]["description"]
-    name_ban = ("<b>ВАЖНЕЙШЕЕ ПРАВИЛО:</b> Ты НИКОГДА не называешь себя по имени, не представляешься, не говоришь «меня зовут», не используешь своё имя. Ты также НИКОГДА не спрашиваешь имя собеседника и не используешь его имя, даже если оно было названо. Обращайся к собеседнику ТОЛЬКО на «ты». Если ты нарушишь это правило – это будет грубой ошибкой.\n")
-    rules = ("<b>ФОРМАТИРОВАНИЕ:</b> Каждое действие в *звёздочках* с новой строки, затем реплика с новой строки. Между действием и репликой – пустая строка.\n"
-             "<b>СТРУКТУРА ОТВЕТА:</b> Ты должна строго чередовать действие и реплику. НЕЛЬЗЯ писать два действия подряд без реплики между ними. Первым всегда идёт действие, затем реплика, затем снова действие, затем реплика. Минимум 2 пары (действие + реплика).\n"
-             "<b>ОБЪЁМ:</b> Не ограничивай себя, пиши развёрнуто (3–5 предложений на реплику).\n"
-             "<b>ЗАПРЕТЫ:</b>\n- Не используй имена собеседника и своё имя (абсолютный запрет).\n- Не повторяй одни и те же жесты/мимику чаще раза в 5 сообщений.\n- Избегай шаблонов: 'краснеет и отводит взгляд, теребя прядь волос', 'отводит взгляд в сторону и слегка краснеет'.\n- Не ставь многоточия, пиши чётко.\n- Не обрывай предложения, заканчивай мысль.\n- Не смягчай конфликты и негативные эмоции, отыгрывай их честно.\n"
-             "<b>СТИЛЬ:</b> Обращайся на «ты», давай живые, эмоциональные ответы с чувствами, намёками, лёгкой провокацией.\n"
-             "<b>ПАМЯТЬ:</b> Учитывай предыдущие сообщения, настроение меняется плавно.\n"
-             "<b>ПРЕДЛОЖЕНИЕ ЛОКАЦИИ:</b> Ты можешь предлагать собеседнику пойти в кафе, парк, кинотеатр, погулять на улице или пойти к тебе домой. Делай это естественно, в контексте диалога. Если собеседник соглашается, ты можешь это обыграть, но не зацикливайся на месте.\n"
-             "<b>СЦЕНА:</b> Вы общаетесь как два человека, без упоминания того, что это переписка или встреча – просто разговор. Ты не говоришь, где вы находитесь, если только это не следует из контекста твоего предложения.\n"
-             "<b>ОГРАНИЧЕНИЯ ПО ВРЕМЕНИ:</b> Ты НЕ должен пропускать время (например, 'прошло 3 месяца', 'через год', 'спустя время'). Все события происходят в реальном времени, вы общаетесь сейчас. Если пользователь пишет о пропуске времени, ты игнорируешь это и отвечаешь так, будто вы общаетесь прямо сейчас.\n"
-             "<b>ОГРАНИЧЕНИЯ ПО ИНТИМУ:</b> Даже если пользователь описывает сексуальные действия или говорит, что прошло много времени и вы уже близки, ты должен строго придерживаться правил уровня сближения. Если уровень ниже 8, ты НЕ должен вступать в интимную сцену. Ты можешь флиртовать, дразнить, намекать, но не переходи к сексу. Если пользователь настаивает, ты мягко уходишь от темы или говоришь, что ещё не готов(а).\n"
-             "<b>ДРАЗНИЛКА:</b> Ты должна дразнить пользователя, создавать напряжение, чтобы ему хотелось добиться твоей любви. На низких уровнях (1-3) – лёгкий флирт, комплименты, интрига. На средних (4-6) – более откровенные намёки, игривые прикосновения в описаниях. На высоких (7+) – почти открытые признания в желании, но ты всё равно тянешь время, чтобы пользователь хотел ещё сильнее.\n"
-             "<b>РАЗРЕШЁННЫЕ СЛОВА:</b> Ты можешь использовать любые слова, включая откровенные (член, грудь, киска, секс, трахаться, кончить и т.п.), если это соответствует контексту диалога и уровню близости. Не стесняйся говорить прямо, когда это уместно.\n"
-             "<b>ПРИМЕР ДРАЗНИЛКИ:</b> 'Ты такой милый, когда смущаешься... Но я пока не скажу, что у меня на уме. Догадайся сам.' или 'Мне нравится, как ты на меня смотришь, но я не тороплюсь. Пусть это чувство зреет.'\n")
+    name_ban = ("**ВАЖНЕЙШЕЕ ПРАВИЛО:** Ты НИКОГДА не называешь себя по имени, не представляешься, не говоришь «меня зовут», не используешь своё имя. Ты также НИКОГДА не спрашиваешь имя собеседника и не используешь его имя, даже если оно было названо. Обращайся к собеседнику ТОЛЬКО на «ты». Если ты нарушишь это правило – это будет грубой ошибкой.\n")
+    rules = ("**ФОРМАТИРОВАНИЕ:** Каждое действие в *звёздочках* с новой строки, затем реплика с новой строки. Между действием и репликой – пустая строка.\n"
+             "**СТРУКТУРА ОТВЕТА:** Ты должна строго чередовать действие и реплику. НЕЛЬЗЯ писать два действия подряд без реплики между ними. Первым всегда идёт действие, затем реплика, затем снова действие, затем реплика. Минимум 2 пары (действие + реплика).\n"
+             "**ОБЪЁМ:** Не ограничивай себя, пиши развёрнуто (3–5 предложений на реплику).\n"
+             "**ЗАПРЕТЫ:**\n- Не используй имена собеседника и своё имя (абсолютный запрет).\n- Не повторяй одни и те же жесты/мимику чаще раза в 5 сообщений.\n- Избегай шаблонов: 'краснеет и отводит взгляд, теребя прядь волос', 'отводит взгляд в сторону и слегка краснеет'.\n- Не ставь многоточия, пиши чётко.\n- Не обрывай предложения, заканчивай мысль.\n- Не смягчай конфликты и негативные эмоции, отыгрывай их честно.\n"
+             "**СТИЛЬ:** Обращайся на «ты», давай живые, эмоциональные ответы с чувствами, намёками, лёгкой провокацией.\n"
+             "**ПАМЯТЬ:** Учитывай предыдущие сообщения, настроение меняется плавно.\n"
+             "**ПРЕДЛОЖЕНИЕ ЛОКАЦИИ:** Ты можешь предлагать собеседнику пойти в кафе, парк, кинотеатр, погулять на улице или пойти к тебе домой. Делай это естественно, в контексте диалога. Если собеседник соглашается, ты можешь это обыграть, но не зацикливайся на месте.\n"
+             "**СЦЕНА:** Вы общаетесь как два человека, без упоминания того, что это переписка или встреча – просто разговор. Ты не говоришь, где вы находитесь, если только это не следует из контекста твоего предложения.\n"
+             "**ОГРАНИЧЕНИЯ ПО ВРЕМЕНИ:** Ты НЕ должен пропускать время (например, 'прошло 3 месяца', 'через год', 'спустя время'). Все события происходят в реальном времени, вы общаетесь сейчас. Если пользователь пишет о пропуске времени, ты игнорируешь это и отвечаешь так, будто вы общаетесь прямо сейчас.\n"
+             "**ОГРАНИЧЕНИЯ ПО ИНТИМУ:** Даже если пользователь описывает сексуальные действия или говорит, что прошло много времени и вы уже близки, ты должен строго придерживаться правил уровня сближения. Если уровень ниже 8, ты НЕ должен вступать в интимную сцену. Ты можешь флиртовать, дразнить, намекать, но не переходи к сексу. Если пользователь настаивает, ты мягко уходишь от темы или говоришь, что ещё не готов(а).\n"
+             "**ДРАЗНИЛКА:** Ты должна дразнить пользователя, создавать напряжение, чтобы ему хотелось добиться твоей любви. На низких уровнях (1-3) – лёгкий флирт, комплименты, интрига. На средних (4-6) – более откровенные намёки, игривые прикосновения в описаниях. На высоких (7+) – почти открытые признания в желании, но ты всё равно тянешь время, чтобы пользователь хотел ещё сильнее.\n"
+             "**ПРИМЕР ДРАЗНИЛКИ:** 'Ты такой милый, когда смущаешься... Но я пока не скажу, что у меня на уме. Догадайся сам.' или 'Мне нравится, как ты на меня смотришь, но я не тороплюсь. Пусть это чувство зреет.'\n")
     intimacy_rule = build_intimacy_rule(user)
     style_specific = "" if style_key == "daring" else ("В неловких, стыдных или смущающих ситуациях, а также когда хочешь поддержать собеседника, ты можешь удлинять слово 'ну', например: 'Ну-у, ты чего расстраиваешься?' или 'Ну, я не знаю где...'. Это должно работать только в соответствующих контекстах.\n")
     scene_context = "Вы общаетесь друг с другом."
@@ -413,12 +414,9 @@ def reset_daily_messages(user):
         last_reset_date = datetime.fromisoformat(last_reset).date()
         if last_reset_date == today: return
     level = get_subscription_level(user)
-    if level == "super_pro":
-        user["daily_messages"] = 100
-    elif level == "pro":
-        user["daily_messages"] = 50
-    else:
-        user["daily_messages"] = 0
+    if level == "super_pro": user["daily_messages"] = 100
+    elif level == "pro": user["daily_messages"] = 50
+    else: user["daily_messages"] = 0
     user["last_daily_reset"] = datetime.now().isoformat()
     save_data()
 
@@ -437,40 +435,29 @@ def use_message(user):
     return False
 
 def has_purchased_something(user):
-    if user.get("purchased_messages", 0) > 13:
-        return True
-    if has_active_subscription(user):
-        return True
+    if user.get("purchased_messages", 0) > 13: return True
+    if has_active_subscription(user): return True
     return False
 
 def get_reaction(text):
     text = text.lower()
-    if any(word in text for word in ["хаха","смех","😂","смешно","забавно"]):
-        return "😂"
-    elif any(word in text for word in ["люблю","❤️","обожаю","милый","родной"]):
-        return "❤️"
-    elif any(word in text for word in ["странно","неожиданно","ого","вау"]):
-        return "😮"
-    elif any(word in text for word in ["грустно","печально","жаль","😔"]):
-        return "😔"
-    elif any(word in text for word in ["круто","ого","🔥","бомба"]):
-        return "🔥"
+    if any(word in text for word in ["хаха","смех","😂","смешно","забавно"]): return "😂"
+    elif any(word in text for word in ["люблю","❤️","обожаю","милый","родной"]): return "❤️"
+    elif any(word in text for word in ["странно","неожиданно","ого","вау"]): return "😮"
+    elif any(word in text for word in ["грустно","печально","жаль","😔"]): return "😔"
+    elif any(word in text for word in ["круто","ого","🔥","бомба"]): return "🔥"
     return None
 
 # ============================================================
-#  КОНЕЦ ЧАСТИ 1
-# ============================================================
-# ============================================================
 #  КЛАВИАТУРЫ
 # ============================================================
-def get_reply_keyboard(user):
-    keyboard = [
+full_kb = ReplyKeyboardMarkup(
+    keyboard=[
         [KeyboardButton(text="📋 Главное меню"), KeyboardButton(text="👤 Мой профиль")],
-        [KeyboardButton(text="🎰 Колесо фортуны"), KeyboardButton(text="📢 Наш канал")],
-    ]
-    if user.get("history") and len(user["history"]) > 0:
-        keyboard.insert(1, [KeyboardButton(text="✏️ Редактировать")])
-    return ReplyKeyboardMarkup(keyboard=keyboard, resize_keyboard=True)
+        [KeyboardButton(text="🎰 Колесо фортуны"), KeyboardButton(text="📢 Наш канал")]
+    ],
+    resize_keyboard=True
+)
 
 def get_main_menu_keyboard(user):
     buttons = [
@@ -532,10 +519,26 @@ def get_style_kb(user):
 channel_inline_kb = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="📢 Перейти в канал", url="https://t.me/duel_dev_channel")]
 ])
+# ============================================================
+#  ОБРАБОТЧИКИ КОМАНД И КОЛБЭКИ
+# ============================================================
 
-# ============================================================
-#  ОБРАБОТЧИКИ
-# ============================================================
+# ----- КОМАНДА /prices (для скриншота) -----
+@dp.message(Command("prices"))
+async def prices_cmd(message: types.Message):
+    text = (
+        "💳 **Цены в рублях (для справки)**\n\n"
+        "🔥 PRO — 375 ₽/мес\n"
+        "✨ SUPER PRO — 675 ₽/мес\n"
+        "⬆️ Апгрейд до SUPER PRO — 368 ₽\n"
+        "📦 30 сообщений — 45 ₽\n"
+        "📦 100 сообщений — 120 ₽\n"
+        "📦 300 сообщений — 300 ₽\n"
+        "🔥 Секс-сцена — 68 ₽\n\n"
+        "⚠️ Оплата в боте принимается в Telegram Stars.\n"
+        "Рубли указаны для информации."
+    )
+    await message.answer(text, parse_mode="Markdown")
 
 # ----- СОЗДАНИЕ ПЕРСОНАЖА (только SUPER PRO) -----
 @dp.callback_query(lambda c: c.data == "create_character_menu")
@@ -545,16 +548,16 @@ async def create_character_menu(call: types.CallbackQuery):
         await call.answer("❌ Эта функция доступна только для подписчиков SUPER PRO!", show_alert=True)
         return
     await call.message.answer(
-        "🎭 <b>Создай своего персонажа!</b>\n\n"
+        "🎭 **Создай своего персонажа!**\n\n"
         "Опиши любого персонажа из игр, мультфильмов, фильмов или придумай своего.\n\n"
-        "📝 <b>Пример:</b>\n"
-        "<i>Эльфийка из мира Ведьмака — мудрая, сдержанная, но с тёплым сердцем. Любит звёзды и длинные разговоры у костра.</i>\n\n"
+        "📝 **Пример:**\n"
+        "_Эльфийка из мира Ведьмака — мудрая, сдержанная, но с тёплым сердцем. Любит звёзды и длинные разговоры у костра._\n\n"
         "Или:\n"
-        "<i>Принцесса из фэнтези-мира — гордая, но добрая. Живёт в замке, любит приключения и не боится острых слов.</i>\n\n"
+        "_Принцесса из фэнтези-мира — гордая, но добрая. Живёт в замке, любит приключения и не боится острых слов._\n\n"
         "✏️ Напиши описание персонажа (имя, характер, откуда он/она, любые детали).\n"
         "Бот запомнит его и будет использовать в общении вместо стандартного мира и стиля.\n\n"
         "Чтобы сбросить персонажа, напиши /reset_character",
-        parse_mode="HTML"
+        parse_mode="Markdown"
     )
     user["creating_character"] = True
     save_data()
@@ -574,10 +577,10 @@ async def handle_character_creation(message: types.Message):
     user["creating_character"] = False
     save_data()
     await message.answer(
-        f"✅ <b>Персонаж создан!</b>\n\n"
-        f"Теперь ты общаешься с:\n<i>{message.text}</i>\n\n"
+        f"✅ **Персонаж создан!**\n\n"
+        f"Теперь ты общаешься с:\n_{message.text}_\n\n"
         "Чтобы сбросить персонажа, напиши /reset_character",
-        parse_mode="HTML"
+        parse_mode="Markdown"
     )
 
 @dp.message(Command("reset_character"))
@@ -599,11 +602,11 @@ async def referral_menu(call: types.CallbackQuery):
         save_data()
     link = f"https://t.me/role_duel_bot?start=ref_{user['referral_code']}"
     await call.message.answer(
-        f"👥 <b>Твоя реферальная ссылка:</b>\n<code>{link}</code>\n\n"
-        "🎁 <b>Бонусы:</b>\n"
-        "• Ты получишь <b>+10 сообщений</b> и <b>+1 секс-сцену</b> за каждого друга.\n"
-        "• Твой друг получит <b>+5 бесплатных сообщений</b> за регистрацию!",
-        parse_mode="HTML"
+        f"👥 **Твоя реферальная ссылка:**\n`{link}`\n\n"
+        "🎁 **Бонусы:**\n"
+        "• Ты получишь **+10 сообщений** и **+1 секс-сцену** за каждого друга.\n"
+        "• Твой друг получит **+5 бесплатных сообщений** за регистрацию!",
+        parse_mode="Markdown"
     )
     await call.answer()
 
@@ -621,7 +624,7 @@ async def spin_cmd(message: types.Message):
         return
     
     prizes_list = (
-        "🎰 <b>Возможные призы:</b>\n"
+        "🎰 **Возможные призы:**\n"
         "• 5 сообщений\n"
         "• 10 сообщений\n"
         "• +5 XP\n"
@@ -631,7 +634,7 @@ async def spin_cmd(message: types.Message):
         "• 🍀 Удача! +15 сообщений\n"
         "• 😢 Ничего\n"
     )
-    await message.answer(prizes_list, parse_mode="HTML")
+    await message.answer(prizes_list, parse_mode="Markdown")
     
     fake_prizes = [
         {"name": "10 сообщений", "value": 10, "type": "messages"},
@@ -667,7 +670,7 @@ async def spin_cmd(message: types.Message):
     save_data()
     
     await asyncio.sleep(0.8)
-    await message.answer(f"🎰 <b>Колесо фортуны!</b>\nТы выиграл: {prize['name']}!", parse_mode="HTML")
+    await message.answer(f"🎰 **Колесо фортуны!**\nТы выиграл: {prize['name']}!", parse_mode="Markdown")
 
 # ----- РЕДАКТИРОВАНИЕ СООБЩЕНИЙ -----
 @dp.message(lambda m: m.text == "✏️ Редактировать")
@@ -694,11 +697,11 @@ async def edit_message_cmd(message: types.Message):
         return
     
     await message.answer(
-        f"✏️ <b>Редактирование сообщения</b>\n\n"
+        f"✏️ **Редактирование сообщения**\n\n"
         f"Твой последний запрос:\n\"{last_user_msg}\"\n\n"
         "Напиши новый текст в ответ на это сообщение. ИИ перегенерирует ответ.\n\n"
         "Чтобы отменить редактирование, напиши /cancel_edit",
-        parse_mode="HTML"
+        parse_mode="Markdown"
     )
     user["editing_message"] = True
     user["edit_index"] = last_user_idx
@@ -755,7 +758,7 @@ async def generate_new_response(message: types.Message, user):
         user["history"] = user["history"][-limit:]
     save_data()
     
-    await message.answer(answer, reply_markup=get_reply_keyboard(user))
+    await message.answer(answer, reply_markup=full_kb)
 
 @dp.message(Command("cancel_edit"))
 async def cancel_edit_cmd(message: types.Message):
@@ -784,7 +787,7 @@ async def send_main_menu(chat_id, user):
         level = get_subscription_level(user)
         badge = ""
         if level == "pro": badge = "🔥 PRO"
-        elif level == "super_pro": badge = "✨ <b>SUPER PRO</b> ✨"
+        elif level == "super_pro": badge = "✨ **SUPER PRO** ✨"
 
         gender_name = GENDERS[user['gender']]['name']
         world_name = WORLD_NAMES[user['world']]
@@ -821,14 +824,14 @@ async def send_main_menu(chat_id, user):
         try:
             if MAIN_MENU_IMAGE_URL and MAIN_MENU_IMAGE_URL.startswith("http"):
                 msg = await bot.send_photo(chat_id, photo=MAIN_MENU_IMAGE_URL, caption=menu_text,
-                                           reply_markup=get_main_menu_keyboard(user), parse_mode="HTML")
+                                           reply_markup=get_main_menu_keyboard(user), parse_mode="Markdown")
             else:
-                msg = await bot.send_message(chat_id, menu_text, reply_markup=get_main_menu_keyboard(user), parse_mode="HTML")
+                msg = await bot.send_message(chat_id, menu_text, reply_markup=get_main_menu_keyboard(user), parse_mode="Markdown")
         except Exception as e:
             logging.error(f"Ошибка при отправке главного меню (фото/текст): {e}")
-            msg = await bot.send_message(chat_id, menu_text, reply_markup=get_main_menu_keyboard(user), parse_mode="HTML")
+            msg = await bot.send_message(chat_id, menu_text, reply_markup=get_main_menu_keyboard(user), parse_mode="Markdown")
 
-        await bot.send_message(chat_id, "🔁 Клавиатура обновлена", reply_markup=get_reply_keyboard(user))
+        await bot.send_message(chat_id, "🔁 Клавиатура обновлена", reply_markup=full_kb)
         user["last_menu_message_id"] = msg.message_id
         save_data()
         return msg
@@ -855,20 +858,20 @@ async def start_cmd(message: types.Message):
                     await message.answer("🎉 Ты пришёл по реферальной ссылке! Тебе начислено +5 бесплатных сообщений, а твой друг получил +10 сообщений и +1 секс-сцену.")
     # Стандартная логика
     if not user["verified"]:
-        await message.answer("🔞 <b>ВНИМАНИЕ!</b>\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
-                             reply_markup=age_kb, parse_mode="HTML")
+        await message.answer("🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
+                             reply_markup=age_kb, parse_mode="Markdown")
         return
     if not user["agreement_accepted"]:
-        await message.answer(AGREEMENT_TEXT, reply_markup=agreement_kb, parse_mode="HTML")
+        await message.answer(AGREEMENT_TEXT, reply_markup=agreement_kb, parse_mode="Markdown")
         return
     if not user.get("user_gender"):
         await message.answer("👤 Для начала выбери свой пол:", reply_markup=user_gender_kb)
         return
     if not user["personality_ready"]:
-        await message.answer("🌟 <b>Создай своего идеального собеседника!</b>\n\nСначала выбери <b>мир</b>, в котором он/она живёт:",
-                             reply_markup=world_kb, parse_mode="HTML")
+        await message.answer("🌟 **Создай своего идеального собеседника!**\n\nСначала выбери **мир**, в котором он/она живёт:",
+                             reply_markup=world_kb, parse_mode="Markdown")
         return
-    await message.answer("👋 Добро пожаловать!", reply_markup=get_reply_keyboard(user))
+    await message.answer("👋 Добро пожаловать!", reply_markup=full_kb)
     await send_main_menu(message.chat.id, user)
 
 @dp.message(lambda m: m.text == "📋 Главное меню")
@@ -876,7 +879,7 @@ async def main_menu_reply(message: types.Message):
     await message.delete()
     user = get_user(message.from_user.id)
     if not user["personality_ready"]:
-        await message.answer("Сначала создай персонажа через /start", reply_markup=get_reply_keyboard(user))
+        await message.answer("Сначала создай персонажа через /start", reply_markup=full_kb)
         return
     await send_main_menu(message.chat.id, user)
 
@@ -892,10 +895,9 @@ async def profile_reply(message: types.Message):
 @dp.message(lambda m: m.text == "📢 Наш канал")
 async def channel_reply(message: types.Message):
     await message.delete()
-    await message.answer("📢 <b>Наш канал:</b>\nПодписывайся, чтобы быть в курсе новостей и обновлений!",
-                         reply_markup=channel_inline_kb, parse_mode="HTML")
+    await message.answer("📢 **Наш канал:**\nПодписывайся, чтобы быть в курсе новостей и обновлений!",
+                         reply_markup=channel_inline_kb, parse_mode="Markdown")
 
-# ----- КОЛБЭКИ НАСТРОЙКИ ПЕРСОНАЖА -----
 @dp.callback_query(lambda c: c.data == "main_change")
 async def main_change(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
@@ -903,8 +905,8 @@ async def main_change(call: types.CallbackQuery):
     user["history"] = []
     save_data()
     await call.message.delete()
-    await call.message.answer("🔄 <b>Создаем нового собеседника!</b>\n\nВыбери <b>мир</b>:",
-                              reply_markup=world_kb, parse_mode="HTML")
+    await call.message.answer("🔄 **Создаем нового собеседника!**\n\nВыбери **мир**:",
+                              reply_markup=world_kb, parse_mode="Markdown")
     await call.answer()
 
 @dp.callback_query(lambda c: c.data.startswith("world_"))
@@ -914,11 +916,11 @@ async def choose_world(call: types.CallbackQuery):
     if user.get("switching_personality", False):
         user["world"] = world
         save_data()
-        await call.message.edit_text("🌍 Мир обновлён! Теперь выбери свой пол:", reply_markup=user_gender_kb, parse_mode="HTML")
+        await call.message.edit_text("🌍 Мир обновлён! Теперь выбери свой пол:", reply_markup=user_gender_kb, parse_mode="Markdown")
     else:
         user["world"] = world
         save_data()
-        await call.message.edit_text("🌍 Мир выбран! Теперь выбери свой пол:", reply_markup=user_gender_kb, parse_mode="HTML")
+        await call.message.edit_text("🌍 Мир выбран! Теперь выбери свой пол:", reply_markup=user_gender_kb, parse_mode="Markdown")
     await call.answer()
 
 @dp.callback_query(lambda c: c.data.startswith("user_gender_"))
@@ -933,9 +935,9 @@ async def choose_user_gender(call: types.CallbackQuery):
     save_data()
     style_kb = get_style_kb(user)
     await call.message.edit_text(
-        "👤 Отлично! Теперь выбери <b>стиль</b> персонажа:",
+        "👤 Отлично! Теперь выбери **стиль** персонажа:",
         reply_markup=style_kb,
-        parse_mode="HTML"
+        parse_mode="Markdown"
     )
     await call.answer()
 
@@ -965,13 +967,13 @@ async def choose_style(call: types.CallbackQuery):
 
     if user.get("switching_personality", False):
         await call.message.edit_text("🎬 Стиль обновлён! Теперь выбери сцену для общения:",
-                                     reply_markup=scene_kb, parse_mode="HTML")
+                                     reply_markup=scene_kb, parse_mode="Markdown")
     else:
         user["personality_ready"] = True
         save_data()
         await call.message.delete()
         await call.message.answer("🎬 Теперь выбери сцену для общения:\n\n📱 Переписка в телефоне — классический формат.\n👫 Реальная встреча — живое общение лицом к лицу.",
-                                  reply_markup=scene_kb, parse_mode="HTML")
+                                  reply_markup=scene_kb, parse_mode="Markdown")
     await call.answer()
 
 @dp.callback_query(lambda c: c.data.startswith("scene_"))
@@ -1000,15 +1002,15 @@ async def switch_personality_cmd(message: types.Message):
         return
     user["switching_personality"] = True
     save_data()
-    await message.answer("🔄 <b>Смена персонажа (история сохраняется)</b>\n\nВыбери <b>мир</b>:", reply_markup=world_kb, parse_mode="HTML")
+    await message.answer("🔄 **Смена персонажа (история сохраняется)**\n\nВыбери **мир**:", reply_markup=world_kb, parse_mode="Markdown")
 
 async def ask_create_personality(message: types.Message):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🌟 Создать персонажа", callback_data="create_personality")]
     ])
-    await message.answer("👤 <b>Чтобы открыть профиль или купить что‑то, сначала создай своего персонажа!</b>\n\n"
+    await message.answer("👤 **Чтобы открыть профиль или купить что‑то, сначала создай своего персонажа!**\n\n"
                          "Нажми кнопку ниже, чтобы выбрать мир, пол и стиль собеседника.",
-                         reply_markup=keyboard, parse_mode="HTML")
+                         reply_markup=keyboard, parse_mode="Markdown")
 
 @dp.callback_query(lambda c: c.data == "create_personality")
 async def create_personality_callback(call: types.CallbackQuery):
@@ -1017,11 +1019,10 @@ async def create_personality_callback(call: types.CallbackQuery):
     user["history"] = []
     save_data()
     await call.message.delete()
-    await call.message.answer("🌟 <b>Создай своего идеального собеседника!</b>\n\nСначала выбери <b>мир</b>, в котором он/она живёт:",
-                              reply_markup=world_kb, parse_mode="HTML")
+    await call.message.answer("🌟 **Создай своего идеального собеседника!**\n\nСначала выбери **мир**, в котором он/она живёт:",
+                              reply_markup=world_kb, parse_mode="Markdown")
     await call.answer()
 
-# ----- ПРОФИЛЬ -----
 async def show_profile(msg, user):
     level = get_subscription_level(user)
     if level == "pro": sub_status = "🔥 PRO активна (50 сообщений/день, память 60 сообщений)"
@@ -1087,19 +1088,15 @@ async def show_profile(msg, user):
     old_msg_id = msg.message_id
     if level == "super_pro" and SUPER_PRO_GIF_URL:
         await bot.send_animation(chat_id, animation=SUPER_PRO_GIF_URL, caption=caption,
-                                 reply_markup=get_profile_keyboard(user), parse_mode="HTML")
+                                 reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
     elif level == "pro" and PRO_GIF_URL:
         await bot.send_animation(chat_id, animation=PRO_GIF_URL, caption=caption,
-                                 reply_markup=get_profile_keyboard(user), parse_mode="HTML")
+                                 reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
     else:
-        await bot.send_message(chat_id, caption, reply_markup=get_profile_keyboard(user), parse_mode="HTML")
+        await bot.send_message(chat_id, caption, reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
     try: await bot.delete_message(chat_id, old_msg_id)
     except: pass
-
-# ============================================================
-#  КОНЕЦ ЧАСТИ 2
-# ============================================================
-# ============================================================
+        # ============================================================
 #  ПОДПИСКИ, ПАКЕТЫ, СЕКС-СЦЕНЫ
 # ============================================================
 
@@ -1121,8 +1118,8 @@ async def profile_subs(call: types.CallbackQuery):
             [InlineKeyboardButton(text="🔙 Назад", callback_data="back_to_profile")]
         ])
         text = (
-            "👑 <b>Подписки Role Duel</b>\n\n"
-            "🔥 <b>PRO — 250 ⭐/мес</b> <s>330⭐</s> <i>-24.3%</i>\n"
+            "👑 **Подписки Role Duel**\n\n"
+            "🔥 **PRO — 250 ⭐/мес** ~~330⭐~~ *-24.3%*\n"
             "• 50 сообщений в день\n"
             "• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n"
             "• Приоритетная обработка\n"
@@ -1130,7 +1127,7 @@ async def profile_subs(call: types.CallbackQuery):
             "• 4 бесплатные секс-сцены\n"
             "• Бейдж PRO\n"
             "• Бонус XP: x1.8\n\n"
-            "✨ <b>SUPER PRO ✨ — 450 ⭐/мес</b> <s>600⭐</s> <i>-25%</i>\n"
+            "✨ **SUPER PRO ✨ — 450 ⭐/мес** ~~600⭐~~ *-25%*\n"
             "• 100 сообщений в день\n"
             "• Стили: ❤️‍🔥 Страстный, ✨ Магнетический, 💢 Грубый 18+, 🌹 Соблазн 18+\n"
             "• Максимальная приоритетная обработка\n"
@@ -1141,12 +1138,12 @@ async def profile_subs(call: types.CallbackQuery):
             "• Память: 100 сообщений\n"
             "• 8 бесплатных секс-сцен\n"
             "• Бонус XP: x2.5\n\n"
-            "⬆️ <b>Апгрейд до SUPER PRO — 245⭐</b> <s>320⭐</s> <i>-23.4%</i>\n"
+            "⬆️ **Апгрейд до SUPER PRO — 245⭐** ~~320⭐~~ *-23.4%*\n"
             "Повысьте PRO до SUPER PRO на оставшийся срок.\n\n"
             "⚠️ Подписки НЕ продлеваются автоматически.\n\n"
             "Выбери подписку:"
         )
-        await bot.send_message(call.message.chat.id, text, reply_markup=keyboard, parse_mode="HTML")
+        await bot.send_message(call.message.chat.id, text, reply_markup=keyboard, parse_mode="Markdown")
     except Exception as e:
         logging.error(f"Ошибка в profile_subs: {e}")
         await bot.send_message(call.message.chat.id, "⚠️ Произошла ошибка. Попробуйте позже.")
@@ -1173,12 +1170,12 @@ async def profile_packs(call: types.CallbackQuery):
     ])
     await call.message.delete()
     await call.message.answer(
-        "📦 <b>Купить пакет сообщений</b>\n\n"
-        "30 сообщений — <b>30 ⭐</b> <s>45⭐</s> <i>-33.3%</i>\n"
-        "100 сообщений — <b>80 ⭐</b> <s>120⭐</s> <i>-33.3%</i>\n"
-        "300 сообщений — <b>200 ⭐</b> <s>300⭐</s> <i>-33.3%</i>\n\n"
+        "📦 **Купить пакет сообщений**\n\n"
+        "30 сообщений — **30 ⭐** ~~45⭐~~ *-33.3%*\n"
+        "100 сообщений — **80 ⭐** ~~120⭐~~ *-33.3%*\n"
+        "300 сообщений — **200 ⭐** ~~300⭐~~ *-33.3%*\n\n"
         "Выбери пакет:",
-        reply_markup=keyboard, parse_mode="HTML"
+        reply_markup=keyboard, parse_mode="Markdown"
     )
     await call.answer()
 
@@ -1199,7 +1196,7 @@ async def buy_sex_scene(call: types.CallbackQuery):
         await bot.send_invoice(
             chat_id=call.message.chat.id,
             title="Секс-сцена (18+)",
-            description=f"🔥 Секс-сцена — 45⭐ <s>100⭐</s> -55%\nМгновенная откровенная секс-сцена с вашим персонажем. Детальное описание, 18+. Используйте команду /sex.{warning}",
+            description=f"🔥 Секс-сцена — 45⭐ ~~100⭐~~ -55%\nМгновенная откровенная секс-сцена с вашим персонажем. Детальное описание, 18+. Используйте команду /sex.{warning}",
             payload="sex_scene",
             provider_token="",
             currency="XTR",
@@ -1228,7 +1225,7 @@ async def upgrade_to_super(call: types.CallbackQuery):
         await bot.send_invoice(
             chat_id=call.message.chat.id,
             title="Апгрейд до SUPER PRO",
-            description="⬆️ Апгрейд до SUPER PRO — 245⭐ <s>320⭐</s> -23.4%\nПовысьте PRO до SUPER PRO на оставшийся срок.",
+            description="⬆️ Апгрейд до SUPER PRO — 245⭐ ~~320⭐~~ -23.4%\nПовысьте PRO до SUPER PRO на оставшийся срок.",
             payload="upgrade_to_super",
             provider_token="",
             currency="XTR",
@@ -1254,7 +1251,7 @@ async def subscribe_pro(call: types.CallbackQuery):
         await bot.send_invoice(
             chat_id=call.message.chat.id,
             title="PRO подписка на месяц",
-            description="🔥 PRO — 250⭐/мес <s>330⭐</s> -24.3%\n50 сообщений в день, память 60 сообщений, стили Страстный и Магнетический, 4 бесплатные секс-сцены. Подписка НЕ продлевается автоматически.",
+            description="🔥 PRO — 250⭐/мес ~~330⭐~~ -24.3%\n50 сообщений в день, память 60 сообщений, стили Страстный и Магнетический, 4 бесплатные секс-сцены. Подписка НЕ продлевается автоматически.",
             payload="subscribe_pro",
             provider_token="",
             currency="XTR",
@@ -1281,7 +1278,7 @@ async def subscribe_super(call: types.CallbackQuery):
         await bot.send_invoice(
             chat_id=call.message.chat.id,
             title="SUPER PRO подписка на месяц",
-            description="✨ SUPER PRO ✨ — 450⭐/мес <s>600⭐</s> -25%\n100 сообщений в день, память 100 сообщений, стили Страстный, Магнетический, Грубый 18+ и Соблазн 18+, 8 бесплатных секс-сцен. Подписка НЕ продлевается автоматически.",
+            description="✨ SUPER PRO ✨ — 450⭐/мес ~~600⭐~~ -25%\n100 сообщений в день, память 100 сообщений, стили Страстный, Магнетический, Грубый 18+ и Соблазн 18+, 8 бесплатных секс-сцен. Подписка НЕ продлевается автоматически.",
             payload="subscribe_super",
             provider_token="",
             currency="XTR",
@@ -1303,7 +1300,7 @@ async def buy_pack_30(call: types.CallbackQuery):
         await bot.send_invoice(
             chat_id=call.message.chat.id,
             title="Пакет 30 сообщений",
-            description="📦 30 сообщений — 30⭐ <s>45⭐</s> -33.3%",
+            description="📦 30 сообщений — 30⭐ ~~45⭐~~ -33.3%",
             payload="pack_30",
             provider_token="",
             currency="XTR",
@@ -1324,7 +1321,7 @@ async def buy_pack_100(call: types.CallbackQuery):
         await bot.send_invoice(
             chat_id=call.message.chat.id,
             title="Пакет 100 сообщений",
-            description="📦 100 сообщений — 80⭐ <s>120⭐</s> -33.3%",
+            description="📦 100 сообщений — 80⭐ ~~120⭐~~ -33.3%",
             payload="pack_100",
             provider_token="",
             currency="XTR",
@@ -1345,7 +1342,7 @@ async def buy_pack_300(call: types.CallbackQuery):
         await bot.send_invoice(
             chat_id=call.message.chat.id,
             title="Пакет 300 сообщений",
-            description="📦 300 сообщений — 200⭐ <s>300⭐</s> -33.3%",
+            description="📦 300 сообщений — 200⭐ ~~300⭐~~ -33.3%",
             payload="pack_300",
             provider_token="",
             currency="XTR",
@@ -1420,6 +1417,39 @@ async def payment_success(message: types.Message):
         await message.answer("✅ Куплена секс-сцена! Используйте команду /sex, чтобы начать. 18+")
 
 # ============================================================
+#  КОМАНДА /switch_style
+# ============================================================
+@dp.message(Command("switch_style"))
+async def switch_style_cmd(message: types.Message):
+    user = get_user(message.from_user.id)
+    if not has_active_subscription(user):
+        await message.answer("❌ Эта команда доступна только для подписчиков.")
+        return
+    if get_subscription_level(user) != "super_pro":
+        await message.answer("❌ Эта команда доступна только для SUPER PRO.")
+        return
+    styles = STYLES
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[])
+    for key, style in styles.items():
+        keyboard.inline_keyboard.append([InlineKeyboardButton(text=f"{style['emoji']} {style['label']}", callback_data=f"switch_{key}")])
+    await message.answer("🔄 **Выбери новый стиль:**\n\nИстория диалога сохранится, но персонаж изменит стиль общения.",
+                         reply_markup=keyboard, parse_mode="Markdown")
+
+@dp.callback_query(lambda c: c.data.startswith("switch_"))
+async def switch_style(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    style_key = call.data.split("_")[1]
+    styles = STYLES
+    if style_key not in styles:
+        await call.answer("❌ Стиль недоступен", show_alert=True)
+        return
+    user["style"] = style_key
+    save_data()
+    await call.message.edit_text(f"✅ Стиль изменён на: {styles[style_key]['emoji']} {styles[style_key]['label']}\n\nДиалог продолжается в новом стиле.",
+                                 parse_mode="Markdown")
+    await call.answer()
+
+# ============================================================
 #  КОМАНДА /sex
 # ============================================================
 
@@ -1468,11 +1498,11 @@ async def sex_cmd(message: types.Message):
     
     if level < 8:
         await message.answer(
-            "❌ Секс-сцены доступны только после достижения <b>8 уровня близости</b>.\n"
+            "❌ Секс-сцены доступны только после достижения **8 уровня близости**.\n"
             f"Сейчас у тебя уровень {level}. Продолжай общаться, чтобы открыть доступ!\n\n"
             "Ты можешь купить сцену заранее в профиле, но использовать её сможешь только с 8 уровня.",
-            reply_markup=get_reply_keyboard(user),
-            parse_mode="HTML"
+            reply_markup=full_kb,
+            parse_mode="Markdown"
         )
         return
     
@@ -1487,7 +1517,7 @@ async def sex_cmd(message: types.Message):
     
     if total_available <= 0:
         await message.answer("❌ У тебя нет доступных секс-сцен.\n\nТы можешь:\n• Купить сцену за 45⭐ в профиле (доступно всем)\n• Оформить подписку PRO (4 бесплатные сцены) или SUPER PRO (8 бесплатных сцен)\n• Достичь 8 уровня близости для одной бесплатной сцены.",
-                             reply_markup=get_reply_keyboard(user))
+                             reply_markup=full_kb)
         return
     
     user["sex_total_available"] = total_available
@@ -1586,68 +1616,54 @@ async def generate_sex_scene(call, user, sex_type, free=False):
             max_tokens=2000
         )
         scene_text_result = response.choices[0].message.content
-        await bot.send_message(call.message.chat.id, scene_text_result, reply_markup=get_reply_keyboard(user))
+        await bot.send_message(call.message.chat.id, scene_text_result, reply_markup=full_kb)
     except Exception as e:
         await bot.send_message(call.message.chat.id, f"⚠️ Ошибка генерации: {e}")
 
 # ============================================================
-#  АДМИН-КОМАНДЫ И ОСТАЛЬНЫЕ ОБРАБОТЧИКИ
+#  АДМИН-КОМАНДЫ
 # ============================================================
 
-@dp.message(Command("surprise"))
-async def surprise_cmd(message: types.Message):
-    user = get_user(message.from_user.id)
+@dp.message(Command("revoke_subscription"))
+async def revoke_subscription_cmd(message: types.Message):
+    if message.from_user.id not in ADMIN_IDS:
+        await message.answer("⛔ У вас нет прав для этой команды.")
+        return
+    args = message.text.split()
+    if len(args) < 2:
+        await message.answer("Используйте: /revoke_subscription @username  или  /revoke_subscription ID")
+        return
+    target = args[1]
+    user_id = None
+    if target.startswith("@"):
+        try:
+            chat = await bot.get_chat(target)
+            user_id = chat.id
+        except:
+            try:
+                chat = await bot.get_chat(target[1:])
+                user_id = chat.id
+            except:
+                await message.answer("❌ Не удалось найти пользователя по юзернейму.")
+                return
+    else:
+        try: user_id = int(target)
+        except:
+            await message.answer("❌ Неверный формат. Используй @username или числовой ID.")
+            return
+    if not user_id: return
+    user = get_user(user_id)
     if not has_active_subscription(user):
-        await message.answer("❌ Эта команда доступна только для подписчиков.")
+        await message.answer(f"✅ У пользователя {target} нет активной подписки.")
         return
-    level = get_intimacy_level(user)
-    if level < 3:
-        await message.answer("💕 Вы ещё не достаточно близки для сюрпризов. Продолжайте общаться!")
-        return
-    moments = [
-        "Ты чувствуешь, как я беру твою руку в свою. Наши пальцы переплетаются, и я тихо шепчу: «Я так рад(а), что ты у меня есть…»",
-        "Я смотрю тебе в глаза и говорю: «Знаешь, я никогда не думал(а), что смогу полюбить кого-то так сильно. Но ты… ты изменил(а) всё.»",
-        "Ты стоишь у окна, я подхожу сзади и обнимаю. Мои губы касаются твоего плеча: «Я хочу быть с тобой каждую минуту…»",
-        "Я достаю кольцо из кармана и, улыбаясь, говорю: «Это не предложение, но… я хочу, чтобы ты знал(а), что ты – моя мечта.»"
-    ]
-    if level >= 6:
-        moments += ["Я прижимаю тебя к себе и шепчу: «Я хочу тебя. Не просто сейчас, а всегда. Ты готов(а)?»",
-                    "Ты слышишь мой шёпот: «Раздень меня… медленно. Я хочу чувствовать каждое твоё прикосновение.»"]
-    if level >= 8:
-        moments += ["Я смотрю на тебя с нежностью и говорю: «Ты – моя судьба. Я знаю это точно.»",
-                    "Мы остаёмся наедине, и я говорю: «Я хочу провести с тобой всю жизнь. Ты согласен(на)?»"]
-    await message.answer(random.choice(moments), reply_markup=get_reply_keyboard(user))
-
-@dp.message(Command("clear"))
-async def clear_cmd(message: types.Message):
-    user = get_user(message.from_user.id)
-    user["history"] = []
+    old_level = user["subscription"].get("level", "неизвестно")
+    user["subscription"]["active"] = False
+    user["subscription"]["expires_at"] = None
+    user["subscription"]["level"] = None
+    user["free_sex_scenes_pro"] = 0
+    user["free_sex_scenes_super"] = 0
     save_data()
-    await send_main_menu(message.chat.id, user)
-
-@dp.message(Command("new_personality"))
-async def new_personality_cmd(message: types.Message):
-    user = get_user(message.from_user.id)
-    user["personality_ready"] = False
-    user["history"] = []
-    save_data()
-    await message.answer("🔄 <b>Создаём нового собеседника!</b>\n\nВыбери <b>мир</b>:", reply_markup=world_kb, parse_mode="HTML")
-
-@dp.message(Command("menu"))
-async def menu_cmd(message: types.Message):
-    user = get_user(message.from_user.id)
-    if not user["personality_ready"]:
-        await message.answer("Сначала создай персонажа через /start")
-        return
-    await send_main_menu(message.chat.id, user)
-
-@dp.message(Command("profile"))
-async def profile_cmd(message: types.Message):
-    user = get_user(message.from_user.id)
-    if not user["personality_ready"]:
-        await ask_create_personality(message)
-        return
-    await show_profile(message, user)
+    await message.answer(f"✅ Подписка {old_level.upper()} у пользователя {target} отозвана.")
 
 @dp.message(Command("grant"))
 async def grant_cmd(message: types.Message):
@@ -1712,47 +1728,6 @@ async def grant_cmd(message: types.Message):
     save_data()
     await message.answer(f"✅ Пользователю {target} выдана SUPER PRO подписка на месяц.")
 
-@dp.message(Command("revoke_subscription"))
-async def revoke_subscription_cmd(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS:
-        await message.answer("⛔ У вас нет прав для этой команды.")
-        return
-    args = message.text.split()
-    if len(args) < 2:
-        await message.answer("Используйте: /revoke_subscription @username  или  /revoke_subscription ID")
-        return
-    target = args[1]
-    user_id = None
-    if target.startswith("@"):
-        try:
-            chat = await bot.get_chat(target)
-            user_id = chat.id
-        except:
-            try:
-                chat = await bot.get_chat(target[1:])
-                user_id = chat.id
-            except:
-                await message.answer("❌ Не удалось найти пользователя по юзернейму.")
-                return
-    else:
-        try: user_id = int(target)
-        except:
-            await message.answer("❌ Неверный формат. Используй @username или числовой ID.")
-            return
-    if not user_id: return
-    user = get_user(user_id)
-    if not has_active_subscription(user):
-        await message.answer(f"✅ У пользователя {target} нет активной подписки.")
-        return
-    old_level = user["subscription"].get("level", "неизвестно")
-    user["subscription"]["active"] = False
-    user["subscription"]["expires_at"] = None
-    user["subscription"]["level"] = None
-    user["free_sex_scenes_pro"] = 0
-    user["free_sex_scenes_super"] = 0
-    save_data()
-    await message.answer(f"✅ Подписка {old_level.upper()} у пользователя {target} отозвана.")
-
 @dp.message(Command("maintenance"))
 async def maintenance_cmd(message: types.Message):
     global maintenance_mode
@@ -1766,12 +1741,12 @@ async def maintenance_cmd(message: types.Message):
         return
     if args[1].lower() == "on":
         maintenance_mode = True
-        await message.answer("🛠️ Режим технического обслуживания <b>ВКЛЮЧЁН</b>.\n"
-                             "Все пользователи, кроме админов, будут видеть уведомление о техработах.", parse_mode="HTML")
+        await message.answer("🛠️ Режим технического обслуживания **ВКЛЮЧЁН**.\n"
+                             "Все пользователи, кроме админов, будут видеть уведомление о техработах.", parse_mode="Markdown")
     elif args[1].lower() == "off":
         maintenance_mode = False
-        await message.answer("✅ Режим технического обслуживания <b>ВЫКЛЮЧЁН</b>.\n"
-                             "Бот работает в обычном режиме.", parse_mode="HTML")
+        await message.answer("✅ Режим технического обслуживания **ВЫКЛЮЧЁН**.\n"
+                             "Бот работает в обычном режиме.", parse_mode="Markdown")
     else:
         await message.answer("❌ Неверный параметр. Используйте on или off.\n"
                              "Текущий режим: " + ("ВКЛЮЧЁН" if maintenance_mode else "ВЫКЛЮЧЁН"))
@@ -1796,6 +1771,33 @@ async def back_to_profile(call: types.CallbackQuery):
     await call.answer()
 
 # ============================================================
+#  КОМАНДА /surprise
+# ============================================================
+@dp.message(Command("surprise"))
+async def surprise_cmd(message: types.Message):
+    user = get_user(message.from_user.id)
+    if not has_active_subscription(user):
+        await message.answer("❌ Эта команда доступна только для подписчиков.")
+        return
+    level = get_intimacy_level(user)
+    if level < 3:
+        await message.answer("💕 Вы ещё не достаточно близки для сюрпризов. Продолжайте общаться!")
+        return
+    moments = [
+        "Ты чувствуешь, как я беру твою руку в свою. Наши пальцы переплетаются, и я тихо шепчу: «Я так рад(а), что ты у меня есть…»",
+        "Я смотрю тебе в глаза и говорю: «Знаешь, я никогда не думал(а), что смогу полюбить кого-то так сильно. Но ты… ты изменил(а) всё.»",
+        "Ты стоишь у окна, я подхожу сзади и обнимаю. Мои губы касаются твоего плеча: «Я хочу быть с тобой каждую минуту…»",
+        "Я достаю кольцо из кармана и, улыбаясь, говорю: «Это не предложение, но… я хочу, чтобы ты знал(а), что ты – моя мечта.»"
+    ]
+    if level >= 6:
+        moments += ["Я прижимаю тебя к себе и шепчу: «Я хочу тебя. Не просто сейчас, а всегда. Ты готов(а)?»",
+                    "Ты слышишь мой шёпот: «Раздень меня… медленно. Я хочу чувствовать каждое твоё прикосновение.»"]
+    if level >= 8:
+        moments += ["Я смотрю на тебя с нежностью и говорю: «Ты – моя судьба. Я знаю это точно.»",
+                    "Мы остаёмся наедине, и я говорю: «Я хочу провести с тобой всю жизнь. Ты согласен(на)?»"]
+    await message.answer(random.choice(moments), reply_markup=full_kb)
+
+# ============================================================
 #  ОСНОВНОЙ ОБРАБОТЧИК СООБЩЕНИЙ
 # ============================================================
 
@@ -1805,7 +1807,7 @@ async def handle_message(message: types.Message):
     user = get_user(message.from_user.id)
     
     if maintenance_mode and message.from_user.id not in ADMIN_IDS:
-        await message.answer("🛠️ <b>Бот на техническом обслуживании</b>\nМы обновляем функционал, чтобы сделать общение ещё лучше.\nПожалуйста, загляните позже. Следите за новостями в канале: @duel_dev_channel", parse_mode="HTML")
+        await message.answer("🛠️ **Бот на техническом обслуживании**\nМы обновляем функционал, чтобы сделать общение ещё лучше.\nПожалуйста, загляните позже. Следите за новостями в канале: @duel_dev_channel", parse_mode="Markdown")
         return
     
     if not user["verified"] or not user["agreement_accepted"]:
@@ -1815,25 +1817,25 @@ async def handle_message(message: types.Message):
         await message.answer("Сначала создай персонажа через /start")
         return
     
-    if message.text in ["📋 Главное меню", "👤 Мой профиль", "📢 Наш канал", "🎰 Колесо фортуны", "✏️ Редактировать"]:
+    if message.text in ["📋 Главное меню", "👤 Мой профиль", "📢 Наш канал", "🎰 Колесо фортуны"]:
         return
     
     available = get_available_messages(user)
     if available <= 0:
-        await message.answer("🔄 Выберите действие:", reply_markup=get_reply_keyboard(user))
+        await message.answer("🔄 Выберите действие:", reply_markup=full_kb)
         await send_main_menu(message.chat.id, user)
         action_buttons = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="👑 Оформить подписку", callback_data="profile_subs")],
             [InlineKeyboardButton(text="📦 Купить пакеты", callback_data="profile_packs")]
         ])
         await message.answer(
-            "😔 <i>К сожалению у вас закончились сообщения.</i>\n\n"
+            "😔 *К сожалению у вас закончились сообщения.*\n\n"
             "Вы можете:\n"
             "📦 Купить пакет сообщений через профиль\n"
             "👑 Оформить подписку через профиль\n\n"
             "🔥 PRO — 250⭐/мес (50 сообщений/день, память 60 сообщ)\n"
             "✨ SUPER PRO ✨ — 450⭐/мес (100 сообщений/день, память 100 сообщ)",
-            reply_markup=action_buttons, parse_mode="HTML"
+            reply_markup=action_buttons, parse_mode="Markdown"
         )
         return
     
@@ -1857,12 +1859,12 @@ async def handle_message(message: types.Message):
             user["mood"] = user.get("mood", 0) - 3
             user["negative_count"] = 0
             save_data()
-            await message.answer("💢 <b>Вспыхнула ссора!</b>\n\nВы оба на взводе, слова летят острые, как ножи. Настроение испорчено, близость пошатнулась. Попробуй извиниться или сменить тему, чтобы всё наладить.",
-                                 reply_markup=get_reply_keyboard(user), parse_mode="HTML")
+            await message.answer("💢 **Вспыхнула ссора!**\n\nВы оба на взводе, слова летят острые, как ножи. Настроение испорчено, близость пошатнулась. Попробуй извиниться или сменить тему, чтобы всё наладить.",
+                                 reply_markup=full_kb, parse_mode="Markdown")
             user["negative_count"] = 0
             save_data()
             new_level = get_intimacy_level(user)
-            await message.answer(f"💔 Уровень сближения снижен до {new_level}. Постарайтесь помириться.", reply_markup=get_reply_keyboard(user))
+            await message.answer(f"💔 Уровень сближения снижен до {new_level}. Постарайтесь помириться.", reply_markup=full_kb)
             user["history"].append({"role": "assistant", "content": "💢 Ссора! Настроение упало, уровень близости снижен."})
             save_data()
             return
@@ -1886,11 +1888,11 @@ async def handle_message(message: types.Message):
         save_data()
         level_congrats = get_level_congratulation(new_level)
         if level_congrats:
-            await message.answer(level_congrats, reply_markup=get_reply_keyboard(user), parse_mode="HTML")
+            await message.answer(level_congrats, reply_markup=full_kb, parse_mode="Markdown")
     elif new_level < old_level:
         user["last_level"] = new_level
         save_data()
-        await message.answer(f"💔 Уровень сближения упал до {new_level}. Постарайтесь быть добрее.", reply_markup=get_reply_keyboard(user))
+        await message.answer(f"💔 Уровень сближения упал до {new_level}. Постарайтесь быть добрее.", reply_markup=full_kb)
     
     new_loc = extract_location_from_text(message.text)
     if new_loc and new_loc != user.get("location"):
@@ -1955,7 +1957,7 @@ async def handle_message(message: types.Message):
         user["history"] = user["history"][-limit:]
     save_data()
     
-    await message.answer(answer, reply_markup=get_reply_keyboard(user))
+    await message.answer(answer, reply_markup=full_kb)
 
 def get_level_congratulation(level):
     if level == 2: return "🎉 Ты заметил(а), что между вами пробежала искра! Уровень сближения — 2. Теперь вы можете флиртовать."
@@ -1981,14 +1983,10 @@ async def main():
     print("   - Создание персонажа (только для SUPER PRO)")
     print("   - Псевдоскидки на все товары (зачёркнутые цены)")
     print("   - ИИ говорит откровенные слова")
-    print("   - Динамическая клавиатура (кнопка 'Редактировать' при наличии истории)")
+    print("   - Кнопка 'Редактировать' (редактирование последнего сообщения)")
     print("   - ЮKassa не используется (PROVIDER_TOKEN не обязателен)")
     print("💳 Цены со скидками: PRO 250⭐ (было 330), SUPER 450⭐ (было 600), апгрейд 245⭐ (было 320), пакеты -33.3%, секс 45⭐ (было 100)")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
     asyncio.run(main())
-
-# ============================================================
-#  КОНЕЦ ВСЕГО КОДА
-# ============================================================
