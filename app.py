@@ -6,7 +6,7 @@ import random
 from datetime import datetime, timedelta
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, LabeledPrice, ReplyKeyboardMarkup, KeyboardButton, ReactionTypeEmoji
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, LabeledPrice, ReplyKeyboardMarkup, KeyboardButton
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -351,7 +351,8 @@ def get_user(user_id):
             "switching_personality": False,
             "sex_scene_unlocked": False,
             "sex_scene_used": False,
-            "subscription_id": None
+            "subscription_id": None,
+            "last_free_spin": None  # ДОБАВЛЕНО ДЛЯ КОЛЕСА
         }
         save_data(user_data)
     else:
@@ -380,7 +381,8 @@ def get_user(user_id):
             "sex_scene_unlocked": False,
             "sex_scene_used": False,
             "subscription_id": None,
-            "user_gender": None
+            "user_gender": None,
+            "last_free_spin": None  # ДОБАВЛЕНО
         }
         for key, val in defaults.items():
             if key not in user:
@@ -424,10 +426,14 @@ def get_reaction(text):
     elif any(word in text for word in ["круто","ого","🔥","бомба"]): return "🔥"
     return None
 
+# ============================================================
+#  КЛАВИАТУРА (ОБНОВЛЕНА С КНОПКОЙ КОЛЕСА И РЕДАКТИРОВАНИЯ)
+# ============================================================
 full_kb = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="📋 Главное меню"), KeyboardButton(text="👤 Мой профиль")],
-        [KeyboardButton(text="📢 Наш канал")]
+        [KeyboardButton(text="🎰 Колесо фортуны"), KeyboardButton(text="📢 Наш канал")],
+        [KeyboardButton(text="✏️ Редактировать")]
     ],
     resize_keyboard=True
 )
@@ -507,9 +513,8 @@ async def prices_cmd(message: types.Message):
         "Рубли указаны для информации."
     )
     await message.answer(text, parse_mode="Markdown")
-
-# ============================================================
-#  ВСЕ ОСТАЛЬНЫЕ ОБРАБОТЧИКИ (полный рабочий код)
+    # ============================================================
+#  ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ ОБРАБОТЧИКОВ
 # ============================================================
 async def send_main_menu(chat_id, user):
     if user.get("last_menu_message_id"):
@@ -523,6 +528,13 @@ async def send_main_menu(chat_id, user):
     badge = ""
     if level == "pro": badge = "🔥 PRO"
     elif level == "super_pro": badge = "✨ *SUPER PRO* ✨"
+
+    # защита от None
+    if user.get("gender") is None:
+        user["gender"] = "female"
+    if user.get("world") is None:
+        user["world"] = "realism"
+    save_data(user_data)
 
     gender_name = GENDERS[user['gender']]['name']
     world_name = WORLD_NAMES[user['world']]
@@ -813,6 +825,9 @@ async def show_profile(msg, user):
     try: await bot.delete_message(chat_id, old_msg_id)
     except: pass
 
+# ============================================================
+#  ПОДПИСКИ, ПАКЕТЫ, СЕКС-СЦЕНЫ (ПОЛНЫЙ ОРИГИНАЛ)
+# ============================================================
 @dp.callback_query(lambda c: c.data == "profile_subs")
 async def profile_subs(call: types.CallbackQuery):
     try:
@@ -827,7 +842,7 @@ async def profile_subs(call: types.CallbackQuery):
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="🔥 PRO — 250 ⭐/мес", callback_data="subscribe_pro")],
             [InlineKeyboardButton(text="✨ SUPER PRO ✨ — 450 ⭐/мес", callback_data="subscribe_super")],
-            [InlineKeyboardButton(text="⬆️ Апгрейд до SUPER PRO (245⭐) — улучшение без продления", callback_data="upgrade_to_super")],
+            [InlineKeyboardButton(text="⬆️ Апгрейд до SUPER PRO (245⭐)", callback_data="upgrade_to_super")],
             [InlineKeyboardButton(text="🔙 Назад", callback_data="back_to_profile")]
         ])
         text = ("👑 Подписки Role Duel\n\n"
@@ -850,7 +865,7 @@ async def profile_subs(call: types.CallbackQuery):
                 "• Память: 100 сообщений\n"
                 "• 8 бесплатных секс-сцен\n"
                 "• Бонус XP: x2.5\n\n"
-                "⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок. Это разовое улучшение, которое НЕ продлевает подписку.\n\n"
+                "⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n"
                 "⚠️ Подписки НЕ продлеваются автоматически. По истечении месяца нужно будет оформить новую подписку вручную.\n\n"
                 "Выбери подписку (оплата звёздами):")
         await bot.send_message(call.message.chat.id, text, reply_markup=keyboard)
@@ -875,7 +890,7 @@ async def upgrade_to_super(call: types.CallbackQuery):
         await bot.send_invoice(
             chat_id=call.message.chat.id,
             title="Апгрейд до SUPER PRO",
-            description="Повысьте PRO до SUPER PRO на оставшийся срок. Стоимость 245⭐. Это разовый платёж, который улучшает вашу подписку, но НЕ продлевает её. Дата окончания остаётся прежней.",
+            description="Повысьте PRO до SUPER PRO на оставшийся срок. Стоимость 245⭐.",
             payload="upgrade_to_super",
             provider_token="",
             currency="XTR",
@@ -898,7 +913,7 @@ async def profile_packs(call: types.CallbackQuery):
         await call.answer()
         return
     if has_active_subscription(user):
-        await call.answer("❌ При активной подписке покупка пакетов сообщений недоступна. Используйте ежедневные сообщения.", show_alert=True)
+        await call.answer("❌ При активной подписке покупка пакетов сообщений недоступна.", show_alert=True)
         return
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="30 сообщений — 30 ⭐", callback_data="pack_30")],
@@ -907,7 +922,7 @@ async def profile_packs(call: types.CallbackQuery):
         [InlineKeyboardButton(text="🔙 Назад", callback_data="back_to_profile")]
     ])
     await call.message.delete()
-    await call.message.answer("📦 **Купить пакет сообщений**\n\nВыбери пакет (оплата звёздами):", reply_markup=keyboard, parse_mode="Markdown")
+    await call.message.answer("📦 **Купить пакет сообщений**\n\nВыбери пакет:", reply_markup=keyboard, parse_mode="Markdown")
     await call.answer()
 
 @dp.callback_query(lambda c: c.data == "buy_sex_scene")
@@ -1057,7 +1072,7 @@ async def subscribe_pro(call: types.CallbackQuery):
         await bot.send_invoice(
             chat_id=call.message.chat.id,
             title="PRO подписка на месяц",
-            description="50 сообщений в день, память 60 сообщений, стили Страстный и Магнетический, 4 бесплатные секс-сцены. Подписка НЕ продлевается автоматически. По истечении месяца нужно будет продлить вручную.",
+            description="50 сообщений в день, память 60 сообщений, стили Страстный и Магнетический, 4 бесплатные секс-сцены. Подписка НЕ продлевается автоматически.",
             payload="subscribe_pro",
             provider_token="",
             currency="XTR",
@@ -1084,7 +1099,7 @@ async def subscribe_super(call: types.CallbackQuery):
         await bot.send_invoice(
             chat_id=call.message.chat.id,
             title="SUPER PRO подписка на месяц",
-            description="100 сообщений в день, память 100 сообщений, стили Страстный, Магнетический, Грубый 18+ и Соблазн 18+, 8 бесплатных секс-сцен. Подписка НЕ продлевается автоматически. По истечении месяца нужно будет продлить вручную.",
+            description="100 сообщений в день, память 100 сообщений, стили Страстный, Магнетический, Грубый 18+ и Соблазн 18+, 8 бесплатных секс-сцен. Подписка НЕ продлевается автоматически.",
             payload="subscribe_super",
             provider_token="",
             currency="XTR",
@@ -1156,6 +1171,9 @@ async def payment_success(message: types.Message):
         save_data(user_data)
         await message.answer("✅ Куплена секс-сцена! Используйте команду /sex, чтобы начать. 18+")
 
+    elif payload == "spin_paid_20":
+        await spin_result(message, user, free=False)
+
 @dp.message(Command("switch_style"))
 async def switch_style_cmd(message: types.Message):
     user = get_user(message.from_user.id)
@@ -1186,6 +1204,9 @@ async def switch_style(call: types.CallbackQuery):
                                  parse_mode="Markdown")
     await call.answer()
 
+# ============================================================
+#  КОМАНДА /sex (ПОЛНЫЙ ОРИГИНАЛ)
+# ============================================================
 @dp.message(Command("sex"))
 async def sex_cmd(message: types.Message):
     user = get_user(message.from_user.id)
@@ -1353,6 +1374,255 @@ async def generate_sex_scene(call, user, sex_type, free=False):
     except Exception as e:
         await bot.send_message(call.message.chat.id, f"⚠️ Ошибка генерации: {e}")
 
+# ============================================================
+#  КОЛЕСО ФОРТУНЫ (БЕСПЛАТНО 1/ДЕНЬ + ПЛАТНО 20⭐)
+# ============================================================
+@dp.message(lambda m: m.text == "🎰 Колесо фортуны")
+async def spin_button_handler(message: types.Message):
+    user = get_user(message.from_user.id)
+    if not user["verified"] or not user["personality_ready"]:
+        await message.answer("Сначала заверши регистрацию через /start.")
+        return
+
+    today = datetime.now().date().isoformat()
+    has_free = user.get("last_free_spin") != today
+
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(
+            text="🎁 Бесплатно (1/день)" if has_free else "⏳ Завтра",
+            callback_data="spin_free" if has_free else "spin_no"
+        )],
+        [InlineKeyboardButton(text="💎 Крутить за 20⭐", callback_data="spin_paid")],
+        [InlineKeyboardButton(text="🔙 Назад", callback_data="spin_back")]
+    ])
+
+    await message.answer(
+        f"🎰 **Колесо фортуны**\n\n"
+        f"{'🎁 У тебя есть **бесплатное** вращение сегодня!' if has_free else '⏳ Бесплатное вращение будет завтра.'}\n"
+        "💎 Платное вращение — **20⭐** (≈25 ₽)\n\n"
+        "🔥 **Что можно выиграть:**\n"
+        "• 10–50 сообщений\n"
+        "• +100–250 XP\n"
+        "• Секс-сцены\n"
+        "• 🎁 PRO на 5 дней\n"
+        "• ✨ SUPER PRO на 3 дня\n"
+        "• и другие призы!\n\n"
+        "Выбери вариант:",
+        reply_markup=keyboard,
+        parse_mode="Markdown"
+    )
+
+@dp.callback_query(lambda c: c.data == "spin_free")
+async def spin_free(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    today = datetime.now().date().isoformat()
+    if user.get("last_free_spin") == today:
+        await call.answer("⏳ Ты уже крутил сегодня! Завтра будет новое бесплатное вращение.", show_alert=True)
+        return
+    user["last_free_spin"] = today
+    save_data(user_data)
+    await call.message.delete()
+    await spin_result(call.message, user, free=True)
+    await call.answer()
+
+@dp.callback_query(lambda c: c.data == "spin_paid")
+async def spin_paid(call: types.CallbackQuery):
+    try:
+        await bot.send_invoice(
+            chat_id=call.message.chat.id,
+            title="🎰 Колесо фортуны",
+            description="Платное вращение — 20⭐. Удачи!",
+            payload="spin_paid_20",
+            provider_token="",
+            currency="XTR",
+            prices=[LabeledPrice(label="Прокрутка", amount=20)]
+        )
+        await call.answer()
+    except Exception as e:
+        await call.message.answer(f"⚠️ Ошибка: {e}")
+        await call.answer()
+
+@dp.callback_query(lambda c: c.data == "spin_no")
+async def spin_no(call: types.CallbackQuery):
+    await call.answer("⏳ Бесплатное вращение будет доступно завтра!", show_alert=True)
+
+@dp.callback_query(lambda c: c.data == "spin_back")
+async def spin_back(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    await call.message.delete()
+    await send_main_menu(call.message.chat.id, user)
+    await call.answer()
+
+async def spin_result(message: types.Message, user, free=False):
+    prizes = [
+        {"name": "😢 Ничего", "value": 0, "type": "nothing", "weight": 18},
+        {"name": "10 сообщений", "value": 10, "type": "messages", "weight": 14},
+        {"name": "15 сообщений", "value": 15, "type": "messages", "weight": 10},
+        {"name": "20 сообщений", "value": 20, "type": "messages", "weight": 8},
+        {"name": "+100 XP", "value": 100, "type": "xp", "weight": 14},
+        {"name": "+150 XP", "value": 150, "type": "xp", "weight": 8},
+        {"name": "+250 XP", "value": 250, "type": "xp", "weight": 4},
+        {"name": "1 секс-сцена 🔥", "value": 1, "type": "sex_scene", "weight": 10},
+        {"name": "2 секс-сцены 🔥🔥", "value": 2, "type": "sex_scene", "weight": 3},
+        {"name": "🎁 PRO на 5 дней", "value": 5, "type": "subscription_pro", "weight": 1.5},
+        {"name": "✨ SUPER PRO на 3 дня", "value": 3, "type": "subscription_super", "weight": 0.5},
+        {"name": "🎉 50 сообщений (ДЖЕКПОТ!)", "value": 50, "type": "messages", "weight": 1},
+    ]
+
+    weighted = []
+    for p in prizes:
+        weighted.extend([p] * int(p["weight"] * 10))
+    chosen = random.choice(weighted)
+
+    msg = await message.answer("🎰 Крутим...")
+    for i in range(3):
+        await asyncio.sleep(0.5)
+        fake = random.choice(prizes)
+        await msg.edit_text(f"🎰 Почти выпало: {fake['name']}")
+    await asyncio.sleep(0.8)
+    await msg.delete()
+
+    result_text = ""
+    if chosen["type"] == "messages":
+        user["purchased_messages"] = user.get("purchased_messages", 0) + chosen["value"]
+        result_text = f"📨 **+{chosen['value']} сообщений**"
+    elif chosen["type"] == "xp":
+        user["xp"] = user.get("xp", 0) + chosen["value"]
+        result_text = f"⭐ **+{chosen['value']} XP**"
+    elif chosen["type"] == "sex_scene":
+        user["sex_scenes"] = user.get("sex_scenes", 0) + chosen["value"]
+        result_text = f"🔥 **+{chosen['value']} секс-сцена**" + ("ы" if chosen["value"] > 1 else "")
+    elif chosen["type"] == "subscription_pro":
+        user["subscription"]["active"] = True
+        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=5)).isoformat()
+        user["subscription"]["level"] = "pro"
+        user["free_sex_scenes_pro"] = 4
+        user["free_sex_scenes_super"] = 0
+        user["daily_messages"] = 50
+        user["last_daily_reset"] = datetime.now().isoformat()
+        result_text = "🎁 **PRO подписка на 5 дней!**\n🔥 50 сообщений/день, стили Страстный и Магнетический, 4 секс-сцены!"
+    elif chosen["type"] == "subscription_super":
+        user["subscription"]["active"] = True
+        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=3)).isoformat()
+        user["subscription"]["level"] = "super_pro"
+        user["free_sex_scenes_super"] = 8
+        user["free_sex_scenes_pro"] = 0
+        user["daily_messages"] = 100
+        user["last_daily_reset"] = datetime.now().isoformat()
+        result_text = "✨ **SUPER PRO на 3 дня!**\n👑 100 сообщений/день, все стили, 8 секс-сцен, реакции, голосовые!"
+    else:
+        result_text = "😢 **Ничего... В следующий раз повезёт!**"
+
+    save_data(user_data)
+    await message.answer(
+        f"🎰 **Результат!**\n\n"
+        f"Ты выиграл: {result_text}\n"
+        f"{'🎁 Бесплатное вращение' if free else '💎 Платное вращение'}\n\n"
+        "💡 Завтра будет новое бесплатное вращение!",
+        parse_mode="Markdown",
+        reply_markup=full_kb
+    )
+
+# ============================================================
+#  РЕДАКТИРОВАНИЕ ПОСЛЕДНЕГО СООБЩЕНИЯ
+# ============================================================
+@dp.message(lambda m: m.text == "✏️ Редактировать")
+async def edit_button_handler(message: types.Message):
+    await edit_message_cmd(message)
+
+@dp.message(Command("edit"))
+async def edit_message_cmd(message: types.Message):
+    user = get_user(message.from_user.id)
+    if not user["history"]:
+        await message.answer("❌ У тебя нет сообщений для редактирования.")
+        return
+    
+    last_user_msg = None
+    last_user_idx = -1
+    for i, msg in enumerate(reversed(user["history"])):
+        if msg["role"] == "user":
+            last_user_msg = msg["content"]
+            last_user_idx = len(user["history"]) - 1 - i
+            break
+    
+    if last_user_msg is None:
+        await message.answer("❌ Не найдено твоих сообщений.")
+        return
+    
+    await message.answer(
+        f"✏️ **Редактирование сообщения**\n\n"
+        f"Твой последний запрос:\n\"{last_user_msg}\"\n\n"
+        "Напиши новый текст в ответ на это сообщение. ИИ перегенерирует ответ.\n\n"
+        "Чтобы отменить редактирование, напиши /cancel_edit",
+        parse_mode="Markdown"
+    )
+    user["editing_message"] = True
+    user["edit_index"] = last_user_idx
+    save_data(user_data)
+
+@dp.message(lambda m: m.reply_to_message and m.text and "Редактирование сообщения" in m.reply_to_message.text)
+async def handle_edited_message(message: types.Message):
+    user = get_user(message.from_user.id)
+    if not user.get("editing_message"):
+        return
+    
+    new_text = message.text
+    idx = user.get("edit_index")
+    if idx is None or idx >= len(user["history"]):
+        user["editing_message"] = False
+        save_data(user_data)
+        await message.answer("❌ Ошибка: сообщение для редактирования не найдено.")
+        return
+    
+    user["history"][idx]["content"] = new_text
+    user["history"] = user["history"][:idx+1]
+    user["editing_message"] = False
+    save_data(user_data)
+    
+    await message.answer("✅ Сообщение заменено. Генерирую новый ответ...")
+    await generate_new_response(message, user)
+
+async def generate_new_response(message: types.Message, user):
+    limit = get_history_limit(user)
+    if len(user["history"]) > 10:
+        user["history"] = user["history"][-10:]
+    
+    await bot.send_chat_action(message.chat.id, "typing")
+    
+    system_prompt = build_prompt(user)
+    messages_for_api = [{"role": "system", "content": system_prompt}]
+    messages_for_api.extend(user["history"])
+    
+    try:
+        response = client.chat.completions.create(
+            model="deepseek/deepseek-v4-pro",
+            messages=messages_for_api,
+            temperature=0.9,
+            max_tokens=1000
+        )
+        answer = response.choices[0].message.content
+    except Exception as e:
+        await message.answer(f"⚠️ Ошибка: {e}")
+        logging.error(f"Ошибка DeepSeek: {e}")
+        return
+    
+    user["history"].append({"role": "assistant", "content": answer})
+    if len(user["history"]) > limit:
+        user["history"] = user["history"][-limit:]
+    save_data(user_data)
+    
+    await message.answer(answer, reply_markup=full_kb)
+
+@dp.message(Command("cancel_edit"))
+async def cancel_edit_cmd(message: types.Message):
+    user = get_user(message.from_user.id)
+    user["editing_message"] = False
+    save_data(user_data)
+    await message.answer("❌ Редактирование отменено.")
+
+# ============================================================
+#  ДОПОЛНИТЕЛЬНЫЕ КОМАНДЫ (surprise, clear, new_personality, menu, profile, grant)
+# ============================================================
 @dp.message(Command("surprise"))
 async def surprise_cmd(message: types.Message):
     user = get_user(message.from_user.id)
@@ -1377,38 +1647,12 @@ async def surprise_cmd(message: types.Message):
                     "Мы остаёмся наедине, и я говорю: «Я хочу провести с тобой всю жизнь. Ты согласен(на)?»"]
     await message.answer(random.choice(moments), reply_markup=full_kb)
 
-@dp.callback_query(lambda c: c.data == "age_yes")
-async def age_yes(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    user["verified"] = True
+@dp.message(Command("clear"))
+async def clear_cmd(message: types.Message):
+    user = get_user(message.from_user.id)
+    user["history"] = []
     save_data(user_data)
-    await call.message.edit_text("✅ Возраст подтверждён.\nОзнакомьтесь с пользовательским соглашением для продолжения:\n\n" + AGREEMENT_TEXT,
-                                 reply_markup=agreement_kb, parse_mode="Markdown")
-    await call.answer()
-
-@dp.callback_query(lambda c: c.data == "age_no")
-async def age_no(call: types.CallbackQuery):
-    await call.message.edit_text("🚫 Доступ запрещён. Бот только для 18+.")
-    await call.message.edit_reply_markup()
-    await call.answer()
-
-@dp.callback_query(lambda c: c.data == "agreement_accept")
-async def agreement_accept(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    user["agreement_accepted"] = True
-    save_data(user_data)
-    await call.message.edit_text("✅ Соглашение принято!\n\nТеперь давай создадим твоего идеального собеседника.\nВыбери **мир**:",
-                                 reply_markup=world_kb, parse_mode="Markdown")
-    await call.answer()
-
-@dp.callback_query(lambda c: c.data == "agreement_decline")
-async def agreement_decline(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    user["verified"] = False
-    save_data(user_data)
-    await call.message.edit_text("❌ Вы отказались от соглашения. Доступ закрыт.")
-    await call.message.edit_reply_markup()
-    await call.answer()
+    await send_main_menu(message.chat.id, user)
 
 @dp.message(Command("new_personality"))
 async def new_personality_cmd(message: types.Message):
@@ -1417,13 +1661,6 @@ async def new_personality_cmd(message: types.Message):
     user["history"] = []
     save_data(user_data)
     await message.answer("🔄 **Создаём нового собеседника!**\n\nВыбери **мир**:", reply_markup=world_kb, parse_mode="Markdown")
-
-@dp.message(Command("clear"))
-async def clear_cmd(message: types.Message):
-    user = get_user(message.from_user.id)
-    user["history"] = []
-    save_data(user_data)
-    await send_main_menu(message.chat.id, user)
 
 @dp.message(Command("menu"))
 async def menu_cmd(message: types.Message):
@@ -1504,19 +1741,41 @@ async def grant_cmd(message: types.Message):
     save_data(user_data)
     await message.answer(f"✅ Пользователю {target} выдана SUPER PRO подписка на месяц.")
 
-@dp.callback_query(lambda c: c.data == "cancel_payment")
-async def cancel_payment(call: types.CallbackQuery):
+@dp.callback_query(lambda c: c.data == "age_yes")
+async def age_yes(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
-    pending_id = user.get("pending_invoice_id")
-    if pending_id:
-        try: await bot.delete_message(chat_id=call.message.chat.id, message_id=pending_id)
-        except: pass
-        user["pending_invoice_id"] = None
-        save_data(user_data)
-    await call.message.delete()
-    await send_main_menu(call.message.chat.id, user)
+    user["verified"] = True
+    save_data(user_data)
+    await call.message.edit_text("✅ Возраст подтверждён.\nОзнакомьтесь с пользовательским соглашением для продолжения:\n\n" + AGREEMENT_TEXT,
+                                 reply_markup=agreement_kb, parse_mode="Markdown")
     await call.answer()
 
+@dp.callback_query(lambda c: c.data == "age_no")
+async def age_no(call: types.CallbackQuery):
+    await call.message.edit_text("🚫 Доступ запрещён. Бот только для 18+.")
+    await call.message.edit_reply_markup()
+    await call.answer()
+
+@dp.callback_query(lambda c: c.data == "agreement_accept")
+async def agreement_accept(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    user["agreement_accepted"] = True
+    save_data(user_data)
+    await call.message.edit_text("✅ Соглашение принято!\n\nТеперь давай создадим твоего идеального собеседника.\nВыбери **мир**:",
+                                 reply_markup=world_kb, parse_mode="Markdown")
+    await call.answer()
+
+@dp.callback_query(lambda c: c.data == "agreement_decline")
+async def agreement_decline(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    user["verified"] = False
+    save_data(user_data)
+    await call.message.edit_text("❌ Вы отказались от соглашения. Доступ закрыт.")
+    await call.message.edit_reply_markup()
+    await call.answer()
+    # ============================================================
+#  ОСНОВНОЙ ОБРАБОТЧИК СООБЩЕНИЙ
+# ============================================================
 @dp.message()
 async def handle_message(message: types.Message):
     global maintenance_mode
@@ -1524,6 +1783,7 @@ async def handle_message(message: types.Message):
     
     logging.info(f"📩 Сообщение от {message.from_user.id}, уровень подписки: {get_subscription_level(user)}, стиль: {user.get('style')}")
     
+    # Проверка: если у пользователя премиум-стиль, но подписка кончилась
     if ensure_valid_style(user):
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="🪶 Нежный", callback_data="fix_style_warm")],
@@ -1540,17 +1800,24 @@ async def handle_message(message: types.Message):
         )
         return
 
+    # Техобслуживание
     if maintenance_mode and message.from_user.id not in ADMIN_IDS:
         await message.answer("🛠️ **Бот на техническом обслуживании**\nМы обновляем функционал, чтобы сделать общение ещё лучше.\nПожалуйста, загляните позже. Следите за новостями в канале: @duel_dev_channel", parse_mode="Markdown")
         return
+    
+    # Проверка регистрации
     if not user["verified"] or not user["agreement_accepted"]:
         await message.answer("🔞 Сначала пройди регистрацию через /start")
         return
     if not user["personality_ready"]:
         await message.answer("Сначала создай персонажа через /start")
         return
-    if message.text in ["📋 Главное меню", "👤 Мой профиль", "📢 Наш канал"]:
+    
+    # Игнорируем команды-кнопки (они обрабатываются отдельно)
+    if message.text in ["📋 Главное меню", "👤 Мой профиль", "📢 Наш канал", "🎰 Колесо фортуны", "✏️ Редактировать"]:
         return
+    
+    # Проверка доступных сообщений
     available = get_available_messages(user)
     if available <= 0:
         await message.answer("🔄 Выберите действие:", reply_markup=full_kb)
@@ -1559,11 +1826,22 @@ async def handle_message(message: types.Message):
             [InlineKeyboardButton(text="👑 Оформить подписку", callback_data="profile_subs")],
             [InlineKeyboardButton(text="📦 Купить пакеты", callback_data="profile_packs")]
         ])
-        await message.answer("😔 *К сожалению у вас закончились сообщения.*\n\nВы можете:\n📦 Купить пакет сообщений через профиль\n👑 Оформить подписку через профиль\n\n🔥 PRO — 250⭐/мес (50 сообщений/день, память 60 сообщ)\n✨ SUPER PRO ✨ — 450⭐/мес (100 сообщений/день, память 100 сообщ)",
-                             reply_markup=action_buttons, parse_mode="Markdown")
+        await message.answer(
+            "😔 *К сожалению у вас закончились сообщения.*\n\n"
+            "Вы можете:\n"
+            "📦 Купить пакет сообщений через профиль\n"
+            "👑 Оформить подписку через профиль\n\n"
+            "🔥 PRO — 250⭐/мес (50 сообщений/день, память 60 сообщ)\n"
+            "✨ SUPER PRO ✨ — 450⭐/мес (100 сообщений/день, память 100 сообщ)",
+            reply_markup=action_buttons,
+            parse_mode="Markdown"
+        )
         return
+    
+    # Тратим сообщение
     use_message(user)
     
+    # Обработка негатива и XP
     negative = contains_negative(message.text)
     base_xp = 5
     multiplier = 1.0
@@ -1582,12 +1860,21 @@ async def handle_message(message: types.Message):
             user["mood"] = user.get("mood", 0) - 3
             user["negative_count"] = 0
             save_data(user_data)
-            await message.answer("💢 **Вспыхнула ссора!**\n\nВы оба на взводе, слова летят острые, как ножи. Настроение испорчено, близость пошатнулась. Попробуй извиниться или сменить тему, чтобы всё наладить.",
-                                 reply_markup=full_kb, parse_mode="Markdown")
+            await message.answer(
+                "💢 **Вспыхнула ссора!**\n\n"
+                "Вы оба на взводе, слова летят острые, как ножи. "
+                "Настроение испорчено, близость пошатнулась. "
+                "Попробуй извиниться или сменить тему, чтобы всё наладить.",
+                reply_markup=full_kb,
+                parse_mode="Markdown"
+            )
             user["negative_count"] = 0
             save_data(user_data)
             new_level = get_intimacy_level(user)
-            await message.answer(f"💔 Уровень сближения снижен до {new_level}. Постарайтесь помириться.", reply_markup=full_kb)
+            await message.answer(
+                f"💔 Уровень сближения снижен до {new_level}. Постарайтесь помириться.",
+                reply_markup=full_kb
+            )
             user["history"].append({"role": "assistant", "content": "💢 Ссора! Настроение упало, уровень близости снижен."})
             save_data(user_data)
             return
@@ -1596,14 +1883,20 @@ async def handle_message(message: types.Message):
         mood_change = 0.5
         if user.get("negative_count", 0) > 0:
             user["negative_count"] = user.get("negative_count", 0) - 1
-            if user["negative_count"] < 0: user["negative_count"] = 0
+            if user["negative_count"] < 0:
+                user["negative_count"] = 0
 
+    # Обновляем XP и настроение
     user["xp"] = user.get("xp", 0) + xp_change
     user["mood"] = user.get("mood", 0) + mood_change
-    if user["mood"] > 10: user["mood"] = 10
-    elif user["mood"] < -10: user["mood"] = -10
-    if user["xp"] < 0: user["xp"] = 0
+    if user["mood"] > 10:
+        user["mood"] = 10
+    elif user["mood"] < -10:
+        user["mood"] = -10
+    if user["xp"] < 0:
+        user["xp"] = 0
     
+    # Проверка уровня сближения
     new_level = get_intimacy_level(user)
     old_level = user.get("last_level", 0)
     if new_level > old_level:
@@ -1615,8 +1908,12 @@ async def handle_message(message: types.Message):
     elif new_level < old_level:
         user["last_level"] = new_level
         save_data(user_data)
-        await message.answer(f"💔 Уровень сближения упал до {new_level}. Постарайтесь быть добрее.", reply_markup=full_kb)
+        await message.answer(
+            f"💔 Уровень сближения упал до {new_level}. Постарайтесь быть добрее.",
+            reply_markup=full_kb
+        )
     
+    # Обновляем локацию (если есть в тексте)
     new_loc = extract_location_from_text(message.text)
     if new_loc and new_loc != user.get("location"):
         user["location"] = new_loc
@@ -1624,19 +1921,24 @@ async def handle_message(message: types.Message):
     
     save_data(user_data)
     
+    # Сохраняем историю
     user["history"].append({"role": "user", "content": message.text})
     limit = get_history_limit(user)
     if len(user["history"]) > 10:
         user["history"] = user["history"][-10:]
     save_data(user_data)
     
+    # Отправляем статус "печатает"
     await bot.send_chat_action(message.chat.id, "typing")
+    
+    # Запускаем бесконечный статус "печатает" (обновляется каждые 4 сек)
     async def keep_typing():
         while True:
             await bot.send_chat_action(message.chat.id, "typing")
             await asyncio.sleep(4)
     typing_task = asyncio.create_task(keep_typing())
     
+    # Для SUPER PRO — ставим реакцию на сообщение пользователя
     if get_subscription_level(user) == "super_pro":
         reaction = get_reaction(message.text)
         if reaction:
@@ -1654,9 +1956,11 @@ async def handle_message(message: types.Message):
     else:
         logging.info(f"⛔ Реакции не ставятся: уровень подписки = {get_subscription_level(user)}")
     
+    # Генерируем ответ AI
     system_prompt = build_prompt(user)
     messages_for_api = [{"role": "system", "content": system_prompt}]
     messages_for_api.extend(user["history"])
+    
     try:
         response = client.chat.completions.create(
             model="deepseek/deepseek-v4-pro",
@@ -1668,24 +1972,33 @@ async def handle_message(message: types.Message):
     except Exception as e:
         if typing_task:
             typing_task.cancel()
-            try: await typing_task
-            except asyncio.CancelledError: pass
+            try:
+                await typing_task
+            except asyncio.CancelledError:
+                pass
         await message.answer(f"⚠️ Ошибка: {e}")
         logging.error(f"Ошибка DeepSeek: {e}")
         return
     finally:
         if typing_task:
             typing_task.cancel()
-            try: await typing_task
-            except asyncio.CancelledError: pass
+            try:
+                await typing_task
+            except asyncio.CancelledError:
+                pass
     
+    # Сохраняем ответ AI
     user["history"].append({"role": "assistant", "content": answer})
     if len(user["history"]) > limit:
         user["history"] = user["history"][-limit:]
     save_data(user_data)
     
-    sent_msg = await message.answer(answer, reply_markup=full_kb)
+    # Отправляем ответ
+    await message.answer(answer, reply_markup=full_kb)
 
+# ============================================================
+#  КОЛБЭК ДЛЯ СМЕНЫ СТИЛЯ (ЕСЛИ ПОДПИСКА КОНЧИЛАСЬ)
+# ============================================================
 @dp.callback_query(lambda c: c.data.startswith("fix_style_"))
 async def fix_style_callback(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
@@ -1693,25 +2006,44 @@ async def fix_style_callback(call: types.CallbackQuery):
     if style_key in BASE_STYLE_KEYS:
         user["style"] = style_key
         save_data(user_data)
-        await call.message.edit_text(f"✅ Стиль изменён на: {STYLES[style_key]['label']}\nТеперь ты можешь продолжать общение.\n\n"
-                                      "💡 Чтобы сменить стиль без потери истории в будущем, нужна подписка SUPER PRO (команда /switch_style).")
+        await call.message.edit_text(
+            f"✅ Стиль изменён на: {STYLES[style_key]['label']}\n"
+            "Теперь ты можешь продолжать общение.\n\n"
+            "💡 Чтобы сменить стиль без потери истории в будущем, "
+            "нужна подписка SUPER PRO (команда /switch_style)."
+        )
         await call.answer()
         await send_main_menu(call.message.chat.id, user)
     else:
         await call.answer("❌ Недопустимый стиль", show_alert=True)
 
+# ============================================================
+#  ФУНКЦИЯ ПОЗДРАВЛЕНИЯ ПРИ ПОВЫШЕНИИ УРОВНЯ
+# ============================================================
 def get_level_congratulation(level):
-    if level == 2: return "🎉 Ты заметил(а), что между вами пробежала искра! Уровень сближения — 2. Теперь вы можете флиртовать."
-    elif level == 3: return "💞 Вы стали ближе! Уровень 3. Теперь вы можете обниматься и делиться секретами."
-    elif level == 4: return "🔥 Напряжение растёт! Уровень 4. Ты чувствуешь, что он/она хочет тебя."
-    elif level == 5: return "💋 Уровень 5! Вы готовы к поцелую. Собеседник уже не скрывает своих чувств."
-    elif level == 6: return "🌹 Уровень 6. Ты влюблён(а)! Теперь вы можете говорить о страсти."
-    elif level == 7: return "💕 Уровень 7. Интимная близость уже близка. Собеседник открыто говорит о желании."
-    elif level == 8: return "❤️‍🔥 Уровень 8! Вы признались друг другу в любви. Теперь вы — пара."
-    elif level == 9: return "🔥 Уровень 9! Вы полностью открыты друг другу. Никаких тайн."
-    elif level == 10: return "💖 Уровень 10! Вы — единое целое. Настоящая душевная близость."
+    if level == 2:
+        return "🎉 Ты заметил(а), что между вами пробежала искра! Уровень сближения — 2. Теперь вы можете флиртовать."
+    elif level == 3:
+        return "💞 Вы стали ближе! Уровень 3. Теперь вы можете обниматься и делиться секретами."
+    elif level == 4:
+        return "🔥 Напряжение растёт! Уровень 4. Ты чувствуешь, что он/она хочет тебя."
+    elif level == 5:
+        return "💋 Уровень 5! Вы готовы к поцелую. Собеседник уже не скрывает своих чувств."
+    elif level == 6:
+        return "🌹 Уровень 6. Ты влюблён(а)! Теперь вы можете говорить о страсти."
+    elif level == 7:
+        return "💕 Уровень 7. Интимная близость уже близка. Собеседник открыто говорит о желании."
+    elif level == 8:
+        return "❤️‍🔥 Уровень 8! Вы признались друг другу в любви. Теперь вы — пара."
+    elif level == 9:
+        return "🔥 Уровень 9! Вы полностью открыты друг другу. Никаких тайн."
+    elif level == 10:
+        return "💖 Уровень 10! Вы — единое целое. Настоящая душевная близость."
     return ""
 
+# ============================================================
+#  ЗАПУСК БОТА
+# ============================================================
 async def main():
     print("🚀 Role Duel финальная версия запущена (DeepSeek V4 Pro)!")
     print("🧠 Модель: deepseek/deepseek-v4-pro (лучшее цена/качество)")
@@ -1732,7 +2064,14 @@ async def main():
     print("💾 Данные сохраняются в data/data.json")
     print("⚠️ Все подписки — разовые, без автопродления.")
     print("💡 Для скриншота с рублёвыми ценами отправьте команду /prices")
+    print("🎰 Колесо фортуны — 20⭐ за прокрутку. Призы сбалансированы.")
+    print("✏️ Редактирование последнего сообщения — кнопка на клавиатуре.")
+    print("✅ БОТ ГОТОВ К РАБОТЕ!")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+# ============================================================
+#  КОНЕЦ ВСЕГО КОДА
+# ============================================================
