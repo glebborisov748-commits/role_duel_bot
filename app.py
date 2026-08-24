@@ -664,7 +664,7 @@ def get_user(user_id):
             "editing_message": False,
             "edit_index": None,
             "referral_code": None,
-            "referred_by": None
+            "referred_by": None,
             "last_activity": None,
             "last_spin_notified": None,
             "last_reminder": None
