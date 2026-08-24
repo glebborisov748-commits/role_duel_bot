@@ -251,6 +251,13 @@ def build_intimacy_rule(user):
     else: return base
 
 def build_prompt(user):
+        # Если у пользователя есть свой персонаж — используем его
+    if user.get("custom_character"):
+        return (f"Ты — {user['custom_character']}. "
+                f"Ты НИКОГДА не называешь себя по имени, не представляешься, не говоришь «меня зовут». "
+                f"Ты НИКОГДА не спрашиваешь имя собеседника. Обращайся к собеседнику ТОЛЬКО на «ты». "
+                f"Ты всегда отвечаешь как настоящий человек, с эмоциями, сомнениями и чувствами.")
+    # Остальной код build_prompt (который был) идёт дальше...
     world_desc = WORLDS[user["world"]]
     gender_info = GENDERS[user["gender"]]
     style_key = get_display_style(user)
@@ -258,6 +265,7 @@ def build_prompt(user):
     style_desc = styles[style_key]["description"]
     name_ban = ("**ВАЖНЕЙШЕЕ ПРАВИЛО:** Ты НИКОГДА не называешь себя по имени, не представляешься, не говоришь «меня зовут», не используешь своё имя. Ты также НИКОГДА не спрашиваешь имя собеседника и не используешь его имя, даже если оно было названо. Обращайся к собеседнику ТОЛЬКО на «ты». Если ты нарушишь это правило – это будет грубой ошибкой.\n")
     rules = ("**ФОРМАТИРОВАНИЕ:** Каждое действие в *звёздочках* с новой строки, затем реплика с новой строки. Между действием и репликой – пустая строка.\n"
+             "**РЕАКЦИЯ НА СООБЩЕНИЕ:** В самом конце своего ответа, после завершения всей фразы, напиши в скобках одну из эмоций для реакции на сообщение собеседника. Варианты: (смех), (радость), (любовь), (удивление), (грусть), (злость), (поддержка), (интрига), (флирт), (приветствие), (вопрос). Пример: '... и я очень рада тебя видеть! (радость)'\n"
              "**СТРУКТУРА ОТВЕТА:** Ты должна строго чередовать действие и реплику. НЕЛЬЗЯ писать два действия подряд без реплики между ними. Первым всегда идёт действие, затем реплика, затем снова действие, затем реплика. Минимум 2 пары (действие + реплика).\n"
              "**ОБЪЁМ:** Не ограничивай себя, пиши развёрнуто (3–5 предложений на реплику).\n"
              "**СТИЛЬ ОБЩЕНИЯ:** Добавляй редкие и уместные эмодзи в свои реплики (😊,🔥,😉,❤️,✨,😏,🌟,💕). Не перебарщивай — максимум 1-2 эмодзи на сообщение. Используй их, чтобы передать эмоции.\n"
@@ -358,6 +366,11 @@ def get_user(user_id):
             "edit_index": None,
             "referral_code": None,
             "referred_by": None
+            "last_activity": datetime.now().isoformat(),
+            "last_spin_notified": None,
+            "last_reminder": None
+            "creating_character": False,
+            "custom_character": None
         }
         save_data(user_data)
     else:
@@ -392,6 +405,9 @@ def get_user(user_id):
             "edit_index": None,
             "referral_code": None,
             "referred_by": None
+            "last_activity": None,
+            "last_spin_notified": None,
+            "last_reminder": None
         }
         for key, val in defaults.items():
             if key not in user:
@@ -434,6 +450,21 @@ def get_reaction(text):
     elif any(word in text for word in ["грустно","печально","жаль","😔"]): return "😔"
     elif any(word in text for word in ["круто","ого","🔥","бомба"]): return "🔥"
     return None
+def extract_reaction_from_answer(text):
+    """Извлекает реакцию из скобок в конце ответа ИИ"""
+    import re
+    match = re.search(r'\(([^)]+)\)$', text)
+    if not match:
+        return None, text
+    reaction_key = match.group(1).strip().lower()
+    reaction_map = {
+        "смех": "😂", "радость": "😊", "любовь": "❤️", "удивление": "😮",
+        "грусть": "😔", "злость": "😡", "поддержка": "👍", "интрига": "😏",
+        "флирт": "😉", "приветствие": "👋", "вопрос": "🤔"
+    }
+    reaction = reaction_map.get(reaction_key)
+    clean_text = re.sub(r'\s*\([^)]+\)$', '', text).strip()
+    return reaction, clean_text
 
 # ============================================================
 #  КЛАВИАТУРА
@@ -448,10 +479,13 @@ full_kb = ReplyKeyboardMarkup(
 )
 
 def get_main_menu_keyboard(user):
-    return InlineKeyboardMarkup(inline_keyboard=[
+    buttons = [
         [InlineKeyboardButton(text="🔄 Сменить персонажа", callback_data="main_change")],
         [InlineKeyboardButton(text="👥 Пригласить друга", callback_data="referral_menu")]
-    ])
+    ]
+    if get_subscription_level(user) == "super_pro":
+        buttons.append([InlineKeyboardButton(text="🎭 Создать своего персонажа", callback_data="create_character")])
+    return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 def get_profile_keyboard(user):
     keyboard = [
@@ -590,6 +624,26 @@ async def create_personality_callback(call: types.CallbackQuery):
                               reply_markup=world_kb, parse_mode="Markdown")
     await call.answer()
 
+@dp.callback_query(lambda c: c.data == "create_character")
+async def create_character(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    if get_subscription_level(user) != "super_pro":
+        await call.answer("❌ Только для SUPER PRO!", show_alert=True)
+        return
+    await call.message.answer(
+        "🎭 **Создай своего уникального персонажа!**\n\n"
+        "Опиши любого персонажа — из аниме, фильмов, игр или придумай своего.\n"
+        "Напиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n"
+        "📝 *Пример:*\n"
+        "«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. "
+        "Любит звёзды и долгие разговоры у костра. Живёт одна в лесу.»\n\n"
+        "✏️ Напиши описание прямо сейчас — и я запомню его!",
+        parse_mode="Markdown"
+    )
+    user["creating_character"] = True
+    save_data(user_data)
+    await call.answer()
+
 @dp.message(Command("switch_personality"))
 async def switch_personality_cmd(message: types.Message):
     user = get_user(message.from_user.id)
@@ -636,6 +690,13 @@ async def start_cmd(message: types.Message):
         return
     await message.answer("👋 Добро пожаловать!", reply_markup=full_kb)
     await send_main_menu(message.chat.id, user)
+    
+@dp.message(Command("reset_character"))
+async def reset_character_cmd(message: types.Message):
+    user = get_user(message.from_user.id)
+    user["custom_character"] = None
+    save_data(user_data)
+    await message.answer("✅ Персонаж сброшен. Теперь используется стандартный собеседник.")
 
 @dp.message(lambda m: m.text == "📋 Главное меню")
 async def main_menu_reply(message: types.Message):
@@ -1818,6 +1879,18 @@ async def cancel_edit_cmd(message: types.Message):
 async def handle_message(message: types.Message):
     global maintenance_mode
     user = get_user(message.from_user.id)
+        # Если пользователь создаёт персонажа
+    if user.get("creating_character"):
+        user["custom_character"] = message.text
+        user["creating_character"] = False
+        save_data(user_data)
+        await message.answer(
+            f"✅ **Персонаж создан!**\n\n"
+            f"Теперь ты общаешься с:\n_{message.text}_\n\n"
+            "Чтобы вернуться к стандартному персонажу, напиши /reset_character",
+            parse_mode="Markdown"
+        )
+        return
     
     logging.info(f"📩 Сообщение от {message.from_user.id}, уровень подписки: {get_subscription_level(user)}, стиль: {user.get('style')}")
     
@@ -1848,8 +1921,12 @@ async def handle_message(message: types.Message):
         await message.answer("Сначала создай персонажа через /start")
         return
     
-    if message.text in ["📋 Главное меню", "👤 Мой профиль", "📢 Наш канал", "🎰 Колесо фортуны", "✏️ Редактировать"]:
-        return
+    # Игнорируем все команды (начинаются с /) и кнопки
+if message.text.startswith("/"):
+    return
+
+if message.text in ["📋 Главное меню", "👤 Мой профиль", "📢 Наш канал", "🎰 Колесо фортуны", "✏️ Редактировать"]:
+    return
     
     available = get_available_messages(user)
     if available <= 0:
@@ -1980,7 +2057,7 @@ async def handle_message(message: types.Message):
     else:
         logging.info(f"⛔ Реакции не ставятся: уровень подписки = {get_subscription_level(user)}")
     
-    system_prompt = build_prompt(user)
+        system_prompt = build_prompt(user)
     messages_for_api = [{"role": "system", "content": system_prompt}]
     messages_for_api.extend(user["history"])
     
@@ -2010,12 +2087,44 @@ async def handle_message(message: types.Message):
             except asyncio.CancelledError:
                 pass
     
-    user["history"].append({"role": "assistant", "content": answer})
+    # ========== НОВЫЙ КОД (ВСТАВЬ ЭТО) ==========
+    # Извлекаем реакцию из ответа ИИ (убираем скобки из текста)
+    import re
+    reaction = None
+    clean_answer = answer
+    
+    # Ищем в конце ответа что-то типа (смех), (радость) и т.д.
+    match = re.search(r'\(([^)]+)\)$', answer)
+    if match:
+        reaction_key = match.group(1).strip().lower()
+        reaction_map = {
+            "смех": "😂", "радость": "😊", "любовь": "❤️", "удивление": "😮",
+            "грусть": "😔", "злость": "😡", "поддержка": "👍", "интрига": "😏",
+            "флирт": "😉", "приветствие": "👋", "вопрос": "🤔"
+        }
+        reaction = reaction_map.get(reaction_key)
+        # Убираем скобки из текста, чтобы пользователь их не видел
+        clean_answer = re.sub(r'\s*\([^)]+\)$', '', answer).strip()
+    
+    user["history"].append({"role": "assistant", "content": clean_answer})
     if len(user["history"]) > limit:
         user["history"] = user["history"][-limit:]
     save_data(user_data)
     
-    await message.answer(answer, reply_markup=full_kb)
+    # Отправляем чистый ответ (без скобок)
+    sent_msg = await message.answer(clean_answer, reply_markup=full_kb)
+    
+    # Ставим реакцию на ТВОЁ сообщение (если есть реакция и пользователь SUPER PRO)
+    if reaction and get_subscription_level(user) == "super_pro":
+        try:
+            await bot.set_message_reaction(
+                chat_id=message.chat.id,
+                message_id=message.message_id,  # ← реакция НА ТВОЁ СООБЩЕНИЕ
+                reaction=[{"type": "emoji", "emoji": reaction}]
+            )
+            logging.info(f"✅ ИИ поставил реакцию {reaction} на твоё сообщение")
+        except Exception as e:
+            logging.error(f"❌ Ошибка реакции: {e}")
 
 # ============================================================
 #  КОЛБЭК ДЛЯ СМЕНЫ СТИЛЯ (ЕСЛИ ПОДПИСКА КОНЧИЛАСЬ)
