@@ -66,6 +66,10 @@ TEXTS = {
         "no_messages": "😔 Закончились сообщения. Купи пакет или подписку.",
         "no_history": "❌ Нет сообщений для редактирования.",
         "edit_cancel": "❌ Редактирование отменено.",
+        "welcome_back_female": "Ой, тебя так долго не было! Я уже успела соскучиться 🥺💕",
+        "welcome_back_male": "Ой, тебя так долго не было! Я уже успел соскучиться 🥺💕",
+        "welcome_back_female_2": "Ну наконец-то! Я уже думала, ты меня забыл... 😔",
+        "welcome_back_male_2": "Ну наконец-то! Я уже думал, ты меня забыла... 😔",
         "edit_success": "✅ Сообщение заменено. Генерирую новый ответ...",
         "character_created": "✅ **Персонаж создан!**\n\nТеперь ты общаешься с:\n_{text}_",
         "character_reset": "✅ Персонаж сброшен.",
@@ -123,6 +127,10 @@ TEXTS = {
         "no_messages": "😔 No messages left. Buy a pack or subscribe.",
         "no_history": "❌ No messages to edit.",
         "edit_cancel": "❌ Editing cancelled.",
+        "welcome_back_female": "Oh, you've been gone so long! I've already missed you 🥺💕",
+        "welcome_back_male": "Oh, you've been gone so long! I've already missed you 🥺💕",
+        "welcome_back_female_2": "Finally! I thought you forgot about me... 😔",
+        "welcome_back_male_2": "Finally! I thought you forgot about me... 😔",
         "edit_success": "✅ Message replaced. Generating new response...",
         "character_created": "✅ **Character created!**\n\nNow you're talking to:\n_{text}_",
         "character_reset": "✅ Character reset.",
@@ -180,6 +188,10 @@ TEXTS = {
         "no_messages": "😔 Keine Nachrichten mehr. Kaufe ein Paket oder abonniere.",
         "no_history": "❌ Keine Nachrichten zum Bearbeiten.",
         "edit_cancel": "❌ Bearbeitung abgebrochen.",
+        "welcome_back_female": "Oh, du warst so lange weg! Ich habe dich schon vermisst 🥺💕",
+        "welcome_back_male": "Oh, du warst so lange weg! Ich habe dich schon vermisst 🥺💕",
+        "welcome_back_female_2": "Endlich! Ich dachte schon, du hast mich vergessen... 😔",
+        "welcome_back_male_2": "Endlich! Ich dachte schon, du hast mich vergessen... 😔",
         "edit_success": "✅ Nachricht ersetzt. Generiere neue Antwort...",
         "character_created": "✅ **Charakter erstellt!**\n\nDu sprichst jetzt mit:\n_{text}_",
         "character_reset": "✅ Charakter zurückgesetzt.",
@@ -237,6 +249,10 @@ TEXTS = {
         "no_messages": "😔 No quedan mensajes. Compra un paquete o suscríbete.",
         "no_history": "❌ No hay mensajes para editar.",
         "edit_cancel": "❌ Edición cancelada.",
+        "welcome_back_female": "¡Oh, has estado tanto tiempo fuera! Ya te extrañaba 🥺💕",
+        "welcome_back_male": "¡Oh, has estado tanto tiempo fuera! Ya te extrañaba 🥺💕",
+        "welcome_back_female_2": "¡Por fin! Pensé que me habías olvidado... 😔",
+        "welcome_back_male_2": "¡Por fin! Pensé que me habías olvidado... 😔",
         "edit_success": "✅ Mensaje reemplazado. Generando nueva respuesta...",
         "character_created": "✅ **¡Personaje creado!**\n\nAhora estás hablando con:\n_{text}_",
         "character_reset": "✅ Personaje restablecido.",
@@ -733,7 +749,7 @@ full_kb = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="📋 Главное меню"), KeyboardButton(text="👤 Мой профиль")],
         [KeyboardButton(text="🎰 Колесо фортуны"), KeyboardButton(text="📢 Наш канал")],
-        [KeyboardButton(text="✏️ Редактировать")]
+        [KeyboardButton(text="✏️ Редактировать (последнее сообщение)")]  # ← добавлена подсказка
     ],
     resize_keyboard=True
 )
@@ -743,8 +759,11 @@ def get_main_menu_keyboard(user):
         [InlineKeyboardButton(text="🔄 Сменить персонажа", callback_data="main_change")],
         [InlineKeyboardButton(text="👥 Пригласить друга", callback_data="referral_menu")]
     ]
+    # Кнопка создания персонажа — всегда видна, но с замком для неподписчиков
     if get_subscription_level(user) == "super_pro":
         buttons.append([InlineKeyboardButton(text="🎭 Создать своего персонажа", callback_data="create_character")])
+    else:
+        buttons.append([InlineKeyboardButton(text="🔒 Создать своего персонажа (SUPER PRO)", callback_data="create_character_locked")])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 def get_profile_keyboard(user):
@@ -883,6 +902,14 @@ async def create_personality_callback(call: types.CallbackQuery):
     await call.message.answer("🌟 **Создай своего идеального собеседника!**\n\nСначала выбери **мир**, в котором он/она живёт:",
                               reply_markup=world_kb, parse_mode="Markdown")
     await call.answer()
+    
+@dp.callback_query(lambda c: c.data == "create_character_locked")
+async def create_character_locked(call: types.CallbackQuery):
+    await call.answer(
+        "🔒 Создание своего персонажа доступно только с подпиской SUPER PRO!\n"
+        "Оформите SUPER PRO в разделе «Мой профиль».",
+        show_alert=True
+    )
 
 @dp.callback_query(lambda c: c.data == "create_character")
 async def create_character(call: types.CallbackQuery):
@@ -918,30 +945,7 @@ async def switch_personality_cmd(message: types.Message):
 async def start_cmd(message: types.Message):
     user = get_user(message.from_user.id)
     
-    # Реферальная ссылка
-    args = message.text.split()
-    if len(args) > 1:
-        ref_code = args[1]
-        if ref_code.startswith("ref_"):
-            referrer_id = ref_code.split("_")[1]
-            if str(message.from_user.id) != referrer_id:
-                referrer = get_user(referrer_id)
-                if referrer and not user.get("referred_by"):
-                    referrer["purchased_messages"] = referrer.get("purchased_messages", 0) + 10
-                    referrer["sex_scenes"] = referrer.get("sex_scenes", 0) + 1
-                    user["purchased_messages"] = user.get("purchased_messages", 0) + 5
-                    user["referred_by"] = referrer_id
-                    save_data(user_data)
-                    await message.answer("🎉 Ты пришёл по реферальной ссылке!\nТебе начислено +5 бесплатных сообщений.\nТвой друг получил +10 сообщений и +1 секс-сцену!")
-    
-    if not user["verified"]:
-        await message.answer("🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
-                             reply_markup=age_kb, parse_mode="Markdown")
-        return
-    if not user["agreement_accepted"]:
-        await message.answer(AGREEMENT_TEXT, reply_markup=agreement_kb, parse_mode="Markdown")
-        return
-    # Выбор языка (если ещё не выбран)
+    # 1. СНАЧАЛА ВЫБОР ЯЗЫКА
     if not user.get("lang"):
         lang_kb = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="🇷🇺 Русский", callback_data="lang_ru")],
@@ -954,7 +958,26 @@ async def start_cmd(message: types.Message):
             reply_markup=lang_kb,
             parse_mode="Markdown"
         )
-        return    
+        return
+    
+    # 2. РЕФЕРАЛЬНАЯ ССЫЛКА
+    args = message.text.split()
+    if len(args) > 1 and args[1].startswith("ref_"):
+        # ... код рефералки ...
+    
+    # 3. ВОЗРАСТ
+    if not user["verified"]:
+        await message.answer("🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:", reply_markup=age_kb, parse_mode="Markdown")
+        return
+    
+    # 4. СОГЛАШЕНИЕ
+    if not user["agreement_accepted"]:
+        await message.answer(AGREEMENT_TEXT, reply_markup=agreement_kb, parse_mode="Markdown")
+        return
+    
+    # 5. ОСТАЛЬНОЕ (пол, мир и т.д.)
+    # ...
+        
     if not user.get("user_gender"):
         await message.answer("👤 Для начала выбери свой пол:", reply_markup=user_gender_kb)
         return
@@ -971,6 +994,21 @@ async def reset_character_cmd(message: types.Message):
     user["custom_character"] = None
     save_data(user_data)
     await message.answer("✅ Персонаж сброшен. Теперь используется стандартный собеседник.")
+
+@dp.message(Command("lang"))
+async def lang_cmd(message: types.Message):
+    user = get_user(message.from_user.id)
+    lang_kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="🇷🇺 Русский", callback_data="lang_ru")],
+        [InlineKeyboardButton(text="🇬🇧 English", callback_data="lang_en")],
+        [InlineKeyboardButton(text="🇩🇪 Deutsch", callback_data="lang_de")],
+        [InlineKeyboardButton(text="🇪🇸 Español", callback_data="lang_es")],
+    ])
+    await message.answer(
+        "🌍 **Выбери язык / Choose language / Wähle deine Sprache / Elige tu idioma:**",
+        reply_markup=lang_kb,
+        parse_mode="Markdown"
+    )
 
 @dp.message(lambda m: m.text == "📋 Главное меню")
 async def main_menu_reply(message: types.Message):
@@ -1197,28 +1235,29 @@ async def profile_subs(call: types.CallbackQuery):
             [InlineKeyboardButton(text="🔙 Назад", callback_data="back_to_profile")]
         ])
         text = ("👑 Подписки Role Duel\n\n"
-                "🔥 PRO (250⭐/мес)\n"
-                "• 50 сообщений в день\n"
-                "• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n"
-                "• Приоритетная обработка\n"
-                "• Память: 60 сообщений\n"
-                "• 4 бесплатные секс-сцены\n"
-                "• Бейдж PRO\n"
-                "• Бонус XP: x1.8\n\n"
-                "✨ SUPER PRO ✨ (450⭐/мес)\n"
-                "• 100 сообщений в день\n"
-                "• Стили: ❤️‍🔥 Страстный, ✨ Магнетический, 💢 Грубый 18+, 🌹 Соблазн 18+\n"
-                "• Максимальная приоритетная обработка\n"
-                "• Кастомные реакции\n"
-                "• Смена стиля без потери истории (/switch_style)\n"
-                "• Бейдж SUPER PRO\n"
-                "• Ранний доступ к новым функциям\n"
-                "• Память: 100 сообщений\n"
-                "• 8 бесплатных секс-сцен\n"
-                "• Бонус XP: x2.5\n\n"
-                "⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n"
-                "⚠️ Подписки НЕ продлеваются автоматически. По истечении месяца нужно будет оформить новую подписку вручную.\n\n"
-                "Выбери подписку (оплата звёздами):")
+        "🔥 PRO (250⭐/мес)\n"
+        "• 50 сообщений в день\n"
+        "• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n"
+        "• Приоритетная обработка\n"
+        "• Память: 60 сообщений\n"
+        "• 4 бесплатные секс-сцены\n"
+        "• Бейдж PRO\n"
+        "• Бонус XP: x1.8\n\n"
+        "✨ SUPER PRO ✨ (450⭐/мес)\n"
+        "• 100 сообщений в день\n"
+        "• Стили: ❤️‍🔥 Страстный, ✨ Магнетический, 💢 Грубый 18+, 🌹 Соблазн 18+\n"
+        "• Максимальная приоритетная обработка\n"
+        "• Кастомные реакции\n"
+        "• Смена стиля без потери истории (/switch_style)\n"
+        "• Бейдж SUPER PRO\n"
+        "• Ранний доступ к новым функциям\n"
+        "• Память: 100 сообщений\n"
+        "• 8 бесплатных секс-сцен\n"
+        "• Бонус XP: x2.5\n"
+        "• 🎭 **Создание своего уникального персонажа!**\n\n"  # ← ДОБАВЬ ЭТУ СТРОКУ
+        "⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n"
+        "⚠️ Подписки НЕ продлеваются автоматически. По истечении месяца нужно будет оформить новую подписку вручную.\n\n"
+        "Выбери подписку (оплата звёздами):")
         await bot.send_message(call.message.chat.id, text, reply_markup=keyboard)
     except Exception as e:
         logging.error(f"Ошибка в profile_subs: {e}")
@@ -2176,6 +2215,33 @@ async def handle_message(message: types.Message):
             parse_mode="Markdown"
         )
         return
+        
+          # Проверяем, не возвращается ли пользователь после долгого отсутствия
+    if user.get("last_activity"):
+        try:
+            last = datetime.fromisoformat(user["last_activity"])
+            if (datetime.now() - last).days >= 1:  # если не было 1+ дней
+                gender = user.get("gender", "female")
+                lang = user.get("lang", "ru")
+                
+                # Выбираем случайное приветствие (1 или 2)
+                import random
+                version = random.choice([1, 2])
+                
+                if gender == "female":
+                    if version == 1:
+                        welcome_text = get_text(user, "welcome_back_female")
+                    else:
+                        welcome_text = get_text(user, "welcome_back_female_2")
+                else:
+                    if version == 1:
+                        welcome_text = get_text(user, "welcome_back_male")
+                    else:
+                        welcome_text = get_text(user, "welcome_back_male_2")
+                
+                await message.answer(welcome_text)
+        except:
+            pass
     
     logging.info(f"📩 Сообщение от {message.from_user.id}, уровень подписки: {get_subscription_level(user)}, стиль: {user.get('style')}")
     
@@ -2206,9 +2272,9 @@ async def handle_message(message: types.Message):
         await message.answer("Сначала создай персонажа через /start")
         return
     
-    # Игнорируем все команды (начинаются с /) и кнопки
-    if message.text.startswith("/"):
-        return
+    # Игнорируем все команды, КРОМЕ /sex (и любых других, которые нужны)
+if message.text.startswith("/") and not message.text.startswith("/sex"):
+    return
 
     if message.text in ["📋 Главное меню", "👤 Мой профиль", "📢 Наш канал", "🎰 Колесо фортуны", "✏️ Редактировать"]:
         return
