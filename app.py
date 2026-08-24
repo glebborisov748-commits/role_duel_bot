@@ -15,6 +15,20 @@ from openai import OpenAI
 # ============================================================
 VOICE_ENABLED = False
 # ============================================================
+#  ВЫБОР ЯЗЫКА — ОБРАБОТЧИК
+# ============================================================
+@dp.callback_query(lambda c: c.data.startswith("lang_"))
+async def choose_lang(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    lang = call.data.split("_")[1]  # ru, en, de, es
+    user["lang"] = lang
+    save_data(user_data)
+    await call.message.delete()
+    await call.message.answer(f"✅ Язык выбран: {lang}")
+    # Запускаем /start заново
+    await start_cmd(call.message)
+    await call.answer()
+# ============================================================
 #  МНОГОЯЗЫЧНЫЙ СЛОВАРЬ
 # ============================================================
 # ============================================================
@@ -945,7 +959,7 @@ async def switch_personality_cmd(message: types.Message):
 async def start_cmd(message: types.Message):
     user = get_user(message.from_user.id)
     
-    # ===== 1. СНАЧАЛА ВСЕГДА ВЫБОР ЯЗЫКА =====
+    # ===== 1. ВСЕГДА СНАЧАЛА ЯЗЫК =====
     if not user.get("lang"):
         lang_kb = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="🇷🇺 Русский", callback_data="lang_ru")],
@@ -954,68 +968,57 @@ async def start_cmd(message: types.Message):
             [InlineKeyboardButton(text="🇪🇸 Español", callback_data="lang_es")],
         ])
         await message.answer(
-            "🌍 **Выбери язык / Choose language:**",
+            "🌍 **Выбери язык:**",
             reply_markup=lang_kb,
             parse_mode="Markdown"
         )
-        return  # ← ВАЖНО! После выбора языка БОЛЬШЕ НИЧЕГО НЕ ВЫПОЛНЯЕТСЯ!
+        return  # ← ВАЖНО: после этого функция ЗАКАНЧИВАЕТСЯ!
     
-    # ===== 2. ПОТОМ ВСЁ ОСТАЛЬНОЕ =====
-    # Рефералка
+    # ===== 2. РЕФЕРАЛКА =====
     args = message.text.split()
-    if len(args) > 1:
-        ref_code = args[1]
-        if ref_code.startswith("ref_"):
-            referrer_id = ref_code.split("_")[1]
-            if str(message.from_user.id) != referrer_id:
-                referrer = get_user(referrer_id)
-                if referrer and not user.get("referred_by"):
-                    referrer["purchased_messages"] = referrer.get("purchased_messages", 0) + 10
-                    referrer["sex_scenes"] = referrer.get("sex_scenes", 0) + 1
-                    user["purchased_messages"] = user.get("purchased_messages", 0) + 5
-                    user["referred_by"] = referrer_id
-                    save_data(user_data)
-                    await message.answer("🎉 Ты пришёл по реферальной ссылке!\nТебе начислено +5 бесплатных сообщений.\nТвой друг получил +10 сообщений и +1 секс-сцену!")
+    if len(args) > 1 and args[1].startswith("ref_"):
+        referrer_id = args[1].split("_")[1]
+        if str(message.from_user.id) != referrer_id:
+            referrer = get_user(referrer_id)
+            if referrer and not user.get("referred_by"):
+                referrer["purchased_messages"] = referrer.get("purchased_messages", 0) + 10
+                referrer["sex_scenes"] = referrer.get("sex_scenes", 0) + 1
+                user["purchased_messages"] = user.get("purchased_messages", 0) + 5
+                user["referred_by"] = referrer_id
+                save_data(user_data)
+                await message.answer("🎉 Ты пришёл по реферальной ссылке!")
     
     # ===== 3. ВОЗРАСТ =====
     if not user["verified"]:
         await message.answer(
-            "🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
+            "🔞 **Подтверди возраст:**\nБот для 18+",
             reply_markup=age_kb,
             parse_mode="Markdown"
         )
         return
     
-    # ===== 4. СОГЛАШЕНИЕ (только через WebApp) =====
+    # ===== 4. СОГЛАШЕНИЕ (ОБЫЧНЫЕ КНОПКИ, БЕЗ WEBAPP!) =====
     if not user["agreement_accepted"]:
-        webapp_kb = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(
-                text="📜 Открыть соглашение",
-                web_app=types.WebAppInfo(url="https://glebborisov748-commits.github.io/agreement/agreement_ru.html")
-            )]
+        agreement_kb = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="✅ Принимаю", callback_data="agreement_accept")],
+            [InlineKeyboardButton(text="❌ Не принимаю", callback_data="agreement_decline")]
         ])
         await message.answer(
-            "✅ Возраст подтверждён.\n\n"
-            "📜 Нажми на кнопку, чтобы ознакомиться с соглашением:",
-            reply_markup=webapp_kb
+            "📜 **Пользовательское соглашение**\n\n"
+            "Нажимая «Принимаю», вы соглашаетесь с условиями использования бота.",
+            reply_markup=agreement_kb,
+            parse_mode="Markdown"
         )
         return
     
     # ===== 5. ПОЛ =====
     if not user.get("user_gender"):
-        await message.answer(
-            "👤 Для начала выбери свой пол:",
-            reply_markup=user_gender_kb
-        )
+        await message.answer("👤 Выбери свой пол:", reply_markup=user_gender_kb)
         return
     
     # ===== 6. МИР =====
     if not user["personality_ready"]:
-        await message.answer(
-            "🌟 **Создай своего идеального собеседника!**\n\nСначала выбери **мир**, в котором он/она живёт:",
-            reply_markup=world_kb,
-            parse_mode="Markdown"
-        )
+        await message.answer("🌟 Выбери мир:", reply_markup=world_kb, parse_mode="Markdown")
         return
     
     # ===== 7. ВСЁ ГОТОВО =====
@@ -2111,33 +2114,18 @@ async def grant_cmd(message: types.Message):
     save_data(user_data)
     await message.answer(f"✅ Пользователю {target} выдана SUPER PRO подписка на месяц.")
 
-@dp.callback_query(lambda c: c.data == "age_yes")
-async def age_yes(call: types.CallbackQuery):
+@dp.callback_query(lambda c: c.data == "agreement_accept")
+async def agreement_accept(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
-    user["verified"] = True
+    user["agreement_accepted"] = True
     save_data(user_data)
-    
-    webapp_kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(
-            text="📜 Открыть соглашение",
-            web_app=types.WebAppInfo(url="https://glebborisov748-commits.github.io/agreement/agreement_ru.html")
-        )]
-    ])
-    
-    await call.message.edit_text(
-        "✅ Возраст подтверждён.\n\n"
-        "📜 Нажми на кнопку, чтобы ознакомиться с соглашением:",
-        reply_markup=webapp_kb
-    )
+    await call.message.edit_text("✅ Соглашение принято!")
+    await start_cmd(call.message)
     await call.answer()
 
 @dp.callback_query(lambda c: c.data == "agreement_decline")
 async def agreement_decline(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    user["verified"] = False
-    save_data(user_data)
-    await call.message.edit_text("❌ Вы отказались от соглашения. Доступ закрыт.")
-    await call.message.edit_reply_markup()
+    await call.message.edit_text("❌ Без соглашения бот не работает.")
     await call.answer()
 
 # ============================================================
