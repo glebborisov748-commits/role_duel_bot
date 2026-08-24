@@ -945,7 +945,7 @@ async def switch_personality_cmd(message: types.Message):
 async def start_cmd(message: types.Message):
     user = get_user(message.from_user.id)
     
-    # 1. СНАЧАЛА ВЫБОР ЯЗЫКА
+    # 1. ВЫБОР ЯЗЫКА
     if not user.get("lang"):
         lang_kb = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="🇷🇺 Русский", callback_data="lang_ru")],
@@ -960,7 +960,7 @@ async def start_cmd(message: types.Message):
         )
         return
     
-        # 2. РЕФЕРАЛЬНАЯ ССЫЛКА
+    # 2. РЕФЕРАЛЬНАЯ ССЫЛКА
     args = message.text.split()
     if len(args) > 1:
         ref_code = args[1]
