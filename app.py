@@ -627,7 +627,7 @@ def get_user(user_id):
             "referred_by": None,
             "last_activity": datetime.now().isoformat(),
             "last_spin_notified": None,
-            "last_reminder": None
+            "last_reminder": None,
             "creating_character": False,
             "custom_character": None
         }
