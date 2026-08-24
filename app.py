@@ -2080,23 +2080,30 @@ async def age_yes(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     user["verified"] = True
     save_data(user_data)
-    await call.message.edit_text("✅ Возраст подтверждён.\nОзнакомьтесь с пользовательским соглашением для продолжения:\n\n" + AGREEMENT_TEXT,
-                                 reply_markup=agreement_kb, parse_mode="Markdown")
-    await call.answer()
-
-@dp.callback_query(lambda c: c.data == "age_no")
-async def age_no(call: types.CallbackQuery):
-    await call.message.edit_text("🚫 Доступ запрещён. Бот только для 18+.")
-    await call.message.edit_reply_markup()
-    await call.answer()
-
-@dp.callback_query(lambda c: c.data == "agreement_accept")
-async def agreement_accept(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    user["agreement_accepted"] = True
-    save_data(user_data)
-    await call.message.edit_text("✅ Соглашение принято!\n\nТеперь давай создадим твоего идеального собеседника.\nВыбери **мир**:",
-                                 reply_markup=world_kb, parse_mode="Markdown")
+    
+    # Ссылки на страницы соглашения (GitHub Pages)
+    agreement_urls = {
+        "ru": "https://glebborisov748-commits.github.io/agreement/agreement_ru.html",
+        "en": "https://glebborisov748-commits.github.io/agreement/agreement_en.html",
+        "de": "https://glebborisov748-commits.github.io/agreement/agreement_de.html",
+        "es": "https://glebborisov748-commits.github.io/agreement/agreement_es.html"
+    }
+    
+    lang = user.get("lang", "ru")
+    url = agreement_urls.get(lang, agreement_urls["ru"])
+    
+    webapp_kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(
+            text="📜 Открыть соглашение",
+            web_app=types.WebAppInfo(url=url)
+        )]
+    ])
+    
+    await call.message.edit_text(
+        "✅ Возраст подтверждён.\n\n"
+        "📜 Нажми на кнопку, чтобы ознакомиться с пользовательским соглашением:",
+        reply_markup=webapp_kb
+    )
     await call.answer()
 
 @dp.callback_query(lambda c: c.data == "agreement_decline")
