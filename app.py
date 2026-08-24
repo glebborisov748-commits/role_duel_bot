@@ -2284,8 +2284,8 @@ async def handle_message(message: types.Message):
         return
     
     # Игнорируем все команды, КРОМЕ /sex (и любых других, которые нужны)
-if message.text.startswith("/") and not message.text.startswith("/sex"):
-    return
+    if message.text.startswith("/") and not message.text.startswith("/sex"):
+        return
 
     if message.text in ["📋 Главное меню", "👤 Мой профиль", "📢 Наш канал", "🎰 Колесо фортуны", "✏️ Редактировать"]:
         return
