@@ -291,23 +291,30 @@ PROVOD_API_KEY = os.getenv("PROVOD_API_KEY")
 if not BOT_TOKEN or not PROVOD_API_KEY:
     raise ValueError("Заполни BOT_TOKEN и PROVOD_API_KEY в .env!")
 
-# ... импорты ...
-# ... TEXTS ...
-# ... load_dotenv() ...
-
-client = OpenAI(...)
+client = OpenAI(api_key=PROVOD_API_KEY, base_url="https://api.provod.ai/v1")
 bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher()  # ← ЗДЕСЬ СОЗДАЁТСЯ dp!
-logging.basicConfig(level=logging.INFO)
+dp = Dispatcher()  # ← СНАЧАЛА СОЗДАЁМ dp!
+logging.basicConfig(level=logging.INFO)  # ← ПОТОМ ЛОГИ!
 
 # ============================================================
-#  ТЕПЕРЬ ЗДЕСЬ МОЖНО ИСПОЛЬЗОВАТЬ @dp.callback_query
+#  ТЕПЕРЬ МОЖНО ИСПОЛЬЗОВАТЬ @dp
 # ============================================================
-
 @dp.callback_query(lambda c: c.data.startswith("lang_"))
 async def choose_lang(call: types.CallbackQuery):
-    # ... код ...
+    user = get_user(call.from_user.id)
+    lang = call.data.split("_")[1]
+    user["lang"] = lang
+    save_data(user_data)
+    await call.message.delete()
+    await call.message.answer(f"✅ Язык выбран: {lang}")
+    await start_cmd(call.message)
+    await call.answer()
 
+# ============================================================
+#  ПОТОМ ВСЁ ОСТАЛЬНОЕ (GIF, ADMIN_IDS, DATA_FILE и т.д.)
+# ============================================================
+PRO_GIF_URL = "..."
+# ...
 # ============================================================
 #  GIF-ССЫЛКИ
 # ============================================================
