@@ -291,10 +291,22 @@ PROVOD_API_KEY = os.getenv("PROVOD_API_KEY")
 if not BOT_TOKEN or not PROVOD_API_KEY:
     raise ValueError("Заполни BOT_TOKEN и PROVOD_API_KEY в .env!")
 
-client = OpenAI(api_key=PROVOD_API_KEY, base_url="https://api.provod.ai/v1")
+# ... импорты ...
+# ... TEXTS ...
+# ... load_dotenv() ...
+
+client = OpenAI(...)
 bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher()
+dp = Dispatcher()  # ← ЗДЕСЬ СОЗДАЁТСЯ dp!
 logging.basicConfig(level=logging.INFO)
+
+# ============================================================
+#  ТЕПЕРЬ ЗДЕСЬ МОЖНО ИСПОЛЬЗОВАТЬ @dp.callback_query
+# ============================================================
+
+@dp.callback_query(lambda c: c.data.startswith("lang_"))
+async def choose_lang(call: types.CallbackQuery):
+    # ... код ...
 
 # ============================================================
 #  GIF-ССЫЛКИ
