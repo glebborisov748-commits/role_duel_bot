@@ -980,10 +980,21 @@ async def start_cmd(message: types.Message):
     if not user["verified"]:
         await message.answer("🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:", reply_markup=age_kb, parse_mode="Markdown")
         return
-    
-    # 4. СОГЛАШЕНИЕ
+
+    # 4. СОГЛАШЕНИЕ (ТЕПЕРЬ ЧЕРЕЗ ВЕБ-АПП!)
     if not user["agreement_accepted"]:
-        await message.answer(AGREEMENT_TEXT, reply_markup=agreement_kb, parse_mode="Markdown")
+        # Кнопка с WebApp
+        webapp_kb = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(
+                text="📜 Открыть соглашение",
+                web_app=types.WebAppInfo(url="https://твой-сайт.ru/agreement.html")  # ← ЗАМЕНИ НА СВОЮ ССЫЛКУ!
+            )]
+        ])
+        await message.answer(
+            "📜 **Чтобы продолжить, ознакомься с пользовательским соглашением:**\n\n"
+            "Нажми на кнопку ниже, чтобы открыть соглашение.",
+            reply_markup=webapp_kb
+        )
         return
     
     # 5. ОСТАЛЬНОЕ (пол, мир и т.д.)
