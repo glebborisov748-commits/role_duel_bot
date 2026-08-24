@@ -1364,7 +1364,7 @@ async def revoke_subscription_cmd(message: types.Message):
     save_data(user_data)
     await message.answer(f"✅ Подписка {old_level.upper()} у пользователя {target} отозвана.")
 
-@dp.message(Command("maintenance"))
+@dp.message(Command("tehwork"))
 async def maintenance_cmd(message: types.Message):
     global maintenance_mode
     if message.from_user.id not in ADMIN_IDS:
@@ -1373,7 +1373,7 @@ async def maintenance_cmd(message: types.Message):
     args = message.text.split()
     if len(args) < 2:
         await message.answer("ℹ️ Текущий режим: " + ("ВКЛЮЧЁН" if maintenance_mode else "ВЫКЛЮЧЁН") + 
-                             "\nИспользуйте: /maintenance on  или  /maintenance off")
+                             "\nИспользуйте: /tehwork on  или  /tehwork off")
         return
     if args[1].lower() == "on":
         maintenance_mode = True
