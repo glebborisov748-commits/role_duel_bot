@@ -945,7 +945,7 @@ async def switch_personality_cmd(message: types.Message):
 async def start_cmd(message: types.Message):
     user = get_user(message.from_user.id)
     
-    # 1. ВЫБОР ЯЗЫКА
+    # ===== 1. СНАЧАЛА ВСЕГДА ВЫБОР ЯЗЫКА =====
     if not user.get("lang"):
         lang_kb = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="🇷🇺 Русский", callback_data="lang_ru")],
@@ -954,13 +954,14 @@ async def start_cmd(message: types.Message):
             [InlineKeyboardButton(text="🇪🇸 Español", callback_data="lang_es")],
         ])
         await message.answer(
-            "🌍 **Выбери язык / Choose language / Wähle deine Sprache / Elige tu idioma:**",
+            "🌍 **Выбери язык / Choose language:**",
             reply_markup=lang_kb,
             parse_mode="Markdown"
         )
-        return
+        return  # ← ВАЖНО! После выбора языка БОЛЬШЕ НИЧЕГО НЕ ВЫПОЛНЯЕТСЯ!
     
-    # 2. РЕФЕРАЛЬНАЯ ССЫЛКА
+    # ===== 2. ПОТОМ ВСЁ ОСТАЛЬНОЕ =====
+    # Рефералка
     args = message.text.split()
     if len(args) > 1:
         ref_code = args[1]
@@ -976,7 +977,7 @@ async def start_cmd(message: types.Message):
                     save_data(user_data)
                     await message.answer("🎉 Ты пришёл по реферальной ссылке!\nТебе начислено +5 бесплатных сообщений.\nТвой друг получил +10 сообщений и +1 секс-сцену!")
     
-    # 3. ВОЗРАСТ (СНАЧАЛА!)
+    # ===== 3. ВОЗРАСТ =====
     if not user["verified"]:
         await message.answer(
             "🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
@@ -985,11 +986,8 @@ async def start_cmd(message: types.Message):
         )
         return
     
-    # 4. СОГЛАШЕНИЕ (ТОЛЬКО ЧЕРЕЗ WEBAPP, ПОСЛЕ ВОЗРАСТА)
+    # ===== 4. СОГЛАШЕНИЕ (только через WebApp) =====
     if not user["agreement_accepted"]:
-        # Здесь НЕ ДОЛЖНО БЫТЬ соглашения! Оно открывается через age_yes.
-        # Этот блок нужен только чтобы показать кнопку, если пользователь уже подтвердил возраст,
-        # но ещё не принял соглашение.
         webapp_kb = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(
                 text="📜 Открыть соглашение",
@@ -1003,7 +1001,7 @@ async def start_cmd(message: types.Message):
         )
         return
     
-    # 5. ПОЛ
+    # ===== 5. ПОЛ =====
     if not user.get("user_gender"):
         await message.answer(
             "👤 Для начала выбери свой пол:",
@@ -1011,7 +1009,7 @@ async def start_cmd(message: types.Message):
         )
         return
     
-    # 6. МИР
+    # ===== 6. МИР =====
     if not user["personality_ready"]:
         await message.answer(
             "🌟 **Создай своего идеального собеседника!**\n\nСначала выбери **мир**, в котором он/она живёт:",
@@ -1020,7 +1018,7 @@ async def start_cmd(message: types.Message):
         )
         return
     
-    # 7. ВСЁ ГОТОВО
+    # ===== 7. ВСЁ ГОТОВО =====
     await message.answer("👋 Добро пожаловать!", reply_markup=full_kb)
     await send_main_menu(message.chat.id, user)
     
@@ -1055,7 +1053,7 @@ async def handle_webapp_data(message: types.Message):
         user["agreement_accepted"] = True
         save_data(user_data)
         await message.answer("✅ Соглашение принято! Давай создадим твоего собеседника.")
-        await start_cmd(message)  # перенаправляем на следующий шаг
+        await start_cmd(message)  # ← перезапускаем start, чтобы пойти дальше
     elif data.get("action") == "decline":
         await message.answer("❌ Вы отказались от соглашения. Доступ закрыт.")
 
@@ -2119,27 +2117,16 @@ async def age_yes(call: types.CallbackQuery):
     user["verified"] = True
     save_data(user_data)
     
-    # Ссылки на страницы соглашения (GitHub Pages)
-    agreement_urls = {
-        "ru": "https://glebborisov748-commits.github.io/agreement/agreement_ru.html",
-        "en": "https://glebborisov748-commits.github.io/agreement/agreement_en.html",
-        "de": "https://glebborisov748-commits.github.io/agreement/agreement_de.html",
-        "es": "https://glebborisov748-commits.github.io/agreement/agreement_es.html"
-    }
-    
-    lang = user.get("lang", "ru")
-    url = agreement_urls.get(lang, agreement_urls["ru"])
-    
     webapp_kb = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
             text="📜 Открыть соглашение",
-            web_app=types.WebAppInfo(url=url)
+            web_app=types.WebAppInfo(url="https://glebborisov748-commits.github.io/agreement/agreement_ru.html")
         )]
     ])
     
     await call.message.edit_text(
         "✅ Возраст подтверждён.\n\n"
-        "📜 Нажми на кнопку, чтобы ознакомиться с пользовательским соглашением:",
+        "📜 Нажми на кнопку, чтобы ознакомиться с соглашением:",
         reply_markup=webapp_kb
     )
     await call.answer()
