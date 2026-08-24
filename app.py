@@ -2163,7 +2163,8 @@ async def cancel_edit_cmd(message: types.Message):
 async def handle_message(message: types.Message):
     global maintenance_mode
     user = get_user(message.from_user.id)
-        # Если пользователь создаёт персонажа
+    
+    # Если пользователь создаёт персонажа
     if user.get("creating_character"):
         user["custom_character"] = message.text
         user["creating_character"] = False
@@ -2206,11 +2207,11 @@ async def handle_message(message: types.Message):
         return
     
     # Игнорируем все команды (начинаются с /) и кнопки
-if message.text.startswith("/"):
-    return
+    if message.text.startswith("/"):
+        return
 
-if message.text in ["📋 Главное меню", "👤 Мой профиль", "📢 Наш канал", "🎰 Колесо фортуны", "✏️ Редактировать"]:
-    return
+    if message.text in ["📋 Главное меню", "👤 Мой профиль", "📢 Наш канал", "🎰 Колесо фортуны", "✏️ Редактировать"]:
+        return
     
     available = get_available_messages(user)
     if available <= 0:
@@ -2341,7 +2342,7 @@ if message.text in ["📋 Главное меню", "👤 Мой профиль"
     else:
         logging.info(f"⛔ Реакции не ставятся: уровень подписки = {get_subscription_level(user)}")
     
-        system_prompt = build_prompt(user)
+    system_prompt = build_prompt(user)
     messages_for_api = [{"role": "system", "content": system_prompt}]
     messages_for_api.extend(user["history"])
     
@@ -2370,6 +2371,17 @@ if message.text in ["📋 Главное меню", "👤 Мой профиль"
                 await typing_task
             except asyncio.CancelledError:
                 pass
+    
+    user["history"].append({"role": "assistant", "content": answer})
+    if len(user["history"]) > limit:
+        user["history"] = user["history"][-limit:]
+    save_data(user_data)
+    
+    await message.answer(answer, reply_markup=full_kb)
+    
+    # Обновляем время последней активности
+    user["last_activity"] = datetime.now().isoformat()
+    save_data(user_data)
     
     # ========== НОВЫЙ КОД (ВСТАВЬ ЭТО) ==========
     # Извлекаем реакцию из ответа ИИ (убираем скобки из текста)
