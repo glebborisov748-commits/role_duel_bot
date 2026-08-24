@@ -976,37 +976,51 @@ async def start_cmd(message: types.Message):
                     save_data(user_data)
                     await message.answer("🎉 Ты пришёл по реферальной ссылке!\nТебе начислено +5 бесплатных сообщений.\nТвой друг получил +10 сообщений и +1 секс-сцену!")
     
-    # 3. ВОЗРАСТ
+    # 3. ВОЗРАСТ (СНАЧАЛА!)
     if not user["verified"]:
-        await message.answer("🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:", reply_markup=age_kb, parse_mode="Markdown")
+        await message.answer(
+            "🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
+            reply_markup=age_kb,
+            parse_mode="Markdown"
+        )
         return
-
-    # 4. СОГЛАШЕНИЕ (ТЕПЕРЬ ЧЕРЕЗ ВЕБ-АПП!)
+    
+    # 4. СОГЛАШЕНИЕ (ТОЛЬКО ЧЕРЕЗ WEBAPP, ПОСЛЕ ВОЗРАСТА)
     if not user["agreement_accepted"]:
-        # Кнопка с WebApp
+        # Здесь НЕ ДОЛЖНО БЫТЬ соглашения! Оно открывается через age_yes.
+        # Этот блок нужен только чтобы показать кнопку, если пользователь уже подтвердил возраст,
+        # но ещё не принял соглашение.
         webapp_kb = InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(
                 text="📜 Открыть соглашение",
-                web_app=types.WebAppInfo(url="https://твой-сайт.ru/agreement.html")  # ← ЗАМЕНИ НА СВОЮ ССЫЛКУ!
+                web_app=types.WebAppInfo(url="https://glebborisov748-commits.github.io/agreement/agreement_ru.html")
             )]
         ])
         await message.answer(
-            "📜 Чтобы продолжить, ознакомься с пользовательским соглашением:\n\n"
-            "Нажми на кнопку ниже, чтобы открыть соглашение.",
+            "✅ Возраст подтверждён.\n\n"
+            "📜 Нажми на кнопку, чтобы ознакомиться с соглашением:",
             reply_markup=webapp_kb
         )
         return
     
-    # 5. ОСТАЛЬНОЕ (пол, мир и т.д.)
-    # ...
-        
+    # 5. ПОЛ
     if not user.get("user_gender"):
-        await message.answer("👤 Для начала выбери свой пол:", reply_markup=user_gender_kb)
+        await message.answer(
+            "👤 Для начала выбери свой пол:",
+            reply_markup=user_gender_kb
+        )
         return
+    
+    # 6. МИР
     if not user["personality_ready"]:
-        await message.answer("🌟 **Создай своего идеального собеседника!**\n\nСначала выбери **мир**, в котором он/она живёт:",
-                             reply_markup=world_kb, parse_mode="Markdown")
+        await message.answer(
+            "🌟 **Создай своего идеального собеседника!**\n\nСначала выбери **мир**, в котором он/она живёт:",
+            reply_markup=world_kb,
+            parse_mode="Markdown"
+        )
         return
+    
+    # 7. ВСЁ ГОТОВО
     await message.answer("👋 Добро пожаловать!", reply_markup=full_kb)
     await send_main_menu(message.chat.id, user)
     
@@ -2107,11 +2121,11 @@ async def age_yes(call: types.CallbackQuery):
     
     # Ссылки на страницы соглашения (GitHub Pages)
     agreement_urls = {
-    "ru": "https://glebborisov748-commits.github.io/agreement/agreement_ru.html",
-    "en": "https://glebborisov748-commits.github.io/agreement/agreement_en.html",
-    "de": "https://glebborisov748-commits.github.io/agreement/agreement_de.html",
-    "es": "https://glebborisov748-commits.github.io/agreement/agreement_es.html"
-}
+        "ru": "https://glebborisov748-commits.github.io/agreement/agreement_ru.html",
+        "en": "https://glebborisov748-commits.github.io/agreement/agreement_en.html",
+        "de": "https://glebborisov748-commits.github.io/agreement/agreement_de.html",
+        "es": "https://glebborisov748-commits.github.io/agreement/agreement_es.html"
+    }
     
     lang = user.get("lang", "ru")
     url = agreement_urls.get(lang, agreement_urls["ru"])
