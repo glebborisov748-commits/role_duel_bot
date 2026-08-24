@@ -960,10 +960,21 @@ async def start_cmd(message: types.Message):
         )
         return
     
-    # 2. РЕФЕРАЛЬНАЯ ССЫЛКА
+        # 2. РЕФЕРАЛЬНАЯ ССЫЛКА
     args = message.text.split()
-    if len(args) > 1 and args[1].startswith("ref_"):
-        # ... код рефералки ...
+    if len(args) > 1:
+        ref_code = args[1]
+        if ref_code.startswith("ref_"):
+            referrer_id = ref_code.split("_")[1]
+            if str(message.from_user.id) != referrer_id:
+                referrer = get_user(referrer_id)
+                if referrer and not user.get("referred_by"):
+                    referrer["purchased_messages"] = referrer.get("purchased_messages", 0) + 10
+                    referrer["sex_scenes"] = referrer.get("sex_scenes", 0) + 1
+                    user["purchased_messages"] = user.get("purchased_messages", 0) + 5
+                    user["referred_by"] = referrer_id
+                    save_data(user_data)
+                    await message.answer("🎉 Ты пришёл по реферальной ссылке!\nТебе начислено +5 бесплатных сообщений.\nТвой друг получил +10 сообщений и +1 секс-сцену!")
     
     # 3. ВОЗРАСТ
     if not user["verified"]:
