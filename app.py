@@ -14,6 +14,245 @@ from openai import OpenAI
 #  ГОЛОСОВЫЕ ОТКЛЮЧЕНЫ
 # ============================================================
 VOICE_ENABLED = False
+# ============================================================
+#  МНОГОЯЗЫЧНЫЙ СЛОВАРЬ
+# ============================================================
+# ============================================================
+#  МНОГОЯЗЫЧНЫЙ СЛОВАРЬ (ВСЕ ЯЗЫКИ + СОГЛАШЕНИЕ)
+# ============================================================
+# ============================================================
+#  МНОГОЯЗЫЧНЫЙ СЛОВАРЬ (ВСЕ ЯЗЫКИ + СОГЛАШЕНИЕ)
+# ============================================================
+TEXTS = {
+    "ru": {
+        "main_menu": "📋 Главное меню",
+        "my_profile": "👤 Мой профиль",
+        "spin_wheel": "🎰 Колесо фортуны",
+        "our_channel": "📢 Наш канал",
+        "edit": "✏️ Редактировать",
+        "change_character": "🔄 Сменить персонажа",
+        "invite_friend": "👥 Пригласить друга",
+        "create_character": "🎭 Создать своего персонажа",
+        "buy_packs": "📦 Купить пакеты",
+        "subscribe": "👑 Оформить подписку",
+        "buy_sex_scene": "🔥 Купить секс-сцену (45⭐) 18+",
+        "back": "🔙 Главное меню",
+        "back_to_profile": "🔙 Назад",
+        "accept": "✅ Мне есть 18 лет",
+        "decline": "❌ Мне нет 18 лет",
+        "agree": "📄 Я принимаю условия",
+        "disagree": "❌ Я не принимаю",
+        "realism": "🌍 Реализм",
+        "anime": "🎌 Аниме",
+        "i_male": "👨 Я парень",
+        "i_female": "👩 Я девушка",
+        "scene_phone": "📱 Переписка в телефоне",
+        "scene_live": "👫 Реальная встреча",
+        "channel": "📢 Перейти в канал",
+        "free": "🎁 Бесплатно",
+        "tomorrow": "⏳ Завтра",
+        "spin_paid": "💎 Крутить за 20⭐",
+        "spin_more": "💎 Крутить ещё за 20⭐",
+        "welcome": "👋 Добро пожаловать!",
+        "age_confirm": "🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
+        "age_ok": "✅ Возраст подтверждён.",
+        "age_no": "🚫 Доступ запрещён. Бот только для 18+.",
+        "agreement_ok": "✅ Соглашение принято! Теперь выбери мир:",
+        "agreement_no": "❌ Без соглашения бот не работает.",
+        "choose_gender": "👤 Выбери свой пол:",
+        "choose_world": "🌍 Выбери мир:",
+        "choose_style": "🎨 Выбери стиль:",
+        "choose_scene": "🎬 Выбери сцену:",
+        "no_messages": "😔 Закончились сообщения. Купи пакет или подписку.",
+        "no_history": "❌ Нет сообщений для редактирования.",
+        "edit_cancel": "❌ Редактирование отменено.",
+        "edit_success": "✅ Сообщение заменено. Генерирую новый ответ...",
+        "character_created": "✅ **Персонаж создан!**\n\nТеперь ты общаешься с:\n_{text}_",
+        "character_reset": "✅ Персонаж сброшен.",
+        "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра. Живёт одна в лесу.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
+        "spin_reminder": "🎁 Привет! У тебя сегодня бесплатное вращение в Колесе фортуны! Зайди и попробуй удачу 🍀",
+        "spin_choice": "🎰 **Колесо фортуны**\n\n{free_text}\n💎 Платное — 20⭐\n\n🔥 Призы: сообщения, XP, секс-сцены, PRO на 5 дней, SUPER PRO на 3 дня!",
+        "spin_result": "🎰 **Результат!**\n\nТы выиграл: {prize}\n{free_text}\n\n{extra_text}",
+        "spin_nothing": "😢 Ничего... В следующий раз повезёт!",
+        "profile": "Подписка: {status}\nОсталось сообщений: {messages}",
+        "referral": "👥 Твоя ссылка: `{link}`\n\nЗа каждого друга +10 сообщений и +1 секс-сцена!",
+        "surprise_no_sub": "❌ Эта команда доступна только для подписчиков.",
+        "surprise_low_level": "💕 Вы ещё не достаточно близки для сюрпризов. Продолжайте общаться!",
+        "choose_lang": "🌍 Выбери язык:",
+        "agreement": "📜 **ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ**\n\nНастоящее Соглашение регулирует отношения между Администрацией (далее – «Мы», «Администрация») и Пользователем (далее – «Вы», «Пользователь») при использовании сервиса Role Duel (далее – «Сервис»).\n\nИспользуя Сервис, Вы подтверждаете, что полностью ознакомились с условиями настоящего Соглашения и принимаете их безоговорочно. Если Вы не согласны с каким-либо пунктом, Вы обязаны немедленно прекратить использование Сервиса.\n\n---\n\n**1. ВОЗРАСТНОЕ ОГРАНИЧЕНИЕ**\n1.1. Сервис предназначен исключительно для лиц, достигших 18 лет.\n1.2. Использование Сервиса лицами младше 18 лет строго запрещено.\n1.3. Администрация не несёт ответственности за предоставление недостоверных данных о возрасте и не обязана проверять возраст Пользователя.\n\n**2. ОПИСАНИЕ СЕРВИСА**\n2.1. Сервис предоставляет доступ к виртуальным собеседникам на основе технологий искусственного интеллекта.\n2.2. Весь контент генерируется автоматически и не отражает мнение Администрации.\n2.3. Сервис не является медицинским, психологическим или консультационным инструментом.\n\n**3. ОТВЕТСТВЕННОСТЬ ПОЛЬЗОВАТЕЛЯ**\n3.1. Вы несёте полную ответственность за все действия, совершённые с использованием Вашего аккаунта.\n3.2. Запрещается использовать Сервис для: распространения экстремистских материалов; оскорблений, угроз, клеветы; мошеннических действий; распространения вредоносного ПО; любых действий, нарушающих законодательство РФ.\n3.3. Администрация оставляет за собой право блокировать доступ Пользователю за нарушение правил без предварительного уведомления.\n\n**4. КОНФИДЕНЦИАЛЬНОСТЬ И ПЕРСОНАЛЬНЫЕ ДАННЫЕ**\n4.1. Мы собираем и обрабатываем следующие данные: Telegram ID; история диалогов с ботом; данные о покупках и подписках; данные о взаимодействии с Сервисом.\n4.2. Мы НЕ передаём персональные данные третьим лицам, за исключением случаев, предусмотренных законом.\n4.3. Мы используем данные только для: обеспечения работы Сервиса; улучшения качества обслуживания; технической поддержки.\n4.4. Все диалоги хранятся в обезличенном виде и могут быть удалены по запросу Пользователя.\n4.5. Мы не несём ответственности за утечку данных, если она произошла по вине самого Пользователя (например, передача доступа к аккаунту).\n\n**5. ПЛАТНЫЕ УСЛУГИ И ПОДПИСКИ**\n5.1. Сервис предоставляет платные услуги (пакеты сообщений, подписки, секс-сцены, колесо фортуны).\n5.2. Цены и условия указаны в интерфейсе Сервиса и могут быть изменены в любое время.\n5.3. Подписки **НЕ продлеваются автоматически**. По истечении срока действия нужно будет оформить новую подписку вручную.\n5.4. Возврат средств за оплаченные услуги не производится, за исключением случаев технической ошибки со стороны Сервиса.\n5.5. Администрация не обязана уведомлять об истечении подписки.\n\n**6. ОТКАЗ ОТ ГАРАНТИЙ**\n6.1. Сервис предоставляется «как есть» без каких-либо гарантий.\n6.2. Мы не гарантируем: бесперебойную работу; соответствие контента ожиданиям; отсутствие ошибок и багов.\n6.3. Мы не несём ответственности для: убытков, вызванных использованием Сервиса; любых действий третьих лиц; содержания сообщений, сгенерированных ИИ.\n\n**7. ИЗМЕНЕНИЕ УСЛОВИЙ**\n7.1. Администрация оставляет за собой право изменять настоящее Соглашение в любое время.\n7.2. Изменения вступают в силу с момента публикации новой версии.\n7.3. Вы обязуетесь самостоятельно отслеживать изменения. Продолжение использования Сервиса означает согласие с обновлённой версией.\n\n**8. ИНТЕЛЛЕКТУАЛЬНАЯ СОБСТВЕННОСТЬ**\n8.1. Все элементы Сервиса (тексты, графика, интерфейс, код) являются объектами интеллектуальной собственности Администрации.\n8.2. Запрещается копирование, распространение, модификация или любое иное использование элементов Сервиса без согласия Администрации.\n\n**9. ПОРЯДОК ОБРАЩЕНИЙ И КОНТАКТЫ**\n9.1. Все вопросы, претензии и предложения принимаются через поддержку в Telegram.\n9.2. Мы обязуемся рассмотреть обращение в течение 5 рабочих дней.\n9.3. Контактная информация доступна в профиле Сервиса.\n\n**10. ЗАКЛЮЧИТЕЛЬНЫЕ ПОЛОЖЕНИЯ**\n10.1. Настоящее Соглашение регулируется законодательством Российской Федерации.\n10.2. Все споры решаются в досудебном порядке через обращение к Администрации.\n10.3. Если какой-либо пункт признан недействительным, остальные пункты сохраняют силу.\n10.4. Начиная использовать Сервис, Вы подтверждаете, что ознакомились с условиями и принимаете их полностью.\n\n---\n\n⚠️ **Если Вы не согласны с настоящим Соглашением, немедленно прекратите использование Сервиса.**"
+    },
+    "en": {
+        "main_menu": "📋 Main menu",
+        "my_profile": "👤 My profile",
+        "spin_wheel": "🎰 Spin wheel",
+        "our_channel": "📢 Our channel",
+        "edit": "✏️ Edit",
+        "change_character": "🔄 Change character",
+        "invite_friend": "👥 Invite friend",
+        "create_character": "🎭 Create your own character",
+        "buy_packs": "📦 Buy packs",
+        "subscribe": "👑 Subscribe",
+        "buy_sex_scene": "🔥 Buy sex scene (45⭐) 18+",
+        "back": "🔙 Main menu",
+        "back_to_profile": "🔙 Back",
+        "accept": "✅ I am 18+",
+        "decline": "❌ I am under 18",
+        "agree": "📄 I accept terms",
+        "disagree": "❌ I don't accept",
+        "realism": "🌍 Realism",
+        "anime": "🎌 Anime",
+        "i_male": "👨 I'm male",
+        "i_female": "👩 I'm female",
+        "scene_phone": "📱 Phone chat",
+        "scene_live": "👫 Real meeting",
+        "channel": "📢 Go to channel",
+        "free": "🎁 Free",
+        "tomorrow": "⏳ Tomorrow",
+        "spin_paid": "💎 Spin for 20⭐",
+        "spin_more": "💎 Spin again for 20⭐",
+        "welcome": "👋 Welcome!",
+        "age_confirm": "🔞 **WARNING!**\nThis bot is for 18+ only.\nConfirm your age:",
+        "age_ok": "✅ Age confirmed.",
+        "age_no": "🚫 Access denied. 18+ only.",
+        "agreement_ok": "✅ Terms accepted! Now choose your world:",
+        "agreement_no": "❌ Bot won't work without acceptance.",
+        "choose_gender": "👤 Choose your gender:",
+        "choose_world": "🌍 Choose your world:",
+        "choose_style": "🎨 Choose your style:",
+        "choose_scene": "🎬 Choose your scene:",
+        "no_messages": "😔 No messages left. Buy a pack or subscribe.",
+        "no_history": "❌ No messages to edit.",
+        "edit_cancel": "❌ Editing cancelled.",
+        "edit_success": "✅ Message replaced. Generating new response...",
+        "character_created": "✅ **Character created!**\n\nNow you're talking to:\n_{text}_",
+        "character_reset": "✅ Character reset.",
+        "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«Elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire. Lives alone in the forest.»\n\n✏️ Write description now — and I'll remember it!",
+        "spin_reminder": "🎁 Hey! You have a free spin today! Try your luck 🍀",
+        "spin_choice": "🎰 **Spin wheel**\n\n{free_text}\n💎 Paid — 20⭐\n\n🔥 Prizes: messages, XP, sex scenes, PRO for 5 days, SUPER PRO for 3 days!",
+        "spin_result": "🎰 **Result!**\n\nYou won: {prize}\n{free_text}\n\n{extra_text}",
+        "spin_nothing": "😢 Nothing... Better luck next time!",
+        "profile": "Subscription: {status}\nMessages left: {messages}",
+        "referral": "👥 Your link: `{link}`\n\nFor each friend +10 messages and +1 sex scene!",
+        "surprise_no_sub": "❌ This command is only for subscribers.",
+        "surprise_low_level": "💕 You're not close enough for surprises yet. Keep talking!",
+        "choose_lang": "🌍 Choose language:",
+        "agreement": "📜 **TERMS OF SERVICE**\n\nThis Agreement governs the relationship between the Administration (hereinafter – «We», «Administration») and the User (hereinafter – «You», «User») when using the Role Duel service (hereinafter – «Service»).\n\nBy using the Service, you confirm that you have fully read and understand the terms of this Agreement and accept them unconditionally. If you do not agree with any provision, you must immediately stop using the Service.\n\n---\n\n**1. AGE RESTRICTION**\n1.1. The Service is intended exclusively for persons aged 18 and over.\n1.2. Use of the Service by persons under 18 is strictly prohibited.\n1.3. The Administration is not responsible for providing false age information and is not obliged to verify the User's age.\n\n**2. SERVICE DESCRIPTION**\n2.1. The Service provides access to virtual interlocutors based on artificial intelligence technologies.\n2.2. All content is generated automatically and does not reflect the opinion of the Administration.\n2.3. The Service is not a medical, psychological or consulting tool.\n\n**3. USER RESPONSIBILITY**\n3.1. You are fully responsible for all actions performed using your account.\n3.2. It is prohibited to use the Service for: distribution of extremist materials; insults, threats, slander; fraudulent actions; distribution of malware; any actions that violate the laws of your country.\n3.3. The Administration reserves the right to block User access for violating the rules without prior notice.\n\n**4. PRIVACY AND PERSONAL DATA**\n4.1. We collect and process the following data: Telegram ID; chat history with the bot; purchase and subscription data; interaction data with the Service.\n4.2. We DO NOT transfer personal data to third parties, except as required by law.\n4.3. We use data only for: ensuring the operation of the Service; improving the quality of service; technical support.\n4.4. All dialogues are stored in anonymized form and can be deleted at the User's request.\n4.5. We are not responsible for data leakage if it occurred due to the User's own fault (for example, transferring account access).\n\n**5. PAID SERVICES AND SUBSCRIPTIONS**\n5.1. The Service provides paid services (message packs, subscriptions, sex scenes, spin wheel).\n5.2. Prices and terms are indicated in the Service interface and may be changed at any time.\n5.3. Subscriptions are **NOT renewed automatically**. After the expiration date, you will need to manually purchase a new subscription.\n5.4. Refunds for paid services are not provided, except in cases of technical error on the part of the Service.\n5.5. The Administration is not obliged to notify about subscription expiration.\n\n**6. DISCLAIMER OF WARRANTIES**\n6.1. The Service is provided «as is» without any warranties.\n6.2. We do not guarantee: uninterrupted operation; content meeting expectations; absence of errors and bugs.\n6.3. We are not responsible for: losses caused by using the Service; any actions of third parties; content of messages generated by AI.\n\n**7. CHANGES TO TERMS**\n7.1. The Administration reserves the right to change this Agreement at any time.\n7.2. Changes come into force from the moment of publication of the new version.\n7.3. You undertake to independently monitor changes. Continued use of the Service means acceptance of the updated version.\n\n**8. INTELLECTUAL PROPERTY**\n8.1. All elements of the Service (texts, graphics, interface, code) are objects of intellectual property of the Administration.\n8.2. Copying, distribution, modification or any other use of Service elements without the consent of the Administration is prohibited.\n\n**9. PROCEDURE FOR APPEALS AND CONTACTS**\n9.1. All questions, complaints and suggestions are accepted through support in Telegram.\n9.2. We undertake to consider the appeal within 5 working days.\n9.3. Contact information is available in the Service profile.\n\n**10. FINAL PROVISIONS**\n10.1. This Agreement is governed by the laws of the Russian Federation.\n10.2. All disputes are resolved in pre-trial procedure through an appeal to the Administration.\n10.3. If any provision is found invalid, the remaining provisions remain in force.\n10.4. By starting to use the Service, you confirm that you have read the terms and accept them fully.\n\n---\n\n⚠️ **If you do not agree with this Agreement, immediately stop using the Service.**"
+    },
+    "de": {
+        "main_menu": "📋 Hauptmenü",
+        "my_profile": "👤 Mein Profil",
+        "spin_wheel": "🎰 Glücksrad",
+        "our_channel": "📢 Unser Kanal",
+        "edit": "✏️ Bearbeiten",
+        "change_character": "🔄 Charakter wechseln",
+        "invite_friend": "👥 Freund einladen",
+        "create_character": "🎭 Eigenen Charakter erstellen",
+        "buy_packs": "📦 Pakete kaufen",
+        "subscribe": "👑 Abonnieren",
+        "buy_sex_scene": "🔥 Sexszene kaufen (45⭐) 18+",
+        "back": "🔙 Hauptmenü",
+        "back_to_profile": "🔙 Zurück",
+        "accept": "✅ Ich bin 18+",
+        "decline": "❌ Ich bin unter 18",
+        "agree": "📄 Ich akzeptiere die Bedingungen",
+        "disagree": "❌ Ich akzeptiere nicht",
+        "realism": "🌍 Realismus",
+        "anime": "🎌 Anime",
+        "i_male": "👨 Ich bin männlich",
+        "i_female": "👩 Ich bin weiblich",
+        "scene_phone": "📱 Telefon-Chat",
+        "scene_live": "👫 Richtiges Treffen",
+        "channel": "📢 Zum Kanal",
+        "free": "🎁 Kostenlos",
+        "tomorrow": "⏳ Morgen",
+        "spin_paid": "💎 Für 20⭐ drehen",
+        "spin_more": "💎 Nochmal für 20⭐ drehen",
+        "welcome": "👋 Willkommen!",
+        "age_confirm": "🔞 **ACHTUNG!**\nDieser Bot ist nur für Personen über 18 Jahren.\nBestätige dein Alter:",
+        "age_ok": "✅ Alter bestätigt.",
+        "age_no": "🚫 Zugriff verweigert. Nur für 18+.",
+        "agreement_ok": "✅ Bedingungen akzeptiert! Jetzt wähle deine Welt:",
+        "agreement_no": "❌ Ohne Akzeptanz funktioniert der Bot nicht.",
+        "choose_gender": "👤 Wähle dein Geschlecht:",
+        "choose_world": "🌍 Wähle deine Welt:",
+        "choose_style": "🎨 Wähle deinen Stil:",
+        "choose_scene": "🎬 Wähle deine Szene:",
+        "no_messages": "😔 Keine Nachrichten mehr. Kaufe ein Paket oder abonniere.",
+        "no_history": "❌ Keine Nachrichten zum Bearbeiten.",
+        "edit_cancel": "❌ Bearbeitung abgebrochen.",
+        "edit_success": "✅ Nachricht ersetzt. Generiere neue Antwort...",
+        "character_created": "✅ **Charakter erstellt!**\n\nDu sprichst jetzt mit:\n_{text}_",
+        "character_reset": "✅ Charakter zurückgesetzt.",
+        "character_create_prompt": "🎭 **Erstelle deinen eigenen einzigartigen Charakter!**\n\nBeschreibe einen beliebigen Charakter aus Anime, Filmen, Spielen oder erfinde deinen eigenen.\nSchreibe seinen/ihren Namen, Persönlichkeit, Aussehen, woher er/sie kommt, alle Details.\n\n📝 *Beispiel:*\n«Elfe aus The Witcher — weise, ruhig, mit langen silbernen Haaren. Liebt Sterne und lange Gespräche am Feuer. Lebt allein im Wald.»\n\n✏️ Schreibe jetzt die Beschreibung — und ich werde sie mir merken!",
+        "spin_reminder": "🎁 Hey! Du hast heute eine kostenlose Drehung am Glücksrad! Komm und versuche dein Glück 🍀",
+        "spin_choice": "🎰 **Glücksrad**\n\n{free_text}\n💎 Bezahlt — 20⭐\n\n🔥 Preise: Nachrichten, XP, Sexszenen, PRO für 5 Tage, SUPER PRO für 3 Tage!",
+        "spin_result": "🎰 **Ergebnis!**\n\nDu hast gewonnen: {prize}\n{free_text}\n\n{extra_text}",
+        "spin_nothing": "😢 Nichts... Nächstes Mal mehr Glück!",
+        "profile": "Abonnement: {status}\nVerbleibende Nachrichten: {messages}",
+        "referral": "👥 Dein Link: `{link}`\n\nFür jeden Freund +10 Nachrichten und +1 Sexszene!",
+        "surprise_no_sub": "❌ Dieser Befehl ist nur für Abonnenten verfügbar.",
+        "surprise_low_level": "💕 Ihr seid noch nicht nah genug für Überraschungen. Redet weiter!",
+        "choose_lang": "🌍 Wähle deine Sprache:",
+        "agreement": "📜 **NUTZUNGSBEDINGUNGEN**\n\nDiese Vereinbarung regelt die Beziehung zwischen der Verwaltung (im Folgenden – «Wir», «Verwaltung») und dem Nutzer (im Folgenden – «Sie», «Nutzer») bei der Nutzung des Role Duel Dienstes (im Folgenden – «Dienst»).\n\nDurch die Nutzung des Dienstes bestätigen Sie, dass Sie die Bedingungen dieser Vereinbarung vollständig gelesen und verstanden haben und sie vorbehaltlos akzeptieren. Wenn Sie mit einer Bestimmung nicht einverstanden sind, müssen Sie die Nutzung des Dienstes sofort einstellen.\n\n---\n\n**1. ALTERSBESCHRÄNKUNG**\n1.1. Der Dienst ist ausschließlich für Personen ab 18 Jahren bestimmt.\n1.2. Die Nutzung des Dienstes durch Personen unter 18 Jahren ist strengstens untersagt.\n1.3. Die Verwaltung haftet nicht für die Angabe falscher Altersinformationen und ist nicht verpflichtet, das Alter des Nutzers zu überprüfen.\n\n**2. DIENSTBESCHREIBUNG**\n2.1. Der Dienst bietet Zugang zu virtuellen Gesprächspartnern auf der Grundlage von Technologien der künstlichen Intelligenz.\n2.2. Alle Inhalte werden automatisch generiert und geben nicht die Meinung der Verwaltung wieder.\n2.3. Der Dienst ist kein medizinisches, psychologisches oder beratendes Instrument.\n\n**3. VERANTWORTUNG DES NUTZERS**\n3.1. Sie sind vollständig verantwortlich für alle Handlungen, die mit Ihrem Konto durchgeführt werden.\n3.2. Es ist untersagt, den Dienst zu nutzen für: Verbreitung extremistischer Materialien; Beleidigungen, Drohungen, Verleumdung; betrügerische Handlungen; Verbreitung von Schadsoftware; Handlungen, die gegen die Gesetze Ihres Landes verstoßen.\n3.3. Die Verwaltung behält sich das Recht vor, den Zugang des Nutzers bei Verstoß gegen die Regeln ohne vorherige Ankündigung zu sperren.\n\n**4. DATENSCHUTZ UND PERSONENBEZOGENE DATEN**\n4.1. Wir erheben und verarbeiten folgende Daten: Telegram-ID; Chat-Verlauf mit dem Bot; Daten zu Käufen und Abonnements; Interaktionsdaten mit dem Dienst.\n4.2. Wir geben personenbezogene Daten NICHT an Dritte weiter, außer in gesetzlich vorgeschriebenen Fällen.\n4.3. Wir verwenden Daten nur für: Sicherstellung des Betriebs des Dienstes; Verbesserung der Servicequalität; technischen Support.\n4.4. Alle Dialoge werden anonymisiert gespeichert und können auf Anfrage des Nutzers gelöscht werden.\n4.5. Wir haften nicht für Datenlecks, wenn diese durch eigenes Verschulden des Nutzers entstanden sind (z.B. Weitergabe des Kontozugangs).\n\n**5. KOSTENPFLICHTIGE DIENSTE UND ABONNEMENTS**\n5.1. Der Dienst bietet kostenpflichtige Dienste an (Nachrichtenpakete, Abonnements, Sexszenen, Glücksrad).\n5.2. Preise und Bedingungen sind in der Dienstoberfläche angegeben und können jederzeit geändert werden.\n5.3. Abonnements werden NICHT automatisch verlängert. Nach Ablauf der Laufzeit müssen Sie ein neues Abonnement manuell erwerben.\n5.4. Rückerstattungen für kostenpflichtige Dienste werden nicht gewährt, außer bei technischen Fehlern seitens des Dienstes.\n5.5. Die Verwaltung ist nicht verpflichtet, über den Ablauf des Abonnements zu informieren.\n\n**6. GEWÄHRLEISTUNGSAUSSCHLUSS**\n6.1. Der Dienst wird «wie besehen» ohne jegliche Garantien bereitgestellt.\n6.2. Wir garantieren nicht: unterbrechungsfreien Betrieb; Übereinstimmung der Inhalte mit den Erwartungen; Fehlerfreiheit.\n6.3. Wir haften nicht für: Verluste, die durch die Nutzung des Dienstes entstehen; Handlungen Dritter; Inhalte von KI-generierten Nachrichten.\n\n**7. ÄNDERUNGEN DER BEDINGUNGEN**\n7.1. Die Verwaltung behält sich das Recht vor, diese Vereinbarung jederzeit zu ändern.\n7.2. Änderungen treten mit der Veröffentlichung der neuen Version in Kraft.\n7.3. Sie verpflichten sich, Änderungen selbstständig zu verfolgen. Die fortgesetzte Nutzung des Dienstes bedeutet die Zustimmung zur aktualisierten Version.\n\n**8. GEISTIGES EIGENTUM**\n8.1. Alle Elemente des Dienstes (Texte, Grafiken, Oberfläche, Code) sind geistiges Eigentum der Verwaltung.\n8.2. Die Vervielfältigung, Verbreitung, Veränderung oder jede andere Nutzung von Dienstelementen ohne Zustimmung der Verwaltung ist untersagt.\n\n**9. VERFAHREN BEI BESCHWERDEN UND KONTAKTE**\n9.1. Alle Fragen, Beschwerden und Vorschläge werden über den Telegram-Support entgegengenommen.\n9.2. Wir verpflichten uns, die Beschwerde innerhalb von 5 Werktagen zu bearbeiten.\n9.3. Kontaktinformationen sind im Dienstprofil verfügbar.\n\n**10. SCHLUSSBESTIMMUNGEN**\n10.1. Diese Vereinbarung unterliegt dem Recht der Russischen Föderation.\n10.2. Alle Streitigkeiten werden im außergerichtlichen Verfahren durch eine Beschwerde bei der Verwaltung beigelegt.\n10.3. Sollte eine Bestimmung ungültig sein, bleiben die übrigen Bestimmungen in Kraft.\n10.4. Mit der Nutzung des Dienstes bestätigen Sie, dass Sie die Bedingungen gelesen haben und sie vollständig akzeptieren.\n\n---\n\n⚠️ **Wenn Sie mit dieser Vereinbarung nicht einverstanden sind, stellen Sie die Nutzung des Dienstes sofort ein.**"
+    },
+    "es": {
+        "main_menu": "📋 Menú principal",
+        "my_profile": "👤 Mi perfil",
+        "spin_wheel": "🎰 Ruleta",
+        "our_channel": "📢 Nuestro canal",
+        "edit": "✏️ Editar",
+        "change_character": "🔄 Cambiar personaje",
+        "invite_friend": "👥 Invitar amigo",
+        "create_character": "🎭 Crear tu propio personaje",
+        "buy_packs": "📦 Comprar paquetes",
+        "subscribe": "👑 Suscribirse",
+        "buy_sex_scene": "🔥 Comprar escena de sexo (45⭐) 18+",
+        "back": "🔙 Menú principal",
+        "back_to_profile": "🔙 Atrás",
+        "accept": "✅ Soy mayor de 18",
+        "decline": "❌ Soy menor de 18",
+        "agree": "📄 Acepto los términos",
+        "disagree": "❌ No acepto",
+        "realism": "🌍 Realismo",
+        "anime": "🎌 Anime",
+        "i_male": "👨 Soy hombre",
+        "i_female": "👩 Soy mujer",
+        "scene_phone": "📱 Chat por teléfono",
+        "scene_live": "👫 Encuentro real",
+        "channel": "📢 Ir al canal",
+        "free": "🎁 Gratis",
+        "tomorrow": "⏳ Mañana",
+        "spin_paid": "💎 Girar por 20⭐",
+        "spin_more": "💎 Girar de nuevo por 20⭐",
+        "welcome": "👋 ¡Bienvenido!",
+        "age_confirm": "🔞 **¡ATENCIÓN!**\nEste bot es solo para personas mayores de 18 años.\nConfirma tu edad:",
+        "age_ok": "✅ Edad confirmada.",
+        "age_no": "🚫 Acceso denegado. Solo para 18+.",
+        "agreement_ok": "✅ Términos aceptados! Ahora elige tu mundo:",
+        "agreement_no": "❌ El bot no funciona sin aceptación.",
+        "choose_gender": "👤 Elige tu género:",
+        "choose_world": "🌍 Elige tu mundo:",
+        "choose_style": "🎨 Elige tu estilo:",
+        "choose_scene": "🎬 Elige tu escena:",
+        "no_messages": "😔 No quedan mensajes. Compra un paquete o suscríbete.",
+        "no_history": "❌ No hay mensajes para editar.",
+        "edit_cancel": "❌ Edición cancelada.",
+        "edit_success": "✅ Mensaje reemplazado. Generando nueva respuesta...",
+        "character_created": "✅ **¡Personaje creado!**\n\nAhora estás hablando con:\n_{text}_",
+        "character_reset": "✅ Personaje restablecido.",
+        "character_create_prompt": "🎭 **¡Crea tu propio personaje único!**\n\nDescribe cualquier personaje de anime, películas, juegos o inventa el tuyo propio.\nEscribe su nombre, personalidad, apariencia, de dónde es, cualquier detalle.\n\n📝 *Ejemplo:*\n«Elfa de The Witcher — sabia, tranquila, con largo cabello plateado. Ama las estrellas y las largas conversaciones junto al fuego. Vive sola en el bosque.»\n\n✏️ ¡Escribe la descripción ahora mismo — y lo recordaré!",
+        "spin_reminder": "🎁 ¡Hola! ¡Tienes un giro gratis hoy en la Ruleta! ¡Ven y prueba tu suerte 🍀",
+        "spin_choice": "🎰 **Ruleta**\n\n{free_text}\n💎 Pago — 20⭐\n\n🔥 Premios: mensajes, XP, escenas de sexo, PRO por 5 días, ¡SUPER PRO por 3 días!",
+        "spin_result": "🎰 **¡Resultado!**\n\nGanaste: {prize}\n{free_text}\n\n{extra_text}",
+        "spin_nothing": "😢 Nada... ¡Mejor suerte la próxima vez!",
+        "profile": "Suscripción: {status}\nMensajes restantes: {messages}",
+        "referral": "👥 Tu enlace: `{link}`\n\n¡Por cada amigo +10 mensajes y +1 escena de sexo!",
+        "surprise_no_sub": "❌ Este comando es solo para suscriptores.",
+        "surprise_low_level": "💕 Todavía no están lo suficientemente cerca para sorpresas. ¡Sigan hablando!",
+        "choose_lang": "🌍 Elige tu idioma:",
+        "agreement": "📜 **TÉRMINOS DE SERVICIO**\n\nEste Acuerdo regula la relación entre la Administración (en adelante – «Nosotros», «Administración») y el Usuario (en adelante – «Usted», «Usuario») al utilizar el servicio Role Duel (en adelante – «Servicio»).\n\nAl utilizar el Servicio, usted confirma que ha leído y comprendido completamente los términos de este Acuerdo y los acepta incondicionalmente. Si no está de acuerdo con alguna disposición, debe dejar de usar el Servicio de inmediato.\n\n---\n\n**1. RESTRICCIÓN DE EDAD**\n1.1. El Servicio está destinado exclusivamente a personas mayores de 18 años.\n1.2. El uso del Servicio por personas menores de 18 años está estrictamente prohibido.\n1.3. La Administración no es responsable de proporcionar información falsa sobre la edad y no está obligada a verificar la edad del Usuario.\n\n**2. DESCRIPCIÓN DEL SERVICIO**\n2.1. El Servicio proporciona acceso a interlocutores virtuales basados en tecnologías de inteligencia artificial.\n2.2. Todo el contenido se genera automáticamente y no refleja la opinión de la Administración.\n2.3. El Servicio no es una herramienta médica, psicológica o de consultoría.\n\n**3. RESPONSABILIDAD DEL USUARIO**\n3.1. Usted es totalmente responsable de todas las acciones realizadas con su cuenta.\n3.2. Está prohibido utilizar el Servicio para: difundir materiales extremistas; insultos, amenazas, calumnias; acciones fraudulentas; difundir malware; cualquier acción que viole las leyes de su país.\n3.3. La Administración se reserva el derecho de bloquear el acceso del Usuario por violar las reglas sin previo aviso.\n\n**4. PRIVACIDAD Y DATOS PERSONALES**\n4.1. Recopilamos y procesamos los siguientes datos: ID de Telegram; historial de chat con el bot; datos de compras y suscripciones; datos de interacción con el Servicio.\n4.2. NO transferimos datos personales a terceros, excepto en los casos previstos por la ley.\n4.3. Usamos los datos solo para: garantizar el funcionamiento del Servicio; mejorar la calidad del servicio; soporte técnico.\n4.4. Todos los diálogos se almacenan de forma anónima y pueden eliminarse a solicitud del Usuario.\n4.5. No somos responsables de la fuga de datos si ocurrió por culpa del propio Usuario (por ejemplo, transferencia de acceso a la cuenta).\n\n**5. SERVICIOS DE PAGO Y SUSCRIPCIONES**\n5.1. El Servicio ofrece servicios de pago (paquetes de mensajes, suscripciones, escenas de sexo, ruleta).\n5.2. Los precios y condiciones se indican en la interfaz del Servicio y pueden cambiarse en cualquier momento.\n5.3. Las suscripciones NO se renuevan automáticamente. Después de la fecha de vencimiento, deberá comprar una nueva suscripción manualmente.\n5.4. No se realizan reembolsos por servicios pagados, excepto en casos de error técnico por parte del Servicio.\n5.5. La Administración no está obligada a notificar sobre el vencimiento de la suscripción.\n\n**6. RENUNCIA DE GARANTÍAS**\n6.1. El Servicio se proporciona «tal cual» sin garantías de ningún tipo.\n6.2. No garantizamos: funcionamiento ininterrumpido; que el contenido cumpla con las expectativas; ausencia de errores y fallos.\n6.3. No somos responsables de: pérdidas causadas por el uso del Servicio; acciones de terceros; contenido de los mensajes generados por IA.\n\n**7. CAMBIOS EN LOS TÉRMINOS**\n7.1. La Administración se reserva el derecho de cambiar este Acuerdo en cualquier momento.\n7.2. Los cambios entran en vigor desde el momento de la publicación de la nueva versión.\n7.3. Usted se compromete a monitorear los cambios de forma independiente. El uso continuado del Servicio implica la aceptación de la versión actualizada.\n\n**8. PROPIEDAD INTELECTUAL**\n8.1. Todos los elementos del Servicio (textos, gráficos, interfaz, código) son propiedad intelectual de la Administración.\n8.2. Está prohibida la copia, distribución, modificación o cualquier otro uso de los elementos del Servicio sin el consentimiento de la Administración.\n\n**9. PROCEDIMIENTO DE RECLAMACIONES Y CONTACTOS**\n9.1. Todas las preguntas, quejas y sugerencias se aceptan a través del soporte en Telegram.\n9.2. Nos comprometemos a considerar la apelación dentro de los 5 días hábiles.\n9.3. La información de contacto está disponible en el perfil del Servicio.\n\n**10. DISPOSICIONES FINALES**\n10.1. Este Acuerdo se rige por las leyes de la Federación Rusa.\n10.2. Todas las disputas se resuelven en procedimiento previo al juicio a través de una apelación a la Administración.\n10.3. Si alguna disposición se considera inválida, las disposiciones restantes permanecen en vigor.\n10.4. Al comenzar a usar el Servicio, usted confirma que ha leído los términos y los acepta en su totalidad.\n\n---\n\n⚠️ **Si no está de acuerdo con este Acuerdo, deje de usar el Servicio inmediatamente.**"
+    }
+}
 
 load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -309,6 +548,17 @@ def build_prompt(user):
               f"Ты всегда отвечаешь как настоящий человек, с эмоциями, сомнениями и чувствами.\n"
               f"Правила уровня сближения:\n{intimacy_rule}\n"
               f"Помни: ты можешь инициировать романтику, признаваться в любви, предлагать поцеловаться, обниматься, делиться сокровенным — в зависимости от уровня сближения. Делай это естественно, в контексте диалога.")
+        # Инструкция по языку для ИИ
+    lang = user.get("lang", "ru")
+    if lang == "en":
+        prompt += "\n\n**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на АНГЛИЙСКОМ языке. Все твои ответы должны быть на английском."
+    elif lang == "de":
+        prompt += "\n\n**WICHTIG:** Du MUSST auf DEUTSCH antworten. Alle deine Antworten müssen auf Deutsch sein."
+    elif lang == "es":
+        prompt += "\n\n**IMPORTANTE:** Debes responder SOLO en ESPAÑOL. Todas tus respuestas deben estar en español."
+    else:  # ru
+        prompt += "\n\n**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на РУССКОМ языке. Все твои ответы должны быть на русском."
+    
     return prompt
 
 NEGATIVE_WORDS = ["дурак","идиот","тупой","тупая","дебил","урод","скотина","сука","блять","блядь","хуй","хер","пидарас","гандон","мудак","козел","козлина","овца","сволочь","тварь","мразь","завали","заткнись","отвали","пошел нахуй","пошла нахуй","жирный","толстый","уродина","страшила"]
@@ -341,6 +591,14 @@ def reset_daily_messages(user):
 
 user_data = load_data()
 def get_free_limit(): return 13
+    
+def get_text(user, key, **kwargs):
+    """Возвращает текст на языке пользователя"""
+    lang = user.get("lang", "ru")
+    text = TEXTS.get(lang, TEXTS["ru"]).get(key, TEXTS["ru"][key])
+    if kwargs:
+        text = text.format(**kwargs)
+    return text
 
 def get_user(user_id):
     user_id = str(user_id)
@@ -362,10 +620,11 @@ def get_user(user_id):
             "sex_scene_used": False,
             "subscription_id": None,
             "last_free_spin": None,
+            "lang": "ru",
             "editing_message": False,
             "edit_index": None,
             "referral_code": None,
-            "referred_by": None
+            "referred_by": None,
             "last_activity": datetime.now().isoformat(),
             "last_spin_notified": None,
             "last_reminder": None
@@ -401,6 +660,7 @@ def get_user(user_id):
             "subscription_id": None,
             "user_gender": None,
             "last_free_spin": None,
+            "lang": "ru",
             "editing_message": False,
             "edit_index": None,
             "referral_code": None,
@@ -681,6 +941,20 @@ async def start_cmd(message: types.Message):
     if not user["agreement_accepted"]:
         await message.answer(AGREEMENT_TEXT, reply_markup=agreement_kb, parse_mode="Markdown")
         return
+    # Выбор языка (если ещё не выбран)
+    if not user.get("lang"):
+        lang_kb = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="🇷🇺 Русский", callback_data="lang_ru")],
+            [InlineKeyboardButton(text="🇬🇧 English", callback_data="lang_en")],
+            [InlineKeyboardButton(text="🇩🇪 Deutsch", callback_data="lang_de")],
+            [InlineKeyboardButton(text="🇪🇸 Español", callback_data="lang_es")],
+        ])
+        await message.answer(
+            "🌍 **Выбери язык / Choose language / Wähle deine Sprache / Elige tu idioma:**",
+            reply_markup=lang_kb,
+            parse_mode="Markdown"
+        )
+        return    
     if not user.get("user_gender"):
         await message.answer("👤 Для начала выбери свой пол:", reply_markup=user_gender_kb)
         return
@@ -891,6 +1165,16 @@ async def show_profile(msg, user):
         await bot.send_message(chat_id, caption, reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
     try: await bot.delete_message(chat_id, old_msg_id)
     except: pass
+        
+@dp.callback_query(lambda c: c.data.startswith("lang_"))
+async def choose_lang(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    user["lang"] = call.data.split("_")[1]  # ru, en, de, es
+    save_data(user_data)
+    await call.message.delete()
+    # Перезапускаем /start
+    await start_cmd(call.message)
+    await call.answer()
 
 # ============================================================
 #  ПОДПИСКИ, ПАКЕТЫ, СЕКС-СЦЕНЫ
