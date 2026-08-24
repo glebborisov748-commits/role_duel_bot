@@ -6,7 +6,7 @@ import random
 from datetime import datetime, timedelta
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, LabeledPrice, ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, LabeledPrice, ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -1031,6 +1031,19 @@ async def lang_cmd(message: types.Message):
         reply_markup=lang_kb,
         parse_mode="Markdown"
     )
+
+@dp.message(lambda m: m.web_app_data)
+async def handle_webapp_data(message: types.Message):
+    user = get_user(message.from_user.id)
+    data = json.loads(message.web_app_data.data)
+    
+    if data.get("action") == "accept":
+        user["agreement_accepted"] = True
+        save_data(user_data)
+        await message.answer("✅ Соглашение принято! Давай создадим твоего собеседника.")
+        await start_cmd(message)  # перенаправляем на следующий шаг
+    elif data.get("action") == "decline":
+        await message.answer("❌ Вы отказались от соглашения. Доступ закрыт.")
 
 @dp.message(lambda m: m.text == "📋 Главное меню")
 async def main_menu_reply(message: types.Message):
@@ -2094,11 +2107,11 @@ async def age_yes(call: types.CallbackQuery):
     
     # Ссылки на страницы соглашения (GitHub Pages)
     agreement_urls = {
-        "ru": "https://glebborisov748-commits.github.io/agreement/agreement_ru.html",
-        "en": "https://glebborisov748-commits.github.io/agreement/agreement_en.html",
-        "de": "https://glebborisov748-commits.github.io/agreement/agreement_de.html",
-        "es": "https://glebborisov748-commits.github.io/agreement/agreement_es.html"
-    }
+    "ru": "https://glebborisov748-commits.github.io/agreement/agreement_ru.html",
+    "en": "https://glebborisov748-commits.github.io/agreement/agreement_en.html",
+    "de": "https://glebborisov748-commits.github.io/agreement/agreement_de.html",
+    "es": "https://glebborisov748-commits.github.io/agreement/agreement_es.html"
+}
     
     lang = user.get("lang", "ru")
     url = agreement_urls.get(lang, agreement_urls["ru"])
