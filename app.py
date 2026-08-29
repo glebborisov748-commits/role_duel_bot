@@ -334,18 +334,28 @@ async def start_cmd(message: types.Message):
         )
         return
     
-    # 4. СОГЛАШЕНИЕ (обычные кнопки)
+    # 4. СОГЛАШЕНИЕ (через WebApp)
     if not user["agreement_accepted"]:
-        agreement_kb = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="✅ Принимаю", callback_data="agreement_accept")],
-            [InlineKeyboardButton(text="❌ Не принимаю", callback_data="agreement_decline")]
-        ])
-        await message.answer(
-            get_text(user, "agreement"),
-            reply_markup=agreement_kb,
-            parse_mode="Markdown"
-        )
-        return
+        agreement_urls = {
+        "ru": "https://glebborisov748-commits.github.io/agreement/agreement_ru.html",
+        "en": "https://glebborisov748-commits.github.io/agreement/agreement_en.html",
+        "de": "https://glebborisov748-commits.github.io/agreement/agreement_de.html",
+        "es": "https://glebborisov748-commits.github.io/agreement/agreement_es.html"
+    }
+    lang = user.get("lang", "ru")
+    url = agreement_urls.get(lang, agreement_urls["ru"])
+    webapp_kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(
+            text="📜 Открыть соглашение",
+            web_app=types.WebAppInfo(url=url)
+        )]
+    ])
+    await message.answer(
+        "✅ Возраст подтверждён.\n\n"
+        "📜 Нажми на кнопку, чтобы ознакомиться с пользовательским соглашением:",
+        reply_markup=webapp_kb
+    )
+    return
     
     # 5. ПОЛ
     if not user.get("user_gender"):
