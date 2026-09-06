@@ -297,6 +297,8 @@ def get_user(user_id):
     else:
         user = user_data[user_id]
         defaults = {
+            "user_gender": None,
+            "style": "warm",
             "purchased_messages": get_free_limit(),
             "has_purchased": False,
             "daily_messages": 0,
@@ -325,6 +327,17 @@ def get_user(user_id):
         for key, val in defaults.items():
             if key not in user:
                 user[key] = val
+
+        # МИГРАЦИЯ СТАРЫХ ДАННЫХ: в реальной базе встречаются значения из более старой
+        # версии бота, которых в текущей схеме больше нет (например world="fantasy" или
+        # style="vulgar" после удаления 18+ стилей). Без этой проверки первое же обращение
+        # такого пользователя падало бы с KeyError в WORLDS[...]/STYLES[...].
+        if user.get("world") and user["world"] not in WORLDS:
+            user["world"] = None
+            user["personality_ready"] = False
+        if user.get("style") not in STYLES:
+            user["style"] = "warm"
+
         save_data(user_data)
     return user_data[user_id]
 
