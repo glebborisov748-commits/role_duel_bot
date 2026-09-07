@@ -375,7 +375,7 @@ BASE_STYLES = {
     }
 }
 
-PREMIUM_STYLES = {
+PRO_STYLES = {
     "passionate": {
         "label": "Страстный",
         "emoji": "❤️‍🔥",
@@ -388,10 +388,34 @@ PREMIUM_STYLES = {
     }
 }
 
-STYLES = {**BASE_STYLES, **PREMIUM_STYLES}
+# Доступны только по SUPER PRO (выше по эксклюзивности, чем PRO_STYLES).
+SUPER_PRO_STYLES = {
+    "rude": {
+        "label": "Грубый",
+        "emoji": "😤",
+        "description": "Ты грубоватый и прямолинейный, не стесняешься в выражениях и любишь подколоть. За внешней резкостью скрывается забота, но тебе легче съязвить, чем признаться в тёплых чувствах."
+    },
+    "seduction": {
+        "label": "Соблазн",
+        "emoji": "😏",
+        "description": "Ты обольстительный и уверенный в своей привлекательности, знаешь силу полунамёков и взгляда искоса. Ты умеешь заставить собеседника нервничать от предвкушения, оставаясь при этом элегантным и никогда не переходя черту."
+    }
+}
+
+STYLES = {**BASE_STYLES, **PRO_STYLES, **SUPER_PRO_STYLES}
 BASE_STYLE_KEYS = ["warm", "daring", "shy"]
-PREMIUM_STYLE_KEYS = ["passionate", "magnetic"]
+PRO_STYLE_KEYS = ["passionate", "magnetic"]
+SUPER_PRO_STYLE_KEYS = ["rude", "seduction"]
+PREMIUM_STYLE_KEYS = PRO_STYLE_KEYS + SUPER_PRO_STYLE_KEYS
 XP_PER_LEVEL = 200
+
+
+def is_style_unlocked(style_key, user):
+    if style_key in SUPER_PRO_STYLE_KEYS:
+        return get_subscription_level(user) == "super_pro"
+    if style_key in PRO_STYLE_KEYS:
+        return get_subscription_level(user) in ("pro", "super_pro")
+    return True
 
 LOCATIONS = {
     "кафе": ["кафе", "кофейн"],
@@ -434,16 +458,16 @@ def get_subscription_level(user):
 
 def get_display_style(user):
     style = user.get("style", "warm")
-    if style in PREMIUM_STYLE_KEYS and get_subscription_level(user) not in ("pro", "super_pro"):
+    if not is_style_unlocked(style, user):
         return "warm"
     return style
 
 
 def ensure_valid_style(user):
-    """True, если текущий стиль премиальный, а подписка на него уже не действует —
+    """True, если текущий стиль больше не по карману подписке —
     тогда в handle_message() покажем клавиатуру выбора бесплатного стиля."""
     style = user.get("style", "warm")
-    return style in PREMIUM_STYLE_KEYS and get_subscription_level(user) not in ("pro", "super_pro")
+    return not is_style_unlocked(style, user)
 
 
 def get_history_limit(user):
@@ -707,7 +731,7 @@ def get_style_kb(user):
     buttons = []
     for key, style in STYLES.items():
         label = f"{style['emoji']} {style['label']}"
-        if key in PREMIUM_STYLE_KEYS and get_subscription_level(user) not in ("pro", "super_pro"):
+        if not is_style_unlocked(key, user):
             label += " 🔒"
         buttons.append(InlineKeyboardButton(text=label, callback_data=f"style_{key}"))
     rows = [buttons[i:i + 2] for i in range(0, len(buttons), 2)]
@@ -926,9 +950,10 @@ async def choose_style(call: types.CallbackQuery):
     if style_key not in STYLES:
         await call.answer("❌ Стиль не найден", show_alert=True)
         return
-    if style_key in PREMIUM_STYLE_KEYS and get_subscription_level(user) not in ("pro", "super_pro"):
+    if not is_style_unlocked(style_key, user):
         label = STYLES[style_key]["label"]
-        await call.answer(f"🔒 Стиль «{label}» доступен по подписке PRO/SUPER PRO. Оформи в разделе «Мой профиль».", show_alert=True)
+        required = "SUPER PRO" if style_key in SUPER_PRO_STYLE_KEYS else "PRO/SUPER PRO"
+        await call.answer(f"🔒 Стиль «{label}» доступен по подписке {required}. Оформи в разделе «Мой профиль».", show_alert=True)
         return
 
     user["style"] = style_key
@@ -1108,7 +1133,7 @@ async def show_profile(msg, user):
 
     styles_text = ""
     for key, style in STYLES.items():
-        locked = key in PREMIUM_STYLE_KEYS and level not in ("pro", "super_pro")
+        locked = not is_style_unlocked(key, user)
         styles_text += f"{style['emoji']} {style['label']}" + (" 🔒\n" if locked else "\n")
 
     if has_purchased_something(user):
@@ -1397,7 +1422,7 @@ async def profile_subs(call: types.CallbackQuery):
             "• Бонус XP: x1.8\n\n"
             "✨ SUPER PRO ✨ (450⭐/мес)\n"
             "• 100 сообщений в день\n"
-            "• Все стили\n"
+            "• Все стили + эксклюзивные 😤 Грубый и 😏 Соблазн\n"
             "• Смена стиля без потери истории (/switch_style)\n"
             "• Память: 100 сообщений\n"
             "• Бонус XP: x2.5\n"
