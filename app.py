@@ -226,9 +226,14 @@ MAIN_MENU_IMAGE_URL = "https://i.ibb.co/k25JyTXD/IMG-2584.jpg"
 ADMIN_IDS = [7287815074]
 maintenance_mode = False
 
-# ФИКС: раньше путь был "data/data.json", а папки data/ в проекте не было —
-# бот при каждом старте читал пустую базу вместо настоящего data.json.
-DATA_FILE = "data.json"
+# На хостинге bot.host.ru контейнер пересобирается из GitHub при каждом деплое
+# (COPY . . в Dockerfile), а каталог /app/data создаётся хостом отдельно
+# (mkdir -p /app/data && chmod 777) именно как постоянное хранилище — то, что
+# лежит вне data/, при пересборке слетает. Поэтому путь обязательно должен
+# указывать внутрь DATA_DIR, который хостинг прокидывает как переменную
+# окружения; локально (без бота на хостинге) используем просто "./data".
+DATA_DIR = os.getenv("DATA_DIR", "data")
+DATA_FILE = os.path.join(DATA_DIR, "data.json")
 
 
 def load_data():
