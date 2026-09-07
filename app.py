@@ -99,6 +99,43 @@ TEXTS = {
             10: "💖 Уровень 10! Настоящая душевная близость.",
         },
         "level_down": "💔 Уровень сближения упал до {level}.",
+        "menu_current_partner": "Текущий собеседник: {gender} из {world}",
+        "menu_style_line": "Стиль: {style}",
+        "menu_messages_left": "Осталось сообщений: {n}",
+        "menu_messages_out": " (закончились)",
+        "menu_free_messages": "У вас есть бесплатные сообщения для старта",
+        "menu_write_prompt": "💬 Напиши персонажу...\n✨ Или выбери действие внизу.",
+        "xp_level_label": "Уровень {level}/10",
+        "xp_bonus_pro": "Бонус XP: x1.8",
+        "xp_bonus_super": "Бонус XP: x2.5",
+        "profile_sub_pro": "🔥 PRO активна (50 сообщений/день, память 60 сообщений)",
+        "profile_sub_super": "✨ SUPER PRO активна (100 сообщений/день, память 100 сообщений)",
+        "profile_sub_inactive": "❌ неактивна (память 30 сообщений)",
+        "profile_sub_label": "Подписка: {status}",
+        "profile_expiry": "Окончание подписки: {date}",
+        "profile_expiry_inactive": "Окончание подписки: неактивна",
+        "profile_messages_available": "Доступно сообщений: {n}",
+        "profile_styles_header": "Доступные стили:",
+        "style_locked_alert": "🔒 Стиль «{label}» доступен по подписке {tier}. Оформи в разделе «Мой профиль».",
+        "style_changed": "✅ Стиль изменён на: {label}",
+        "gender_female": "Девушка",
+        "gender_male": "Парень",
+        "world_name_realism": "реального мира",
+        "world_name_anime": "аниме-мира",
+        "spin_already": "⏳ Ты уже крутил сегодня! Завтра будет новое бесплатное вращение.",
+        "spin_tomorrow_alert": "⏳ Бесплатное вращение будет доступно завтра!",
+        "spin_invoice_desc": "Платное вращение — 20⭐. Удачи!",
+        "spin_invoice_label": "Прокрутка",
+        "spin_rolling": "🎰 Крутим...",
+        "spin_almost": "🎰 Почти выпало: {name}",
+        "spin_win_messages": "📨 **+{value} сообщений**",
+        "spin_win_xp": "⭐ **+{value} XP**",
+        "spin_win_pro": "🎁 **PRO подписка на 5 дней!**\n🔥 50 сообщений/день, стили Страстный и Магнетический!",
+        "spin_win_super": "✨ **SUPER PRO на 3 дня!**\n👑 100 сообщений/день, все стили!",
+        "spin_result_header": "🎰 **Результат!**\n\nТы выиграл: {result}\n{mode}",
+        "spin_mode_free": "🎁 Бесплатное вращение",
+        "spin_mode_paid": "💎 Платное вращение",
+        "switch_style_prompt": "🔄 **Выбери новый стиль:**\n\nИстория диалога сохранится.",
         "agreement": "📜 **ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ**\n\nНастоящее Соглашение регулирует отношения между Администрацией (далее – «Мы») и Пользователем (далее – «Вы») при использовании сервиса Role Duel (далее – «Сервис»).\n\nИспользуя Сервис, Вы подтверждаете, что ознакомились с условиями настоящего Соглашения и принимаете их безоговорочно.\n\n---\n\n**1. ВОЗРАСТНОЕ ОГРАНИЧЕНИЕ**\n1.1. Сервис предназначен исключительно для лиц, достигших 18 лет.\n1.2. Использование Сервиса лицами младше 18 лет строго запрещено.\n\n**2. ОПИСАНИЕ СЕРВИСА**\n2.1. Сервис предоставляет доступ к виртуальным собеседникам на основе технологий искусственного интеллекта.\n2.2. Весь контент генерируется автоматически и не отражает мнение Администрации.\n2.3. Сервис не является медицинским, психологическим или консультационным инструментом.\n\n**3. ОТВЕТСТВЕННОСТЬ ПОЛЬЗОВАТЕЛЯ**\n3.1. Вы несёте полную ответственность за все действия, совершённые с использованием Вашего аккаунта.\n3.2. Запрещается использовать Сервис для распространения экстремистских материалов, оскорблений, угроз, клеветы, мошенничества, вредоносного ПО и любых действий, нарушающих законодательство РФ.\n\n**4. КОНФИДЕНЦИАЛЬНОСТЬ**\n4.1. Мы собираем: Telegram ID, историю диалогов, данные о покупках и подписках.\n4.2. Мы НЕ передаём персональные данные третьим лицам, за исключением случаев, предусмотренных законом.\n\n**5. ПЛАТНЫЕ УСЛУГИ**\n5.1. Сервис предоставляет платные услуги (пакеты сообщений, подписки, колесо фортуны).\n5.2. Подписки **НЕ продлеваются автоматически**.\n5.3. Возврат средств не производится, за исключением технической ошибки со стороны Сервиса.\n\n**6. ОТКАЗ ОТ ГАРАНТИЙ**\nСервис предоставляется «как есть» без каких-либо гарантий бесперебойной работы.\n\n**7. ИЗМЕНЕНИЕ УСЛОВИЙ**\nАдминистрация вправе изменять Соглашение в любое время; продолжение использования Сервиса означает согласие с новой версией.\n\n**8. КОНТАКТЫ**\nВсе вопросы принимаются через поддержку в Telegram.\n\n---\n\n✅ Нажимая кнопку «Принимаю», Вы подтверждаете, что ознакомились со всеми перечисленными выше пунктами и согласны с ними.\n\n⚠️ Если Вы не согласны с настоящим Соглашением, немедленно прекратите использование Сервиса."
     },
     "en": {
@@ -181,6 +218,43 @@ TEXTS = {
             10: "💖 Level 10! A true emotional bond.",
         },
         "level_down": "💔 Closeness level dropped to {level}.",
+        "menu_current_partner": "Current partner: {gender} from {world}",
+        "menu_style_line": "Style: {style}",
+        "menu_messages_left": "Messages left: {n}",
+        "menu_messages_out": " (none left)",
+        "menu_free_messages": "You have free messages to get started",
+        "menu_write_prompt": "💬 Write to your character...\n✨ Or choose an action below.",
+        "xp_level_label": "Level {level}/10",
+        "xp_bonus_pro": "XP bonus: x1.8",
+        "xp_bonus_super": "XP bonus: x2.5",
+        "profile_sub_pro": "🔥 PRO active (50 messages/day, 60-message memory)",
+        "profile_sub_super": "✨ SUPER PRO active (100 messages/day, 100-message memory)",
+        "profile_sub_inactive": "❌ inactive (30-message memory)",
+        "profile_sub_label": "Subscription: {status}",
+        "profile_expiry": "Subscription ends: {date}",
+        "profile_expiry_inactive": "Subscription ends: inactive",
+        "profile_messages_available": "Messages available: {n}",
+        "profile_styles_header": "Available styles:",
+        "style_locked_alert": "🔒 The «{label}» style requires a {tier} subscription. Get it in the «My profile» section.",
+        "style_changed": "✅ Style changed to: {label}",
+        "gender_female": "Girl",
+        "gender_male": "Guy",
+        "world_name_realism": "the real world",
+        "world_name_anime": "the anime world",
+        "spin_already": "⏳ You already spun today! A new free spin will be available tomorrow.",
+        "spin_tomorrow_alert": "⏳ The free spin will be available tomorrow!",
+        "spin_invoice_desc": "Paid spin — 20⭐. Good luck!",
+        "spin_invoice_label": "Spin",
+        "spin_rolling": "🎰 Spinning...",
+        "spin_almost": "🎰 Almost got: {name}",
+        "spin_win_messages": "📨 **+{value} messages**",
+        "spin_win_xp": "⭐ **+{value} XP**",
+        "spin_win_pro": "🎁 **PRO subscription for 5 days!**\n🔥 50 messages/day, Passionate and Magnetic styles!",
+        "spin_win_super": "✨ **SUPER PRO for 3 days!**\n👑 100 messages/day, all styles!",
+        "spin_result_header": "🎰 **Result!**\n\nYou won: {result}\n{mode}",
+        "spin_mode_free": "🎁 Free spin",
+        "spin_mode_paid": "💎 Paid spin",
+        "switch_style_prompt": "🔄 **Choose a new style:**\n\nYour conversation history will be kept.",
         "agreement": "📜 **TERMS OF SERVICE**\n\nThis Agreement governs the relationship between the Administration (\"We\") and the User (\"You\") when using the Role Duel service (\"Service\").\n\nBy using the Service, you confirm that you have read and accept the terms of this Agreement unconditionally.\n\n---\n\n**1. AGE RESTRICTION**\n1.1. The Service is intended exclusively for persons aged 18 and over.\n1.2. Use of the Service by persons under 18 is strictly prohibited.\n\n**2. SERVICE DESCRIPTION**\n2.1. The Service provides access to virtual companions based on artificial intelligence.\n2.2. All content is generated automatically and does not reflect the Administration's opinion.\n2.3. The Service is not a medical, psychological or consulting tool.\n\n**3. USER RESPONSIBILITY**\n3.1. You are fully responsible for all actions performed using your account.\n3.2. It is prohibited to use the Service to distribute extremist materials, insults, threats, fraud, malware, or anything violating applicable law.\n\n**4. PRIVACY**\n4.1. We collect: Telegram ID, chat history, purchase and subscription data.\n4.2. We do NOT share personal data with third parties, except as required by law.\n\n**5. PAID SERVICES**\n5.1. The Service provides paid features (message packs, subscriptions, spin wheel).\n5.2. Subscriptions are **NOT renewed automatically**.\n5.3. Refunds are not provided except in case of a technical error by the Service.\n\n**6. DISCLAIMER**\nThe Service is provided «as is» with no uptime guarantees.\n\n**7. CHANGES TO TERMS**\nThe Administration may change this Agreement at any time; continued use means acceptance of the new version.\n\n**8. CONTACT**\nAll questions are handled through Telegram support.\n\n---\n\n✅ By clicking «Accept» below, you confirm that you have read all the items listed above and agree to them.\n\n⚠️ If you do not agree with this Agreement, stop using the Service immediately."
     }
 }
@@ -357,19 +431,30 @@ WORLDS = {
 }
 GENDERS = {"female": {"name": "Девушка", "age": 22}, "male": {"name": "Парень", "age": 24}}
 
+
+def gender_display_name(gender_key, user):
+    return get_text(user, f"gender_{gender_key}")
+
+
+def world_display_name(world_key, user):
+    return get_text(user, f"world_name_{world_key}")
+
 BASE_STYLES = {
     "warm": {
         "label": "Нежный",
+        "label_en": "Gentle",
         "emoji": "🪶",
         "description": "Ты нежный, с мягким голосом. Ты умеешь слушать и поддерживать. Ты не торопишь события, ценишь искренность и доверие."
     },
     "daring": {
         "label": "Дерзкий",
+        "label_en": "Bold",
         "emoji": "🔥",
         "description": "Ты уверенный, прямолинейный, с искоркой в глазах. Ты любишь флиртовать и остроумно шутить, но всегда знаешь меру."
     },
     "shy": {
         "label": "Стеснительный",
+        "label_en": "Shy",
         "emoji": "😊",
         "description": "Ты стеснительный, часто краснеешь, говоришь тихо и иногда запинаешься. Ты долго подбираешь слова, но всегда искренен."
     }
@@ -378,11 +463,13 @@ BASE_STYLES = {
 PRO_STYLES = {
     "passionate": {
         "label": "Страстный",
+        "label_en": "Passionate",
         "emoji": "❤️‍🔥",
         "description": "Ты страстный, эмоциональный, с огнём в глазах. Ты говоришь прямо, без стеснения, умеешь дразнить и создавать романтическое напряжение, оставаясь в рамках приличия."
     },
     "magnetic": {
         "label": "Магнетический",
+        "label_en": "Magnetic",
         "emoji": "✨",
         "description": "Ты загадочный, притягательный, с лёгкой магией в каждом слове. Ты говоришь с интригой, оставляя пространство для фантазии, но не раскрываешься полностью."
     }
@@ -392,11 +479,13 @@ PRO_STYLES = {
 SUPER_PRO_STYLES = {
     "rude": {
         "label": "Грубый",
+        "label_en": "Rough",
         "emoji": "😤",
         "description": "Ты грубоватый и прямолинейный, не стесняешься в выражениях и любишь подколоть. За внешней резкостью скрывается забота, но тебе легче съязвить, чем признаться в тёплых чувствах."
     },
     "seduction": {
         "label": "Соблазн",
+        "label_en": "Temptation",
         "emoji": "😏",
         "description": "Ты обольстительный и уверенный в своей привлекательности, знаешь силу полунамёков и взгляда искоса. Ты умеешь заставить собеседника нервничать от предвкушения, оставаясь при этом элегантным и никогда не переходя черту."
     }
@@ -416,6 +505,12 @@ def is_style_unlocked(style_key, user):
     if style_key in PRO_STYLE_KEYS:
         return get_subscription_level(user) in ("pro", "super_pro")
     return True
+
+
+def style_display_label(style_key, user, with_emoji=True):
+    style = STYLES[style_key]
+    label = style["label_en"] if user.get("lang") == "en" else style["label"]
+    return f"{style['emoji']} {label}" if with_emoji else label
 
 LOCATIONS = {
     "кафе": ["кафе", "кофейн"],
@@ -564,7 +659,8 @@ def get_xp_badge(user):
     bar_length = 10
     filled_bar = int((progress / XP_PER_LEVEL) * bar_length)
     bar = "▓" * filled_bar + "░" * (bar_length - filled_bar)
-    return f"Уровень {level}/10 {filled}{empty}\n{bar} {scaled_progress}/100 XP"
+    level_label = get_text(user, "xp_level_label", level=level)
+    return f"{level_label} {filled}{empty}\n{bar} {scaled_progress}/100 XP"
 
 
 def build_intimacy_rule(user):
@@ -729,8 +825,8 @@ def get_scene_kb(user):
 
 def get_style_kb(user):
     buttons = []
-    for key, style in STYLES.items():
-        label = f"{style['emoji']} {style['label']}"
+    for key in STYLES:
+        label = style_display_label(key, user)
         if not is_style_unlocked(key, user):
             label += " 🔒"
         buttons.append(InlineKeyboardButton(text=label, callback_data=f"style_{key}"))
@@ -951,9 +1047,9 @@ async def choose_style(call: types.CallbackQuery):
         await call.answer("❌ Стиль не найден", show_alert=True)
         return
     if not is_style_unlocked(style_key, user):
-        label = STYLES[style_key]["label"]
+        label = style_display_label(style_key, user, with_emoji=False)
         required = "SUPER PRO" if style_key in SUPER_PRO_STYLE_KEYS else "PRO/SUPER PRO"
-        await call.answer(f"🔒 Стиль «{label}» доступен по подписке {required}. Оформи в разделе «Мой профиль».", show_alert=True)
+        await call.answer(get_text(user, "style_locked_alert", label=label, tier=required), show_alert=True)
         return
 
     user["style"] = style_key
@@ -995,7 +1091,7 @@ async def fix_style_callback(call: types.CallbackQuery):
     if style in BASE_STYLE_KEYS:
         user["style"] = style
         save_data(user_data)
-        await call.message.edit_text(f"✅ Стиль изменён на: {STYLES[style]['label']}")
+        await call.message.edit_text(get_text(user, "style_changed", label=style_display_label(style, user, with_emoji=False)))
         await call.answer()
         await send_main_menu(call.message.chat.id, user)
     else:
@@ -1009,9 +1105,9 @@ async def switch_style_cmd(message: types.Message):
         await message.answer("❌ Только для SUPER PRO.")
         return
     keyboard = InlineKeyboardMarkup(inline_keyboard=[])
-    for key, style in STYLES.items():
-        keyboard.inline_keyboard.append([InlineKeyboardButton(text=f"{style['emoji']} {style['label']}", callback_data=f"switch_{key}")])
-    await message.answer("🔄 **Выбери новый стиль:**\n\nИстория диалога сохранится.", reply_markup=keyboard, parse_mode="Markdown")
+    for key in STYLES:
+        keyboard.inline_keyboard.append([InlineKeyboardButton(text=style_display_label(key, user), callback_data=f"switch_{key}")])
+    await message.answer(get_text(user, "switch_style_prompt"), reply_markup=keyboard, parse_mode="Markdown")
 
 
 @dp.callback_query(lambda c: c.data.startswith("switch_"))
@@ -1023,7 +1119,7 @@ async def switch_style(call: types.CallbackQuery):
         return
     user["style"] = style
     save_data(user_data)
-    await call.message.edit_text(f"✅ Стиль изменён на: {STYLES[style]['label']}")
+    await call.message.edit_text(get_text(user, "style_changed", label=style_display_label(style, user, with_emoji=False)))
     await call.answer()
 
 
@@ -1078,28 +1174,27 @@ async def send_main_menu(chat_id, user):
     elif level == "super_pro":
         badge = "✨ *SUPER PRO* ✨"
 
-    gender_name = GENDERS[user["gender"]]["name"]
-    world_name = WORLD_NAMES[user["world"]]
-    style_label = STYLES[get_display_style(user)]["label"]
+    gender_name = gender_display_name(user["gender"], user)
+    world_name = world_display_name(user["world"], user)
+    style_label = style_display_label(get_display_style(user), user, with_emoji=False)
 
     if has_purchased_something(user):
         available = get_available_messages(user)
-        balance_text = f"\nОсталось сообщений: {available}" + (" (закончились)" if available <= 0 else "")
+        balance_text = "\n" + get_text(user, "menu_messages_left", n=available) + (get_text(user, "menu_messages_out") if available <= 0 else "")
     else:
-        balance_text = "\nУ вас есть бесплатные сообщения для старта"
+        balance_text = "\n" + get_text(user, "menu_free_messages")
 
     xp_badge = get_xp_badge(user)
-    multiplier_text = "Бонус XP: x1.8" if level == "pro" else ("Бонус XP: x2.5" if level == "super_pro" else "")
+    multiplier_text = get_text(user, "xp_bonus_pro") if level == "pro" else (get_text(user, "xp_bonus_super") if level == "super_pro" else "")
 
     menu_text = (
         f"{badge}\n\n"
-        f"Текущий собеседник: {gender_name} из {world_name}\n"
-        f"Стиль: {style_label}\n"
+        f"{get_text(user, 'menu_current_partner', gender=gender_name, world=world_name)}\n"
+        f"{get_text(user, 'menu_style_line', style=style_label)}\n"
         f"{balance_text}\n"
         f"{xp_badge}\n"
         f"{multiplier_text}\n\n"
-        f"💬 Напиши персонажу...\n"
-        f"✨ Или выбери действие внизу."
+        f"{get_text(user, 'menu_write_prompt')}"
     )
 
     try:
@@ -1119,38 +1214,38 @@ async def send_main_menu(chat_id, user):
 async def show_profile(msg, user):
     level = get_subscription_level(user)
     if level == "pro":
-        sub_status = "🔥 PRO активна (50 сообщений/день, память 60 сообщений)"
+        sub_status = get_text(user, "profile_sub_pro")
     elif level == "super_pro":
-        sub_status = "✨ SUPER PRO активна (100 сообщений/день, память 100 сообщений)"
+        sub_status = get_text(user, "profile_sub_super")
     else:
-        sub_status = "❌ неактивна (память 30 сообщений)"
+        sub_status = get_text(user, "profile_sub_inactive")
 
     expiry = user["subscription"]["expires_at"]
     if expiry:
-        expiry_line = f"Окончание подписки: {datetime.fromisoformat(expiry).strftime('%d.%m.%Y %H:%M')}"
+        expiry_line = get_text(user, "profile_expiry", date=datetime.fromisoformat(expiry).strftime('%d.%m.%Y %H:%M'))
     else:
-        expiry_line = "Окончание подписки: неактивна"
+        expiry_line = get_text(user, "profile_expiry_inactive")
 
     styles_text = ""
-    for key, style in STYLES.items():
+    for key in STYLES:
         locked = not is_style_unlocked(key, user)
-        styles_text += f"{style['emoji']} {style['label']}" + (" 🔒\n" if locked else "\n")
+        styles_text += style_display_label(key, user) + (" 🔒\n" if locked else "\n")
 
     if has_purchased_something(user):
         available = get_available_messages(user)
-        balance_line = f"Доступно сообщений: {available}" + (" (закончились)" if available <= 0 else "")
+        balance_line = get_text(user, "profile_messages_available", n=available) + (get_text(user, "menu_messages_out") if available <= 0 else "")
     else:
-        balance_line = "У вас есть бесплатные сообщения для старта"
+        balance_line = get_text(user, "menu_free_messages")
 
     xp_badge = get_xp_badge(user)
-    multiplier_text = "Бонус XP: x1.8" if level == "pro" else ("Бонус XP: x2.5" if level == "super_pro" else "")
+    multiplier_text = get_text(user, "xp_bonus_pro") if level == "pro" else (get_text(user, "xp_bonus_super") if level == "super_pro" else "")
 
     caption = (f"{balance_line}\n"
-               f"Подписка: {sub_status}\n"
+               f"{get_text(user, 'profile_sub_label', status=sub_status)}\n"
                f"{expiry_line}\n\n"
                f"{xp_badge}\n"
                f"{multiplier_text}\n\n"
-               f"Доступные стили:\n{styles_text}")
+               f"{get_text(user, 'profile_styles_header')}\n{styles_text}")
 
     chat_id = msg.chat.id
     old_msg_id = msg.message_id
@@ -1272,7 +1367,7 @@ async def spin_free(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     today = datetime.now().date().isoformat()
     if user.get("last_free_spin") == today:
-        await call.answer("⏳ Ты уже крутил сегодня! Завтра будет новое бесплатное вращение.", show_alert=True)
+        await call.answer(get_text(user, "spin_already"), show_alert=True)
         return
     user["last_free_spin"] = today
     save_data(user_data)
@@ -1284,14 +1379,15 @@ async def spin_free(call: types.CallbackQuery):
 @dp.callback_query(lambda c: c.data == "spin_paid")
 async def spin_paid(call: types.CallbackQuery):
     try:
+        user = get_user(call.from_user.id)
         await bot.send_invoice(
             chat_id=call.message.chat.id,
-            title="🎰 Колесо фортуны",
-            description="Платное вращение — 20⭐. Удачи!",
+            title=get_text(user, "spin_wheel"),
+            description=get_text(user, "spin_invoice_desc"),
             payload="spin_paid_20",
             provider_token="",
             currency="XTR",
-            prices=[LabeledPrice(label="Прокрутка", amount=20)]
+            prices=[LabeledPrice(label=get_text(user, "spin_invoice_label"), amount=20)]
         )
     except Exception as e:
         await call.message.answer(f"⚠️ Ошибка: {e}")
@@ -1300,7 +1396,8 @@ async def spin_paid(call: types.CallbackQuery):
 
 @dp.callback_query(lambda c: c.data == "spin_no")
 async def spin_no(call: types.CallbackQuery):
-    await call.answer("⏳ Бесплатное вращение будет доступно завтра!", show_alert=True)
+    user = get_user(call.from_user.id)
+    await call.answer(get_text(user, "spin_tomorrow_alert"), show_alert=True)
 
 
 @dp.callback_query(lambda c: c.data == "spin_back")
@@ -1312,17 +1409,21 @@ async def spin_back(call: types.CallbackQuery):
 
 
 SPIN_PRIZES = [
-    {"name": "😢 Ничего", "value": 0, "type": "nothing", "weight": 20},
-    {"name": "10 сообщений", "value": 10, "type": "messages", "weight": 18},
-    {"name": "15 сообщений", "value": 15, "type": "messages", "weight": 13},
-    {"name": "20 сообщений", "value": 20, "type": "messages", "weight": 10},
-    {"name": "100 XP", "value": 100, "type": "xp", "weight": 18},
-    {"name": "150 XP", "value": 150, "type": "xp", "weight": 10},
-    {"name": "250 XP", "value": 250, "type": "xp", "weight": 5},
-    {"name": "🎁 PRO на 5 дней", "value": 5, "type": "subscription_pro", "weight": 1.5},
-    {"name": "✨ SUPER PRO на 3 дня", "value": 3, "type": "subscription_super", "weight": 0.5},
-    {"name": "🎉 50 сообщений (ДЖЕКПОТ!)", "value": 50, "type": "messages", "weight": 1},
+    {"name": "😢 Ничего", "name_en": "😢 Nothing", "value": 0, "type": "nothing", "weight": 20},
+    {"name": "10 сообщений", "name_en": "10 messages", "value": 10, "type": "messages", "weight": 18},
+    {"name": "15 сообщений", "name_en": "15 messages", "value": 15, "type": "messages", "weight": 13},
+    {"name": "20 сообщений", "name_en": "20 messages", "value": 20, "type": "messages", "weight": 10},
+    {"name": "100 XP", "name_en": "100 XP", "value": 100, "type": "xp", "weight": 18},
+    {"name": "150 XP", "name_en": "150 XP", "value": 150, "type": "xp", "weight": 10},
+    {"name": "250 XP", "name_en": "250 XP", "value": 250, "type": "xp", "weight": 5},
+    {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "value": 5, "type": "subscription_pro", "weight": 1.5},
+    {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "value": 3, "type": "subscription_super", "weight": 0.5},
+    {"name": "🎉 50 сообщений (ДЖЕКПОТ!)", "name_en": "🎉 50 messages (JACKPOT!)", "value": 50, "type": "messages", "weight": 1},
 ]
+
+
+def prize_name(prize, user):
+    return prize.get("name_en") if user.get("lang") == "en" else prize["name"]
 
 
 async def spin_result(message: types.Message, user, free=False):
@@ -1331,12 +1432,12 @@ async def spin_result(message: types.Message, user, free=False):
         weighted.extend([p] * int(p["weight"] * 10))
     chosen = random.choice(weighted)
 
-    msg = await message.answer("🎰 Крутим...")
+    msg = await message.answer(get_text(user, "spin_rolling"))
     for _ in range(3):
         await asyncio.sleep(0.5)
         fake = random.choice(SPIN_PRIZES)
         try:
-            await msg.edit_text(f"🎰 Почти выпало: {fake['name']}")
+            await msg.edit_text(get_text(user, "spin_almost", name=prize_name(fake, user)))
         except Exception:
             pass
     await asyncio.sleep(0.8)
@@ -1344,24 +1445,24 @@ async def spin_result(message: types.Message, user, free=False):
 
     if chosen["type"] == "messages":
         user["purchased_messages"] = user.get("purchased_messages", 0) + chosen["value"]
-        result_text = f"📨 **+{chosen['value']} сообщений**"
+        result_text = get_text(user, "spin_win_messages", value=chosen["value"])
     elif chosen["type"] == "xp":
         user["xp"] = user.get("xp", 0) + chosen["value"]
-        result_text = f"⭐ **+{chosen['value']} XP**"
+        result_text = get_text(user, "spin_win_xp", value=chosen["value"])
     elif chosen["type"] == "subscription_pro":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=5)).isoformat()
         user["subscription"]["level"] = "pro"
         user["daily_messages"] = 50
         user["last_daily_reset"] = datetime.now().date().isoformat()
-        result_text = "🎁 **PRO подписка на 5 дней!**\n🔥 50 сообщений/день, стили Страстный и Магнетический!"
+        result_text = get_text(user, "spin_win_pro")
     elif chosen["type"] == "subscription_super":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=3)).isoformat()
         user["subscription"]["level"] = "super_pro"
         user["daily_messages"] = 100
         user["last_daily_reset"] = datetime.now().date().isoformat()
-        result_text = "✨ **SUPER PRO на 3 дня!**\n👑 100 сообщений/день, все стили!"
+        result_text = get_text(user, "spin_win_super")
     else:
         result_text = get_text(user, "spin_nothing")
 
@@ -1372,9 +1473,9 @@ async def spin_result(message: types.Message, user, free=False):
         [InlineKeyboardButton(text=get_text(user, "back"), callback_data="spin_back")]
     ])
 
+    mode_text = get_text(user, "spin_mode_free" if free else "spin_mode_paid")
     await message.answer(
-        f"🎰 **Результат!**\n\nТы выиграл: {result_text}\n"
-        f"{'🎁 Бесплатное вращение' if free else '💎 Платное вращение'}",
+        get_text(user, "spin_result_header", result=result_text, mode=mode_text),
         reply_markup=keyboard,
         parse_mode="Markdown"
     )
