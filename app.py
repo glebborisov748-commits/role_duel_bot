@@ -6,11 +6,11 @@ import random
 import re
 from datetime import datetime, timedelta
 
-from aiogram import Bot, Dispatcher, types, F
+from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import (
     InlineKeyboardMarkup, InlineKeyboardButton, LabeledPrice,
-    ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
+    ReplyKeyboardMarkup, KeyboardButton
 )
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -99,7 +99,7 @@ TEXTS = {
             10: "💖 Уровень 10! Настоящая душевная близость.",
         },
         "level_down": "💔 Уровень сближения упал до {level}.",
-        "agreement": "📜 **ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ**\n\nНастоящее Соглашение регулирует отношения между Администрацией (далее – «Мы») и Пользователем (далее – «Вы») при использовании сервиса Role Duel (далее – «Сервис»).\n\nИспользуя Сервис, Вы подтверждаете, что ознакомились с условиями настоящего Соглашения и принимаете их безоговорочно.\n\n---\n\n**1. ВОЗРАСТНОЕ ОГРАНИЧЕНИЕ**\n1.1. Сервис предназначен исключительно для лиц, достигших 18 лет.\n1.2. Использование Сервиса лицами младше 18 лет строго запрещено.\n\n**2. ОПИСАНИЕ СЕРВИСА**\n2.1. Сервис предоставляет доступ к виртуальным собеседникам на основе технологий искусственного интеллекта.\n2.2. Весь контент генерируется автоматически и не отражает мнение Администрации.\n2.3. Сервис не является медицинским, психологическим или консультационным инструментом.\n\n**3. ОТВЕТСТВЕННОСТЬ ПОЛЬЗОВАТЕЛЯ**\n3.1. Вы несёте полную ответственность за все действия, совершённые с использованием Вашего аккаунта.\n3.2. Запрещается использовать Сервис для распространения экстремистских материалов, оскорблений, угроз, клеветы, мошенничества, вредоносного ПО и любых действий, нарушающих законодательство РФ.\n\n**4. КОНФИДЕНЦИАЛЬНОСТЬ**\n4.1. Мы собираем: Telegram ID, историю диалогов, данные о покупках и подписках.\n4.2. Мы НЕ передаём персональные данные третьим лицам, за исключением случаев, предусмотренных законом.\n\n**5. ПЛАТНЫЕ УСЛУГИ**\n5.1. Сервис предоставляет платные услуги (пакеты сообщений, подписки, колесо фортуны).\n5.2. Подписки **НЕ продлеваются автоматически**.\n5.3. Возврат средств не производится, за исключением технической ошибки со стороны Сервиса.\n\n**6. ОТКАЗ ОТ ГАРАНТИЙ**\nСервис предоставляется «как есть» без каких-либо гарантий бесперебойной работы.\n\n**7. ИЗМЕНЕНИЕ УСЛОВИЙ**\nАдминистрация вправе изменять Соглашение в любое время; продолжение использования Сервиса означает согласие с новой версией.\n\n**8. КОНТАКТЫ**\nВсе вопросы принимаются через поддержку в Telegram.\n\n---\n\n⚠️ Если Вы не согласны с настоящим Соглашением, немедленно прекратите использование Сервиса."
+        "agreement": "📜 **ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ**\n\nНастоящее Соглашение регулирует отношения между Администрацией (далее – «Мы») и Пользователем (далее – «Вы») при использовании сервиса Role Duel (далее – «Сервис»).\n\nИспользуя Сервис, Вы подтверждаете, что ознакомились с условиями настоящего Соглашения и принимаете их безоговорочно.\n\n---\n\n**1. ВОЗРАСТНОЕ ОГРАНИЧЕНИЕ**\n1.1. Сервис предназначен исключительно для лиц, достигших 18 лет.\n1.2. Использование Сервиса лицами младше 18 лет строго запрещено.\n\n**2. ОПИСАНИЕ СЕРВИСА**\n2.1. Сервис предоставляет доступ к виртуальным собеседникам на основе технологий искусственного интеллекта.\n2.2. Весь контент генерируется автоматически и не отражает мнение Администрации.\n2.3. Сервис не является медицинским, психологическим или консультационным инструментом.\n\n**3. ОТВЕТСТВЕННОСТЬ ПОЛЬЗОВАТЕЛЯ**\n3.1. Вы несёте полную ответственность за все действия, совершённые с использованием Вашего аккаунта.\n3.2. Запрещается использовать Сервис для распространения экстремистских материалов, оскорблений, угроз, клеветы, мошенничества, вредоносного ПО и любых действий, нарушающих законодательство РФ.\n\n**4. КОНФИДЕНЦИАЛЬНОСТЬ**\n4.1. Мы собираем: Telegram ID, историю диалогов, данные о покупках и подписках.\n4.2. Мы НЕ передаём персональные данные третьим лицам, за исключением случаев, предусмотренных законом.\n\n**5. ПЛАТНЫЕ УСЛУГИ**\n5.1. Сервис предоставляет платные услуги (пакеты сообщений, подписки, колесо фортуны).\n5.2. Подписки **НЕ продлеваются автоматически**.\n5.3. Возврат средств не производится, за исключением технической ошибки со стороны Сервиса.\n\n**6. ОТКАЗ ОТ ГАРАНТИЙ**\nСервис предоставляется «как есть» без каких-либо гарантий бесперебойной работы.\n\n**7. ИЗМЕНЕНИЕ УСЛОВИЙ**\nАдминистрация вправе изменять Соглашение в любое время; продолжение использования Сервиса означает согласие с новой версией.\n\n**8. КОНТАКТЫ**\nВсе вопросы принимаются через поддержку в Telegram.\n\n---\n\n✅ Нажимая кнопку «Принимаю», Вы подтверждаете, что ознакомились со всеми перечисленными выше пунктами и согласны с ними.\n\n⚠️ Если Вы не согласны с настоящим Соглашением, немедленно прекратите использование Сервиса."
     },
     "en": {
         "main_menu": "📋 Main menu",
@@ -181,7 +181,7 @@ TEXTS = {
             10: "💖 Level 10! A true emotional bond.",
         },
         "level_down": "💔 Closeness level dropped to {level}.",
-        "agreement": "📜 **TERMS OF SERVICE**\n\nThis Agreement governs the relationship between the Administration (\"We\") and the User (\"You\") when using the Role Duel service (\"Service\").\n\nBy using the Service, you confirm that you have read and accept the terms of this Agreement unconditionally.\n\n---\n\n**1. AGE RESTRICTION**\n1.1. The Service is intended exclusively for persons aged 18 and over.\n1.2. Use of the Service by persons under 18 is strictly prohibited.\n\n**2. SERVICE DESCRIPTION**\n2.1. The Service provides access to virtual companions based on artificial intelligence.\n2.2. All content is generated automatically and does not reflect the Administration's opinion.\n2.3. The Service is not a medical, psychological or consulting tool.\n\n**3. USER RESPONSIBILITY**\n3.1. You are fully responsible for all actions performed using your account.\n3.2. It is prohibited to use the Service to distribute extremist materials, insults, threats, fraud, malware, or anything violating applicable law.\n\n**4. PRIVACY**\n4.1. We collect: Telegram ID, chat history, purchase and subscription data.\n4.2. We do NOT share personal data with third parties, except as required by law.\n\n**5. PAID SERVICES**\n5.1. The Service provides paid features (message packs, subscriptions, spin wheel).\n5.2. Subscriptions are **NOT renewed automatically**.\n5.3. Refunds are not provided except in case of a technical error by the Service.\n\n**6. DISCLAIMER**\nThe Service is provided «as is» with no uptime guarantees.\n\n**7. CHANGES TO TERMS**\nThe Administration may change this Agreement at any time; continued use means acceptance of the new version.\n\n**8. CONTACT**\nAll questions are handled through Telegram support.\n\n---\n\n⚠️ If you do not agree with this Agreement, stop using the Service immediately."
+        "agreement": "📜 **TERMS OF SERVICE**\n\nThis Agreement governs the relationship between the Administration (\"We\") and the User (\"You\") when using the Role Duel service (\"Service\").\n\nBy using the Service, you confirm that you have read and accept the terms of this Agreement unconditionally.\n\n---\n\n**1. AGE RESTRICTION**\n1.1. The Service is intended exclusively for persons aged 18 and over.\n1.2. Use of the Service by persons under 18 is strictly prohibited.\n\n**2. SERVICE DESCRIPTION**\n2.1. The Service provides access to virtual companions based on artificial intelligence.\n2.2. All content is generated automatically and does not reflect the Administration's opinion.\n2.3. The Service is not a medical, psychological or consulting tool.\n\n**3. USER RESPONSIBILITY**\n3.1. You are fully responsible for all actions performed using your account.\n3.2. It is prohibited to use the Service to distribute extremist materials, insults, threats, fraud, malware, or anything violating applicable law.\n\n**4. PRIVACY**\n4.1. We collect: Telegram ID, chat history, purchase and subscription data.\n4.2. We do NOT share personal data with third parties, except as required by law.\n\n**5. PAID SERVICES**\n5.1. The Service provides paid features (message packs, subscriptions, spin wheel).\n5.2. Subscriptions are **NOT renewed automatically**.\n5.3. Refunds are not provided except in case of a technical error by the Service.\n\n**6. DISCLAIMER**\nThe Service is provided «as is» with no uptime guarantees.\n\n**7. CHANGES TO TERMS**\nThe Administration may change this Agreement at any time; continued use means acceptance of the new version.\n\n**8. CONTACT**\nAll questions are handled through Telegram support.\n\n---\n\n✅ By clicking «Accept» below, you confirm that you have read all the items listed above and agree to them.\n\n⚠️ If you do not agree with this Agreement, stop using the Service immediately."
     }
 }
 
@@ -673,21 +673,8 @@ def get_age_kb(user):
     ])
 
 
-AGREEMENT_URLS = {
-    "ru": "https://glebborisov748-commits.github.io/agreement/agreement_ru.html",
-    "en": "https://glebborisov748-commits.github.io/agreement/agreement_en.html",
-}
-
-
 def get_agreement_kb(user):
-    lang = user.get("lang", "ru")
-    url = AGREEMENT_URLS.get(lang, AGREEMENT_URLS["ru"])
-    # ВАЖНО: кнопки "Принимаю"/"Не принимаю" продублированы здесь как обычные inline-кнопки.
-    # Раньше согласие можно было подтвердить ТОЛЬКО через WebApp, но бот нигде не слушал
-    # web_app_data — нажатие "Принимаю" внутри WebApp никак не доходило до бота.
-    # Теперь пользователь может просто нажать кнопку в чате — это работает всегда.
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "open_agreement"), web_app=WebAppInfo(url=url))],
         [
             InlineKeyboardButton(text=get_text(user, "agree"), callback_data="agreement_accept"),
             InlineKeyboardButton(text=get_text(user, "disagree"), callback_data="agreement_decline"),
@@ -792,7 +779,8 @@ async def proceed_flow(user_id: int, chat_id: int):
         return
 
     if not user["agreement_accepted"]:
-        await bot.send_message(chat_id, get_text(user, "agreement_intro"), reply_markup=get_agreement_kb(user))
+        agreement_text = get_text(user, "agreement_intro") + "\n\n" + get_text(user, "agreement")
+        await bot.send_message(chat_id, agreement_text, reply_markup=get_agreement_kb(user), parse_mode="Markdown")
         return
 
     if not user.get("world"):
@@ -880,18 +868,6 @@ async def agreement_decline(call: types.CallbackQuery):
     await call.answer()
 
 
-@dp.message(F.web_app_data)
-async def web_app_data_handler(message: types.Message):
-    """На случай, если страница соглашения (GitHub Pages) вызовет Telegram.WebApp.sendData(...) —
-    тогда бот тоже примет согласие. Основной путь принятия — инлайн-кнопки в get_agreement_kb(),
-    им WebApp для этого не требуется."""
-    user = get_user(message.from_user.id)
-    user["agreement_accepted"] = True
-    save_data(user_data)
-    await bot.send_message(message.chat.id, get_text(user, "agreement_ok"))
-    await proceed_flow(message.from_user.id, message.chat.id)
-
-
 # ============================================================
 #  ВЫБОР ПЕРСОНАЖА (МИР → ПОЛ → СТИЛЬ → СЦЕНА)
 # ============================================================
@@ -952,7 +928,7 @@ async def choose_style(call: types.CallbackQuery):
         return
     if style_key in PREMIUM_STYLE_KEYS and get_subscription_level(user) not in ("pro", "super_pro"):
         label = STYLES[style_key]["label"]
-        await call.answer(f"🔒 Стиль «{label}» доступен по подписке PRO/SUPER PRO. Оформи в «Моём профиле».", show_alert=True)
+        await call.answer(f"🔒 Стиль «{label}» доступен по подписке PRO/SUPER PRO. Оформи в разделе «Мой профиль».", show_alert=True)
         return
 
     user["style"] = style_key
