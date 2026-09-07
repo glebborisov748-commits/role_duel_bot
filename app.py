@@ -70,21 +70,25 @@ TEXTS = {
         "character_created": "✅ **Персонаж создан!**\n\nТеперь ты общаешься с:\n_{text}_\n\nЧтобы вернуться к обычному персонажу — /reset_character",
         "character_reset": "✅ Персонаж сброшен.",
         "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
-        "spin_reminder": "🎁 Привет! У тебя сегодня бесплатное вращение в Колесе фортуны! Зайди и попробуй удачу 🍀",
         "spin_title": "🎰 **Колесо фортуны**",
         "spin_prizes": "🔥 **Что можно выиграть:**\n• 10–50 сообщений\n• 100–250 XP\n• 🎁 PRO на 5 дней\n• ✨ SUPER PRO на 3 дня",
         "spin_choose": "Выбери вариант:",
         "spin_nothing": "😢 Ничего... В следующий раз повезёт!",
         "profile": "Подписка: {status}\nОсталось сообщений: {messages}",
-        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+10 сообщений** тебе, ему — **+5 бесплатных сообщений**!",
+        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+10 сообщений** тебе, ему — **+5 бесплатных сообщений**!\n\n📊 Приглашено друзей: **{count}**\n💌 Заработано сообщений: **{earned}**",
         "choose_lang_label": "🌍 Выбери язык:",
         "welcome_back_female": "Ой, тебя так долго не было! Я уже успела соскучиться 🥺💕",
         "welcome_back_male": "Ой, тебя так долго не было! Я уже успел соскучиться 🥺💕",
         "welcome_back_female_2": "Ну наконец-то! Я уже думала, ты меня забыл... 😔",
         "welcome_back_male_2": "Ну наконец-то! Я уже думал, ты меня забыла... 😔",
-        "miss_you": [
-            "Я скучаю... Ты где пропал? 😔 Напиши мне...",
-            "Эй, ты там живой? 🥺 Я уже начала волноваться...",
+        "miss_you_female": [
+            "Я так соскучилась... Ты где пропал? 😔 Напиши мне...",
+            "Эй, ты как? 🥺 Я уже начала волноваться...",
+            "Привет! Давно не общались... Расскажи, как дела 💕",
+        ],
+        "miss_you_male": [
+            "Я так соскучился... Ты где пропала? 😔 Напиши мне...",
+            "Эй, ты как? 🥺 Я уже начал волноваться...",
             "Привет! Давно не общались... Расскажи, как дела 💕",
         ],
         "level_up": {
@@ -136,6 +140,33 @@ TEXTS = {
         "spin_mode_free": "🎁 Бесплатное вращение",
         "spin_mode_paid": "💎 Платное вращение",
         "switch_style_prompt": "🔄 **Выбери новый стиль:**\n\nИстория диалога сохранится.",
+        "need_character_alert": "Сначала создай персонажа!",
+        "already_subscribed_alert": "❌ У вас уже есть подписка.",
+        "pro_only_alert": "❌ Только для PRO.",
+        "packs_blocked_active_sub": "❌ При активной подписке покупка пакетов недоступна.",
+        "subs_title": "👑 Подписки Role Duel",
+        "subs_body": "🔥 PRO (250⭐/мес)\n• 50 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• 100 сообщений в день\n• Все стили + эксклюзивные 😤 Грубый и 😏 Соблазн\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_btn_pro": "🔥 PRO — 250 ⭐/мес",
+        "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐/мес",
+        "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (245⭐)",
+        "packs_title": "📦 **Купить пакет сообщений**\n\nВыбери пакет:",
+        "pack_btn": "{n} сообщений — {price} ⭐",
+        "invoice_pro_title": "PRO подписка на месяц",
+        "invoice_pro_desc": "50 сообщений/день, память 60 сообщений, стили Страстный и Магнетический.",
+        "invoice_pro_label": "PRO месяц",
+        "invoice_super_title": "SUPER PRO подписка на месяц",
+        "invoice_super_desc": "100 сообщений/день, память 100 сообщений, все стили.",
+        "invoice_super_label": "SUPER PRO месяц",
+        "invoice_upgrade_title": "Апгрейд до SUPER PRO",
+        "invoice_upgrade_desc": "Повысьте PRO до SUPER PRO на оставшийся срок. 245⭐.",
+        "invoice_upgrade_label": "Апгрейд",
+        "invoice_pack_title": "Пакет {n} сообщений",
+        "invoice_pack_desc": "{n} сообщений за {price}⭐",
+        "invoice_pack_label": "{n} сообщ.",
+        "payment_pack_success": "✅ Куплено {n} сообщений!",
+        "payment_pro_success": "✅ PRO подписка активирована на месяц!",
+        "payment_super_success": "✅ SUPER PRO подписка активирована на месяц!",
+        "payment_upgrade_success": "✅ Апгрейд до SUPER PRO выполнен до {date}!",
         "agreement": "📜 **ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ**\n\nНастоящее Соглашение регулирует отношения между Администрацией (далее – «Мы») и Пользователем (далее – «Вы») при использовании сервиса Role Duel (далее – «Сервис»).\n\nИспользуя Сервис, Вы подтверждаете, что ознакомились с условиями настоящего Соглашения и принимаете их безоговорочно.\n\n---\n\n**1. ВОЗРАСТНОЕ ОГРАНИЧЕНИЕ**\n1.1. Сервис предназначен исключительно для лиц, достигших 18 лет.\n1.2. Использование Сервиса лицами младше 18 лет строго запрещено.\n\n**2. ОПИСАНИЕ СЕРВИСА**\n2.1. Сервис предоставляет доступ к виртуальным собеседникам на основе технологий искусственного интеллекта.\n2.2. Весь контент генерируется автоматически и не отражает мнение Администрации.\n2.3. Сервис не является медицинским, психологическим или консультационным инструментом.\n\n**3. ОТВЕТСТВЕННОСТЬ ПОЛЬЗОВАТЕЛЯ**\n3.1. Вы несёте полную ответственность за все действия, совершённые с использованием Вашего аккаунта.\n3.2. Запрещается использовать Сервис для распространения экстремистских материалов, оскорблений, угроз, клеветы, мошенничества, вредоносного ПО и любых действий, нарушающих законодательство РФ.\n\n**4. КОНФИДЕНЦИАЛЬНОСТЬ**\n4.1. Мы собираем: Telegram ID, историю диалогов, данные о покупках и подписках.\n4.2. Мы НЕ передаём персональные данные третьим лицам, за исключением случаев, предусмотренных законом.\n\n**5. ПЛАТНЫЕ УСЛУГИ**\n5.1. Сервис предоставляет платные услуги (пакеты сообщений, подписки, колесо фортуны).\n5.2. Подписки **НЕ продлеваются автоматически**.\n5.3. Возврат средств не производится, за исключением технической ошибки со стороны Сервиса.\n\n**6. ОТКАЗ ОТ ГАРАНТИЙ**\nСервис предоставляется «как есть» без каких-либо гарантий бесперебойной работы.\n\n**7. ИЗМЕНЕНИЕ УСЛОВИЙ**\nАдминистрация вправе изменять Соглашение в любое время; продолжение использования Сервиса означает согласие с новой версией.\n\n**8. КОНТАКТЫ**\nВсе вопросы принимаются через поддержку в Telegram.\n\n---\n\n✅ Нажимая кнопку «Принимаю», Вы подтверждаете, что ознакомились со всеми перечисленными выше пунктами и согласны с ними.\n\n⚠️ Если Вы не согласны с настоящим Соглашением, немедленно прекратите использование Сервиса."
     },
     "en": {
@@ -189,19 +220,23 @@ TEXTS = {
         "character_created": "✅ **Character created!**\n\nNow you're talking to:\n_{text}_\n\nTo go back to the default character — /reset_character",
         "character_reset": "✅ Character reset.",
         "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«An elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire.»\n\n✏️ Write the description now — and I'll remember it!",
-        "spin_reminder": "🎁 Hey! You have a free spin today! Try your luck 🍀",
         "spin_title": "🎰 **Spin wheel**",
         "spin_prizes": "🔥 **What you can win:**\n• 10–50 messages\n• 100–250 XP\n• 🎁 PRO for 5 days\n• ✨ SUPER PRO for 3 days",
         "spin_choose": "Choose an option:",
         "spin_nothing": "😢 Nothing... Better luck next time!",
         "profile": "Subscription: {status}\nMessages left: {messages}",
-        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+10 messages** for you, and **+5 free messages** for them!",
+        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+10 messages** for you, and **+5 free messages** for them!\n\n📊 Friends invited: **{count}**\n💌 Messages earned: **{earned}**",
         "choose_lang_label": "🌍 Choose language:",
         "welcome_back_female": "Oh, you've been gone so long! I already missed you 🥺💕",
         "welcome_back_male": "Oh, you've been gone so long! I already missed you 🥺💕",
         "welcome_back_female_2": "Finally! I thought you forgot about me... 😔",
         "welcome_back_male_2": "Finally! I thought you forgot about me... 😔",
-        "miss_you": [
+        "miss_you_female": [
+            "I miss you... where did you go? 😔 Write to me...",
+            "Hey, are you okay? 🥺 I was starting to worry...",
+            "Hi! It's been a while... tell me how you're doing 💕",
+        ],
+        "miss_you_male": [
             "I miss you... where did you go? 😔 Write to me...",
             "Hey, are you okay? 🥺 I was starting to worry...",
             "Hi! It's been a while... tell me how you're doing 💕",
@@ -255,6 +290,33 @@ TEXTS = {
         "spin_mode_free": "🎁 Free spin",
         "spin_mode_paid": "💎 Paid spin",
         "switch_style_prompt": "🔄 **Choose a new style:**\n\nYour conversation history will be kept.",
+        "need_character_alert": "Create your character first!",
+        "already_subscribed_alert": "❌ You already have a subscription.",
+        "pro_only_alert": "❌ PRO only.",
+        "packs_blocked_active_sub": "❌ Packs can't be bought while a subscription is active.",
+        "subs_title": "👑 Role Duel Subscriptions",
+        "subs_body": "🔥 PRO (250⭐/mo)\n• 50 messages a day\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n\n✨ SUPER PRO ✨ (450⭐/mo)\n• 100 messages a day\n• All styles + exclusive 😤 Rough and 😏 Temptation\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_btn_pro": "🔥 PRO — 250 ⭐/mo",
+        "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐/mo",
+        "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (245⭐)",
+        "packs_title": "📦 **Buy a message pack**\n\nChoose a pack:",
+        "pack_btn": "{n} messages — {price} ⭐",
+        "invoice_pro_title": "PRO subscription for a month",
+        "invoice_pro_desc": "50 messages/day, 60-message memory, Passionate and Magnetic styles.",
+        "invoice_pro_label": "PRO month",
+        "invoice_super_title": "SUPER PRO subscription for a month",
+        "invoice_super_desc": "100 messages/day, 100-message memory, all styles.",
+        "invoice_super_label": "SUPER PRO month",
+        "invoice_upgrade_title": "Upgrade to SUPER PRO",
+        "invoice_upgrade_desc": "Upgrade PRO to SUPER PRO for the remaining time. 245⭐.",
+        "invoice_upgrade_label": "Upgrade",
+        "invoice_pack_title": "Pack of {n} messages",
+        "invoice_pack_desc": "{n} messages for {price}⭐",
+        "invoice_pack_label": "{n} msgs",
+        "payment_pack_success": "✅ Purchased {n} messages!",
+        "payment_pro_success": "✅ PRO subscription activated for a month!",
+        "payment_super_success": "✅ SUPER PRO subscription activated for a month!",
+        "payment_upgrade_success": "✅ Upgrade to SUPER PRO done until {date}!",
         "agreement": "📜 **TERMS OF SERVICE**\n\nThis Agreement governs the relationship between the Administration (\"We\") and the User (\"You\") when using the Role Duel service (\"Service\").\n\nBy using the Service, you confirm that you have read and accept the terms of this Agreement unconditionally.\n\n---\n\n**1. AGE RESTRICTION**\n1.1. The Service is intended exclusively for persons aged 18 and over.\n1.2. Use of the Service by persons under 18 is strictly prohibited.\n\n**2. SERVICE DESCRIPTION**\n2.1. The Service provides access to virtual companions based on artificial intelligence.\n2.2. All content is generated automatically and does not reflect the Administration's opinion.\n2.3. The Service is not a medical, psychological or consulting tool.\n\n**3. USER RESPONSIBILITY**\n3.1. You are fully responsible for all actions performed using your account.\n3.2. It is prohibited to use the Service to distribute extremist materials, insults, threats, fraud, malware, or anything violating applicable law.\n\n**4. PRIVACY**\n4.1. We collect: Telegram ID, chat history, purchase and subscription data.\n4.2. We do NOT share personal data with third parties, except as required by law.\n\n**5. PAID SERVICES**\n5.1. The Service provides paid features (message packs, subscriptions, spin wheel).\n5.2. Subscriptions are **NOT renewed automatically**.\n5.3. Refunds are not provided except in case of a technical error by the Service.\n\n**6. DISCLAIMER**\nThe Service is provided «as is» with no uptime guarantees.\n\n**7. CHANGES TO TERMS**\nThe Administration may change this Agreement at any time; continued use means acceptance of the new version.\n\n**8. CONTACT**\nAll questions are handled through Telegram support.\n\n---\n\n✅ By clicking «Accept» below, you confirm that you have read all the items listed above and agree to them.\n\n⚠️ If you do not agree with this Agreement, stop using the Service immediately."
     }
 }
@@ -366,8 +428,8 @@ def get_user(user_id):
             "editing_message": False,
             "referral_code": None,
             "referred_by": None,
+            "referral_count": 0,
             "last_activity": datetime.now().isoformat(),
-            "last_spin_notified": None,
             "last_reminder": None,
             "creating_character": False,
             "custom_character": None
@@ -397,8 +459,8 @@ def get_user(user_id):
             "editing_message": False,
             "referral_code": None,
             "referred_by": None,
+            "referral_count": 0,
             "last_activity": None,
-            "last_spin_notified": None,
             "last_reminder": None,
             "creating_character": False,
             "custom_character": None
@@ -931,10 +993,16 @@ async def start_cmd(message: types.Message):
         if str(message.from_user.id) != referrer_id and not user.get("referred_by"):
             referrer = get_user(referrer_id)
             referrer["purchased_messages"] = referrer.get("purchased_messages", 0) + 10
+            referrer["referral_count"] = referrer.get("referral_count", 0) + 1
             user["purchased_messages"] = user.get("purchased_messages", 0) + 5
             user["referred_by"] = referrer_id
             save_data(user_data)
-            await message.answer("🎉 Ты пришёл по реферальной ссылке! +5 сообщений тебе и +10 сообщений другу!")
+            # Язык ещё не выбран на этом шаге (выбор языка идёт дальше в proceed_flow),
+            # поэтому сообщение о бонусе показываем сразу на двух языках.
+            await message.answer(
+                "🎉 Ты пришёл по реферальной ссылке! +5 сообщений тебе и +10 сообщений другу!\n"
+                "🎉 You joined via a referral link! +5 messages for you, +10 for your friend!"
+            )
 
     await proceed_flow(message.from_user.id, message.chat.id)
 
@@ -1488,14 +1556,15 @@ async def spin_result(message: types.Message, user, free=False):
 async def referral_menu(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     if not user["personality_ready"]:
-        await call.answer("Сначала создай персонажа!", show_alert=True)
+        await call.answer(get_text(user, "need_character_alert"), show_alert=True)
         return
     if not user.get("referral_code"):
         user["referral_code"] = str(call.from_user.id)
         save_data(user_data)
     bot_username = (await bot.get_me()).username
     link = f"https://t.me/{bot_username}?start=ref_{user['referral_code']}"
-    await call.message.answer(get_text(user, "referral", link=link), parse_mode="Markdown")
+    count = user.get("referral_count", 0)
+    await call.message.answer(get_text(user, "referral", link=link, count=count, earned=count * 10), parse_mode="Markdown")
     await call.answer()
 
 
@@ -1507,29 +1576,15 @@ async def profile_subs(call: types.CallbackQuery):
     await call.answer()
     user = get_user(call.from_user.id)
     if not user["personality_ready"]:
-        await call.answer("Сначала создай персонажа!", show_alert=True)
+        await call.answer(get_text(user, "need_character_alert"), show_alert=True)
         return
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🔥 PRO — 250 ⭐/мес", callback_data="subscribe_pro")],
-        [InlineKeyboardButton(text="✨ SUPER PRO ✨ — 450 ⭐/мес", callback_data="subscribe_super")],
-        [InlineKeyboardButton(text="⬆️ Апгрейд до SUPER PRO (245⭐)", callback_data="upgrade_to_super")],
+        [InlineKeyboardButton(text=get_text(user, "subs_btn_pro"), callback_data="subscribe_pro")],
+        [InlineKeyboardButton(text=get_text(user, "subs_btn_super"), callback_data="subscribe_super")],
+        [InlineKeyboardButton(text=get_text(user, "subs_btn_upgrade"), callback_data="upgrade_to_super")],
         [InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile")]
     ])
-    text = ("👑 Подписки Role Duel\n\n"
-            "🔥 PRO (250⭐/мес)\n"
-            "• 50 сообщений в день\n"
-            "• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n"
-            "• Память: 60 сообщений\n"
-            "• Бонус XP: x1.8\n\n"
-            "✨ SUPER PRO ✨ (450⭐/мес)\n"
-            "• 100 сообщений в день\n"
-            "• Все стили + эксклюзивные 😤 Грубый и 😏 Соблазн\n"
-            "• Смена стиля без потери истории (/switch_style)\n"
-            "• Память: 100 сообщений\n"
-            "• Бонус XP: x2.5\n"
-            "• 🎭 Создание своего уникального персонажа!\n\n"
-            "⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n"
-            "⚠️ Подписки НЕ продлеваются автоматически.")
+    text = get_text(user, "subs_title") + "\n\n" + get_text(user, "subs_body")
     await call.message.answer(text, reply_markup=keyboard)
 
 
@@ -1537,18 +1592,18 @@ async def profile_subs(call: types.CallbackQuery):
 async def profile_packs(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     if not user["personality_ready"]:
-        await call.answer("Сначала создай персонажа!", show_alert=True)
+        await call.answer(get_text(user, "need_character_alert"), show_alert=True)
         return
     if has_active_subscription(user):
-        await call.answer("❌ При активной подписке покупка пакетов недоступна.", show_alert=True)
+        await call.answer(get_text(user, "packs_blocked_active_sub"), show_alert=True)
         return
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="30 сообщений — 30 ⭐", callback_data="pack_30")],
-        [InlineKeyboardButton(text="100 сообщений — 80 ⭐", callback_data="pack_100")],
-        [InlineKeyboardButton(text="300 сообщений — 200 ⭐", callback_data="pack_300")],
+        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=30, price=30), callback_data="pack_30")],
+        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=100, price=80), callback_data="pack_100")],
+        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=300, price=200), callback_data="pack_300")],
         [InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile")]
     ])
-    await call.message.answer("📦 **Купить пакет сообщений**\n\nВыбери пакет:", reply_markup=keyboard, parse_mode="Markdown")
+    await call.message.answer(get_text(user, "packs_title"), reply_markup=keyboard, parse_mode="Markdown")
     await call.answer()
 
 
@@ -1572,17 +1627,17 @@ async def back_to_profile(call: types.CallbackQuery):
 async def subscribe_pro(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     if has_active_subscription(user):
-        await call.answer("❌ У вас уже есть подписка.", show_alert=True)
+        await call.answer(get_text(user, "already_subscribed_alert"), show_alert=True)
         return
     try:
         await bot.send_invoice(
             chat_id=call.message.chat.id,
-            title="PRO подписка на месяц",
-            description="50 сообщений/день, память 60 сообщений, стили Страстный и Магнетический.",
+            title=get_text(user, "invoice_pro_title"),
+            description=get_text(user, "invoice_pro_desc"),
             payload="subscribe_pro",
             provider_token="",
             currency="XTR",
-            prices=[LabeledPrice(label="PRO месяц", amount=250)]
+            prices=[LabeledPrice(label=get_text(user, "invoice_pro_label"), amount=250)]
         )
     except Exception as e:
         await call.message.answer(f"⚠️ Ошибка: {e}")
@@ -1593,17 +1648,17 @@ async def subscribe_pro(call: types.CallbackQuery):
 async def subscribe_super(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     if has_active_subscription(user):
-        await call.answer("❌ У вас уже есть подписка.", show_alert=True)
+        await call.answer(get_text(user, "already_subscribed_alert"), show_alert=True)
         return
     try:
         await bot.send_invoice(
             chat_id=call.message.chat.id,
-            title="SUPER PRO подписка на месяц",
-            description="100 сообщений/день, память 100 сообщений, все стили.",
+            title=get_text(user, "invoice_super_title"),
+            description=get_text(user, "invoice_super_desc"),
             payload="subscribe_super",
             provider_token="",
             currency="XTR",
-            prices=[LabeledPrice(label="SUPER PRO месяц", amount=450)]
+            prices=[LabeledPrice(label=get_text(user, "invoice_super_label"), amount=450)]
         )
     except Exception as e:
         await call.message.answer(f"⚠️ Ошибка: {e}")
@@ -1614,17 +1669,17 @@ async def subscribe_super(call: types.CallbackQuery):
 async def upgrade_to_super(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     if get_subscription_level(user) != "pro":
-        await call.answer("❌ Только для PRO.", show_alert=True)
+        await call.answer(get_text(user, "pro_only_alert"), show_alert=True)
         return
     try:
         await bot.send_invoice(
             chat_id=call.message.chat.id,
-            title="Апгрейд до SUPER PRO",
-            description="Повысьте PRO до SUPER PRO на оставшийся срок. 245⭐.",
+            title=get_text(user, "invoice_upgrade_title"),
+            description=get_text(user, "invoice_upgrade_desc"),
             payload="upgrade_to_super",
             provider_token="",
             currency="XTR",
-            prices=[LabeledPrice(label="Апгрейд", amount=245)]
+            prices=[LabeledPrice(label=get_text(user, "invoice_upgrade_label"), amount=245)]
         )
     except Exception as e:
         await call.message.answer(f"⚠️ Ошибка: {e}")
@@ -1635,20 +1690,22 @@ async def upgrade_to_super(call: types.CallbackQuery):
 async def buy_pack(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     if has_active_subscription(user):
-        await call.answer("❌ При подписке пакеты недоступны.", show_alert=True)
+        await call.answer(get_text(user, "packs_blocked_active_sub"), show_alert=True)
         return
     period = call.data.split("_", 1)[1]
     pack_map = {"30": 30, "100": 100, "300": 300}
     price_map = {"30": 30, "100": 80, "300": 200}
+    n = pack_map[period]
+    price = price_map[period]
     try:
         await bot.send_invoice(
             chat_id=call.message.chat.id,
-            title=f"Пакет {pack_map[period]} сообщений",
-            description=f"{pack_map[period]} сообщений за {price_map[period]}⭐",
+            title=get_text(user, "invoice_pack_title", n=n),
+            description=get_text(user, "invoice_pack_desc", n=n, price=price),
             payload=f"pack_{period}",
             provider_token="",
             currency="XTR",
-            prices=[LabeledPrice(label=f"{pack_map[period]} сообщ.", amount=price_map[period])]
+            prices=[LabeledPrice(label=get_text(user, "invoice_pack_label", n=n), amount=price)]
         )
     except Exception as e:
         await call.message.answer(f"⚠️ Ошибка: {e}")
@@ -1671,7 +1728,7 @@ async def payment_success(message: types.Message):
         pack_map = {"30": 30, "100": 100, "300": 300}
         user["purchased_messages"] += pack_map[period]
         save_data(user_data)
-        await message.answer(f"✅ Куплено {pack_map[period]} сообщений!")
+        await message.answer(get_text(user, "payment_pack_success", n=pack_map[period]))
     elif payload == "subscribe_pro":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
@@ -1679,7 +1736,7 @@ async def payment_success(message: types.Message):
         user["daily_messages"] = 50
         user["last_daily_reset"] = datetime.now().date().isoformat()
         save_data(user_data)
-        await message.answer("✅ PRO подписка активирована на месяц!")
+        await message.answer(get_text(user, "payment_pro_success"))
     elif payload == "subscribe_super":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
@@ -1687,14 +1744,15 @@ async def payment_success(message: types.Message):
         user["daily_messages"] = 100
         user["last_daily_reset"] = datetime.now().date().isoformat()
         save_data(user_data)
-        await message.answer("✅ SUPER PRO подписка активирована на месяц!")
+        await message.answer(get_text(user, "payment_super_success"))
     elif payload == "upgrade_to_super":
         if has_active_subscription(user) and get_subscription_level(user) == "pro":
             old_expiry = user["subscription"]["expires_at"]
             user["subscription"]["level"] = "super_pro"
             user["daily_messages"] = 100
             save_data(user_data)
-            await message.answer(f"✅ Апгрейд до SUPER PRO выполнен до {old_expiry}!")
+            expiry_str = datetime.fromisoformat(old_expiry).strftime('%d.%m.%Y %H:%M')
+            await message.answer(get_text(user, "payment_upgrade_success", date=expiry_str))
     elif payload == "spin_paid_20":
         await spin_result(message, user, free=False)
 
@@ -2043,6 +2101,10 @@ async def handle_message(message: types.Message):
 # ============================================================
 #  УВЕДОМЛЕНИЯ (ЕЖЕДНЕВНЫЕ И "СКУЧАЮ")
 # ============================================================
+MISS_YOU_INACTIVITY_DAYS = 3  # с какого дня без сообщений начинаем напоминать
+MISS_YOU_INTERVAL_DAYS = 3  # не чаще чем раз в столько дней после предыдущего напоминания
+
+
 async def check_notifications():
     while True:
         try:
@@ -2052,26 +2114,32 @@ async def check_notifications():
                 if not user.get("verified") or not user.get("personality_ready"):
                     continue
 
-                if user.get("last_free_spin") != today and user.get("last_spin_notified") != today:
-                    user["last_spin_notified"] = today
-                    save_data(user_data)
-                    try:
-                        await bot.send_message(int(user_id), get_text(user, "spin_reminder"))
-                    except Exception:
-                        pass
+                if not user.get("last_activity"):
+                    continue
+                try:
+                    last = datetime.fromisoformat(user["last_activity"])
+                except Exception:
+                    continue
+                if (now - last).days < MISS_YOU_INACTIVITY_DAYS:
+                    continue
 
-                if user.get("last_activity"):
+                last_reminder = user.get("last_reminder")
+                due = True
+                if last_reminder:
                     try:
-                        last = datetime.fromisoformat(user["last_activity"])
+                        due = (now - datetime.fromisoformat(last_reminder)).days >= MISS_YOU_INTERVAL_DAYS
                     except Exception:
-                        continue
-                    if (now - last).days >= 3 and user.get("last_reminder") != today:
-                        user["last_reminder"] = today
-                        save_data(user_data)
-                        try:
-                            await bot.send_message(int(user_id), random.choice(get_text(user, "miss_you")))
-                        except Exception:
-                            pass
+                        due = True
+                if not due:
+                    continue
+
+                user["last_reminder"] = today
+                save_data(user_data)
+                try:
+                    gender = user.get("gender", "female")
+                    await bot.send_message(int(user_id), random.choice(get_text(user, f"miss_you_{gender}")))
+                except Exception:
+                    pass
         except Exception as e:
             logging.error(f"Ошибка уведомлений: {e}")
         await asyncio.sleep(1800)  # проверка раз в 30 минут
