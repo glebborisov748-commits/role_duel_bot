@@ -26,19 +26,19 @@ TEXTS = {
         "main_menu": "📋 Главное меню",
         "my_profile": "👤 Мой профиль",
         "spin_wheel": "🎰 Колесо фортуны",
-        "our_channel": "📢 Наш канал",
+        "our_channel": "🔵 Наш канал",
         "edit": "✏️ Редактировать",
-        "change_character": "🔄 Сменить персонажа",
+        "change_character": "🔵 Сменить персонажа",
         "invite_friend": "👥 Пригласить друга",
         "create_character": "🎭 Создать своего персонажа",
         "buy_packs": "📦 Купить пакеты",
         "subscribe": "👑 Оформить подписку",
-        "back": "🔙 Главное меню",
-        "back_to_profile": "🔙 Назад",
+        "back": "🔴 Главное меню",
+        "back_to_profile": "🔴 Назад",
         "accept": "✅ Мне есть 18 лет",
         "decline": "❌ Мне нет 18 лет",
-        "agree": "✅ Принимаю",
-        "disagree": "❌ Не принимаю",
+        "agree": "🟢 Принимаю",
+        "disagree": "🔴 Не принимаю",
         "open_agreement": "📜 Открыть соглашение",
         "realism": "🌍 Реализм",
         "anime": "🎌 Аниме",
@@ -46,7 +46,7 @@ TEXTS = {
         "i_female": "👩 Я девушка",
         "scene_phone": "📱 Переписка в телефоне",
         "scene_live": "👫 Реальная встреча",
-        "channel": "📢 Перейти в канал",
+        "channel": "🔵 Перейти в канал",
         "free": "🎁 Бесплатно (1/день)",
         "tomorrow": "⏳ Завтра",
         "spin_paid": "💎 Крутить за 20⭐",
@@ -184,7 +184,7 @@ TEXTS = {
         "pro_only_alert": "❌ Только для PRO.",
         "packs_blocked_active_sub": "❌ При активной подписке покупка пакетов недоступна.",
         "subs_title": "👑 Подписки Role Duel",
-        "subs_body": "🔥 PRO (250⭐/мес)\n• 50 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• 100 сообщений в день\n• Все стили + эксклюзивные 😤 Грубый 18+, 😏 Соблазн 18+ и 💋 Интим 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_body": "🔥 PRO (250⭐/мес)\n• 50 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• 100 сообщений в день\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐/мес",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐/мес",
         "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (245⭐)",
@@ -212,19 +212,19 @@ TEXTS = {
         "main_menu": "📋 Main menu",
         "my_profile": "👤 My profile",
         "spin_wheel": "🎰 Spin wheel",
-        "our_channel": "📢 Our channel",
+        "our_channel": "🔵 Our channel",
         "edit": "✏️ Edit",
-        "change_character": "🔄 Change character",
+        "change_character": "🔵 Change character",
         "invite_friend": "👥 Invite friend",
         "create_character": "🎭 Create your own character",
         "buy_packs": "📦 Buy packs",
         "subscribe": "👑 Subscribe",
-        "back": "🔙 Main menu",
-        "back_to_profile": "🔙 Back",
+        "back": "🔴 Main menu",
+        "back_to_profile": "🔴 Back",
         "accept": "✅ I am 18+",
         "decline": "❌ I am under 18",
-        "agree": "✅ Accept",
-        "disagree": "❌ Decline",
+        "agree": "🟢 Accept",
+        "disagree": "🔴 Decline",
         "open_agreement": "📜 Open agreement",
         "realism": "🌍 Realism",
         "anime": "🎌 Anime",
@@ -232,7 +232,7 @@ TEXTS = {
         "i_female": "👩 I'm female",
         "scene_phone": "📱 Phone chat",
         "scene_live": "👫 Real meeting",
-        "channel": "📢 Go to channel",
+        "channel": "🔵 Go to channel",
         "free": "🎁 Free (1 per day)",
         "tomorrow": "⏳ Tomorrow",
         "spin_paid": "💎 Spin for 20⭐",
@@ -370,7 +370,7 @@ TEXTS = {
         "pro_only_alert": "❌ PRO only.",
         "packs_blocked_active_sub": "❌ Packs can't be bought while a subscription is active.",
         "subs_title": "👑 Role Duel Subscriptions",
-        "subs_body": "🔥 PRO (250⭐ per month)\n• 50 messages a day\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• 100 messages a day\n• All styles + exclusive 😤 Rough 18+, 😏 Temptation 18+ and 💋 Intimate 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_body": "🔥 PRO (250⭐ per month)\n• 50 messages a day\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• 100 messages a day\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐ per month",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ per month",
         "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (245⭐)",
@@ -398,19 +398,19 @@ TEXTS = {
         "main_menu": "📋 Hauptmenü",
         "my_profile": "👤 Mein Profil",
         "spin_wheel": "🎰 Glücksrad",
-        "our_channel": "📢 Unser Kanal",
+        "our_channel": "🔵 Unser Kanal",
         "edit": "✏️ Bearbeiten",
-        "change_character": "🔄 Charakter wechseln",
+        "change_character": "🔵 Charakter wechseln",
         "invite_friend": "👥 Freund einladen",
         "create_character": "🎭 Eigenen Charakter erstellen",
         "buy_packs": "📦 Pakete kaufen",
         "subscribe": "👑 Abo abschließen",
-        "back": "🔙 Hauptmenü",
-        "back_to_profile": "🔙 Zurück",
+        "back": "🔴 Hauptmenü",
+        "back_to_profile": "🔴 Zurück",
         "accept": "✅ Ich bin 18+",
         "decline": "❌ Ich bin unter 18",
-        "agree": "✅ Akzeptieren",
-        "disagree": "❌ Ablehnen",
+        "agree": "🟢 Akzeptieren",
+        "disagree": "🔴 Ablehnen",
         "open_agreement": "📜 Vereinbarung öffnen",
         "realism": "🌍 Realismus",
         "anime": "🎌 Anime",
@@ -418,7 +418,7 @@ TEXTS = {
         "i_female": "👩 Ich bin eine Frau",
         "scene_phone": "📱 Chat am Handy",
         "scene_live": "👫 Echtes Treffen",
-        "channel": "📢 Zum Kanal",
+        "channel": "🔵 Zum Kanal",
         "free": "🎁 Gratis (1 pro Tag)",
         "tomorrow": "⏳ Morgen",
         "spin_paid": "💎 Für 20⭐ drehen",
@@ -556,7 +556,7 @@ TEXTS = {
         "pro_only_alert": "❌ Nur für PRO.",
         "packs_blocked_active_sub": "❌ Mit einem aktiven Abo können keine Pakete gekauft werden.",
         "subs_title": "👑 Role Duel Abos",
-        "subs_body": "🔥 PRO (250⭐ pro Monat)\n• 50 Nachrichten pro Tag\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• 100 Nachrichten pro Tag\n• Alle Stile + exklusiv 😤 Rau 18+, 😏 Verführung 18+ und 💋 Intim 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
+        "subs_body": "🔥 PRO (250⭐ pro Monat)\n• 50 Nachrichten pro Tag\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• 100 Nachrichten pro Tag\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐ pro Monat",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ pro Monat",
         "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO (245⭐)",
@@ -896,21 +896,13 @@ SUPER_PRO_STYLES = {
         "adult": True,
         "emoji": "😏",
         "description": "Ты обольстительный и уверенный в своей привлекательности, знаешь силу полунамёков и взгляда искоса. Ты умеешь заставить собеседника нервничать от предвкушения, оставаясь при этом элегантным и никогда не переходя черту."
-    },
-    "intimate": {
-        "label": "Интим",
-        "label_en": "Intimate",
-        "label_de": "Intim",
-        "emoji": "💋",
-        "adult": True,
-        "description": "Ты раскованный и чувственный, между вами нет запретных тем. Ты открыто говоришь о влечении и не стесняешься близости, но всегда считываешь настрой собеседника и не давишь."
     }
 }
 
 STYLES = {**BASE_STYLES, **PRO_STYLES, **SUPER_PRO_STYLES}
 BASE_STYLE_KEYS = ["warm", "daring", "shy"]
 PRO_STYLE_KEYS = ["passionate", "magnetic"]
-SUPER_PRO_STYLE_KEYS = ["rude", "seduction", "intimate"]
+SUPER_PRO_STYLE_KEYS = ["rude", "seduction"]
 PREMIUM_STYLE_KEYS = PRO_STYLE_KEYS + SUPER_PRO_STYLE_KEYS
 # Стили с пометкой 18+: только для них снимается ограничение на откровенные сцены.
 ADULT_STYLE_KEYS = [key for key, style in STYLES.items() if style.get("adult")]
@@ -1331,8 +1323,18 @@ def get_age_kb(user):
     ])
 
 
+AGREEMENT_URLS = {
+    "ru": "https://telegra.ph/Polzovatelskoe-soglashenie-Role-Duel-09-08",
+    "en": "https://telegra.ph/Role-Duel-User-Agreement-09-08",
+    "de": "https://telegra.ph/Nutzervertrag-Role-Duel-09-08",
+}
+
+
 def get_agreement_kb(user):
+    lang = user.get("lang", "ru")
+    url = AGREEMENT_URLS.get(lang, AGREEMENT_URLS["ru"])
     return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=get_text(user, "open_agreement"), url=url)],
         [
             InlineKeyboardButton(text=get_text(user, "agree"), callback_data="agreement_accept"),
             InlineKeyboardButton(text=get_text(user, "disagree"), callback_data="agreement_decline"),
@@ -1403,9 +1405,9 @@ def get_main_menu_keyboard(user):
 
 def get_profile_keyboard(user):
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene")],
         [InlineKeyboardButton(text=get_text(user, "buy_packs"), callback_data="profile_packs")],
         [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs")],
+        [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene")],
         [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back")],
     ])
 
@@ -1482,6 +1484,16 @@ async def start_cmd(message: types.Message):
             )
 
     await proceed_flow(message.from_user.id, message.chat.id)
+
+
+@dp.message(Command("language"))
+async def language_cmd(message: types.Message):
+    """Смена языка в любой момент — на случай, если при регистрации выбрали не тот
+    по ошибке. Сам выбор обрабатывает тот же choose_lang(), что и при первом запуске:
+    он либо продолжит регистрацию, либо (если она уже завершена) просто откроет
+    главное меню заново — уже на новом языке."""
+    user = get_user(message.from_user.id)
+    await message.answer(get_text(user, "choose_lang_label"), reply_markup=get_lang_kb())
 
 
 @dp.callback_query(lambda c: c.data.startswith("lang_"))
@@ -2119,15 +2131,19 @@ PAYMENT_TIMEOUT_MINUTES = 60  # через сколько снимаем нео�
 # Цена одного и того же товара в разных валютах. Звёзды — как было, рубли и
 # доллары правь здесь же: это единственное место, где заданы цены.
 PRODUCTS = {
-    "subscribe_pro": {"stars": 250, "rub": 399, "usd": 4.5},
-    "subscribe_super": {"stars": 450, "rub": 699, "usd": 7.9},
-    "upgrade_to_super": {"stars": 245, "rub": 390, "usd": 4.4},
-    "pack_30": {"stars": 30, "rub": 59, "usd": 0.7},
-    "pack_100": {"stars": 80, "rub": 149, "usd": 1.7},
-    "pack_300": {"stars": 200, "rub": 349, "usd": 3.9},
-    "spin_paid_20": {"stars": 20, "rub": 39, "usd": 0.5},
-    "intim_scene": {"stars": 45, "rub": 89, "usd": 1.0},
+    "subscribe_pro": {"stars": 250, "usd": 4.5},
+    "subscribe_super": {"stars": 450, "usd": 7.9},
+    "upgrade_to_super": {"stars": 245, "usd": 4.4},
+    "pack_30": {"stars": 30, "usd": 0.7},
+    "pack_100": {"stars": 80, "usd": 1.7},
+    "pack_300": {"stars": 200, "usd": 3.9},
+    "spin_paid_20": {"stars": 20, "usd": 0.5},
+    "intim_scene": {"stars": 45, "usd": 1.0},
 }
+# Цена в рублях (для Lava) равна цене в звёздах один в один — так попросили,
+# отдельного расчёта по курсу нет.
+for _product in PRODUCTS.values():
+    _product["rub"] = _product["stars"]
 
 PACK_SIZES = {"pack_30": 30, "pack_100": 100, "pack_300": 300}
 
