@@ -1,4 +1,6 @@
 import asyncio
+import hashlib
+import hmac
 import os
 import json
 import logging
@@ -12,6 +14,7 @@ from aiogram.types import (
     InlineKeyboardMarkup, InlineKeyboardButton, LabeledPrice,
     ReplyKeyboardMarkup, KeyboardButton
 )
+import httpx
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -140,6 +143,13 @@ TEXTS = {
         "spin_mode_free": "🎁 Бесплатное вращение",
         "spin_mode_paid": "💎 Платное вращение",
         "switch_style_prompt": "🔄 **Выбери новый стиль:**\n\nИстория диалога сохранится.",
+        "choose_payment": "💳 **Выбери способ оплаты:**",
+        "pay_stars": "⭐ Telegram Stars — {amount}⭐",
+        "pay_crypto": "🪙 Криптовалюта — ${amount}",
+        "pay_lava": "💳 Карта (Lava) — {amount}₽",
+        "pay_invoice_ready": "🧾 Счёт создан. Оплати по ссылке — доступ откроется автоматически в течение минуты после оплаты.",
+        "pay_open_invoice": "💳 Перейти к оплате",
+        "pay_error": "⚠️ Не удалось создать счёт. Попробуй другой способ оплаты.",
         "need_character_alert": "Сначала создай персонажа!",
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
@@ -290,6 +300,13 @@ TEXTS = {
         "spin_mode_free": "🎁 Free spin",
         "spin_mode_paid": "💎 Paid spin",
         "switch_style_prompt": "🔄 **Choose a new style:**\n\nYour conversation history will be kept.",
+        "choose_payment": "💳 **Choose a payment method:**",
+        "pay_stars": "⭐ Telegram Stars — {amount}⭐",
+        "pay_crypto": "🪙 Crypto — ${amount}",
+        "pay_lava": "💳 Card (Lava) — {amount}₽",
+        "pay_invoice_ready": "🧾 Invoice created. Pay via the link — access opens automatically within a minute after payment.",
+        "pay_open_invoice": "💳 Go to payment",
+        "pay_error": "⚠️ Could not create the invoice. Please try another payment method.",
         "need_character_alert": "Create your character first!",
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
@@ -440,6 +457,13 @@ TEXTS = {
         "spin_mode_free": "🎁 Gratisdrehung",
         "spin_mode_paid": "💎 Bezahlte Drehung",
         "switch_style_prompt": "🔄 **Wähle einen neuen Stil:**\n\nDer Gesprächsverlauf bleibt erhalten.",
+        "choose_payment": "💳 **Wähle eine Zahlungsart:**",
+        "pay_stars": "⭐ Telegram Stars — {amount}⭐",
+        "pay_crypto": "🪙 Krypto — ${amount}",
+        "pay_lava": "💳 Karte (Lava) — {amount}₽",
+        "pay_invoice_ready": "🧾 Rechnung erstellt. Zahle über den Link — der Zugang wird innerhalb einer Minute nach der Zahlung automatisch freigeschaltet.",
+        "pay_open_invoice": "💳 Zur Zahlung",
+        "pay_error": "⚠️ Rechnung konnte nicht erstellt werden. Bitte versuche eine andere Zahlungsart.",
         "need_character_alert": "Erstelle zuerst deinen Charakter!",
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
@@ -639,6 +663,7 @@ def get_user(user_id):
             "referral_code": None,
             "referred_by": None,
             "referral_count": 0,
+            "pending_payments": [],
             "last_activity": datetime.now().isoformat(),
             "last_reminder": None,
             "creating_character": False,
@@ -670,6 +695,7 @@ def get_user(user_id):
             "referral_code": None,
             "referred_by": None,
             "referral_count": 0,
+            "pending_payments": [],
             "last_activity": None,
             "last_reminder": None,
             "creating_character": False,
@@ -1707,25 +1733,21 @@ async def spin_free(call: types.CallbackQuery):
     user["last_free_spin"] = today
     save_data(user_data)
     await safe_delete(call.message)
-    await spin_result(call.message, user, free=True)
+    await spin_result(call.message.chat.id, user, free=True)
     await call.answer()
 
 
 @dp.callback_query(lambda c: c.data == "spin_paid")
 async def spin_paid(call: types.CallbackQuery):
-    try:
-        user = get_user(call.from_user.id)
-        await bot.send_invoice(
-            chat_id=call.message.chat.id,
-            title=get_text(user, "spin_wheel"),
-            description=get_text(user, "spin_invoice_desc"),
-            payload="spin_paid_20",
-            provider_token="",
-            currency="XTR",
-            prices=[LabeledPrice(label=get_text(user, "spin_invoice_label"), amount=20)]
-        )
-    except Exception as e:
-        await call.message.answer(f"⚠️ Ошибка: {e}")
+    """Платная прокрутка идёт через тот же выбор способа оплаты, что и подписки."""
+    user = get_user(call.from_user.id)
+    methods = available_payment_methods()
+    if len(methods) == 1:
+        await start_payment(call, user, methods[0], "spin_paid_20")
+    else:
+        await call.message.answer(get_text(user, "choose_payment"),
+                                  reply_markup=get_payment_methods_kb(user, "spin_paid_20"),
+                                  parse_mode="Markdown")
     await call.answer()
 
 
@@ -1762,13 +1784,13 @@ def prize_name(prize, user):
     return prize.get(f"name_{lang}", prize["name"]) if lang != "ru" else prize["name"]
 
 
-async def spin_result(message: types.Message, user, free=False):
+async def spin_result(chat_id, user, free=False):
     weighted = []
     for p in SPIN_PRIZES:
         weighted.extend([p] * int(p["weight"] * 10))
     chosen = random.choice(weighted)
 
-    msg = await message.answer(get_text(user, "spin_rolling"))
+    msg = await bot.send_message(chat_id, get_text(user, "spin_rolling"))
     for _ in range(3):
         await asyncio.sleep(0.5)
         fake = random.choice(SPIN_PRIZES)
@@ -1810,7 +1832,8 @@ async def spin_result(message: types.Message, user, free=False):
     ])
 
     mode_text = get_text(user, "spin_mode_free" if free else "spin_mode_paid")
-    await message.answer(
+    await bot.send_message(
+        chat_id,
         get_text(user, "spin_result_header", result=result_text, mode=mode_text),
         reply_markup=keyboard,
         parse_mode="Markdown"
@@ -1847,9 +1870,9 @@ async def profile_subs(call: types.CallbackQuery):
         await call.answer(get_text(user, "need_character_alert"), show_alert=True)
         return
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "subs_btn_pro"), callback_data="subscribe_pro")],
-        [InlineKeyboardButton(text=get_text(user, "subs_btn_super"), callback_data="subscribe_super")],
-        [InlineKeyboardButton(text=get_text(user, "subs_btn_upgrade"), callback_data="upgrade_to_super")],
+        [InlineKeyboardButton(text=get_text(user, "subs_btn_pro"), callback_data="buy:subscribe_pro")],
+        [InlineKeyboardButton(text=get_text(user, "subs_btn_super"), callback_data="buy:subscribe_super")],
+        [InlineKeyboardButton(text=get_text(user, "subs_btn_upgrade"), callback_data="buy:upgrade_to_super")],
         [InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile")]
     ])
     text = get_text(user, "subs_title") + "\n\n" + get_text(user, "subs_body")
@@ -1866,9 +1889,9 @@ async def profile_packs(call: types.CallbackQuery):
         await call.answer(get_text(user, "packs_blocked_active_sub"), show_alert=True)
         return
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=30, price=30), callback_data="pack_30")],
-        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=100, price=80), callback_data="pack_100")],
-        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=300, price=200), callback_data="pack_300")],
+        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=30, price=30), callback_data="buy:pack_30")],
+        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=100, price=80), callback_data="buy:pack_100")],
+        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=300, price=200), callback_data="buy:pack_300")],
         [InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile")]
     ])
     await call.message.answer(get_text(user, "packs_title"), reply_markup=keyboard, parse_mode="Markdown")
@@ -1891,92 +1914,341 @@ async def back_to_profile(call: types.CallbackQuery):
     await call.answer()
 
 
-@dp.callback_query(lambda c: c.data == "subscribe_pro")
-async def subscribe_pro(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    if has_active_subscription(user):
-        await call.answer(get_text(user, "already_subscribed_alert"), show_alert=True)
-        return
-    try:
-        await bot.send_invoice(
-            chat_id=call.message.chat.id,
-            title=get_text(user, "invoice_pro_title"),
-            description=get_text(user, "invoice_pro_desc"),
-            payload="subscribe_pro",
-            provider_token="",
-            currency="XTR",
-            prices=[LabeledPrice(label=get_text(user, "invoice_pro_label"), amount=250)]
+# ============================================================
+#  СПОСОБЫ ОПЛАТЫ (Telegram Stars / CryptoBot / Lava)
+# ============================================================
+# Stars работают всегда, остальные способы включаются сами, как только в
+# переменных окружения появятся ключи — до этого их кнопок просто не видно.
+CRYPTO_PAY_TOKEN = os.getenv("CRYPTO_PAY_TOKEN", "")
+CRYPTO_PAY_API = os.getenv("CRYPTO_PAY_API", "https://pay.crypt.bot/api")
+LAVA_SECRET_KEY = os.getenv("LAVA_SECRET_KEY", "")
+LAVA_SHOP_ID = os.getenv("LAVA_SHOP_ID", "")
+LAVA_API = os.getenv("LAVA_API", "https://api.lava.ru/business")
+
+PAYMENT_TIMEOUT_MINUTES = 60  # через сколько снимаем неоплаченный счёт с отслеживания
+
+# Цена одного и того же товара в разных валютах. Звёзды — как было, рубли и
+# доллары правь здесь же: это единственное место, где заданы цены.
+PRODUCTS = {
+    "subscribe_pro": {"stars": 250, "rub": 399, "usd": 4.5},
+    "subscribe_super": {"stars": 450, "rub": 699, "usd": 7.9},
+    "upgrade_to_super": {"stars": 245, "rub": 390, "usd": 4.4},
+    "pack_30": {"stars": 30, "rub": 59, "usd": 0.7},
+    "pack_100": {"stars": 80, "rub": 149, "usd": 1.7},
+    "pack_300": {"stars": 200, "rub": 349, "usd": 3.9},
+    "spin_paid_20": {"stars": 20, "rub": 39, "usd": 0.5},
+}
+
+PACK_SIZES = {"pack_30": 30, "pack_100": 100, "pack_300": 300}
+
+
+def is_method_enabled(method):
+    if method == "stars":
+        return True
+    if method == "crypto":
+        return bool(CRYPTO_PAY_TOKEN)
+    if method == "lava":
+        return bool(LAVA_SECRET_KEY and LAVA_SHOP_ID)
+    return False
+
+
+def available_payment_methods():
+    return [m for m in ("stars", "crypto", "lava") if is_method_enabled(m)]
+
+
+def product_invoice_texts(user, payload):
+    """Заголовок, описание и подпись строки счёта для товара."""
+    if payload == "subscribe_pro":
+        return (get_text(user, "invoice_pro_title"), get_text(user, "invoice_pro_desc"),
+                get_text(user, "invoice_pro_label"))
+    if payload == "subscribe_super":
+        return (get_text(user, "invoice_super_title"), get_text(user, "invoice_super_desc"),
+                get_text(user, "invoice_super_label"))
+    if payload == "upgrade_to_super":
+        return (get_text(user, "invoice_upgrade_title"), get_text(user, "invoice_upgrade_desc"),
+                get_text(user, "invoice_upgrade_label"))
+    if payload in PACK_SIZES:
+        n = PACK_SIZES[payload]
+        price = PRODUCTS[payload]["stars"]
+        return (get_text(user, "invoice_pack_title", n=n),
+                get_text(user, "invoice_pack_desc", n=n, price=price),
+                get_text(user, "invoice_pack_label", n=n))
+    return (get_text(user, "spin_wheel"), get_text(user, "spin_invoice_desc"),
+            get_text(user, "spin_invoice_label"))
+
+
+# ---------- CryptoBot (Crypto Pay API) ----------
+async def _crypto_request(method, path, **kwargs):
+    async with httpx.AsyncClient(timeout=20) as client:
+        response = await client.request(
+            method, f"{CRYPTO_PAY_API}/{path}",
+            headers={"Crypto-Pay-API-Token": CRYPTO_PAY_TOKEN}, **kwargs
         )
+    return response.json()
+
+
+async def create_crypto_invoice(user_id, payload, description):
+    data = await _crypto_request(
+        "POST", "createInvoice",
+        json={
+            "currency_type": "fiat",
+            "fiat": "USD",
+            "amount": f"{PRODUCTS[payload]['usd']:.2f}",
+            "description": description[:1024],
+            "payload": f"{user_id}:{payload}",
+            "expires_in": PAYMENT_TIMEOUT_MINUTES * 60,
+        },
+    )
+    if not data.get("ok"):
+        raise RuntimeError(f"CryptoBot createInvoice: {data}")
+    result = data["result"]
+    url = result.get("bot_invoice_url") or result.get("mini_app_invoice_url") or result.get("pay_url")
+    return str(result["invoice_id"]), url
+
+
+async def check_crypto_invoice(invoice_id):
+    data = await _crypto_request("GET", "getInvoices", params={"invoice_ids": invoice_id})
+    if not data.get("ok"):
+        return None
+    items = (data.get("result") or {}).get("items") or []
+    return items[0].get("status") if items else None
+
+
+# ---------- Lava (business API) ----------
+def _lava_call_body(body):
+    """Lava подписывает ровно ту строку тела, которую мы отправляем,
+    поэтому сериализуем один раз и шлём как есть."""
+    raw = json.dumps(body, separators=(",", ":"), ensure_ascii=False)
+    signature = hmac.new(LAVA_SECRET_KEY.encode(), raw.encode(), hashlib.sha256).hexdigest()
+    headers = {"Signature": signature, "Accept": "application/json",
+               "Content-Type": "application/json"}
+    return raw, headers
+
+
+async def create_lava_invoice(user_id, payload, description):
+    order_id = f"{user_id}-{payload}-{int(datetime.now().timestamp())}"
+    raw, headers = _lava_call_body({
+        "sum": round(float(PRODUCTS[payload]["rub"]), 2),
+        "orderId": order_id,
+        "shopId": LAVA_SHOP_ID,
+        "comment": description[:250],
+    })
+    async with httpx.AsyncClient(timeout=20) as client:
+        response = await client.post(f"{LAVA_API}/invoice/create", content=raw.encode(), headers=headers)
+    data = response.json()
+    url = (data.get("data") or {}).get("url")
+    if not url:
+        raise RuntimeError(f"Lava invoice/create: {data}")
+    return order_id, url
+
+
+async def check_lava_invoice(order_id):
+    raw, headers = _lava_call_body({"shopId": LAVA_SHOP_ID, "orderId": order_id})
+    async with httpx.AsyncClient(timeout=20) as client:
+        response = await client.post(f"{LAVA_API}/invoice/status", content=raw.encode(), headers=headers)
+    data = response.json()
+    return (data.get("data") or {}).get("status")
+
+
+# ---------- общая часть ----------
+PAID_STATUSES = {"paid", "success", "successful", "completed"}
+DEAD_STATUSES = {"expired", "cancel", "cancelled", "canceled", "failed", "error"}
+
+
+def add_pending_payment(user, provider, invoice_id, payload):
+    pending = user.setdefault("pending_payments", [])
+    pending.append({
+        "provider": provider,
+        "invoice_id": invoice_id,
+        "payload": payload,
+        "created_at": datetime.now().isoformat(),
+    })
+    save_data(user_data)
+
+
+async def grant_product(user, payload, chat_id):
+    """Единая выдача товара: и для Stars, и для внешних платёжек.
+    Раньше эта логика жила прямо в payment_success и работала только для Stars."""
+    user["has_purchased"] = True
+
+    if payload in PACK_SIZES:
+        n = PACK_SIZES[payload]
+        user["purchased_messages"] = user.get("purchased_messages", 0) + n
+        save_data(user_data)
+        await bot.send_message(chat_id, get_text(user, "payment_pack_success", n=n))
+    elif payload == "subscribe_pro":
+        user["subscription"]["active"] = True
+        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
+        user["subscription"]["level"] = "pro"
+        user["daily_messages"] = 50
+        user["last_daily_reset"] = datetime.now().date().isoformat()
+        save_data(user_data)
+        await bot.send_message(chat_id, get_text(user, "payment_pro_success"))
+    elif payload == "subscribe_super":
+        user["subscription"]["active"] = True
+        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
+        user["subscription"]["level"] = "super_pro"
+        user["daily_messages"] = 100
+        user["last_daily_reset"] = datetime.now().date().isoformat()
+        save_data(user_data)
+        await bot.send_message(chat_id, get_text(user, "payment_super_success"))
+    elif payload == "upgrade_to_super":
+        if has_active_subscription(user) and get_subscription_level(user) == "pro":
+            old_expiry = user["subscription"]["expires_at"]
+            user["subscription"]["level"] = "super_pro"
+            user["daily_messages"] = 100
+            save_data(user_data)
+            expiry_str = datetime.fromisoformat(old_expiry).strftime('%d.%m.%Y %H:%M')
+            await bot.send_message(chat_id, get_text(user, "payment_upgrade_success", date=expiry_str))
+    elif payload == "spin_paid_20":
+        await spin_result(chat_id, user, free=False)
+
+
+async def check_pending_payments():
+    """CryptoBot и Lava подтверждают оплату вебхуками, но у бота нет
+    веб-сервера (он на long polling), поэтому просто опрашиваем статусы."""
+    while True:
+        await asyncio.sleep(30)
+        try:
+            sync_data()
+            for user_id, user in list(user_data.items()):
+                for item in list(user.get("pending_payments") or []):
+                    provider = item.get("provider")
+                    try:
+                        if provider == "crypto":
+                            status = await check_crypto_invoice(item["invoice_id"])
+                        elif provider == "lava":
+                            status = await check_lava_invoice(item["invoice_id"])
+                        else:
+                            status = None
+                    except Exception as e:
+                        logging.warning(f"Проверка платежа {provider} {item.get('invoice_id')}: {e}")
+                        continue
+
+                    expired = False
+                    try:
+                        created = datetime.fromisoformat(item["created_at"])
+                        expired = (datetime.now() - created).total_seconds() > PAYMENT_TIMEOUT_MINUTES * 60
+                    except Exception:
+                        expired = True
+
+                    status_key = (status or "").lower()
+                    if status_key in PAID_STATUSES:
+                        user["pending_payments"].remove(item)
+                        save_data(user_data)
+                        try:
+                            await grant_product(user, item["payload"], int(user_id))
+                        except Exception as e:
+                            logging.error(f"Не удалось выдать товар {item['payload']} для {user_id}: {e}")
+                    elif status_key in DEAD_STATUSES or expired:
+                        user["pending_payments"].remove(item)
+                        save_data(user_data)
+        except Exception as e:
+            logging.error(f"Ошибка проверки платежей: {e}")
+
+
+async def send_stars_invoice(chat_id, user, payload):
+    title, description, label = product_invoice_texts(user, payload)
+    await bot.send_invoice(
+        chat_id=chat_id,
+        title=title,
+        description=description,
+        payload=payload,
+        provider_token="",
+        currency="XTR",
+        prices=[LabeledPrice(label=label, amount=PRODUCTS[payload]["stars"])],
+    )
+
+
+async def start_payment(call: types.CallbackQuery, user, method, payload):
+    chat_id = call.message.chat.id
+    title, description, _ = product_invoice_texts(user, payload)
+
+    if method == "stars":
+        await send_stars_invoice(chat_id, user, payload)
+        return
+
+    try:
+        if method == "crypto":
+            invoice_id, url = await create_crypto_invoice(call.from_user.id, payload, description)
+        elif method == "lava":
+            invoice_id, url = await create_lava_invoice(call.from_user.id, payload, description)
+        else:
+            return
     except Exception as e:
-        await call.message.answer(f"⚠️ Ошибка: {e}")
+        logging.error(f"Счёт {method} для {payload}: {e}")
+        await call.message.answer(get_text(user, "pay_error"))
+        return
+
+    add_pending_payment(user, method, invoice_id, payload)
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=get_text(user, "pay_open_invoice"), url=url)]
+    ])
+    await call.message.answer(f"{title}\n\n{get_text(user, 'pay_invoice_ready')}", reply_markup=keyboard)
+
+
+def get_payment_methods_kb(user, payload):
+    prices = PRODUCTS[payload]
+    labels = {
+        "stars": get_text(user, "pay_stars", amount=prices["stars"]),
+        "crypto": get_text(user, "pay_crypto", amount=prices["usd"]),
+        "lava": get_text(user, "pay_lava", amount=prices["rub"]),
+    }
+    rows = [[InlineKeyboardButton(text=labels[method], callback_data=f"pay:{method}:{payload}")]
+            for method in available_payment_methods()]
+    rows.append([InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+def payment_blocked_reason(user, payload):
+    """Те же проверки, что раньше висели на каждой кнопке покупки."""
+    if payload in ("subscribe_pro", "subscribe_super") and has_active_subscription(user):
+        return get_text(user, "already_subscribed_alert")
+    if payload == "upgrade_to_super" and get_subscription_level(user) != "pro":
+        return get_text(user, "pro_only_alert")
+    if payload in PACK_SIZES and has_active_subscription(user):
+        return get_text(user, "packs_blocked_active_sub")
+    return None
+
+
+@dp.callback_query(lambda c: c.data.startswith("buy:"))
+async def buy_product(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    payload = call.data.split(":", 1)[1]
+    if payload not in PRODUCTS:
+        await call.answer()
+        return
+
+    blocked = payment_blocked_reason(user, payload)
+    if blocked:
+        await call.answer(blocked, show_alert=True)
+        return
+
+    methods = available_payment_methods()
+    if len(methods) == 1:
+        # выбирать не из чего — сразу счёт, как было раньше
+        await start_payment(call, user, methods[0], payload)
+    else:
+        await call.message.answer(get_text(user, "choose_payment"),
+                                  reply_markup=get_payment_methods_kb(user, payload),
+                                  parse_mode="Markdown")
     await call.answer()
 
 
-@dp.callback_query(lambda c: c.data == "subscribe_super")
-async def subscribe_super(call: types.CallbackQuery):
+@dp.callback_query(lambda c: c.data.startswith("pay:"))
+async def pay_with_method(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
-    if has_active_subscription(user):
-        await call.answer(get_text(user, "already_subscribed_alert"), show_alert=True)
+    _, method, payload = call.data.split(":", 2)
+    if payload not in PRODUCTS or not is_method_enabled(method):
+        await call.answer()
         return
-    try:
-        await bot.send_invoice(
-            chat_id=call.message.chat.id,
-            title=get_text(user, "invoice_super_title"),
-            description=get_text(user, "invoice_super_desc"),
-            payload="subscribe_super",
-            provider_token="",
-            currency="XTR",
-            prices=[LabeledPrice(label=get_text(user, "invoice_super_label"), amount=450)]
-        )
-    except Exception as e:
-        await call.message.answer(f"⚠️ Ошибка: {e}")
-    await call.answer()
 
-
-@dp.callback_query(lambda c: c.data == "upgrade_to_super")
-async def upgrade_to_super(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    if get_subscription_level(user) != "pro":
-        await call.answer(get_text(user, "pro_only_alert"), show_alert=True)
+    blocked = payment_blocked_reason(user, payload)
+    if blocked:
+        await call.answer(blocked, show_alert=True)
         return
-    try:
-        await bot.send_invoice(
-            chat_id=call.message.chat.id,
-            title=get_text(user, "invoice_upgrade_title"),
-            description=get_text(user, "invoice_upgrade_desc"),
-            payload="upgrade_to_super",
-            provider_token="",
-            currency="XTR",
-            prices=[LabeledPrice(label=get_text(user, "invoice_upgrade_label"), amount=245)]
-        )
-    except Exception as e:
-        await call.message.answer(f"⚠️ Ошибка: {e}")
-    await call.answer()
 
-
-@dp.callback_query(lambda c: c.data.startswith("pack_"))
-async def buy_pack(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    if has_active_subscription(user):
-        await call.answer(get_text(user, "packs_blocked_active_sub"), show_alert=True)
-        return
-    period = call.data.split("_", 1)[1]
-    pack_map = {"30": 30, "100": 100, "300": 300}
-    price_map = {"30": 30, "100": 80, "300": 200}
-    n = pack_map[period]
-    price = price_map[period]
-    try:
-        await bot.send_invoice(
-            chat_id=call.message.chat.id,
-            title=get_text(user, "invoice_pack_title", n=n),
-            description=get_text(user, "invoice_pack_desc", n=n, price=price),
-            payload=f"pack_{period}",
-            provider_token="",
-            currency="XTR",
-            prices=[LabeledPrice(label=get_text(user, "invoice_pack_label", n=n), amount=price)]
-        )
-    except Exception as e:
-        await call.message.answer(f"⚠️ Ошибка: {e}")
+    await start_payment(call, user, method, payload)
     await call.answer()
 
 
@@ -1988,41 +2260,7 @@ async def pre_checkout(query: types.PreCheckoutQuery):
 @dp.message(lambda m: m.successful_payment)
 async def payment_success(message: types.Message):
     user = get_user(message.from_user.id)
-    payload = message.successful_payment.invoice_payload
-    user["has_purchased"] = True
-
-    if payload.startswith("pack_"):
-        period = payload.split("_", 1)[1]
-        pack_map = {"30": 30, "100": 100, "300": 300}
-        user["purchased_messages"] += pack_map[period]
-        save_data(user_data)
-        await message.answer(get_text(user, "payment_pack_success", n=pack_map[period]))
-    elif payload == "subscribe_pro":
-        user["subscription"]["active"] = True
-        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
-        user["subscription"]["level"] = "pro"
-        user["daily_messages"] = 50
-        user["last_daily_reset"] = datetime.now().date().isoformat()
-        save_data(user_data)
-        await message.answer(get_text(user, "payment_pro_success"))
-    elif payload == "subscribe_super":
-        user["subscription"]["active"] = True
-        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
-        user["subscription"]["level"] = "super_pro"
-        user["daily_messages"] = 100
-        user["last_daily_reset"] = datetime.now().date().isoformat()
-        save_data(user_data)
-        await message.answer(get_text(user, "payment_super_success"))
-    elif payload == "upgrade_to_super":
-        if has_active_subscription(user) and get_subscription_level(user) == "pro":
-            old_expiry = user["subscription"]["expires_at"]
-            user["subscription"]["level"] = "super_pro"
-            user["daily_messages"] = 100
-            save_data(user_data)
-            expiry_str = datetime.fromisoformat(old_expiry).strftime('%d.%m.%Y %H:%M')
-            await message.answer(get_text(user, "payment_upgrade_success", date=expiry_str))
-    elif payload == "spin_paid_20":
-        await spin_result(message, user, free=False)
+    await grant_product(user, message.successful_payment.invoice_payload, message.chat.id)
 
 
 # ============================================================
@@ -2421,9 +2659,11 @@ async def main():
     print("🧠 Модель: deepseek/deepseek-chat")
     print(f"💾 Данные сохраняются в {os.path.abspath(DATA_FILE)}")
     print(f"👥 Загружено профилей: {len(user_data)}")
+    print(f"💳 Способы оплаты: {', '.join(available_payment_methods())}")
     print("✅ БОТ ГОТОВ К РАБОТЕ!")
 
     asyncio.create_task(check_notifications())
+    asyncio.create_task(check_pending_payments())
     await dp.start_polling(bot)
 
 
