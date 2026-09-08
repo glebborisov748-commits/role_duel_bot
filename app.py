@@ -623,7 +623,7 @@ INTIM_MODEL = os.getenv("INTIM_MODEL", AI_MODEL)
 
 PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh4eWJ2Zzg0bTVlbWE2ZzFicHlsMXNibXp3dXdsayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GGSbxfzvec3PYZbFOM/giphy.gif"
 SUPER_PRO_GIF_URL = "https://media.giphy.com/media/DbHZXBo5WFPZX7QpXj/giphy.gif"
-MAIN_MENU_IMAGE_URL = "https://i.ibb.co/k25JyTXD/IMG-2584.jpg"
+MAIN_MENU_IMAGE_URL = "https://i.ibb.co/xSDWKM52/image.jpg"
 
 ADMIN_IDS = [7287815074]
 maintenance_mode = False
