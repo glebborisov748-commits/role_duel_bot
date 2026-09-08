@@ -26,19 +26,19 @@ TEXTS = {
         "main_menu": "📋 Главное меню",
         "my_profile": "👤 Мой профиль",
         "spin_wheel": "🎰 Колесо фортуны",
-        "our_channel": "🔵 Наш канал",
+        "our_channel": "📢 Наш канал",
         "edit": "✏️ Редактировать",
-        "change_character": "🔵 Сменить персонажа",
+        "change_character": "🔄 Сменить персонажа",
         "invite_friend": "👥 Пригласить друга",
         "create_character": "🎭 Создать своего персонажа",
         "buy_packs": "📦 Купить пакеты",
         "subscribe": "👑 Оформить подписку",
-        "back": "🔴 Главное меню",
-        "back_to_profile": "🔴 Назад",
+        "back": "🔙 Главное меню",
+        "back_to_profile": "🔙 Назад",
         "accept": "✅ Мне есть 18 лет",
         "decline": "❌ Мне нет 18 лет",
-        "agree": "🟢 Принимаю",
-        "disagree": "🔴 Не принимаю",
+        "agree": "✅ Принимаю",
+        "disagree": "❌ Не принимаю",
         "open_agreement": "📜 Открыть соглашение",
         "realism": "🌍 Реализм",
         "anime": "🎌 Аниме",
@@ -46,7 +46,7 @@ TEXTS = {
         "i_female": "👩 Я девушка",
         "scene_phone": "📱 Переписка в телефоне",
         "scene_live": "👫 Реальная встреча",
-        "channel": "🔵 Перейти в канал",
+        "channel": "📢 Перейти в канал",
         "free": "🎁 Бесплатно (1/день)",
         "tomorrow": "⏳ Завтра",
         "spin_paid": "💎 Крутить за 20⭐",
@@ -212,19 +212,19 @@ TEXTS = {
         "main_menu": "📋 Main menu",
         "my_profile": "👤 My profile",
         "spin_wheel": "🎰 Spin wheel",
-        "our_channel": "🔵 Our channel",
+        "our_channel": "📢 Our channel",
         "edit": "✏️ Edit",
-        "change_character": "🔵 Change character",
+        "change_character": "🔄 Change character",
         "invite_friend": "👥 Invite friend",
         "create_character": "🎭 Create your own character",
         "buy_packs": "📦 Buy packs",
         "subscribe": "👑 Subscribe",
-        "back": "🔴 Main menu",
-        "back_to_profile": "🔴 Back",
+        "back": "🔙 Main menu",
+        "back_to_profile": "🔙 Back",
         "accept": "✅ I am 18+",
         "decline": "❌ I am under 18",
-        "agree": "🟢 Accept",
-        "disagree": "🔴 Decline",
+        "agree": "✅ Accept",
+        "disagree": "❌ Decline",
         "open_agreement": "📜 Open agreement",
         "realism": "🌍 Realism",
         "anime": "🎌 Anime",
@@ -232,7 +232,7 @@ TEXTS = {
         "i_female": "👩 I'm female",
         "scene_phone": "📱 Phone chat",
         "scene_live": "👫 Real meeting",
-        "channel": "🔵 Go to channel",
+        "channel": "📢 Go to channel",
         "free": "🎁 Free (1 per day)",
         "tomorrow": "⏳ Tomorrow",
         "spin_paid": "💎 Spin for 20⭐",
@@ -398,19 +398,19 @@ TEXTS = {
         "main_menu": "📋 Hauptmenü",
         "my_profile": "👤 Mein Profil",
         "spin_wheel": "🎰 Glücksrad",
-        "our_channel": "🔵 Unser Kanal",
+        "our_channel": "📢 Unser Kanal",
         "edit": "✏️ Bearbeiten",
-        "change_character": "🔵 Charakter wechseln",
+        "change_character": "🔄 Charakter wechseln",
         "invite_friend": "👥 Freund einladen",
         "create_character": "🎭 Eigenen Charakter erstellen",
         "buy_packs": "📦 Pakete kaufen",
         "subscribe": "👑 Abo abschließen",
-        "back": "🔴 Hauptmenü",
-        "back_to_profile": "🔴 Zurück",
+        "back": "🔙 Hauptmenü",
+        "back_to_profile": "🔙 Zurück",
         "accept": "✅ Ich bin 18+",
         "decline": "❌ Ich bin unter 18",
-        "agree": "🟢 Akzeptieren",
-        "disagree": "🔴 Ablehnen",
+        "agree": "✅ Akzeptieren",
+        "disagree": "❌ Ablehnen",
         "open_agreement": "📜 Vereinbarung öffnen",
         "realism": "🌍 Realismus",
         "anime": "🎌 Anime",
@@ -418,7 +418,7 @@ TEXTS = {
         "i_female": "👩 Ich bin eine Frau",
         "scene_phone": "📱 Chat am Handy",
         "scene_live": "👫 Echtes Treffen",
-        "channel": "🔵 Zum Kanal",
+        "channel": "📢 Zum Kanal",
         "free": "🎁 Gratis (1 pro Tag)",
         "tomorrow": "⏳ Morgen",
         "spin_paid": "💎 Für 20⭐ drehen",
@@ -1318,8 +1318,8 @@ def get_lang_kb():
 
 def get_age_kb(user):
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "accept"), callback_data="age_yes")],
-        [InlineKeyboardButton(text=get_text(user, "decline"), callback_data="age_no")]
+        [InlineKeyboardButton(text=get_text(user, "accept"), callback_data="age_yes", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "decline"), callback_data="age_no", style="danger")]
     ])
 
 
@@ -1334,10 +1334,10 @@ def get_agreement_kb(user):
     lang = user.get("lang", "ru")
     url = AGREEMENT_URLS.get(lang, AGREEMENT_URLS["ru"])
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "open_agreement"), url=url)],
+        [InlineKeyboardButton(text=get_text(user, "open_agreement"), url=url, style="primary")],
         [
-            InlineKeyboardButton(text=get_text(user, "agree"), callback_data="agreement_accept"),
-            InlineKeyboardButton(text=get_text(user, "disagree"), callback_data="agreement_decline"),
+            InlineKeyboardButton(text=get_text(user, "agree"), callback_data="agreement_accept", style="success"),
+            InlineKeyboardButton(text=get_text(user, "disagree"), callback_data="agreement_decline", style="danger"),
         ],
     ])
 
@@ -1376,7 +1376,7 @@ def get_style_kb(user):
 
 def get_channel_kb(user):
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "channel"), url="https://t.me/duel_dev_channel")]
+        [InlineKeyboardButton(text=get_text(user, "channel"), url="https://t.me/duel_dev_channel", style="primary")]
     ])
 
 
@@ -1384,7 +1384,7 @@ def get_full_kb(user):
     return ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text=get_text(user, "main_menu")), KeyboardButton(text=get_text(user, "my_profile"))],
-            [KeyboardButton(text=get_text(user, "spin_wheel")), KeyboardButton(text=get_text(user, "our_channel"))],
+            [KeyboardButton(text=get_text(user, "spin_wheel")), KeyboardButton(text=get_text(user, "our_channel"), style="primary")],
             [KeyboardButton(text=get_text(user, "edit"))]
         ],
         resize_keyboard=True
@@ -1393,7 +1393,7 @@ def get_full_kb(user):
 
 def get_main_menu_keyboard(user):
     buttons = [
-        [InlineKeyboardButton(text=get_text(user, "change_character"), callback_data="main_change")],
+        [InlineKeyboardButton(text=get_text(user, "change_character"), callback_data="main_change", style="primary")],
         [InlineKeyboardButton(text=get_text(user, "invite_friend"), callback_data="referral_menu")]
     ]
     if get_subscription_level(user) == "super_pro":
@@ -1405,10 +1405,10 @@ def get_main_menu_keyboard(user):
 
 def get_profile_keyboard(user):
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "buy_packs"), callback_data="profile_packs")],
-        [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs")],
-        [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene")],
-        [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back")],
+        [InlineKeyboardButton(text=get_text(user, "buy_packs"), callback_data="profile_packs", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")],
     ])
 
 
@@ -1906,10 +1906,11 @@ async def spin_button_handler(message: types.Message):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
             text=get_text(user, "free") if has_free else get_text(user, "tomorrow"),
-            callback_data="spin_free" if has_free else "spin_no"
+            callback_data="spin_free" if has_free else "spin_no",
+            style="success" if has_free else None
         )],
-        [InlineKeyboardButton(text=get_text(user, "spin_paid"), callback_data="spin_paid")],
-        [InlineKeyboardButton(text=get_text(user, "back"), callback_data="spin_back")]
+        [InlineKeyboardButton(text=get_text(user, "spin_paid"), callback_data="spin_paid", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "back"), callback_data="spin_back", style="danger")]
     ])
 
     await message.answer(
@@ -2028,8 +2029,8 @@ async def spin_result(chat_id, user, free=False):
     save_data(user_data)
 
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "spin_more"), callback_data="spin_paid")],
-        [InlineKeyboardButton(text=get_text(user, "back"), callback_data="spin_back")]
+        [InlineKeyboardButton(text=get_text(user, "spin_more"), callback_data="spin_paid", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "back"), callback_data="spin_back", style="danger")]
     ])
 
     mode_text = get_text(user, "spin_mode_free" if free else "spin_mode_paid")
@@ -2071,10 +2072,10 @@ async def profile_subs(call: types.CallbackQuery):
         await call.answer(get_text(user, "need_character_alert"), show_alert=True)
         return
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "subs_btn_pro"), callback_data="buy:subscribe_pro")],
-        [InlineKeyboardButton(text=get_text(user, "subs_btn_super"), callback_data="buy:subscribe_super")],
-        [InlineKeyboardButton(text=get_text(user, "subs_btn_upgrade"), callback_data="buy:upgrade_to_super")],
-        [InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile")]
+        [InlineKeyboardButton(text=get_text(user, "subs_btn_pro"), callback_data="buy:subscribe_pro", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "subs_btn_super"), callback_data="buy:subscribe_super", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "subs_btn_upgrade"), callback_data="buy:upgrade_to_super", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")]
     ])
     text = get_text(user, "subs_title") + "\n\n" + get_text(user, "subs_body")
     await call.message.answer(text, reply_markup=keyboard)
@@ -2090,10 +2091,10 @@ async def profile_packs(call: types.CallbackQuery):
         await call.answer(get_text(user, "packs_blocked_active_sub"), show_alert=True)
         return
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=30, price=30), callback_data="buy:pack_30")],
-        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=100, price=80), callback_data="buy:pack_100")],
-        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=300, price=200), callback_data="buy:pack_300")],
-        [InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile")]
+        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=30, price=30), callback_data="buy:pack_30", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=100, price=80), callback_data="buy:pack_100", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=300, price=200), callback_data="buy:pack_300", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")]
     ])
     await call.message.answer(get_text(user, "packs_title"), reply_markup=keyboard, parse_mode="Markdown")
     await call.answer()
@@ -2395,7 +2396,7 @@ async def start_payment(call: types.CallbackQuery, user, method, payload):
 
     add_pending_payment(user, method, invoice_id, payload)
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "pay_open_invoice"), url=url)]
+        [InlineKeyboardButton(text=get_text(user, "pay_open_invoice"), url=url, style="success")]
     ])
     await call.message.answer(f"{title}\n\n{get_text(user, 'pay_invoice_ready')}", reply_markup=keyboard)
 
@@ -2407,9 +2408,9 @@ def get_payment_methods_kb(user, payload):
         "crypto": get_text(user, "pay_crypto", amount=prices["usd"]),
         "lava": get_text(user, "pay_lava", amount=prices["rub"]),
     }
-    rows = [[InlineKeyboardButton(text=labels[method], callback_data=f"pay:{method}:{payload}")]
+    rows = [[InlineKeyboardButton(text=labels[method], callback_data=f"pay:{method}:{payload}", style="success")]
             for method in available_payment_methods()]
-    rows.append([InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile")])
+    rows.append([InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -2597,7 +2598,7 @@ def get_intim_types_kb(user):
                                     callback_data=f"intim_type_{key}")
                for key in INTIM_SCENES]
     rows = [buttons[i:i + 2] for i in range(0, len(buttons), 2)]
-    rows.append([InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back")])
+    rows.append([InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -2611,8 +2612,8 @@ def get_intim_locations_kb(user, scene_type):
 
 def get_intim_buy_kb(user):
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene")],
-        [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back")],
+        [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")],
     ])
 
 
@@ -2914,8 +2915,8 @@ async def handle_message(message: types.Message):
     available = get_available_messages(user)
     if available <= 0:
         action_buttons = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs")],
-            [InlineKeyboardButton(text=get_text(user, "buy_packs"), callback_data="profile_packs")]
+            [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")],
+            [InlineKeyboardButton(text=get_text(user, "buy_packs"), callback_data="profile_packs", style="success")]
         ])
         await message.answer(get_text(user, "no_messages"), reply_markup=action_buttons)
         return
