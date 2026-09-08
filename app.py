@@ -135,7 +135,7 @@ TEXTS = {
         "spin_win_messages": "📨 **+{value} сообщений**",
         "spin_win_xp": "⭐ **+{value} XP**",
         "spin_win_pro": "🎁 **PRO подписка на 5 дней!**\n🔥 50 сообщений/день, стили Страстный и Магнетический!",
-        "spin_win_super": "✨ **SUPER PRO на 3 дня!**\n👑 100 сообщений/день, все стили!",
+        "spin_win_super": "✨ **SUPER PRO на 3 дня!**\n👑 100 сообщений/день, все стили, включая 18+!",
         "spin_result_header": "🎰 **Результат!**\n\nТы выиграл: {result}\n{mode}",
         "spin_mode_free": "🎁 Бесплатное вращение",
         "spin_mode_paid": "💎 Платное вращение",
@@ -145,7 +145,7 @@ TEXTS = {
         "pro_only_alert": "❌ Только для PRO.",
         "packs_blocked_active_sub": "❌ При активной подписке покупка пакетов недоступна.",
         "subs_title": "👑 Подписки Role Duel",
-        "subs_body": "🔥 PRO (250⭐/мес)\n• 50 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• 100 сообщений в день\n• Все стили + эксклюзивные 😤 Грубый и 😏 Соблазн\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_body": "🔥 PRO (250⭐/мес)\n• 50 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• 100 сообщений в день\n• Все стили + эксклюзивные 😤 Грубый 18+, 😏 Соблазн 18+ и 💋 Интим 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐/мес",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐/мес",
         "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (245⭐)",
@@ -155,7 +155,7 @@ TEXTS = {
         "invoice_pro_desc": "50 сообщений/день, память 60 сообщений, стили Страстный и Магнетический.",
         "invoice_pro_label": "PRO месяц",
         "invoice_super_title": "SUPER PRO подписка на месяц",
-        "invoice_super_desc": "100 сообщений/день, память 100 сообщений, все стили.",
+        "invoice_super_desc": "100 сообщений/день, память 100 сообщений, все стили, включая 18+.",
         "invoice_super_label": "SUPER PRO месяц",
         "invoice_upgrade_title": "Апгрейд до SUPER PRO",
         "invoice_upgrade_desc": "Повысьте PRO до SUPER PRO на оставшийся срок. 245⭐.",
@@ -194,7 +194,7 @@ TEXTS = {
         "scene_phone": "📱 Phone chat",
         "scene_live": "👫 Real meeting",
         "channel": "📢 Go to channel",
-        "free": "🎁 Free (1/day)",
+        "free": "🎁 Free (1 per day)",
         "tomorrow": "⏳ Tomorrow",
         "spin_paid": "💎 Spin for 20⭐",
         "spin_more": "💎 Spin again for 20⭐",
@@ -262,8 +262,8 @@ TEXTS = {
         "xp_level_label": "Level {level}/10",
         "xp_bonus_pro": "XP bonus: x1.8",
         "xp_bonus_super": "XP bonus: x2.5",
-        "profile_sub_pro": "🔥 PRO active (50 messages/day, 60-message memory)",
-        "profile_sub_super": "✨ SUPER PRO active (100 messages/day, 100-message memory)",
+        "profile_sub_pro": "🔥 PRO active (50 messages per day, 60-message memory)",
+        "profile_sub_super": "✨ SUPER PRO active (100 messages per day, 100-message memory)",
         "profile_sub_inactive": "❌ inactive (30-message memory)",
         "profile_sub_label": "Subscription: {status}",
         "profile_expiry": "Subscription ends: {date}",
@@ -284,8 +284,8 @@ TEXTS = {
         "spin_almost": "🎰 Almost got: {name}",
         "spin_win_messages": "📨 **+{value} messages**",
         "spin_win_xp": "⭐ **+{value} XP**",
-        "spin_win_pro": "🎁 **PRO subscription for 5 days!**\n🔥 50 messages/day, Passionate and Magnetic styles!",
-        "spin_win_super": "✨ **SUPER PRO for 3 days!**\n👑 100 messages/day, all styles!",
+        "spin_win_pro": "🎁 **PRO subscription for 5 days!**\n🔥 50 messages per day, Passionate and Magnetic styles!",
+        "spin_win_super": "✨ **SUPER PRO for 3 days!**\n👑 100 messages per day, all styles including 18+!",
         "spin_result_header": "🎰 **Result!**\n\nYou won: {result}\n{mode}",
         "spin_mode_free": "🎁 Free spin",
         "spin_mode_paid": "💎 Paid spin",
@@ -295,17 +295,17 @@ TEXTS = {
         "pro_only_alert": "❌ PRO only.",
         "packs_blocked_active_sub": "❌ Packs can't be bought while a subscription is active.",
         "subs_title": "👑 Role Duel Subscriptions",
-        "subs_body": "🔥 PRO (250⭐/mo)\n• 50 messages a day\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n\n✨ SUPER PRO ✨ (450⭐/mo)\n• 100 messages a day\n• All styles + exclusive 😤 Rough and 😏 Temptation\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
-        "subs_btn_pro": "🔥 PRO — 250 ⭐/mo",
-        "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐/mo",
+        "subs_body": "🔥 PRO (250⭐ per month)\n• 50 messages a day\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• 100 messages a day\n• All styles + exclusive 😤 Rough 18+, 😏 Temptation 18+ and 💋 Intimate 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_btn_pro": "🔥 PRO — 250 ⭐ per month",
+        "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ per month",
         "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (245⭐)",
         "packs_title": "📦 **Buy a message pack**\n\nChoose a pack:",
         "pack_btn": "{n} messages — {price} ⭐",
         "invoice_pro_title": "PRO subscription for a month",
-        "invoice_pro_desc": "50 messages/day, 60-message memory, Passionate and Magnetic styles.",
+        "invoice_pro_desc": "50 messages per day, 60-message memory, Passionate and Magnetic styles.",
         "invoice_pro_label": "PRO month",
         "invoice_super_title": "SUPER PRO subscription for a month",
-        "invoice_super_desc": "100 messages/day, 100-message memory, all styles.",
+        "invoice_super_desc": "100 messages per day, 100-message memory, all styles including 18+.",
         "invoice_super_label": "SUPER PRO month",
         "invoice_upgrade_title": "Upgrade to SUPER PRO",
         "invoice_upgrade_desc": "Upgrade PRO to SUPER PRO for the remaining time. 245⭐.",
@@ -318,10 +318,160 @@ TEXTS = {
         "payment_super_success": "✅ SUPER PRO subscription activated for a month!",
         "payment_upgrade_success": "✅ Upgrade to SUPER PRO done until {date}!",
         "agreement": "📜 **TERMS OF SERVICE**\n\nThis Agreement governs the relationship between the Administration (\"We\") and the User (\"You\") when using the Role Duel service (\"Service\").\n\nBy using the Service, you confirm that you have read and accept the terms of this Agreement unconditionally.\n\n---\n\n**1. AGE RESTRICTION**\n1.1. The Service is intended exclusively for persons aged 18 and over.\n1.2. Use of the Service by persons under 18 is strictly prohibited.\n\n**2. SERVICE DESCRIPTION**\n2.1. The Service provides access to virtual companions based on artificial intelligence.\n2.2. All content is generated automatically and does not reflect the Administration's opinion.\n2.3. The Service is not a medical, psychological or consulting tool.\n\n**3. USER RESPONSIBILITY**\n3.1. You are fully responsible for all actions performed using your account.\n3.2. It is prohibited to use the Service to distribute extremist materials, insults, threats, fraud, malware, or anything violating applicable law.\n\n**4. PRIVACY**\n4.1. We collect: Telegram ID, chat history, purchase and subscription data.\n4.2. We do NOT share personal data with third parties, except as required by law.\n\n**5. PAID SERVICES**\n5.1. The Service provides paid features (message packs, subscriptions, spin wheel).\n5.2. Subscriptions are **NOT renewed automatically**.\n5.3. Refunds are not provided except in case of a technical error by the Service.\n\n**6. DISCLAIMER**\nThe Service is provided «as is» with no uptime guarantees.\n\n**7. CHANGES TO TERMS**\nThe Administration may change this Agreement at any time; continued use means acceptance of the new version.\n\n**8. CONTACT**\nAll questions are handled through Telegram support.\n\n---\n\n✅ By clicking «Accept» below, you confirm that you have read all the items listed above and agree to them.\n\n⚠️ If you do not agree with this Agreement, stop using the Service immediately."
+    },
+    "de": {
+        "main_menu": "📋 Hauptmenü",
+        "my_profile": "👤 Mein Profil",
+        "spin_wheel": "🎰 Glücksrad",
+        "our_channel": "📢 Unser Kanal",
+        "edit": "✏️ Bearbeiten",
+        "change_character": "🔄 Charakter wechseln",
+        "invite_friend": "👥 Freund einladen",
+        "create_character": "🎭 Eigenen Charakter erstellen",
+        "buy_packs": "📦 Pakete kaufen",
+        "subscribe": "👑 Abo abschließen",
+        "back": "🔙 Hauptmenü",
+        "back_to_profile": "🔙 Zurück",
+        "accept": "✅ Ich bin 18+",
+        "decline": "❌ Ich bin unter 18",
+        "agree": "✅ Akzeptieren",
+        "disagree": "❌ Ablehnen",
+        "open_agreement": "📜 Vereinbarung öffnen",
+        "realism": "🌍 Realismus",
+        "anime": "🎌 Anime",
+        "i_male": "👨 Ich bin ein Mann",
+        "i_female": "👩 Ich bin eine Frau",
+        "scene_phone": "📱 Chat am Handy",
+        "scene_live": "👫 Echtes Treffen",
+        "channel": "📢 Zum Kanal",
+        "free": "🎁 Gratis (1 pro Tag)",
+        "tomorrow": "⏳ Morgen",
+        "spin_paid": "💎 Für 20⭐ drehen",
+        "spin_more": "💎 Nochmal für 20⭐ drehen",
+        "welcome": "👋 Willkommen!",
+        "age_confirm": "🔞 **ACHTUNG!**\nDieser Bot ist nur für Personen ab 18 Jahren.\nBestätige dein Alter:",
+        "age_ok": "✅ Alter bestätigt.",
+        "age_no": "🚫 Zugriff verweigert. Nur ab 18 Jahren.",
+        "agreement_intro": "📜 Bevor es weitergeht, lies bitte die Nutzungsvereinbarung und akzeptiere sie:",
+        "agreement_ok": "✅ Vereinbarung akzeptiert!",
+        "agreement_no": "❌ Ohne akzeptierte Vereinbarung funktioniert der Bot nicht.",
+        "choose_lang": "🌍 Sprache wählen / Choose language:",
+        "choose_gender": "👤 Wähle dein Geschlecht:",
+        "choose_world": "🌍 Wähle deine Welt:",
+        "choose_world_updated": "🌍 Welt aktualisiert! Wähle jetzt dein Geschlecht:",
+        "choose_world_first": "🌍 Welt gewählt! Wähle jetzt dein Geschlecht:",
+        "choose_style": "🎨 Wähle jetzt den Stil deines Charakters:",
+        "choose_style_updated": "🎨 Stil aktualisiert! Wähle jetzt eine Szene:",
+        "choose_scene": "🎬 Wähle jetzt eine Szene:\n\n📱 Chat am Handy — das klassische Schreiben.\n👫 Echtes Treffen — ein Gespräch von Angesicht zu Angesicht.",
+        "no_messages": "😔 Keine Nachrichten mehr übrig. Kaufe ein Paket oder ein Abo.",
+        "no_history": "❌ Noch nichts zum Bearbeiten — schreibe deinem Charakter zuerst eine Nachricht.",
+        "edit_prompt": "✏️ Schicke den neuen Text deiner letzten Nachricht — ich vergesse die alte und antworte neu.",
+        "edit_success": "✅ Nachricht ersetzt. Ich erstelle eine neue Antwort...",
+        "character_created": "✅ **Charakter erstellt!**\n\nDu sprichst jetzt mit:\n_{text}_\n\nZurück zum normalen Charakter — /reset_character",
+        "character_reset": "✅ Charakter zurückgesetzt.",
+        "character_create_prompt": "🎭 **Erstelle deinen eigenen Charakter!**\n\nBeschreibe eine beliebige Figur — aus Anime, Filmen, Spielen oder denk dir selbst eine aus.\nSchreibe Namen, Charakter, Aussehen, Herkunft und beliebige Details.\n\n📝 *Beispiel:*\n«Eine Elfe aus der Welt von The Witcher — weise, ruhig, mit langen silbernen Haaren. Sie liebt Sterne und lange Gespräche am Feuer.»\n\n✏️ Schreibe die Beschreibung jetzt — und ich merke sie mir!",
+        "spin_title": "🎰 **Glücksrad**",
+        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 10–50 Nachrichten\n• 100–250 XP\n• 🎁 PRO für 5 Tage\n• ✨ SUPER PRO für 3 Tage",
+        "spin_choose": "Wähle eine Option:",
+        "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",
+        "profile": "Abo: {status}\nNachrichten übrig: {messages}",
+        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+10 Nachrichten** für dich und **+5 gratis Nachrichten** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💌 Verdiente Nachrichten: **{earned}**",
+        "choose_lang_label": "🌍 Sprache wählen:",
+        "welcome_back_female": "Oh, du warst so lange weg! Ich habe dich schon vermisst 🥺💕",
+        "welcome_back_male": "Oh, du warst so lange weg! Ich habe dich schon vermisst 🥺💕",
+        "welcome_back_female_2": "Endlich! Ich dachte schon, du hättest mich vergessen... 😔",
+        "welcome_back_male_2": "Endlich! Ich dachte schon, du hättest mich vergessen... 😔",
+        "miss_you_female": [
+            "Ich vermisse dich... Wo steckst du? 😔 Schreib mir...",
+            "Hey, alles okay bei dir? 🥺 Ich habe mir schon Sorgen gemacht...",
+            "Hi! Wir haben lange nicht geredet... Erzähl, wie geht es dir 💕",
+        ],
+        "miss_you_male": [
+            "Ich vermisse dich... Wo steckst du? 😔 Schreib mir...",
+            "Hey, alles okay bei dir? 🥺 Ich habe mir schon Sorgen gemacht...",
+            "Hi! Wir haben lange nicht geredet... Erzähl, wie geht es dir 💕",
+        ],
+        "level_up": {
+            2: "🎉 Zwischen euch hat es gefunkt! Nähe-Level 2. Jetzt könnt ihr flirten.",
+            3: "💞 Ihr kommt euch näher! Level 3. Jetzt könnt ihr euch umarmen und Geheimnisse teilen.",
+            4: "🔥 Die Spannung steigt! Level 4.",
+            5: "💋 Level 5! Ihr seid bereit für den ersten Kuss.",
+            6: "🌹 Level 6. Du bist verliebt! Jetzt könnt ihr offen über Gefühle sprechen.",
+            7: "💕 Level 7. Ihr steht euch sehr nahe.",
+            8: "❤️ Level 8! Ihr habt einander eure Gefühle gestanden. Jetzt seid ihr ein Paar.",
+            9: "✨ Level 9! Zwischen euch gibt es fast keine Geheimnisse mehr.",
+            10: "💖 Level 10! Echte seelische Verbundenheit.",
+        },
+        "level_down": "💔 Das Nähe-Level ist auf {level} gefallen.",
+        "menu_current_partner": "Aktueller Gesprächspartner: {gender} aus {world}",
+        "menu_style_line": "Stil: {style}",
+        "menu_messages_left": "Nachrichten übrig: {n}",
+        "menu_messages_out": " (aufgebraucht)",
+        "menu_free_messages": "Du hast gratis Nachrichten für den Start",
+        "menu_write_prompt": "💬 Schreibe deinem Charakter...\n✨ Oder wähle unten eine Aktion.",
+        "xp_level_label": "Level {level}/10",
+        "xp_bonus_pro": "XP-Bonus: x1.8",
+        "xp_bonus_super": "XP-Bonus: x2.5",
+        "profile_sub_pro": "🔥 PRO aktiv (50 Nachrichten pro Tag, Gedächtnis 60 Nachrichten)",
+        "profile_sub_super": "✨ SUPER PRO aktiv (100 Nachrichten pro Tag, Gedächtnis 100 Nachrichten)",
+        "profile_sub_inactive": "❌ inaktiv (Gedächtnis 30 Nachrichten)",
+        "profile_sub_label": "Abo: {status}",
+        "profile_expiry": "Abo endet am: {date}",
+        "profile_expiry_inactive": "Abo endet am: inaktiv",
+        "profile_messages_available": "Verfügbare Nachrichten: {n}",
+        "profile_styles_header": "Verfügbare Stile:",
+        "style_locked_alert": "🔒 Der Stil «{label}» ist im {tier}-Abo enthalten. Hol es dir im Bereich «Mein Profil».",
+        "style_changed": "✅ Stil geändert zu: {label}",
+        "gender_female": "Mädchen",
+        "gender_male": "Junge",
+        "world_name_realism": "der echten Welt",
+        "world_name_anime": "der Anime-Welt",
+        "spin_already": "⏳ Du hast heute schon gedreht! Morgen gibt es eine neue Gratisdrehung.",
+        "spin_tomorrow_alert": "⏳ Die Gratisdrehung gibt es morgen wieder!",
+        "spin_invoice_desc": "Bezahlte Drehung — 20⭐. Viel Glück!",
+        "spin_invoice_label": "Drehung",
+        "spin_rolling": "🎰 Es dreht sich...",
+        "spin_almost": "🎰 Fast gewonnen: {name}",
+        "spin_win_messages": "📨 **+{value} Nachrichten**",
+        "spin_win_xp": "⭐ **+{value} XP**",
+        "spin_win_pro": "🎁 **PRO-Abo für 5 Tage!**\n🔥 50 Nachrichten pro Tag, Stile Leidenschaftlich und Magnetisch!",
+        "spin_win_super": "✨ **SUPER PRO für 3 Tage!**\n👑 100 Nachrichten pro Tag, alle Stile inklusive 18+!",
+        "spin_result_header": "🎰 **Ergebnis!**\n\nDu hast gewonnen: {result}\n{mode}",
+        "spin_mode_free": "🎁 Gratisdrehung",
+        "spin_mode_paid": "💎 Bezahlte Drehung",
+        "switch_style_prompt": "🔄 **Wähle einen neuen Stil:**\n\nDer Gesprächsverlauf bleibt erhalten.",
+        "need_character_alert": "Erstelle zuerst deinen Charakter!",
+        "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
+        "pro_only_alert": "❌ Nur für PRO.",
+        "packs_blocked_active_sub": "❌ Mit einem aktiven Abo können keine Pakete gekauft werden.",
+        "subs_title": "👑 Role Duel Abos",
+        "subs_body": "🔥 PRO (250⭐ pro Monat)\n• 50 Nachrichten pro Tag\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• 100 Nachrichten pro Tag\n• Alle Stile + exklusiv 😤 Rau 18+, 😏 Verführung 18+ und 💋 Intim 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
+        "subs_btn_pro": "🔥 PRO — 250 ⭐ pro Monat",
+        "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ pro Monat",
+        "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO (245⭐)",
+        "packs_title": "📦 **Nachrichtenpaket kaufen**\n\nWähle ein Paket:",
+        "pack_btn": "{n} Nachrichten — {price} ⭐",
+        "invoice_pro_title": "PRO-Abo für einen Monat",
+        "invoice_pro_desc": "50 Nachrichten pro Tag, Gedächtnis 60 Nachrichten, Stile Leidenschaftlich und Magnetisch.",
+        "invoice_pro_label": "PRO Monat",
+        "invoice_super_title": "SUPER PRO-Abo für einen Monat",
+        "invoice_super_desc": "100 Nachrichten pro Tag, Gedächtnis 100 Nachrichten, alle Stile inklusive 18+.",
+        "invoice_super_label": "SUPER PRO Monat",
+        "invoice_upgrade_title": "Upgrade auf SUPER PRO",
+        "invoice_upgrade_desc": "Hebt PRO für die Restlaufzeit auf SUPER PRO an. 245⭐.",
+        "invoice_upgrade_label": "Upgrade",
+        "invoice_pack_title": "Paket mit {n} Nachrichten",
+        "invoice_pack_desc": "{n} Nachrichten für {price}⭐",
+        "invoice_pack_label": "{n} Nachr.",
+        "payment_pack_success": "✅ {n} Nachrichten gekauft!",
+        "payment_pro_success": "✅ PRO-Abo für einen Monat aktiviert!",
+        "payment_super_success": "✅ SUPER PRO-Abo für einen Monat aktiviert!",
+        "payment_upgrade_success": "✅ Upgrade auf SUPER PRO bis {date} erledigt!",
+        "agreement": "📜 **NUTZUNGSVEREINBARUNG**\n\nDiese Vereinbarung regelt das Verhältnis zwischen der Administration (nachfolgend «Wir») und dem Nutzer (nachfolgend «Du») bei der Nutzung des Dienstes Role Duel (nachfolgend «Dienst»).\n\nMit der Nutzung des Dienstes bestätigst du, dass du die Bedingungen dieser Vereinbarung gelesen hast und sie vorbehaltlos akzeptierst.\n\n---\n\n**1. ALTERSBESCHRÄNKUNG**\n1.1. Der Dienst ist ausschließlich für Personen ab 18 Jahren bestimmt.\n1.2. Die Nutzung durch Personen unter 18 Jahren ist strengstens untersagt.\n\n**2. BESCHREIBUNG DES DIENSTES**\n2.1. Der Dienst bietet Zugang zu virtuellen Gesprächspartnern auf Basis künstlicher Intelligenz.\n2.2. Alle Inhalte werden automatisch generiert und geben nicht die Meinung der Administration wieder.\n2.3. Der Dienst ist kein medizinisches, psychologisches oder beratendes Hilfsmittel.\n\n**3. VERANTWORTUNG DES NUTZERS**\n3.1. Du trägst die volle Verantwortung für alle Handlungen, die über dein Konto erfolgen.\n3.2. Es ist untersagt, den Dienst zur Verbreitung extremistischer Materialien, Beleidigungen, Drohungen, Verleumdung, Betrug, Schadsoftware oder für sonstige rechtswidrige Handlungen zu nutzen.\n\n**4. DATENSCHUTZ**\n4.1. Wir erheben: Telegram-ID, Chatverlauf, Kauf- und Abodaten.\n4.2. Wir geben personenbezogene Daten NICHT an Dritte weiter, außer wenn dies gesetzlich vorgeschrieben ist.\n\n**5. KOSTENPFLICHTIGE LEISTUNGEN**\n5.1. Der Dienst bietet kostenpflichtige Leistungen an (Nachrichtenpakete, Abos, Glücksrad).\n5.2. Abos verlängern sich **NICHT automatisch**.\n5.3. Eine Rückerstattung erfolgt nicht, außer bei einem technischen Fehler des Dienstes.\n\n**6. HAFTUNGSAUSSCHLUSS**\nDer Dienst wird «wie besehen» ohne Garantie für einen unterbrechungsfreien Betrieb bereitgestellt.\n\n**7. ÄNDERUNG DER BEDINGUNGEN**\nDie Administration kann diese Vereinbarung jederzeit ändern; die weitere Nutzung gilt als Zustimmung zur neuen Fassung.\n\n**8. KONTAKT**\nAlle Fragen werden über den Telegram-Support bearbeitet.\n\n---\n\n✅ Mit dem Klick auf «Akzeptieren» bestätigst du, dass du alle oben genannten Punkte gelesen hast und ihnen zustimmst.\n\n⚠️ Wenn du dieser Vereinbarung nicht zustimmst, beende die Nutzung des Dienstes sofort.",
     }
 }
 
-SUPPORTED_LANGS = ("ru", "en")
+SUPPORTED_LANGS = ("ru", "en", "de")
 
 
 def get_text(user, key, **kwargs):
@@ -334,10 +484,11 @@ def get_text(user, key, **kwargs):
 
 def is_button(text, key):
     """Сравнивает текст сообщения с подписью кнопки на любом из поддерживаемых языков.
-    Нужно, потому что клавиатуры теперь локализованы (ru/en), а не захардкожены на русском."""
+    Нужно, потому что клавиатуры локализованы, а не захардкожены на русском: пользователь
+    мог сменить язык, а на клавиатуре у него в этот момент ещё старые подписи."""
     if not text:
         return False
-    return text in (TEXTS["ru"][key], TEXTS["en"][key])
+    return any(text == TEXTS[lang][key] for lang in SUPPORTED_LANGS)
 
 
 # ============================================================
@@ -372,23 +523,81 @@ DATA_DIR = os.getenv("DATA_DIR", "data")
 DATA_FILE = os.path.join(DATA_DIR, "data.json")
 
 
+DATA_BACKUP_FILE = DATA_FILE + ".bak"
+
+_data_mtime = None  # время последней известной нам версии файла, см. sync_data()
+
+
+def _file_mtime():
+    try:
+        return os.path.getmtime(DATA_FILE)
+    except OSError:
+        return None
+
+
+def _read_json(path):
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
 def load_data():
-    if os.path.exists(DATA_FILE):
+    global _data_mtime
+    for path in (DATA_FILE, DATA_BACKUP_FILE):
+        if not os.path.exists(path):
+            continue
         try:
-            with open(DATA_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
+            data = _read_json(path)
         except (json.JSONDecodeError, ValueError):
-            logging.warning(f"Файл {DATA_FILE} повреждён, создаём новый")
-            return {}
+            logging.warning(f"Файл {path} повреждён, пробуем резервную копию")
+            continue
+        if path == DATA_BACKUP_FILE:
+            logging.warning("Основной файл не читается — данные восстановлены из .bak")
+        _data_mtime = _file_mtime()
+        return data
     return {}
 
 
 def save_data(data):
+    """Пишем через временный файл и os.replace: если процесс убьют посреди записи
+    (например, хостинг перезапускает контейнер при деплое), data.json останется
+    целым — раньше open(..., "w") сразу обнулял файл, и при неудачном моменте
+    вся база превращалась в пустой/битый JSON, то есть все регистрации слетали."""
+    global _data_mtime
     directory = os.path.dirname(DATA_FILE)
     if directory:
         os.makedirs(directory, exist_ok=True)
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
+    tmp_path = DATA_FILE + ".tmp"
+    with open(tmp_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+        f.flush()
+        os.fsync(f.fileno())
+    if os.path.exists(DATA_FILE):
+        try:
+            os.replace(DATA_FILE, DATA_BACKUP_FILE)
+        except OSError:
+            pass
+    os.replace(tmp_path, DATA_FILE)
+    _data_mtime = _file_mtime()
+
+
+def sync_data():
+    """Если файл изменился на диске не нашей записью — перечитываем его.
+    Такое бывает, когда рядом остался работать второй экземпляр бота (например,
+    старый контейнер не остановился после передеплоя): каждый процесс держит свой
+    снимок user_data и при сохранении затирает чужие изменения. Из-за этого,
+    в частности, уже выбранный язык мог "исчезнуть" на следующем шаге регистрации."""
+    mtime = _file_mtime()
+    if mtime is None or mtime == _data_mtime:
+        return
+    fresh = load_data()
+    for user_id, record in fresh.items():
+        current = user_data.get(user_id)
+        if isinstance(current, dict) and isinstance(record, dict):
+            # обновляем словарь на месте, чтобы ссылки внутри хендлеров остались валидными
+            current.clear()
+            current.update(record)
+        else:
+            user_data[user_id] = record
 
 
 user_data = load_data()
@@ -399,6 +608,7 @@ def get_free_limit():
 
 
 def get_user(user_id):
+    sync_data()
     user_id = str(user_id)
     if user_id not in user_data:
         user_data[user_id] = {
@@ -505,18 +715,21 @@ BASE_STYLES = {
     "warm": {
         "label": "Нежный",
         "label_en": "Gentle",
+        "label_de": "Sanft",
         "emoji": "🪶",
         "description": "Ты нежный, с мягким голосом. Ты умеешь слушать и поддерживать. Ты не торопишь события, ценишь искренность и доверие."
     },
     "daring": {
         "label": "Дерзкий",
         "label_en": "Bold",
+        "label_de": "Frech",
         "emoji": "🔥",
         "description": "Ты уверенный, прямолинейный, с искоркой в глазах. Ты любишь флиртовать и остроумно шутить, но всегда знаешь меру."
     },
     "shy": {
         "label": "Стеснительный",
         "label_en": "Shy",
+        "label_de": "Schüchtern",
         "emoji": "😊",
         "description": "Ты стеснительный, часто краснеешь, говоришь тихо и иногда запинаешься. Ты долго подбираешь слова, но всегда искренен."
     }
@@ -526,12 +739,14 @@ PRO_STYLES = {
     "passionate": {
         "label": "Страстный",
         "label_en": "Passionate",
+        "label_de": "Leidenschaftlich",
         "emoji": "❤️‍🔥",
         "description": "Ты страстный, эмоциональный, с огнём в глазах. Ты говоришь прямо, без стеснения, умеешь дразнить и создавать романтическое напряжение, оставаясь в рамках приличия."
     },
     "magnetic": {
         "label": "Магнетический",
         "label_en": "Magnetic",
+        "label_de": "Magnetisch",
         "emoji": "✨",
         "description": "Ты загадочный, притягательный, с лёгкой магией в каждом слове. Ты говоришь с интригой, оставляя пространство для фантазии, но не раскрываешься полностью."
     }
@@ -542,22 +757,37 @@ SUPER_PRO_STYLES = {
     "rude": {
         "label": "Грубый",
         "label_en": "Rough",
+        "label_de": "Rau",
+        "adult": True,
         "emoji": "😤",
         "description": "Ты грубоватый и прямолинейный, не стесняешься в выражениях и любишь подколоть. За внешней резкостью скрывается забота, но тебе легче съязвить, чем признаться в тёплых чувствах."
     },
     "seduction": {
         "label": "Соблазн",
         "label_en": "Temptation",
+        "label_de": "Verführung",
+        "adult": True,
         "emoji": "😏",
         "description": "Ты обольстительный и уверенный в своей привлекательности, знаешь силу полунамёков и взгляда искоса. Ты умеешь заставить собеседника нервничать от предвкушения, оставаясь при этом элегантным и никогда не переходя черту."
+    },
+    "intimate": {
+        "label": "Интим",
+        "label_en": "Intimate",
+        "label_de": "Intim",
+        "emoji": "💋",
+        "adult": True,
+        "description": "Ты раскованный и чувственный, между вами нет запретных тем. Ты открыто говоришь о влечении и не стесняешься близости, но всегда считываешь настрой собеседника и не давишь."
     }
 }
 
 STYLES = {**BASE_STYLES, **PRO_STYLES, **SUPER_PRO_STYLES}
 BASE_STYLE_KEYS = ["warm", "daring", "shy"]
 PRO_STYLE_KEYS = ["passionate", "magnetic"]
-SUPER_PRO_STYLE_KEYS = ["rude", "seduction"]
+SUPER_PRO_STYLE_KEYS = ["rude", "seduction", "intimate"]
 PREMIUM_STYLE_KEYS = PRO_STYLE_KEYS + SUPER_PRO_STYLE_KEYS
+# Стили с пометкой 18+: только для них снимается ограничение на откровенные сцены.
+ADULT_STYLE_KEYS = [key for key, style in STYLES.items() if style.get("adult")]
+ADULT_BADGE = "18+"
 XP_PER_LEVEL = 200
 
 
@@ -570,9 +800,15 @@ def is_style_unlocked(style_key, user):
 
 
 def style_display_label(style_key, user, with_emoji=True):
+    """with_emoji=True — вид для списков и кнопок (с эмодзи и пометкой 18+),
+    False — просто название для подстановки в предложение."""
     style = STYLES[style_key]
-    label = style["label_en"] if user.get("lang") == "en" else style["label"]
-    return f"{style['emoji']} {label}" if with_emoji else label
+    lang = user.get("lang", "ru")
+    label = style.get(f"label_{lang}", style["label"]) if lang != "ru" else style["label"]
+    if not with_emoji:
+        return label
+    badge = f" {ADULT_BADGE}" if style.get("adult") else ""
+    return f"{style['emoji']} {label}{badge}"
 
 LOCATIONS = {
     "кафе": ["кафе", "кофейн"],
@@ -760,13 +996,43 @@ def get_level_congratulation(user, level):
     return get_text(user, "level_up").get(level, "")
 
 
+SAFE_CONTENT_RULE = (
+    "**ЗАПРЕТ 18+:** Ты НИКОГДА не описываешь и не участвуешь в сексуальных сценах, "
+    "не используешь откровенную лексику. Романтика ограничивается объятиями, поцелуями и разговорами "
+    "о чувствах — без физической близости и её описаний. Если собеседник просит явный контент 18+, "
+    "ты мягко уходишь от темы и переводишь разговор на эмоциональную близость.\n"
+)
+
+# Действует только для стилей с пометкой 18+ (ADULT_STYLE_KEYS), которые доступны
+# после подтверждения возраста и принятия соглашения.
+ADULT_CONTENT_RULE = (
+    "**РЕЖИМ 18+:** Собеседник подтвердил, что ему есть 18 лет, и выбрал стиль с пометкой 18+. "
+    "Откровенные сцены между вами разрешены: ты можешь описывать интимную близость и говорить о желании "
+    "прямо, в тон происходящему.\n"
+    "**ГРАНИЦЫ, КОТОРЫЕ НЕЛЬЗЯ НАРУШАТЬ:** все участники сцены — совершеннолетние (18+); всё происходит "
+    "по обоюдному согласию; ты никогда не описываешь сцены с несовершеннолетними, насилием, принуждением "
+    "или животными — на такие просьбы ты отказываешь прямо и переводишь тему. Ты считываешь настрой "
+    "собеседника: если он сбавляет темп или меняет тему, ты следуешь за ним и не давишь.\n"
+)
+
+
+LANGUAGE_RULES = {
+    "ru": "**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на РУССКОМ языке.",
+    "en": "**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на АНГЛИЙСКОМ языке.",
+    "de": "**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на НЕМЕЦКОМ языке.",
+}
+
+
+def get_content_rule(style_key):
+    return ADULT_CONTENT_RULE if style_key in ADULT_STYLE_KEYS else SAFE_CONTENT_RULE
+
+
+def get_language_rule(user):
+    return LANGUAGE_RULES.get(user.get("lang", "ru"), LANGUAGE_RULES["ru"])
+
+
 def build_prompt(user):
-    no_explicit_rule = (
-        "**СТРОГИЙ ЗАПРЕТ 18+:** Ты НИКОГДА не описываешь и не участвуешь в сексуальных сценах, "
-        "не используешь откровенную лексику. Романтика ограничивается объятиями, поцелуями и разговорами "
-        "о чувствах — без физической близости и её описаний. Если собеседник просит явный контент 18+, "
-        "ты мягко уходишь от темы и переводишь разговор на эмоциональную близость.\n"
-    )
+    no_explicit_rule = get_content_rule(get_display_style(user))
 
     if user.get("custom_character"):
         return (
@@ -775,6 +1041,8 @@ def build_prompt(user):
             f"Ты НИКОГДА не спрашиваешь имя собеседника. Обращайся к собеседнику ТОЛЬКО на «ты». "
             f"Ты всегда отвечаешь как настоящий человек, с эмоциями, сомнениями и чувствами.\n"
             f"{no_explicit_rule}"
+            # своему персонажу тоже нужно указание языка, иначе модель отвечает наугад
+            f"\n{get_language_rule(user)}"
         )
 
     world_desc = WORLDS[user["world"]]
@@ -829,11 +1097,7 @@ def build_prompt(user):
         f"Правила уровня сближения:\n{intimacy_rule}\n"
     )
 
-    lang = user.get("lang", "ru")
-    if lang == "en":
-        prompt += "\n**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на АНГЛИЙСКОМ языке."
-    else:
-        prompt += "\n**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на РУССКОМ языке."
+    prompt += "\n" + get_language_rule(user)
 
     return prompt
 
@@ -841,10 +1105,13 @@ def build_prompt(user):
 # ============================================================
 #  КЛАВИАТУРЫ (локализованные по языку пользователя)
 # ============================================================
+LANG_BUTTONS = {"ru": "🇷🇺 Русский", "en": "🇬🇧 English", "de": "🇩🇪 Deutsch"}
+
+
 def get_lang_kb():
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🇷🇺 Русский", callback_data="lang_ru")],
-        [InlineKeyboardButton(text="🇬🇧 English", callback_data="lang_en")],
+        [InlineKeyboardButton(text=LANG_BUTTONS[lang], callback_data=f"lang_{lang}")]
+        for lang in SUPPORTED_LANGS
     ])
 
 
@@ -1477,21 +1744,22 @@ async def spin_back(call: types.CallbackQuery):
 
 
 SPIN_PRIZES = [
-    {"name": "😢 Ничего", "name_en": "😢 Nothing", "value": 0, "type": "nothing", "weight": 20},
-    {"name": "10 сообщений", "name_en": "10 messages", "value": 10, "type": "messages", "weight": 18},
-    {"name": "15 сообщений", "name_en": "15 messages", "value": 15, "type": "messages", "weight": 13},
-    {"name": "20 сообщений", "name_en": "20 messages", "value": 20, "type": "messages", "weight": 10},
-    {"name": "100 XP", "name_en": "100 XP", "value": 100, "type": "xp", "weight": 18},
-    {"name": "150 XP", "name_en": "150 XP", "value": 150, "type": "xp", "weight": 10},
-    {"name": "250 XP", "name_en": "250 XP", "value": 250, "type": "xp", "weight": 5},
-    {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "value": 5, "type": "subscription_pro", "weight": 1.5},
-    {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "value": 3, "type": "subscription_super", "weight": 0.5},
-    {"name": "🎉 50 сообщений (ДЖЕКПОТ!)", "name_en": "🎉 50 messages (JACKPOT!)", "value": 50, "type": "messages", "weight": 1},
+    {"name": "😢 Ничего", "name_en": "😢 Nothing", "name_de": "😢 Nichts", "value": 0, "type": "nothing", "weight": 20},
+    {"name": "10 сообщений", "name_en": "10 messages", "name_de": "10 Nachrichten", "value": 10, "type": "messages", "weight": 18},
+    {"name": "15 сообщений", "name_en": "15 messages", "name_de": "15 Nachrichten", "value": 15, "type": "messages", "weight": 13},
+    {"name": "20 сообщений", "name_en": "20 messages", "name_de": "20 Nachrichten", "value": 20, "type": "messages", "weight": 10},
+    {"name": "100 XP", "name_en": "100 XP", "name_de": "100 XP", "value": 100, "type": "xp", "weight": 18},
+    {"name": "150 XP", "name_en": "150 XP", "name_de": "150 XP", "value": 150, "type": "xp", "weight": 10},
+    {"name": "250 XP", "name_en": "250 XP", "name_de": "250 XP", "value": 250, "type": "xp", "weight": 5},
+    {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "name_de": "🎁 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 1.5},
+    {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.5},
+    {"name": "🎉 50 сообщений (ДЖЕКПОТ!)", "name_en": "🎉 50 messages (JACKPOT!)", "name_de": "🎉 50 Nachrichten (JACKPOT!)", "value": 50, "type": "messages", "weight": 1},
 ]
 
 
 def prize_name(prize, user):
-    return prize.get("name_en") if user.get("lang") == "en" else prize["name"]
+    lang = user.get("lang", "ru")
+    return prize.get(f"name_{lang}", prize["name"]) if lang != "ru" else prize["name"]
 
 
 async def spin_result(message: types.Message, user, free=False):
@@ -2151,7 +2419,8 @@ async def check_notifications():
 async def main():
     print("🚀 Role Duel запущен!")
     print("🧠 Модель: deepseek/deepseek-chat")
-    print(f"💾 Данные сохраняются в {DATA_FILE}")
+    print(f"💾 Данные сохраняются в {os.path.abspath(DATA_FILE)}")
+    print(f"👥 Загружено профилей: {len(user_data)}")
     print("✅ БОТ ГОТОВ К РАБОТЕ!")
 
     asyncio.create_task(check_notifications())
