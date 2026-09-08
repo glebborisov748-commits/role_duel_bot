@@ -620,9 +620,70 @@ bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 logging.basicConfig(level=logging.INFO)
 
-AI_MODEL = os.getenv("AI_MODEL", "deepseek/deepseek-chat")
-# Модель для интим-сцен можно задать отдельно, например deepseek/deepseek-v4-pro
-INTIM_MODEL = os.getenv("INTIM_MODEL", AI_MODEL)
+# Пусто = не задано вручную -> модель ищется сама в каталоге provod.ai (см. resolve_model).
+# Явно заданное значение (переменная окружения AI_MODEL/INTIM_MODEL) всегда в приоритете.
+AI_MODEL = os.getenv("AI_MODEL", "")
+INTIM_MODEL = os.getenv("INTIM_MODEL", "")
+
+# Резерв на случай, если сам каталог /v1/models недоступен (сеть, ключ и т.п.) —
+# лучшее предположение по конвенции OpenRouter-подобных агрегаторов, а не проверенное
+# значение. Основной путь — живой поиск в каталоге ниже.
+FALLBACK_MODEL = "anthropic/claude-sonnet-5"
+
+_model_cache = {}
+
+
+def _fetch_model_catalog():
+    try:
+        return [m.id for m in client.models.list().data]
+    except Exception as e:
+        logging.warning(f"Не удалось получить список моделей provod.ai: {e}")
+        return []
+
+
+def _pick_claude_sonnet(model_ids):
+    candidates = [m for m in model_ids if "claude" in m.lower() and "sonnet" in m.lower()]
+    if not candidates:
+        return None
+    for m in candidates:
+        if re.search(r"sonnet[^a-z0-9]?5\b", m.lower()):
+            return m
+    return sorted(candidates)[-1]
+
+
+def resolve_model(cache_key):
+    """Модель для cache_key ("ai"/"intim"), если она не задана явно через переменную
+    окружения: ищем Claude Sonnet в живом каталоге provod.ai (тем же ключом, что уже
+    настроен) и запоминаем результат на время работы процесса."""
+    if cache_key in _model_cache:
+        return _model_cache[cache_key]
+    found = _pick_claude_sonnet(_fetch_model_catalog())
+    resolved = found or FALLBACK_MODEL
+    _model_cache[cache_key] = resolved
+    logging.info(f"Автоопределение модели ({cache_key}): {resolved}")
+    return resolved
+
+
+def invalidate_model_cache(cache_key):
+    _model_cache.pop(cache_key, None)
+
+
+def call_ai(explicit_model, cache_key, **kwargs):
+    """Обёртка над client.chat.completions.create с автоподбором модели и одной
+    повторной попыткой, если провайдер вдруг снял именно эту модель с каталога
+    (как уже случилось с deepseek/deepseek-chat) — чтобы бот не лежал молча,
+    пока кто-то не поправит переменную окружения вручную."""
+    model = explicit_model or resolve_model(cache_key)
+    try:
+        return client.chat.completions.create(model=model, **kwargs)
+    except Exception as e:
+        if not explicit_model and getattr(e, "status_code", None) == 404:
+            invalidate_model_cache(cache_key)
+            retry_model = resolve_model(cache_key)
+            if retry_model != model:
+                logging.warning(f"Модель {model} недоступна (404), пробуем {retry_model}")
+                return client.chat.completions.create(model=retry_model, **kwargs)
+        raise
 
 PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh4eWJ2Zzg0bTVlbWE2ZzFicHlsMXNibXp3dXdsayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GGSbxfzvec3PYZbFOM/giphy.gif"
 SUPER_PRO_GIF_URL = "https://media.giphy.com/media/DbHZXBo5WFPZX7QpXj/giphy.gif"
@@ -2741,8 +2802,8 @@ async def generate_intim_scene(call, user, scene_type, location="any", free=Fals
     status_msg = await bot.send_message(chat_id, get_text(user, "intim_generating"))
     typing_task = asyncio.create_task(_keep_typing(chat_id))
     try:
-        response = client.chat.completions.create(
-            model=INTIM_MODEL,
+        response = call_ai(
+            INTIM_MODEL, "intim",
             messages=[{"role": "system", "content": build_intim_prompt(user, scene_type, location)}]
                      + user["history"][-10:],
             temperature=0.95,
@@ -2812,8 +2873,8 @@ async def generate_and_reply(message: types.Message, user):
     system_prompt = build_prompt(user)
     typing_task = asyncio.create_task(_keep_typing(message.chat.id))
     try:
-        response = client.chat.completions.create(
-            model=AI_MODEL,
+        response = call_ai(
+            AI_MODEL, "ai",
             messages=[{"role": "system", "content": system_prompt}] + user["history"],
             temperature=0.9,
             max_tokens=1000
@@ -3069,7 +3130,7 @@ async def check_notifications():
 # ============================================================
 async def main():
     print("🚀 Role Duel запущен!")
-    print(f"🧠 Модель: {AI_MODEL} | интим-сцены: {INTIM_MODEL}")
+    print(f"🧠 Модель: {AI_MODEL or resolve_model('ai')} | интим-сцены: {INTIM_MODEL or resolve_model('intim')}")
     print(f"💾 Данные сохраняются в {os.path.abspath(DATA_FILE)}")
     print(f"👥 Загружено профилей: {len(user_data)}")
     print(f"💳 Способы оплаты: {', '.join(available_payment_methods())}")
