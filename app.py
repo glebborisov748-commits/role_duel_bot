@@ -150,6 +150,35 @@ TEXTS = {
         "pay_invoice_ready": "🧾 Счёт создан. Оплати по ссылке — доступ откроется автоматически в течение минуты после оплаты.",
         "pay_open_invoice": "💳 Перейти к оплате",
         "pay_error": "⚠️ Не удалось создать счёт. Попробуй другой способ оплаты.",
+        "super_pro_only": "❌ Только для SUPER PRO.",
+        "create_character_super_only": "🔒 Создание своего персонажа доступно только с подпиской SUPER PRO!",
+        "style_not_found": "❌ Стиль не найден",
+        "style_unavailable": "❌ Стиль недоступен",
+        "character_updated": "✅ Персонаж обновлён! История сохранена.",
+        "create_character_first": "Сначала создай персонажа через /start",
+        "finish_registration_first": "🔞 Сначала пройди регистрацию через /start",
+        "finish_registration_spin": "Сначала заверши регистрацию через /start.",
+        "channel_text": "📢 **Наш канал:**\nПодписывайся, чтобы быть в курсе новостей и обновлений!",
+        "ask_create_character": "👤 **Чтобы открыть профиль или купить что-то, сначала создай своего персонажа!**",
+        "ask_create_character_btn": "🌟 Создать персонажа",
+        "maintenance": "🛠️ **Бот на техобслуживании**\nСледите за новостями: @duel_dev_channel",
+        "subscription_expired_style": "⚠️ Твоя подписка закончилась, выбери бесплатный стиль:",
+        "quarrel": "💢 Ссора! Уровень близости снижен.",
+        "generation_error": "⚠️ Ошибка генерации ответа: {error}",
+        "intim_buy_btn": "🔥 Купить интим-сцену (45⭐)",
+        "intim_menu_title": "🔥 **Интим-сцена**\n\nДоступно сцен: {n}\nВыбери, что будет происходить:",
+        "intim_choose_location": "📍 Выбери место:",
+        "intim_none": "🔥 У тебя нет доступных интим-сцен.\n\nКупи сцену в профиле или испытай удачу в Колесе фортуны.",
+        "intim_generating": "🔥 Создаю сцену...",
+        "intim_free_level": "🎁 Бесплатная сцена за 8 уровень близости!",
+        "intim_free_sub": "🎁 Бесплатная сцена по подписке.",
+        "intim_left": "🔥 Осталось интим-сцен: {n}",
+        "intim_need_character": "Сначала создай персонажа через /start",
+        "invoice_intim_title": "Интим-сцена",
+        "invoice_intim_desc": "Одна интим-сцена с твоим персонажем.",
+        "invoice_intim_label": "Интим-сцена",
+        "payment_intim_success": "✅ Интим-сцена куплена! Открой её командой /intim",
+        "spin_win_intim": "🔥 **+{value} интим-сцены**",
         "need_character_alert": "Сначала создай персонажа!",
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
@@ -307,6 +336,35 @@ TEXTS = {
         "pay_invoice_ready": "🧾 Invoice created. Pay via the link — access opens automatically within a minute after payment.",
         "pay_open_invoice": "💳 Go to payment",
         "pay_error": "⚠️ Could not create the invoice. Please try another payment method.",
+        "super_pro_only": "❌ SUPER PRO only.",
+        "create_character_super_only": "🔒 Creating your own character requires a SUPER PRO subscription!",
+        "style_not_found": "❌ Style not found",
+        "style_unavailable": "❌ Style unavailable",
+        "character_updated": "✅ Character updated! Your history is kept.",
+        "create_character_first": "Create your character first via /start",
+        "finish_registration_first": "🔞 Please finish registration via /start first",
+        "finish_registration_spin": "Please finish registration via /start first.",
+        "channel_text": "📢 **Our channel:**\nSubscribe to keep up with news and updates!",
+        "ask_create_character": "👤 **To open your profile or buy anything, create your character first!**",
+        "ask_create_character_btn": "🌟 Create a character",
+        "maintenance": "🛠️ **The bot is under maintenance**\nFollow the news: @duel_dev_channel",
+        "subscription_expired_style": "⚠️ Your subscription has ended, pick a free style:",
+        "quarrel": "💢 A quarrel! Your closeness level dropped.",
+        "generation_error": "⚠️ Failed to generate a reply: {error}",
+        "intim_buy_btn": "🔥 Buy an intimate scene (45⭐)",
+        "intim_menu_title": "🔥 **Intimate scene**\n\nScenes available: {n}\nChoose what happens:",
+        "intim_choose_location": "📍 Choose a place:",
+        "intim_none": "🔥 You have no intimate scenes left.\n\nBuy one in your profile or try your luck on the spin wheel.",
+        "intim_generating": "🔥 Creating the scene...",
+        "intim_free_level": "🎁 A free scene for reaching closeness level 8!",
+        "intim_free_sub": "🎁 A free scene from your subscription.",
+        "intim_left": "🔥 Intimate scenes left: {n}",
+        "intim_need_character": "Create your character first via /start",
+        "invoice_intim_title": "Intimate scene",
+        "invoice_intim_desc": "One intimate scene with your character.",
+        "invoice_intim_label": "Intimate scene",
+        "payment_intim_success": "✅ Intimate scene purchased! Open it with /intim",
+        "spin_win_intim": "🔥 **+{value} intimate scene(s)**",
         "need_character_alert": "Create your character first!",
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
@@ -464,6 +522,35 @@ TEXTS = {
         "pay_invoice_ready": "🧾 Rechnung erstellt. Zahle über den Link — der Zugang wird innerhalb einer Minute nach der Zahlung automatisch freigeschaltet.",
         "pay_open_invoice": "💳 Zur Zahlung",
         "pay_error": "⚠️ Rechnung konnte nicht erstellt werden. Bitte versuche eine andere Zahlungsart.",
+        "super_pro_only": "❌ Nur für SUPER PRO.",
+        "create_character_super_only": "🔒 Einen eigenen Charakter zu erstellen ist nur mit SUPER PRO möglich!",
+        "style_not_found": "❌ Stil nicht gefunden",
+        "style_unavailable": "❌ Stil nicht verfügbar",
+        "character_updated": "✅ Charakter aktualisiert! Der Verlauf bleibt erhalten.",
+        "create_character_first": "Erstelle zuerst deinen Charakter über /start",
+        "finish_registration_first": "🔞 Schließe zuerst die Registrierung über /start ab",
+        "finish_registration_spin": "Schließe zuerst die Registrierung über /start ab.",
+        "channel_text": "📢 **Unser Kanal:**\nAbonniere ihn, um Neuigkeiten und Updates nicht zu verpassen!",
+        "ask_create_character": "👤 **Um dein Profil zu öffnen oder etwas zu kaufen, erstelle zuerst deinen Charakter!**",
+        "ask_create_character_btn": "🌟 Charakter erstellen",
+        "maintenance": "🛠️ **Der Bot wird gewartet**\nNeuigkeiten gibt es hier: @duel_dev_channel",
+        "subscription_expired_style": "⚠️ Dein Abo ist abgelaufen, wähle einen kostenlosen Stil:",
+        "quarrel": "💢 Streit! Dein Nähe-Level ist gesunken.",
+        "generation_error": "⚠️ Antwort konnte nicht erzeugt werden: {error}",
+        "intim_buy_btn": "🔥 Intim-Szene kaufen (45⭐)",
+        "intim_menu_title": "🔥 **Intim-Szene**\n\nVerfügbare Szenen: {n}\nWähle, was passiert:",
+        "intim_choose_location": "📍 Wähle einen Ort:",
+        "intim_none": "🔥 Du hast keine Intim-Szenen mehr.\n\nKaufe eine im Profil oder versuche dein Glück am Glücksrad.",
+        "intim_generating": "🔥 Die Szene entsteht...",
+        "intim_free_level": "🎁 Eine Gratis-Szene für Nähe-Level 8!",
+        "intim_free_sub": "🎁 Eine Gratis-Szene aus deinem Abo.",
+        "intim_left": "🔥 Verbleibende Intim-Szenen: {n}",
+        "intim_need_character": "Erstelle zuerst deinen Charakter über /start",
+        "invoice_intim_title": "Intim-Szene",
+        "invoice_intim_desc": "Eine Intim-Szene mit deinem Charakter.",
+        "invoice_intim_label": "Intim-Szene",
+        "payment_intim_success": "✅ Intim-Szene gekauft! Öffne sie mit /intim",
+        "spin_win_intim": "🔥 **+{value} Intim-Szene(n)**",
         "need_character_alert": "Erstelle zuerst deinen Charakter!",
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
@@ -529,6 +616,10 @@ client = OpenAI(api_key=PROVOD_API_KEY, base_url="https://api.provod.ai/v1")
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 logging.basicConfig(level=logging.INFO)
+
+AI_MODEL = os.getenv("AI_MODEL", "deepseek/deepseek-chat")
+# Модель для интим-сцен можно задать отдельно, например deepseek/deepseek-v4-pro
+INTIM_MODEL = os.getenv("INTIM_MODEL", AI_MODEL)
 
 PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh4eWJ2Zzg0bTVlbWE2ZzFicHlsMXNibXp3dXdsayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GGSbxfzvec3PYZbFOM/giphy.gif"
 SUPER_PRO_GIF_URL = "https://media.giphy.com/media/DbHZXBo5WFPZX7QpXj/giphy.gif"
@@ -664,6 +755,11 @@ def get_user(user_id):
             "referred_by": None,
             "referral_count": 0,
             "pending_payments": [],
+            "intim_scenes": 0,
+            "free_intim_scenes_pro": 0,
+            "free_intim_scenes_super": 0,
+            "intim_scene_unlocked": False,
+            "intim_scene_used": False,
             "last_activity": datetime.now().isoformat(),
             "last_reminder": None,
             "creating_character": False,
@@ -696,6 +792,11 @@ def get_user(user_id):
             "referred_by": None,
             "referral_count": 0,
             "pending_payments": [],
+            "intim_scenes": 0,
+            "free_intim_scenes_pro": 0,
+            "free_intim_scenes_super": 0,
+            "intim_scene_unlocked": False,
+            "intim_scene_used": False,
             "last_activity": None,
             "last_reminder": None,
             "creating_character": False,
@@ -858,6 +959,86 @@ REACTION_KEYWORDS = {
 
 
 # ============================================================
+#  ИНТИМ-СЦЕНЫ (18+, отдельная покупаемая механика)
+# ============================================================
+INTIM_SCENES = {
+    "bed": {"emoji": "\U0001f6cf", "ru": "В постели", "en": "In bed", "de": "Im Bett"},
+    "kiss": {"emoji": "\U0001f48b", "ru": "Страстный поцелуй", "en": "Passionate kiss", "de": "Leidenschaftlicher Kuss"},
+    "bdsm": {"emoji": "\u26d3", "ru": "БДСМ (лёгкое доминирование)", "en": "BDSM (light domination)", "de": "BDSM (leichte Dominanz)"},
+    "oral": {"emoji": "\U0001f445", "ru": "Минет", "en": "Oral", "de": "Oral"},
+    "undress": {"emoji": "\U0001f457", "ru": "Раздевание", "en": "Undressing", "de": "Entkleiden"},
+    "wall": {"emoji": "\U0001f9f1", "ru": "У стены", "en": "Against the wall", "de": "An der Wand"},
+    "shower": {"emoji": "\U0001f6bf", "ru": "В душе", "en": "In the shower", "de": "Unter der Dusche"},
+    "massage": {"emoji": "\U0001f486", "ru": "Массаж", "en": "Massage", "de": "Massage"},
+    "random": {"emoji": "\U0001f3b2", "ru": "Случайный", "en": "Random", "de": "Zufällig"},
+}
+
+INTIM_LOCATIONS = {
+    "any": {"emoji": "\U0001f3b2", "ru": "Не важно", "en": "Any place", "de": "Egal"},
+    "car": {"emoji": "\U0001f697", "ru": "В машине", "en": "In a car", "de": "Im Auto"},
+    "beach": {"emoji": "\U0001f3d6", "ru": "На пляже", "en": "On the beach", "de": "Am Strand"},
+    "elevator": {"emoji": "\U0001f3e8", "ru": "В лифте", "en": "In an elevator", "de": "Im Aufzug"},
+    "forest": {"emoji": "\U0001f332", "ru": "В лесу", "en": "In the forest", "de": "Im Wald"},
+}
+
+# Сколько бесплатных сцен в день даёт подписка (обновляются вместе с дневным лимитом сообщений).
+FREE_INTIM_SCENES = {"pro": 1, "super_pro": 3}
+INTIM_LEVEL_REWARD = 8  # на каком уровне близости открывается бесплатная сцена
+
+
+def intim_option_label(mapping, key, user):
+    option = mapping[key]
+    lang = user.get("lang", "ru")
+    label = option.get(lang, option["ru"])
+    return f"{option['emoji']} {label}"
+
+
+def free_intim_field(user):
+    """Поле с бесплатными сценами текущей подписки (или None, если подписки нет)."""
+    level = get_subscription_level(user)
+    if level == "super_pro":
+        return "free_intim_scenes_super"
+    if level == "pro":
+        return "free_intim_scenes_pro"
+    return None
+
+
+def intim_scenes_available(user):
+    total = user.get("intim_scenes", 0)
+    if user.get("intim_scene_unlocked") and not user.get("intim_scene_used"):
+        total += 1
+    field = free_intim_field(user)
+    if field:
+        _reset_daily_quota_if_needed(user)
+        total += user.get(field, 0)
+    return total
+
+
+def consume_intim_scene(user):
+    """Списывает одну сцену. Сначала бесплатную за 8 уровень, потом подписочную,
+    потом купленную. Возвращает вид списанной сцены или None, если сцен нет."""
+    if user.get("intim_scene_unlocked") and not user.get("intim_scene_used"):
+        user["intim_scene_used"] = True
+        save_data(user_data)
+        return "level"
+
+    field = free_intim_field(user)
+    if field:
+        _reset_daily_quota_if_needed(user)
+        if user.get(field, 0) > 0:
+            user[field] = user[field] - 1
+            save_data(user_data)
+            return "subscription"
+
+    if user.get("intim_scenes", 0) > 0:
+        user["intim_scenes"] = user["intim_scenes"] - 1
+        save_data(user_data)
+        return "paid"
+    return None
+
+
+
+# ============================================================
 #  ПОДПИСКИ / БАЛАНС СООБЩЕНИЙ
 # ============================================================
 def has_active_subscription(user):
@@ -907,6 +1088,8 @@ def _reset_daily_quota_if_needed(user):
     if user.get("last_daily_reset") != today:
         user["daily_messages"] = 100 if level == "super_pro" else 50
         user["last_daily_reset"] = today
+        field = "free_intim_scenes_super" if level == "super_pro" else "free_intim_scenes_pro"
+        user[field] = FREE_INTIM_SCENES[level]
 
 
 def get_available_messages(user):
@@ -1023,7 +1206,7 @@ def get_level_congratulation(user, level):
 
 
 SAFE_CONTENT_RULE = (
-    "**ЗАПРЕТ 18+:** Ты НИКОГДА не описываешь и не участвуешь в сексуальных сценах, "
+    "**ЗАПРЕТ 18+:** Ты НИКОГДА не описываешь и не участвуешь в интимных сценах, "
     "не используешь откровенную лексику. Романтика ограничивается объятиями, поцелуями и разговорами "
     "о чувствах — без физической близости и её описаний. Если собеседник просит явный контент 18+, "
     "ты мягко уходишь от темы и переводишь разговор на эмоциональную близость.\n"
@@ -1220,6 +1403,7 @@ def get_main_menu_keyboard(user):
 
 def get_profile_keyboard(user):
     return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene")],
         [InlineKeyboardButton(text=get_text(user, "buy_packs"), callback_data="profile_packs")],
         [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs")],
         [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back")],
@@ -1369,7 +1553,7 @@ async def main_change(call: types.CallbackQuery):
 async def switch_personality_cmd(message: types.Message):
     user = get_user(message.from_user.id)
     if get_subscription_level(user) != "super_pro":
-        await message.answer("❌ Команда /switch_personality доступна только для подписчиков SUPER PRO.")
+        await message.answer(get_text(user, "super_pro_only"))
         return
     user["switching_personality"] = True
     save_data(user_data)
@@ -1405,7 +1589,7 @@ async def choose_style(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     style_key = call.data.split("_", 1)[1]
     if style_key not in STYLES:
-        await call.answer("❌ Стиль не найден", show_alert=True)
+        await call.answer(get_text(user, "style_not_found"), show_alert=True)
         return
     if not is_style_unlocked(style_key, user):
         label = style_display_label(style_key, user, with_emoji=False)
@@ -1438,7 +1622,7 @@ async def choose_scene(call: types.CallbackQuery):
         save_data(user_data)
         await safe_delete(call.message)
         await send_main_menu(call.message.chat.id, user)
-        await call.answer("✅ Персонаж обновлён! История сохранена.")
+        await call.answer(get_text(user, "character_updated"))
     else:
         await safe_delete(call.message)
         await send_main_menu(call.message.chat.id, user)
@@ -1456,14 +1640,14 @@ async def fix_style_callback(call: types.CallbackQuery):
         await call.answer()
         await send_main_menu(call.message.chat.id, user)
     else:
-        await call.answer("❌ Недопустимый стиль", show_alert=True)
+        await call.answer(get_text(user, "style_unavailable"), show_alert=True)
 
 
 @dp.message(Command("switch_style"))
 async def switch_style_cmd(message: types.Message):
     user = get_user(message.from_user.id)
     if get_subscription_level(user) != "super_pro":
-        await message.answer("❌ Только для SUPER PRO.")
+        await message.answer(get_text(user, "super_pro_only"))
         return
     keyboard = InlineKeyboardMarkup(inline_keyboard=[])
     for key in STYLES:
@@ -1476,7 +1660,7 @@ async def switch_style(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     style = call.data.split("_", 1)[1]
     if style not in STYLES:
-        await call.answer("❌ Стиль недоступен", show_alert=True)
+        await call.answer(get_text(user, "style_unavailable"), show_alert=True)
         return
     user["style"] = style
     save_data(user_data)
@@ -1489,14 +1673,14 @@ async def switch_style(call: types.CallbackQuery):
 # ============================================================
 @dp.callback_query(lambda c: c.data == "create_character_locked")
 async def create_character_locked(call: types.CallbackQuery):
-    await call.answer("🔒 Создание своего персонажа доступно только с подпиской SUPER PRO!", show_alert=True)
+    await call.answer(get_text(get_user(call.from_user.id), "create_character_super_only"), show_alert=True)
 
 
 @dp.callback_query(lambda c: c.data == "create_character")
 async def create_character(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     if get_subscription_level(user) != "super_pro":
-        await call.answer("❌ Только для SUPER PRO!", show_alert=True)
+        await call.answer(get_text(user, "super_pro_only"), show_alert=True)
         return
     await call.message.answer(get_text(user, "character_create_prompt"), parse_mode="Markdown")
     user["creating_character"] = True
@@ -1631,10 +1815,10 @@ async def show_profile(msg, user):
 async def ask_create_personality(message: types.Message):
     user = get_user(message.from_user.id)
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🌟 Создать персонажа", callback_data="create_personality")]
+        [InlineKeyboardButton(text=get_text(user, "ask_create_character_btn"), callback_data="create_personality")]
     ])
     await message.answer(
-        "👤 **Чтобы открыть профиль или купить что-то, сначала создай своего персонажа!**",
+        get_text(user, "ask_create_character"),
         reply_markup=keyboard, parse_mode="Markdown"
     )
 
@@ -1655,7 +1839,7 @@ async def main_menu_reply(message: types.Message):
     await safe_delete(message)
     user = get_user(message.from_user.id)
     if not user["personality_ready"]:
-        await message.answer("Сначала создай персонажа через /start", reply_markup=get_full_kb(user))
+        await message.answer(get_text(user, "create_character_first"), reply_markup=get_full_kb(user))
         return
     await send_main_menu(message.chat.id, user)
 
@@ -1674,7 +1858,7 @@ async def profile_reply(message: types.Message):
 async def channel_reply(message: types.Message):
     await safe_delete(message)
     user = get_user(message.from_user.id)
-    await message.answer("📢 **Наш канал:**\nПодписывайся, чтобы быть в курсе новостей и обновлений!",
+    await message.answer(get_text(user, "channel_text"),
                           reply_markup=get_channel_kb(user), parse_mode="Markdown")
 
 
@@ -1701,7 +1885,7 @@ async def spin_button_handler(message: types.Message):
     await safe_delete(message)
     user = get_user(message.from_user.id)
     if not user["verified"] or not user["personality_ready"]:
-        await message.answer("Сначала заверши регистрацию через /start.")
+        await message.answer(get_text(user, "finish_registration_spin"))
         return
 
     today = datetime.now().date().isoformat()
@@ -1776,6 +1960,8 @@ SPIN_PRIZES = [
     {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "name_de": "🎁 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 1.5},
     {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.5},
     {"name": "🎉 50 сообщений (ДЖЕКПОТ!)", "name_en": "🎉 50 messages (JACKPOT!)", "name_de": "🎉 50 Nachrichten (JACKPOT!)", "value": 50, "type": "messages", "weight": 1},
+    {"name": "1 интим-сцена 🔥", "name_en": "1 intimate scene 🔥", "name_de": "1 Intim-Szene 🔥", "value": 1, "type": "intim_scenes", "weight": 10},
+    {"name": "2 интим-сцены 🔥🔥", "name_en": "2 intimate scenes 🔥🔥", "name_de": "2 Intim-Szenen 🔥🔥", "value": 2, "type": "intim_scenes", "weight": 3},
 ]
 
 
@@ -1807,6 +1993,9 @@ async def spin_result(chat_id, user, free=False):
     elif chosen["type"] == "xp":
         user["xp"] = user.get("xp", 0) + chosen["value"]
         result_text = get_text(user, "spin_win_xp", value=chosen["value"])
+    elif chosen["type"] == "intim_scenes":
+        user["intim_scenes"] = user.get("intim_scenes", 0) + chosen["value"]
+        result_text = get_text(user, "spin_win_intim", value=chosen["value"])
     elif chosen["type"] == "subscription_pro":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=5)).isoformat()
@@ -1937,6 +2126,7 @@ PRODUCTS = {
     "pack_100": {"stars": 80, "rub": 149, "usd": 1.7},
     "pack_300": {"stars": 200, "rub": 349, "usd": 3.9},
     "spin_paid_20": {"stars": 20, "rub": 39, "usd": 0.5},
+    "intim_scene": {"stars": 45, "rub": 89, "usd": 1.0},
 }
 
 PACK_SIZES = {"pack_30": 30, "pack_100": 100, "pack_300": 300}
@@ -1967,6 +2157,9 @@ def product_invoice_texts(user, payload):
     if payload == "upgrade_to_super":
         return (get_text(user, "invoice_upgrade_title"), get_text(user, "invoice_upgrade_desc"),
                 get_text(user, "invoice_upgrade_label"))
+    if payload == "intim_scene":
+        return (get_text(user, "invoice_intim_title"), get_text(user, "invoice_intim_desc"),
+                get_text(user, "invoice_intim_label"))
     if payload in PACK_SIZES:
         n = PACK_SIZES[payload]
         price = PRODUCTS[payload]["stars"]
@@ -2100,6 +2293,10 @@ async def grant_product(user, payload, chat_id):
             save_data(user_data)
             expiry_str = datetime.fromisoformat(old_expiry).strftime('%d.%m.%Y %H:%M')
             await bot.send_message(chat_id, get_text(user, "payment_upgrade_success", date=expiry_str))
+    elif payload == "intim_scene":
+        user["intim_scenes"] = user.get("intim_scenes", 0) + 1
+        save_data(user_data)
+        await bot.send_message(chat_id, get_text(user, "payment_intim_success"))
     elif payload == "spin_paid_20":
         await spin_result(chat_id, user, free=False)
 
@@ -2321,12 +2518,24 @@ async def grant_cmd(message: types.Message):
         return
     args = message.text.split()
     if len(args) < 2:
-        await message.answer("/grant @username — SUPER PRO\n/grant @username pro — PRO")
+        await message.answer("/grant @username — SUPER PRO\n/grant @username pro — PRO\n/grant @username intim N — N интим-сцен")
         return
     user_id = await _resolve_admin_target(message, args[1])
     if user_id is None:
         return
     user = get_user(user_id)
+    if len(args) >= 3 and args[2].lower() == "intim":
+        amount = 1
+        if len(args) >= 4:
+            try:
+                amount = max(1, int(args[3]))
+            except ValueError:
+                await message.answer("❌ Количество сцен должно быть числом.")
+                return
+        user["intim_scenes"] = user.get("intim_scenes", 0) + amount
+        save_data(user_data)
+        await message.answer(f"✅ {args[1]} выдано интим-сцен: {amount}.")
+        return
     if len(args) >= 3 and args[2].lower() == "pro":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
@@ -2365,6 +2574,163 @@ async def revoke_subscription_cmd(message: types.Message):
 
 
 # ============================================================
+#  КОМАНДА /intim — ВЫБОР И ГЕНЕРАЦИЯ ИНТИМ-СЦЕНЫ
+# ============================================================
+def get_intim_types_kb(user):
+    buttons = [InlineKeyboardButton(text=intim_option_label(INTIM_SCENES, key, user),
+                                    callback_data=f"intim_type_{key}")
+               for key in INTIM_SCENES]
+    rows = [buttons[i:i + 2] for i in range(0, len(buttons), 2)]
+    rows.append([InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+def get_intim_locations_kb(user, scene_type):
+    buttons = [InlineKeyboardButton(text=intim_option_label(INTIM_LOCATIONS, key, user),
+                                    callback_data=f"intim_loc_{scene_type}:{key}")
+               for key in INTIM_LOCATIONS]
+    rows = [buttons[i:i + 2] for i in range(0, len(buttons), 2)]
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+def get_intim_buy_kb(user):
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene")],
+        [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back")],
+    ])
+
+
+async def show_intim_menu(chat_id, user):
+    available = intim_scenes_available(user)
+    if available <= 0:
+        await bot.send_message(chat_id, get_text(user, "intim_none"),
+                               reply_markup=get_intim_buy_kb(user))
+        return
+    await bot.send_message(chat_id, get_text(user, "intim_menu_title", n=available),
+                           reply_markup=get_intim_types_kb(user), parse_mode="Markdown")
+
+
+@dp.message(Command("intim"))
+async def intim_cmd(message: types.Message):
+    user = get_user(message.from_user.id)
+    if not user["verified"] or not user["agreement_accepted"]:
+        await message.answer(get_text(user, "finish_registration_first"))
+        return
+    if not user["personality_ready"]:
+        await message.answer(get_text(user, "intim_need_character"))
+        return
+    await show_intim_menu(message.chat.id, user)
+
+
+@dp.callback_query(lambda c: c.data.startswith("intim_type_"))
+async def choose_intim_type(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    scene_type = call.data[len("intim_type_"):]
+    if scene_type not in INTIM_SCENES:
+        await call.answer()
+        return
+    await safe_delete(call.message)
+    await bot.send_message(call.message.chat.id, get_text(user, "intim_choose_location"),
+                           reply_markup=get_intim_locations_kb(user, scene_type))
+    await call.answer()
+
+
+@dp.callback_query(lambda c: c.data.startswith("intim_loc_"))
+async def choose_intim_location(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    scene_type, _, location = call.data[len("intim_loc_"):].partition(":")
+    if scene_type not in INTIM_SCENES or location not in INTIM_LOCATIONS:
+        await call.answer()
+        return
+
+    kind = consume_intim_scene(user)
+    if kind is None:
+        await safe_delete(call.message)
+        await bot.send_message(call.message.chat.id, get_text(user, "intim_none"),
+                               reply_markup=get_intim_buy_kb(user))
+        await call.answer()
+        return
+
+    await safe_delete(call.message)
+    if kind == "level":
+        await bot.send_message(call.message.chat.id, get_text(user, "intim_free_level"))
+    elif kind == "subscription":
+        await bot.send_message(call.message.chat.id, get_text(user, "intim_free_sub"))
+    await call.answer()
+
+    ok = await generate_intim_scene(call, user, scene_type, location=location, free=kind != "paid")
+    if not ok:
+        # сцену не показали — возвращаем ровно то, что списали
+        refund_intim_scene(user, kind)
+
+
+def refund_intim_scene(user, kind):
+    if kind == "level":
+        user["intim_scene_used"] = False
+    elif kind == "subscription":
+        field = free_intim_field(user)
+        if field:
+            user[field] = user.get(field, 0) + 1
+    else:
+        user["intim_scenes"] = user.get("intim_scenes", 0) + 1
+    save_data(user_data)
+
+
+def build_intim_prompt(user, scene_type, location):
+    """Тот же персонаж и те же рамки 18+, что и в обычном чате, плюс выбранная сцена.
+    Название сцены и места подставляются как есть — это выбор пользователя из меню."""
+    if scene_type == "random":
+        scene_type = random.choice([key for key in INTIM_SCENES if key != "random"])
+    scene = INTIM_SCENES[scene_type]
+    place = INTIM_LOCATIONS[location]
+
+    prompt = build_prompt(user) + "\n" + ADULT_CONTENT_RULE
+    prompt += f"\n**СЦЕНА:** {scene['ru']}."
+    if location != "any":
+        prompt += f" Место: {place['ru']}."
+    prompt += (
+        "\nОпиши эту сцену от лица своего персонажа, продолжая ваш разговор.\n"
+        "**ФОРМАТ:** действие в *звёздочках* с новой строки, затем реплика с новой строки, "
+        "между ними пустая строка. Минимум 2 пары «действие + реплика».\n"
+    )
+    return prompt
+
+
+async def generate_intim_scene(call, user, scene_type, location="any", free=False):
+    """Возвращает True, если сцена сгенерирована и отправлена."""
+    chat_id = call.message.chat.id
+    status_msg = await bot.send_message(chat_id, get_text(user, "intim_generating"))
+    typing_task = asyncio.create_task(_keep_typing(chat_id))
+    try:
+        response = client.chat.completions.create(
+            model=INTIM_MODEL,
+            messages=[{"role": "system", "content": build_intim_prompt(user, scene_type, location)}]
+                     + user["history"][-10:],
+            temperature=0.95,
+            max_tokens=1200,
+        )
+        answer = response.choices[0].message.content
+    except Exception as e:
+        await bot.send_message(chat_id, get_text(user, "generation_error", error=e))
+        return False
+    finally:
+        typing_task.cancel()
+        await safe_delete(status_msg)
+
+    _, clean_answer = extract_reaction_from_answer(answer)
+    user["history"].append({"role": "assistant", "content": clean_answer})
+    limit = get_history_limit(user)
+    if len(user["history"]) > limit:
+        user["history"] = user["history"][-limit:]
+    user["last_activity"] = datetime.now().isoformat()
+    save_data(user_data)
+
+    await send_long_to_chat(chat_id, clean_answer, reply_markup=get_full_kb(user))
+    await bot.send_message(chat_id, get_text(user, "intim_left", n=intim_scenes_available(user)))
+    return True
+
+
+# ============================================================
 #  ВСПОМОГАТЕЛЬНОЕ ДЛЯ ОТВЕТОВ ИИ
 # ============================================================
 def extract_reaction_from_answer(text):
@@ -2385,16 +2751,20 @@ def extract_reaction_from_answer(text):
 MAX_MESSAGE_LEN = 4000  # запас от лимита Telegram в 4096 символов
 
 
-async def send_long(message: types.Message, text, **kwargs):
+async def send_long_to_chat(chat_id, text, **kwargs):
     """Если ответ ИИ длиннее лимита Telegram, отправляем несколькими сообщениями,
     вместо падения с ошибкой 'message is too long'."""
     if len(text) <= MAX_MESSAGE_LEN:
-        return await message.answer(text, **kwargs)
+        return await bot.send_message(chat_id, text, **kwargs)
     chunks = [text[i:i + MAX_MESSAGE_LEN] for i in range(0, len(text), MAX_MESSAGE_LEN)]
     last = None
     for i, chunk in enumerate(chunks):
-        last = await message.answer(chunk, **(kwargs if i == len(chunks) - 1 else {}))
+        last = await bot.send_message(chat_id, chunk, **(kwargs if i == len(chunks) - 1 else {}))
     return last
+
+
+async def send_long(message: types.Message, text, **kwargs):
+    return await send_long_to_chat(message.chat.id, text, **kwargs)
 
 
 async def generate_and_reply(message: types.Message, user):
@@ -2404,14 +2774,14 @@ async def generate_and_reply(message: types.Message, user):
     typing_task = asyncio.create_task(_keep_typing(message.chat.id))
     try:
         response = client.chat.completions.create(
-            model="deepseek/deepseek-chat",
+            model=AI_MODEL,
             messages=[{"role": "system", "content": system_prompt}] + user["history"],
             temperature=0.9,
             max_tokens=1000
         )
         answer = response.choices[0].message.content
     except Exception as e:
-        await message.answer(f"⚠️ Ошибка генерации ответа: {e}")
+        await message.answer(get_text(user, "generation_error", error=e))
         return
     finally:
         typing_task.cancel()
@@ -2480,13 +2850,13 @@ async def handle_message(message: types.Message):
 
     # 3. Техобслуживание / регистрация
     if maintenance_mode and message.from_user.id not in ADMIN_IDS:
-        await message.answer("🛠️ **Бот на техобслуживании**\nСледите за новостями: @duel_dev_channel", parse_mode="Markdown")
+        await message.answer(get_text(user, "maintenance"), parse_mode="Markdown")
         return
     if not user["verified"] or not user["agreement_accepted"]:
-        await message.answer("🔞 Сначала пройди регистрацию через /start")
+        await message.answer(get_text(user, "finish_registration_first"))
         return
     if not user["personality_ready"]:
-        await message.answer("Сначала создай персонажа через /start")
+        await message.answer(get_text(user, "create_character_first"))
         return
 
     # 4. Игнорируем команды и кнопки клавиатуры
@@ -2518,11 +2888,10 @@ async def handle_message(message: types.Message):
     # 6. Премиум-стиль, если подписка кончилась
     if ensure_valid_style(user):
         keyboard = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="🪶 Нежный", callback_data="fix_style_warm")],
-            [InlineKeyboardButton(text="🔥 Дерзкий", callback_data="fix_style_daring")],
-            [InlineKeyboardButton(text="😊 Стеснительный", callback_data="fix_style_shy")],
+            [InlineKeyboardButton(text=style_display_label(key, user), callback_data=f"fix_style_{key}")]
+            for key in BASE_STYLE_KEYS
         ])
-        await message.answer("⚠️ Твоя подписка закончилась, выбери бесплатный стиль:", reply_markup=keyboard)
+        await message.answer(get_text(user, "subscription_expired_style"), reply_markup=keyboard)
         return
 
     # 7. Проверка баланса сообщений
@@ -2549,7 +2918,7 @@ async def handle_message(message: types.Message):
             user["mood"] = max(-10, user.get("mood", 0) - 3)
             user["negative_count"] = 0
             save_data(user_data)
-            await message.answer("💢 Ссора! Уровень близости снижен.", reply_markup=get_full_kb(user))
+            await message.answer(get_text(user, "quarrel"), reply_markup=get_full_kb(user))
             user["history"].append({"role": "assistant", "content": "💢 Ссора!"})
             save_data(user_data)
             return
@@ -2568,10 +2937,15 @@ async def handle_message(message: types.Message):
     if new_level != old_level:
         user["last_level"] = new_level
         save_data(user_data)
+        if new_level >= INTIM_LEVEL_REWARD and not user.get("intim_scene_unlocked"):
+            user["intim_scene_unlocked"] = True
+            save_data(user_data)
         if new_level > old_level:
             congrats = get_level_congratulation(user, new_level)
             if congrats:
                 await message.answer(congrats, reply_markup=get_full_kb(user))
+            if new_level == INTIM_LEVEL_REWARD:
+                await message.answer(get_text(user, "intim_free_level"), reply_markup=get_full_kb(user))
         else:
             await message.answer(get_text(user, "level_down", level=new_level), reply_markup=get_full_kb(user))
 
@@ -2656,7 +3030,7 @@ async def check_notifications():
 # ============================================================
 async def main():
     print("🚀 Role Duel запущен!")
-    print("🧠 Модель: deepseek/deepseek-chat")
+    print(f"🧠 Модель: {AI_MODEL} | интим-сцены: {INTIM_MODEL}")
     print(f"💾 Данные сохраняются в {os.path.abspath(DATA_FILE)}")
     print(f"👥 Загружено профилей: {len(user_data)}")
     print(f"💳 Способы оплаты: {', '.join(available_payment_methods())}")
