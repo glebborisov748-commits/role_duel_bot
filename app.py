@@ -863,8 +863,6 @@ def sync_data():
 user_data = load_data()
 
 
-def get_free_limit():
-    return 13
 
 
 def get_user(user_id):
@@ -880,7 +878,7 @@ def get_user(user_id):
             "style": "warm",
             "personality_ready": False,
             "subscription": {"active": False, "expires_at": None, "level": None},
-            "purchased_messages": get_free_limit(),
+            "purchased_messages": 0,  # больше не выдаём стартовый бонус — бесплатный дневной пул (FREE_DAILY_MESSAGES) и есть вся механика
             "has_purchased": False,
             "daily_messages": 0,
             "last_daily_reset": None,
@@ -924,7 +922,7 @@ def get_user(user_id):
         defaults = {
             "user_gender": None,
             "style": "warm",
-            "purchased_messages": get_free_limit(),
+            "purchased_messages": 0,  # больше не выдаём стартовый бонус — бесплатный дневной пул (FREE_DAILY_MESSAGES) и есть вся механика
             "has_purchased": False,
             "daily_messages": 0,
             "last_daily_reset": None,
@@ -1096,9 +1094,9 @@ XP_PER_LEVEL = 200
 
 def is_style_unlocked(style_key, user):
     if style_key in SUPER_PRO_STYLE_KEYS:
-        return get_subscription_level(user) == "super_pro"
+        return get_subscription_level(user) in ("super_pro", "elite")
     if style_key in PRO_STYLE_KEYS:
-        return get_subscription_level(user) in ("pro", "super_pro")
+        return get_subscription_level(user) in ("pro", "super_pro", "elite")
     return True
 
 
@@ -1198,7 +1196,9 @@ INTIM_DOMINANTS = {
 }
 
 # Сколько бесплатных сцен в день даёт подписка (обновляются вместе с дневным лимитом сообщений).
-FREE_INTIM_SCENES = {"pro": 1, "super_pro": 3}
+FREE_INTIM_SCENES = {"pro": 1, "super_pro": 3, "elite": 5}
+FREE_INTIM_FIELD = {"pro": "free_intim_scenes_pro", "super_pro": "free_intim_scenes_super",
+                     "elite": "free_intim_scenes_elite"}
 INTIM_LEVEL_REWARD = 8  # на каком уровне близости открывается бесплатная сцена
 
 # Магазин за баксы 💵 (валюта из бандлов): еда поднимает сытость, подарки — настроение и немного XP.
@@ -1224,12 +1224,7 @@ def intim_option_label(mapping, key, user):
 
 def free_intim_field(user):
     """Поле с бесплатными сценами текущей подписки (или None, если подписки нет)."""
-    level = get_subscription_level(user)
-    if level == "super_pro":
-        return "free_intim_scenes_super"
-    if level == "pro":
-        return "free_intim_scenes_pro"
-    return None
+    return FREE_INTIM_FIELD.get(get_subscription_level(user))
 
 
 def intim_scenes_available(user):
@@ -1301,7 +1296,9 @@ def ensure_valid_style(user):
 
 def get_history_limit(user):
     level = get_subscription_level(user)
-    if level == "super_pro":
+    if level == "elite":
+        return 150
+    elif level == "super_pro":
         return 100
     elif level == "pro":
         return 60
@@ -1311,12 +1308,13 @@ def get_history_limit(user):
 
 FREE_DAILY_MESSAGES = 20  # бесплатный дневной лимит для тех, у кого нет подписки — бандлы больше не дают
                           # сообщений (только энергетики/баксы), поэтому чат больше никогда не "кончается" насовсем
-BUCKS_DAILY_STIPEND = {"pro": 80, "super_pro": 200}  # ежедневная "подпитка" баксов для магазина — подписка
+BUCKS_DAILY_STIPEND = {"pro": 80, "super_pro": 200, "elite": 350}  # ежедневная "подпитка" баксов для магазина — подписка
                                                       # оплачивает не только лимит сообщений, но и часть жизни персонажа
 FREE_DAILY_BUCKS = 15  # бесплатный источник баксов и без подписки — иначе валюту неоткуда взять бесплатно
 
 
-FREE_SPINS_PER_DAY = {"pro": 2, "super_pro": 3}  # без подписки — 1 (значение по умолчанию ниже)
+FREE_SPINS_PER_DAY = {"pro": 2, "super_pro": 3, "elite": 5}  # без подписки — 1 (значение по умолчанию ниже)
+ENERGIZERS_DAILY_STIPEND = {"pro": 1, "super_pro": 3, "elite": 6}  # такая же ежедневная "подпитка", но энергетиками
 
 
 def free_spins_allowed(user):
@@ -1328,25 +1326,29 @@ def free_spins_left(user):
     return max(0, free_spins_allowed(user) - user.get("free_spins_used", 0))
 
 
+DAILY_MESSAGES_BY_LEVEL = {"pro": 50, "super_pro": 100, "elite": 150}
+
+
 def _reset_daily_quota_if_needed(user):
     level = get_subscription_level(user)
     today = datetime.now().date().isoformat()
     if user.get("last_daily_reset") == today:
         return
-    user["daily_messages"] = 100 if level == "super_pro" else (50 if level == "pro" else FREE_DAILY_MESSAGES)
+    user["daily_messages"] = DAILY_MESSAGES_BY_LEVEL.get(level, FREE_DAILY_MESSAGES)
     user["last_daily_reset"] = today
     user["free_spins_used"] = 0
     if level:
-        field = "free_intim_scenes_super" if level == "super_pro" else "free_intim_scenes_pro"
-        user[field] = FREE_INTIM_SCENES[level]
+        user[FREE_INTIM_FIELD[level]] = FREE_INTIM_SCENES[level]
         user["bucks"] = user.get("bucks", 0) + BUCKS_DAILY_STIPEND[level]
+        user["energizers"] = user.get("energizers", 0) + ENERGIZERS_DAILY_STIPEND[level]
     else:
         user["bucks"] = user.get("bucks", 0) + FREE_DAILY_BUCKS
 
 
 def get_available_messages(user):
-    """daily_messages — обновляемый каждый день лимит (у подписчиков больше), purchased_messages —
-    постоянный бонусный запас (стартовый подарок + рефералы), который тратится уже после него."""
+    """daily_messages — обновляемый каждый день лимит (у подписчиков больше). purchased_messages
+    новым пользователям больше не выдаётся (см. get_user), но у аккаунтов из прошлой версии там
+    мог остаться баланс — он тратится уже после дневного пула, а не теряется просто так."""
     _reset_daily_quota_if_needed(user)
     return user.get("daily_messages", 0) + user.get("purchased_messages", 0)
 
@@ -1481,7 +1483,9 @@ ENERGY_COST_MESSAGE = 6  # на бесплатном тарифе (без мно
 SATIETY_COST_MESSAGE = 3
 ENERGIZER_RESTORE_AMOUNT = 50  # энергетик восполняет половину бака, а не сразу всё — поэтому их
                                 # можно (и нужно) выдавать щедрее, не делая чат безлимитным одним предметом
-STAT_DECAY_MULTIPLIER = {"pro": 0.6, "super_pro": 0.3}  # подписчики устают/голодают медленнее
+STAT_DECAY_MULTIPLIER = {"pro": 0.6, "super_pro": 0.3, "elite": 0.15}  # подписчики устают/голодают медленнее
+INTIMACY_LEVEL_DECAY_STEP = 0.1  # чем ближе вы, тем персонаж "требовательнее": на 1 уровне — как
+                                  # обычно, на 10 — почти вдвое быстрее тратит энергию и сытость
 # У /hot нет стоимости энергии/сытости и нет проверки is_asleep(user) — это отдельный платный
 # раздел именно для тех, кто не хочет ждать ни уровня близости, ни "сна" персонажа (см. intim_cmd
 # и generate_intim_scene): тамагочи-механика на него не распространяется ни в одну, ни в другую сторону.
@@ -1504,8 +1508,15 @@ def apply_passive_stat_regen(user):
     user["last_stat_tick"] = now.isoformat()
 
 
+def get_level_decay_multiplier(user):
+    """Более близкие отношения — более требовательный персонаж: level=1 даёт множитель 1.0
+    (как раньше), level=10 — 1.9 (почти вдвое быстрее тратится энергия/сытость)."""
+    level = get_intimacy_level(user)
+    return 1.0 + (level - 1) * INTIMACY_LEVEL_DECAY_STEP
+
+
 def apply_activity_stat_cost(user, energy_cost, satiety_cost):
-    mult = STAT_DECAY_MULTIPLIER.get(get_subscription_level(user), 1.0)
+    mult = STAT_DECAY_MULTIPLIER.get(get_subscription_level(user), 1.0) * get_level_decay_multiplier(user)
     user["energy"] = max(0, user.get("energy", MAX_STAT) - energy_cost * mult)
     user["satiety"] = max(0, user.get("satiety", MAX_STAT) - satiety_cost * mult)
 
@@ -3380,7 +3391,13 @@ async def generate_intim_scene(call, user, scene_type, location="any", dominant=
     try:
         response = await asyncio.to_thread(
             call_ai, INTIM_MODEL, "intim",
-            messages=[{"role": "system", "content": build_intim_prompt(user, scene_type, location, dominant)}],
+            messages=[
+                {"role": "system", "content": build_intim_prompt(user, scene_type, location, dominant)},
+                # Некоторые провайдеры отклоняют запрос с 400 INVALID_REQUEST, если в messages
+                # вообще нет non-system реплики — этот триггер ничего не значит по содержанию
+                # (вся суть сцены задана в system), он просто заставляет модель начать отвечать.
+                {"role": "user", "content": "Начинай сцену."},
+            ],
             temperature=0.95,
             max_tokens=1200,
         )
