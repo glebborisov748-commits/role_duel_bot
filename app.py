@@ -226,6 +226,10 @@ TEXTS = {
         "shop_category_treat": "🎁 Подарки",
         "shop_category_accessory": "💍 Аксессуары",
         "shop_item_owned": " ✅ уже есть",
+        "custom_gift_btn": "✍️ Свой подарок — {price}💵",
+        "custom_gift_prompt": "✍️ Напиши, что хочешь подарить (до {n} символов, цена {price}💵). Каждый подарок можно подарить только один раз.",
+        "custom_gift_invalid": "❌ Напиши текст подарка (до {n} символов).",
+        "custom_gift_duplicate": "😉 Ты уже дарил(а) именно это. Придумай что-то новое!",
         "hungry_nudge": "🍽 У собеседника заурчал живот... Может, покормишь?",
         "low_energy_nudge": "😴 Собеседник начинает уставать и клонит в сон... Может, взбодришь энергетиком?",
         "not_enough_bucks": "❌ Не хватает баксов: нужно ещё {n}💵.",
@@ -451,6 +455,10 @@ TEXTS = {
         "shop_category_treat": "🎁 Treats",
         "shop_category_accessory": "💍 Accessories",
         "shop_item_owned": " ✅ owned",
+        "custom_gift_btn": "✍️ Custom gift — {price}💵",
+        "custom_gift_prompt": "✍️ Write what you want to gift (up to {n} characters, price {price}💵). Each gift can only be given once.",
+        "custom_gift_invalid": "❌ Write the gift's text (up to {n} characters).",
+        "custom_gift_duplicate": "😉 You've already given that exact gift. Think of something new!",
         "hungry_nudge": "🍽 Your companion's stomach just growled... Maybe feed them?",
         "low_energy_nudge": "😴 Your companion is starting to feel drowsy... Maybe perk them up with an energizer?",
         "not_enough_bucks": "❌ Not enough bucks: you need {n}💵 more.",
@@ -676,6 +684,10 @@ TEXTS = {
         "shop_category_treat": "🎁 Geschenke",
         "shop_category_accessory": "💍 Accessoires",
         "shop_item_owned": " ✅ vorhanden",
+        "custom_gift_btn": "✍️ Eigenes Geschenk — {price}💵",
+        "custom_gift_prompt": "✍️ Schreib, was du schenken möchtest (bis zu {n} Zeichen, Preis {price}💵). Jedes Geschenk kann nur einmal verschenkt werden.",
+        "custom_gift_invalid": "❌ Schreib den Text des Geschenks (bis zu {n} Zeichen).",
+        "custom_gift_duplicate": "😉 Das hast du schon verschenkt. Denk dir etwas Neues aus!",
         "hungry_nudge": "🍽 Der Magen deines Begleiters knurrt gerade... Vielleicht Zeit zu füttern?",
         "low_energy_nudge": "😴 Dein Begleiter wird langsam müde und schläfrig... Vielleicht mit einem Energydrink aufmuntern?",
         "not_enough_bucks": "❌ Nicht genug Bucks: dir fehlen noch {n}💵.",
@@ -941,6 +953,8 @@ def get_user(user_id):
             "energizers": 0,
             "bucks": 0,
             "owned_accessories": [],
+            "custom_gifts_given": [],
+            "writing_custom_gift": False,
             "last_hot_scene": None,
             "last_stat_tick": None,
             "sleep_until": None,
@@ -988,6 +1002,8 @@ def get_user(user_id):
             "energizers": 0,
             "bucks": 0,
             "owned_accessories": [],
+            "custom_gifts_given": [],
+            "writing_custom_gift": False,
             "last_hot_scene": None,
             "last_stat_tick": None,
             "sleep_until": None,
@@ -2687,6 +2703,14 @@ def apply_shop_item_effects(user, item):
 SHOP_CATEGORY_ORDER = ["food", "treat", "accessory"]
 SHOP_CATEGORY_TEXT_KEY = {"food": "shop_category_food", "treat": "shop_category_treat", "accessory": "shop_category_accessory"}
 
+# Каталог аксессуаров конечен и одноразовый — рано или поздно всё куплено. "Свой подарок" даёт
+# запасной вариант: любой текст, который ещё не дарили (дубли по нормализованному тексту), с
+# рандомным настроением из диапазона обычных аксессуаров (см. их mood выше — 18..45), а не
+# средним: со случайным числом каждый раз приятнее, чем одна и та же предсказуемая цифра.
+CUSTOM_GIFT_PRICE = 100
+CUSTOM_GIFT_MOOD_RANGE = (18, 45)
+CUSTOM_GIFT_MAX_LEN = 60
+
 
 def get_shop_kb(user):
     entries = [(key, item, f"shop_food_{key}", False) for key, item in FOOD_ITEMS.items()]
@@ -2707,9 +2731,22 @@ def get_shop_kb(user):
                 owned = False
             suffix = get_text(user, "shop_item_owned") if owned else f" — {item['price']}💵"
             rows.append([InlineKeyboardButton(text=f"{label}{suffix}", callback_data=callback_data, style="success")])
+        if category == "accessory":
+            rows.append([InlineKeyboardButton(
+                text=get_text(user, "custom_gift_btn", price=CUSTOM_GIFT_PRICE),
+                callback_data="shop_custom_gift_start", style="success")])
 
     rows.append([InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+@dp.callback_query(lambda c: c.data == "shop_custom_gift_start")
+async def shop_custom_gift_start(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    user["writing_custom_gift"] = True
+    save_data(user_data)
+    await call.message.answer(get_text(user, "custom_gift_prompt", price=CUSTOM_GIFT_PRICE, n=CUSTOM_GIFT_MAX_LEN))
+    await call.answer()
 
 
 @dp.callback_query(lambda c: c.data == "shop_noop")
@@ -3858,6 +3895,38 @@ async def handle_message(message: types.Message):
         user["creating_character"] = False
         save_data(user_data)
         await message.answer(get_text(user, "character_created", text=message.text), parse_mode="Markdown")
+        return
+
+    # 1b. Свой подарок — свободный текст вместо каталога (аксессуары конечны и одноразовые).
+    # Настроение случайное (не среднее): пользователь сам так предложил, с рандомом приятнее.
+    if user.get("writing_custom_gift"):
+        gift_text = message.text.strip()
+        if not gift_text or len(gift_text) > CUSTOM_GIFT_MAX_LEN:
+            await message.answer(get_text(user, "custom_gift_invalid", n=CUSTOM_GIFT_MAX_LEN))
+            return
+        normalized = gift_text.lower()
+        if normalized in user.get("custom_gifts_given", []):
+            await message.answer(get_text(user, "custom_gift_duplicate"))
+            return
+        if not spend_bucks(user, CUSTOM_GIFT_PRICE):
+            await message.answer(get_text(user, "not_enough_bucks", n=CUSTOM_GIFT_PRICE - user.get("bucks", 0)))
+            return
+        user["writing_custom_gift"] = False
+        mood = random.randint(*CUSTOM_GIFT_MOOD_RANGE)
+        xp = round(mood * 0.6)
+        custom_item = {
+            "ru": gift_text, "en": gift_text, "de": gift_text, "emoji": "🎁", "mood": mood, "xp": xp,
+            "reaction_hint": ("Это подарок, который собеседник придумал сам, специально для тебя — не "
+                              "что-то из готового списка. Благодарность самая искренняя и трогательная "
+                              "из всех: чувствуется, что он(а) думал(а) именно о тебе."),
+        }
+        apply_shop_item_effects(user, custom_item)
+        user.setdefault("custom_gifts_given", []).append(normalized)
+        save_data(user_data)
+        await grant_gift_xp(message.chat.id, user, xp)
+        await message.answer(get_text(user, "item_bought", effects=format_item_effects(custom_item, user)))
+        if not is_asleep(user):
+            await generate_shop_reaction(message.chat.id, user, custom_item, "gift")
         return
 
     # 2. Приветствие после долгого отсутствия
