@@ -31,7 +31,7 @@ TEXTS = {
         "change_character": "🔄 Сменить персонажа",
         "invite_friend": "👥 Пригласить друга",
         "create_character": "🎭 Создать своего персонажа",
-        "buy_packs": "📦 Купить пакеты",
+        "buy_bundles": "🎁 Купить бандл",
         "subscribe": "👑 Оформить подписку",
         "back": "🔙 Главное меню",
         "back_to_profile": "🔙 Назад",
@@ -68,7 +68,7 @@ TEXTS = {
         "choose_style": "🎨 Теперь выбери стиль персонажа:",
         "choose_style_updated": "🎨 Стиль обновлён! Теперь выбери сцену для общения:",
         "choose_scene": "🎬 Теперь выбери сцену для общения:\n\n📱 Переписка в телефоне — классический формат.\n👫 Реальная встреча — живое общение лицом к лицу.",
-        "no_messages": "😔 Закончились сообщения. Купи пакет или подписку.",
+        "no_messages": "😔 Бесплатные сообщения на сегодня закончились. Оформи подписку — лимит станет намного больше!",
         "no_history": "❌ Пока нечего редактировать — напиши персонажу хотя бы одно сообщение.",
         "edit_prompt": "✏️ Пришли новый текст своего последнего сообщения — я забуду старую реплику и отвечу заново.",
         "edit_success": "✅ Сообщение заменено. Генерирую новый ответ...",
@@ -185,14 +185,13 @@ TEXTS = {
         "need_character_alert": "Сначала создай персонажа!",
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
-        "packs_blocked_active_sub": "❌ При активной подписке покупка пакетов недоступна.",
         "subs_title": "👑 Подписки Role Duel",
         "subs_body": "🔥 PRO (250⭐/мес)\n• 50 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• 100 сообщений в день\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐/мес",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐/мес",
         "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (245⭐)",
-        "packs_title": "📦 **Купить пакет сообщений**\n\nВыбери пакет:",
-        "pack_btn": "{n} сообщений — {price} ⭐",
+        "bundles_title": "🎁 **Купить бандл**\n\nБандл — это энергетики ⚡ (энергия персонажа) и баксы 💵 (на еду и подарки в магазине). Выбери бандл:",
+        "bundle_btn": "{energizers}⚡ + {bucks}💵 — {price} ⭐",
         "invoice_pro_title": "PRO подписка на месяц",
         "invoice_pro_desc": "50 сообщений/день, память 60 сообщений, стили Страстный и Магнетический.",
         "invoice_pro_label": "PRO месяц",
@@ -202,10 +201,20 @@ TEXTS = {
         "invoice_upgrade_title": "Апгрейд до SUPER PRO",
         "invoice_upgrade_desc": "Повысьте PRO до SUPER PRO на оставшийся срок. 245⭐.",
         "invoice_upgrade_label": "Апгрейд",
-        "invoice_pack_title": "Пакет {n} сообщений",
-        "invoice_pack_desc": "{n} сообщений за {price}⭐",
-        "invoice_pack_label": "{n} сообщ.",
-        "payment_pack_success": "✅ Куплено {n} сообщений!",
+        "invoice_bundle_title": "Бандл: {energizers}⚡ + {bucks}💵",
+        "invoice_bundle_desc": "{energizers} энергетиков и {bucks} баксов за {price}⭐",
+        "invoice_bundle_label": "Бандл",
+        "payment_bundle_success": "✅ Получено: {energizers}⚡ энергетиков и {bucks}💵 баксов!",
+        "shop_btn": "🛍 Магазин",
+        "shop_title": "🛍 **Магазин**\n\nТвои баксы: {bucks}💵\n\n🍽 Еда восстанавливает сытость, 🎁 подарки поднимают настроение и дают немного опыта. Выбирай:",
+        "food_bought": "🍽 Сытость +{n}! Персонаж доволен.",
+        "gift_bought": "🎁 Подарок понравился! Настроение +{mood}, опыт +{xp}.",
+        "not_enough_bucks": "❌ Не хватает баксов: нужно ещё {n}💵.",
+        "not_enough_energizers": "❌ Нет энергетиков. Купи бандл, чтобы разбудить персонажа сразу ⚡.",
+        "asleep_message": "😴 Персонаж крепко спит и сейчас не может ответить. Энергия восстановится сама через некоторое время — или разбуди прямо сейчас энергетиком ⚡.",
+        "wake_energizer_btn": "⚡ Разбудить энергетиком",
+        "woken_up": "⚡ Энергетик выпит — персонаж снова бодр и на связи!",
+        "stats_line": "⚡ Энергия: {energy}/100   🍗 Сытость: {satiety}/100\n⚡ Энергетиков: {energizers}   💵 Баксов: {bucks}",
         "payment_pro_success": "✅ PRO подписка активирована на месяц!",
         "payment_super_success": "✅ SUPER PRO подписка активирована на месяц!",
         "payment_upgrade_success": "✅ Апгрейд до SUPER PRO выполнен до {date}!",
@@ -219,7 +228,7 @@ TEXTS = {
         "change_character": "🔄 Change character",
         "invite_friend": "👥 Invite friend",
         "create_character": "🎭 Create your own character",
-        "buy_packs": "📦 Buy packs",
+        "buy_bundles": "🎁 Buy a bundle",
         "subscribe": "👑 Subscribe",
         "back": "🔙 Main menu",
         "back_to_profile": "🔙 Back",
@@ -256,7 +265,7 @@ TEXTS = {
         "choose_style": "🎨 Now choose your character's style:",
         "choose_style_updated": "🎨 Style updated! Now choose a scene:",
         "choose_scene": "🎬 Now choose a scene:\n\n📱 Phone chat — classic texting format.\n👫 Real meeting — face-to-face conversation.",
-        "no_messages": "😔 No messages left. Buy a pack or subscribe.",
+        "no_messages": "😔 You're out of free messages for today. Get a subscription for a much bigger limit!",
         "no_history": "❌ Nothing to edit yet — send your character a message first.",
         "edit_prompt": "✏️ Send the new text for your last message — I'll forget the old one and reply again.",
         "edit_success": "✅ Message replaced. Generating a new response...",
@@ -373,14 +382,13 @@ TEXTS = {
         "need_character_alert": "Create your character first!",
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
-        "packs_blocked_active_sub": "❌ Packs can't be bought while a subscription is active.",
         "subs_title": "👑 Role Duel Subscriptions",
         "subs_body": "🔥 PRO (250⭐ per month)\n• 50 messages a day\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• 100 messages a day\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐ per month",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ per month",
         "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (245⭐)",
-        "packs_title": "📦 **Buy a message pack**\n\nChoose a pack:",
-        "pack_btn": "{n} messages — {price} ⭐",
+        "bundles_title": "🎁 **Buy a bundle**\n\nA bundle gives you energizers ⚡ (your companion's energy) and bucks 💵 (for food and gifts in the shop). Choose a bundle:",
+        "bundle_btn": "{energizers}⚡ + {bucks}💵 — {price} ⭐",
         "invoice_pro_title": "PRO subscription for a month",
         "invoice_pro_desc": "50 messages per day, 60-message memory, Passionate and Magnetic styles.",
         "invoice_pro_label": "PRO month",
@@ -390,10 +398,20 @@ TEXTS = {
         "invoice_upgrade_title": "Upgrade to SUPER PRO",
         "invoice_upgrade_desc": "Upgrade PRO to SUPER PRO for the remaining time. 245⭐.",
         "invoice_upgrade_label": "Upgrade",
-        "invoice_pack_title": "Pack of {n} messages",
-        "invoice_pack_desc": "{n} messages for {price}⭐",
-        "invoice_pack_label": "{n} msgs",
-        "payment_pack_success": "✅ Purchased {n} messages!",
+        "invoice_bundle_title": "Bundle: {energizers}⚡ + {bucks}💵",
+        "invoice_bundle_desc": "{energizers} energizers and {bucks} bucks for {price}⭐",
+        "invoice_bundle_label": "Bundle",
+        "payment_bundle_success": "✅ Received: {energizers}⚡ energizers and {bucks}💵 bucks!",
+        "shop_btn": "🛍 Shop",
+        "shop_title": "🛍 **Shop**\n\nYour bucks: {bucks}💵\n\n🍽 Food restores satiety, 🎁 gifts boost mood and give a bit of XP. Take your pick:",
+        "food_bought": "🍽 Satiety +{n}! Your companion is happy.",
+        "gift_bought": "🎁 The gift was a hit! Mood +{mood}, XP +{xp}.",
+        "not_enough_bucks": "❌ Not enough bucks: you need {n}💵 more.",
+        "not_enough_energizers": "❌ No energizers left. Buy a bundle to wake your companion up right away ⚡.",
+        "asleep_message": "😴 Your companion is fast asleep and can't reply right now. Energy will recover on its own after a while — or wake them up right away with an energizer ⚡.",
+        "wake_energizer_btn": "⚡ Wake up with an energizer",
+        "woken_up": "⚡ Energizer used — your companion is wide awake again!",
+        "stats_line": "⚡ Energy: {energy}/100   🍗 Satiety: {satiety}/100\n⚡ Energizers: {energizers}   💵 Bucks: {bucks}",
         "payment_pro_success": "✅ PRO subscription activated for a month!",
         "payment_super_success": "✅ SUPER PRO subscription activated for a month!",
         "payment_upgrade_success": "✅ Upgrade to SUPER PRO done until {date}!",
@@ -407,7 +425,7 @@ TEXTS = {
         "change_character": "🔄 Charakter wechseln",
         "invite_friend": "👥 Freund einladen",
         "create_character": "🎭 Eigenen Charakter erstellen",
-        "buy_packs": "📦 Pakete kaufen",
+        "buy_bundles": "🎁 Bundle kaufen",
         "subscribe": "👑 Abo abschließen",
         "back": "🔙 Hauptmenü",
         "back_to_profile": "🔙 Zurück",
@@ -444,7 +462,7 @@ TEXTS = {
         "choose_style": "🎨 Wähle jetzt den Stil deines Charakters:",
         "choose_style_updated": "🎨 Stil aktualisiert! Wähle jetzt eine Szene:",
         "choose_scene": "🎬 Wähle jetzt eine Szene:\n\n📱 Chat am Handy — das klassische Schreiben.\n👫 Echtes Treffen — ein Gespräch von Angesicht zu Angesicht.",
-        "no_messages": "😔 Keine Nachrichten mehr übrig. Kaufe ein Paket oder ein Abo.",
+        "no_messages": "😔 Deine kostenlosen Nachrichten für heute sind aufgebraucht. Hol dir ein Abo für ein viel größeres Limit!",
         "no_history": "❌ Noch nichts zum Bearbeiten — schreibe deinem Charakter zuerst eine Nachricht.",
         "edit_prompt": "✏️ Schicke den neuen Text deiner letzten Nachricht — ich vergesse die alte und antworte neu.",
         "edit_success": "✅ Nachricht ersetzt. Ich erstelle eine neue Antwort...",
@@ -561,14 +579,13 @@ TEXTS = {
         "need_character_alert": "Erstelle zuerst deinen Charakter!",
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
-        "packs_blocked_active_sub": "❌ Mit einem aktiven Abo können keine Pakete gekauft werden.",
         "subs_title": "👑 Role Duel Abos",
         "subs_body": "🔥 PRO (250⭐ pro Monat)\n• 50 Nachrichten pro Tag\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• 100 Nachrichten pro Tag\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐ pro Monat",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ pro Monat",
         "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO (245⭐)",
-        "packs_title": "📦 **Nachrichtenpaket kaufen**\n\nWähle ein Paket:",
-        "pack_btn": "{n} Nachrichten — {price} ⭐",
+        "bundles_title": "🎁 **Bundle kaufen**\n\nEin Bundle enthält Energydrinks ⚡ (Energie deines Begleiters) und Bucks 💵 (für Essen und Geschenke im Shop). Wähle ein Bundle:",
+        "bundle_btn": "{energizers}⚡ + {bucks}💵 — {price} ⭐",
         "invoice_pro_title": "PRO-Abo für einen Monat",
         "invoice_pro_desc": "50 Nachrichten pro Tag, Gedächtnis 60 Nachrichten, Stile Leidenschaftlich und Magnetisch.",
         "invoice_pro_label": "PRO Monat",
@@ -578,10 +595,20 @@ TEXTS = {
         "invoice_upgrade_title": "Upgrade auf SUPER PRO",
         "invoice_upgrade_desc": "Hebt PRO für die Restlaufzeit auf SUPER PRO an. 245⭐.",
         "invoice_upgrade_label": "Upgrade",
-        "invoice_pack_title": "Paket mit {n} Nachrichten",
-        "invoice_pack_desc": "{n} Nachrichten für {price}⭐",
-        "invoice_pack_label": "{n} Nachr.",
-        "payment_pack_success": "✅ {n} Nachrichten gekauft!",
+        "invoice_bundle_title": "Bundle: {energizers}⚡ + {bucks}💵",
+        "invoice_bundle_desc": "{energizers} Energydrinks und {bucks} Bucks für {price}⭐",
+        "invoice_bundle_label": "Bundle",
+        "payment_bundle_success": "✅ Erhalten: {energizers}⚡ Energydrinks und {bucks}💵 Bucks!",
+        "shop_btn": "🛍 Shop",
+        "shop_title": "🛍 **Shop**\n\nDeine Bucks: {bucks}💵\n\n🍽 Essen füllt die Sättigung auf, 🎁 Geschenke heben die Stimmung und geben etwas XP. Wähle:",
+        "food_bought": "🍽 Sättigung +{n}! Dein Begleiter ist zufrieden.",
+        "gift_bought": "🎁 Das Geschenk kam gut an! Stimmung +{mood}, XP +{xp}.",
+        "not_enough_bucks": "❌ Nicht genug Bucks: dir fehlen noch {n}💵.",
+        "not_enough_energizers": "❌ Keine Energydrinks mehr. Kaufe ein Bundle, um deinen Begleiter sofort aufzuwecken ⚡.",
+        "asleep_message": "😴 Dein Begleiter schläft tief und fest und kann gerade nicht antworten. Die Energie erholt sich von selbst nach einer Weile — oder wecke ihn sofort mit einem Energydrink ⚡.",
+        "wake_energizer_btn": "⚡ Mit Energydrink wecken",
+        "woken_up": "⚡ Energydrink getrunken — dein Begleiter ist wieder hellwach!",
+        "stats_line": "⚡ Energie: {energy}/100   🍗 Sättigung: {satiety}/100\n⚡ Energydrinks: {energizers}   💵 Bucks: {bucks}",
         "payment_pro_success": "✅ PRO-Abo für einen Monat aktiviert!",
         "payment_super_success": "✅ SUPER PRO-Abo für einen Monat aktiviert!",
         "payment_upgrade_success": "✅ Upgrade auf SUPER PRO bis {date} erledigt!",
@@ -827,6 +854,11 @@ def get_user(user_id):
             "free_intim_scenes_super": 0,
             "intim_scene_unlocked": False,
             "intim_scene_used": False,
+            "energy": 100,
+            "satiety": 100,
+            "energizers": 0,
+            "bucks": 0,
+            "last_stat_tick": None,
             "last_activity": datetime.now().isoformat(),
             "last_reminder": None,
             "creating_character": False,
@@ -864,6 +896,11 @@ def get_user(user_id):
             "free_intim_scenes_super": 0,
             "intim_scene_unlocked": False,
             "intim_scene_used": False,
+            "energy": 100,
+            "satiety": 100,
+            "energizers": 0,
+            "bucks": 0,
+            "last_stat_tick": None,
             "last_activity": None,
             "last_reminder": None,
             "creating_character": False,
@@ -883,6 +920,7 @@ def get_user(user_id):
         if user.get("style") not in STYLES:
             user["style"] = "warm"
 
+        apply_passive_stat_regen(user)
         save_data(user_data)
     return user_data[user_id]
 
@@ -1055,6 +1093,17 @@ INTIM_DOMINANTS = {
 FREE_INTIM_SCENES = {"pro": 1, "super_pro": 3}
 INTIM_LEVEL_REWARD = 8  # на каком уровне близости открывается бесплатная сцена
 
+# Магазин за баксы 💵 (валюта из бандлов): еда поднимает сытость, подарки — настроение и немного XP.
+FOOD_ITEMS = {
+    "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 10, "satiety": 15},
+    "meal": {"emoji": "🍲", "ru": "Обед", "en": "Meal", "de": "Mahlzeit", "price": 25, "satiety": 40},
+    "feast": {"emoji": "🍰", "ru": "Пир", "en": "Feast", "de": "Festmahl", "price": 50, "satiety": 100},
+}
+GIFT_ITEMS = {
+    "flowers": {"emoji": "💐", "ru": "Цветы", "en": "Flowers", "de": "Blumen", "price": 20, "mood": 4, "xp": 5},
+    "jewelry": {"emoji": "💎", "ru": "Украшение", "en": "Jewelry", "de": "Schmuck", "price": 60, "mood": 8, "xp": 15},
+}
+
 
 def intim_option_label(mapping, key, user):
     option = mapping[key]
@@ -1150,30 +1199,33 @@ def get_history_limit(user):
         return 30
 
 
+FREE_DAILY_MESSAGES = 20  # бесплатный дневной лимит для тех, у кого нет подписки — бандлы больше не дают
+                          # сообщений (только энергетики/баксы), поэтому чат больше никогда не "кончается" насовсем
+
+
 def _reset_daily_quota_if_needed(user):
     level = get_subscription_level(user)
-    if not level:
-        return
     today = datetime.now().date().isoformat()
-    if user.get("last_daily_reset") != today:
-        user["daily_messages"] = 100 if level == "super_pro" else 50
-        user["last_daily_reset"] = today
+    if user.get("last_daily_reset") == today:
+        return
+    user["daily_messages"] = 100 if level == "super_pro" else (50 if level == "pro" else FREE_DAILY_MESSAGES)
+    user["last_daily_reset"] = today
+    if level:
         field = "free_intim_scenes_super" if level == "super_pro" else "free_intim_scenes_pro"
         user[field] = FREE_INTIM_SCENES[level]
 
 
 def get_available_messages(user):
-    """Раньше эта функция вызывалась, но нигде не была определена —
-    из-за этого падало ЛЮБОЕ сообщение пользователю (NameError)."""
-    if has_active_subscription(user):
-        _reset_daily_quota_if_needed(user)
-        return user.get("daily_messages", 0)
-    return user.get("purchased_messages", 0)
+    """daily_messages — обновляемый каждый день лимит (у подписчиков больше), purchased_messages —
+    постоянный бонусный запас (стартовый подарок + рефералы), который тратится уже после него."""
+    _reset_daily_quota_if_needed(user)
+    return user.get("daily_messages", 0) + user.get("purchased_messages", 0)
 
 
 def use_message(user):
-    if has_active_subscription(user):
-        user["daily_messages"] = max(0, user.get("daily_messages", 0) - 1)
+    _reset_daily_quota_if_needed(user)
+    if user.get("daily_messages", 0) > 0:
+        user["daily_messages"] = user.get("daily_messages", 0) - 1
     else:
         user["purchased_messages"] = max(0, user.get("purchased_messages", 0) - 1)
     save_data(user_data)
@@ -1294,6 +1346,81 @@ def get_time_of_day(user):
     return period, note
 
 
+# ============================================================
+#  ЭНЕРГИЯ / СЫТОСТЬ СОБЕСЕДНИКА (тамагочи-механика)
+# ============================================================
+MAX_STAT = 100
+ENERGY_REGEN_MINUTES_FULL = 40    # без активности энергия сама полностью восстанавливается примерно за 40 минут
+SATIETY_REGEN_MINUTES_FULL = 180  # сытость сама восстанавливается намного медленнее — еда остаётся ценной
+ENERGY_COST_MESSAGE = 3
+SATIETY_COST_MESSAGE = 2
+ENERGY_COST_INTIM = 10
+SATIETY_COST_INTIM = 6
+
+
+def apply_passive_stat_regen(user):
+    """Энергия и сытость понемногу восстанавливаются сами, пока пользователь не пишет — так
+    бесплатный сценарий остаётся честным: персонаж рано или поздно "отдыхает" сам, а энергетики
+    и еда только ускоряют это или добавляют бонус сверху, а не остаются единственным способом."""
+    now = datetime.now()
+    last = user.get("last_stat_tick")
+    if last:
+        try:
+            elapsed_min = max(0.0, (now - datetime.fromisoformat(last)).total_seconds() / 60)
+        except (ValueError, TypeError):
+            elapsed_min = 0
+        if elapsed_min > 0:
+            user["energy"] = min(MAX_STAT, user.get("energy", MAX_STAT) + elapsed_min * (MAX_STAT / ENERGY_REGEN_MINUTES_FULL))
+            user["satiety"] = min(MAX_STAT, user.get("satiety", MAX_STAT) + elapsed_min * (MAX_STAT / SATIETY_REGEN_MINUTES_FULL))
+    user["last_stat_tick"] = now.isoformat()
+
+
+def apply_activity_stat_cost(user, energy_cost, satiety_cost):
+    user["energy"] = max(0, user.get("energy", MAX_STAT) - energy_cost)
+    user["satiety"] = max(0, user.get("satiety", MAX_STAT) - satiety_cost)
+
+
+def is_asleep(user):
+    return user.get("energy", MAX_STAT) <= 0
+
+
+def use_energizer(user):
+    """Возвращает True, если энергетик найден и использован."""
+    if user.get("energizers", 0) <= 0:
+        return False
+    user["energizers"] -= 1
+    user["energy"] = MAX_STAT
+    save_data(user_data)
+    return True
+
+
+def build_energy_rule(user):
+    if user.get("energy", MAX_STAT) <= 30:
+        return ("У тебя мало энергии, тебя клонит в сон — отвечай короче обычного, сонно и чуть "
+                "медленнее, можешь между делом зевнуть в описании действия.\n")
+    return ""
+
+
+def build_hunger_rule(user):
+    satiety = user.get("satiety", MAX_STAT)
+    if satiety <= 20:
+        return ("Голод даёт о себе знать — время от времени вскользь упоминай это, отвечай чуть "
+                "более отрывисто и рассеянно, чем обычно.\n")
+    elif satiety <= 50:
+        return "Лёгкий голод — иногда вскользь упоминай, что не прочь перекусить.\n"
+    return ""
+
+
+def stats_line_text(user):
+    return get_text(
+        user, "stats_line",
+        energy=int(round(user.get("energy", MAX_STAT))),
+        satiety=int(round(user.get("satiety", MAX_STAT))),
+        energizers=user.get("energizers", 0),
+        bucks=user.get("bucks", 0),
+    )
+
+
 def get_level_congratulation(user, level):
     return get_text(user, "level_up").get(level, "")
 
@@ -1376,6 +1503,8 @@ def build_prompt(user):
     )
     intimacy_rule = build_intimacy_rule(user)
     mood_rule = build_mood_rule(user)
+    energy_rule = build_energy_rule(user)
+    hunger_rule = build_hunger_rule(user)
     time_period, time_note = get_time_of_day(user)
     user_gender = user.get("user_gender", "male")
     if user_gender == "male":
@@ -1390,7 +1519,7 @@ def build_prompt(user):
         f"{style_desc} "
         f"{rules}"
         f"Сейчас у вас {time_period} — {time_note}. "
-        f"{mood_rule} "
+        f"{mood_rule} {energy_rule}{hunger_rule}"
         f"{gender_context} "
         f"Ты не признаёшься в любви с первого сообщения — у тебя есть характер и самоуважение. "
         f"Ты ценишь близость и доверие, которые не возникают за один вечер. "
@@ -1518,7 +1647,8 @@ def get_main_menu_keyboard(user):
 
 def get_profile_keyboard(user):
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "buy_packs"), callback_data="profile_packs", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "buy_bundles"), callback_data="profile_bundles", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "shop_btn"), callback_data="profile_shop", style="success")],
         [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")],
         [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
         [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")],
@@ -1871,6 +2001,7 @@ async def send_main_menu(chat_id, user):
         f"{balance_text}\n"
         f"{xp_badge}\n"
         f"{multiplier_text}\n\n"
+        f"{stats_line_text(user)}\n\n"
         f"{get_text(user, 'menu_write_prompt')}"
     )
 
@@ -1922,6 +2053,7 @@ async def show_profile(msg, user):
                f"{expiry_line}\n\n"
                f"{xp_badge}\n"
                f"{multiplier_text}\n\n"
+               f"{stats_line_text(user)}\n\n"
                f"{get_text(user, 'profile_styles_header')}\n{styles_text}")
 
     chat_id = msg.chat.id
@@ -2201,22 +2333,103 @@ async def profile_subs(call: types.CallbackQuery):
     await call.message.answer(text, reply_markup=keyboard)
 
 
-@dp.callback_query(lambda c: c.data == "profile_packs")
-async def profile_packs(call: types.CallbackQuery):
+@dp.callback_query(lambda c: c.data == "profile_bundles")
+async def profile_bundles(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     if not user["personality_ready"]:
         await call.answer(get_text(user, "need_character_alert"), show_alert=True)
         return
-    if has_active_subscription(user):
-        await call.answer(get_text(user, "packs_blocked_active_sub"), show_alert=True)
-        return
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=30, price=30), callback_data="buy:pack_30", style="success")],
-        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=100, price=80), callback_data="buy:pack_100", style="success")],
-        [InlineKeyboardButton(text=get_text(user, "pack_btn", n=300, price=200), callback_data="buy:pack_300", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "bundle_btn", **BUNDLES[key], price=PRODUCTS[key]["stars"]),
+                              callback_data=f"buy:{key}", style="success")]
+        for key in BUNDLES
+    ] + [
         [InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")]
     ])
-    await call.message.answer(get_text(user, "packs_title"), reply_markup=keyboard, parse_mode="Markdown")
+    await call.message.answer(get_text(user, "bundles_title"), reply_markup=keyboard, parse_mode="Markdown")
+    await call.answer()
+
+
+def spend_bucks(user, price):
+    if user.get("bucks", 0) < price:
+        return False
+    user["bucks"] -= price
+    return True
+
+
+async def grant_gift_xp(chat_id, user, amount):
+    """Такая же проверка уровня близости, что и в handle_message при обычном сообщении —
+    вынесена отдельно, чтобы не трогать стабильный основной хендлер ради ещё одного источника XP."""
+    user["xp"] = max(0, user.get("xp", 0) + amount)
+    new_level = get_intimacy_level(user)
+    old_level = user.get("last_level", 0)
+    if new_level != old_level:
+        user["last_level"] = new_level
+        if new_level >= INTIM_LEVEL_REWARD and not user.get("intim_scene_unlocked"):
+            user["intim_scene_unlocked"] = True
+        if new_level > old_level:
+            congrats = get_level_congratulation(user, new_level)
+            if congrats:
+                await bot.send_message(chat_id, congrats, reply_markup=get_full_kb(user))
+            if new_level == INTIM_LEVEL_REWARD:
+                await bot.send_message(chat_id, get_text(user, "intim_free_level"), reply_markup=get_full_kb(user))
+    save_data(user_data)
+
+
+def get_shop_kb(user):
+    rows = [[InlineKeyboardButton(text=f"{intim_option_label(FOOD_ITEMS, key, user)} — {item['price']}💵",
+                                  callback_data=f"shop_food_{key}", style="success")]
+            for key, item in FOOD_ITEMS.items()]
+    rows += [[InlineKeyboardButton(text=f"{intim_option_label(GIFT_ITEMS, key, user)} — {item['price']}💵",
+                                   callback_data=f"shop_gift_{key}", style="success")]
+             for key, item in GIFT_ITEMS.items()]
+    rows.append([InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+@dp.callback_query(lambda c: c.data == "profile_shop")
+async def profile_shop(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    if not user["personality_ready"]:
+        await call.answer(get_text(user, "need_character_alert"), show_alert=True)
+        return
+    await call.message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)),
+                              reply_markup=get_shop_kb(user), parse_mode="Markdown")
+    await call.answer()
+
+
+@dp.callback_query(lambda c: c.data.startswith("shop_food_"))
+async def buy_food(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    key = call.data[len("shop_food_"):]
+    item = FOOD_ITEMS.get(key)
+    if not item:
+        await call.answer()
+        return
+    if not spend_bucks(user, item["price"]):
+        await call.answer(get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0)), show_alert=True)
+        return
+    user["satiety"] = min(MAX_STAT, user.get("satiety", MAX_STAT) + item["satiety"])
+    save_data(user_data)
+    await call.message.answer(get_text(user, "food_bought", n=item["satiety"]))
+    await call.answer()
+
+
+@dp.callback_query(lambda c: c.data.startswith("shop_gift_"))
+async def buy_gift(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    key = call.data[len("shop_gift_"):]
+    item = GIFT_ITEMS.get(key)
+    if not item:
+        await call.answer()
+        return
+    if not spend_bucks(user, item["price"]):
+        await call.answer(get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0)), show_alert=True)
+        return
+    user["mood"] = min(10, max(-10, user.get("mood", 0) + item["mood"]))
+    save_data(user_data)
+    await grant_gift_xp(call.message.chat.id, user, item["xp"])
+    await call.message.answer(get_text(user, "gift_bought", mood=item["mood"], xp=item["xp"]))
     await call.answer()
 
 
@@ -2255,9 +2468,9 @@ PRODUCTS = {
     "subscribe_pro": {"stars": 250, "usd": 4.5},
     "subscribe_super": {"stars": 450, "usd": 7.9},
     "upgrade_to_super": {"stars": 245, "usd": 4.4},
-    "pack_30": {"stars": 30, "usd": 0.7},
-    "pack_100": {"stars": 80, "usd": 1.7},
-    "pack_300": {"stars": 200, "usd": 3.9},
+    "bundle_small": {"stars": 30, "usd": 0.7},
+    "bundle_medium": {"stars": 80, "usd": 1.7},
+    "bundle_large": {"stars": 200, "usd": 3.9},
     "spin_paid_20": {"stars": 20, "usd": 0.5},
     "intim_scene": {"stars": 45, "usd": 1.0},
 }
@@ -2266,7 +2479,13 @@ PRODUCTS = {
 for _product in PRODUCTS.values():
     _product["rub"] = _product["stars"]
 
-PACK_SIZES = {"pack_30": 30, "pack_100": 100, "pack_300": 300}
+# Что именно выдаёт каждый бандл — энергетики (⚡ энергия) и баксы (💵 еда/подарки в магазине),
+# сообщения бандлы больше не дают (см. FREE_DAILY_MESSAGES — теперь бесплатный лимit обновляется сам).
+BUNDLES = {
+    "bundle_small": {"energizers": 2, "bucks": 60},
+    "bundle_medium": {"energizers": 6, "bucks": 180},
+    "bundle_large": {"energizers": 16, "bucks": 500},
+}
 
 
 def is_method_enabled(method):
@@ -2297,12 +2516,12 @@ def product_invoice_texts(user, payload):
     if payload == "intim_scene":
         return (get_text(user, "invoice_intim_title"), get_text(user, "invoice_intim_desc"),
                 get_text(user, "invoice_intim_label"))
-    if payload in PACK_SIZES:
-        n = PACK_SIZES[payload]
+    if payload in BUNDLES:
+        bundle = BUNDLES[payload]
         price = PRODUCTS[payload]["stars"]
-        return (get_text(user, "invoice_pack_title", n=n),
-                get_text(user, "invoice_pack_desc", n=n, price=price),
-                get_text(user, "invoice_pack_label", n=n))
+        return (get_text(user, "invoice_bundle_title", **bundle),
+                get_text(user, "invoice_bundle_desc", price=price, **bundle),
+                get_text(user, "invoice_bundle_label"))
     return (get_text(user, "spin_wheel"), get_text(user, "spin_invoice_desc"),
             get_text(user, "spin_invoice_label"))
 
@@ -2401,11 +2620,12 @@ async def grant_product(user, payload, chat_id):
     Раньше эта логика жила прямо в payment_success и работала только для Stars."""
     user["has_purchased"] = True
 
-    if payload in PACK_SIZES:
-        n = PACK_SIZES[payload]
-        user["purchased_messages"] = user.get("purchased_messages", 0) + n
+    if payload in BUNDLES:
+        bundle = BUNDLES[payload]
+        user["energizers"] = user.get("energizers", 0) + bundle["energizers"]
+        user["bucks"] = user.get("bucks", 0) + bundle["bucks"]
         save_data(user_data)
-        await bot.send_message(chat_id, get_text(user, "payment_pack_success", n=n))
+        await bot.send_message(chat_id, get_text(user, "payment_bundle_success", **bundle))
     elif payload == "subscribe_pro":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
@@ -2540,8 +2760,6 @@ def payment_blocked_reason(user, payload):
         return get_text(user, "already_subscribed_alert")
     if payload == "upgrade_to_super" and get_subscription_level(user) != "pro":
         return get_text(user, "pro_only_alert")
-    if payload in PACK_SIZES and has_active_subscription(user):
-        return get_text(user, "packs_blocked_active_sub")
     return None
 
 
@@ -2655,7 +2873,11 @@ async def grant_cmd(message: types.Message):
         return
     args = message.text.split()
     if len(args) < 2:
-        await message.answer("/grant @username — SUPER PRO\n/grant @username pro — PRO\n/grant @username intim N — N интим-сцен")
+        await message.answer(
+            "/grant @username — SUPER PRO\n/grant @username pro — PRO\n"
+            "/grant @username intim N — N интим-сцен\n/grant @username energizers N — N энергетиков\n"
+            "/grant @username bucks N — N баксов"
+        )
         return
     user_id = await _resolve_admin_target(message, args[1])
     if user_id is None:
@@ -2672,6 +2894,19 @@ async def grant_cmd(message: types.Message):
         user["intim_scenes"] = user.get("intim_scenes", 0) + amount
         save_data(user_data)
         await message.answer(f"✅ {args[1]} выдано интим-сцен: {amount}.")
+        return
+    if len(args) >= 3 and args[2].lower() in ("energizers", "bucks"):
+        field = args[2].lower()
+        amount = 1
+        if len(args) >= 4:
+            try:
+                amount = max(1, int(args[3]))
+            except ValueError:
+                await message.answer("❌ Количество должно быть числом.")
+                return
+        user[field] = user.get(field, 0) + amount
+        save_data(user_data)
+        await message.answer(f"✅ {args[1]} выдано {field}: {amount}.")
         return
     if len(args) >= 3 and args[2].lower() == "pro":
         user["subscription"]["active"] = True
@@ -2744,6 +2979,29 @@ def get_intim_buy_kb(user):
     ])
 
 
+def get_wake_kb(user):
+    """Пока энергия не кончится, эта клавиатура не нужна — показываем её только когда
+    собеседник "спит" (energy <= 0), поэтому кнопка предлагает либо мгновенно разбудить
+    энергетиком, либо (если их нет) сразу купить бандл."""
+    if user.get("energizers", 0) > 0:
+        return InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=get_text(user, "wake_energizer_btn"), callback_data="wake_up", style="success")]
+        ])
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=get_text(user, "buy_bundles"), callback_data="profile_bundles", style="success")]
+    ])
+
+
+@dp.callback_query(lambda c: c.data == "wake_up")
+async def wake_up_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    if use_energizer(user):
+        await call.message.answer(get_text(user, "woken_up"))
+        await call.answer()
+    else:
+        await call.answer(get_text(user, "not_enough_energizers"), show_alert=True)
+
+
 async def show_intim_menu(chat_id, user):
     available = intim_scenes_available(user)
     if available <= 0:
@@ -2762,6 +3020,9 @@ async def intim_cmd(message: types.Message):
         return
     if not user["personality_ready"]:
         await message.answer(get_text(user, "intim_need_character"))
+        return
+    if is_asleep(user):
+        await message.answer(get_text(user, "asleep_message"), reply_markup=get_wake_kb(user))
         return
     await show_intim_menu(message.chat.id, user)
 
@@ -2922,6 +3183,7 @@ async def generate_intim_scene(call, user, scene_type, location="any", dominant=
     if len(user["history"]) > limit:
         user["history"] = user["history"][-limit:]
     user["last_activity"] = datetime.now().isoformat()
+    apply_activity_stat_cost(user, ENERGY_COST_INTIM, SATIETY_COST_INTIM)
     save_data(user_data)
 
     await send_long_to_chat(chat_id, clean_answer, reply_markup=get_full_kb(user))
@@ -3005,6 +3267,7 @@ async def generate_and_reply(message: types.Message, user):
             pass
 
     user["last_activity"] = datetime.now().isoformat()
+    apply_activity_stat_cost(user, ENERGY_COST_MESSAGE, SATIETY_COST_MESSAGE)
     save_data(user_data)
 
 
@@ -3065,6 +3328,13 @@ async def handle_message(message: types.Message):
         if is_button(message.text, key):
             return
 
+    # 4b. Собеседник может "уснуть", если кончилась энергия — тогда обычный ИИ-ответ
+    # не генерируем (экономит и токены, и веру в механику), а кнопки навигации выше уже
+    # обработаны и по-прежнему работают, чтобы можно было зайти в профиль и разбудить/покормить.
+    if is_asleep(user):
+        await message.answer(get_text(user, "asleep_message"), reply_markup=get_wake_kb(user))
+        return
+
     # 5. Режим редактирования последнего сообщения
     if user.get("editing_message"):
         user["editing_message"] = False
@@ -3097,8 +3367,7 @@ async def handle_message(message: types.Message):
     available = get_available_messages(user)
     if available <= 0:
         action_buttons = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")],
-            [InlineKeyboardButton(text=get_text(user, "buy_packs"), callback_data="profile_packs", style="success")]
+            [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")]
         ])
         await message.answer(get_text(user, "no_messages"), reply_markup=action_buttons)
         return
