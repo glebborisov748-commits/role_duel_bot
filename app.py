@@ -122,8 +122,10 @@ TEXTS = {
         "xp_level_label": "Уровень {level}/10",
         "xp_bonus_pro": "Бонус XP: x1.8",
         "xp_bonus_super": "Бонус XP: x2.5",
+        "xp_bonus_elite": "Бонус XP: x3.5",
         "profile_sub_pro": "🔥 PRO активна (50 сообщений/день, память 60 сообщений)",
         "profile_sub_super": "✨ SUPER PRO активна (100 сообщений/день, память 100 сообщений)",
+        "profile_sub_elite": "💎 ELITE активна (150 сообщений/день, память 150 сообщений)",
         "profile_sub_inactive": "❌ неактивна (память 30 сообщений)",
         "profile_sub_label": "Подписка: {status}",
         "profile_expiry": "Окончание подписки: {date}",
@@ -158,7 +160,7 @@ TEXTS = {
         "pay_invoice_ready": "🧾 Счёт создан. Оплати по ссылке — доступ откроется автоматически в течение минуты после оплаты.",
         "pay_open_invoice": "💳 Перейти к оплате",
         "pay_error": "⚠️ Не удалось создать счёт. Попробуй другой способ оплаты.",
-        "super_pro_only": "❌ Только для SUPER PRO.",
+        "super_pro_only": "❌ Доступно только с подпиской SUPER PRO или ELITE.",
         "create_character_super_only": "🔒 Создание своего персонажа доступно только с подпиской SUPER PRO!",
         "style_not_found": "❌ Стиль не найден",
         "style_unavailable": "❌ Стиль недоступен",
@@ -192,9 +194,10 @@ TEXTS = {
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
         "subs_title": "👑 Подписки Role Duel",
-        "subs_body": "🔥 PRO (250⭐/мес)\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-40%)\n• +80💵 баксов каждый день на еду и подарки\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-70%)\n• +200💵 баксов каждый день на еду и подарки\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_body": "🔥 PRO (250⭐/мес)\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-40%)\n• +80💵 баксов и +1⚡ энергетик каждый день\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-70%)\n• +200💵 баксов и +3⚡ энергетика каждый день\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (800⭐/мес)\n• Всё, что есть в SUPER PRO\n• 150 сообщений в день, память 150 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-85%)\n• +350💵 баксов и +6⚡ энергетиков каждый день\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐/мес",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐/мес",
+        "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐/мес",
         "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (245⭐)",
         "bundles_title": "🎁 **Купить бандл**\n\nБандл — это энергетики ⚡ (энергия персонажа) и баксы 💵 (на еду и подарки в магазине). Выбери бандл:",
         "bundle_btn": "{energizers}⚡ + {bucks}💵 — {price} ⭐",
@@ -204,6 +207,9 @@ TEXTS = {
         "invoice_super_title": "SUPER PRO подписка на месяц",
         "invoice_super_desc": "100 сообщений/день, память 100 сообщений, все стили, включая 18+.",
         "invoice_super_label": "SUPER PRO месяц",
+        "invoice_elite_title": "ELITE подписка на месяц",
+        "invoice_elite_desc": "150 сообщений/день, память 150 сообщений, все стили включая 18+, XP x3.5, минимальный расход энергии/сытости.",
+        "invoice_elite_label": "ELITE месяц",
         "invoice_upgrade_title": "Апгрейд до SUPER PRO",
         "invoice_upgrade_desc": "Повысьте PRO до SUPER PRO на оставшийся срок. 245⭐.",
         "invoice_upgrade_label": "Апгрейд",
@@ -234,6 +240,7 @@ TEXTS = {
         "mute_requires_sub_alert": "🔒 Отключение уведомлений доступно только с подпиской SUPER PRO.",
         "payment_pro_success": "✅ PRO подписка активирована на месяц!",
         "payment_super_success": "✅ SUPER PRO подписка активирована на месяц!",
+        "payment_elite_success": "✅ ELITE подписка активирована на месяц!",
         "payment_upgrade_success": "✅ Апгрейд до SUPER PRO выполнен до {date}!",
     },
     "en": {
@@ -336,8 +343,10 @@ TEXTS = {
         "xp_level_label": "Level {level}/10",
         "xp_bonus_pro": "XP bonus: x1.8",
         "xp_bonus_super": "XP bonus: x2.5",
+        "xp_bonus_elite": "XP bonus: x3.5",
         "profile_sub_pro": "🔥 PRO active (50 messages per day, 60-message memory)",
         "profile_sub_super": "✨ SUPER PRO active (100 messages per day, 100-message memory)",
+        "profile_sub_elite": "💎 ELITE active (150 messages per day, 150-message memory)",
         "profile_sub_inactive": "❌ inactive (30-message memory)",
         "profile_sub_label": "Subscription: {status}",
         "profile_expiry": "Subscription ends: {date}",
@@ -372,7 +381,7 @@ TEXTS = {
         "pay_invoice_ready": "🧾 Invoice created. Pay via the link — access opens automatically within a minute after payment.",
         "pay_open_invoice": "💳 Go to payment",
         "pay_error": "⚠️ Could not create the invoice. Please try another payment method.",
-        "super_pro_only": "❌ SUPER PRO only.",
+        "super_pro_only": "❌ Available with SUPER PRO or ELITE only.",
         "create_character_super_only": "🔒 Creating your own character requires a SUPER PRO subscription!",
         "style_not_found": "❌ Style not found",
         "style_unavailable": "❌ Style unavailable",
@@ -406,9 +415,10 @@ TEXTS = {
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
         "subs_title": "👑 Role Duel Subscriptions",
-        "subs_body": "🔥 PRO (250⭐ per month)\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-40%)\n• +80💵 bucks every day for food and gifts\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-70%)\n• +200💵 bucks every day for food and gifts\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_body": "🔥 PRO (250⭐ per month)\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-40%)\n• +80💵 bucks and +1⚡ energizer every day\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-70%)\n• +200💵 bucks and +3⚡ energizers every day\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (800⭐ per month)\n• Everything in SUPER PRO\n• 150 messages a day, 150-message memory\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-85%)\n• +350💵 bucks and +6⚡ energizers every day\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐ per month",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ per month",
+        "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐ per month",
         "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (245⭐)",
         "bundles_title": "🎁 **Buy a bundle**\n\nA bundle gives you energizers ⚡ (your companion's energy) and bucks 💵 (for food and gifts in the shop). Choose a bundle:",
         "bundle_btn": "{energizers}⚡ + {bucks}💵 — {price} ⭐",
@@ -418,6 +428,9 @@ TEXTS = {
         "invoice_super_title": "SUPER PRO subscription for a month",
         "invoice_super_desc": "100 messages per day, 100-message memory, all styles including 18+.",
         "invoice_super_label": "SUPER PRO month",
+        "invoice_elite_title": "ELITE subscription for a month",
+        "invoice_elite_desc": "150 messages per day, 150-message memory, all styles including 18+, XP x3.5, minimal energy/satiety drain.",
+        "invoice_elite_label": "ELITE month",
         "invoice_upgrade_title": "Upgrade to SUPER PRO",
         "invoice_upgrade_desc": "Upgrade PRO to SUPER PRO for the remaining time. 245⭐.",
         "invoice_upgrade_label": "Upgrade",
@@ -448,6 +461,7 @@ TEXTS = {
         "mute_requires_sub_alert": "🔒 Muting notifications is available with a SUPER PRO subscription only.",
         "payment_pro_success": "✅ PRO subscription activated for a month!",
         "payment_super_success": "✅ SUPER PRO subscription activated for a month!",
+        "payment_elite_success": "✅ ELITE subscription activated for a month!",
         "payment_upgrade_success": "✅ Upgrade to SUPER PRO done until {date}!",
     },
     "de": {
@@ -550,8 +564,10 @@ TEXTS = {
         "xp_level_label": "Level {level}/10",
         "xp_bonus_pro": "XP-Bonus: x1.8",
         "xp_bonus_super": "XP-Bonus: x2.5",
+        "xp_bonus_elite": "XP-Bonus: x3.5",
         "profile_sub_pro": "🔥 PRO aktiv (50 Nachrichten pro Tag, Gedächtnis 60 Nachrichten)",
         "profile_sub_super": "✨ SUPER PRO aktiv (100 Nachrichten pro Tag, Gedächtnis 100 Nachrichten)",
+        "profile_sub_elite": "💎 ELITE aktiv (150 Nachrichten pro Tag, Gedächtnis 150 Nachrichten)",
         "profile_sub_inactive": "❌ inaktiv (Gedächtnis 30 Nachrichten)",
         "profile_sub_label": "Abo: {status}",
         "profile_expiry": "Abo endet am: {date}",
@@ -586,7 +602,7 @@ TEXTS = {
         "pay_invoice_ready": "🧾 Rechnung erstellt. Zahle über den Link — der Zugang wird innerhalb einer Minute nach der Zahlung automatisch freigeschaltet.",
         "pay_open_invoice": "💳 Zur Zahlung",
         "pay_error": "⚠️ Rechnung konnte nicht erstellt werden. Bitte versuche eine andere Zahlungsart.",
-        "super_pro_only": "❌ Nur für SUPER PRO.",
+        "super_pro_only": "❌ Nur mit SUPER PRO oder ELITE verfügbar.",
         "create_character_super_only": "🔒 Einen eigenen Charakter zu erstellen ist nur mit SUPER PRO möglich!",
         "style_not_found": "❌ Stil nicht gefunden",
         "style_unavailable": "❌ Stil nicht verfügbar",
@@ -620,9 +636,10 @@ TEXTS = {
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
         "subs_title": "👑 Role Duel Abos",
-        "subs_body": "🔥 PRO (250⭐ pro Monat)\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-40%)\n• +80💵 Bucks jeden Tag für Essen und Geschenke\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-70%)\n• +200💵 Bucks jeden Tag für Essen und Geschenke\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
+        "subs_body": "🔥 PRO (250⭐ pro Monat)\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-40%)\n• +80💵 Bucks und +1⚡ Energydrink jeden Tag\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-70%)\n• +200💵 Bucks und +3⚡ Energydrinks jeden Tag\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (800⭐ pro Monat)\n• Alles aus SUPER PRO\n• 150 Nachrichten pro Tag, Gedächtnis 150 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-85%)\n• +350💵 Bucks und +6⚡ Energydrinks jeden Tag\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐ pro Monat",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ pro Monat",
+        "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐ pro Monat",
         "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO (245⭐)",
         "bundles_title": "🎁 **Bundle kaufen**\n\nEin Bundle enthält Energydrinks ⚡ (Energie deines Begleiters) und Bucks 💵 (für Essen und Geschenke im Shop). Wähle ein Bundle:",
         "bundle_btn": "{energizers}⚡ + {bucks}💵 — {price} ⭐",
@@ -632,6 +649,9 @@ TEXTS = {
         "invoice_super_title": "SUPER PRO-Abo für einen Monat",
         "invoice_super_desc": "100 Nachrichten pro Tag, Gedächtnis 100 Nachrichten, alle Stile inklusive 18+.",
         "invoice_super_label": "SUPER PRO Monat",
+        "invoice_elite_title": "ELITE-Abo für einen Monat",
+        "invoice_elite_desc": "150 Nachrichten pro Tag, Gedächtnis 150 Nachrichten, alle Stile inklusive 18+, XP x3.5, minimaler Energie-/Sättigungsverbrauch.",
+        "invoice_elite_label": "ELITE Monat",
         "invoice_upgrade_title": "Upgrade auf SUPER PRO",
         "invoice_upgrade_desc": "Hebt PRO für die Restlaufzeit auf SUPER PRO an. 245⭐.",
         "invoice_upgrade_label": "Upgrade",
@@ -662,6 +682,7 @@ TEXTS = {
         "mute_requires_sub_alert": "🔒 Benachrichtigungen stummschalten ist nur mit einem SUPER PRO-Abo möglich.",
         "payment_pro_success": "✅ PRO-Abo für einen Monat aktiviert!",
         "payment_super_success": "✅ SUPER PRO-Abo für einen Monat aktiviert!",
+        "payment_elite_success": "✅ ELITE-Abo für einen Monat aktiviert!",
         "payment_upgrade_success": "✅ Upgrade auf SUPER PRO bis {date} erledigt!",
     }
 }
@@ -901,6 +922,7 @@ def get_user(user_id):
             "intim_scenes": 0,
             "free_intim_scenes_pro": 0,
             "free_intim_scenes_super": 0,
+            "free_intim_scenes_elite": 0,
             "intim_scene_unlocked": False,
             "intim_scene_used": False,
             "energy": 100,
@@ -946,6 +968,7 @@ def get_user(user_id):
             "intim_scenes": 0,
             "free_intim_scenes_pro": 0,
             "free_intim_scenes_super": 0,
+            "free_intim_scenes_elite": 0,
             "intim_scene_unlocked": False,
             "intim_scene_used": False,
             "energy": 100,
@@ -1090,6 +1113,8 @@ STYLE_INTIM_FLAVOR = {
 ADULT_STYLE_KEYS = [key for key, style in STYLES.items() if style.get("adult")]
 ADULT_BADGE = "18+"
 XP_PER_LEVEL = 200
+XP_MULTIPLIER = {"pro": 1.8, "super_pro": 2.5, "elite": 3.5}
+XP_BONUS_TEXT_KEY = {"pro": "xp_bonus_pro", "super_pro": "xp_bonus_super", "elite": "xp_bonus_elite"}
 
 
 def is_style_unlocked(style_key, user):
@@ -1209,8 +1234,13 @@ FOOD_ITEMS = {
 }
 GIFT_ITEMS = {
     "sweets": {"emoji": "🍫", "ru": "Шоколадки", "en": "Chocolates", "de": "Pralinen", "price": 10, "mood": 2, "xp": 2},
+    "wine": {"emoji": "🍷", "ru": "Вино", "en": "Wine", "de": "Wein", "price": 15, "mood": 3, "xp": 3},
     "flowers": {"emoji": "💐", "ru": "Цветы", "en": "Flowers", "de": "Blumen", "price": 20, "mood": 4, "xp": 5},
+    "cosmetics": {"emoji": "💄", "ru": "Косметика", "en": "Cosmetics", "de": "Kosmetik", "price": 30, "mood": 5, "xp": 7},
+    "heels": {"emoji": "👠", "ru": "Каблуки", "en": "Heels", "de": "High Heels", "price": 40, "mood": 6, "xp": 8},
+    "dress": {"emoji": "👗", "ru": "Платье", "en": "Dress", "de": "Kleid", "price": 55, "mood": 7, "xp": 10},
     "jewelry": {"emoji": "💎", "ru": "Украшение", "en": "Jewelry", "de": "Schmuck", "price": 60, "mood": 8, "xp": 15},
+    "phone": {"emoji": "📱", "ru": "Телефон", "en": "Phone", "de": "Handy", "price": 100, "mood": 9, "xp": 20},
     "date": {"emoji": "🌹", "ru": "Романтический вечер", "en": "Romantic evening", "de": "Romantischer Abend", "price": 150, "mood": 10, "xp": 35},
 }
 
@@ -1781,7 +1811,7 @@ def get_main_menu_keyboard(user):
         [InlineKeyboardButton(text=get_text(user, "change_character"), callback_data="main_change", style="primary")],
         [InlineKeyboardButton(text=get_text(user, "invite_friend"), callback_data="referral_menu")]
     ]
-    if get_subscription_level(user) == "super_pro":
+    if get_subscription_level(user) in ("super_pro", "elite"):
         buttons.append([InlineKeyboardButton(text=get_text(user, "create_character"), callback_data="create_character")])
     else:
         buttons.append([InlineKeyboardButton(text="🔒 " + get_text(user, "create_character") + " (SUPER PRO)", callback_data="create_character_locked")])
@@ -1849,6 +1879,11 @@ async def proceed_flow(user_id: int, chat_id: int):
 
 @dp.message(Command("start"))
 async def start_cmd(message: types.Message):
+    if maintenance_mode and message.from_user.id not in ADMIN_IDS:
+        user = get_user(message.from_user.id)
+        await message.answer(get_text(user, "maintenance"), parse_mode="Markdown")
+        return
+
     user = get_user(message.from_user.id)
 
     # Реферальная ссылка — разбираем только из настоящего /start-сообщения пользователя,
@@ -1866,10 +1901,14 @@ async def start_cmd(message: types.Message):
             user["referred_by"] = referrer_id
             save_data(user_data)
             # Язык ещё не выбран на этом шаге (выбор языка идёт дальше в proceed_flow),
-            # поэтому сообщение о бонусе показываем сразу на двух языках.
+            # поэтому сообщение о бонусе показываем сразу на двух языках. Числа/валюты тут
+            # должны совпадать с тем, что реально выдаётся выше — раньше текст остался старым
+            # ("+5/+10 сообщений") уже после того, как награду поменяли на баксы/энергетики.
             await message.answer(
-                "🎉 Ты пришёл по реферальной ссылке! +5 сообщений тебе и +10 сообщений другу!\n"
-                "🎉 You joined via a referral link! +5 messages for you, +10 for your friend!"
+                "🎉 Ты пришёл по реферальной ссылке! Тебе +15💵 баксов и +1⚡ энергетик, "
+                "другу — +30💵 баксов и +3⚡ энергетика!\n"
+                "🎉 You joined via a referral link! You get +15💵 bucks and +1⚡ energizer, "
+                "your friend gets +30💵 bucks and +3⚡ energizers!"
             )
 
     await proceed_flow(message.from_user.id, message.chat.id)
@@ -1961,7 +2000,7 @@ async def main_change(call: types.CallbackQuery):
 @dp.message(Command("switch_personality"))
 async def switch_personality_cmd(message: types.Message):
     user = get_user(message.from_user.id)
-    if get_subscription_level(user) != "super_pro":
+    if get_subscription_level(user) not in ("super_pro", "elite"):
         await message.answer(get_text(user, "super_pro_only"))
         return
     user["switching_personality"] = True
@@ -2055,7 +2094,7 @@ async def fix_style_callback(call: types.CallbackQuery):
 @dp.message(Command("switch_style"))
 async def switch_style_cmd(message: types.Message):
     user = get_user(message.from_user.id)
-    if get_subscription_level(user) != "super_pro":
+    if get_subscription_level(user) not in ("super_pro", "elite"):
         await message.answer(get_text(user, "super_pro_only"))
         return
     keyboard = InlineKeyboardMarkup(inline_keyboard=[])
@@ -2088,7 +2127,7 @@ async def create_character_locked(call: types.CallbackQuery):
 @dp.callback_query(lambda c: c.data == "create_character")
 async def create_character(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
-    if get_subscription_level(user) != "super_pro":
+    if get_subscription_level(user) not in ("super_pro", "elite"):
         await call.answer(get_text(user, "super_pro_only"), show_alert=True)
         return
     await call.message.answer(get_text(user, "character_create_prompt"), parse_mode="Markdown")
@@ -2127,6 +2166,8 @@ async def send_main_menu(chat_id, user):
         badge = "🔥 PRO"
     elif level == "super_pro":
         badge = "✨ *SUPER PRO* ✨"
+    elif level == "elite":
+        badge = "💎 *ELITE* 💎"
 
     gender_name = gender_display_name(user["gender"], user)
     world_name = world_display_name(user["world"], user)
@@ -2136,7 +2177,7 @@ async def send_main_menu(chat_id, user):
     balance_text = "\n" + get_text(user, "menu_messages_left", n=available) + (get_text(user, "menu_messages_out") if available <= 0 else "")
 
     xp_badge = get_xp_badge(user)
-    multiplier_text = get_text(user, "xp_bonus_pro") if level == "pro" else (get_text(user, "xp_bonus_super") if level == "super_pro" else "")
+    multiplier_text = get_text(user, XP_BONUS_TEXT_KEY[level]) if level in XP_BONUS_TEXT_KEY else ""
 
     menu_text = (
         f"{badge}\n\n"
@@ -2169,6 +2210,8 @@ async def show_profile(msg, user):
         sub_status = get_text(user, "profile_sub_pro")
     elif level == "super_pro":
         sub_status = get_text(user, "profile_sub_super")
+    elif level == "elite":
+        sub_status = get_text(user, "profile_sub_elite")
     else:
         sub_status = get_text(user, "profile_sub_inactive")
 
@@ -2187,7 +2230,7 @@ async def show_profile(msg, user):
     balance_line = get_text(user, "profile_messages_available", n=available) + (get_text(user, "menu_messages_out") if available <= 0 else "")
 
     xp_badge = get_xp_badge(user)
-    multiplier_text = get_text(user, "xp_bonus_pro") if level == "pro" else (get_text(user, "xp_bonus_super") if level == "super_pro" else "")
+    multiplier_text = get_text(user, XP_BONUS_TEXT_KEY[level]) if level in XP_BONUS_TEXT_KEY else ""
 
     caption = (f"{balance_line}\n"
                f"{get_text(user, 'profile_sub_label', status=sub_status)}\n"
@@ -2200,7 +2243,12 @@ async def show_profile(msg, user):
     chat_id = msg.chat.id
     old_msg_id = msg.message_id
     try:
-        if level == "super_pro":
+        if level == "elite":
+            # Пока используем ту же анимацию, что и SUPER PRO — отдельного GIF для ELITE
+            # никто не присылал; поменять легко, просто задав свой ELITE_GIF_URL.
+            await bot.send_animation(chat_id, animation=SUPER_PRO_GIF_URL, caption=caption,
+                                      reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
+        elif level == "super_pro":
             await bot.send_animation(chat_id, animation=SUPER_PRO_GIF_URL, caption=caption,
                                       reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
         elif level == "pro":
@@ -2470,6 +2518,7 @@ async def profile_subs(call: types.CallbackQuery):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=get_text(user, "subs_btn_pro"), callback_data="buy:subscribe_pro", style="success")],
         [InlineKeyboardButton(text=get_text(user, "subs_btn_super"), callback_data="buy:subscribe_super", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "subs_btn_elite"), callback_data="buy:subscribe_elite", style="success")],
         [InlineKeyboardButton(text=get_text(user, "subs_btn_upgrade"), callback_data="buy:upgrade_to_super", style="success")],
         [InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")]
     ])
@@ -2650,7 +2699,7 @@ async def back_to_profile(call: types.CallbackQuery):
 @dp.callback_query(lambda c: c.data == "toggle_notifications")
 async def toggle_notifications(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
-    if get_subscription_level(user) != "super_pro":
+    if get_subscription_level(user) not in ("super_pro", "elite"):
         await call.answer(get_text(user, "mute_requires_sub_alert"), show_alert=True)
         return
     user["notifications_muted"] = not user.get("notifications_muted", False)
@@ -2677,6 +2726,7 @@ PAYMENT_TIMEOUT_MINUTES = 60  # через сколько снимаем нео�
 PRODUCTS = {
     "subscribe_pro": {"stars": 250, "usd": 4.5},
     "subscribe_super": {"stars": 450, "usd": 7.9},
+    "subscribe_elite": {"stars": 800, "usd": 14.5},
     "upgrade_to_super": {"stars": 245, "usd": 4.4},
     "bundle_small": {"stars": 30, "usd": 0.7},
     "bundle_medium": {"stars": 80, "usd": 1.7},
@@ -2721,6 +2771,9 @@ def product_invoice_texts(user, payload):
     if payload == "subscribe_super":
         return (get_text(user, "invoice_super_title"), get_text(user, "invoice_super_desc"),
                 get_text(user, "invoice_super_label"))
+    if payload == "subscribe_elite":
+        return (get_text(user, "invoice_elite_title"), get_text(user, "invoice_elite_desc"),
+                get_text(user, "invoice_elite_label"))
     if payload == "upgrade_to_super":
         return (get_text(user, "invoice_upgrade_title"), get_text(user, "invoice_upgrade_desc"),
                 get_text(user, "invoice_upgrade_label"))
@@ -2844,23 +2897,36 @@ async def grant_product(user, payload, chat_id):
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
         user["subscription"]["level"] = "pro"
-        user["daily_messages"] = 50
-        user["last_daily_reset"] = datetime.now().date().isoformat()
+        # Форсируем полный пересчёт дневных плюшек (сообщения, баксы, энергетики, бесплатные
+        # сцены) прямо сейчас, а не только с завтрашнего дня — раньше здесь просто вручную
+        # проставлялись daily_messages/last_daily_reset, и бонус баксов/энергетиков в день
+        # покупки просто пропадал.
+        user["last_daily_reset"] = None
+        _reset_daily_quota_if_needed(user)
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "payment_pro_success"))
     elif payload == "subscribe_super":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
         user["subscription"]["level"] = "super_pro"
-        user["daily_messages"] = 100
-        user["last_daily_reset"] = datetime.now().date().isoformat()
+        user["last_daily_reset"] = None
+        _reset_daily_quota_if_needed(user)
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "payment_super_success"))
+    elif payload == "subscribe_elite":
+        user["subscription"]["active"] = True
+        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
+        user["subscription"]["level"] = "elite"
+        user["last_daily_reset"] = None
+        _reset_daily_quota_if_needed(user)
+        save_data(user_data)
+        await bot.send_message(chat_id, get_text(user, "payment_elite_success"))
     elif payload == "upgrade_to_super":
         if has_active_subscription(user) and get_subscription_level(user) == "pro":
             old_expiry = user["subscription"]["expires_at"]
             user["subscription"]["level"] = "super_pro"
-            user["daily_messages"] = 100
+            user["last_daily_reset"] = None
+            _reset_daily_quota_if_needed(user)
             save_data(user_data)
             expiry_str = datetime.fromisoformat(old_expiry).strftime('%d.%m.%Y %H:%M')
             await bot.send_message(chat_id, get_text(user, "payment_upgrade_success", date=expiry_str))
@@ -2974,7 +3040,7 @@ def get_payment_methods_kb(user, payload):
 
 def payment_blocked_reason(user, payload):
     """Те же проверки, что раньше висели на каждой кнопке покупки."""
-    if payload in ("subscribe_pro", "subscribe_super") and has_active_subscription(user):
+    if payload in ("subscribe_pro", "subscribe_super", "subscribe_elite") and has_active_subscription(user):
         return get_text(user, "already_subscribed_alert")
     if payload == "upgrade_to_super" and get_subscription_level(user) != "pro":
         return get_text(user, "pro_only_alert")
@@ -3092,7 +3158,7 @@ async def grant_cmd(message: types.Message):
     args = message.text.split()
     if len(args) < 2:
         await message.answer(
-            "/grant @username — SUPER PRO\n/grant @username pro — PRO\n"
+            "/grant @username — SUPER PRO\n/grant @username pro — PRO\n/grant @username elite — ELITE\n"
             "/grant @username intim N — N горячих сцен\n/grant @username energizers N — N энергетиков\n"
             "/grant @username bucks N — N баксов"
         )
@@ -3126,20 +3192,19 @@ async def grant_cmd(message: types.Message):
         save_data(user_data)
         await message.answer(f"✅ {args[1]} выдано {field}: {amount}.")
         return
-    if len(args) >= 3 and args[2].lower() == "pro":
-        user["subscription"]["active"] = True
-        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
-        user["subscription"]["level"] = "pro"
-        user["daily_messages"] = 50
-        save_data(user_data)
-        await message.answer(f"✅ {args[1]} выдана PRO.")
-        return
+    level = "super_pro"
+    if len(args) >= 3 and args[2].lower() in ("pro", "elite"):
+        level = args[2].lower()
     user["subscription"]["active"] = True
     user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
-    user["subscription"]["level"] = "super_pro"
-    user["daily_messages"] = 100
+    user["subscription"]["level"] = level
+    # Форсируем полный пересчёт дневных плюшек (сообщения, баксы, энергетики, бесплатные сцены)
+    # прямо сейчас — иначе, как раньше, они появились бы только на следующий день.
+    user["last_daily_reset"] = None
+    _reset_daily_quota_if_needed(user)
     save_data(user_data)
-    await message.answer(f"✅ {args[1]} выдана SUPER PRO.")
+    label = {"pro": "PRO", "super_pro": "SUPER PRO", "elite": "ELITE"}[level]
+    await message.answer(f"✅ {args[1]} выдана {label}.")
 
 
 @dp.message(Command("revoke_subscription"))
@@ -3486,7 +3551,7 @@ async def generate_and_reply(message: types.Message, user):
 
     await send_long(message, clean_answer, reply_markup=get_full_kb(user))
 
-    if reaction and get_subscription_level(user) == "super_pro":
+    if reaction and get_subscription_level(user) in ("super_pro", "elite"):
         try:
             await bot.set_message_reaction(
                 chat_id=message.chat.id,
@@ -3609,7 +3674,7 @@ async def handle_message(message: types.Message):
     # 8. Негатив / XP / настроение
     negative = contains_negative(message.text)
     sub_level = get_subscription_level(user)
-    multiplier = 1.8 if sub_level == "pro" else (2.5 if sub_level == "super_pro" else 1.0)
+    multiplier = XP_MULTIPLIER.get(sub_level, 1.0)
 
     if negative:
         user["negative_count"] = user.get("negative_count", 0) + 1
@@ -3663,7 +3728,7 @@ async def handle_message(message: types.Message):
     save_data(user_data)
 
     # 12. Реакция на сообщение пользователя (SUPER PRO)
-    if get_subscription_level(user) == "super_pro":
+    if get_subscription_level(user) in ("super_pro", "elite"):
         reaction = get_reaction(message.text)
         if reaction:
             try:
@@ -3695,7 +3760,7 @@ async def check_notifications():
                     continue
                 # Отключение уведомлений — привилегия SUPER PRO: если подписка упала до PRO или
                 # истекла, напоминания сами возобновятся — отдельно снимать флаг не нужно.
-                if user.get("notifications_muted") and get_subscription_level(user) == "super_pro":
+                if user.get("notifications_muted") and get_subscription_level(user) in ("super_pro", "elite"):
                     continue
 
                 if not user.get("last_activity"):
