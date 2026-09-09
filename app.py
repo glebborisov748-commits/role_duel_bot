@@ -47,7 +47,7 @@ TEXTS = {
         "scene_phone": "📱 Переписка в телефоне",
         "scene_live": "👫 Реальная встреча",
         "channel": "📢 Перейти в канал",
-        "free": "🎁 Бесплатно (1/день)",
+        "free": "🎁 Бесплатно ({left}/{total})",
         "tomorrow": "⏳ Завтра",
         "spin_paid": "💎 Крутить за 20⭐",
         "spin_more": "💎 Крутить ещё за 20⭐",
@@ -76,7 +76,7 @@ TEXTS = {
         "character_reset": "✅ Персонаж сброшен.",
         "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
         "spin_title": "🎰 **Колесо фортуны**",
-        "spin_prizes": "🔥 **Что можно выиграть:**\n• 10–50 сообщений\n• 100–250 XP\n• 🎁 PRO на 5 дней\n• ✨ SUPER PRO на 3 дня",
+        "spin_prizes": "🔥 **Что можно выиграть:**\n• 20–150💵 баксов\n• 1–2⚡ энергетика\n• 100–250 XP\n• 🔥 Горячие сцены\n• 🎁 PRO на 5 дней\n• ✨ SUPER PRO на 3 дня",
         "spin_choose": "Выбери вариант:",
         "spin_nothing": "😢 Ничего... В следующий раз повезёт!",
         "profile": "Подписка: {status}\nОсталось сообщений: {messages}",
@@ -137,7 +137,8 @@ TEXTS = {
         "spin_invoice_label": "Прокрутка",
         "spin_rolling": "🎰 Крутим...",
         "spin_almost": "🎰 Почти выпало: {name}",
-        "spin_win_messages": "📨 **+{value} сообщений**",
+        "spin_win_bucks": "💵 **+{value} баксов**",
+        "spin_win_energizers": "⚡ **+{value} энергетика**",
         "spin_win_xp": "⭐ **+{value} XP**",
         "spin_win_pro": "🎁 **PRO подписка на 5 дней!**\n🔥 50 сообщений/день, стили Страстный и Магнетический!",
         "spin_win_super": "✨ **SUPER PRO на 3 дня!**\n👑 100 сообщений/день, все стили, включая 18+!",
@@ -167,26 +168,26 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Твоя подписка закончилась, выбери бесплатный стиль:",
         "quarrel": "💢 Ссора! Уровень близости снижен.",
         "generation_error": "⚠️ Ошибка генерации ответа: {error}",
-        "intim_buy_btn": "🔥 Купить интим-сцену (45⭐)",
-        "intim_menu_title": "🔥 **Интим-сцена**\n\nДоступно сцен: {n}\nВыбери, что будет происходить:",
+        "intim_buy_btn": "🔥 Купить горячую сцену (45⭐)",
+        "intim_menu_title": "🔥 **Горячая сцена**\n\nДоступно сцен: {n}\nВыбери, что будет происходить:",
         "intim_choose_location": "📍 Выбери место:",
         "intim_choose_dominant": "🎭 Кто проявляет инициативу?",
-        "intim_none": "🔥 У тебя нет доступных интим-сцен.\n\nКупи сцену в профиле или испытай удачу в Колесе фортуны.",
+        "intim_none": "🔥 У тебя нет доступных горячих сцен.\n\nКупи сцену в профиле или испытай удачу в Колесе фортуны.",
         "intim_generating": "🔥 Создаю сцену...",
         "intim_free_level": "🎁 Бесплатная сцена за 8 уровень близости!",
         "intim_free_sub": "🎁 Бесплатная сцена по подписке.",
-        "intim_left": "🔥 Осталось интим-сцен: {n}",
+        "intim_left": "🔥 Осталось горячих сцен: {n}",
         "intim_need_character": "Сначала создай персонажа через /start",
-        "invoice_intim_title": "Интим-сцена",
-        "invoice_intim_desc": "Одна интим-сцена с твоим персонажем.",
-        "invoice_intim_label": "Интим-сцена",
-        "payment_intim_success": "✅ Интим-сцена куплена! Открой её командой /intim",
-        "spin_win_intim": "🔥 **+{value} интим-сцены**",
+        "invoice_intim_title": "Горячая сцена",
+        "invoice_intim_desc": "Одна горячая сцена с твоим персонажем.",
+        "invoice_intim_label": "Горячая сцена",
+        "payment_intim_success": "✅ Горячая сцена куплена! Открой её командой /hot",
+        "spin_win_intim": "🔥 **+{value} горячей сцены**",
         "need_character_alert": "Сначала создай персонажа!",
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
         "subs_title": "👑 Подписки Role Duel",
-        "subs_body": "🔥 PRO (250⭐/мес)\n• 50 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-40%)\n• +80💵 баксов каждый день на еду и подарки\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• 100 сообщений в день\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-70%)\n• +200💵 баксов каждый день на еду и подарки\n• 🔕 Можно отключить уведомления бота\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_body": "🔥 PRO (250⭐/мес)\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-40%)\n• +80💵 баксов каждый день на еду и подарки\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-70%)\n• +200💵 баксов каждый день на еду и подарки\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐/мес",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐/мес",
         "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (245⭐)",
@@ -208,6 +209,7 @@ TEXTS = {
         "shop_btn": "🛍 Магазин",
         "shop_title": "🛍 **Магазин**\n\nТвои баксы: {bucks}💵\n\n🍽 Еда восстанавливает сытость, 🎁 подарки поднимают настроение и дают немного опыта. Выбирай:",
         "food_bought": "🍽 Сытость +{n}! Персонаж доволен.",
+        "hungry_nudge": "🍽 У собеседника заурчал живот... Может, покормишь?",
         "gift_bought": "🎁 Подарок понравился! Настроение +{mood}, опыт +{xp}.",
         "not_enough_bucks": "❌ Не хватает баксов: нужно ещё {n}💵.",
         "not_enough_energizers": "❌ Нет энергетиков. Купи бандл, чтобы разбудить персонажа сразу ⚡.",
@@ -219,8 +221,8 @@ TEXTS = {
         "invoice_wake_title": "Разбудить персонажа",
         "invoice_wake_desc": "Мгновенно поднимает энергию персонажа до максимума.",
         "invoice_wake_label": "Разбудить",
-        "mute_notifications_btn": "🔕 Отключить уведомления",
-        "unmute_notifications_btn": "🔔 Включить уведомления",
+        "notifications_on_btn": "🔔 Уведомления: ВКЛ",
+        "notifications_off_btn": "🔕 Уведомления: ВЫКЛ",
         "notifications_muted_alert": "🔕 Уведомления отключены.",
         "notifications_unmuted_alert": "🔔 Уведомления включены.",
         "mute_requires_sub_alert": "🔒 Отключение уведомлений доступно только с подпиской SUPER PRO.",
@@ -253,7 +255,7 @@ TEXTS = {
         "scene_phone": "📱 Phone chat",
         "scene_live": "👫 Real meeting",
         "channel": "📢 Go to channel",
-        "free": "🎁 Free (1 per day)",
+        "free": "🎁 Free ({left}/{total})",
         "tomorrow": "⏳ Tomorrow",
         "spin_paid": "💎 Spin for 20⭐",
         "spin_more": "💎 Spin again for 20⭐",
@@ -282,7 +284,7 @@ TEXTS = {
         "character_reset": "✅ Character reset.",
         "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«An elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire.»\n\n✏️ Write the description now — and I'll remember it!",
         "spin_title": "🎰 **Spin wheel**",
-        "spin_prizes": "🔥 **What you can win:**\n• 10–50 messages\n• 100–250 XP\n• 🎁 PRO for 5 days\n• ✨ SUPER PRO for 3 days",
+        "spin_prizes": "🔥 **What you can win:**\n• 20–150💵 bucks\n• 1–2⚡ energizers\n• 100–250 XP\n• 🔥 Hot scenes\n• 🎁 PRO for 5 days\n• ✨ SUPER PRO for 3 days",
         "spin_choose": "Choose an option:",
         "spin_nothing": "😢 Nothing... Better luck next time!",
         "profile": "Subscription: {status}\nMessages left: {messages}",
@@ -343,7 +345,8 @@ TEXTS = {
         "spin_invoice_label": "Spin",
         "spin_rolling": "🎰 Spinning...",
         "spin_almost": "🎰 Almost got: {name}",
-        "spin_win_messages": "📨 **+{value} messages**",
+        "spin_win_bucks": "💵 **+{value} bucks**",
+        "spin_win_energizers": "⚡ **+{value} energizers**",
         "spin_win_xp": "⭐ **+{value} XP**",
         "spin_win_pro": "🎁 **PRO subscription for 5 days!**\n🔥 50 messages per day, Passionate and Magnetic styles!",
         "spin_win_super": "✨ **SUPER PRO for 3 days!**\n👑 100 messages per day, all styles including 18+!",
@@ -373,26 +376,26 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Your subscription has ended, pick a free style:",
         "quarrel": "💢 A quarrel! Your closeness level dropped.",
         "generation_error": "⚠️ Failed to generate a reply: {error}",
-        "intim_buy_btn": "🔥 Buy an intimate scene (45⭐)",
-        "intim_menu_title": "🔥 **Intimate scene**\n\nScenes available: {n}\nChoose what happens:",
+        "intim_buy_btn": "🔥 Buy a hot scene (45⭐)",
+        "intim_menu_title": "🔥 **Hot scene**\n\nScenes available: {n}\nChoose what happens:",
         "intim_choose_location": "📍 Choose a place:",
         "intim_choose_dominant": "🎭 Who takes the lead?",
-        "intim_none": "🔥 You have no intimate scenes left.\n\nBuy one in your profile or try your luck on the spin wheel.",
+        "intim_none": "🔥 You have no hot scenes left.\n\nBuy one in your profile or try your luck on the spin wheel.",
         "intim_generating": "🔥 Creating the scene...",
         "intim_free_level": "🎁 A free scene for reaching closeness level 8!",
         "intim_free_sub": "🎁 A free scene from your subscription.",
-        "intim_left": "🔥 Intimate scenes left: {n}",
+        "intim_left": "🔥 Hot scenes left: {n}",
         "intim_need_character": "Create your character first via /start",
-        "invoice_intim_title": "Intimate scene",
-        "invoice_intim_desc": "One intimate scene with your character.",
-        "invoice_intim_label": "Intimate scene",
-        "payment_intim_success": "✅ Intimate scene purchased! Open it with /intim",
-        "spin_win_intim": "🔥 **+{value} intimate scene(s)**",
+        "invoice_intim_title": "Hot scene",
+        "invoice_intim_desc": "One hot scene with your character.",
+        "invoice_intim_label": "Hot scene",
+        "payment_intim_success": "✅ Hot scene purchased! Open it with /hot",
+        "spin_win_intim": "🔥 **+{value} hot scene(s)**",
         "need_character_alert": "Create your character first!",
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
         "subs_title": "👑 Role Duel Subscriptions",
-        "subs_body": "🔥 PRO (250⭐ per month)\n• 50 messages a day\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-40%)\n• +80💵 bucks every day for food and gifts\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• 100 messages a day\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-70%)\n• +200💵 bucks every day for food and gifts\n• 🔕 Mute the bot's notifications\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_body": "🔥 PRO (250⭐ per month)\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-40%)\n• +80💵 bucks every day for food and gifts\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-70%)\n• +200💵 bucks every day for food and gifts\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐ per month",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ per month",
         "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (245⭐)",
@@ -414,6 +417,7 @@ TEXTS = {
         "shop_btn": "🛍 Shop",
         "shop_title": "🛍 **Shop**\n\nYour bucks: {bucks}💵\n\n🍽 Food restores satiety, 🎁 gifts boost mood and give a bit of XP. Take your pick:",
         "food_bought": "🍽 Satiety +{n}! Your companion is happy.",
+        "hungry_nudge": "🍽 Your companion's stomach just growled... Maybe feed them?",
         "gift_bought": "🎁 The gift was a hit! Mood +{mood}, XP +{xp}.",
         "not_enough_bucks": "❌ Not enough bucks: you need {n}💵 more.",
         "not_enough_energizers": "❌ No energizers left. Buy a bundle to wake your companion up right away ⚡.",
@@ -425,8 +429,8 @@ TEXTS = {
         "invoice_wake_title": "Wake up your companion",
         "invoice_wake_desc": "Instantly refills your companion's energy to full.",
         "invoice_wake_label": "Wake up",
-        "mute_notifications_btn": "🔕 Mute notifications",
-        "unmute_notifications_btn": "🔔 Unmute notifications",
+        "notifications_on_btn": "🔔 Notifications: ON",
+        "notifications_off_btn": "🔕 Notifications: OFF",
         "notifications_muted_alert": "🔕 Notifications muted.",
         "notifications_unmuted_alert": "🔔 Notifications unmuted.",
         "mute_requires_sub_alert": "🔒 Muting notifications is available with a SUPER PRO subscription only.",
@@ -459,7 +463,7 @@ TEXTS = {
         "scene_phone": "📱 Chat am Handy",
         "scene_live": "👫 Echtes Treffen",
         "channel": "📢 Zum Kanal",
-        "free": "🎁 Gratis (1 pro Tag)",
+        "free": "🎁 Gratis ({left}/{total})",
         "tomorrow": "⏳ Morgen",
         "spin_paid": "💎 Für 20⭐ drehen",
         "spin_more": "💎 Nochmal für 20⭐ drehen",
@@ -488,7 +492,7 @@ TEXTS = {
         "character_reset": "✅ Charakter zurückgesetzt.",
         "character_create_prompt": "🎭 **Erstelle deinen eigenen Charakter!**\n\nBeschreibe eine beliebige Figur — aus Anime, Filmen, Spielen oder denk dir selbst eine aus.\nSchreibe Namen, Charakter, Aussehen, Herkunft und beliebige Details.\n\n📝 *Beispiel:*\n«Eine Elfe aus der Welt von The Witcher — weise, ruhig, mit langen silbernen Haaren. Sie liebt Sterne und lange Gespräche am Feuer.»\n\n✏️ Schreibe die Beschreibung jetzt — und ich merke sie mir!",
         "spin_title": "🎰 **Glücksrad**",
-        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 10–50 Nachrichten\n• 100–250 XP\n• 🎁 PRO für 5 Tage\n• ✨ SUPER PRO für 3 Tage",
+        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 20–150💵 Bucks\n• 1–2⚡ Energydrinks\n• 100–250 XP\n• 🔥 Heiße Szenen\n• 🎁 PRO für 5 Tage\n• ✨ SUPER PRO für 3 Tage",
         "spin_choose": "Wähle eine Option:",
         "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",
         "profile": "Abo: {status}\nNachrichten übrig: {messages}",
@@ -549,7 +553,8 @@ TEXTS = {
         "spin_invoice_label": "Drehung",
         "spin_rolling": "🎰 Es dreht sich...",
         "spin_almost": "🎰 Fast gewonnen: {name}",
-        "spin_win_messages": "📨 **+{value} Nachrichten**",
+        "spin_win_bucks": "💵 **+{value} Bucks**",
+        "spin_win_energizers": "⚡ **+{value} Energydrinks**",
         "spin_win_xp": "⭐ **+{value} XP**",
         "spin_win_pro": "🎁 **PRO-Abo für 5 Tage!**\n🔥 50 Nachrichten pro Tag, Stile Leidenschaftlich und Magnetisch!",
         "spin_win_super": "✨ **SUPER PRO für 3 Tage!**\n👑 100 Nachrichten pro Tag, alle Stile inklusive 18+!",
@@ -579,26 +584,26 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Dein Abo ist abgelaufen, wähle einen kostenlosen Stil:",
         "quarrel": "💢 Streit! Dein Nähe-Level ist gesunken.",
         "generation_error": "⚠️ Antwort konnte nicht erzeugt werden: {error}",
-        "intim_buy_btn": "🔥 Intim-Szene kaufen (45⭐)",
-        "intim_menu_title": "🔥 **Intim-Szene**\n\nVerfügbare Szenen: {n}\nWähle, was passiert:",
+        "intim_buy_btn": "🔥 Heiße Szene kaufen (45⭐)",
+        "intim_menu_title": "🔥 **Heiße Szene**\n\nVerfügbare Szenen: {n}\nWähle, was passiert:",
         "intim_choose_location": "📍 Wähle einen Ort:",
         "intim_choose_dominant": "🎭 Wer übernimmt die Führung?",
-        "intim_none": "🔥 Du hast keine Intim-Szenen mehr.\n\nKaufe eine im Profil oder versuche dein Glück am Glücksrad.",
+        "intim_none": "🔥 Du hast keine heißen Szenen mehr.\n\nKaufe eine im Profil oder versuche dein Glück am Glücksrad.",
         "intim_generating": "🔥 Die Szene entsteht...",
         "intim_free_level": "🎁 Eine Gratis-Szene für Nähe-Level 8!",
         "intim_free_sub": "🎁 Eine Gratis-Szene aus deinem Abo.",
-        "intim_left": "🔥 Verbleibende Intim-Szenen: {n}",
+        "intim_left": "🔥 Verbleibende heiße Szenen: {n}",
         "intim_need_character": "Erstelle zuerst deinen Charakter über /start",
-        "invoice_intim_title": "Intim-Szene",
-        "invoice_intim_desc": "Eine Intim-Szene mit deinem Charakter.",
-        "invoice_intim_label": "Intim-Szene",
-        "payment_intim_success": "✅ Intim-Szene gekauft! Öffne sie mit /intim",
-        "spin_win_intim": "🔥 **+{value} Intim-Szene(n)**",
+        "invoice_intim_title": "Heiße Szene",
+        "invoice_intim_desc": "Eine heiße Szene mit deinem Charakter.",
+        "invoice_intim_label": "Heiße Szene",
+        "payment_intim_success": "✅ Heiße Szene gekauft! Öffne sie mit /hot",
+        "spin_win_intim": "🔥 **+{value} heiße Szene(n)**",
         "need_character_alert": "Erstelle zuerst deinen Charakter!",
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
         "subs_title": "👑 Role Duel Abos",
-        "subs_body": "🔥 PRO (250⭐ pro Monat)\n• 50 Nachrichten pro Tag\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-40%)\n• +80💵 Bucks jeden Tag für Essen und Geschenke\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• 100 Nachrichten pro Tag\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-70%)\n• +200💵 Bucks jeden Tag für Essen und Geschenke\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
+        "subs_body": "🔥 PRO (250⭐ pro Monat)\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-40%)\n• +80💵 Bucks jeden Tag für Essen und Geschenke\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-70%)\n• +200💵 Bucks jeden Tag für Essen und Geschenke\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐ pro Monat",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ pro Monat",
         "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO (245⭐)",
@@ -620,6 +625,7 @@ TEXTS = {
         "shop_btn": "🛍 Shop",
         "shop_title": "🛍 **Shop**\n\nDeine Bucks: {bucks}💵\n\n🍽 Essen füllt die Sättigung auf, 🎁 Geschenke heben die Stimmung und geben etwas XP. Wähle:",
         "food_bought": "🍽 Sättigung +{n}! Dein Begleiter ist zufrieden.",
+        "hungry_nudge": "🍽 Der Magen deines Begleiters knurrt gerade... Vielleicht Zeit zu füttern?",
         "gift_bought": "🎁 Das Geschenk kam gut an! Stimmung +{mood}, XP +{xp}.",
         "not_enough_bucks": "❌ Nicht genug Bucks: dir fehlen noch {n}💵.",
         "not_enough_energizers": "❌ Keine Energydrinks mehr. Kaufe ein Bundle, um deinen Begleiter sofort aufzuwecken ⚡.",
@@ -631,8 +637,8 @@ TEXTS = {
         "invoice_wake_title": "Begleiter wecken",
         "invoice_wake_desc": "Füllt die Energie deines Begleiters sofort komplett auf.",
         "invoice_wake_label": "Wecken",
-        "mute_notifications_btn": "🔕 Benachrichtigungen stumm schalten",
-        "unmute_notifications_btn": "🔔 Benachrichtigungen aktivieren",
+        "notifications_on_btn": "🔔 Benachrichtigungen: AN",
+        "notifications_off_btn": "🔕 Benachrichtigungen: AUS",
         "notifications_muted_alert": "🔕 Benachrichtigungen stummgeschaltet.",
         "notifications_unmuted_alert": "🔔 Benachrichtigungen aktiviert.",
         "mute_requires_sub_alert": "🔒 Benachrichtigungen stummschalten ist nur mit einem SUPER PRO-Abo möglich.",
@@ -869,7 +875,7 @@ def get_user(user_id):
             "last_level": 0,
             "scene": "phone",
             "switching_personality": False,
-            "last_free_spin": None,
+            "free_spins_used": 0,
             "lang": None,
             "editing_message": False,
             "referral_code": None,
@@ -887,6 +893,7 @@ def get_user(user_id):
             "bucks": 0,
             "last_stat_tick": None,
             "notifications_muted": False,
+            "last_feed_nudge": None,
             "last_activity": datetime.now().isoformat(),
             "last_reminder": None,
             "creating_character": False,
@@ -912,7 +919,7 @@ def get_user(user_id):
             "last_level": 0,
             "scene": "phone",
             "switching_personality": False,
-            "last_free_spin": None,
+            "free_spins_used": 0,
             "lang": None,
             "editing_message": False,
             "referral_code": None,
@@ -930,6 +937,7 @@ def get_user(user_id):
             "bucks": 0,
             "last_stat_tick": None,
             "notifications_muted": False,
+            "last_feed_nudge": None,
             "last_activity": None,
             "last_reminder": None,
             "creating_character": False,
@@ -1038,6 +1046,28 @@ BASE_STYLE_KEYS = ["warm", "daring", "shy"]
 PRO_STYLE_KEYS = ["passionate", "magnetic"]
 SUPER_PRO_STYLE_KEYS = ["rude", "seduction"]
 PREMIUM_STYLE_KEYS = PRO_STYLE_KEYS + SUPER_PRO_STYLE_KEYS
+
+# Как черты стиля конкретно звучат в диалогах интим-сцены — обычное STYLES[...]["description"]
+# писалось для сдержанного повседневного чата и само по себе не даёт такого разброса реплик.
+STYLE_INTIM_FLAVOR = {
+    "warm": ("Твои реплики нежные и тёплые: шёпот, ласковые слова, ты часто спрашиваешь «тебе "
+             "хорошо?», признаёшься в своих чувствах даже посреди сцены."),
+    "daring": ("Твои реплики дерзкие и поддразнивающие: усмешки, вызов («слабо?», «докажи»), ты "
+               "уверена в себе и любишь подначивать собеседника."),
+    "shy": ("Ты смущаешься и стесняешься даже в разгар сцены: сбивчивые фразы, тихое «подожди... я "
+            "не готова...», «а если кто-то узнает...» — но при этом НЕ останавливаешься и не просишь "
+            "прекратить по-настоящему: смущение только сильнее тебя распаляет."),
+    "passionate": ("Твои реплики страстные, на грани срыва голоса: рваное дыхание, отчаянные "
+                   "признания («я больше не могу терпеть», «хочу тебя»), эмоции через край."),
+    "magnetic": ("Ты держишь интригу даже в разгар сцены: недосказанные фразы, хриплый шёпот на "
+                 "грани слов, дразнишь и не даёшь всё сразу, заставляя собеседника хотеть больше."),
+    "rude": ("Ты грубая и прямолинейная: ругаешься матом, вперемешку со стонами называешь собеседника "
+             "резкими словами («сука», «как ты смеешь так со мной обращаться», «мудак») — но это "
+             "часть твоего возбуждения и азарта, а не настоящий отказ или обида."),
+    "seduction": ("Ты держишь полный контроль: низкий мурлычущий голос, команды и полунамёки "
+                  "(«молчи и делай, что я говорю»), ты играешь с собеседником, наслаждаясь властью "
+                  "над ним."),
+}
 # Стили с пометкой 18+: только для них снимается ограничение на откровенные сцены.
 ADULT_STYLE_KEYS = [key for key, style in STYLES.items() if style.get("adult")]
 ADULT_BADGE = "18+"
@@ -1101,21 +1131,50 @@ INTIM_SCENES = {
 
 INTIM_LOCATIONS = {
     "any": {"emoji": "\U0001f3b2", "ru": "Не важно", "en": "Any place", "de": "Egal"},
+    "home": {"emoji": "\U0001f3e0", "ru": "Дома", "en": "At home", "de": "Zu Hause"},
     "car": {"emoji": "\U0001f697", "ru": "В машине", "en": "In a car", "de": "Im Auto"},
     "beach": {"emoji": "\U0001f3d6", "ru": "На пляже", "en": "On the beach", "de": "Am Strand"},
-    "elevator": {"emoji": "\U0001f3e8", "ru": "В лифте", "en": "In an elevator", "de": "Im Aufzug"},
+    "elevator": {"emoji": "\U0001f3e8", "ru": "В лифте", "en": "In an elevator", "de": "Im Aufzug",
+                 "tension": ("Периодически шёпотом напоминай, что лифт может остановиться и кто-то "
+                             "войдёт — «тише, вдруг кто-то зайдёт», «слышишь, он останавливается?» — "
+                             "это только добавляет напряжения, не останавливая сцену.")},
     "forest": {"emoji": "\U0001f332", "ru": "В лесу", "en": "In the forest", "de": "Im Wald"},
+    "entryway": {"emoji": "\U0001f6aa", "ru": "В подъезде", "en": "In the stairwell", "de": "Im Treppenhaus",
+                 "tension": ("Периодически шёпотом напоминай, что соседи могут услышать или кто-то "
+                             "войдёт в подъезд — «тише, а то услышат», «подожди, кажется, дверь "
+                             "хлопнула» — это только добавляет напряжения, не останавливая сцену.")},
+    "fitting_room": {"emoji": "\U0001f6cd", "ru": "В примерочной ТЦ", "en": "In a mall fitting room", "de": "In der Umkleidekabine",
+                      "tension": ("Периодически шёпотом напоминай, что за тонкой шторкой ходят люди и "
+                                  "продавец может постучать — «тише, там кто-то рядом», «я не выдержу, "
+                                  "если нас услышат» — это только добавляет напряжения, не останавливая "
+                                  "сцену.")},
+    "office": {"emoji": "\U0001f3e2", "ru": "В офисе после работы", "en": "At the office after hours", "de": "Im Büro nach Feierabend",
+               "tension": ("Периодически шёпотом напоминай, что в здании ещё могут быть люди или "
+                           "охрана — «подожди, кажется, кто-то в коридоре», «тише, нас могут "
+                           "услышать» — это только добавляет напряжения, не останавливая сцену.")},
 }
 
-# Кто ведёт сцену — это про темп и инициативу в описании, не про модель согласия:
-# ADULT_CONTENT_RULE (обоюдное согласие, без принуждения) действует одинаково при любом выборе.
+# Кто ведёт сцену — это про темп, инициативу и то, ЧЬИ действия описываются как активные, а не про
+# модель согласия: ADULT_CONTENT_RULE (обоюдное согласие, без принуждения) действует одинаково при
+# любом выборе. dominant="user" должен реально читаться как действия собеседника над персонажем, а
+# не просто как "персонаж более отзывчив" — иначе выбор ничего не меняет в самом тексте сцены.
 INTIM_DOMINANTS = {
     "any": {"emoji": "\U0001f3ad", "ru": "Не важно", "en": "Any", "de": "Egal",
-            "prompt": "Инициативу в сцене можешь проявлять ты сама, по ситуации."},
+            "prompt": ("Инициативу в сцене можешь проявлять сама, по ситуации — то беря её в свои "
+                       "руки, то уступая собеседнику.")},
     "character": {"emoji": "\U0001f525", "ru": "Инициативу проявляю я", "en": "I take the lead", "de": "Ich übernehme die Führung",
-                  "prompt": "В этой сцене инициативу и темп задаёшь ты — уверенно веди происходящее."},
+                  "prompt": ("В этой сцене инициативу и темп задаёшь ТЫ: именно твой персонаж действует "
+                             "первым — тянет, толкает, направляет, раздевает, командует. Пиши действия "
+                             "как свои собственные шаги («*Толкаю тебя к стене...*», «*Провожу губами "
+                             "по...*»). Собеседник — тот, на кого направлена инициатива: он в основном "
+                             "реагирует, подчиняется, отвечает на твои действия.")},
     "user": {"emoji": "\U0001f60c", "ru": "Инициативу проявляет собеседник", "en": "My partner leads", "de": "Mein Partner führt",
-              "prompt": "В этой сцене инициативу задаёт собеседник — ты откликаешься, следуешь за его темпом, реагируешь чувственно."},
+              "prompt": ("В этой сцене инициативу задаёт СОБЕСЕДНИК: именно он действует первым — "
+                         "хватает, прижимает, раздевает, направляет тебя. Описывай его действия как "
+                         "совершающиеся над тобой и вокруг тебя, обращаясь к нему на «ты» («*Ты "
+                         "притягиваешь меня к себе...*», «*Твои руки скользят по...*»), а сама ты в "
+                         "основном откликаешься: выдыхаешь, стонешь, говоришь о том, что чувствуешь от "
+                         "его действий, но не описываешь свои активные действия первой.")},
 }
 
 # Сколько бесплатных сцен в день даёт подписка (обновляются вместе с дневным лимитом сообщений).
@@ -1129,6 +1188,7 @@ FOOD_ITEMS = {
     "feast": {"emoji": "🍰", "ru": "Пир", "en": "Feast", "de": "Festmahl", "price": 50, "satiety": 100},
 }
 GIFT_ITEMS = {
+    "sweets": {"emoji": "🍫", "ru": "Шоколадки", "en": "Chocolates", "de": "Pralinen", "price": 10, "mood": 2, "xp": 2},
     "flowers": {"emoji": "💐", "ru": "Цветы", "en": "Flowers", "de": "Blumen", "price": 20, "mood": 4, "xp": 5},
     "jewelry": {"emoji": "💎", "ru": "Украшение", "en": "Jewelry", "de": "Schmuck", "price": 60, "mood": 8, "xp": 15},
 }
@@ -1234,6 +1294,18 @@ BUCKS_DAILY_STIPEND = {"pro": 80, "super_pro": 200}  # ежедневная "п�
                                                       # оплачивает не только лимит сообщений, но и часть жизни персонажа
 
 
+FREE_SPINS_PER_DAY = {"pro": 2, "super_pro": 3}  # без подписки — 1 (значение по умолчанию ниже)
+
+
+def free_spins_allowed(user):
+    return FREE_SPINS_PER_DAY.get(get_subscription_level(user), 1)
+
+
+def free_spins_left(user):
+    _reset_daily_quota_if_needed(user)
+    return max(0, free_spins_allowed(user) - user.get("free_spins_used", 0))
+
+
 def _reset_daily_quota_if_needed(user):
     level = get_subscription_level(user)
     today = datetime.now().date().isoformat()
@@ -1241,6 +1313,7 @@ def _reset_daily_quota_if_needed(user):
         return
     user["daily_messages"] = 100 if level == "super_pro" else (50 if level == "pro" else FREE_DAILY_MESSAGES)
     user["last_daily_reset"] = today
+    user["free_spins_used"] = 0
     if level:
         field = "free_intim_scenes_super" if level == "super_pro" else "free_intim_scenes_pro"
         user[field] = FREE_INTIM_SCENES[level]
@@ -1384,10 +1457,10 @@ def get_time_of_day(user):
 MAX_STAT = 100
 ENERGY_REGEN_MINUTES_FULL = 40    # без активности энергия сама полностью восстанавливается примерно за 40 минут
 SATIETY_REGEN_MINUTES_FULL = 180  # сытость сама восстанавливается намного медленнее — еда остаётся ценной
-ENERGY_COST_MESSAGE = 3
-SATIETY_COST_MESSAGE = 2
+ENERGY_COST_MESSAGE = 6  # на бесплатном тарифе (без множителя подписки) хватает примерно на 16 сообщений
+SATIETY_COST_MESSAGE = 3
 STAT_DECAY_MULTIPLIER = {"pro": 0.6, "super_pro": 0.3}  # подписчики устают/голодают медленнее
-# У /intim нет стоимости энергии/сытости и нет проверки is_asleep(user) — это отдельный платный
+# У /hot нет стоимости энергии/сытости и нет проверки is_asleep(user) — это отдельный платный
 # раздел именно для тех, кто не хочет ждать ни уровня близости, ни "сна" персонажа (см. intim_cmd
 # и generate_intim_scene): тамагочи-механика на него не распространяется ни в одну, ни в другую сторону.
 
@@ -1681,7 +1754,7 @@ def get_main_menu_keyboard(user):
 
 
 def get_profile_keyboard(user):
-    mute_key = "unmute_notifications_btn" if user.get("notifications_muted") else "mute_notifications_btn"
+    mute_key = "notifications_off_btn" if user.get("notifications_muted") else "notifications_on_btn"
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=get_text(user, "buy_bundles"), callback_data="profile_bundles", style="success")],
         [InlineKeyboardButton(text=get_text(user, "shop_btn"), callback_data="profile_shop", style="success")],
@@ -2189,12 +2262,12 @@ async def spin_button_handler(message: types.Message):
         await message.answer(get_text(user, "finish_registration_spin"))
         return
 
-    today = datetime.now().date().isoformat()
-    has_free = user.get("last_free_spin") != today
+    left = free_spins_left(user)
+    has_free = left > 0
 
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(
-            text=get_text(user, "free") if has_free else get_text(user, "tomorrow"),
+            text=get_text(user, "free", left=left, total=free_spins_allowed(user)) if has_free else get_text(user, "tomorrow"),
             callback_data="spin_free" if has_free else "spin_no",
             style="success" if has_free else None
         )],
@@ -2212,11 +2285,10 @@ async def spin_button_handler(message: types.Message):
 @dp.callback_query(lambda c: c.data == "spin_free")
 async def spin_free(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
-    today = datetime.now().date().isoformat()
-    if user.get("last_free_spin") == today:
+    if free_spins_left(user) <= 0:
         await call.answer(get_text(user, "spin_already"), show_alert=True)
         return
-    user["last_free_spin"] = today
+    user["free_spins_used"] = user.get("free_spins_used", 0) + 1
     save_data(user_data)
     await safe_delete(call.message)
     await spin_result(call.message.chat.id, user, free=True)
@@ -2252,18 +2324,19 @@ async def spin_back(call: types.CallbackQuery):
 
 
 SPIN_PRIZES = [
-    {"name": "😢 Ничего", "name_en": "😢 Nothing", "name_de": "😢 Nichts", "value": 0, "type": "nothing", "weight": 20},
-    {"name": "10 сообщений", "name_en": "10 messages", "name_de": "10 Nachrichten", "value": 10, "type": "messages", "weight": 18},
-    {"name": "15 сообщений", "name_en": "15 messages", "name_de": "15 Nachrichten", "value": 15, "type": "messages", "weight": 13},
-    {"name": "20 сообщений", "name_en": "20 messages", "name_de": "20 Nachrichten", "value": 20, "type": "messages", "weight": 10},
-    {"name": "100 XP", "name_en": "100 XP", "name_de": "100 XP", "value": 100, "type": "xp", "weight": 18},
-    {"name": "150 XP", "name_en": "150 XP", "name_de": "150 XP", "value": 150, "type": "xp", "weight": 10},
-    {"name": "250 XP", "name_en": "250 XP", "name_de": "250 XP", "value": 250, "type": "xp", "weight": 5},
-    {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "name_de": "🎁 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 1.5},
-    {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.5},
-    {"name": "🎉 50 сообщений (ДЖЕКПОТ!)", "name_en": "🎉 50 messages (JACKPOT!)", "name_de": "🎉 50 Nachrichten (JACKPOT!)", "value": 50, "type": "messages", "weight": 1},
-    {"name": "1 интим-сцена 🔥", "name_en": "1 intimate scene 🔥", "name_de": "1 Intim-Szene 🔥", "value": 1, "type": "intim_scenes", "weight": 10},
-    {"name": "2 интим-сцены 🔥🔥", "name_en": "2 intimate scenes 🔥🔥", "name_de": "2 Intim-Szenen 🔥🔥", "value": 2, "type": "intim_scenes", "weight": 3},
+    {"name": "😢 Ничего", "name_en": "😢 Nothing", "name_de": "😢 Nichts", "value": 0, "type": "nothing", "weight": 8},
+    {"name": "20💵 баксов", "name_en": "20💵 bucks", "name_de": "20💵 Bucks", "value": 20, "type": "bucks", "weight": 16},
+    {"name": "40💵 баксов", "name_en": "40💵 bucks", "name_de": "40💵 Bucks", "value": 40, "type": "bucks", "weight": 12},
+    {"name": "1⚡ энергетик", "name_en": "1⚡ energizer", "name_de": "1⚡ Energydrink", "value": 1, "type": "energizers", "weight": 14},
+    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 8},
+    {"name": "100 XP", "name_en": "100 XP", "name_de": "100 XP", "value": 100, "type": "xp", "weight": 16},
+    {"name": "150 XP", "name_en": "150 XP", "name_de": "150 XP", "value": 150, "type": "xp", "weight": 9},
+    {"name": "250 XP", "name_en": "250 XP", "name_de": "250 XP", "value": 250, "type": "xp", "weight": 4},
+    {"name": "🔥 1 горячая сцена", "name_en": "🔥 1 hot scene", "name_de": "🔥 1 heiße Szene", "value": 1, "type": "intim_scenes", "weight": 9},
+    {"name": "🔥🔥 2 горячие сцены", "name_en": "🔥🔥 2 hot scenes", "name_de": "🔥🔥 2 heiße Szenen", "value": 2, "type": "intim_scenes", "weight": 3},
+    {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "name_de": "🎁 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 1},
+    {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.4},
+    {"name": "🎉 150💵 баксов (ДЖЕКПОТ!)", "name_en": "🎉 150💵 bucks (JACKPOT!)", "name_de": "🎉 150💵 Bucks (JACKPOT!)", "value": 150, "type": "bucks", "weight": 0.6},
 ]
 
 
@@ -2289,9 +2362,12 @@ async def spin_result(chat_id, user, free=False):
     await asyncio.sleep(0.8)
     await safe_delete(msg)
 
-    if chosen["type"] == "messages":
-        user["purchased_messages"] = user.get("purchased_messages", 0) + chosen["value"]
-        result_text = get_text(user, "spin_win_messages", value=chosen["value"])
+    if chosen["type"] == "bucks":
+        user["bucks"] = user.get("bucks", 0) + chosen["value"]
+        result_text = get_text(user, "spin_win_bucks", value=chosen["value"])
+    elif chosen["type"] == "energizers":
+        user["energizers"] = user.get("energizers", 0) + chosen["value"]
+        result_text = get_text(user, "spin_win_energizers", value=chosen["value"])
     elif chosen["type"] == "xp":
         user["xp"] = user.get("xp", 0) + chosen["value"]
         result_text = get_text(user, "spin_win_xp", value=chosen["value"])
@@ -2422,6 +2498,38 @@ def get_shop_kb(user):
              for key, item in GIFT_ITEMS.items()]
     rows.append([InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+FEED_NUDGE_SATIETY_THRESHOLD = 20  # тот же порог, что и у "сильного голода" в build_hunger_rule
+FEED_NUDGE_COOLDOWN_MINUTES = 90  # чтобы не слать одно и то же напоминание после каждого сообщения
+
+
+def get_feed_nudge_kb(user):
+    """Кормим прямо из подсказки теми же кнопками shop_food_*, что и в магазине —
+    отдельного хендлера не нужно."""
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=f"{intim_option_label(FOOD_ITEMS, key, user)} — {item['price']}💵",
+                              callback_data=f"shop_food_{key}", style="success")]
+        for key, item in FOOD_ITEMS.items()
+    ])
+
+
+async def maybe_send_feed_nudge(chat_id, user):
+    """Многие не понимают, как вообще работает голод и чем кормить — вместо того чтобы
+    заставлять искать магазин самому, подсказываем прямо в чате, когда сытость правда низкая."""
+    if user.get("satiety", MAX_STAT) > FEED_NUDGE_SATIETY_THRESHOLD:
+        return
+    last = user.get("last_feed_nudge")
+    if last:
+        try:
+            elapsed_min = (datetime.now() - datetime.fromisoformat(last)).total_seconds() / 60
+            if elapsed_min < FEED_NUDGE_COOLDOWN_MINUTES:
+                return
+        except (ValueError, TypeError):
+            pass
+    user["last_feed_nudge"] = datetime.now().isoformat()
+    save_data(user_data)
+    await bot.send_message(chat_id, get_text(user, "hungry_nudge"), reply_markup=get_feed_nudge_kb(user))
 
 
 @dp.callback_query(lambda c: c.data == "profile_shop")
@@ -2932,7 +3040,7 @@ async def grant_cmd(message: types.Message):
     if len(args) < 2:
         await message.answer(
             "/grant @username — SUPER PRO\n/grant @username pro — PRO\n"
-            "/grant @username intim N — N интим-сцен\n/grant @username energizers N — N энергетиков\n"
+            "/grant @username intim N — N горячих сцен\n/grant @username energizers N — N энергетиков\n"
             "/grant @username bucks N — N баксов"
         )
         return
@@ -2950,7 +3058,7 @@ async def grant_cmd(message: types.Message):
                 return
         user["intim_scenes"] = user.get("intim_scenes", 0) + amount
         save_data(user_data)
-        await message.answer(f"✅ {args[1]} выдано интим-сцен: {amount}.")
+        await message.answer(f"✅ {args[1]} выдано горячих сцен: {amount}.")
         return
     if len(args) >= 3 and args[2].lower() in ("energizers", "bucks"):
         field = args[2].lower()
@@ -3003,7 +3111,7 @@ async def revoke_subscription_cmd(message: types.Message):
 
 
 # ============================================================
-#  КОМАНДА /intim — ВЫБОР И ГЕНЕРАЦИЯ ИНТИМ-СЦЕНЫ
+#  КОМАНДА /hot — ВЫБОР И ГЕНЕРАЦИЯ ГОРЯЧЕЙ СЦЕНЫ
 # ============================================================
 def get_intim_types_kb(user):
     buttons = [InlineKeyboardButton(text=intim_option_label(INTIM_SCENES, key, user),
@@ -3068,7 +3176,7 @@ async def show_intim_menu(chat_id, user):
                            reply_markup=get_intim_types_kb(user), parse_mode="Markdown")
 
 
-@dp.message(Command("intim"))
+@dp.message(Command("hot"))
 async def intim_cmd(message: types.Message):
     user = get_user(message.from_user.id)
     if not user["verified"] or not user["agreement_accepted"]:
@@ -3077,7 +3185,7 @@ async def intim_cmd(message: types.Message):
     if not user["personality_ready"]:
         await message.answer(get_text(user, "intim_need_character"))
         return
-    # /intim нарочно не проверяет is_asleep(user) — это отдельный платный раздел именно для тех,
+    # /hot нарочно не проверяет is_asleep(user) — это отдельный платный раздел именно для тех,
     # кто не хочет ждать (ни уровня близости, ни "сна" персонажа): раз сцена куплена/доступна,
     # она выдаётся сразу, тамагочи-механика на неё не распространяется.
     await show_intim_menu(message.chat.id, user)
@@ -3169,14 +3277,17 @@ def build_intim_prompt(user, scene_type, location, dominant="any"):
 
     if user.get("custom_character"):
         identity = f"Ты — {user['custom_character']}.\n"
+        style_flavor = ""
     else:
         world_desc = WORLDS[user["world"]]
         gender_info = GENDERS[user["gender"]]
-        style_desc = STYLES[get_display_style(user)]["description"]
+        style_key = get_display_style(user)
+        style_desc = STYLES[style_key]["description"]
         identity = (
             f"Ты — {gender_info['name']}, тебе {gender_info['age']} лет. Ты живёшь в {world_desc} "
             f"{style_desc}\n"
         )
+        style_flavor = STYLE_INTIM_FLAVOR.get(style_key, "")
 
     user_gender = user.get("user_gender", "male")
     if user_gender == "male":
@@ -3194,17 +3305,22 @@ def build_intim_prompt(user, scene_type, location, dominant="any"):
         "уже выбрал эту сцену в меню и оплатил её, то есть точно этого хочет — ты не сдерживаешься и не "
         "переключаешься на более лёгкую тему.\n"
     )
+    if style_flavor:
+        prompt += f"{style_flavor}\n"
     prompt += f"\n**СЦЕНА:** {scene['ru']}."
     if location != "any":
         prompt += f" Место: {place['ru']}."
     prompt += f" {dominant_rule}\n"
+    tension = place.get("tension")
+    if tension:
+        prompt += f"{tension}\n"
     prompt += (
         f"Собеседник специально выбрал в меню именно «{scene['ru']}» — раскрывай сразу это действие, уже "
-        "в первой паре «действие + реплика», без затянутого вступления на другую тему и без более мягкой "
-        "замены выбранного. Опиши сцену от лица своего персонажа, продолжая ваш разговор. Пиши развёрнуто "
-        "и чувственно: передавай прикосновения, дыхание, взгляды, интонации голоса — а не только факт "
-        "действия. Избегай сухого перечисления и повторов формулировок из прошлых сцен, если они были в "
-        "истории диалога.\n"
+        "в первой паре «действие + реплика», без вступления на постороннюю тему и без более мягкой замены "
+        "выбранного. Опиши сцену от лица своего персонажа как самостоятельный эпизод, начинающийся прямо "
+        "сейчас, без всякой связи с обычной перепиской — считай, что никакого предыдущего разговора не "
+        "было. Пиши развёрнуто и чувственно: передавай прикосновения, дыхание, взгляды, интонации голоса "
+        "— а не только факт действия.\n"
         "**ФОРМАТ:** действие в *звёздочках* с новой строки, затем реплика с новой строки, между ними "
         "пустая строка. Минимум 3 пары «действие + реплика». Не обрывай сцену на середине.\n"
     )
@@ -3213,15 +3329,16 @@ def build_intim_prompt(user, scene_type, location, dominant="any"):
 
 
 async def generate_intim_scene(call, user, scene_type, location="any", dominant="any", free=False):
-    """Возвращает True, если сцена сгенерирована и отправлена."""
+    """Возвращает True, если сцена сгенерирована и отправлена. Намеренно не читает и не
+    пишет в user["history"]: сцена — самостоятельный эпизод без всякой связи с обычным чатом
+    (ни в контексте генерации, ни в том, что персонаж "помнит" потом)."""
     chat_id = call.message.chat.id
     status_msg = await bot.send_message(chat_id, get_text(user, "intim_generating"))
     typing_task = asyncio.create_task(_keep_typing(chat_id))
     try:
         response = call_ai(
             INTIM_MODEL, "intim",
-            messages=[{"role": "system", "content": build_intim_prompt(user, scene_type, location, dominant)}]
-                     + user["history"][-10:],
+            messages=[{"role": "system", "content": build_intim_prompt(user, scene_type, location, dominant)}],
             temperature=0.95,
             max_tokens=1200,
         )
@@ -3234,10 +3351,6 @@ async def generate_intim_scene(call, user, scene_type, location="any", dominant=
         await safe_delete(status_msg)
 
     _, clean_answer = extract_reaction_from_answer(answer)
-    user["history"].append({"role": "assistant", "content": clean_answer})
-    limit = get_history_limit(user)
-    if len(user["history"]) > limit:
-        user["history"] = user["history"][-limit:]
     user["last_activity"] = datetime.now().isoformat()
     # Интим-сцены нарочно не тратят энергию/сытость: иначе платная сцена могла бы сама "усыпить"
     # персонажа и заблокировать пользователю следующее обычное сообщение — а это ровно то ожидание,
@@ -3327,6 +3440,7 @@ async def generate_and_reply(message: types.Message, user):
     user["last_activity"] = datetime.now().isoformat()
     apply_activity_stat_cost(user, ENERGY_COST_MESSAGE, SATIETY_COST_MESSAGE)
     save_data(user_data)
+    await maybe_send_feed_nudge(message.chat.id, user)
 
 
 async def _keep_typing(chat_id):
@@ -3450,7 +3564,7 @@ async def handle_message(message: types.Message):
             return
         xp_change, mood_change = -10, -1
     else:
-        xp_change = int(5 * multiplier + 0.5)
+        xp_change = int(3 * multiplier + 0.5)
         mood_change = 0.5
         user["negative_count"] = max(0, user.get("negative_count", 0) - 1)
 
