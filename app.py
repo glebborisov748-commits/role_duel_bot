@@ -13,7 +13,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import (
     InlineKeyboardMarkup, InlineKeyboardButton, LabeledPrice,
-    ReplyKeyboardMarkup, KeyboardButton
+    ReplyKeyboardMarkup, KeyboardButton, BotCommand
 )
 import httpx
 from dotenv import load_dotenv
@@ -73,6 +73,30 @@ TEXTS = {
         "edit_success": "✅ Сообщение заменено. Генерирую новый ответ...",
         "character_created": "✅ **Персонаж создан!**\n\nТеперь ты общаешься с:\n_{text}_\n\nЧтобы вернуться к обычному персонажу — /reset_character",
         "character_reset": "✅ Персонаж сброшен.",
+        "help_title": "📖 **Команды бота**",
+        "help_base": (
+            "/start — регистрация / открыть главное меню\n"
+            "/language — сменить язык\n"
+            "/hot — горячая сцена с персонажем\n"
+            "/reset_character — сбросить своего кастомного персонажа\n"
+            "/help — этот список команд"
+        ),
+        "help_subscriber_extra": (
+            "✨ *Доступно с SUPER PRO / ELITE:*\n"
+            "/switch_personality — сменить мир и пол без потери истории\n"
+            "/switch_style — сменить стиль без потери истории"
+        ),
+        "help_admin_extra": (
+            "🛠 *Админ-команды:*\n"
+            "/grant @username [pro|elite] — выдать подписку\n"
+            "/grant @username intim N — выдать горячие сцены\n"
+            "/grant @username energizers N — выдать энергетики\n"
+            "/grant @username bucks N — выдать баксы\n"
+            "/revoke_subscription @username — отозвать подписку\n"
+            "/tehwork on|off — режим техобслуживания\n"
+            "/reset_me — сбросить свои данные"
+        ),
+        "help_hint": "📖 /help — список всех команд.",
         "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
         "spin_title": "🎰 **Колесо фортуны**",
         "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 20–150💵 баксов\n• 🔥 Горячие сцены\n• 2–4⚡ энергетика (редко)\n• 🎁 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)",
@@ -302,6 +326,30 @@ TEXTS = {
         "edit_success": "✅ Message replaced. Generating a new response...",
         "character_created": "✅ **Character created!**\n\nNow you're talking to:\n_{text}_\n\nTo go back to the default character — /reset_character",
         "character_reset": "✅ Character reset.",
+        "help_title": "📖 **Bot commands**",
+        "help_base": (
+            "/start — sign up / open the main menu\n"
+            "/language — change language\n"
+            "/hot — a hot scene with your character\n"
+            "/reset_character — reset your custom character\n"
+            "/help — this list of commands"
+        ),
+        "help_subscriber_extra": (
+            "✨ *Available with SUPER PRO / ELITE:*\n"
+            "/switch_personality — change world and gender without losing history\n"
+            "/switch_style — change style without losing history"
+        ),
+        "help_admin_extra": (
+            "🛠 *Admin commands:*\n"
+            "/grant @username [pro|elite] — grant a subscription\n"
+            "/grant @username intim N — grant N hot scenes\n"
+            "/grant @username energizers N — grant N energizers\n"
+            "/grant @username bucks N — grant N bucks\n"
+            "/revoke_subscription @username — revoke a subscription\n"
+            "/tehwork on|off — maintenance mode\n"
+            "/reset_me — wipe your own data"
+        ),
+        "help_hint": "📖 /help — the full list of commands.",
         "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«An elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire.»\n\n✏️ Write the description now — and I'll remember it!",
         "spin_title": "🎰 **Spin wheel**",
         "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 20–150💵 bucks\n• 🔥 Hot scenes\n• 2–4⚡ energizers (rare)\n• 🎁 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)",
@@ -531,6 +579,30 @@ TEXTS = {
         "edit_success": "✅ Nachricht ersetzt. Ich erstelle eine neue Antwort...",
         "character_created": "✅ **Charakter erstellt!**\n\nDu sprichst jetzt mit:\n_{text}_\n\nZurück zum normalen Charakter — /reset_character",
         "character_reset": "✅ Charakter zurückgesetzt.",
+        "help_title": "📖 **Bot-Befehle**",
+        "help_base": (
+            "/start — registrieren / Hauptmenü öffnen\n"
+            "/language — Sprache ändern\n"
+            "/hot — heiße Szene mit deinem Charakter\n"
+            "/reset_character — deinen eigenen Charakter zurücksetzen\n"
+            "/help — diese Befehlsliste"
+        ),
+        "help_subscriber_extra": (
+            "✨ *Verfügbar mit SUPER PRO / ELITE:*\n"
+            "/switch_personality — Welt und Geschlecht ändern, ohne den Verlauf zu verlieren\n"
+            "/switch_style — Stil ändern, ohne den Verlauf zu verlieren"
+        ),
+        "help_admin_extra": (
+            "🛠 *Admin-Befehle:*\n"
+            "/grant @username [pro|elite] — Abo vergeben\n"
+            "/grant @username intim N — N heiße Szenen vergeben\n"
+            "/grant @username energizers N — N Energydrinks vergeben\n"
+            "/grant @username bucks N — N Bucks vergeben\n"
+            "/revoke_subscription @username — Abo entziehen\n"
+            "/tehwork on|off — Wartungsmodus\n"
+            "/reset_me — eigene Daten löschen"
+        ),
+        "help_hint": "📖 /help — die vollständige Befehlsliste.",
         "character_create_prompt": "🎭 **Erstelle deinen eigenen Charakter!**\n\nBeschreibe eine beliebige Figur — aus Anime, Filmen, Spielen oder denk dir selbst eine aus.\nSchreibe Namen, Charakter, Aussehen, Herkunft und beliebige Details.\n\n📝 *Beispiel:*\n«Eine Elfe aus der Welt von The Witcher — weise, ruhig, mit langen silbernen Haaren. Sie liebt Sterne und lange Gespräche am Feuer.»\n\n✏️ Schreibe die Beschreibung jetzt — und ich merke sie mir!",
         "spin_title": "🎰 **Glücksrad**",
         "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 20–150💵 Bucks\n• 🔥 Heiße Szenen\n• 2–4⚡ Energydrinks (selten)\n• 🎁 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)",
@@ -2228,6 +2300,20 @@ async def reset_character_cmd(message: types.Message):
     await message.answer(get_text(user, "character_reset"))
 
 
+@dp.message(Command("help"))
+async def help_cmd(message: types.Message):
+    """Список команд собирается по частям, а не одним большим текстом — чтобы пользователь
+    видел только то, что реально доступно на его тарифе (see: видели только нужное), а не
+    команды SUPER PRO/ELITE, которыми он всё равно не может воспользоваться."""
+    user = get_user(message.from_user.id)
+    text = get_text(user, "help_title") + "\n\n" + get_text(user, "help_base")
+    if get_subscription_level(user) in ("super_pro", "elite"):
+        text += "\n\n" + get_text(user, "help_subscriber_extra")
+    if message.from_user.id in ADMIN_IDS:
+        text += "\n\n" + get_text(user, "help_admin_extra")
+    await message.answer(text, parse_mode="Markdown")
+
+
 # ============================================================
 #  ГЛАВНОЕ МЕНЮ И ПРОФИЛЬ
 # ============================================================
@@ -2268,7 +2354,8 @@ async def send_main_menu(chat_id, user):
         f"{multiplier_text}\n\n"
         f"{stats_line_text(user)}\n\n"
         f"{get_text(user, 'menu_write_prompt')}\n"
-        f"{get_text(user, 'hot_hint')}"
+        f"{get_text(user, 'hot_hint')}\n"
+        f"{get_text(user, 'help_hint')}"
     )
 
     try:
@@ -4127,6 +4214,18 @@ async def main():
     print(f"👥 Загружено профилей: {len(user_data)}")
     print(f"💳 Способы оплаты: {', '.join(available_payment_methods())}")
     print("✅ БОТ ГОТОВ К РАБОТЕ!")
+
+    # Нативное меню команд Telegram (кнопка "/" рядом с полем ввода) — всегда на русском,
+    # т.к. привязано к языку клиента Telegram, а не к языку, выбранному внутри бота.
+    await bot.set_my_commands([
+        BotCommand(command="start", description="Регистрация / главное меню"),
+        BotCommand(command="help", description="Список команд"),
+        BotCommand(command="language", description="Сменить язык"),
+        BotCommand(command="hot", description="Горячая сцена с персонажем"),
+        BotCommand(command="reset_character", description="Сбросить кастомного персонажа"),
+        BotCommand(command="switch_personality", description="Сменить мир/пол (SUPER PRO+)"),
+        BotCommand(command="switch_style", description="Сменить стиль (SUPER PRO+)"),
+    ])
 
     asyncio.create_task(check_notifications())
     asyncio.create_task(check_pending_payments())
