@@ -1,6 +1,7 @@
 import asyncio
 import hashlib
 import hmac
+import math
 import os
 import json
 import logging
@@ -225,7 +226,7 @@ TEXTS = {
         "gift_bought": "🎁 Подарок понравился! Настроение +{mood}, опыт +{xp}.",
         "not_enough_bucks": "❌ Не хватает баксов: нужно ещё {n}💵.",
         "not_enough_energizers": "❌ Нет энергетиков. Купи бандл, чтобы разбудить персонажа сразу ⚡.",
-        "asleep_message": "😴 Персонаж крепко спит и сейчас не может ответить. Энергия восстановится сама через некоторое время — или разбуди прямо сейчас энергетиком ⚡.",
+        "asleep_message": "😴 Персонаж крепко спит и сейчас не может ответить. Проснётся сам примерно через {minutes} мин. — или разбуди прямо сейчас энергетиком ⚡.",
         "wake_energizer_btn": "⚡ Разбудить энергетиком",
         "woken_up": "⚡ Энергетик выпит — персонаж снова бодр и на связи!",
         "stats_line": "⚡ Энергия: {energy}/100   🍗 Сытость: {satiety}/100\n⚡ Энергетиков: {energizers}   💵 Баксов: {bucks}",
@@ -446,7 +447,7 @@ TEXTS = {
         "gift_bought": "🎁 The gift was a hit! Mood +{mood}, XP +{xp}.",
         "not_enough_bucks": "❌ Not enough bucks: you need {n}💵 more.",
         "not_enough_energizers": "❌ No energizers left. Buy a bundle to wake your companion up right away ⚡.",
-        "asleep_message": "😴 Your companion is fast asleep and can't reply right now. Energy will recover on its own after a while — or wake them up right away with an energizer ⚡.",
+        "asleep_message": "😴 Your companion is fast asleep and can't reply right now. They'll wake up on their own in about {minutes} min. — or wake them up right away with an energizer ⚡.",
         "wake_energizer_btn": "⚡ Wake up with an energizer",
         "woken_up": "⚡ Energizer used — your companion is wide awake again!",
         "stats_line": "⚡ Energy: {energy}/100   🍗 Satiety: {satiety}/100\n⚡ Energizers: {energizers}   💵 Bucks: {bucks}",
@@ -667,7 +668,7 @@ TEXTS = {
         "gift_bought": "🎁 Das Geschenk kam gut an! Stimmung +{mood}, XP +{xp}.",
         "not_enough_bucks": "❌ Nicht genug Bucks: dir fehlen noch {n}💵.",
         "not_enough_energizers": "❌ Keine Energydrinks mehr. Kaufe ein Bundle, um deinen Begleiter sofort aufzuwecken ⚡.",
-        "asleep_message": "😴 Dein Begleiter schläft tief und fest und kann gerade nicht antworten. Die Energie erholt sich von selbst nach einer Weile — oder wecke ihn sofort mit einem Energydrink ⚡.",
+        "asleep_message": "😴 Dein Begleiter schläft tief und fest und kann gerade nicht antworten. Er/sie wacht von selbst in etwa {minutes} Min. auf — oder wecke ihn sofort mit einem Energydrink ⚡.",
         "wake_energizer_btn": "⚡ Mit Energydrink wecken",
         "woken_up": "⚡ Energydrink getrunken — dein Begleiter ist wieder hellwach!",
         "stats_line": "⚡ Energie: {energy}/100   🍗 Sättigung: {satiety}/100\n⚡ Energydrinks: {energizers}   💵 Bucks: {bucks}",
@@ -930,6 +931,7 @@ def get_user(user_id):
             "energizers": 0,
             "bucks": 0,
             "last_stat_tick": None,
+            "sleep_until": None,
             "notifications_muted": False,
             "last_feed_nudge": None,
             "last_energy_nudge": None,
@@ -976,6 +978,7 @@ def get_user(user_id):
             "energizers": 0,
             "bucks": 0,
             "last_stat_tick": None,
+            "sleep_until": None,
             "notifications_muted": False,
             "last_feed_nudge": None,
             "last_energy_nudge": None,
@@ -1236,6 +1239,7 @@ GIFT_ITEMS = {
     "sweets": {"emoji": "🍫", "ru": "Шоколадки", "en": "Chocolates", "de": "Pralinen", "price": 10, "mood": 2, "xp": 2},
     "wine": {"emoji": "🍷", "ru": "Вино", "en": "Wine", "de": "Wein", "price": 15, "mood": 3, "xp": 3},
     "flowers": {"emoji": "💐", "ru": "Цветы", "en": "Flowers", "de": "Blumen", "price": 20, "mood": 4, "xp": 5},
+    "perfume": {"emoji": "🧴", "ru": "Духи", "en": "Perfume", "de": "Parfüm", "price": 25, "mood": 4, "xp": 6},
     "cosmetics": {"emoji": "💄", "ru": "Косметика", "en": "Cosmetics", "de": "Kosmetik", "price": 30, "mood": 5, "xp": 7},
     "heels": {"emoji": "👠", "ru": "Каблуки", "en": "Heels", "de": "High Heels", "price": 40, "mood": 6, "xp": 8},
     "dress": {"emoji": "👗", "ru": "Платье", "en": "Dress", "de": "Kleid", "price": 55, "mood": 7, "xp": 10},
@@ -1513,6 +1517,9 @@ ENERGY_COST_MESSAGE = 6  # на бесплатном тарифе (без мно
 SATIETY_COST_MESSAGE = 3
 ENERGIZER_RESTORE_AMOUNT = 50  # энергетик восполняет половину бака, а не сразу всё — поэтому их
                                 # можно (и нужно) выдавать щедрее, не делая чат безлимитным одним предметом
+SLEEP_NAP_MINUTES = 20  # фиксированная длительность "сна": пассивная регенерация энергии идёт
+                          # непрерывно и сама по себе не должна досрочно снимать блокировку чата —
+                          # иначе при регене ~2.5/мин чат разблокировался бы уже через минуту
 STAT_DECAY_MULTIPLIER = {"pro": 0.6, "super_pro": 0.3, "elite": 0.15}  # подписчики устают/голодают медленнее
 INTIMACY_LEVEL_DECAY_STEP = 0.1  # чем ближе вы, тем персонаж "требовательнее": на 1 уровне — как
                                   # обычно, на 10 — почти вдвое быстрее тратит энергию и сытость
@@ -1547,22 +1554,47 @@ def get_level_decay_multiplier(user):
 
 def apply_activity_stat_cost(user, energy_cost, satiety_cost):
     mult = STAT_DECAY_MULTIPLIER.get(get_subscription_level(user), 1.0) * get_level_decay_multiplier(user)
-    user["energy"] = max(0, user.get("energy", MAX_STAT) - energy_cost * mult)
+    prev_energy = user.get("energy", MAX_STAT)
+    user["energy"] = max(0, prev_energy - energy_cost * mult)
     user["satiety"] = max(0, user.get("satiety", MAX_STAT) - satiety_cost * mult)
+    if prev_energy > 0 and user["energy"] <= 0:
+        # Энергия только что впервые дошла до 0 — фиксируем время пробуждения. Дальше
+        # is_asleep() смотрит именно на sleep_until, а не на текущую энергию: иначе
+        # непрерывный пассивный регенерации энергии почти сразу же "будил" бы персонажа.
+        user["sleep_until"] = (datetime.now() + timedelta(minutes=SLEEP_NAP_MINUTES)).isoformat()
 
 
 def is_asleep(user):
-    return user.get("energy", MAX_STAT) <= 0
+    sleep_until = user.get("sleep_until")
+    if not sleep_until:
+        return False
+    try:
+        return datetime.fromisoformat(sleep_until) > datetime.now()
+    except (ValueError, TypeError):
+        return False
+
+
+def sleep_minutes_left(user):
+    """Сколько минут осталось до конца сна, округлённо вверх, минимум 1 (только для отображения)."""
+    sleep_until = user.get("sleep_until")
+    if not sleep_until:
+        return 0
+    try:
+        remaining = (datetime.fromisoformat(sleep_until) - datetime.now()).total_seconds() / 60
+    except (ValueError, TypeError):
+        return 0
+    return max(1, math.ceil(remaining))
 
 
 def use_energizer(user):
     """Возвращает True, если энергетик найден и использован. Восполняет ENERGIZER_RESTORE_AMOUNT,
-    а не сразу до максимума — этого хватает, чтобы "разбудить" персонажа (is_asleep смотрит на
-    energy > 0), но обычно не хватит на полный бак с одного энергетика."""
+    а не сразу до максимума, и сразу снимает sleep_until — так энергетик всегда мгновенно
+    "будит" персонажа, даже если пассивная энергия ещё не успела подрасти."""
     if user.get("energizers", 0) <= 0:
         return False
     user["energizers"] -= 1
     user["energy"] = min(MAX_STAT, user.get("energy", MAX_STAT) + ENERGIZER_RESTORE_AMOUNT)
+    user["sleep_until"] = None
     save_data(user_data)
     return True
 
@@ -2936,6 +2968,7 @@ async def grant_product(user, payload, chat_id):
         await bot.send_message(chat_id, get_text(user, "payment_intim_success"))
     elif payload == "wake_now":
         user["energy"] = MAX_STAT
+        user["sleep_until"] = None
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "woken_up"))
     elif payload == "spin_paid_20":
@@ -3629,7 +3662,7 @@ async def handle_message(message: types.Message):
     # не генерируем (экономит и токены, и веру в механику), а кнопки навигации выше уже
     # обработаны и по-прежнему работают, чтобы можно было зайти в профиль и разбудить/покормить.
     if is_asleep(user):
-        await message.answer(get_text(user, "asleep_message"), reply_markup=get_wake_kb(user))
+        await message.answer(get_text(user, "asleep_message", minutes=sleep_minutes_left(user)), reply_markup=get_wake_kb(user))
         return
 
     # 5. Режим редактирования последнего сообщения
