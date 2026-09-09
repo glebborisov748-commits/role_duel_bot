@@ -3378,8 +3378,8 @@ async def generate_intim_scene(call, user, scene_type, location="any", dominant=
     status_msg = await bot.send_message(chat_id, get_text(user, "intim_generating"))
     typing_task = asyncio.create_task(_keep_typing(chat_id))
     try:
-        response = call_ai(
-            INTIM_MODEL, "intim",
+        response = await asyncio.to_thread(
+            call_ai, INTIM_MODEL, "intim",
             messages=[{"role": "system", "content": build_intim_prompt(user, scene_type, location, dominant)}],
             temperature=0.95,
             max_tokens=1200,
@@ -3447,8 +3447,8 @@ async def generate_and_reply(message: types.Message, user):
     system_prompt = build_prompt(user)
     typing_task = asyncio.create_task(_keep_typing(message.chat.id))
     try:
-        response = call_ai(
-            AI_MODEL, "ai",
+        response = await asyncio.to_thread(
+            call_ai, AI_MODEL, "ai",
             messages=[{"role": "system", "content": system_prompt}] + user["history"],
             temperature=0.9,
             max_tokens=1000
