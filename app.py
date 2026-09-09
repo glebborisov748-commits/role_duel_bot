@@ -76,11 +76,11 @@ TEXTS = {
         "character_reset": "✅ Персонаж сброшен.",
         "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
         "spin_title": "🎰 **Колесо фортуны**",
-        "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 20–150💵 баксов\n• 🔥 Горячие сцены\n• 1–2⚡ энергетика (редко)\n• 🎁 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)",
+        "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 20–150💵 баксов\n• 🔥 Горячие сцены\n• 2–4⚡ энергетика (редко)\n• 🎁 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)",
         "spin_choose": "Выбери вариант:",
         "spin_nothing": "😢 Ничего... В следующий раз повезёт!",
         "profile": "Подписка: {status}\nОсталось сообщений: {messages}",
-        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+10 сообщений и +30💵 баксов** тебе, ему — **+5 сообщений и +15💵 баксов**!\n\n📊 Приглашено друзей: **{count}**\n💌 Заработано сообщений: **{earned}**\n💵 Заработано баксов: **{earned_bucks}**",
+        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+30💵 баксов и +3⚡ энергетика** тебе, ему — **+15💵 баксов и +1⚡ энергетик**!\n\n📊 Приглашено друзей: **{count}**\n💵 Заработано баксов: **{earned_bucks}**\n⚡ Заработано энергетиков: **{earned_energizers}**",
         "choose_lang_label": "🌍 Выбери язык:",
         "welcome_back_female": "Ой, тебя так долго не было! Я уже успела соскучиться 🥺💕",
         "welcome_back_male": "Ой, тебя так долго не было! Я уже успел соскучиться 🥺💕",
@@ -118,7 +118,6 @@ TEXTS = {
         "menu_style_line": "Стиль: {style}",
         "menu_messages_left": "Осталось сообщений: {n}",
         "menu_messages_out": " (закончились)",
-        "menu_free_messages": "У вас есть бесплатные сообщения для старта",
         "menu_write_prompt": "💬 Напиши персонажу...\n✨ Или выбери действие внизу.",
         "xp_level_label": "Уровень {level}/10",
         "xp_bonus_pro": "Бонус XP: x1.8",
@@ -291,11 +290,11 @@ TEXTS = {
         "character_reset": "✅ Character reset.",
         "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«An elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire.»\n\n✏️ Write the description now — and I'll remember it!",
         "spin_title": "🎰 **Spin wheel**",
-        "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 20–150💵 bucks\n• 🔥 Hot scenes\n• 1–2⚡ energizers (rare)\n• 🎁 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)",
+        "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 20–150💵 bucks\n• 🔥 Hot scenes\n• 2–4⚡ energizers (rare)\n• 🎁 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)",
         "spin_choose": "Choose an option:",
         "spin_nothing": "😢 Nothing... Better luck next time!",
         "profile": "Subscription: {status}\nMessages left: {messages}",
-        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+10 messages and +30💵 bucks** for you, and **+5 messages and +15💵 bucks** for them!\n\n📊 Friends invited: **{count}**\n💌 Messages earned: **{earned}**\n💵 Bucks earned: **{earned_bucks}**",
+        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+30💵 bucks and +3⚡ energizers** for you, and **+15💵 bucks and +1⚡ energizer** for them!\n\n📊 Friends invited: **{count}**\n💵 Bucks earned: **{earned_bucks}**\n⚡ Energizers earned: **{earned_energizers}**",
         "choose_lang_label": "🌍 Choose language:",
         "welcome_back_female": "Oh, you've been gone so long! I already missed you 🥺💕",
         "welcome_back_male": "Oh, you've been gone so long! I already missed you 🥺💕",
@@ -333,7 +332,6 @@ TEXTS = {
         "menu_style_line": "Style: {style}",
         "menu_messages_left": "Messages left: {n}",
         "menu_messages_out": " (none left)",
-        "menu_free_messages": "You have free messages to get started",
         "menu_write_prompt": "💬 Write to your character...\n✨ Or choose an action below.",
         "xp_level_label": "Level {level}/10",
         "xp_bonus_pro": "XP bonus: x1.8",
@@ -506,11 +504,11 @@ TEXTS = {
         "character_reset": "✅ Charakter zurückgesetzt.",
         "character_create_prompt": "🎭 **Erstelle deinen eigenen Charakter!**\n\nBeschreibe eine beliebige Figur — aus Anime, Filmen, Spielen oder denk dir selbst eine aus.\nSchreibe Namen, Charakter, Aussehen, Herkunft und beliebige Details.\n\n📝 *Beispiel:*\n«Eine Elfe aus der Welt von The Witcher — weise, ruhig, mit langen silbernen Haaren. Sie liebt Sterne und lange Gespräche am Feuer.»\n\n✏️ Schreibe die Beschreibung jetzt — und ich merke sie mir!",
         "spin_title": "🎰 **Glücksrad**",
-        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 20–150💵 Bucks\n• 🔥 Heiße Szenen\n• 1–2⚡ Energydrinks (selten)\n• 🎁 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)",
+        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 20–150💵 Bucks\n• 🔥 Heiße Szenen\n• 2–4⚡ Energydrinks (selten)\n• 🎁 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)",
         "spin_choose": "Wähle eine Option:",
         "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",
         "profile": "Abo: {status}\nNachrichten übrig: {messages}",
-        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+10 Nachrichten und +30💵 Bucks** für dich und **+5 Nachrichten und +15💵 Bucks** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💌 Verdiente Nachrichten: **{earned}**\n💵 Verdiente Bucks: **{earned_bucks}**",
+        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+30💵 Bucks und +3⚡ Energydrinks** für dich und **+15💵 Bucks und +1⚡ Energydrink** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💵 Verdiente Bucks: **{earned_bucks}**\n⚡ Verdiente Energydrinks: **{earned_energizers}**",
         "choose_lang_label": "🌍 Sprache wählen:",
         "welcome_back_female": "Oh, du warst so lange weg! Ich habe dich schon vermisst 🥺💕",
         "welcome_back_male": "Oh, du warst so lange weg! Ich habe dich schon vermisst 🥺💕",
@@ -548,7 +546,6 @@ TEXTS = {
         "menu_style_line": "Stil: {style}",
         "menu_messages_left": "Nachrichten übrig: {n}",
         "menu_messages_out": " (aufgebraucht)",
-        "menu_free_messages": "Du hast gratis Nachrichten für den Start",
         "menu_write_prompt": "💬 Schreibe deinem Charakter...\n✨ Oder wähle unten eine Aktion.",
         "xp_level_label": "Level {level}/10",
         "xp_bonus_pro": "XP-Bonus: x1.8",
@@ -1363,10 +1360,6 @@ def use_message(user):
     save_data(user_data)
 
 
-def has_purchased_something(user):
-    return bool(user.get("has_purchased")) or has_active_subscription(user)
-
-
 def contains_negative(text):
     if not text:
         return False
@@ -1486,6 +1479,8 @@ ENERGY_REGEN_MINUTES_FULL = 40    # без активности энергия �
 SATIETY_REGEN_MINUTES_FULL = 180  # сытость сама восстанавливается намного медленнее — еда остаётся ценной
 ENERGY_COST_MESSAGE = 6  # на бесплатном тарифе (без множителя подписки) хватает примерно на 16 сообщений
 SATIETY_COST_MESSAGE = 3
+ENERGIZER_RESTORE_AMOUNT = 50  # энергетик восполняет половину бака, а не сразу всё — поэтому их
+                                # можно (и нужно) выдавать щедрее, не делая чат безлимитным одним предметом
 STAT_DECAY_MULTIPLIER = {"pro": 0.6, "super_pro": 0.3}  # подписчики устают/голодают медленнее
 # У /hot нет стоимости энергии/сытости и нет проверки is_asleep(user) — это отдельный платный
 # раздел именно для тех, кто не хочет ждать ни уровня близости, ни "сна" персонажа (см. intim_cmd
@@ -1520,11 +1515,13 @@ def is_asleep(user):
 
 
 def use_energizer(user):
-    """Возвращает True, если энергетик найден и использован."""
+    """Возвращает True, если энергетик найден и использован. Восполняет ENERGIZER_RESTORE_AMOUNT,
+    а не сразу до максимума — этого хватает, чтобы "разбудить" персонажа (is_asleep смотрит на
+    energy > 0), но обычно не хватит на полный бак с одного энергетика."""
     if user.get("energizers", 0) <= 0:
         return False
     user["energizers"] -= 1
-    user["energy"] = MAX_STAT
+    user["energy"] = min(MAX_STAT, user.get("energy", MAX_STAT) + ENERGIZER_RESTORE_AMOUNT)
     save_data(user_data)
     return True
 
@@ -1850,11 +1847,11 @@ async def start_cmd(message: types.Message):
         referrer_id = args[1].split("_", 1)[1]
         if str(message.from_user.id) != referrer_id and not user.get("referred_by"):
             referrer = get_user(referrer_id)
-            referrer["purchased_messages"] = referrer.get("purchased_messages", 0) + 10
             referrer["bucks"] = referrer.get("bucks", 0) + 30
+            referrer["energizers"] = referrer.get("energizers", 0) + 3
             referrer["referral_count"] = referrer.get("referral_count", 0) + 1
-            user["purchased_messages"] = user.get("purchased_messages", 0) + 5
             user["bucks"] = user.get("bucks", 0) + 15
+            user["energizers"] = user.get("energizers", 0) + 1
             user["referred_by"] = referrer_id
             save_data(user_data)
             # Язык ещё не выбран на этом шаге (выбор языка идёт дальше в proceed_flow),
@@ -2124,11 +2121,8 @@ async def send_main_menu(chat_id, user):
     world_name = world_display_name(user["world"], user)
     style_label = style_display_label(get_display_style(user), user, with_emoji=False)
 
-    if has_purchased_something(user):
-        available = get_available_messages(user)
-        balance_text = "\n" + get_text(user, "menu_messages_left", n=available) + (get_text(user, "menu_messages_out") if available <= 0 else "")
-    else:
-        balance_text = "\n" + get_text(user, "menu_free_messages")
+    available = get_available_messages(user)
+    balance_text = "\n" + get_text(user, "menu_messages_left", n=available) + (get_text(user, "menu_messages_out") if available <= 0 else "")
 
     xp_badge = get_xp_badge(user)
     multiplier_text = get_text(user, "xp_bonus_pro") if level == "pro" else (get_text(user, "xp_bonus_super") if level == "super_pro" else "")
@@ -2178,11 +2172,8 @@ async def show_profile(msg, user):
         locked = not is_style_unlocked(key, user)
         styles_text += style_display_label(key, user) + (" 🔒\n" if locked else "\n")
 
-    if has_purchased_something(user):
-        available = get_available_messages(user)
-        balance_line = get_text(user, "profile_messages_available", n=available) + (get_text(user, "menu_messages_out") if available <= 0 else "")
-    else:
-        balance_line = get_text(user, "menu_free_messages")
+    available = get_available_messages(user)
+    balance_line = get_text(user, "profile_messages_available", n=available) + (get_text(user, "menu_messages_out") if available <= 0 else "")
 
     xp_badge = get_xp_badge(user)
     multiplier_text = get_text(user, "xp_bonus_pro") if level == "pro" else (get_text(user, "xp_bonus_super") if level == "super_pro" else "")
@@ -2361,8 +2352,8 @@ SPIN_PRIZES = [
     {"name": "250 XP", "name_en": "250 XP", "name_de": "250 XP", "value": 250, "type": "xp", "weight": 4},
     {"name": "🔥 1 горячая сцена", "name_en": "🔥 1 hot scene", "name_de": "🔥 1 heiße Szene", "value": 1, "type": "intim_scenes", "weight": 8},
     {"name": "🔥🔥 2 горячие сцены", "name_en": "🔥🔥 2 hot scenes", "name_de": "🔥🔥 2 heiße Szenen", "value": 2, "type": "intim_scenes", "weight": 3},
-    {"name": "1⚡ энергетик", "name_en": "1⚡ energizer", "name_de": "1⚡ Energydrink", "value": 1, "type": "energizers", "weight": 3},
-    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 1},
+    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 3},
+    {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 1},
     {"name": "🎉 150💵 баксов (ДЖЕКПОТ!)", "name_en": "🎉 150💵 bucks (JACKPOT!)", "name_de": "🎉 150💵 Bucks (JACKPOT!)", "value": 150, "type": "bucks", "weight": 0.3},
     {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "name_de": "🎁 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.4},
     {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.15},
@@ -2451,7 +2442,7 @@ async def referral_menu(call: types.CallbackQuery):
     bot_username = (await bot.get_me()).username
     link = f"https://t.me/{bot_username}?start=ref_{user['referral_code']}"
     count = user.get("referral_count", 0)
-    await call.message.answer(get_text(user, "referral", link=link, count=count, earned=count * 10, earned_bucks=count * 30), parse_mode="Markdown")
+    await call.message.answer(get_text(user, "referral", link=link, count=count, earned_bucks=count * 30, earned_energizers=count * 3), parse_mode="Markdown")
     await call.answer()
 
 
@@ -2691,9 +2682,9 @@ for _product in PRODUCTS.values():
 # Что именно выдаёт каждый бандл — энергетики (⚡ энергия) и баксы (💵 еда/подарки в магазине),
 # сообщения бандлы больше не дают (см. FREE_DAILY_MESSAGES — теперь бесплатный лимit обновляется сам).
 BUNDLES = {
-    "bundle_small": {"energizers": 2, "bucks": 60},
-    "bundle_medium": {"energizers": 6, "bucks": 180},
-    "bundle_large": {"energizers": 16, "bucks": 500},
+    "bundle_small": {"energizers": 5, "bucks": 60},
+    "bundle_medium": {"energizers": 14, "bucks": 180},
+    "bundle_large": {"energizers": 36, "bucks": 500},
 }
 
 
