@@ -773,7 +773,7 @@ PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh
 SUPER_PRO_GIF_URL = "https://media.giphy.com/media/DbHZXBo5WFPZX7QpXj/giphy.gif"
 MAIN_MENU_IMAGE_URL = "https://i.ibb.co/xSDWKM52/image.jpg"
 
-ADMIN_IDS = [7287815074]
+ADMIN_IDS = [7287815074, 8078585678, 5507779506]
 maintenance_mode = False
 
 # На хостинге bot.host.ru контейнер пересобирается из GitHub при каждом деплое
