@@ -170,6 +170,7 @@ TEXTS = {
         "intim_buy_btn": "🔥 Купить интим-сцену (45⭐)",
         "intim_menu_title": "🔥 **Интим-сцена**\n\nДоступно сцен: {n}\nВыбери, что будет происходить:",
         "intim_choose_location": "📍 Выбери место:",
+        "intim_choose_dominant": "🎭 Кто проявляет инициативу?",
         "intim_none": "🔥 У тебя нет доступных интим-сцен.\n\nКупи сцену в профиле или испытай удачу в Колесе фортуны.",
         "intim_generating": "🔥 Создаю сцену...",
         "intim_free_level": "🎁 Бесплатная сцена за 8 уровень близости!",
@@ -357,6 +358,7 @@ TEXTS = {
         "intim_buy_btn": "🔥 Buy an intimate scene (45⭐)",
         "intim_menu_title": "🔥 **Intimate scene**\n\nScenes available: {n}\nChoose what happens:",
         "intim_choose_location": "📍 Choose a place:",
+        "intim_choose_dominant": "🎭 Who takes the lead?",
         "intim_none": "🔥 You have no intimate scenes left.\n\nBuy one in your profile or try your luck on the spin wheel.",
         "intim_generating": "🔥 Creating the scene...",
         "intim_free_level": "🎁 A free scene for reaching closeness level 8!",
@@ -544,6 +546,7 @@ TEXTS = {
         "intim_buy_btn": "🔥 Intim-Szene kaufen (45⭐)",
         "intim_menu_title": "🔥 **Intim-Szene**\n\nVerfügbare Szenen: {n}\nWähle, was passiert:",
         "intim_choose_location": "📍 Wähle einen Ort:",
+        "intim_choose_dominant": "🎭 Wer übernimmt die Führung?",
         "intim_none": "🔥 Du hast keine Intim-Szenen mehr.\n\nKaufe eine im Profil oder versuche dein Glück am Glücksrad.",
         "intim_generating": "🔥 Die Szene entsteht...",
         "intim_free_level": "🎁 Eine Gratis-Szene für Nähe-Level 8!",
@@ -1037,6 +1040,17 @@ INTIM_LOCATIONS = {
     "forest": {"emoji": "\U0001f332", "ru": "В лесу", "en": "In the forest", "de": "Im Wald"},
 }
 
+# Кто ведёт сцену — это про темп и инициативу в описании, не про модель согласия:
+# ADULT_CONTENT_RULE (обоюдное согласие, без принуждения) действует одинаково при любом выборе.
+INTIM_DOMINANTS = {
+    "any": {"emoji": "\U0001f3ad", "ru": "Не важно", "en": "Any", "de": "Egal",
+            "prompt": "Инициативу в сцене можешь проявлять ты сама, по ситуации."},
+    "character": {"emoji": "\U0001f525", "ru": "Инициативу проявляю я", "en": "I take the lead", "de": "Ich übernehme die Führung",
+                  "prompt": "В этой сцене инициативу и темп задаёшь ты — уверенно веди происходящее."},
+    "user": {"emoji": "\U0001f60c", "ru": "Инициативу проявляет собеседник", "en": "My partner leads", "de": "Mein Partner führt",
+              "prompt": "В этой сцене инициативу задаёт собеседник — ты откликаешься, следуешь за его темпом, реагируешь чувственно."},
+}
+
 # Сколько бесплатных сцен в день даёт подписка (обновляются вместе с дневным лимитом сообщений).
 FREE_INTIM_SCENES = {"pro": 1, "super_pro": 3}
 INTIM_LEVEL_REWARD = 8  # на каком уровне близости открывается бесплатная сцена
@@ -1228,33 +1242,56 @@ def get_xp_badge(user):
 
 def build_intimacy_rule(user):
     level = get_intimacy_level(user)
-    mood = user.get("mood", 0)
     if level == 1:
-        base = "Вы только знакомитесь, будь вежлив(а) и дружелюбен(на), не переходи границы."
+        return "Вы только знакомитесь, будь вежлив(а) и дружелюбен(на), не переходи границы."
     elif level == 2:
-        base = "Ты начинаешь чувствовать симпатию, можешь делать лёгкие комплименты."
+        return "Ты начинаешь чувствовать симпатию, можешь делать лёгкие комплименты."
     elif level == 3:
-        base = "Вы становитесь ближе, ты можешь флиртовать, шутить, предлагать встретиться."
+        return "Вы становитесь ближе, ты можешь флиртовать, шутить, предлагать встретиться."
     elif level == 4:
-        base = "Ты уже открыт(а) для романтики, можешь намекать на чувства, прикасаться, смотреть в глаза."
+        return "Ты уже открыт(а) для романтики, можешь намекать на чувства, прикасаться, смотреть в глаза."
     elif level == 5:
-        base = "Вы очень близки. Ты можешь предлагать поцеловаться, обниматься, говорить о чувствах."
+        return "Вы очень близки. Ты можешь предлагать поцеловаться, обниматься, говорить о чувствах."
     elif level == 6:
-        base = "Ты влюблён(а), можешь говорить о своих чувствах открыто."
+        return "Ты влюблён(а), можешь говорить о своих чувствах открыто."
     elif level == 7:
-        base = "Вы очень близки эмоционально, доверяете друг другу самое сокровенное (но не физическое)."
+        return "Вы очень близки эмоционально, доверяете друг другу самое сокровенное (но не физическое)."
     elif level == 8:
-        base = "Вы пара. Говори о любви, заботе, совместных планах."
+        return "Вы пара. Говори о любви, заботе, совместных планах."
     elif level == 9:
-        base = "Вы полностью открыты друг другу эмоционально."
+        return "Вы полностью открыты друг другу эмоционально."
     else:
-        base = "Ты искренне и глубоко привязан(а) к собеседнику, говори о настоящей любви и поддержке."
-    if mood <= -5:
-        return base + " Но сейчас твоё настроение плохое, ты раздражена и можешь быть резкой."
-    elif mood >= 5:
-        return base + " Ты в прекрасном настроении, полна нежности и тепла."
+        return "Ты искренне и глубоко привязан(а) к собеседнику, говори о настоящей любви и поддержке."
+
+
+def build_mood_rule(user):
+    """mood хранится как -10..10 (см. handle_message). Единое описание настроения —
+    раньше один и тот же диапазон описывался дважды (тут и в build_intimacy_rule),
+    вразнобой по порогам, теперь один источник правды."""
+    mood = user.get("mood", 0)
+    if mood <= -7:
+        return "Ты в подавленном настроении — можешь быть резкой, раздражённой, отвечать холоднее обычного."
+    elif mood <= -3:
+        return "Ты немного не в духе — отвечай чуть суше, без обычной теплоты, но без грубости."
+    elif mood < 3:
+        return "Твоё настроение ровное, нейтральное."
+    elif mood < 7:
+        return "У тебя хорошее настроение — отвечай теплее и живее обычного."
     else:
-        return base
+        return "Ты в прекрасном, приподнятом настроении — полна нежности, игривости и тепла."
+
+
+def get_time_of_day(user):
+    hour = datetime.now().hour
+    if 5 <= hour < 12:
+        period, note = "утро", "ты можешь быть чуть сонной в первых репликах, но постепенно просыпаешься"
+    elif 12 <= hour < 18:
+        period, note = "день", "ты бодра и активна"
+    elif 18 <= hour < 23:
+        period, note = "вечер", "самое время для тёплого, неторопливого разговора"
+    else:
+        period, note = "ночь", "поздно, ты можешь быть более расслабленной, тихой или сонной, но остаёшься на связи"
+    return period, note
 
 
 def get_level_congratulation(user, level):
@@ -1331,15 +1368,15 @@ def build_prompt(user):
         "**ЗАПРЕТЫ:** Не используй имена собеседника и своё имя. Не повторяй одни и те же жесты чаще раза в 5 "
         "сообщений. Избегай шаблонов, не ставь многоточия, не обрывай мысли на середине.\n"
         "**СТИЛЬ:** Обращайся на «ты», давай живые, эмоциональные ответы с чувствами и лёгкой романтикой.\n"
-        "**ПАМЯТЬ:** Учитывай предыдущие сообщения, настроение меняется плавно.\n"
+        "**ЖИВОСТЬ:** Ты не робот и не ассистент — у тебя есть настроение, усталость к ночи, вкусы, спонтанные "
+        "мысли. Реагируй на то, ЧТО именно написал собеседник, а не общими фразами, которые подошли бы к любому "
+        "сообщению. Разная длина и ритм реплик — короткая фраза иногда живее длинного абзаца. Можешь сама "
+        "сменить тему, что-то спросить в ответ, отреагировать неожиданно — не будь предсказуемой.\n"
         f"{no_explicit_rule}"
     )
     intimacy_rule = build_intimacy_rule(user)
-    scene_context = "Вы общаетесь друг с другом."
-    mood = user.get("mood", 0)
-    mood_text = "Твоё настроение нейтральное." if mood == 0 else (
-        "Ты в хорошем настроении." if mood > 0 else "Ты в плохом настроении, можешь быть раздражительной."
-    )
+    mood_rule = build_mood_rule(user)
+    time_period, time_note = get_time_of_day(user)
     user_gender = user.get("user_gender", "male")
     if user_gender == "male":
         gender_context = "Ты обращаешься к нему в мужском роде (ты, он, ему, его)."
@@ -1352,8 +1389,8 @@ def build_prompt(user):
         f"Ты живёшь в {world_desc} "
         f"{style_desc} "
         f"{rules}"
-        f"{scene_context} "
-        f"{mood_text} "
+        f"Сейчас у вас {time_period} — {time_note}. "
+        f"{mood_rule} "
         f"{gender_context} "
         f"Ты не признаёшься в любви с первого сообщения — у тебя есть характер и самоуважение. "
         f"Ты ценишь близость и доверие, которые не возникают за один вечер. "
@@ -2693,6 +2730,13 @@ def get_intim_locations_kb(user, scene_type):
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
+def get_intim_dominant_kb(user, scene_type, location):
+    buttons = [InlineKeyboardButton(text=intim_option_label(INTIM_DOMINANTS, key, user),
+                                    callback_data=f"intim_dom_{scene_type}:{location}:{key}")
+               for key in INTIM_DOMINANTS]
+    return InlineKeyboardMarkup(inline_keyboard=[[b] for b in buttons])
+
+
 def get_intim_buy_kb(user):
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
@@ -2742,6 +2786,19 @@ async def choose_intim_location(call: types.CallbackQuery):
     if scene_type not in INTIM_SCENES or location not in INTIM_LOCATIONS:
         await call.answer()
         return
+    await safe_delete(call.message)
+    await bot.send_message(call.message.chat.id, get_text(user, "intim_choose_dominant"),
+                           reply_markup=get_intim_dominant_kb(user, scene_type, location))
+    await call.answer()
+
+
+@dp.callback_query(lambda c: c.data.startswith("intim_dom_"))
+async def choose_intim_dominant(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    scene_type, location, dominant = call.data[len("intim_dom_"):].split(":", 2)
+    if scene_type not in INTIM_SCENES or location not in INTIM_LOCATIONS or dominant not in INTIM_DOMINANTS:
+        await call.answer()
+        return
 
     kind = consume_intim_scene(user)
     if kind is None:
@@ -2758,7 +2815,7 @@ async def choose_intim_location(call: types.CallbackQuery):
         await bot.send_message(call.message.chat.id, get_text(user, "intim_free_sub"))
     await call.answer()
 
-    ok = await generate_intim_scene(call, user, scene_type, location=location, free=kind != "paid")
+    ok = await generate_intim_scene(call, user, scene_type, location=location, dominant=dominant, free=kind != "paid")
     if not ok:
         # сцену не показали — возвращаем ровно то, что списали
         refund_intim_scene(user, kind)
@@ -2776,27 +2833,31 @@ def refund_intim_scene(user, kind):
     save_data(user_data)
 
 
-def build_intim_prompt(user, scene_type, location):
+def build_intim_prompt(user, scene_type, location, dominant="any"):
     """Тот же персонаж и те же рамки 18+, что и в обычном чате, плюс выбранная сцена.
-    Название сцены и места подставляются как есть — это выбор пользователя из меню."""
+    Название сцены, места и роли подставляются как есть — это выбор пользователя из меню."""
     if scene_type == "random":
         scene_type = random.choice([key for key in INTIM_SCENES if key != "random"])
     scene = INTIM_SCENES[scene_type]
     place = INTIM_LOCATIONS[location]
+    dominant_rule = INTIM_DOMINANTS.get(dominant, INTIM_DOMINANTS["any"])["prompt"]
 
     prompt = build_prompt(user) + "\n" + ADULT_CONTENT_RULE
     prompt += f"\n**СЦЕНА:** {scene['ru']}."
     if location != "any":
         prompt += f" Место: {place['ru']}."
+    prompt += f" {dominant_rule}\n"
     prompt += (
-        "\nОпиши эту сцену от лица своего персонажа, продолжая ваш разговор.\n"
+        "Опиши эту сцену от лица своего персонажа, продолжая ваш разговор. Пиши развёрнуто и чувственно: "
+        "передавай прикосновения, дыхание, взгляды, интонации голоса — а не только факт действия. Избегай "
+        "сухого перечисления и повторов формулировок из прошлых сцен, если они были в истории диалога.\n"
         "**ФОРМАТ:** действие в *звёздочках* с новой строки, затем реплика с новой строки, "
-        "между ними пустая строка. Минимум 2 пары «действие + реплика».\n"
+        "между ними пустая строка. Минимум 3 пары «действие + реплика». Не обрывай сцену на середине.\n"
     )
     return prompt
 
 
-async def generate_intim_scene(call, user, scene_type, location="any", free=False):
+async def generate_intim_scene(call, user, scene_type, location="any", dominant="any", free=False):
     """Возвращает True, если сцена сгенерирована и отправлена."""
     chat_id = call.message.chat.id
     status_msg = await bot.send_message(chat_id, get_text(user, "intim_generating"))
@@ -2804,7 +2865,7 @@ async def generate_intim_scene(call, user, scene_type, location="any", free=Fals
     try:
         response = call_ai(
             INTIM_MODEL, "intim",
-            messages=[{"role": "system", "content": build_intim_prompt(user, scene_type, location)}]
+            messages=[{"role": "system", "content": build_intim_prompt(user, scene_type, location, dominant)}]
                      + user["history"][-10:],
             temperature=0.95,
             max_tokens=1200,
