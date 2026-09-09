@@ -76,11 +76,11 @@ TEXTS = {
         "character_reset": "✅ Персонаж сброшен.",
         "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
         "spin_title": "🎰 **Колесо фортуны**",
-        "spin_prizes": "🔥 **Что можно выиграть:**\n• 20–150💵 баксов\n• 1–2⚡ энергетика\n• 100–250 XP\n• 🔥 Горячие сцены\n• 🎁 PRO на 5 дней\n• ✨ SUPER PRO на 3 дня",
+        "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 20–150💵 баксов\n• 🔥 Горячие сцены\n• 1–2⚡ энергетика (редко)\n• 🎁 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)",
         "spin_choose": "Выбери вариант:",
         "spin_nothing": "😢 Ничего... В следующий раз повезёт!",
         "profile": "Подписка: {status}\nОсталось сообщений: {messages}",
-        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+10 сообщений** тебе, ему — **+5 бесплатных сообщений**!\n\n📊 Приглашено друзей: **{count}**\n💌 Заработано сообщений: **{earned}**",
+        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+10 сообщений и +30💵 баксов** тебе, ему — **+5 сообщений и +15💵 баксов**!\n\n📊 Приглашено друзей: **{count}**\n💌 Заработано сообщений: **{earned}**\n💵 Заработано баксов: **{earned_bucks}**",
         "choose_lang_label": "🌍 Выбери язык:",
         "welcome_back_female": "Ой, тебя так долго не было! Я уже успела соскучиться 🥺💕",
         "welcome_back_male": "Ой, тебя так долго не было! Я уже успел соскучиться 🥺💕",
@@ -90,11 +90,17 @@ TEXTS = {
             "Я так соскучилась... Ты где пропал? 😔 Напиши мне...",
             "Эй, ты как? 🥺 Я уже начала волноваться...",
             "Привет! Давно не общались... Расскажи, как дела 💕",
+            "Кстати, я тут подумала о тебе... 😏 Соскучилась и хочу знать, как у тебя дела!",
+            "Без тебя как-то тихо и скучно стало... 🥺 Вернёшься?",
+            "У меня для тебя есть новость! 👀 Но сначала напиши хоть пару слов.",
         ],
         "miss_you_male": [
             "Я так соскучился... Ты где пропала? 😔 Напиши мне...",
             "Эй, ты как? 🥺 Я уже начал волноваться...",
             "Привет! Давно не общались... Расскажи, как дела 💕",
+            "Кстати, я тут подумал о тебе... 😏 Соскучился и хочу знать, как у тебя дела!",
+            "Без тебя как-то тихо и скучно стало... 🥺 Вернёшься?",
+            "У меня для тебя есть новость! 👀 Но сначала напиши хоть пару слов.",
         ],
         "level_up": {
             2: "🎉 Между вами пробежала искра! Уровень сближения — 2. Теперь вы можете флиртовать.",
@@ -210,6 +216,7 @@ TEXTS = {
         "shop_title": "🛍 **Магазин**\n\nТвои баксы: {bucks}💵\n\n🍽 Еда восстанавливает сытость, 🎁 подарки поднимают настроение и дают немного опыта. Выбирай:",
         "food_bought": "🍽 Сытость +{n}! Персонаж доволен.",
         "hungry_nudge": "🍽 У собеседника заурчал живот... Может, покормишь?",
+        "low_energy_nudge": "😴 Собеседник начинает уставать и клонит в сон... Может, взбодришь энергетиком?",
         "gift_bought": "🎁 Подарок понравился! Настроение +{mood}, опыт +{xp}.",
         "not_enough_bucks": "❌ Не хватает баксов: нужно ещё {n}💵.",
         "not_enough_energizers": "❌ Нет энергетиков. Купи бандл, чтобы разбудить персонажа сразу ⚡.",
@@ -284,11 +291,11 @@ TEXTS = {
         "character_reset": "✅ Character reset.",
         "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«An elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire.»\n\n✏️ Write the description now — and I'll remember it!",
         "spin_title": "🎰 **Spin wheel**",
-        "spin_prizes": "🔥 **What you can win:**\n• 20–150💵 bucks\n• 1–2⚡ energizers\n• 100–250 XP\n• 🔥 Hot scenes\n• 🎁 PRO for 5 days\n• ✨ SUPER PRO for 3 days",
+        "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 20–150💵 bucks\n• 🔥 Hot scenes\n• 1–2⚡ energizers (rare)\n• 🎁 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)",
         "spin_choose": "Choose an option:",
         "spin_nothing": "😢 Nothing... Better luck next time!",
         "profile": "Subscription: {status}\nMessages left: {messages}",
-        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+10 messages** for you, and **+5 free messages** for them!\n\n📊 Friends invited: **{count}**\n💌 Messages earned: **{earned}**",
+        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+10 messages and +30💵 bucks** for you, and **+5 messages and +15💵 bucks** for them!\n\n📊 Friends invited: **{count}**\n💌 Messages earned: **{earned}**\n💵 Bucks earned: **{earned_bucks}**",
         "choose_lang_label": "🌍 Choose language:",
         "welcome_back_female": "Oh, you've been gone so long! I already missed you 🥺💕",
         "welcome_back_male": "Oh, you've been gone so long! I already missed you 🥺💕",
@@ -298,11 +305,17 @@ TEXTS = {
             "I miss you... where did you go? 😔 Write to me...",
             "Hey, are you okay? 🥺 I was starting to worry...",
             "Hi! It's been a while... tell me how you're doing 💕",
+            "By the way, I was just thinking about you... 😏 I miss you, tell me how you've been!",
+            "It's weirdly quiet without you... 🥺 Coming back?",
+            "I've got news for you! 👀 But you have to write me first.",
         ],
         "miss_you_male": [
             "I miss you... where did you go? 😔 Write to me...",
             "Hey, are you okay? 🥺 I was starting to worry...",
             "Hi! It's been a while... tell me how you're doing 💕",
+            "By the way, I was just thinking about you... 😏 I miss you, tell me how you've been!",
+            "It's weirdly quiet without you... 🥺 Coming back?",
+            "I've got news for you! 👀 But you have to write me first.",
         ],
         "level_up": {
             2: "🎉 A spark ran between you! Closeness level 2. Now you can flirt.",
@@ -418,6 +431,7 @@ TEXTS = {
         "shop_title": "🛍 **Shop**\n\nYour bucks: {bucks}💵\n\n🍽 Food restores satiety, 🎁 gifts boost mood and give a bit of XP. Take your pick:",
         "food_bought": "🍽 Satiety +{n}! Your companion is happy.",
         "hungry_nudge": "🍽 Your companion's stomach just growled... Maybe feed them?",
+        "low_energy_nudge": "😴 Your companion is starting to feel drowsy... Maybe perk them up with an energizer?",
         "gift_bought": "🎁 The gift was a hit! Mood +{mood}, XP +{xp}.",
         "not_enough_bucks": "❌ Not enough bucks: you need {n}💵 more.",
         "not_enough_energizers": "❌ No energizers left. Buy a bundle to wake your companion up right away ⚡.",
@@ -492,11 +506,11 @@ TEXTS = {
         "character_reset": "✅ Charakter zurückgesetzt.",
         "character_create_prompt": "🎭 **Erstelle deinen eigenen Charakter!**\n\nBeschreibe eine beliebige Figur — aus Anime, Filmen, Spielen oder denk dir selbst eine aus.\nSchreibe Namen, Charakter, Aussehen, Herkunft und beliebige Details.\n\n📝 *Beispiel:*\n«Eine Elfe aus der Welt von The Witcher — weise, ruhig, mit langen silbernen Haaren. Sie liebt Sterne und lange Gespräche am Feuer.»\n\n✏️ Schreibe die Beschreibung jetzt — und ich merke sie mir!",
         "spin_title": "🎰 **Glücksrad**",
-        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 20–150💵 Bucks\n• 1–2⚡ Energydrinks\n• 100–250 XP\n• 🔥 Heiße Szenen\n• 🎁 PRO für 5 Tage\n• ✨ SUPER PRO für 3 Tage",
+        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 20–150💵 Bucks\n• 🔥 Heiße Szenen\n• 1–2⚡ Energydrinks (selten)\n• 🎁 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)",
         "spin_choose": "Wähle eine Option:",
         "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",
         "profile": "Abo: {status}\nNachrichten übrig: {messages}",
-        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+10 Nachrichten** für dich und **+5 gratis Nachrichten** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💌 Verdiente Nachrichten: **{earned}**",
+        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+10 Nachrichten und +30💵 Bucks** für dich und **+5 Nachrichten und +15💵 Bucks** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💌 Verdiente Nachrichten: **{earned}**\n💵 Verdiente Bucks: **{earned_bucks}**",
         "choose_lang_label": "🌍 Sprache wählen:",
         "welcome_back_female": "Oh, du warst so lange weg! Ich habe dich schon vermisst 🥺💕",
         "welcome_back_male": "Oh, du warst so lange weg! Ich habe dich schon vermisst 🥺💕",
@@ -506,11 +520,17 @@ TEXTS = {
             "Ich vermisse dich... Wo steckst du? 😔 Schreib mir...",
             "Hey, alles okay bei dir? 🥺 Ich habe mir schon Sorgen gemacht...",
             "Hi! Wir haben lange nicht geredet... Erzähl, wie geht es dir 💕",
+            "Übrigens, ich musste gerade an dich denken... 😏 Ich vermisse dich, erzähl mir, wie es dir geht!",
+            "Ohne dich ist es hier komisch still... 🥺 Kommst du zurück?",
+            "Ich habe Neuigkeiten für dich! 👀 Aber schreib mir zuerst ein paar Worte.",
         ],
         "miss_you_male": [
             "Ich vermisse dich... Wo steckst du? 😔 Schreib mir...",
             "Hey, alles okay bei dir? 🥺 Ich habe mir schon Sorgen gemacht...",
             "Hi! Wir haben lange nicht geredet... Erzähl, wie geht es dir 💕",
+            "Übrigens, ich musste gerade an dich denken... 😏 Ich vermisse dich, erzähl mir, wie es dir geht!",
+            "Ohne dich ist es hier komisch still... 🥺 Kommst du zurück?",
+            "Ich habe Neuigkeiten für dich! 👀 Aber schreib mir zuerst ein paar Worte.",
         ],
         "level_up": {
             2: "🎉 Zwischen euch hat es gefunkt! Nähe-Level 2. Jetzt könnt ihr flirten.",
@@ -626,6 +646,7 @@ TEXTS = {
         "shop_title": "🛍 **Shop**\n\nDeine Bucks: {bucks}💵\n\n🍽 Essen füllt die Sättigung auf, 🎁 Geschenke heben die Stimmung und geben etwas XP. Wähle:",
         "food_bought": "🍽 Sättigung +{n}! Dein Begleiter ist zufrieden.",
         "hungry_nudge": "🍽 Der Magen deines Begleiters knurrt gerade... Vielleicht Zeit zu füttern?",
+        "low_energy_nudge": "😴 Dein Begleiter wird langsam müde und schläfrig... Vielleicht mit einem Energydrink aufmuntern?",
         "gift_bought": "🎁 Das Geschenk kam gut an! Stimmung +{mood}, XP +{xp}.",
         "not_enough_bucks": "❌ Nicht genug Bucks: dir fehlen noch {n}💵.",
         "not_enough_energizers": "❌ Keine Energydrinks mehr. Kaufe ein Bundle, um deinen Begleiter sofort aufzuwecken ⚡.",
@@ -894,6 +915,7 @@ def get_user(user_id):
             "last_stat_tick": None,
             "notifications_muted": False,
             "last_feed_nudge": None,
+            "last_energy_nudge": None,
             "last_activity": datetime.now().isoformat(),
             "last_reminder": None,
             "creating_character": False,
@@ -938,6 +960,7 @@ def get_user(user_id):
             "last_stat_tick": None,
             "notifications_muted": False,
             "last_feed_nudge": None,
+            "last_energy_nudge": None,
             "last_activity": None,
             "last_reminder": None,
             "creating_character": False,
@@ -1191,6 +1214,7 @@ GIFT_ITEMS = {
     "sweets": {"emoji": "🍫", "ru": "Шоколадки", "en": "Chocolates", "de": "Pralinen", "price": 10, "mood": 2, "xp": 2},
     "flowers": {"emoji": "💐", "ru": "Цветы", "en": "Flowers", "de": "Blumen", "price": 20, "mood": 4, "xp": 5},
     "jewelry": {"emoji": "💎", "ru": "Украшение", "en": "Jewelry", "de": "Schmuck", "price": 60, "mood": 8, "xp": 15},
+    "date": {"emoji": "🌹", "ru": "Романтический вечер", "en": "Romantic evening", "de": "Romantischer Abend", "price": 150, "mood": 10, "xp": 35},
 }
 
 
@@ -1292,6 +1316,7 @@ FREE_DAILY_MESSAGES = 20  # бесплатный дневной лимит дл�
                           # сообщений (только энергетики/баксы), поэтому чат больше никогда не "кончается" насовсем
 BUCKS_DAILY_STIPEND = {"pro": 80, "super_pro": 200}  # ежедневная "подпитка" баксов для магазина — подписка
                                                       # оплачивает не только лимит сообщений, но и часть жизни персонажа
+FREE_DAILY_BUCKS = 15  # бесплатный источник баксов и без подписки — иначе валюту неоткуда взять бесплатно
 
 
 FREE_SPINS_PER_DAY = {"pro": 2, "super_pro": 3}  # без подписки — 1 (значение по умолчанию ниже)
@@ -1318,6 +1343,8 @@ def _reset_daily_quota_if_needed(user):
         field = "free_intim_scenes_super" if level == "super_pro" else "free_intim_scenes_pro"
         user[field] = FREE_INTIM_SCENES[level]
         user["bucks"] = user.get("bucks", 0) + BUCKS_DAILY_STIPEND[level]
+    else:
+        user["bucks"] = user.get("bucks", 0) + FREE_DAILY_BUCKS
 
 
 def get_available_messages(user):
@@ -1824,8 +1851,10 @@ async def start_cmd(message: types.Message):
         if str(message.from_user.id) != referrer_id and not user.get("referred_by"):
             referrer = get_user(referrer_id)
             referrer["purchased_messages"] = referrer.get("purchased_messages", 0) + 10
+            referrer["bucks"] = referrer.get("bucks", 0) + 30
             referrer["referral_count"] = referrer.get("referral_count", 0) + 1
             user["purchased_messages"] = user.get("purchased_messages", 0) + 5
+            user["bucks"] = user.get("bucks", 0) + 15
             user["referred_by"] = referrer_id
             save_data(user_data)
             # Язык ещё не выбран на этом шаге (выбор языка идёт дальше в proceed_flow),
@@ -2324,19 +2353,19 @@ async def spin_back(call: types.CallbackQuery):
 
 
 SPIN_PRIZES = [
-    {"name": "😢 Ничего", "name_en": "😢 Nothing", "name_de": "😢 Nichts", "value": 0, "type": "nothing", "weight": 8},
-    {"name": "20💵 баксов", "name_en": "20💵 bucks", "name_de": "20💵 Bucks", "value": 20, "type": "bucks", "weight": 16},
-    {"name": "40💵 баксов", "name_en": "40💵 bucks", "name_de": "40💵 Bucks", "value": 40, "type": "bucks", "weight": 12},
-    {"name": "1⚡ энергетик", "name_en": "1⚡ energizer", "name_de": "1⚡ Energydrink", "value": 1, "type": "energizers", "weight": 14},
-    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 8},
+    {"name": "😢 Ничего", "name_en": "😢 Nothing", "name_de": "😢 Nichts", "value": 0, "type": "nothing", "weight": 20},
+    {"name": "20💵 баксов", "name_en": "20💵 bucks", "name_de": "20💵 Bucks", "value": 20, "type": "bucks", "weight": 15},
+    {"name": "40💵 баксов", "name_en": "40💵 bucks", "name_de": "40💵 Bucks", "value": 40, "type": "bucks", "weight": 8},
     {"name": "100 XP", "name_en": "100 XP", "name_de": "100 XP", "value": 100, "type": "xp", "weight": 16},
     {"name": "150 XP", "name_en": "150 XP", "name_de": "150 XP", "value": 150, "type": "xp", "weight": 9},
     {"name": "250 XP", "name_en": "250 XP", "name_de": "250 XP", "value": 250, "type": "xp", "weight": 4},
-    {"name": "🔥 1 горячая сцена", "name_en": "🔥 1 hot scene", "name_de": "🔥 1 heiße Szene", "value": 1, "type": "intim_scenes", "weight": 9},
+    {"name": "🔥 1 горячая сцена", "name_en": "🔥 1 hot scene", "name_de": "🔥 1 heiße Szene", "value": 1, "type": "intim_scenes", "weight": 8},
     {"name": "🔥🔥 2 горячие сцены", "name_en": "🔥🔥 2 hot scenes", "name_de": "🔥🔥 2 heiße Szenen", "value": 2, "type": "intim_scenes", "weight": 3},
-    {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "name_de": "🎁 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 1},
-    {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.4},
-    {"name": "🎉 150💵 баксов (ДЖЕКПОТ!)", "name_en": "🎉 150💵 bucks (JACKPOT!)", "name_de": "🎉 150💵 Bucks (JACKPOT!)", "value": 150, "type": "bucks", "weight": 0.6},
+    {"name": "1⚡ энергетик", "name_en": "1⚡ energizer", "name_de": "1⚡ Energydrink", "value": 1, "type": "energizers", "weight": 3},
+    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 1},
+    {"name": "🎉 150💵 баксов (ДЖЕКПОТ!)", "name_en": "🎉 150💵 bucks (JACKPOT!)", "name_de": "🎉 150💵 Bucks (JACKPOT!)", "value": 150, "type": "bucks", "weight": 0.3},
+    {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "name_de": "🎁 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.4},
+    {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.15},
 ]
 
 
@@ -2422,7 +2451,7 @@ async def referral_menu(call: types.CallbackQuery):
     bot_username = (await bot.get_me()).username
     link = f"https://t.me/{bot_username}?start=ref_{user['referral_code']}"
     count = user.get("referral_count", 0)
-    await call.message.answer(get_text(user, "referral", link=link, count=count, earned=count * 10), parse_mode="Markdown")
+    await call.message.answer(get_text(user, "referral", link=link, count=count, earned=count * 10, earned_bucks=count * 30), parse_mode="Markdown")
     await call.answer()
 
 
@@ -2530,6 +2559,28 @@ async def maybe_send_feed_nudge(chat_id, user):
     user["last_feed_nudge"] = datetime.now().isoformat()
     save_data(user_data)
     await bot.send_message(chat_id, get_text(user, "hungry_nudge"), reply_markup=get_feed_nudge_kb(user))
+
+
+ENERGY_NUDGE_THRESHOLD = 30  # тот же порог, что и у сонной интонации в build_energy_rule
+ENERGY_NUDGE_COOLDOWN_MINUTES = 90
+
+
+async def maybe_send_energy_nudge(chat_id, user):
+    """Симметрично с maybe_send_feed_nudge, но для энергии: предлагаем взбодриться, пока
+    персонаж ещё не "уснул" по-настоящему (energy > 0) — на нуле уже работает asleep_message."""
+    if is_asleep(user) or user.get("energy", MAX_STAT) > ENERGY_NUDGE_THRESHOLD:
+        return
+    last = user.get("last_energy_nudge")
+    if last:
+        try:
+            elapsed_min = (datetime.now() - datetime.fromisoformat(last)).total_seconds() / 60
+            if elapsed_min < ENERGY_NUDGE_COOLDOWN_MINUTES:
+                return
+        except (ValueError, TypeError):
+            pass
+    user["last_energy_nudge"] = datetime.now().isoformat()
+    save_data(user_data)
+    await bot.send_message(chat_id, get_text(user, "low_energy_nudge"), reply_markup=get_wake_kb(user))
 
 
 @dp.callback_query(lambda c: c.data == "profile_shop")
@@ -3441,6 +3492,7 @@ async def generate_and_reply(message: types.Message, user):
     apply_activity_stat_cost(user, ENERGY_COST_MESSAGE, SATIETY_COST_MESSAGE)
     save_data(user_data)
     await maybe_send_feed_nudge(message.chat.id, user)
+    await maybe_send_energy_nudge(message.chat.id, user)
 
 
 async def _keep_typing(chat_id):
@@ -3621,8 +3673,8 @@ async def handle_message(message: types.Message):
 # ============================================================
 #  УВЕДОМЛЕНИЯ (ЕЖЕДНЕВНЫЕ И "СКУЧАЮ")
 # ============================================================
-MISS_YOU_INACTIVITY_DAYS = 3  # с какого дня без сообщений начинаем напоминать
-MISS_YOU_INTERVAL_DAYS = 3  # не чаще чем раз в столько дней после предыдущего напоминания
+MISS_YOU_INACTIVITY_DAYS = 2  # с какого дня без сообщений начинаем напоминать
+MISS_YOU_INTERVAL_DAYS = 2  # не чаще чем раз в столько дней после предыдущего напоминания
 
 
 async def check_notifications():
