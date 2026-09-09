@@ -1230,22 +1230,38 @@ FREE_INTIM_FIELD = {"pro": "free_intim_scenes_pro", "super_pro": "free_intim_sce
 INTIM_LEVEL_REWARD = 8  # на каком уровне близости открывается бесплатная сцена
 
 # Магазин за баксы 💵 (валюта из бандлов): еда поднимает сытость, подарки — настроение и немного XP.
+
+# reaction_hint — краткий ориентир по тону благодарности для AI-реакции на покупку (см.
+# generate_shop_reaction ниже); пользователю не показывается, влияет только на промпт.
 FOOD_ITEMS = {
-    "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 10, "satiety": 15},
-    "meal": {"emoji": "🍲", "ru": "Обед", "en": "Meal", "de": "Mahlzeit", "price": 25, "satiety": 40},
-    "feast": {"emoji": "🍰", "ru": "Пир", "en": "Feast", "de": "Festmahl", "price": 50, "satiety": 100},
+    "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 10, "satiety": 15,
+              "reaction_hint": "Это мелкая, но милая забота — благодарность лёгкая, тёплая, почти игривая."},
+    "meal": {"emoji": "🍲", "ru": "Обед", "en": "Meal", "de": "Mahlzeit", "price": 25, "satiety": 40,
+             "reaction_hint": "Это нормальная забота о тебе — благодарность душевная, ты чувствуешь себя сытой и по-настоящему тронута вниманием."},
+    "feast": {"emoji": "🍰", "ru": "Пир", "en": "Feast", "de": "Festmahl", "price": 50, "satiety": 100,
+              "reaction_hint": "Это щедрый, почти избыточный жест — благодарность восторженная, ты слегка ошеломлена такой щедростью."},
 }
 GIFT_ITEMS = {
-    "sweets": {"emoji": "🍫", "ru": "Шоколадки", "en": "Chocolates", "de": "Pralinen", "price": 10, "mood": 2, "xp": 2},
-    "wine": {"emoji": "🍷", "ru": "Вино", "en": "Wine", "de": "Wein", "price": 15, "mood": 3, "xp": 3},
-    "flowers": {"emoji": "💐", "ru": "Цветы", "en": "Flowers", "de": "Blumen", "price": 20, "mood": 4, "xp": 5},
-    "perfume": {"emoji": "🧴", "ru": "Духи", "en": "Perfume", "de": "Parfüm", "price": 25, "mood": 4, "xp": 6},
-    "cosmetics": {"emoji": "💄", "ru": "Косметика", "en": "Cosmetics", "de": "Kosmetik", "price": 30, "mood": 5, "xp": 7},
-    "heels": {"emoji": "👠", "ru": "Каблуки", "en": "Heels", "de": "High Heels", "price": 40, "mood": 6, "xp": 8},
-    "dress": {"emoji": "👗", "ru": "Платье", "en": "Dress", "de": "Kleid", "price": 55, "mood": 7, "xp": 10},
-    "jewelry": {"emoji": "💎", "ru": "Украшение", "en": "Jewelry", "de": "Schmuck", "price": 60, "mood": 8, "xp": 15},
-    "phone": {"emoji": "📱", "ru": "Телефон", "en": "Phone", "de": "Handy", "price": 100, "mood": 9, "xp": 20},
-    "date": {"emoji": "🌹", "ru": "Романтический вечер", "en": "Romantic evening", "de": "Romantischer Abend", "price": 150, "mood": 10, "xp": 35},
+    "sweets": {"emoji": "🍫", "ru": "Шоколадки", "en": "Chocolates", "de": "Pralinen", "price": 10, "mood": 2, "xp": 2,
+               "reaction_hint": "Простой милый подарок — благодарность лёгкая, с улыбкой, без надрыва."},
+    "wine": {"emoji": "🍷", "ru": "Вино", "en": "Wine", "de": "Wein", "price": 15, "mood": 3, "xp": 3,
+             "reaction_hint": "Романтичный намёк на вечер вдвоём — благодарность чуть кокетливая, с лёгким флиртом."},
+    "flowers": {"emoji": "💐", "ru": "Цветы", "en": "Flowers", "de": "Blumen", "price": 20, "mood": 4, "xp": 5,
+                "reaction_hint": "Классический трогательный жест — благодарность искренняя и нежная, ты правда растрогана."},
+    "perfume": {"emoji": "🧴", "ru": "Духи", "en": "Perfume", "de": "Parfüm", "price": 25, "mood": 4, "xp": 6,
+                "reaction_hint": "Личный, продуманный подарок про заботу о тебе — приятно удивлена, что он угадал(а) со вкусом."},
+    "cosmetics": {"emoji": "💄", "ru": "Косметика", "en": "Cosmetics", "de": "Kosmetik", "price": 30, "mood": 5, "xp": 7,
+                  "reaction_hint": "Подарок про заботу о твоей красоте — благодарность тёплая, немного смущённая, приятно, что заметили детали."},
+    "heels": {"emoji": "👠", "ru": "Каблуки", "en": "Heels", "de": "High Heels", "price": 40, "mood": 6, "xp": 8,
+              "reaction_hint": "Дерзкий, чуть сексуальный подарок — благодарность кокетливая и уверенная в себе."},
+    "dress": {"emoji": "👗", "ru": "Платье", "en": "Dress", "de": "Kleid", "price": 55, "mood": 7, "xp": 10,
+              "reaction_hint": "Особенный подарок, который хочется сразу примерить — благодарность взволнованная, с предвкушением похвастаться."},
+    "jewelry": {"emoji": "💎", "ru": "Украшение", "en": "Jewelry", "de": "Schmuck", "price": 60, "mood": 8, "xp": 15,
+                "reaction_hint": "Дорогой, значимый подарок — благодарность глубокая, ты растрогана и немного смущена такой щедростью."},
+    "phone": {"emoji": "📱", "ru": "Телефон", "en": "Phone", "de": "Handy", "price": 100, "mood": 9, "xp": 20,
+              "reaction_hint": "Очень дорогой подарок — искренний шок и восторг, ты не ожидала такой щедрости и говоришь об этом прямо."},
+    "date": {"emoji": "🌹", "ru": "Романтический вечер", "en": "Romantic evening", "de": "Romantischer Abend", "price": 150, "mood": 10, "xp": 35,
+             "reaction_hint": "Самый интимный из подарков — не вещь, а вечер вдвоём — благодарность взволнованная, с предвкушением встречи, самая тёплая из всех."},
 }
 
 
@@ -2692,6 +2708,8 @@ async def buy_food(call: types.CallbackQuery):
     save_data(user_data)
     await call.message.answer(get_text(user, "food_bought", n=item["satiety"]))
     await call.answer()
+    if not is_asleep(user):
+        await generate_shop_reaction(call.message.chat.id, user, item, "food")
 
 
 @dp.callback_query(lambda c: c.data.startswith("shop_gift_"))
@@ -2710,6 +2728,8 @@ async def buy_gift(call: types.CallbackQuery):
     await grant_gift_xp(call.message.chat.id, user, item["xp"])
     await call.message.answer(get_text(user, "gift_bought", mood=item["mood"], xp=item["xp"]))
     await call.answer()
+    if not is_asleep(user):
+        await generate_shop_reaction(call.message.chat.id, user, item, "gift")
 
 
 @dp.callback_query(lambda c: c.data == "profile_back")
@@ -3608,6 +3628,56 @@ async def _keep_typing(chat_id):
             await asyncio.sleep(4)
     except asyncio.CancelledError:
         pass
+
+
+def build_shop_reaction_instruction(item, kind):
+    """kind: "food" или "gift". Даёт модели конкретный повод и эмоциональный ориентир
+    (reaction_hint), чтобы благодарность не была одинаковым шаблоном для всех предметов —
+    снек и романтический вечер должны звучать по-разному."""
+    hint = item.get("reaction_hint", "")
+    verb = "покормил(а)" if kind == "food" else "подарил(а)"
+    thing = item["ru"].lower()
+    return (
+        f"\n\nСобеседник только что {verb} тебя: «{thing}». {hint} Отреагируй и поблагодари "
+        f"в характере — коротко (1-2 реплики), не шаблонно, с реакцией именно на ЭТО, а не общими "
+        f"словами благодарности, которые подошли бы к любому подарку."
+    )
+
+
+async def generate_shop_reaction(chat_id, user, item, kind):
+    """Просит ИИ отреагировать и поблагодарить в характере за конкретную еду/подарок —
+    полноценная реплика персонажа через build_prompt(user), а не статичный текст,
+    и разная в зависимости от того, что именно куплено (см. reaction_hint у предмета)."""
+    system_prompt = build_prompt(user) + build_shop_reaction_instruction(item, kind)
+    action_word = "кормит" if kind == "food" else "дарит"
+    action_text = f"*{action_word} тебя: {item['ru'].lower()}*"
+    history_tail = user["history"][-6:]
+
+    typing_task = asyncio.create_task(_keep_typing(chat_id))
+    try:
+        response = await asyncio.to_thread(
+            call_ai, AI_MODEL, "ai",
+            messages=[{"role": "system", "content": system_prompt}] + history_tail +
+                     [{"role": "user", "content": action_text}],
+            temperature=0.9,
+            max_tokens=400
+        )
+        answer = response.choices[0].message.content
+    except Exception:
+        # Покупка уже прошла и подтверждена статичным текстом выше — если ИИ недоступен,
+        # просто тихо пропускаем бонусную реакцию, не показывая пользователю ошибку.
+        return
+    finally:
+        typing_task.cancel()
+
+    _, clean_answer = extract_reaction_from_answer(answer)
+    user["history"].append({"role": "user", "content": action_text})
+    user["history"].append({"role": "assistant", "content": clean_answer})
+    limit = get_history_limit(user)
+    if len(user["history"]) > limit:
+        user["history"] = user["history"][-limit:]
+    save_data(user_data)
+    await send_long_to_chat(chat_id, clean_answer)
 
 
 # ============================================================
