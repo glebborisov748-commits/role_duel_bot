@@ -1354,8 +1354,9 @@ ENERGY_REGEN_MINUTES_FULL = 40    # без активности энергия �
 SATIETY_REGEN_MINUTES_FULL = 180  # сытость сама восстанавливается намного медленнее — еда остаётся ценной
 ENERGY_COST_MESSAGE = 3
 SATIETY_COST_MESSAGE = 2
-ENERGY_COST_INTIM = 10
-SATIETY_COST_INTIM = 6
+# У /intim нет стоимости энергии/сытости и нет проверки is_asleep(user) — это отдельный платный
+# раздел именно для тех, кто не хочет ждать ни уровня близости, ни "сна" персонажа (см. intim_cmd
+# и generate_intim_scene): тамагочи-механика на него не распространяется ни в одну, ни в другую сторону.
 
 
 def apply_passive_stat_regen(user):
@@ -3021,9 +3022,9 @@ async def intim_cmd(message: types.Message):
     if not user["personality_ready"]:
         await message.answer(get_text(user, "intim_need_character"))
         return
-    if is_asleep(user):
-        await message.answer(get_text(user, "asleep_message"), reply_markup=get_wake_kb(user))
-        return
+    # /intim нарочно не проверяет is_asleep(user) — это отдельный платный раздел именно для тех,
+    # кто не хочет ждать (ни уровня близости, ни "сна" персонажа): раз сцена куплена/доступна,
+    # она выдаётся сразу, тамагочи-механика на неё не распространяется.
     await show_intim_menu(message.chat.id, user)
 
 
@@ -3183,7 +3184,9 @@ async def generate_intim_scene(call, user, scene_type, location="any", dominant=
     if len(user["history"]) > limit:
         user["history"] = user["history"][-limit:]
     user["last_activity"] = datetime.now().isoformat()
-    apply_activity_stat_cost(user, ENERGY_COST_INTIM, SATIETY_COST_INTIM)
+    # Интим-сцены нарочно не тратят энергию/сытость: иначе платная сцена могла бы сама "усыпить"
+    # персонажа и заблокировать пользователю следующее обычное сообщение — а это ровно то ожидание,
+    # которого этот раздел должен избегать.
     save_data(user_data)
 
     await send_long_to_chat(chat_id, clean_answer, reply_markup=get_full_kb(user))
