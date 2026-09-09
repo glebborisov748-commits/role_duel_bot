@@ -86,16 +86,6 @@ TEXTS = {
             "/switch_personality — сменить мир и пол без потери истории\n"
             "/switch_style — сменить стиль без потери истории"
         ),
-        "help_admin_extra": (
-            "🛠 *Админ-команды:*\n"
-            "/grant @username [pro|elite] — выдать подписку\n"
-            "/grant @username intim N — выдать горячие сцены\n"
-            "/grant @username energizers N — выдать энергетики\n"
-            "/grant @username bucks N — выдать баксы\n"
-            "/revoke_subscription @username — отозвать подписку\n"
-            "/tehwork on|off — режим техобслуживания\n"
-            "/reset_me — сбросить свои данные"
-        ),
         "help_hint": "📖 /help — список всех команд.",
         "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
         "spin_title": "🎰 **Колесо фортуны**",
@@ -339,16 +329,6 @@ TEXTS = {
             "/switch_personality — change world and gender without losing history\n"
             "/switch_style — change style without losing history"
         ),
-        "help_admin_extra": (
-            "🛠 *Admin commands:*\n"
-            "/grant @username [pro|elite] — grant a subscription\n"
-            "/grant @username intim N — grant N hot scenes\n"
-            "/grant @username energizers N — grant N energizers\n"
-            "/grant @username bucks N — grant N bucks\n"
-            "/revoke_subscription @username — revoke a subscription\n"
-            "/tehwork on|off — maintenance mode\n"
-            "/reset_me — wipe your own data"
-        ),
         "help_hint": "📖 /help — the full list of commands.",
         "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«An elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire.»\n\n✏️ Write the description now — and I'll remember it!",
         "spin_title": "🎰 **Spin wheel**",
@@ -591,16 +571,6 @@ TEXTS = {
             "✨ *Verfügbar mit SUPER PRO / ELITE:*\n"
             "/switch_personality — Welt und Geschlecht ändern, ohne den Verlauf zu verlieren\n"
             "/switch_style — Stil ändern, ohne den Verlauf zu verlieren"
-        ),
-        "help_admin_extra": (
-            "🛠 *Admin-Befehle:*\n"
-            "/grant @username [pro|elite] — Abo vergeben\n"
-            "/grant @username intim N — N heiße Szenen vergeben\n"
-            "/grant @username energizers N — N Energydrinks vergeben\n"
-            "/grant @username bucks N — N Bucks vergeben\n"
-            "/revoke_subscription @username — Abo entziehen\n"
-            "/tehwork on|off — Wartungsmodus\n"
-            "/reset_me — eigene Daten löschen"
         ),
         "help_hint": "📖 /help — die vollständige Befehlsliste.",
         "character_create_prompt": "🎭 **Erstelle deinen eigenen Charakter!**\n\nBeschreibe eine beliebige Figur — aus Anime, Filmen, Spielen oder denk dir selbst eine aus.\nSchreibe Namen, Charakter, Aussehen, Herkunft und beliebige Details.\n\n📝 *Beispiel:*\n«Eine Elfe aus der Welt von The Witcher — weise, ruhig, mit langen silbernen Haaren. Sie liebt Sterne und lange Gespräche am Feuer.»\n\n✏️ Schreibe die Beschreibung jetzt — und ich merke sie mir!",
@@ -2300,17 +2270,20 @@ async def reset_character_cmd(message: types.Message):
     await message.answer(get_text(user, "character_reset"))
 
 
+HELP_LANG_HINT = "🌍 Не тот язык? / Wrong language? / Falsche Sprache? → /language"
+
+
 @dp.message(Command("help"))
 async def help_cmd(message: types.Message):
-    """Список команд собирается по частям, а не одним большим текстом — чтобы пользователь
-    видел только то, что реально доступно на его тарифе (see: видели только нужное), а не
-    команды SUPER PRO/ELITE, которыми он всё равно не может воспользоваться."""
+    """Список команд собирается по частям — чтобы пользователь видел только то, что реально
+    доступно на его тарифе, а не команды SUPER PRO/ELITE, которыми он всё равно не может
+    воспользоваться. Подсказка про /language всегда на трёх языках сразу и в самом верху —
+    если при регистрации случайно выбрали не тот язык, весь остальной текст читать будет
+    нечем, а эту строку так или иначе можно прочитать и найти команду для смены языка."""
     user = get_user(message.from_user.id)
-    text = get_text(user, "help_title") + "\n\n" + get_text(user, "help_base")
+    text = HELP_LANG_HINT + "\n\n" + get_text(user, "help_title") + "\n\n" + get_text(user, "help_base")
     if get_subscription_level(user) in ("super_pro", "elite"):
         text += "\n\n" + get_text(user, "help_subscriber_extra")
-    if message.from_user.id in ADMIN_IDS:
-        text += "\n\n" + get_text(user, "help_admin_extra")
     await message.answer(text, parse_mode="Markdown")
 
 
