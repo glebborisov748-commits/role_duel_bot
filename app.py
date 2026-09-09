@@ -186,7 +186,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
         "subs_title": "👑 Подписки Role Duel",
-        "subs_body": "🔥 PRO (250⭐/мес)\n• 50 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• 100 сообщений в день\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_body": "🔥 PRO (250⭐/мес)\n• 50 сообщений в день\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-40%)\n• +80💵 баксов каждый день на еду и подарки\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• 100 сообщений в день\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-70%)\n• +200💵 баксов каждый день на еду и подарки\n• 🔕 Можно отключить уведомления бота\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐/мес",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐/мес",
         "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (245⭐)",
@@ -215,6 +215,15 @@ TEXTS = {
         "wake_energizer_btn": "⚡ Разбудить энергетиком",
         "woken_up": "⚡ Энергетик выпит — персонаж снова бодр и на связи!",
         "stats_line": "⚡ Энергия: {energy}/100   🍗 Сытость: {satiety}/100\n⚡ Энергетиков: {energizers}   💵 Баксов: {bucks}",
+        "wake_now_btn": "💳 Разбудить сейчас за {price}⭐",
+        "invoice_wake_title": "Разбудить персонажа",
+        "invoice_wake_desc": "Мгновенно поднимает энергию персонажа до максимума.",
+        "invoice_wake_label": "Разбудить",
+        "mute_notifications_btn": "🔕 Отключить уведомления",
+        "unmute_notifications_btn": "🔔 Включить уведомления",
+        "notifications_muted_alert": "🔕 Уведомления отключены.",
+        "notifications_unmuted_alert": "🔔 Уведомления включены.",
+        "mute_requires_sub_alert": "🔒 Отключение уведомлений доступно только с подпиской SUPER PRO.",
         "payment_pro_success": "✅ PRO подписка активирована на месяц!",
         "payment_super_success": "✅ SUPER PRO подписка активирована на месяц!",
         "payment_upgrade_success": "✅ Апгрейд до SUPER PRO выполнен до {date}!",
@@ -383,7 +392,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
         "subs_title": "👑 Role Duel Subscriptions",
-        "subs_body": "🔥 PRO (250⭐ per month)\n• 50 messages a day\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• 100 messages a day\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_body": "🔥 PRO (250⭐ per month)\n• 50 messages a day\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-40%)\n• +80💵 bucks every day for food and gifts\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• 100 messages a day\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-70%)\n• +200💵 bucks every day for food and gifts\n• 🔕 Mute the bot's notifications\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐ per month",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ per month",
         "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (245⭐)",
@@ -412,6 +421,15 @@ TEXTS = {
         "wake_energizer_btn": "⚡ Wake up with an energizer",
         "woken_up": "⚡ Energizer used — your companion is wide awake again!",
         "stats_line": "⚡ Energy: {energy}/100   🍗 Satiety: {satiety}/100\n⚡ Energizers: {energizers}   💵 Bucks: {bucks}",
+        "wake_now_btn": "💳 Wake up now for {price}⭐",
+        "invoice_wake_title": "Wake up your companion",
+        "invoice_wake_desc": "Instantly refills your companion's energy to full.",
+        "invoice_wake_label": "Wake up",
+        "mute_notifications_btn": "🔕 Mute notifications",
+        "unmute_notifications_btn": "🔔 Unmute notifications",
+        "notifications_muted_alert": "🔕 Notifications muted.",
+        "notifications_unmuted_alert": "🔔 Notifications unmuted.",
+        "mute_requires_sub_alert": "🔒 Muting notifications is available with a SUPER PRO subscription only.",
         "payment_pro_success": "✅ PRO subscription activated for a month!",
         "payment_super_success": "✅ SUPER PRO subscription activated for a month!",
         "payment_upgrade_success": "✅ Upgrade to SUPER PRO done until {date}!",
@@ -580,7 +598,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
         "subs_title": "👑 Role Duel Abos",
-        "subs_body": "🔥 PRO (250⭐ pro Monat)\n• 50 Nachrichten pro Tag\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• 100 Nachrichten pro Tag\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
+        "subs_body": "🔥 PRO (250⭐ pro Monat)\n• 50 Nachrichten pro Tag\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-40%)\n• +80💵 Bucks jeden Tag für Essen und Geschenke\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• 100 Nachrichten pro Tag\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-70%)\n• +200💵 Bucks jeden Tag für Essen und Geschenke\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐ pro Monat",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ pro Monat",
         "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO (245⭐)",
@@ -609,6 +627,15 @@ TEXTS = {
         "wake_energizer_btn": "⚡ Mit Energydrink wecken",
         "woken_up": "⚡ Energydrink getrunken — dein Begleiter ist wieder hellwach!",
         "stats_line": "⚡ Energie: {energy}/100   🍗 Sättigung: {satiety}/100\n⚡ Energydrinks: {energizers}   💵 Bucks: {bucks}",
+        "wake_now_btn": "💳 Jetzt wecken für {price}⭐",
+        "invoice_wake_title": "Begleiter wecken",
+        "invoice_wake_desc": "Füllt die Energie deines Begleiters sofort komplett auf.",
+        "invoice_wake_label": "Wecken",
+        "mute_notifications_btn": "🔕 Benachrichtigungen stumm schalten",
+        "unmute_notifications_btn": "🔔 Benachrichtigungen aktivieren",
+        "notifications_muted_alert": "🔕 Benachrichtigungen stummgeschaltet.",
+        "notifications_unmuted_alert": "🔔 Benachrichtigungen aktiviert.",
+        "mute_requires_sub_alert": "🔒 Benachrichtigungen stummschalten ist nur mit einem SUPER PRO-Abo möglich.",
         "payment_pro_success": "✅ PRO-Abo für einen Monat aktiviert!",
         "payment_super_success": "✅ SUPER PRO-Abo für einen Monat aktiviert!",
         "payment_upgrade_success": "✅ Upgrade auf SUPER PRO bis {date} erledigt!",
@@ -859,6 +886,7 @@ def get_user(user_id):
             "energizers": 0,
             "bucks": 0,
             "last_stat_tick": None,
+            "notifications_muted": False,
             "last_activity": datetime.now().isoformat(),
             "last_reminder": None,
             "creating_character": False,
@@ -901,6 +929,7 @@ def get_user(user_id):
             "energizers": 0,
             "bucks": 0,
             "last_stat_tick": None,
+            "notifications_muted": False,
             "last_activity": None,
             "last_reminder": None,
             "creating_character": False,
@@ -1201,6 +1230,8 @@ def get_history_limit(user):
 
 FREE_DAILY_MESSAGES = 20  # бесплатный дневной лимит для тех, у кого нет подписки — бандлы больше не дают
                           # сообщений (только энергетики/баксы), поэтому чат больше никогда не "кончается" насовсем
+BUCKS_DAILY_STIPEND = {"pro": 80, "super_pro": 200}  # ежедневная "подпитка" баксов для магазина — подписка
+                                                      # оплачивает не только лимит сообщений, но и часть жизни персонажа
 
 
 def _reset_daily_quota_if_needed(user):
@@ -1213,6 +1244,7 @@ def _reset_daily_quota_if_needed(user):
     if level:
         field = "free_intim_scenes_super" if level == "super_pro" else "free_intim_scenes_pro"
         user[field] = FREE_INTIM_SCENES[level]
+        user["bucks"] = user.get("bucks", 0) + BUCKS_DAILY_STIPEND[level]
 
 
 def get_available_messages(user):
@@ -1354,6 +1386,7 @@ ENERGY_REGEN_MINUTES_FULL = 40    # без активности энергия �
 SATIETY_REGEN_MINUTES_FULL = 180  # сытость сама восстанавливается намного медленнее — еда остаётся ценной
 ENERGY_COST_MESSAGE = 3
 SATIETY_COST_MESSAGE = 2
+STAT_DECAY_MULTIPLIER = {"pro": 0.6, "super_pro": 0.3}  # подписчики устают/голодают медленнее
 # У /intim нет стоимости энергии/сытости и нет проверки is_asleep(user) — это отдельный платный
 # раздел именно для тех, кто не хочет ждать ни уровня близости, ни "сна" персонажа (см. intim_cmd
 # и generate_intim_scene): тамагочи-механика на него не распространяется ни в одну, ни в другую сторону.
@@ -1377,8 +1410,9 @@ def apply_passive_stat_regen(user):
 
 
 def apply_activity_stat_cost(user, energy_cost, satiety_cost):
-    user["energy"] = max(0, user.get("energy", MAX_STAT) - energy_cost)
-    user["satiety"] = max(0, user.get("satiety", MAX_STAT) - satiety_cost)
+    mult = STAT_DECAY_MULTIPLIER.get(get_subscription_level(user), 1.0)
+    user["energy"] = max(0, user.get("energy", MAX_STAT) - energy_cost * mult)
+    user["satiety"] = max(0, user.get("satiety", MAX_STAT) - satiety_cost * mult)
 
 
 def is_asleep(user):
@@ -1647,11 +1681,13 @@ def get_main_menu_keyboard(user):
 
 
 def get_profile_keyboard(user):
+    mute_key = "unmute_notifications_btn" if user.get("notifications_muted") else "mute_notifications_btn"
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=get_text(user, "buy_bundles"), callback_data="profile_bundles", style="success")],
         [InlineKeyboardButton(text=get_text(user, "shop_btn"), callback_data="profile_shop", style="success")],
         [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")],
         [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
+        [InlineKeyboardButton(text=get_text(user, mute_key), callback_data="toggle_notifications", style="primary")],
         [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")],
     ])
 
@@ -2450,6 +2486,18 @@ async def back_to_profile(call: types.CallbackQuery):
     await call.answer()
 
 
+@dp.callback_query(lambda c: c.data == "toggle_notifications")
+async def toggle_notifications(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    if get_subscription_level(user) != "super_pro":
+        await call.answer(get_text(user, "mute_requires_sub_alert"), show_alert=True)
+        return
+    user["notifications_muted"] = not user.get("notifications_muted", False)
+    save_data(user_data)
+    key = "notifications_muted_alert" if user["notifications_muted"] else "notifications_unmuted_alert"
+    await call.answer(get_text(user, key), show_alert=True)
+
+
 # ============================================================
 #  СПОСОБЫ ОПЛАТЫ (Telegram Stars / CryptoBot / Lava)
 # ============================================================
@@ -2474,6 +2522,7 @@ PRODUCTS = {
     "bundle_large": {"stars": 200, "usd": 3.9},
     "spin_paid_20": {"stars": 20, "usd": 0.5},
     "intim_scene": {"stars": 45, "usd": 1.0},
+    "wake_now": {"stars": 20, "usd": 0.45},
 }
 # Цена в рублях (для Lava) равна цене в звёздах один в один — так попросили,
 # отдельного расчёта по курсу нет.
@@ -2517,6 +2566,9 @@ def product_invoice_texts(user, payload):
     if payload == "intim_scene":
         return (get_text(user, "invoice_intim_title"), get_text(user, "invoice_intim_desc"),
                 get_text(user, "invoice_intim_label"))
+    if payload == "wake_now":
+        return (get_text(user, "invoice_wake_title"), get_text(user, "invoice_wake_desc"),
+                get_text(user, "invoice_wake_label"))
     if payload in BUNDLES:
         bundle = BUNDLES[payload]
         price = PRODUCTS[payload]["stars"]
@@ -2655,6 +2707,10 @@ async def grant_product(user, payload, chat_id):
         user["intim_scenes"] = user.get("intim_scenes", 0) + 1
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "payment_intim_success"))
+    elif payload == "wake_now":
+        user["energy"] = MAX_STAT
+        save_data(user_data)
+        await bot.send_message(chat_id, get_text(user, "woken_up"))
     elif payload == "spin_paid_20":
         await spin_result(chat_id, user, free=False)
 
@@ -2981,16 +3037,15 @@ def get_intim_buy_kb(user):
 
 
 def get_wake_kb(user):
-    """Пока энергия не кончится, эта клавиатура не нужна — показываем её только когда
-    собеседник "спит" (energy <= 0), поэтому кнопка предлагает либо мгновенно разбудить
-    энергетиком, либо (если их нет) сразу купить бандл."""
+    """Показывается только когда собеседник "спит" (energy <= 0). Если есть свой энергетик —
+    им можно разбудить бесплатно; в любом случае ниже есть мгновенная платная кнопка "разбудить
+    сейчас" — она нужна именно тем, кто не хочет ждать и не хочет запасаться энергетиками заранее."""
+    rows = []
     if user.get("energizers", 0) > 0:
-        return InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=get_text(user, "wake_energizer_btn"), callback_data="wake_up", style="success")]
-        ])
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "buy_bundles"), callback_data="profile_bundles", style="success")]
-    ])
+        rows.append([InlineKeyboardButton(text=get_text(user, "wake_energizer_btn"), callback_data="wake_up", style="success")])
+    rows.append([InlineKeyboardButton(text=get_text(user, "wake_now_btn", price=PRODUCTS["wake_now"]["stars"]),
+                                      callback_data="buy:wake_now", style="success")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
 @dp.callback_query(lambda c: c.data == "wake_up")
@@ -3463,6 +3518,10 @@ async def check_notifications():
             today = now.date().isoformat()
             for user_id, user in list(user_data.items()):
                 if not user.get("verified") or not user.get("personality_ready"):
+                    continue
+                # Отключение уведомлений — привилегия SUPER PRO: если подписка упала до PRO или
+                # истекла, напоминания сами возобновятся — отдельно снимать флаг не нужно.
+                if user.get("notifications_muted") and get_subscription_level(user) == "super_pro":
                     continue
 
                 if not user.get("last_activity"):
