@@ -68,9 +68,7 @@ TEXTS = {
         "choose_world_first": "🌍 Мир выбран! Теперь выбери свой пол:",
         "choose_style": "🎨 Теперь выбери стиль персонажа:",
         "choose_style_updated": "🎨 Стиль обновлён! Теперь выбери сцену для общения:",
-        "choose_scene": "🎬 Теперь выбери сцену для общения:\n\n📱 Переписка в телефоне — классический формат.\n👫 Реальная встреча — живое общение лицом к лицу.",
-        "no_messages": "😔 Бесплатные сообщения на сегодня закончились. Оформи подписку — лимит станет намного больше!",
-        "no_history": "❌ Пока нечего редактировать — напиши персонажу хотя бы одно сообщение.",
+        "choose_scene": "🎬 Теперь выбери сцену для общения:\n\n📱 Переписка в телефоне — классический формат.\n👫 Реальная встреча — живое общение лицом к лицу.",        "no_history": "❌ Пока нечего редактировать — напиши персонажу хотя бы одно сообщение.",
         "edit_prompt": "✏️ Пришли новый текст своего последнего сообщения — я забуду старую реплику и отвечу заново.",
         "edit_success": "✅ Сообщение заменено. Генерирую новый ответ...",
         "character_created": "✅ **Персонаж создан!**\n\nТеперь ты общаешься с:\n_{text}_\n\nЧтобы вернуться к обычному персонажу — /reset_character",
@@ -79,9 +77,7 @@ TEXTS = {
         "spin_title": "🎰 **Колесо фортуны**",
         "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 20–150💵 баксов\n• 🔥 Горячие сцены\n• 2–4⚡ энергетика (редко)\n• 🎁 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)",
         "spin_choose": "Выбери вариант:",
-        "spin_nothing": "😢 Ничего... В следующий раз повезёт!",
-        "profile": "Подписка: {status}\nОсталось сообщений: {messages}",
-        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+30💵 баксов и +3⚡ энергетика** тебе, ему — **+15💵 баксов и +1⚡ энергетик**!\n\n📊 Приглашено друзей: **{count}**\n💵 Заработано баксов: **{earned_bucks}**\n⚡ Заработано энергетиков: **{earned_energizers}**",
+        "spin_nothing": "😢 Ничего... В следующий раз повезёт!",        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+30💵 баксов и +3⚡ энергетика** тебе, ему — **+15💵 баксов и +1⚡ энергетик**!\n\n📊 Приглашено друзей: **{count}**\n💵 Заработано баксов: **{earned_bucks}**\n⚡ Заработано энергетиков: **{earned_energizers}**",
         "choose_lang_label": "🌍 Выбери язык:",
         "welcome_back_female": "Ой, тебя так долго не было! Я уже успела соскучиться 🥺💕",
         "welcome_back_male": "Ой, тебя так долго не было! Я уже успел соскучиться 🥺💕",
@@ -117,8 +113,6 @@ TEXTS = {
         "level_down": "💔 Уровень сближения упал до {level}.",
         "menu_current_partner": "Текущий собеседник: {gender} из {world}",
         "menu_style_line": "Стиль: {style}",
-        "menu_messages_left": "Осталось сообщений: {n}",
-        "menu_messages_out": " (закончились)",
         "menu_write_prompt": "💬 Напиши персонажу...\n✨ Или выбери действие внизу.",
         "xp_level_label": "Уровень {level}/10",
         "xp_bonus_pro": "Бонус XP: x1.8",
@@ -130,9 +124,7 @@ TEXTS = {
         "profile_sub_inactive": "❌ неактивна (память 30 сообщений)",
         "profile_sub_label": "Подписка: {status}",
         "profile_expiry": "Окончание подписки: {date}",
-        "profile_expiry_inactive": "Окончание подписки: неактивна",
-        "profile_messages_available": "Доступно сообщений: {n}",
-        "profile_styles_header": "Доступные стили:",
+        "profile_expiry_inactive": "Окончание подписки: неактивна",        "profile_styles_header": "Доступные стили:",
         "style_locked_alert": "🔒 Стиль «{label}» доступен по подписке {tier}. Оформи в разделе «Мой профиль».",
         "style_changed": "✅ Стиль изменён на: {label}",
         "gender_female": "Девушка",
@@ -185,6 +177,9 @@ TEXTS = {
         "intim_free_level": "🎁 Бесплатная сцена за 8 уровень близости!",
         "intim_free_sub": "🎁 Бесплатная сцена по подписке.",
         "intim_left": "🔥 Осталось горячих сцен: {n}",
+        "intim_left_cta": "Хочешь ещё — просто жми /hot 😉",
+        "intim_continue_btn": "🔁 Продолжить сцену",
+        "hot_hint": "🔥 Кстати: команда /hot откроет горячую сцену с персонажем.",
         "intim_need_character": "Сначала создай персонажа через /start",
         "invoice_intim_title": "Горячая сцена",
         "invoice_intim_desc": "Одна горячая сцена с твоим персонажем.",
@@ -195,7 +190,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
         "subs_title": "👑 Подписки Role Duel",
-        "subs_body": "🔥 PRO (250⭐/мес)\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-40%)\n• +80💵 баксов и +1⚡ энергетик каждый день\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-70%)\n• +200💵 баксов и +3⚡ энергетика каждый день\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (800⭐/мес)\n• Всё, что есть в SUPER PRO\n• 150 сообщений в день, память 150 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-85%)\n• +350💵 баксов и +6⚡ энергетиков каждый день\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_body": "🔥 PRO (250⭐/мес)\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-40%)\n• +80💵 баксов и +1⚡ энергетик каждый день\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-70%)\n• +200💵 баксов и +3⚡ энергетика каждый день\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (800⭐/мес)\n• Всё, что есть в SUPER PRO\n• Память: 150 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-85%)\n• +350💵 баксов и +6⚡ энергетиков каждый день\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐/мес",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐/мес",
         "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐/мес",
@@ -220,10 +215,19 @@ TEXTS = {
         "payment_bundle_success": "✅ Получено: {energizers}⚡ энергетиков и {bucks}💵 баксов!",
         "shop_btn": "🛍 Магазин",
         "shop_title": "🛍 **Магазин**\n\nТвои баксы: {bucks}💵\n\n🍽 Еда восстанавливает сытость, 🎁 подарки поднимают настроение и дают немного опыта. Выбирай:",
-        "food_bought": "🍽 Сытость +{n}! Персонаж доволен.",
+        "item_bought": "✅ Куплено! {effects}.",
+        "effect_satiety": "Сытость +{n}",
+        "effect_mood": "Настроение +{n}",
+        "effect_satiety_full": "Сытость до максимума",
+        "effect_mood_full": "Настроение до максимума",
+        "effect_xp": "XP +{n}",
+        "gift_already_owned": "😉 У тебя уже есть этот подарок — персонажу не нужен второй такой же.",
+        "shop_category_food": "🍽 Еда",
+        "shop_category_treat": "🎁 Подарки",
+        "shop_category_accessory": "💍 Аксессуары",
+        "shop_item_owned": " ✅ уже есть",
         "hungry_nudge": "🍽 У собеседника заурчал живот... Может, покормишь?",
         "low_energy_nudge": "😴 Собеседник начинает уставать и клонит в сон... Может, взбодришь энергетиком?",
-        "gift_bought": "🎁 Подарок понравился! Настроение +{mood}, опыт +{xp}.",
         "not_enough_bucks": "❌ Не хватает баксов: нужно ещё {n}💵.",
         "not_enough_energizers": "❌ Нет энергетиков. Купи бандл, чтобы разбудить персонажа сразу ⚡.",
         "asleep_message": "😴 Персонаж крепко спит и сейчас не может ответить. Проснётся сам примерно через {minutes} мин. — или разбуди прямо сейчас энергетиком ⚡.",
@@ -289,9 +293,7 @@ TEXTS = {
         "choose_world_first": "🌍 World chosen! Now choose your gender:",
         "choose_style": "🎨 Now choose your character's style:",
         "choose_style_updated": "🎨 Style updated! Now choose a scene:",
-        "choose_scene": "🎬 Now choose a scene:\n\n📱 Phone chat — classic texting format.\n👫 Real meeting — face-to-face conversation.",
-        "no_messages": "😔 You're out of free messages for today. Get a subscription for a much bigger limit!",
-        "no_history": "❌ Nothing to edit yet — send your character a message first.",
+        "choose_scene": "🎬 Now choose a scene:\n\n📱 Phone chat — classic texting format.\n👫 Real meeting — face-to-face conversation.",        "no_history": "❌ Nothing to edit yet — send your character a message first.",
         "edit_prompt": "✏️ Send the new text for your last message — I'll forget the old one and reply again.",
         "edit_success": "✅ Message replaced. Generating a new response...",
         "character_created": "✅ **Character created!**\n\nNow you're talking to:\n_{text}_\n\nTo go back to the default character — /reset_character",
@@ -300,9 +302,7 @@ TEXTS = {
         "spin_title": "🎰 **Spin wheel**",
         "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 20–150💵 bucks\n• 🔥 Hot scenes\n• 2–4⚡ energizers (rare)\n• 🎁 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)",
         "spin_choose": "Choose an option:",
-        "spin_nothing": "😢 Nothing... Better luck next time!",
-        "profile": "Subscription: {status}\nMessages left: {messages}",
-        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+30💵 bucks and +3⚡ energizers** for you, and **+15💵 bucks and +1⚡ energizer** for them!\n\n📊 Friends invited: **{count}**\n💵 Bucks earned: **{earned_bucks}**\n⚡ Energizers earned: **{earned_energizers}**",
+        "spin_nothing": "😢 Nothing... Better luck next time!",        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+30💵 bucks and +3⚡ energizers** for you, and **+15💵 bucks and +1⚡ energizer** for them!\n\n📊 Friends invited: **{count}**\n💵 Bucks earned: **{earned_bucks}**\n⚡ Energizers earned: **{earned_energizers}**",
         "choose_lang_label": "🌍 Choose language:",
         "welcome_back_female": "Oh, you've been gone so long! I already missed you 🥺💕",
         "welcome_back_male": "Oh, you've been gone so long! I already missed you 🥺💕",
@@ -338,8 +338,6 @@ TEXTS = {
         "level_down": "💔 Closeness level dropped to {level}.",
         "menu_current_partner": "Current partner: {gender} from {world}",
         "menu_style_line": "Style: {style}",
-        "menu_messages_left": "Messages left: {n}",
-        "menu_messages_out": " (none left)",
         "menu_write_prompt": "💬 Write to your character...\n✨ Or choose an action below.",
         "xp_level_label": "Level {level}/10",
         "xp_bonus_pro": "XP bonus: x1.8",
@@ -351,9 +349,7 @@ TEXTS = {
         "profile_sub_inactive": "❌ inactive (30-message memory)",
         "profile_sub_label": "Subscription: {status}",
         "profile_expiry": "Subscription ends: {date}",
-        "profile_expiry_inactive": "Subscription ends: inactive",
-        "profile_messages_available": "Messages available: {n}",
-        "profile_styles_header": "Available styles:",
+        "profile_expiry_inactive": "Subscription ends: inactive",        "profile_styles_header": "Available styles:",
         "style_locked_alert": "🔒 The «{label}» style requires a {tier} subscription. Get it in the «My profile» section.",
         "style_changed": "✅ Style changed to: {label}",
         "gender_female": "Girl",
@@ -406,6 +402,9 @@ TEXTS = {
         "intim_free_level": "🎁 A free scene for reaching closeness level 8!",
         "intim_free_sub": "🎁 A free scene from your subscription.",
         "intim_left": "🔥 Hot scenes left: {n}",
+        "intim_left_cta": "Want more? Just tap /hot 😉",
+        "intim_continue_btn": "🔁 Continue the scene",
+        "hot_hint": "🔥 By the way: the /hot command unlocks a hot scene with your character.",
         "intim_need_character": "Create your character first via /start",
         "invoice_intim_title": "Hot scene",
         "invoice_intim_desc": "One hot scene with your character.",
@@ -416,7 +415,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
         "subs_title": "👑 Role Duel Subscriptions",
-        "subs_body": "🔥 PRO (250⭐ per month)\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-40%)\n• +80💵 bucks and +1⚡ energizer every day\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-70%)\n• +200💵 bucks and +3⚡ energizers every day\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (800⭐ per month)\n• Everything in SUPER PRO\n• 150 messages a day, 150-message memory\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-85%)\n• +350💵 bucks and +6⚡ energizers every day\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_body": "🔥 PRO (250⭐ per month)\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-40%)\n• +80💵 bucks and +1⚡ energizer every day\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-70%)\n• +200💵 bucks and +3⚡ energizers every day\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (800⭐ per month)\n• Everything in SUPER PRO\n• Memory: 150 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-85%)\n• +350💵 bucks and +6⚡ energizers every day\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐ per month",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ per month",
         "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐ per month",
@@ -441,10 +440,19 @@ TEXTS = {
         "payment_bundle_success": "✅ Received: {energizers}⚡ energizers and {bucks}💵 bucks!",
         "shop_btn": "🛍 Shop",
         "shop_title": "🛍 **Shop**\n\nYour bucks: {bucks}💵\n\n🍽 Food restores satiety, 🎁 gifts boost mood and give a bit of XP. Take your pick:",
-        "food_bought": "🍽 Satiety +{n}! Your companion is happy.",
+        "item_bought": "✅ Purchased! {effects}.",
+        "effect_satiety": "Satiety +{n}",
+        "effect_mood": "Mood +{n}",
+        "effect_satiety_full": "Satiety maxed out",
+        "effect_mood_full": "Mood maxed out",
+        "effect_xp": "XP +{n}",
+        "gift_already_owned": "😉 You already have this gift — your companion doesn't need a second one.",
+        "shop_category_food": "🍽 Food",
+        "shop_category_treat": "🎁 Treats",
+        "shop_category_accessory": "💍 Accessories",
+        "shop_item_owned": " ✅ owned",
         "hungry_nudge": "🍽 Your companion's stomach just growled... Maybe feed them?",
         "low_energy_nudge": "😴 Your companion is starting to feel drowsy... Maybe perk them up with an energizer?",
-        "gift_bought": "🎁 The gift was a hit! Mood +{mood}, XP +{xp}.",
         "not_enough_bucks": "❌ Not enough bucks: you need {n}💵 more.",
         "not_enough_energizers": "❌ No energizers left. Buy a bundle to wake your companion up right away ⚡.",
         "asleep_message": "😴 Your companion is fast asleep and can't reply right now. They'll wake up on their own in about {minutes} min. — or wake them up right away with an energizer ⚡.",
@@ -510,9 +518,7 @@ TEXTS = {
         "choose_world_first": "🌍 Welt gewählt! Wähle jetzt dein Geschlecht:",
         "choose_style": "🎨 Wähle jetzt den Stil deines Charakters:",
         "choose_style_updated": "🎨 Stil aktualisiert! Wähle jetzt eine Szene:",
-        "choose_scene": "🎬 Wähle jetzt eine Szene:\n\n📱 Chat am Handy — das klassische Schreiben.\n👫 Echtes Treffen — ein Gespräch von Angesicht zu Angesicht.",
-        "no_messages": "😔 Deine kostenlosen Nachrichten für heute sind aufgebraucht. Hol dir ein Abo für ein viel größeres Limit!",
-        "no_history": "❌ Noch nichts zum Bearbeiten — schreibe deinem Charakter zuerst eine Nachricht.",
+        "choose_scene": "🎬 Wähle jetzt eine Szene:\n\n📱 Chat am Handy — das klassische Schreiben.\n👫 Echtes Treffen — ein Gespräch von Angesicht zu Angesicht.",        "no_history": "❌ Noch nichts zum Bearbeiten — schreibe deinem Charakter zuerst eine Nachricht.",
         "edit_prompt": "✏️ Schicke den neuen Text deiner letzten Nachricht — ich vergesse die alte und antworte neu.",
         "edit_success": "✅ Nachricht ersetzt. Ich erstelle eine neue Antwort...",
         "character_created": "✅ **Charakter erstellt!**\n\nDu sprichst jetzt mit:\n_{text}_\n\nZurück zum normalen Charakter — /reset_character",
@@ -521,9 +527,7 @@ TEXTS = {
         "spin_title": "🎰 **Glücksrad**",
         "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 20–150💵 Bucks\n• 🔥 Heiße Szenen\n• 2–4⚡ Energydrinks (selten)\n• 🎁 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)",
         "spin_choose": "Wähle eine Option:",
-        "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",
-        "profile": "Abo: {status}\nNachrichten übrig: {messages}",
-        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+30💵 Bucks und +3⚡ Energydrinks** für dich und **+15💵 Bucks und +1⚡ Energydrink** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💵 Verdiente Bucks: **{earned_bucks}**\n⚡ Verdiente Energydrinks: **{earned_energizers}**",
+        "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+30💵 Bucks und +3⚡ Energydrinks** für dich und **+15💵 Bucks und +1⚡ Energydrink** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💵 Verdiente Bucks: **{earned_bucks}**\n⚡ Verdiente Energydrinks: **{earned_energizers}**",
         "choose_lang_label": "🌍 Sprache wählen:",
         "welcome_back_female": "Oh, du warst so lange weg! Ich habe dich schon vermisst 🥺💕",
         "welcome_back_male": "Oh, du warst so lange weg! Ich habe dich schon vermisst 🥺💕",
@@ -559,8 +563,6 @@ TEXTS = {
         "level_down": "💔 Das Nähe-Level ist auf {level} gefallen.",
         "menu_current_partner": "Aktueller Gesprächspartner: {gender} aus {world}",
         "menu_style_line": "Stil: {style}",
-        "menu_messages_left": "Nachrichten übrig: {n}",
-        "menu_messages_out": " (aufgebraucht)",
         "menu_write_prompt": "💬 Schreibe deinem Charakter...\n✨ Oder wähle unten eine Aktion.",
         "xp_level_label": "Level {level}/10",
         "xp_bonus_pro": "XP-Bonus: x1.8",
@@ -572,9 +574,7 @@ TEXTS = {
         "profile_sub_inactive": "❌ inaktiv (Gedächtnis 30 Nachrichten)",
         "profile_sub_label": "Abo: {status}",
         "profile_expiry": "Abo endet am: {date}",
-        "profile_expiry_inactive": "Abo endet am: inaktiv",
-        "profile_messages_available": "Verfügbare Nachrichten: {n}",
-        "profile_styles_header": "Verfügbare Stile:",
+        "profile_expiry_inactive": "Abo endet am: inaktiv",        "profile_styles_header": "Verfügbare Stile:",
         "style_locked_alert": "🔒 Der Stil «{label}» ist im {tier}-Abo enthalten. Hol es dir im Bereich «Mein Profil».",
         "style_changed": "✅ Stil geändert zu: {label}",
         "gender_female": "Mädchen",
@@ -627,6 +627,9 @@ TEXTS = {
         "intim_free_level": "🎁 Eine Gratis-Szene für Nähe-Level 8!",
         "intim_free_sub": "🎁 Eine Gratis-Szene aus deinem Abo.",
         "intim_left": "🔥 Verbleibende heiße Szenen: {n}",
+        "intim_left_cta": "Noch mehr? Einfach /hot antippen 😉",
+        "intim_continue_btn": "🔁 Szene fortsetzen",
+        "hot_hint": "🔥 Übrigens: der Befehl /hot schaltet eine heiße Szene mit deinem Charakter frei.",
         "intim_need_character": "Erstelle zuerst deinen Charakter über /start",
         "invoice_intim_title": "Heiße Szene",
         "invoice_intim_desc": "Eine heiße Szene mit deinem Charakter.",
@@ -637,7 +640,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
         "subs_title": "👑 Role Duel Abos",
-        "subs_body": "🔥 PRO (250⭐ pro Monat)\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-40%)\n• +80💵 Bucks und +1⚡ Energydrink jeden Tag\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-70%)\n• +200💵 Bucks und +3⚡ Energydrinks jeden Tag\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (800⭐ pro Monat)\n• Alles aus SUPER PRO\n• 150 Nachrichten pro Tag, Gedächtnis 150 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-85%)\n• +350💵 Bucks und +6⚡ Energydrinks jeden Tag\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
+        "subs_body": "🔥 PRO (250⭐ pro Monat)\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-40%)\n• +80💵 Bucks und +1⚡ Energydrink jeden Tag\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-70%)\n• +200💵 Bucks und +3⚡ Energydrinks jeden Tag\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (800⭐ pro Monat)\n• Alles aus SUPER PRO\n• Gedächtnis: 150 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-85%)\n• +350💵 Bucks und +6⚡ Energydrinks jeden Tag\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐ pro Monat",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ pro Monat",
         "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐ pro Monat",
@@ -662,10 +665,19 @@ TEXTS = {
         "payment_bundle_success": "✅ Erhalten: {energizers}⚡ Energydrinks und {bucks}💵 Bucks!",
         "shop_btn": "🛍 Shop",
         "shop_title": "🛍 **Shop**\n\nDeine Bucks: {bucks}💵\n\n🍽 Essen füllt die Sättigung auf, 🎁 Geschenke heben die Stimmung und geben etwas XP. Wähle:",
-        "food_bought": "🍽 Sättigung +{n}! Dein Begleiter ist zufrieden.",
+        "item_bought": "✅ Gekauft! {effects}.",
+        "effect_satiety": "Sättigung +{n}",
+        "effect_mood": "Stimmung +{n}",
+        "effect_satiety_full": "Sättigung auf Maximum",
+        "effect_mood_full": "Stimmung auf Maximum",
+        "effect_xp": "XP +{n}",
+        "gift_already_owned": "😉 Das hast du deinem Begleiter schon geschenkt — ein zweites Exemplar braucht er/sie nicht.",
+        "shop_category_food": "🍽 Essen",
+        "shop_category_treat": "🎁 Geschenke",
+        "shop_category_accessory": "💍 Accessoires",
+        "shop_item_owned": " ✅ vorhanden",
         "hungry_nudge": "🍽 Der Magen deines Begleiters knurrt gerade... Vielleicht Zeit zu füttern?",
         "low_energy_nudge": "😴 Dein Begleiter wird langsam müde und schläfrig... Vielleicht mit einem Energydrink aufmuntern?",
-        "gift_bought": "🎁 Das Geschenk kam gut an! Stimmung +{mood}, XP +{xp}.",
         "not_enough_bucks": "❌ Nicht genug Bucks: dir fehlen noch {n}💵.",
         "not_enough_energizers": "❌ Keine Energydrinks mehr. Kaufe ein Bundle, um deinen Begleiter sofort aufzuwecken ⚡.",
         "asleep_message": "😴 Dein Begleiter schläft tief und fest und kann gerade nicht antworten. Er/sie wacht von selbst in etwa {minutes} Min. auf — oder wecke ihn sofort mit einem Energydrink ⚡.",
@@ -900,9 +912,7 @@ def get_user(user_id):
             "style": "warm",
             "personality_ready": False,
             "subscription": {"active": False, "expires_at": None, "level": None},
-            "purchased_messages": 0,  # больше не выдаём стартовый бонус — бесплатный дневной пул (FREE_DAILY_MESSAGES) и есть вся механика
             "has_purchased": False,
-            "daily_messages": 0,
             "last_daily_reset": None,
             "history": [],
             "last_menu_message_id": None,
@@ -930,6 +940,8 @@ def get_user(user_id):
             "satiety": 100,
             "energizers": 0,
             "bucks": 0,
+            "owned_accessories": [],
+            "last_hot_scene": None,
             "last_stat_tick": None,
             "sleep_until": None,
             "notifications_muted": False,
@@ -946,9 +958,7 @@ def get_user(user_id):
         defaults = {
             "user_gender": None,
             "style": "warm",
-            "purchased_messages": 0,  # больше не выдаём стартовый бонус — бесплатный дневной пул (FREE_DAILY_MESSAGES) и есть вся механика
             "has_purchased": False,
-            "daily_messages": 0,
             "last_daily_reset": None,
             "history": [],
             "last_menu_message_id": None,
@@ -977,6 +987,8 @@ def get_user(user_id):
             "satiety": 100,
             "energizers": 0,
             "bucks": 0,
+            "owned_accessories": [],
+            "last_hot_scene": None,
             "last_stat_tick": None,
             "sleep_until": None,
             "notifications_muted": False,
@@ -1167,7 +1179,7 @@ INTIM_SCENES = {
     "bed": {"emoji": "\U0001f6cf", "ru": "В постели", "en": "In bed", "de": "Im Bett"},
     "kiss": {"emoji": "\U0001f48b", "ru": "Страстный поцелуй", "en": "Passionate kiss", "de": "Leidenschaftlicher Kuss"},
     "bdsm": {"emoji": "\u26d3", "ru": "БДСМ (лёгкое доминирование)", "en": "BDSM (light domination)", "de": "BDSM (leichte Dominanz)"},
-    "oral": {"emoji": "\U0001f445", "ru": "Минет", "en": "Oral", "de": "Oral"},
+    "oral": {"emoji": "\U0001f445", "ru": "Оральные ласки", "en": "Oral", "de": "Oral"},
     "undress": {"emoji": "\U0001f457", "ru": "Раздевание", "en": "Undressing", "de": "Entkleiden"},
     "wall": {"emoji": "\U0001f9f1", "ru": "У стены", "en": "Against the wall", "de": "An der Wand"},
     "shower": {"emoji": "\U0001f6bf", "ru": "В душе", "en": "In the shower", "de": "Unter der Dusche"},
@@ -1229,38 +1241,62 @@ FREE_INTIM_FIELD = {"pro": "free_intim_scenes_pro", "super_pro": "free_intim_sce
                      "elite": "free_intim_scenes_elite"}
 INTIM_LEVEL_REWARD = 8  # на каком уровне близости открывается бесплатная сцена
 
-# Магазин за баксы 💵 (валюта из бандлов): еда поднимает сытость, подарки — настроение и немного XP.
-
-# reaction_hint — краткий ориентир по тону благодарности для AI-реакции на покупку (см.
-# generate_shop_reaction ниже); пользователю не показывается, влияет только на промпт.
+# Магазин за баксы 💵 (валюта из бандлов). Категории — для группировки в магазине (food/treat/
+# accessory). Большинство предметов задевают только одну характеристику (еда — сытость,
+# аксессуары — настроение), но у нескольких "жизненных" предметов эффект двойной, как в реальности:
+# вино/шоколадки/кафе заодно чуть поднимают настроение (у шоколадок настроение растёт даже
+# больше, чем сытость), а романтический вечер — единственный предмет, который выводит ОБЕ
+# характеристики сразу на максимум (full_restore). "accessory" — вещи, которые не покупают по 15
+# штук (духи, косметика, каблуки, платье, украшение, телефон): repeatable=False, одна на аккаунт,
+# и на male_variant заменяется вид/название под персонажа-мужчину (часы вместо каблуков и т.п.),
+# сама механика (цена/эффект/xp) не меняется. reaction_hint — ориентир тона для AI-благодарности
+# (generate_shop_reaction), пользователю не показывается.
 FOOD_ITEMS = {
-    "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 10, "satiety": 15,
-              "reaction_hint": "Это мелкая, но милая забота — благодарность лёгкая, тёплая, почти игривая."},
-    "meal": {"emoji": "🍲", "ru": "Обед", "en": "Meal", "de": "Mahlzeit", "price": 25, "satiety": 40,
-             "reaction_hint": "Это нормальная забота о тебе — благодарность душевная, ты чувствуешь себя сытой и по-настоящему тронута вниманием."},
-    "feast": {"emoji": "🍰", "ru": "Пир", "en": "Feast", "de": "Festmahl", "price": 50, "satiety": 100,
-              "reaction_hint": "Это щедрый, почти избыточный жест — благодарность восторженная, ты слегка ошеломлена такой щедростью."},
+    "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 15, "satiety": 10,
+              "category": "food", "reaction_hint": "Это мелкая, но милая забота — благодарность лёгкая, тёплая, почти игривая."},
+    "meal": {"emoji": "🍲", "ru": "Обед", "en": "Meal", "de": "Mahlzeit", "price": 30, "satiety": 25,
+             "category": "food", "reaction_hint": "Это нормальная забота о тебе — благодарность душевная, ты чувствуешь себя сытой и по-настоящему тронута вниманием."},
+    "cafe": {"emoji": "☕", "ru": "Кафе", "en": "Café", "de": "Café", "price": 55, "satiety": 50, "mood": 8,
+             "category": "food", "reaction_hint": "Это настоящее свидание за столиком, не просто еда — благодарность тёплая, немного смущённая, приятно проведённое время."},
+    "feast": {"emoji": "🍰", "ru": "Пир", "en": "Feast", "de": "Festmahl", "price": 90, "satiety": 80,
+              "category": "food", "reaction_hint": "Это щедрый, почти избыточный жест — благодарность восторженная, ты слегка ошеломлена такой щедростью."},
 }
 GIFT_ITEMS = {
-    "sweets": {"emoji": "🍫", "ru": "Шоколадки", "en": "Chocolates", "de": "Pralinen", "price": 10, "mood": 2, "xp": 2,
+    "sweets": {"emoji": "🍫", "ru": "Шоколадки", "en": "Chocolates", "de": "Pralinen", "price": 20, "satiety": 6, "mood": 25, "xp": 5,
+               "category": "treat", "repeatable": True,
                "reaction_hint": "Простой милый подарок — благодарность лёгкая, с улыбкой, без надрыва."},
-    "wine": {"emoji": "🍷", "ru": "Вино", "en": "Wine", "de": "Wein", "price": 15, "mood": 3, "xp": 3,
+    "wine": {"emoji": "🍷", "ru": "Вино", "en": "Wine", "de": "Wein", "price": 35, "satiety": 8, "mood": 20, "xp": 7,
+             "category": "treat", "repeatable": True,
              "reaction_hint": "Романтичный намёк на вечер вдвоём — благодарность чуть кокетливая, с лёгким флиртом."},
-    "flowers": {"emoji": "💐", "ru": "Цветы", "en": "Flowers", "de": "Blumen", "price": 20, "mood": 4, "xp": 5,
+    "flowers": {"emoji": "💐", "ru": "Цветы", "en": "Flowers", "de": "Blumen", "price": 30, "mood": 18, "xp": 8,
+                "category": "treat", "repeatable": True,
                 "reaction_hint": "Классический трогательный жест — благодарность искренняя и нежная, ты правда растрогана."},
-    "perfume": {"emoji": "🧴", "ru": "Духи", "en": "Perfume", "de": "Parfüm", "price": 25, "mood": 4, "xp": 6,
+    "perfume": {"emoji": "🧴", "ru": "Духи", "en": "Perfume", "de": "Parfüm", "price": 45, "mood": 18, "xp": 10,
+                "category": "accessory", "repeatable": False,
                 "reaction_hint": "Личный, продуманный подарок про заботу о тебе — приятно удивлена, что он угадал(а) со вкусом."},
-    "cosmetics": {"emoji": "💄", "ru": "Косметика", "en": "Cosmetics", "de": "Kosmetik", "price": 30, "mood": 5, "xp": 7,
-                  "reaction_hint": "Подарок про заботу о твоей красоте — благодарность тёплая, немного смущённая, приятно, что заметили детали."},
-    "heels": {"emoji": "👠", "ru": "Каблуки", "en": "Heels", "de": "High Heels", "price": 40, "mood": 6, "xp": 8,
-              "reaction_hint": "Дерзкий, чуть сексуальный подарок — благодарность кокетливая и уверенная в себе."},
-    "dress": {"emoji": "👗", "ru": "Платье", "en": "Dress", "de": "Kleid", "price": 55, "mood": 7, "xp": 10,
-              "reaction_hint": "Особенный подарок, который хочется сразу примерить — благодарность взволнованная, с предвкушением похвастаться."},
-    "jewelry": {"emoji": "💎", "ru": "Украшение", "en": "Jewelry", "de": "Schmuck", "price": 60, "mood": 8, "xp": 15,
+    "cosmetics": {"emoji": "💄", "ru": "Косметика", "en": "Cosmetics", "de": "Kosmetik", "price": 60, "mood": 20, "xp": 12,
+                  "category": "accessory", "repeatable": False,
+                  "reaction_hint": "Подарок про заботу о твоей красоте — благодарность тёплая, немного смущённая, приятно, что заметили детали.",
+                  "male_variant": {"emoji": "🪒", "ru": "Набор для бритья", "en": "Shaving set", "de": "Rasierset",
+                                    "reaction_hint": "Подарок про заботу о твоём уходе за собой — благодарность тёплая, немного смущённая, приятно, что заметили детали."}},
+    "heels": {"emoji": "👠", "ru": "Каблуки", "en": "Heels", "de": "High Heels", "price": 90, "mood": 25, "xp": 16,
+              "category": "accessory", "repeatable": False,
+              "reaction_hint": "Дерзкий, чуть сексуальный подарок — благодарность кокетливая и уверенная в себе.",
+              "male_variant": {"emoji": "⌚", "ru": "Наручные часы", "en": "Wristwatch", "de": "Armbanduhr",
+                                "reaction_hint": "Дорогой, статусный подарок — благодарность сдержанная, но искренне впечатлён вниманием к деталям."}},
+    "dress": {"emoji": "👗", "ru": "Платье", "en": "Dress", "de": "Kleid", "price": 120, "mood": 30, "xp": 20,
+              "category": "accessory", "repeatable": False,
+              "reaction_hint": "Особенный подарок, который хочется сразу примерить — благодарность взволнованная, с предвкушением похвастаться.",
+              "male_variant": {"emoji": "🧥", "ru": "Стильный костюм", "en": "Stylish suit", "de": "Eleganter Anzug",
+                                "reaction_hint": "Особенный подарок, который хочется сразу примерить — благодарность довольная, с предвкушением показаться в нём."}},
+    "jewelry": {"emoji": "💎", "ru": "Украшение", "en": "Jewelry", "de": "Schmuck", "price": 160, "mood": 38, "xp": 28,
+                "category": "accessory", "repeatable": False,
                 "reaction_hint": "Дорогой, значимый подарок — благодарность глубокая, ты растрогана и немного смущена такой щедростью."},
-    "phone": {"emoji": "📱", "ru": "Телефон", "en": "Phone", "de": "Handy", "price": 100, "mood": 9, "xp": 20,
+    "phone": {"emoji": "📱", "ru": "Телефон", "en": "Phone", "de": "Handy", "price": 250, "mood": 45, "xp": 40,
+              "category": "accessory", "repeatable": False,
               "reaction_hint": "Очень дорогой подарок — искренний шок и восторг, ты не ожидала такой щедрости и говоришь об этом прямо."},
-    "date": {"emoji": "🌹", "ru": "Романтический вечер", "en": "Romantic evening", "de": "Romantischer Abend", "price": 150, "mood": 10, "xp": 35,
+    "date": {"emoji": "🌹", "ru": "Романтический вечер", "en": "Romantic evening", "de": "Romantischer Abend", "price": 300, "xp": 60,
+             "category": "treat", "repeatable": True, "full_restore": True,
              "reaction_hint": "Самый интимный из подарков — не вещь, а вечер вдвоём — благодарность взволнованная, с предвкушением встречи, самая тёплая из всех."},
 }
 
@@ -1356,8 +1392,6 @@ def get_history_limit(user):
         return 30
 
 
-FREE_DAILY_MESSAGES = 20  # бесплатный дневной лимит для тех, у кого нет подписки — бандлы больше не дают
-                          # сообщений (только энергетики/баксы), поэтому чат больше никогда не "кончается" насовсем
 BUCKS_DAILY_STIPEND = {"pro": 80, "super_pro": 200, "elite": 350}  # ежедневная "подпитка" баксов для магазина — подписка
                                                       # оплачивает не только лимит сообщений, но и часть жизни персонажа
 FREE_DAILY_BUCKS = 15  # бесплатный источник баксов и без подписки — иначе валюту неоткуда взять бесплатно
@@ -1376,15 +1410,11 @@ def free_spins_left(user):
     return max(0, free_spins_allowed(user) - user.get("free_spins_used", 0))
 
 
-DAILY_MESSAGES_BY_LEVEL = {"pro": 50, "super_pro": 100, "elite": 150}
-
-
 def _reset_daily_quota_if_needed(user):
     level = get_subscription_level(user)
     today = datetime.now().date().isoformat()
     if user.get("last_daily_reset") == today:
         return
-    user["daily_messages"] = DAILY_MESSAGES_BY_LEVEL.get(level, FREE_DAILY_MESSAGES)
     user["last_daily_reset"] = today
     user["free_spins_used"] = 0
     if level:
@@ -1393,23 +1423,6 @@ def _reset_daily_quota_if_needed(user):
         user["energizers"] = user.get("energizers", 0) + ENERGIZERS_DAILY_STIPEND[level]
     else:
         user["bucks"] = user.get("bucks", 0) + FREE_DAILY_BUCKS
-
-
-def get_available_messages(user):
-    """daily_messages — обновляемый каждый день лимит (у подписчиков больше). purchased_messages
-    новым пользователям больше не выдаётся (см. get_user), но у аккаунтов из прошлой версии там
-    мог остаться баланс — он тратится уже после дневного пула, а не теряется просто так."""
-    _reset_daily_quota_if_needed(user)
-    return user.get("daily_messages", 0) + user.get("purchased_messages", 0)
-
-
-def use_message(user):
-    _reset_daily_quota_if_needed(user)
-    if user.get("daily_messages", 0) > 0:
-        user["daily_messages"] = user.get("daily_messages", 0) - 1
-    else:
-        user["purchased_messages"] = max(0, user.get("purchased_messages", 0) - 1)
-    save_data(user_data)
 
 
 def contains_negative(text):
@@ -1493,18 +1506,21 @@ def build_intimacy_rule(user):
         return "Ты искренне и глубоко привязан(а) к собеседнику, говори о настоящей любви и поддержке."
 
 
+MOOD_MAX = 100  # настроение хранится как -100..100 (та же "сотенная" шкала, что у энергии/сытости,
+                 # чтобы эффекты подарков — например "каблуки +25 настроения" — были буквальными числами)
+
+
 def build_mood_rule(user):
-    """mood хранится как -10..10 (см. handle_message). Единое описание настроения —
-    раньше один и тот же диапазон описывался дважды (тут и в build_intimacy_rule),
-    вразнобой по порогам, теперь один источник правды."""
+    """Единое описание настроения — раньше один и тот же диапазон описывался дважды (тут и в
+    build_intimacy_rule), вразнобой по порогам, теперь один источник правды."""
     mood = user.get("mood", 0)
-    if mood <= -7:
+    if mood <= -70:
         return "Ты в подавленном настроении — можешь быть резкой, раздражённой, отвечать холоднее обычного."
-    elif mood <= -3:
+    elif mood <= -30:
         return "Ты немного не в духе — отвечай чуть суше, без обычной теплоты, но без грубости."
-    elif mood < 3:
+    elif mood < 30:
         return "Твоё настроение ровное, нейтральное."
-    elif mood < 7:
+    elif mood < 70:
         return "У тебя хорошее настроение — отвечай теплее и живее обычного."
     else:
         return "Ты в прекрасном, приподнятом настроении — полна нежности, игривости и тепла."
@@ -1624,9 +1640,13 @@ def build_energy_rule(user):
 
 def build_hunger_rule(user):
     satiety = user.get("satiety", MAX_STAT)
-    if satiety <= 20:
-        return ("Голод даёт о себе знать — время от времени вскользь упоминай это, отвечай чуть "
-                "более отрывисто и рассеянно, чем обычно.\n")
+    if satiety <= 0:
+        return ("Тебя одолевает настоящий голод, и это тебя злит — отвечай холодно, коротко и раздражённо, "
+                "будто тебе сейчас совсем не до разговоров; можешь демонстративно огрызнуться или почти "
+                "проигнорировать вопрос собеседника одной сухой фразой.\n")
+    elif satiety <= 20:
+        return ("Тебя мучает голод, и он тебя злит — время от времени грубишь, огрызаешься или раздражённо "
+                "жалуешься на голод, тон заметно холоднее и резче обычного.\n")
     elif satiety <= 50:
         return "Лёгкий голод — иногда вскользь упоминай, что не прочь перекусить.\n"
     return ""
@@ -2221,9 +2241,6 @@ async def send_main_menu(chat_id, user):
     world_name = world_display_name(user["world"], user)
     style_label = style_display_label(get_display_style(user), user, with_emoji=False)
 
-    available = get_available_messages(user)
-    balance_text = "\n" + get_text(user, "menu_messages_left", n=available) + (get_text(user, "menu_messages_out") if available <= 0 else "")
-
     xp_badge = get_xp_badge(user)
     multiplier_text = get_text(user, XP_BONUS_TEXT_KEY[level]) if level in XP_BONUS_TEXT_KEY else ""
 
@@ -2231,11 +2248,11 @@ async def send_main_menu(chat_id, user):
         f"{badge}\n\n"
         f"{get_text(user, 'menu_current_partner', gender=gender_name, world=world_name)}\n"
         f"{get_text(user, 'menu_style_line', style=style_label)}\n"
-        f"{balance_text}\n"
         f"{xp_badge}\n"
         f"{multiplier_text}\n\n"
         f"{stats_line_text(user)}\n\n"
-        f"{get_text(user, 'menu_write_prompt')}"
+        f"{get_text(user, 'menu_write_prompt')}\n"
+        f"{get_text(user, 'hot_hint')}"
     )
 
     try:
@@ -2274,14 +2291,10 @@ async def show_profile(msg, user):
         locked = not is_style_unlocked(key, user)
         styles_text += style_display_label(key, user) + (" 🔒\n" if locked else "\n")
 
-    available = get_available_messages(user)
-    balance_line = get_text(user, "profile_messages_available", n=available) + (get_text(user, "menu_messages_out") if available <= 0 else "")
-
     xp_badge = get_xp_badge(user)
     multiplier_text = get_text(user, XP_BONUS_TEXT_KEY[level]) if level in XP_BONUS_TEXT_KEY else ""
 
-    caption = (f"{balance_line}\n"
-               f"{get_text(user, 'profile_sub_label', status=sub_status)}\n"
+    caption = (f"{get_text(user, 'profile_sub_label', status=sub_status)}\n"
                f"{expiry_line}\n\n"
                f"{xp_badge}\n"
                f"{multiplier_text}\n\n"
@@ -2505,25 +2518,30 @@ async def spin_result(chat_id, user, free=False):
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=5)).isoformat()
         user["subscription"]["level"] = "pro"
-        user["daily_messages"] = 50
-        user["last_daily_reset"] = datetime.now().date().isoformat()
+        user["last_daily_reset"] = None
+        _reset_daily_quota_if_needed(user)
         result_text = get_text(user, "spin_win_pro")
     elif chosen["type"] == "subscription_super":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=3)).isoformat()
         user["subscription"]["level"] = "super_pro"
-        user["daily_messages"] = 100
-        user["last_daily_reset"] = datetime.now().date().isoformat()
+        user["last_daily_reset"] = None
+        _reset_daily_quota_if_needed(user)
         result_text = get_text(user, "spin_win_super")
     else:
         result_text = get_text(user, "spin_nothing")
 
     save_data(user_data)
 
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "spin_more"), callback_data="spin_paid", style="success")],
-        [InlineKeyboardButton(text=get_text(user, "back"), callback_data="spin_back", style="danger")]
-    ])
+    rows = []
+    free_left = free_spins_left(user)
+    if free_left > 0:
+        rows.append([InlineKeyboardButton(
+            text=get_text(user, "free", left=free_left, total=free_spins_allowed(user)),
+            callback_data="spin_free", style="success")])
+    rows.append([InlineKeyboardButton(text=get_text(user, "spin_more"), callback_data="spin_paid", style="success")])
+    rows.append([InlineKeyboardButton(text=get_text(user, "back"), callback_data="spin_back", style="danger")])
+    keyboard = InlineKeyboardMarkup(inline_keyboard=rows)
 
     mode_text = get_text(user, "spin_mode_free" if free else "spin_mode_paid")
     await bot.send_message(
@@ -2617,15 +2635,86 @@ async def grant_gift_xp(chat_id, user, amount):
     save_data(user_data)
 
 
+def gift_effective_item(item, user):
+    """Для аксессуаров с male_variant подменяет вид/название под персонажа-мужчину (часы вместо
+    каблуков и т.п.) — цена и эффекты (satiety/mood/xp) всегда берутся из базового item, вариант
+    переопределяет только emoji/ru/en/de/reaction_hint."""
+    variant = item.get("male_variant")
+    if variant and user.get("gender") == "male":
+        return {**item, **variant}
+    return item
+
+
+def gift_option_label(key, user):
+    item = gift_effective_item(GIFT_ITEMS[key], user)
+    lang = user.get("lang", "ru")
+    label = item.get(lang, item["ru"])
+    return f"{item['emoji']} {label}"
+
+
+def gift_already_owned(user, key, item):
+    """Не-повторяемые аксессуары (духи, косметика, каблуки/часы, платье/костюм, украшение,
+    телефон) покупаются один раз на аккаунт — незачем 15 одинаковых пар каблуков."""
+    return not item.get("repeatable", True) and key in user.get("owned_accessories", [])
+
+
+def format_item_effects(item, user):
+    parts = []
+    if item.get("full_restore"):
+        parts.append(get_text(user, "effect_satiety_full"))
+        parts.append(get_text(user, "effect_mood_full"))
+    else:
+        if item.get("satiety"):
+            parts.append(get_text(user, "effect_satiety", n=item["satiety"]))
+        if item.get("mood"):
+            parts.append(get_text(user, "effect_mood", n=item["mood"]))
+    if item.get("xp"):
+        parts.append(get_text(user, "effect_xp", n=item["xp"]))
+    return ", ".join(parts)
+
+
+def apply_shop_item_effects(user, item):
+    if item.get("full_restore"):
+        user["satiety"] = MAX_STAT
+        user["mood"] = MOOD_MAX
+    else:
+        if "satiety" in item:
+            user["satiety"] = min(MAX_STAT, user.get("satiety", MAX_STAT) + item["satiety"])
+        if "mood" in item:
+            user["mood"] = min(MOOD_MAX, max(-MOOD_MAX, user.get("mood", 0) + item["mood"]))
+
+
+SHOP_CATEGORY_ORDER = ["food", "treat", "accessory"]
+SHOP_CATEGORY_TEXT_KEY = {"food": "shop_category_food", "treat": "shop_category_treat", "accessory": "shop_category_accessory"}
+
+
 def get_shop_kb(user):
-    rows = [[InlineKeyboardButton(text=f"{intim_option_label(FOOD_ITEMS, key, user)} — {item['price']}💵",
-                                  callback_data=f"shop_food_{key}", style="success")]
-            for key, item in FOOD_ITEMS.items()]
-    rows += [[InlineKeyboardButton(text=f"{intim_option_label(GIFT_ITEMS, key, user)} — {item['price']}💵",
-                                   callback_data=f"shop_gift_{key}", style="success")]
-             for key, item in GIFT_ITEMS.items()]
+    entries = [(key, item, f"shop_food_{key}", False) for key, item in FOOD_ITEMS.items()]
+    entries += [(key, item, f"shop_gift_{key}", True) for key, item in GIFT_ITEMS.items()]
+
+    rows = []
+    for category in SHOP_CATEGORY_ORDER:
+        cat_entries = [e for e in entries if e[1].get("category") == category]
+        if not cat_entries:
+            continue
+        rows.append([InlineKeyboardButton(text=get_text(user, SHOP_CATEGORY_TEXT_KEY[category]), callback_data="shop_noop")])
+        for key, item, callback_data, is_gift in cat_entries:
+            if is_gift:
+                label = gift_option_label(key, user)
+                owned = gift_already_owned(user, key, item)
+            else:
+                label = intim_option_label(FOOD_ITEMS, key, user)
+                owned = False
+            suffix = get_text(user, "shop_item_owned") if owned else f" — {item['price']}💵"
+            rows.append([InlineKeyboardButton(text=f"{label}{suffix}", callback_data=callback_data, style="success")])
+
     rows.append([InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+@dp.callback_query(lambda c: c.data == "shop_noop")
+async def shop_noop_cb(call: types.CallbackQuery):
+    await call.answer()
 
 
 FEED_NUDGE_SATIETY_THRESHOLD = 20  # тот же порог, что и у "сильного голода" в build_hunger_rule
@@ -2704,9 +2793,9 @@ async def buy_food(call: types.CallbackQuery):
     if not spend_bucks(user, item["price"]):
         await call.answer(get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0)), show_alert=True)
         return
-    user["satiety"] = min(MAX_STAT, user.get("satiety", MAX_STAT) + item["satiety"])
+    apply_shop_item_effects(user, item)
     save_data(user_data)
-    await call.message.answer(get_text(user, "food_bought", n=item["satiety"]))
+    await call.message.answer(get_text(user, "item_bought", effects=format_item_effects(item, user)))
     await call.answer()
     if not is_asleep(user):
         await generate_shop_reaction(call.message.chat.id, user, item, "food")
@@ -2716,20 +2805,27 @@ async def buy_food(call: types.CallbackQuery):
 async def buy_gift(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     key = call.data[len("shop_gift_"):]
-    item = GIFT_ITEMS.get(key)
-    if not item:
+    base_item = GIFT_ITEMS.get(key)
+    if not base_item:
         await call.answer()
         return
-    if not spend_bucks(user, item["price"]):
-        await call.answer(get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0)), show_alert=True)
+    if gift_already_owned(user, key, base_item):
+        await call.answer(get_text(user, "gift_already_owned"), show_alert=True)
         return
-    user["mood"] = min(10, max(-10, user.get("mood", 0) + item["mood"]))
+    if not spend_bucks(user, base_item["price"]):
+        await call.answer(get_text(user, "not_enough_bucks", n=base_item["price"] - user.get("bucks", 0)), show_alert=True)
+        return
+    display_item = gift_effective_item(base_item, user)
+    apply_shop_item_effects(user, base_item)
+    if not base_item.get("repeatable", True):
+        user.setdefault("owned_accessories", []).append(key)
     save_data(user_data)
-    await grant_gift_xp(call.message.chat.id, user, item["xp"])
-    await call.message.answer(get_text(user, "gift_bought", mood=item["mood"], xp=item["xp"]))
+    if base_item.get("xp"):
+        await grant_gift_xp(call.message.chat.id, user, base_item["xp"])
+    await call.message.answer(get_text(user, "item_bought", effects=format_item_effects(base_item, user)))
     await call.answer()
     if not is_asleep(user):
-        await generate_shop_reaction(call.message.chat.id, user, item, "gift")
+        await generate_shop_reaction(call.message.chat.id, user, display_item, "gift")
 
 
 @dp.callback_query(lambda c: c.data == "profile_back")
@@ -2792,8 +2888,8 @@ PRODUCTS = {
 for _product in PRODUCTS.values():
     _product["rub"] = _product["stars"]
 
-# Что именно выдаёт каждый бандл — энергетики (⚡ энергия) и баксы (💵 еда/подарки в магазине),
-# сообщения бандлы больше не дают (см. FREE_DAILY_MESSAGES — теперь бесплатный лимit обновляется сам).
+# Что именно выдаёт каждый бандл — энергетики (⚡ энергия) и баксы (💵 еда/подарки в магазине);
+# сообщений в игре больше нет вообще, чат ограничивает только энергия/сон.
 BUNDLES = {
     "bundle_small": {"energizers": 5, "bucks": 60},
     "bundle_medium": {"energizers": 14, "bucks": 180},
@@ -3433,9 +3529,9 @@ def build_intim_prompt(user, scene_type, location, dominant="any"):
     """Отдельный промпт для интим-сцен — НЕ через build_prompt(). Там SAFE/ADULT правило переключается
     по обычному стилю чата (а не по праву на интим-сцену), плюс сдержанность по уровню близости и
     медленный темп сближения — это заставляло ИИ уходить от темы вместо прямого показа выбранной сцены.
-    Здесь только личность персонажа, безусловный ADULT_CONTENT_RULE и сама сцена."""
-    if scene_type == "random":
-        scene_type = random.choice([key for key in INTIM_SCENES if key != "random"])
+    Здесь только личность персонажа, безусловный ADULT_CONTENT_RULE и сама сцена. scene_type
+    здесь уже конкретный (random разрешается в generate_intim_scene ДО вызова) — иначе
+    "продолжение" сцены каждый раз перевыбирало бы случайный тип заново."""
     scene = INTIM_SCENES[scene_type]
     place = INTIM_LOCATIONS[location]
     dominant_rule = INTIM_DOMINANTS.get(dominant, INTIM_DOMINANTS["any"])["prompt"]
@@ -3463,13 +3559,28 @@ def build_intim_prompt(user, scene_type, location, dominant="any"):
     user_gender = user.get("user_gender", "male")
     if user_gender == "male":
         gender_context = "Ты обращаешься к нему в мужском роде (ты, он, ему, его)."
+        anatomy_rule = ("У собеседника есть половой член. Если в сцене есть оральный секс, направленный "
+                         "НА собеседника — это минет (оральная стимуляция члена), никогда не куни: у "
+                         "собеседника нет вульвы.\n")
     else:
         gender_context = "Ты обращаешься к ней в женском роде (ты, она, ей, её)."
+        anatomy_rule = ("У собеседницы нет полового члена — есть вульва. Если в сцене есть оральный секс, "
+                         "направленный НА собеседницу — это куни (оральная стимуляция клитора/влагалища), "
+                         "никогда не минет: собеседнице физически нечего сосать.\n")
+
+    if not user.get("custom_character"):
+        if user["gender"] == "male":
+            anatomy_rule += ("У тебя есть половой член. Если собеседник доставляет оральные ласки ТЕБЕ — это "
+                              "минет, никогда не куни: у тебя нет вульвы.\n")
+        else:
+            anatomy_rule += ("У тебя нет полового члена — есть вульва. Если собеседник доставляет оральные "
+                              "ласки ТЕБЕ — это куни, никогда не минет: тебе физически нечего сосать.\n")
 
     prompt = (
         f"{name_ban}"
         f"{identity}"
         f"{gender_context}\n"
+        f"{anatomy_rule}"
         f"{ADULT_CONTENT_RULE}"
         "Твои обычные черты характера (сдержанность, стеснительность, неторопливость и т.п.) проявляются "
         "только в интонациях, словах и жестах — но не в отказе от сцены и не в уходе от темы. Собеседник "
@@ -3499,24 +3610,46 @@ def build_intim_prompt(user, scene_type, location, dominant="any"):
     return prompt
 
 
-async def generate_intim_scene(call, user, scene_type, location="any", dominant="any", free=False):
+async def generate_intim_scene(call, user, scene_type, location="any", dominant="any", free=False, continue_text=None):
     """Возвращает True, если сцена сгенерирована и отправлена. Намеренно не читает и не
     пишет в user["history"]: сцена — самостоятельный эпизод без всякой связи с обычным чатом
-    (ни в контексте генерации, ни в том, что персонаж "помнит" потом)."""
+    (ни в контексте генерации, ни в том, что персонаж "помнит" потом). continue_text — если
+    задан, это текст предыдущей части ЭТОЙ ЖЕ сцены (см. intim_continue_cb): модель продолжает
+    её, а не начинает заново."""
+    if scene_type == "random":
+        scene_type = random.choice([key for key in INTIM_SCENES if key != "random"])
     chat_id = call.message.chat.id
     status_msg = await bot.send_message(chat_id, get_text(user, "intim_generating"))
     typing_task = asyncio.create_task(_keep_typing(chat_id))
+    system_prompt = build_intim_prompt(user, scene_type, location, dominant)
+    if continue_text:
+        system_prompt += (
+            "\n**ПРОДОЛЖЕНИЕ:** Это продолжение уже идущей сцены — предыдущая часть дана следующим "
+            "сообщением. Не начинай сцену заново и не повторяй, что уже произошло: продолжай действие "
+            "дальше, развивая его, с того момента, на котором оно остановилось."
+        )
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "assistant", "content": continue_text},
+            {"role": "user", "content": "Продолжай."},
+        ]
+    else:
+        messages = [
+            {"role": "system", "content": system_prompt},
+            # Некоторые провайдеры отклоняют запрос с 400 INVALID_REQUEST, если в messages
+            # вообще нет non-system реплики — этот триггер ничего не значит по содержанию
+            # (вся суть сцены задана в system), он просто заставляет модель начать отвечать.
+            {"role": "user", "content": "Начинай сцену."},
+        ]
     try:
         response = await asyncio.to_thread(
             call_ai, INTIM_MODEL, "intim",
-            messages=[
-                {"role": "system", "content": build_intim_prompt(user, scene_type, location, dominant)},
-                # Некоторые провайдеры отклоняют запрос с 400 INVALID_REQUEST, если в messages
-                # вообще нет non-system реплики — этот триггер ничего не значит по содержанию
-                # (вся суть сцены задана в system), он просто заставляет модель начать отвечать.
-                {"role": "user", "content": "Начинай сцену."},
-            ],
-            temperature=0.95,
+            messages=messages,
+            # temperature была 0.95 — чуть снижена, чтобы уменьшить (не гарантированно убрать)
+            # случайные "склеенные" токены на смеси языков вроде "requestующий" в выдаче модели;
+            # причина не в промпте (в нём нет ни слова на английском рядом со сценой), это
+            # похоже на артефакт сэмплирования самой модели.
+            temperature=0.85,
             max_tokens=1200,
         )
         answer = response.choices[0].message.content
@@ -3529,14 +3662,43 @@ async def generate_intim_scene(call, user, scene_type, location="any", dominant=
 
     _, clean_answer = extract_reaction_from_answer(answer)
     user["last_activity"] = datetime.now().isoformat()
+    user["last_hot_scene"] = {"text": clean_answer, "scene_type": scene_type, "location": location, "dominant": dominant}
     # Интим-сцены нарочно не тратят энергию/сытость: иначе платная сцена могла бы сама "усыпить"
     # персонажа и заблокировать пользователю следующее обычное сообщение — а это ровно то ожидание,
     # которого этот раздел должен избегать.
     save_data(user_data)
 
     await send_long_to_chat(chat_id, clean_answer, reply_markup=get_full_kb(user))
-    await bot.send_message(chat_id, get_text(user, "intim_left", n=intim_scenes_available(user)))
+
+    remaining = intim_scenes_available(user)
+    left_text = get_text(user, "intim_left", n=remaining)
+    continue_kb = None
+    if remaining > 0:
+        left_text += "\n" + get_text(user, "intim_left_cta")
+        continue_kb = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=get_text(user, "intim_continue_btn"), callback_data="intim_continue", style="success")]
+        ])
+    await bot.send_message(chat_id, left_text, reply_markup=continue_kb)
     return True
+
+
+@dp.callback_query(lambda c: c.data == "intim_continue")
+async def intim_continue_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    last = user.get("last_hot_scene")
+    if not last:
+        await call.answer()
+        return
+    kind = consume_intim_scene(user)
+    if kind is None:
+        await call.answer(get_text(user, "intim_none"), show_alert=True)
+        return
+    await call.answer()
+    ok = await generate_intim_scene(call, user, last["scene_type"], location=last["location"],
+                                     dominant=last["dominant"], free=kind != "paid",
+                                     continue_text=last["text"])
+    if not ok:
+        refund_intim_scene(user, kind)
 
 
 # ============================================================
@@ -3763,18 +3925,7 @@ async def handle_message(message: types.Message):
         await message.answer(get_text(user, "subscription_expired_style"), reply_markup=keyboard)
         return
 
-    # 7. Проверка баланса сообщений
-    available = get_available_messages(user)
-    if available <= 0:
-        action_buttons = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")]
-        ])
-        await message.answer(get_text(user, "no_messages"), reply_markup=action_buttons)
-        return
-
-    use_message(user)
-
-    # 8. Негатив / XP / настроение
+    # 7. Негатив / XP / настроение
     negative = contains_negative(message.text)
     sub_level = get_subscription_level(user)
     multiplier = XP_MULTIPLIER.get(sub_level, 1.0)
@@ -3783,21 +3934,21 @@ async def handle_message(message: types.Message):
         user["negative_count"] = user.get("negative_count", 0) + 1
         if user["negative_count"] >= 5:
             user["xp"] = max(0, user.get("xp", 0) - 50)
-            user["mood"] = max(-10, user.get("mood", 0) - 3)
+            user["mood"] = max(-MOOD_MAX, user.get("mood", 0) - 30)
             user["negative_count"] = 0
             save_data(user_data)
             await message.answer(get_text(user, "quarrel"), reply_markup=get_full_kb(user))
             user["history"].append({"role": "assistant", "content": "💢 Ссора!"})
             save_data(user_data)
             return
-        xp_change, mood_change = -10, -1
+        xp_change, mood_change = -10, -10
     else:
         xp_change = int(3 * multiplier + 0.5)
-        mood_change = 0.5
+        mood_change = 5
         user["negative_count"] = max(0, user.get("negative_count", 0) - 1)
 
     user["xp"] = max(0, user.get("xp", 0) + xp_change)
-    user["mood"] = min(10, max(-10, user.get("mood", 0) + mood_change))
+    user["mood"] = min(MOOD_MAX, max(-MOOD_MAX, user.get("mood", 0) + mood_change))
 
     # 9. Проверка уровня близости
     new_level = get_intimacy_level(user)
