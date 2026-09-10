@@ -50,8 +50,8 @@ TEXTS = {
         "channel": "📢 Перейти в канал",
         "free": "🎁 Бесплатно ({left}/{total})",
         "tomorrow": "⏳ Завтра",
-        "spin_paid": "💎 Крутить за 20⭐",
-        "spin_more": "💎 Крутить ещё за 20⭐",
+        "spin_paid": "💎 Крутить за 15⭐",
+        "spin_more": "💎 Крутить ещё за 15⭐",
         "welcome": "👋 Добро пожаловать!",
         "age_confirm": "🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
         "age_ok": "✅ Возраст подтверждён.",
@@ -147,7 +147,7 @@ TEXTS = {
         "world_name_anime": "аниме-мира",
         "spin_already": "⏳ Ты уже крутил сегодня! Завтра будет новое бесплатное вращение.",
         "spin_tomorrow_alert": "⏳ Бесплатное вращение будет доступно завтра!",
-        "spin_invoice_desc": "Платное вращение — 20⭐. Удачи!",
+        "spin_invoice_desc": "Платное вращение — 15⭐. Удачи!",
         "spin_invoice_label": "Прокрутка",
         "spin_rolling": "🎰 Крутим...",
         "spin_almost": "🎰 Почти выпало: {name}",
@@ -156,7 +156,6 @@ TEXTS = {
         "spin_win_xp": "⭐ **+{value} XP**",
         "spin_win_pro": "🎁 **PRO подписка на 5 дней!**\n🔥 Стили Страстный и Магнетический, энергия и сытость тратятся медленнее!",
         "spin_win_super": "✨ **SUPER PRO на 3 дня!**\n👑 Все стили, включая 18+, свой уникальный персонаж!",
-        "spin_win_elite": "💎 **ELITE на 2 дня!**\n👑 Всё из SUPER PRO — по максимуму!",
         "spin_result_header": "🎰 **Результат!**\n\nТы выиграл: {result}\n{mode}",
         "spin_mode_free": "🎁 Бесплатное вращение",
         "spin_mode_paid": "💎 Платное вращение",
@@ -252,7 +251,7 @@ TEXTS = {
         "asleep_message": "😴 Персонаж крепко спит и сейчас не может ответить. Проснётся сам примерно через {minutes} мин. — или разбуди прямо сейчас энергетиком ⚡.",
         "wake_energizer_btn": "⚡ Разбудить энергетиком",
         "woken_up": "⚡ Энергетик выпит — персонаж снова бодр и на связи!",
-        "stats_line": "⚡ Энергия: {energy}/100   🍗 Сытость: {satiety}/100\n⚡ Энергетиков: {energizers}   💵 Баксов: {bucks}",
+        "stats_line": "⚡ Энергия: {energy}/150   🍗 Сытость: {satiety}/100\n⚡ Энергетиков: {energizers}   💵 Баксов: {bucks}",
         "wake_now_btn": "💳 Разбудить сейчас за {price}⭐",
         "invoice_wake_title": "Разбудить персонажа",
         "invoice_wake_desc": "Мгновенно поднимает энергию персонажа до максимума.",
@@ -294,8 +293,8 @@ TEXTS = {
         "channel": "📢 Go to channel",
         "free": "🎁 Free ({left}/{total})",
         "tomorrow": "⏳ Tomorrow",
-        "spin_paid": "💎 Spin for 20⭐",
-        "spin_more": "💎 Spin again for 20⭐",
+        "spin_paid": "💎 Spin for 15⭐",
+        "spin_more": "💎 Spin again for 15⭐",
         "welcome": "👋 Welcome!",
         "age_confirm": "🔞 **WARNING!**\nThis bot is for 18+ only.\nConfirm your age:",
         "age_ok": "✅ Age confirmed.",
@@ -391,7 +390,7 @@ TEXTS = {
         "world_name_anime": "the anime world",
         "spin_already": "⏳ You already spun today! A new free spin will be available tomorrow.",
         "spin_tomorrow_alert": "⏳ The free spin will be available tomorrow!",
-        "spin_invoice_desc": "Paid spin — 20⭐. Good luck!",
+        "spin_invoice_desc": "Paid spin — 15⭐. Good luck!",
         "spin_invoice_label": "Spin",
         "spin_rolling": "🎰 Spinning...",
         "spin_almost": "🎰 Almost got: {name}",
@@ -400,7 +399,6 @@ TEXTS = {
         "spin_win_xp": "⭐ **+{value} XP**",
         "spin_win_pro": "🎁 **PRO subscription for 5 days!**\n🔥 Passionate and Magnetic styles, energy and satiety drain slower!",
         "spin_win_super": "✨ **SUPER PRO for 3 days!**\n👑 All styles including 18+, your own unique character!",
-        "spin_win_elite": "💎 **ELITE for 2 days!**\n👑 Everything from SUPER PRO — maxed out!",
         "spin_result_header": "🎰 **Result!**\n\nYou won: {result}\n{mode}",
         "spin_mode_free": "🎁 Free spin",
         "spin_mode_paid": "💎 Paid spin",
@@ -496,7 +494,7 @@ TEXTS = {
         "asleep_message": "😴 Your companion is fast asleep and can't reply right now. They'll wake up on their own in about {minutes} min. — or wake them up right away with an energizer ⚡.",
         "wake_energizer_btn": "⚡ Wake up with an energizer",
         "woken_up": "⚡ Energizer used — your companion is wide awake again!",
-        "stats_line": "⚡ Energy: {energy}/100   🍗 Satiety: {satiety}/100\n⚡ Energizers: {energizers}   💵 Bucks: {bucks}",
+        "stats_line": "⚡ Energy: {energy}/150   🍗 Satiety: {satiety}/100\n⚡ Energizers: {energizers}   💵 Bucks: {bucks}",
         "wake_now_btn": "💳 Wake up now for {price}⭐",
         "invoice_wake_title": "Wake up your companion",
         "invoice_wake_desc": "Instantly refills your companion's energy to full.",
@@ -538,8 +536,8 @@ TEXTS = {
         "channel": "📢 Zum Kanal",
         "free": "🎁 Gratis ({left}/{total})",
         "tomorrow": "⏳ Morgen",
-        "spin_paid": "💎 Für 20⭐ drehen",
-        "spin_more": "💎 Nochmal für 20⭐ drehen",
+        "spin_paid": "💎 Für 15⭐ drehen",
+        "spin_more": "💎 Nochmal für 15⭐ drehen",
         "welcome": "👋 Willkommen!",
         "age_confirm": "🔞 **ACHTUNG!**\nDieser Bot ist nur für Personen ab 18 Jahren.\nBestätige dein Alter:",
         "age_ok": "✅ Alter bestätigt.",
@@ -635,7 +633,7 @@ TEXTS = {
         "world_name_anime": "der Anime-Welt",
         "spin_already": "⏳ Du hast heute schon gedreht! Morgen gibt es eine neue Gratisdrehung.",
         "spin_tomorrow_alert": "⏳ Die Gratisdrehung gibt es morgen wieder!",
-        "spin_invoice_desc": "Bezahlte Drehung — 20⭐. Viel Glück!",
+        "spin_invoice_desc": "Bezahlte Drehung — 15⭐. Viel Glück!",
         "spin_invoice_label": "Drehung",
         "spin_rolling": "🎰 Es dreht sich...",
         "spin_almost": "🎰 Fast gewonnen: {name}",
@@ -644,7 +642,6 @@ TEXTS = {
         "spin_win_xp": "⭐ **+{value} XP**",
         "spin_win_pro": "🎁 **PRO-Abo für 5 Tage!**\n🔥 Stile Leidenschaftlich und Magnetisch, Energie und Sättigung sinken langsamer!",
         "spin_win_super": "✨ **SUPER PRO für 3 Tage!**\n👑 Alle Stile inklusive 18+, dein eigener einzigartiger Charakter!",
-        "spin_win_elite": "💎 **ELITE für 2 Tage!**\n👑 Alles aus SUPER PRO — maximal ausgereizt!",
         "spin_result_header": "🎰 **Ergebnis!**\n\nDu hast gewonnen: {result}\n{mode}",
         "spin_mode_free": "🎁 Gratisdrehung",
         "spin_mode_paid": "💎 Bezahlte Drehung",
@@ -740,7 +737,7 @@ TEXTS = {
         "asleep_message": "😴 Dein Begleiter schläft tief und fest und kann gerade nicht antworten. Er/sie wacht von selbst in etwa {minutes} Min. auf — oder wecke ihn sofort mit einem Energydrink ⚡.",
         "wake_energizer_btn": "⚡ Mit Energydrink wecken",
         "woken_up": "⚡ Energydrink getrunken — dein Begleiter ist wieder hellwach!",
-        "stats_line": "⚡ Energie: {energy}/100   🍗 Sättigung: {satiety}/100\n⚡ Energydrinks: {energizers}   💵 Bucks: {bucks}",
+        "stats_line": "⚡ Energie: {energy}/150   🍗 Sättigung: {satiety}/100\n⚡ Energydrinks: {energizers}   💵 Bucks: {bucks}",
         "wake_now_btn": "💳 Jetzt wecken für {price}⭐",
         "invoice_wake_title": "Begleiter wecken",
         "invoice_wake_desc": "Füllt die Energie deines Begleiters sofort komplett auf.",
@@ -827,13 +824,26 @@ def _pick_claude_sonnet(model_ids):
     return sorted(candidates)[-1]
 
 
+def _pick_deepseek_v4_pro(model_ids):
+    """Точный ID модели в каталоге provod.ai заранее не известен (там дружелюбное название
+    "DeepSeek V4 Pro", а не обязательно такой же API-слаг) — ищем по паттерну прямо в живом
+    каталоге вместо того, чтобы угадывать строку в коде: угаданная неверная строка молча
+    свалилась бы на FALLBACK_MODEL через retry-по-404 в call_ai."""
+    candidates = [m for m in model_ids if "deepseek" in m.lower() and "v4" in m.lower() and "pro" in m.lower()]
+    if candidates:
+        return sorted(candidates)[-1]
+    candidates = [m for m in model_ids if "deepseek" in m.lower() and re.search(r"v4|(?<!\d)4[.\-]", m.lower())]
+    return sorted(candidates)[-1] if candidates else None
+
+
 def resolve_model(cache_key):
     """Модель для cache_key ("ai"/"intim"), если она не задана явно через переменную
-    окружения: ищем Claude Sonnet в живом каталоге provod.ai (тем же ключом, что уже
-    настроен) и запоминаем результат на время работы процесса."""
+    окружения: сперва ищем DeepSeek V4 Pro в живом каталоге provod.ai, если не нашли —
+    Claude Sonnet, и запоминаем результат на время работы процесса."""
     if cache_key in _model_cache:
         return _model_cache[cache_key]
-    found = _pick_claude_sonnet(_fetch_model_catalog())
+    catalog = _fetch_model_catalog()
+    found = _pick_deepseek_v4_pro(catalog) or _pick_claude_sonnet(catalog)
     resolved = found or FALLBACK_MODEL
     _model_cache[cache_key] = resolved
     logging.info(f"Автоопределение модели ({cache_key}): {resolved}")
@@ -1002,7 +1012,7 @@ def get_user(user_id):
             "free_intim_scenes_elite": 0,
             "intim_scene_unlocked": False,
             "intim_scene_used": False,
-            "energy": 100,
+            "energy": 150,
             "satiety": 100,
             "energizers": 0,
             "bucks": 0,
@@ -1011,6 +1021,7 @@ def get_user(user_id):
             "writing_custom_gift": False,
             "last_hot_scene": None,
             "last_stat_tick": None,
+            "last_mood_tick": None,
             "sleep_until": None,
             "notifications_muted": False,
             "last_feed_nudge": None,
@@ -1051,7 +1062,7 @@ def get_user(user_id):
             "free_intim_scenes_elite": 0,
             "intim_scene_unlocked": False,
             "intim_scene_used": False,
-            "energy": 100,
+            "energy": 150,
             "satiety": 100,
             "energizers": 0,
             "bucks": 0,
@@ -1060,6 +1071,7 @@ def get_user(user_id):
             "writing_custom_gift": False,
             "last_hot_scene": None,
             "last_stat_tick": None,
+            "last_mood_tick": None,
             "sleep_until": None,
             "notifications_muted": False,
             "last_feed_nudge": None,
@@ -1084,6 +1096,7 @@ def get_user(user_id):
             user["style"] = "warm"
 
         apply_passive_stat_regen(user)
+        apply_mood_inactivity_decay(user)
         save_data(user_data)
     return user_data[user_id]
 
@@ -1616,13 +1629,17 @@ def get_time_of_day(user):
 # ============================================================
 #  ЭНЕРГИЯ / СЫТОСТЬ СОБЕСЕДНИКА (тамагочи-механика)
 # ============================================================
-MAX_STAT = 100
+# Энергия и сытость теперь на РАЗНЫХ шкалах: энергии всего 150 (было 100 — общий MAX_STAT),
+# у сытости по-прежнему 100. SATIETY_MAX — старое имя MAX_STAT, оставлено под сытость, чтобы
+# не переименовывать вдвое больше мест без необходимости.
+ENERGY_MAX = 150
+SATIETY_MAX = 100
 ENERGY_REGEN_MINUTES_FULL = 40    # без активности энергия сама полностью восстанавливается примерно за 40 минут
 SATIETY_REGEN_MINUTES_FULL = 180  # сытость сама восстанавливается намного медленнее — еда остаётся ценной
-ENERGY_COST_MESSAGE = 6  # на бесплатном тарифе (без множителя подписки) хватает примерно на 16 сообщений
+ENERGY_COST_MESSAGE = 12  # бак вырос в 1.5 раза (100->150), но стоимость сообщения выросла вдвое —
+                          # сообщений на полный бак стало МЕНЬШЕ, чем раньше (было ~16.7, теперь ~12.5)
 SATIETY_COST_MESSAGE = 3
-ENERGIZER_RESTORE_AMOUNT = 50  # энергетик восполняет половину бака, а не сразу всё — поэтому их
-                                # можно (и нужно) выдавать щедрее, не делая чат безлимитным одним предметом
+ENERGIZER_RESTORE_AMOUNT = 98  # 65% от нового бака в 150 (150*0.65=97.5, округлено)
 SLEEP_NAP_MINUTES = 20  # фиксированная длительность "сна": пассивная регенерация энергии идёт
                           # непрерывно и сама по себе не должна досрочно снимать блокировку чата —
                           # иначе при регене ~2.5/мин чат разблокировался бы уже через минуту
@@ -1646,9 +1663,31 @@ def apply_passive_stat_regen(user):
         except (ValueError, TypeError):
             elapsed_min = 0
         if elapsed_min > 0:
-            user["energy"] = min(MAX_STAT, user.get("energy", MAX_STAT) + elapsed_min * (MAX_STAT / ENERGY_REGEN_MINUTES_FULL))
-            user["satiety"] = min(MAX_STAT, user.get("satiety", MAX_STAT) + elapsed_min * (MAX_STAT / SATIETY_REGEN_MINUTES_FULL))
+            user["energy"] = min(ENERGY_MAX, user.get("energy", ENERGY_MAX) + elapsed_min * (ENERGY_MAX / ENERGY_REGEN_MINUTES_FULL))
+            user["satiety"] = min(SATIETY_MAX, user.get("satiety", SATIETY_MAX) + elapsed_min * (SATIETY_MAX / SATIETY_REGEN_MINUTES_FULL))
     user["last_stat_tick"] = now.isoformat()
+
+
+MOOD_INACTIVITY_DECAY_PER_DAY = 5  # настроение теперь поднимают только подарки (см.
+                                    # apply_shop_item_effects) — само по себе оно может только
+                                    # падать: от долгого молчания (тут) и от негатива/оскорблений
+                                    # в переписке (см. handle_message, mood_change)
+
+
+def apply_mood_inactivity_decay(user):
+    """Тикает от last_mood_tick так же, как энергия/сытость — от last_stat_tick, иначе один и
+    тот же промежуток молчания списывался бы заново при каждом обращении к get_user()."""
+    now = datetime.now()
+    last = user.get("last_mood_tick")
+    if last:
+        try:
+            elapsed_days = max(0.0, (now - datetime.fromisoformat(last)).total_seconds() / 86400)
+        except (ValueError, TypeError):
+            elapsed_days = 0
+        if elapsed_days > 0:
+            decay = elapsed_days * MOOD_INACTIVITY_DECAY_PER_DAY
+            user["mood"] = max(-MOOD_MAX, user.get("mood", 0) - decay)
+    user["last_mood_tick"] = now.isoformat()
 
 
 def get_level_decay_multiplier(user):
@@ -1660,9 +1699,9 @@ def get_level_decay_multiplier(user):
 
 def apply_activity_stat_cost(user, energy_cost, satiety_cost):
     mult = STAT_DECAY_MULTIPLIER.get(get_subscription_level(user), 1.0) * get_level_decay_multiplier(user)
-    prev_energy = user.get("energy", MAX_STAT)
+    prev_energy = user.get("energy", ENERGY_MAX)
     user["energy"] = max(0, prev_energy - energy_cost * mult)
-    user["satiety"] = max(0, user.get("satiety", MAX_STAT) - satiety_cost * mult)
+    user["satiety"] = max(0, user.get("satiety", SATIETY_MAX) - satiety_cost * mult)
     if prev_energy > 0 and user["energy"] <= 0:
         # Энергия только что впервые дошла до 0 — фиксируем время пробуждения. Дальше
         # is_asleep() смотрит именно на sleep_until, а не на текущую энергию: иначе
@@ -1699,21 +1738,21 @@ def use_energizer(user):
     if user.get("energizers", 0) <= 0:
         return False
     user["energizers"] -= 1
-    user["energy"] = min(MAX_STAT, user.get("energy", MAX_STAT) + ENERGIZER_RESTORE_AMOUNT)
+    user["energy"] = min(ENERGY_MAX, user.get("energy", ENERGY_MAX) + ENERGIZER_RESTORE_AMOUNT)
     user["sleep_until"] = None
     save_data(user_data)
     return True
 
 
 def build_energy_rule(user):
-    if user.get("energy", MAX_STAT) <= 30:
+    if user.get("energy", ENERGY_MAX) <= 45:  # тот же порог, что и у ENERGY_NUDGE_THRESHOLD (30% бака)
         return ("У тебя мало энергии, тебя клонит в сон — отвечай короче обычного, сонно и чуть "
                 "медленнее, можешь между делом зевнуть в описании действия.\n")
     return ""
 
 
 def build_hunger_rule(user):
-    satiety = user.get("satiety", MAX_STAT)
+    satiety = user.get("satiety", SATIETY_MAX)
     if satiety <= 0:
         return ("Тебя одолевает настоящий голод, и это тебя злит — отвечай холодно, коротко и раздражённо, "
                 "будто тебе сейчас совсем не до разговоров; можешь демонстративно огрызнуться или почти "
@@ -1729,8 +1768,8 @@ def build_hunger_rule(user):
 def stats_line_text(user):
     return get_text(
         user, "stats_line",
-        energy=int(round(user.get("energy", MAX_STAT))),
-        satiety=int(round(user.get("satiety", MAX_STAT))),
+        energy=int(round(user.get("energy", ENERGY_MAX))),
+        satiety=int(round(user.get("satiety", SATIETY_MAX))),
         energizers=user.get("energizers", 0),
         bucks=user.get("bucks", 0),
     )
@@ -1793,7 +1832,8 @@ def build_prompt(user):
             f"Ты — {user['custom_character']}. "
             f"Ты НИКОГДА не называешь себя по имени, не представляешься, не говоришь «меня зовут». "
             f"Ты НИКОГДА не спрашиваешь имя собеседника. Обращайся к собеседнику ТОЛЬКО на «ты». "
-            f"Ты всегда отвечаешь как настоящий человек, с эмоциями, сомнениями и чувствами.\n"
+            f"Ты всегда отвечаешь как настоящий человек, с эмоциями, сомнениями и чувствами. "
+            f"Время от времени уместно вставляй эмодзи прямо в реплику (в меру, не в каждое предложение).\n"
             f"{no_explicit_rule}"
             # своему персонажу тоже нужно указание языка, иначе модель отвечает наугад
             f"\n{get_language_rule(user)}"
@@ -1824,6 +1864,8 @@ def build_prompt(user):
         "мысли. Реагируй на то, ЧТО именно написал собеседник, а не общими фразами, которые подошли бы к любому "
         "сообщению. Разная длина и ритм реплик — короткая фраза иногда живее длинного абзаца. Можешь сама "
         "сменить тему, что-то спросить в ответ, отреагировать неожиданно — не будь предсказуемой.\n"
+        "**ЭМОДЗИ:** Время от времени уместно вставляй эмодзи прямо в реплику (1–2 на сообщение, не в "
+        "каждое предложение) — переписка от этого живее, но не перебарщивай.\n"
         f"{no_explicit_rule}"
     )
     intimacy_rule = build_intimacy_rule(user)
@@ -2582,7 +2624,6 @@ SPIN_PRIZES = [
     {"name": "🎉 150💵 баксов (ДЖЕКПОТ!)", "name_en": "🎉 150💵 bucks (JACKPOT!)", "name_de": "🎉 150💵 Bucks (JACKPOT!)", "value": 150, "type": "bucks", "weight": 0.3},
     {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "name_de": "🎁 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.4},
     {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.15},
-    {"name": "💎 ELITE на 2 дня", "name_en": "💎 ELITE for 2 days", "name_de": "💎 ELITE für 2 Tage", "value": 2, "type": "subscription_elite", "weight": 0.05},
 ]
 
 
@@ -2634,13 +2675,6 @@ async def spin_result(chat_id, user, free=False):
         user["last_daily_reset"] = None
         _reset_daily_quota_if_needed(user)
         result_text = get_text(user, "spin_win_super")
-    elif chosen["type"] == "subscription_elite":
-        user["subscription"]["active"] = True
-        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=2)).isoformat()
-        user["subscription"]["level"] = "elite"
-        user["last_daily_reset"] = None
-        _reset_daily_quota_if_needed(user)
-        result_text = get_text(user, "spin_win_elite")
     else:
         result_text = get_text(user, "spin_nothing")
 
@@ -2788,11 +2822,11 @@ def format_item_effects(item, user):
 
 def apply_shop_item_effects(user, item):
     if item.get("full_restore"):
-        user["satiety"] = MAX_STAT
+        user["satiety"] = SATIETY_MAX
         user["mood"] = MOOD_MAX
     else:
         if "satiety" in item:
-            user["satiety"] = min(MAX_STAT, user.get("satiety", MAX_STAT) + item["satiety"])
+            user["satiety"] = min(SATIETY_MAX, user.get("satiety", SATIETY_MAX) + item["satiety"])
         if "mood" in item:
             user["mood"] = min(MOOD_MAX, max(-MOOD_MAX, user.get("mood", 0) + item["mood"]))
 
@@ -2868,7 +2902,7 @@ def get_feed_nudge_kb(user):
 async def maybe_send_feed_nudge(chat_id, user):
     """Многие не понимают, как вообще работает голод и чем кормить — вместо того чтобы
     заставлять искать магазин самому, подсказываем прямо в чате, когда сытость правда низкая."""
-    if user.get("satiety", MAX_STAT) > FEED_NUDGE_SATIETY_THRESHOLD:
+    if user.get("satiety", SATIETY_MAX) > FEED_NUDGE_SATIETY_THRESHOLD:
         return
     last = user.get("last_feed_nudge")
     if last:
@@ -2883,14 +2917,14 @@ async def maybe_send_feed_nudge(chat_id, user):
     await bot.send_message(chat_id, get_text(user, "hungry_nudge"), reply_markup=get_feed_nudge_kb(user))
 
 
-ENERGY_NUDGE_THRESHOLD = 30  # тот же порог, что и у сонной интонации в build_energy_rule
+ENERGY_NUDGE_THRESHOLD = 45  # тот же порог (30% бака), что и у сонной интонации в build_energy_rule
 ENERGY_NUDGE_COOLDOWN_MINUTES = 90
 
 
 async def maybe_send_energy_nudge(chat_id, user):
     """Симметрично с maybe_send_feed_nudge, но для энергии: предлагаем взбодриться, пока
     персонаж ещё не "уснул" по-настоящему (energy > 0) — на нуле уже работает asleep_message."""
-    if is_asleep(user) or user.get("energy", MAX_STAT) > ENERGY_NUDGE_THRESHOLD:
+    if is_asleep(user) or user.get("energy", ENERGY_MAX) > ENERGY_NUDGE_THRESHOLD:
         return
     last = user.get("last_energy_nudge")
     if last:
@@ -3013,9 +3047,9 @@ PRODUCTS = {
     "bundle_small": {"stars": 30, "usd": 0.7},
     "bundle_medium": {"stars": 80, "usd": 1.7},
     "bundle_large": {"stars": 200, "usd": 3.9},
-    "spin_paid_20": {"stars": 20, "usd": 0.5},
+    "spin_paid_20": {"stars": 15, "usd": 0.4},
     "intim_scene": {"stars": 45, "usd": 1.0},
-    "wake_now": {"stars": 20, "usd": 0.45},
+    "wake_now": {"stars": 50, "usd": 1.2},
 }
 # Цена в рублях (для Lava) равна цене в звёздах один в один — так попросили,
 # отдельного расчёта по курсу нет.
@@ -3217,7 +3251,7 @@ async def grant_product(user, payload, chat_id):
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "payment_intim_success"))
     elif payload == "wake_now":
-        user["energy"] = MAX_STAT
+        user["energy"] = ENERGY_MAX
         user["sleep_until"] = None
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "woken_up"))
@@ -4115,7 +4149,8 @@ async def handle_message(message: types.Message):
         xp_change, mood_change = -10, -10
     else:
         xp_change = int(3 * multiplier + 0.5)
-        mood_change = 5
+        mood_change = 0  # настроение больше не растёт от самой переписки — только от подарков
+                          # (см. apply_shop_item_effects); тут оно может только падать
         user["negative_count"] = max(0, user.get("negative_count", 0) - 1)
 
     user["xp"] = max(0, user.get("xp", 0) + xp_change)
