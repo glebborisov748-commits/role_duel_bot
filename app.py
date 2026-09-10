@@ -824,11 +824,17 @@ def _pick_claude_sonnet(model_ids):
     return sorted(candidates)[-1]
 
 
+def _pick_deepseek_flash(model_ids):
+    """DeepSeek Flash — быстрее и без "невидимых" reasoning-токенов V4 Pro, которые были
+    вероятной причиной таймаутов. Точный ID в каталоге provod.ai заранее не известен —
+    ищем по паттерну в живом каталоге, а не угадываем строку в коде."""
+    candidates = [m for m in model_ids if "deepseek" in m.lower() and "flash" in m.lower()]
+    return sorted(candidates)[-1] if candidates else None
+
+
 def _pick_deepseek_v4_pro(model_ids):
-    """Точный ID модели в каталоге provod.ai заранее не известен (там дружелюбное название
-    "DeepSeek V4 Pro", а не обязательно такой же API-слаг) — ищем по паттерну прямо в живом
-    каталоге вместо того, чтобы угадывать строку в коде: угаданная неверная строка молча
-    свалилась бы на FALLBACK_MODEL через retry-по-404 в call_ai."""
+    """Резерв, если Flash не нашёлся в каталоге — сама reasoning-модель, из-за которой,
+    собственно, и была просьба попробовать Flash."""
     candidates = [m for m in model_ids if "deepseek" in m.lower() and "v4" in m.lower() and "pro" in m.lower()]
     if candidates:
         return sorted(candidates)[-1]
@@ -838,12 +844,12 @@ def _pick_deepseek_v4_pro(model_ids):
 
 def resolve_model(cache_key):
     """Модель для cache_key ("ai"/"intim"), если она не задана явно через переменную
-    окружения: сперва ищем DeepSeek V4 Pro в живом каталоге provod.ai, если не нашли —
-    Claude Sonnet, и запоминаем результат на время работы процесса."""
+    окружения: сперва ищем DeepSeek Flash в живом каталоге provod.ai, потом DeepSeek V4 Pro,
+    потом Claude Sonnet, и запоминаем результат на время работы процесса."""
     if cache_key in _model_cache:
         return _model_cache[cache_key]
     catalog = _fetch_model_catalog()
-    found = _pick_deepseek_v4_pro(catalog) or _pick_claude_sonnet(catalog)
+    found = _pick_deepseek_flash(catalog) or _pick_deepseek_v4_pro(catalog) or _pick_claude_sonnet(catalog)
     resolved = found or FALLBACK_MODEL
     _model_cache[cache_key] = resolved
     logging.info(f"Автоопределение модели ({cache_key}): {resolved}")
