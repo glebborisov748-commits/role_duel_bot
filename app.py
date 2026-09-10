@@ -17,7 +17,7 @@ from aiogram.types import (
 )
 import httpx
 from dotenv import load_dotenv
-from openai import OpenAI
+from openai import OpenAI, APITimeoutError
 
 # ============================================================
 #  МНОГОЯЗЫЧНЫЙ СЛОВАРЬ (только RU + EN, см. пункт 7 задачи)
@@ -71,9 +71,9 @@ TEXTS = {
         "choose_scene": "🎬 Теперь выбери сцену для общения:\n\n📱 Переписка в телефоне — классический формат.\n👫 Реальная встреча — живое общение лицом к лицу.",        "no_history": "❌ Пока нечего редактировать — напиши персонажу хотя бы одно сообщение.",
         "edit_prompt": "✏️ Пришли новый текст своего последнего сообщения — я забуду старую реплику и отвечу заново.",
         "edit_success": "✅ Сообщение заменено. Генерирую новый ответ...",
-        "character_created": "✅ **Персонаж создан!**\n\nТеперь ты общаешься с:\n_{text}_\n\nЧтобы вернуться к обычному персонажу — /reset_character",
+        "character_created": "✅ Персонаж создан!\n\nТеперь ты общаешься с:\n«{text}»\n\nЧтобы вернуться к обычному персонажу — /reset_character",
         "character_reset": "✅ Персонаж сброшен.",
-        "help_title": "📖 **Команды бота**",
+        "help_title": "📖 Команды бота",
         "help_base": (
             "/start — регистрация / открыть главное меню\n"
             "/language — сменить язык\n"
@@ -82,7 +82,7 @@ TEXTS = {
             "/help — этот список команд"
         ),
         "help_subscriber_extra": (
-            "✨ *Доступно с SUPER PRO / ELITE:*\n"
+            "✨ Доступно с SUPER PRO / ELITE:\n"
             "/switch_personality — сменить мир и пол без потери истории\n"
             "/switch_style — сменить стиль без потери истории"
         ),
@@ -154,8 +154,9 @@ TEXTS = {
         "spin_win_bucks": "💵 **+{value} баксов**",
         "spin_win_energizers": "⚡ **+{value} энергетика**",
         "spin_win_xp": "⭐ **+{value} XP**",
-        "spin_win_pro": "🎁 **PRO подписка на 5 дней!**\n🔥 50 сообщений/день, стили Страстный и Магнетический!",
-        "spin_win_super": "✨ **SUPER PRO на 3 дня!**\n👑 100 сообщений/день, все стили, включая 18+!",
+        "spin_win_pro": "🎁 **PRO подписка на 5 дней!**\n🔥 Стили Страстный и Магнетический, энергия и сытость тратятся медленнее!",
+        "spin_win_super": "✨ **SUPER PRO на 3 дня!**\n👑 Все стили, включая 18+, свой уникальный персонаж!",
+        "spin_win_elite": "💎 **ELITE на 2 дня!**\n👑 Всё из SUPER PRO — по максимуму!",
         "spin_result_header": "🎰 **Результат!**\n\nТы выиграл: {result}\n{mode}",
         "spin_mode_free": "🎁 Бесплатное вращение",
         "spin_mode_paid": "💎 Платное вращение",
@@ -314,9 +315,9 @@ TEXTS = {
         "choose_scene": "🎬 Now choose a scene:\n\n📱 Phone chat — classic texting format.\n👫 Real meeting — face-to-face conversation.",        "no_history": "❌ Nothing to edit yet — send your character a message first.",
         "edit_prompt": "✏️ Send the new text for your last message — I'll forget the old one and reply again.",
         "edit_success": "✅ Message replaced. Generating a new response...",
-        "character_created": "✅ **Character created!**\n\nNow you're talking to:\n_{text}_\n\nTo go back to the default character — /reset_character",
+        "character_created": "✅ Character created!\n\nNow you're talking to:\n«{text}»\n\nTo go back to the default character — /reset_character",
         "character_reset": "✅ Character reset.",
-        "help_title": "📖 **Bot commands**",
+        "help_title": "📖 Bot commands",
         "help_base": (
             "/start — sign up / open the main menu\n"
             "/language — change language\n"
@@ -325,7 +326,7 @@ TEXTS = {
             "/help — this list of commands"
         ),
         "help_subscriber_extra": (
-            "✨ *Available with SUPER PRO / ELITE:*\n"
+            "✨ Available with SUPER PRO / ELITE:\n"
             "/switch_personality — change world and gender without losing history\n"
             "/switch_style — change style without losing history"
         ),
@@ -397,8 +398,9 @@ TEXTS = {
         "spin_win_bucks": "💵 **+{value} bucks**",
         "spin_win_energizers": "⚡ **+{value} energizers**",
         "spin_win_xp": "⭐ **+{value} XP**",
-        "spin_win_pro": "🎁 **PRO subscription for 5 days!**\n🔥 50 messages per day, Passionate and Magnetic styles!",
-        "spin_win_super": "✨ **SUPER PRO for 3 days!**\n👑 100 messages per day, all styles including 18+!",
+        "spin_win_pro": "🎁 **PRO subscription for 5 days!**\n🔥 Passionate and Magnetic styles, energy and satiety drain slower!",
+        "spin_win_super": "✨ **SUPER PRO for 3 days!**\n👑 All styles including 18+, your own unique character!",
+        "spin_win_elite": "💎 **ELITE for 2 days!**\n👑 Everything from SUPER PRO — maxed out!",
         "spin_result_header": "🎰 **Result!**\n\nYou won: {result}\n{mode}",
         "spin_mode_free": "🎁 Free spin",
         "spin_mode_paid": "💎 Paid spin",
@@ -557,9 +559,9 @@ TEXTS = {
         "choose_scene": "🎬 Wähle jetzt eine Szene:\n\n📱 Chat am Handy — das klassische Schreiben.\n👫 Echtes Treffen — ein Gespräch von Angesicht zu Angesicht.",        "no_history": "❌ Noch nichts zum Bearbeiten — schreibe deinem Charakter zuerst eine Nachricht.",
         "edit_prompt": "✏️ Schicke den neuen Text deiner letzten Nachricht — ich vergesse die alte und antworte neu.",
         "edit_success": "✅ Nachricht ersetzt. Ich erstelle eine neue Antwort...",
-        "character_created": "✅ **Charakter erstellt!**\n\nDu sprichst jetzt mit:\n_{text}_\n\nZurück zum normalen Charakter — /reset_character",
+        "character_created": "✅ Charakter erstellt!\n\nDu sprichst jetzt mit:\n«{text}»\n\nZurück zum normalen Charakter — /reset_character",
         "character_reset": "✅ Charakter zurückgesetzt.",
-        "help_title": "📖 **Bot-Befehle**",
+        "help_title": "📖 Bot-Befehle",
         "help_base": (
             "/start — registrieren / Hauptmenü öffnen\n"
             "/language — Sprache ändern\n"
@@ -568,7 +570,7 @@ TEXTS = {
             "/help — diese Befehlsliste"
         ),
         "help_subscriber_extra": (
-            "✨ *Verfügbar mit SUPER PRO / ELITE:*\n"
+            "✨ Verfügbar mit SUPER PRO / ELITE:\n"
             "/switch_personality — Welt und Geschlecht ändern, ohne den Verlauf zu verlieren\n"
             "/switch_style — Stil ändern, ohne den Verlauf zu verlieren"
         ),
@@ -640,8 +642,9 @@ TEXTS = {
         "spin_win_bucks": "💵 **+{value} Bucks**",
         "spin_win_energizers": "⚡ **+{value} Energydrinks**",
         "spin_win_xp": "⭐ **+{value} XP**",
-        "spin_win_pro": "🎁 **PRO-Abo für 5 Tage!**\n🔥 50 Nachrichten pro Tag, Stile Leidenschaftlich und Magnetisch!",
-        "spin_win_super": "✨ **SUPER PRO für 3 Tage!**\n👑 100 Nachrichten pro Tag, alle Stile inklusive 18+!",
+        "spin_win_pro": "🎁 **PRO-Abo für 5 Tage!**\n🔥 Stile Leidenschaftlich und Magnetisch, Energie und Sättigung sinken langsamer!",
+        "spin_win_super": "✨ **SUPER PRO für 3 Tage!**\n👑 Alle Stile inklusive 18+, dein eigener einzigartiger Charakter!",
+        "spin_win_elite": "💎 **ELITE für 2 Tage!**\n👑 Alles aus SUPER PRO — maximal ausgereizt!",
         "spin_result_header": "🎰 **Ergebnis!**\n\nDu hast gewonnen: {result}\n{mode}",
         "spin_mode_free": "🎁 Gratisdrehung",
         "spin_mode_paid": "💎 Bezahlte Drehung",
@@ -794,6 +797,10 @@ logging.basicConfig(level=logging.INFO)
 AI_MODEL = os.getenv("AI_MODEL", "")
 INTIM_MODEL = os.getenv("INTIM_MODEL", "")
 
+# Reasoning-модели (например, DeepSeek с тегом Reasoning) тратят время на скрытые "мысли"
+# до видимого ответа и могут не уложиться в короткий таймаут по умолчанию — даём с запасом.
+AI_REQUEST_TIMEOUT = 100
+
 # Резерв на случай, если сам каталог /v1/models недоступен (сеть, ключ и т.п.) —
 # лучшее предположение по конвенции OpenRouter-подобных агрегаторов, а не проверенное
 # значение. Основной путь — живой поиск в каталоге ниже.
@@ -838,11 +845,13 @@ def invalidate_model_cache(cache_key):
 
 
 def call_ai(explicit_model, cache_key, **kwargs):
-    """Обёртка над client.chat.completions.create с автоподбором модели и одной
-    повторной попыткой, если провайдер вдруг снял именно эту модель с каталога
-    (как уже случилось с deepseek/deepseek-chat) — чтобы бот не лежал молча,
-    пока кто-то не поправит переменную окружения вручную."""
+    """Обёртка над client.chat.completions.create с автоподбором модели, явным таймаутом
+    (иначе reasoning-модели вроде DeepSeek иногда не укладываются в таймаут SDK по
+    умолчанию) и одной повторной попыткой — если провайдер вдруг снял именно эту модель
+    с каталога (как уже случилось с deepseek/deepseek-chat), или если запрос просто не
+    успел за отведённое время (транзиентная задержка на стороне провайдера)."""
     model = explicit_model or resolve_model(cache_key)
+    kwargs.setdefault("timeout", AI_REQUEST_TIMEOUT)
     try:
         return client.chat.completions.create(model=model, **kwargs)
     except Exception as e:
@@ -852,6 +861,9 @@ def call_ai(explicit_model, cache_key, **kwargs):
             if retry_model != model:
                 logging.warning(f"Модель {model} недоступна (404), пробуем {retry_model}")
                 return client.chat.completions.create(model=retry_model, **kwargs)
+        if isinstance(e, APITimeoutError):
+            logging.warning(f"Таймаут запроса к {model} ({AI_REQUEST_TIMEOUT}с), пробуем ещё раз")
+            return client.chat.completions.create(model=model, **kwargs)
         raise
 
 PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh4eWJ2Zzg0bTVlbWE2ZzFicHlsMXNibXp3dXdsayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GGSbxfzvec3PYZbFOM/giphy.gif"
@@ -1312,12 +1324,16 @@ INTIM_LEVEL_REWARD = 8  # на каком уровне близости откр
 FOOD_ITEMS = {
     "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 15, "satiety": 10,
               "category": "food", "reaction_hint": "Это мелкая, но милая забота — благодарность лёгкая, тёплая, почти игривая."},
+    "breakfast": {"emoji": "🥐", "ru": "Завтрак", "en": "Breakfast", "de": "Frühstück", "price": 22, "satiety": 18,
+                  "category": "food", "reaction_hint": "Утренняя забота — благодарность сонная, но очень нежная, ты тронута, что о тебе подумали с самого утра."},
     "meal": {"emoji": "🍲", "ru": "Обед", "en": "Meal", "de": "Mahlzeit", "price": 30, "satiety": 25,
              "category": "food", "reaction_hint": "Это нормальная забота о тебе — благодарность душевная, ты чувствуешь себя сытой и по-настоящему тронута вниманием."},
     "cafe": {"emoji": "☕", "ru": "Кафе", "en": "Café", "de": "Café", "price": 55, "satiety": 50, "mood": 8,
              "category": "food", "reaction_hint": "Это настоящее свидание за столиком, не просто еда — благодарность тёплая, немного смущённая, приятно проведённое время."},
-    "feast": {"emoji": "🍰", "ru": "Пир", "en": "Feast", "de": "Festmahl", "price": 90, "satiety": 80,
-              "category": "food", "reaction_hint": "Это щедрый, почти избыточный жест — благодарность восторженная, ты слегка ошеломлена такой щедростью."},
+    "restaurant": {"emoji": "🍽", "ru": "Ресторан", "en": "Restaurant", "de": "Restaurant", "price": 90, "satiety": 80, "mood": 6,
+                   "category": "food", "reaction_hint": "Настоящий поход в ресторан — не просто еда, а маленькое свидание, благодарность восторженная и чуть взволнованная."},
+    "sushi": {"emoji": "🍣", "ru": "Суши-сет", "en": "Sushi set", "de": "Sushi-Set", "price": 120, "satiety": 70, "mood": 10,
+              "category": "food", "reaction_hint": "Необычный, изысканный выбор — благодарность удивлённая и довольная, ты оценила, что подошли к делу с фантазией."},
 }
 GIFT_ITEMS = {
     "sweets": {"emoji": "🍫", "ru": "Шоколадки", "en": "Chocolates", "de": "Pralinen", "price": 20, "satiety": 6, "mood": 25, "xp": 5,
@@ -1745,9 +1761,19 @@ ADULT_CONTENT_RULE = (
 
 
 LANGUAGE_RULES = {
-    "ru": "**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на РУССКОМ языке.",
-    "en": "**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на АНГЛИЙСКОМ языке.",
-    "de": "**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на НЕМЕЦКОМ языке.",
+    # Явно проговариваем конфликт с историей диалога — иначе после смены языка командой
+    # /language модель часто просто продолжала на языке предыдущих сообщений в истории,
+    # игнорируя короткую однострочную инструкцию (много русских реплик в контексте
+    # перевешивали одну строку системного промпта).
+    "ru": ("**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на РУССКОМ языке, независимо от языка "
+           "предыдущих сообщений в истории диалога ниже (пользователь мог только что сменить "
+           "язык командой /language) — начиная с этого ответа общайся исключительно на русском."),
+    "en": ("**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на АНГЛИЙСКОМ языке, независимо от языка "
+           "предыдущих сообщений в истории диалога ниже (пользователь мог только что сменить "
+           "язык командой /language) — начиная с этого ответа общайся исключительно на английском."),
+    "de": ("**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на НЕМЕЦКОМ языке, независимо от языка "
+           "предыдущих сообщений в истории диалога ниже (пользователь мог только что сменить "
+           "язык командой /language) — начиная с этого ответа общайся исключительно на немецком."),
 }
 
 
@@ -2279,12 +2305,15 @@ async def help_cmd(message: types.Message):
     доступно на его тарифе, а не команды SUPER PRO/ELITE, которыми он всё равно не может
     воспользоваться. Подсказка про /language всегда на трёх языках сразу и в самом верху —
     если при регистрации случайно выбрали не тот язык, весь остальной текст читать будет
-    нечем, а эту строку так или иначе можно прочитать и найти команду для смены языка."""
+    нечем, а эту строку так или иначе можно прочитать и найти команду для смены языка.
+    Без parse_mode: команды вроде /reset_character содержат "_", а он непарный в тексте —
+    Telegram Markdown не может найти закрывающий символ и тихо отклоняет всё сообщение
+    целиком (именно поэтому /help не отвечал вообще ничего)."""
     user = get_user(message.from_user.id)
     text = HELP_LANG_HINT + "\n\n" + get_text(user, "help_title") + "\n\n" + get_text(user, "help_base")
     if get_subscription_level(user) in ("super_pro", "elite"):
         text += "\n\n" + get_text(user, "help_subscriber_extra")
-    await message.answer(text, parse_mode="Markdown")
+    await message.answer(text)
 
 
 # ============================================================
@@ -2321,14 +2350,14 @@ async def send_main_menu(chat_id, user):
 
     menu_text = (
         f"{badge}\n\n"
+        f"{get_text(user, 'hot_hint')}\n"
+        f"{get_text(user, 'help_hint')}\n\n"
         f"{get_text(user, 'menu_current_partner', gender=gender_name, world=world_name)}\n"
         f"{get_text(user, 'menu_style_line', style=style_label)}\n"
         f"{xp_badge}\n"
         f"{multiplier_text}\n\n"
         f"{stats_line_text(user)}\n\n"
-        f"{get_text(user, 'menu_write_prompt')}\n"
-        f"{get_text(user, 'hot_hint')}\n"
-        f"{get_text(user, 'help_hint')}"
+        f"{get_text(user, 'menu_write_prompt')}"
     )
 
     try:
@@ -2553,6 +2582,7 @@ SPIN_PRIZES = [
     {"name": "🎉 150💵 баксов (ДЖЕКПОТ!)", "name_en": "🎉 150💵 bucks (JACKPOT!)", "name_de": "🎉 150💵 Bucks (JACKPOT!)", "value": 150, "type": "bucks", "weight": 0.3},
     {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "name_de": "🎁 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.4},
     {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.15},
+    {"name": "💎 ELITE на 2 дня", "name_en": "💎 ELITE for 2 days", "name_de": "💎 ELITE für 2 Tage", "value": 2, "type": "subscription_elite", "weight": 0.05},
 ]
 
 
@@ -2604,6 +2634,13 @@ async def spin_result(chat_id, user, free=False):
         user["last_daily_reset"] = None
         _reset_daily_quota_if_needed(user)
         result_text = get_text(user, "spin_win_super")
+    elif chosen["type"] == "subscription_elite":
+        user["subscription"]["active"] = True
+        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=2)).isoformat()
+        user["subscription"]["level"] = "elite"
+        user["last_daily_reset"] = None
+        _reset_daily_quota_if_needed(user)
+        result_text = get_text(user, "spin_win_elite")
     else:
         result_text = get_text(user, "spin_nothing")
 
@@ -3954,12 +3991,18 @@ async def handle_message(message: types.Message):
         user["custom_character"] = message.text
         user["creating_character"] = False
         save_data(user_data)
-        await message.answer(get_text(user, "character_created", text=message.text), parse_mode="Markdown")
+        await message.answer(get_text(user, "character_created", text=message.text))
         return
 
     # 1b. Свой подарок — свободный текст вместо каталога (аксессуары конечны и одноразовые).
     # Настроение случайное (не среднее): пользователь сам так предложил, с рандомом приятнее.
     if user.get("writing_custom_gift"):
+        # Гасим флаг сразу, а не только при успехе: раньше он оставался True при любой
+        # неудаче (не хватило баксов/дубликат/невалидный текст), и следующее сообщение
+        # пользователя — даже обычная реплика собеседнику — снова ловилось этой же веткой
+        # без возможности выйти. Один заход = одна попытка; хочешь ещё раз — жми кнопку в магазине.
+        user["writing_custom_gift"] = False
+        save_data(user_data)
         gift_text = message.text.strip()
         if not gift_text or len(gift_text) > CUSTOM_GIFT_MAX_LEN:
             await message.answer(get_text(user, "custom_gift_invalid", n=CUSTOM_GIFT_MAX_LEN))
@@ -3971,7 +4014,6 @@ async def handle_message(message: types.Message):
         if not spend_bucks(user, CUSTOM_GIFT_PRICE):
             await message.answer(get_text(user, "not_enough_bucks", n=CUSTOM_GIFT_PRICE - user.get("bucks", 0)))
             return
-        user["writing_custom_gift"] = False
         mood = random.randint(*CUSTOM_GIFT_MOOD_RANGE)
         xp = round(mood * 0.6)
         custom_item = {
