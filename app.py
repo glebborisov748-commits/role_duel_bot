@@ -164,7 +164,7 @@ TEXTS = {
         "pay_open_invoice": "💳 Перейти к оплате",
         "pay_error": "⚠️ Не удалось создать счёт. Попробуй другой способ оплаты.",
         "super_pro_only": "❌ Доступно только с подпиской SUPER PRO или ELITE.",
-        "create_character_super_only": "🔒 Создание своего персонажа доступно только с подпиской SUPER PRO!",
+        "create_character_super_only": "🔒 Создание своего персонажа доступно только с подпиской SUPER PRO или ELITE!",
         "style_not_found": "❌ Стиль не найден",
         "style_unavailable": "❌ Стиль недоступен",
         "character_updated": "✅ Персонаж обновлён! История сохранена.",
@@ -403,7 +403,7 @@ TEXTS = {
         "pay_open_invoice": "💳 Go to payment",
         "pay_error": "⚠️ Could not create the invoice. Please try another payment method.",
         "super_pro_only": "❌ Available with SUPER PRO or ELITE only.",
-        "create_character_super_only": "🔒 Creating your own character requires a SUPER PRO subscription!",
+        "create_character_super_only": "🔒 Creating your own character requires a SUPER PRO or ELITE subscription!",
         "style_not_found": "❌ Style not found",
         "style_unavailable": "❌ Style unavailable",
         "character_updated": "✅ Character updated! Your history is kept.",
@@ -642,7 +642,7 @@ TEXTS = {
         "pay_open_invoice": "💳 Zur Zahlung",
         "pay_error": "⚠️ Rechnung konnte nicht erstellt werden. Bitte versuche eine andere Zahlungsart.",
         "super_pro_only": "❌ Nur mit SUPER PRO oder ELITE verfügbar.",
-        "create_character_super_only": "🔒 Einen eigenen Charakter zu erstellen ist nur mit SUPER PRO möglich!",
+        "create_character_super_only": "🔒 Einen eigenen Charakter zu erstellen ist nur mit SUPER PRO oder ELITE möglich!",
         "style_not_found": "❌ Stil nicht gefunden",
         "style_unavailable": "❌ Stil nicht verfügbar",
         "character_updated": "✅ Charakter aktualisiert! Der Verlauf bleibt erhalten.",
@@ -1204,7 +1204,14 @@ STYLE_INTIM_FLAVOR = {
 # Стили с пометкой 18+: только для них снимается ограничение на откровенные сцены.
 ADULT_STYLE_KEYS = [key for key, style in STYLES.items() if style.get("adult")]
 ADULT_BADGE = "18+"
-XP_PER_LEVEL = 200
+# Стоимость (в XP) перехода С уровня N НА уровень N+1 — каждый следующий уровень требует
+# больше, чем предыдущий: первое сближение лёгкое и быстрое, а дальше — как и в реальных
+# отношениях — узнавать друг друга и завоёвывать доверие сложнее и дольше.
+LEVEL_XP_COST = {1: 20, 2: 40, 3: 100, 4: 180, 5: 280, 6: 400, 7: 550, 8: 750, 9: 1000}
+# Суммарный XP, необходимый для ДОСТИЖЕНИЯ уровня N (level=1 — старт, 0 XP).
+LEVEL_XP_THRESHOLD = {1: 0}
+for _lvl in range(2, 11):
+    LEVEL_XP_THRESHOLD[_lvl] = LEVEL_XP_THRESHOLD[_lvl - 1] + LEVEL_XP_COST[_lvl - 1]
 XP_MULTIPLIER = {"pro": 1.8, "super_pro": 2.5, "elite": 3.5}
 XP_BONUS_TEXT_KEY = {"pro": "xp_bonus_pro", "super_pro": "xp_bonus_super", "elite": "xp_bonus_elite"}
 
@@ -1544,16 +1551,25 @@ def get_reaction(text):
 # ============================================================
 def get_intimacy_level(user):
     xp = user.get("xp", 0)
-    level = xp // XP_PER_LEVEL + 1
-    return min(10, level)
+    level = 1
+    for lvl in range(2, 11):
+        if xp >= LEVEL_XP_THRESHOLD[lvl]:
+            level = lvl
+    return level
 
 
 def get_xp_progress(user):
+    """XP, накопленный ВНУТРИ текущего уровня (0..стоимость этого уровня)."""
     xp = user.get("xp", 0)
     level = get_intimacy_level(user)
     if level >= 10:
-        return XP_PER_LEVEL
-    return xp % XP_PER_LEVEL
+        return LEVEL_XP_COST[9]
+    return xp - LEVEL_XP_THRESHOLD[level]
+
+
+def get_xp_cost(level):
+    """Сколько всего XP нужно набрать на текущем уровне, чтобы перейти на следующий."""
+    return LEVEL_XP_COST.get(min(level, 9), LEVEL_XP_COST[9])
 
 
 def get_xp_badge(user):
@@ -1561,9 +1577,10 @@ def get_xp_badge(user):
     filled = "❤️" * level
     empty = "🤍" * (10 - level)
     progress = get_xp_progress(user)
-    scaled_progress = int((progress / XP_PER_LEVEL) * 100)
+    cost = get_xp_cost(level)
+    scaled_progress = int((progress / cost) * 100)
     bar_length = 10
-    filled_bar = int((progress / XP_PER_LEVEL) * bar_length)
+    filled_bar = int((progress / cost) * bar_length)
     bar = "▓" * filled_bar + "░" * (bar_length - filled_bar)
     level_label = get_text(user, "xp_level_label", level=level)
     return f"{level_label} {filled}{empty}\n{bar} {scaled_progress}/100 XP"
@@ -2038,7 +2055,7 @@ def get_main_menu_keyboard(user):
     if get_subscription_level(user) in ("super_pro", "elite"):
         buttons.append([InlineKeyboardButton(text=get_text(user, "create_character"), callback_data="create_character")])
     else:
-        buttons.append([InlineKeyboardButton(text="🔒 " + get_text(user, "create_character") + " (SUPER PRO)", callback_data="create_character_locked")])
+        buttons.append([InlineKeyboardButton(text="🔒 " + get_text(user, "create_character") + " (SUPER PRO/ELITE)", callback_data="create_character_locked")])
     return InlineKeyboardMarkup(inline_keyboard=buttons)
 
 
@@ -2345,7 +2362,18 @@ async def switch_style(call: types.CallbackQuery):
 # ============================================================
 @dp.callback_query(lambda c: c.data == "create_character_locked")
 async def create_character_locked(call: types.CallbackQuery):
-    await call.answer(get_text(get_user(call.from_user.id), "create_character_super_only"), show_alert=True)
+    # Перепроверяем актуальный уровень подписки, а не только кнопку: если пользователь
+    # апгрейднулся уже ПОСЛЕ того, как это меню было отправлено, кнопка в Telegram
+    # остаётся старой ("заблокировано") — без этой проверки ELITE/SUPER PRO пользователь
+    # с устаревшей кнопкой навсегда видел бы отказ, даже реально имея доступ.
+    user = get_user(call.from_user.id)
+    if get_subscription_level(user) in ("super_pro", "elite"):
+        await call.message.answer(get_text(user, "character_create_prompt"), parse_mode="Markdown")
+        user["creating_character"] = True
+        save_data(user_data)
+        await call.answer()
+        return
+    await call.answer(get_text(user, "create_character_super_only"), show_alert=True)
 
 
 @dp.callback_query(lambda c: c.data == "create_character")
@@ -4053,7 +4081,7 @@ async def generate_shop_reaction(chat_id, user, item, kind):
             messages=[{"role": "system", "content": system_prompt}] + history_tail +
                      [{"role": "user", "content": action_text}],
             temperature=0.9,
-            max_tokens=400
+            max_tokens=1000
         )
         answer = response.choices[0].message.content
     except Exception:
