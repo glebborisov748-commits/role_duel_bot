@@ -3545,6 +3545,33 @@ async def revoke_subscription_cmd(message: types.Message):
     await message.answer(f"✅ Подписка {args[1]} отозвана.")
 
 
+@dp.message(Command("models"))
+async def models_cmd(message: types.Message):
+    """Точный ID модели в каталоге provod.ai нельзя узнать из кода без живого запроса —
+    эта команда даёт админу посмотреть каталог напрямую с продовского сервера (где реально
+    есть PROVOD_API_KEY), вместо того чтобы я гадал строку и рисковал молчаливым 404->fallback."""
+    if message.from_user.id not in ADMIN_IDS:
+        await message.answer("⛔ Нет прав.")
+        return
+    invalidate_model_cache("ai")
+    invalidate_model_cache("intim")
+    catalog = _fetch_model_catalog()
+    if not catalog:
+        await message.answer("❌ Не удалось получить каталог моделей — см. логи бота (сеть/ключ).")
+        return
+    deepseek_matches = sorted(m for m in catalog if "deepseek" in m.lower())
+    lines = [f"Всего моделей в каталоге: {len(catalog)}", ""]
+    if deepseek_matches:
+        lines.append("🔍 Содержат «deepseek»:")
+        lines.extend(f"• {m}" for m in deepseek_matches)
+    else:
+        lines.append("❌ Ни одной модели с «deepseek» в названии в каталоге не нашлось.")
+    lines.append("")
+    lines.append(f"Сейчас будет выбрано для обычного чата: {resolve_model('ai')}")
+    lines.append(f"Сейчас будет выбрано для /hot: {resolve_model('intim')}")
+    await send_long_to_chat(message.chat.id, "\n".join(lines))
+
+
 # ============================================================
 #  КОМАНДА /hot — ВЫБОР И ГЕНЕРАЦИЯ ГОРЯЧЕЙ СЦЕНЫ
 # ============================================================
