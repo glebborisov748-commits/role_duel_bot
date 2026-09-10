@@ -1875,8 +1875,11 @@ def build_prompt(user):
 
     if user.get("custom_character"):
         return (
-            f"Ты — {user['custom_character']}. "
-            f"Ты НИКОГДА не называешь себя по имени, не представляешься, не говоришь «меня зовут». "
+            f"Ты — {user['custom_character']}. Полностью вживись в эту личность и её характер: если "
+            f"персонаж узнаваем (из фильма, игры, аниме, книги и т.п.), веди себя как он — с его "
+            f"характерными чертами, манерой речи и взглядами, а не обезличенно и уклончиво. Можешь "
+            f"свободно называть себя по имени и упоминать свою личность, когда это естественно по ходу "
+            f"разговора — не превращайся в безымянный силуэт без узнаваемых черт.\n"
             f"Ты НИКОГДА не спрашиваешь имя собеседника. Обращайся к собеседнику ТОЛЬКО на «ты». "
             f"Ты всегда отвечаешь как настоящий человек, с эмоциями, сомнениями и чувствами. "
             f"В каждой реплике используй минимум 1 эмодзи, органично вписанный по смыслу фразы.\n"
@@ -2231,6 +2234,10 @@ async def main_change(call: types.CallbackQuery):
     user["personality_ready"] = False
     user["world"] = None
     user["user_gender"] = None
+    # Иначе выбор нового пресетного персонажа молча не срабатывает: build_prompt()
+    # проверяет custom_character в первую очередь, и старый кастомный персонаж
+    # так и остаётся активным несмотря на новый выбор мира/пола.
+    user["custom_character"] = None
     user["history"] = []
     save_data(user_data)
     await safe_delete(call.message)
@@ -2392,6 +2399,9 @@ async def create_character(call: types.CallbackQuery):
 async def reset_character_cmd(message: types.Message):
     user = get_user(message.from_user.id)
     user["custom_character"] = None
+    # Сбрасываем историю — иначе реплики кастомного персонажа остаются в контексте
+    # и перевешивают личность, к которой пользователь только что вернулся.
+    user["history"] = []
     save_data(user_data)
     await message.answer(get_text(user, "character_reset"))
 
@@ -2544,6 +2554,7 @@ async def ask_create_personality(message: types.Message):
 async def create_personality_callback(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     user["personality_ready"] = False
+    user["custom_character"] = None
     user["history"] = []
     save_data(user_data)
     await safe_delete(call.message)
@@ -3787,15 +3798,20 @@ def build_intim_prompt(user, scene_type, location, dominant="any"):
     place = INTIM_LOCATIONS[location]
     dominant_rule = INTIM_DOMINANTS.get(dominant, INTIM_DOMINANTS["any"])["prompt"]
 
-    name_ban = (
-        "**ВАЖНЕЙШЕЕ ПРАВИЛО:** Ты НИКОГДА не называешь себя по имени, не представляешься, не говоришь "
-        "«меня зовут», не используешь своё имя. Ты также НИКОГДА не спрашиваешь имя собеседника и не "
-        "используешь его имя, даже если оно было названо. Обращайся к собеседнику ТОЛЬКО на «ты».\n"
-    )
-
     if user.get("custom_character"):
-        identity = f"Ты — {user['custom_character']}.\n"
+        # Для своего персонажа НЕ запрещаем называть себя по имени (в отличие от пресетных
+        # персон ниже) — иначе прямой конфликт с "Ты — Бэтмен" даёт обезличенный результат:
+        # модель не может опереться на единственный явный сигнал личности, который у неё есть.
+        identity = (
+            f"Ты — {user['custom_character']}. Полностью вживись в эту личность и её характер: если "
+            f"персонаж узнаваем, веди себя как он — с его характерными чертами и манерой речи, а не "
+            f"обезличенно. Можешь называть себя по имени, когда это естественно по ходу разговора.\n"
+        )
         style_flavor = ""
+        name_ban = (
+            "Ты НИКОГДА не спрашиваешь имя собеседника и не используешь его имя, даже если оно было "
+            "названо. Обращайся к собеседнику ТОЛЬКО на «ты».\n"
+        )
     else:
         world_desc = WORLDS[user["world"]]
         gender_info = GENDERS[user["gender"]]
@@ -3806,6 +3822,11 @@ def build_intim_prompt(user, scene_type, location, dominant="any"):
             f"{style_desc}\n"
         )
         style_flavor = STYLE_INTIM_FLAVOR.get(style_key, "")
+        name_ban = (
+            "**ВАЖНЕЙШЕЕ ПРАВИЛО:** Ты НИКОГДА не называешь себя по имени, не представляешься, не говоришь "
+            "«меня зовут», не используешь своё имя. Ты также НИКОГДА не спрашиваешь имя собеседника и не "
+            "используешь его имя, даже если оно было названо. Обращайся к собеседнику ТОЛЬКО на «ты».\n"
+        )
 
     user_gender = user.get("user_gender", "male")
     if user_gender == "male":
@@ -4115,6 +4136,9 @@ async def handle_message(message: types.Message):
     if user.get("creating_character"):
         user["custom_character"] = message.text
         user["creating_character"] = False
+        # Сбрасываем историю — иначе при ПЕРЕсоздании персонажа старые реплики ("я Бэтмен")
+        # остаются в контексте и перевешивают новую личность, которая только что была задана.
+        user["history"] = []
         save_data(user_data)
         await message.answer(get_text(user, "character_created", text=message.text))
         return
