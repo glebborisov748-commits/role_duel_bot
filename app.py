@@ -79,12 +79,8 @@ TEXTS = {
             "/language — сменить язык\n"
             "/hot — горячая сцена с персонажем\n"
             "/reset_character — сбросить своего кастомного персонажа\n"
-            "/help — этот список команд"
-        ),
-        "help_subscriber_extra": (
-            "✨ Доступно с SUPER PRO / ELITE:\n"
-            "/switch_personality — сменить мир и пол без потери истории\n"
-            "/switch_style — сменить стиль без потери истории"
+            "/switch_personality — сменить мир и пол без потери истории (SUPER PRO/ELITE)\n"
+            "/switch_style — сменить стиль без потери истории (SUPER PRO/ELITE)"
         ),
         "help_hint": "📖 /help — список всех команд.",
         "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
@@ -132,9 +128,9 @@ TEXTS = {
         "xp_bonus_pro": "Бонус XP: x1.8",
         "xp_bonus_super": "Бонус XP: x2.5",
         "xp_bonus_elite": "Бонус XP: x3.5",
-        "profile_sub_pro": "🔥 PRO активна (50 сообщений/день, память 60 сообщений)",
-        "profile_sub_super": "✨ SUPER PRO активна (100 сообщений/день, память 100 сообщений)",
-        "profile_sub_elite": "💎 ELITE активна (150 сообщений/день, память 150 сообщений)",
+        "profile_sub_pro": "🔥 PRO активна (память 60 сообщений)",
+        "profile_sub_super": "✨ SUPER PRO активна (память 100 сообщений)",
+        "profile_sub_elite": "💎 ELITE активна (память 150 сообщений)",
         "profile_sub_inactive": "❌ неактивна (память 30 сообщений)",
         "profile_sub_label": "Подписка: {status}",
         "profile_expiry": "Окончание подписки: {date}",
@@ -212,13 +208,13 @@ TEXTS = {
         "bundles_title": "🎁 **Купить бандл**\n\nБандл — это энергетики ⚡ (энергия персонажа) и баксы 💵 (на еду и подарки в магазине). Выбери бандл:",
         "bundle_btn": "{energizers}⚡ + {bucks}💵 — {price} ⭐",
         "invoice_pro_title": "PRO подписка на месяц",
-        "invoice_pro_desc": "50 сообщений/день, память 60 сообщений, стили Страстный и Магнетический.",
+        "invoice_pro_desc": "Память 60 сообщений, стили Страстный и Магнетический.",
         "invoice_pro_label": "PRO месяц",
         "invoice_super_title": "SUPER PRO подписка на месяц",
-        "invoice_super_desc": "100 сообщений/день, память 100 сообщений, все стили, включая 18+.",
+        "invoice_super_desc": "Память 100 сообщений, все стили, включая 18+.",
         "invoice_super_label": "SUPER PRO месяц",
         "invoice_elite_title": "ELITE подписка на месяц",
-        "invoice_elite_desc": "150 сообщений/день, память 150 сообщений, все стили включая 18+, XP x3.5, минимальный расход энергии/сытости.",
+        "invoice_elite_desc": "Память 150 сообщений, все стили включая 18+, XP x3.5, минимальный расход энергии/сытости.",
         "invoice_elite_label": "ELITE месяц",
         "invoice_upgrade_title": "Апгрейд до SUPER PRO",
         "invoice_upgrade_desc": "Повысьте PRO до SUPER PRO на оставшийся срок. 245⭐.",
@@ -251,7 +247,7 @@ TEXTS = {
         "asleep_message": "😴 Персонаж крепко спит и сейчас не может ответить. Проснётся сам примерно через {minutes} мин. — или разбуди прямо сейчас энергетиком ⚡.",
         "wake_energizer_btn": "⚡ Разбудить энергетиком",
         "woken_up": "⚡ Энергетик выпит — персонаж снова бодр и на связи!",
-        "stats_line": "⚡ Энергия: {energy}/150   🍗 Сытость: {satiety}/100\n⚡ Энергетиков: {energizers}   💵 Баксов: {bucks}",
+        "stats_line": "⚡ Энергия: {energy}/150   🍗 Сытость: {satiety}/100\n{mood_emoji} Настроение: {mood_bar} ({mood_value})\n⚡ Энергетиков: {energizers}   💵 Баксов: {bucks} — потратить можно в 🛍 Магазине\n🔥 Сцен: {scenes}",
         "wake_now_btn": "💳 Разбудить сейчас за {price}⭐",
         "invoice_wake_title": "Разбудить персонажа",
         "invoice_wake_desc": "Мгновенно поднимает энергию персонажа до максимума.",
@@ -322,12 +318,8 @@ TEXTS = {
             "/language — change language\n"
             "/hot — a hot scene with your character\n"
             "/reset_character — reset your custom character\n"
-            "/help — this list of commands"
-        ),
-        "help_subscriber_extra": (
-            "✨ Available with SUPER PRO / ELITE:\n"
-            "/switch_personality — change world and gender without losing history\n"
-            "/switch_style — change style without losing history"
+            "/switch_personality — change world and gender without losing history (SUPER PRO/ELITE)\n"
+            "/switch_style — change style without losing history (SUPER PRO/ELITE)"
         ),
         "help_hint": "📖 /help — the full list of commands.",
         "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«An elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire.»\n\n✏️ Write the description now — and I'll remember it!",
@@ -375,9 +367,9 @@ TEXTS = {
         "xp_bonus_pro": "XP bonus: x1.8",
         "xp_bonus_super": "XP bonus: x2.5",
         "xp_bonus_elite": "XP bonus: x3.5",
-        "profile_sub_pro": "🔥 PRO active (50 messages per day, 60-message memory)",
-        "profile_sub_super": "✨ SUPER PRO active (100 messages per day, 100-message memory)",
-        "profile_sub_elite": "💎 ELITE active (150 messages per day, 150-message memory)",
+        "profile_sub_pro": "🔥 PRO active (60-message memory)",
+        "profile_sub_super": "✨ SUPER PRO active (100-message memory)",
+        "profile_sub_elite": "💎 ELITE active (150-message memory)",
         "profile_sub_inactive": "❌ inactive (30-message memory)",
         "profile_sub_label": "Subscription: {status}",
         "profile_expiry": "Subscription ends: {date}",
@@ -455,13 +447,13 @@ TEXTS = {
         "bundles_title": "🎁 **Buy a bundle**\n\nA bundle gives you energizers ⚡ (your companion's energy) and bucks 💵 (for food and gifts in the shop). Choose a bundle:",
         "bundle_btn": "{energizers}⚡ + {bucks}💵 — {price} ⭐",
         "invoice_pro_title": "PRO subscription for a month",
-        "invoice_pro_desc": "50 messages per day, 60-message memory, Passionate and Magnetic styles.",
+        "invoice_pro_desc": "60-message memory, Passionate and Magnetic styles.",
         "invoice_pro_label": "PRO month",
         "invoice_super_title": "SUPER PRO subscription for a month",
-        "invoice_super_desc": "100 messages per day, 100-message memory, all styles including 18+.",
+        "invoice_super_desc": "100-message memory, all styles including 18+.",
         "invoice_super_label": "SUPER PRO month",
         "invoice_elite_title": "ELITE subscription for a month",
-        "invoice_elite_desc": "150 messages per day, 150-message memory, all styles including 18+, XP x3.5, minimal energy/satiety drain.",
+        "invoice_elite_desc": "150-message memory, all styles including 18+, XP x3.5, minimal energy/satiety drain.",
         "invoice_elite_label": "ELITE month",
         "invoice_upgrade_title": "Upgrade to SUPER PRO",
         "invoice_upgrade_desc": "Upgrade PRO to SUPER PRO for the remaining time. 245⭐.",
@@ -494,7 +486,7 @@ TEXTS = {
         "asleep_message": "😴 Your companion is fast asleep and can't reply right now. They'll wake up on their own in about {minutes} min. — or wake them up right away with an energizer ⚡.",
         "wake_energizer_btn": "⚡ Wake up with an energizer",
         "woken_up": "⚡ Energizer used — your companion is wide awake again!",
-        "stats_line": "⚡ Energy: {energy}/150   🍗 Satiety: {satiety}/100\n⚡ Energizers: {energizers}   💵 Bucks: {bucks}",
+        "stats_line": "⚡ Energy: {energy}/150   🍗 Satiety: {satiety}/100\n{mood_emoji} Mood: {mood_bar} ({mood_value})\n⚡ Energizers: {energizers}   💵 Bucks: {bucks} — spend them in the 🛍 Shop\n🔥 Scenes: {scenes}",
         "wake_now_btn": "💳 Wake up now for {price}⭐",
         "invoice_wake_title": "Wake up your companion",
         "invoice_wake_desc": "Instantly refills your companion's energy to full.",
@@ -565,12 +557,8 @@ TEXTS = {
             "/language — Sprache ändern\n"
             "/hot — heiße Szene mit deinem Charakter\n"
             "/reset_character — deinen eigenen Charakter zurücksetzen\n"
-            "/help — diese Befehlsliste"
-        ),
-        "help_subscriber_extra": (
-            "✨ Verfügbar mit SUPER PRO / ELITE:\n"
-            "/switch_personality — Welt und Geschlecht ändern, ohne den Verlauf zu verlieren\n"
-            "/switch_style — Stil ändern, ohne den Verlauf zu verlieren"
+            "/switch_personality — Welt und Geschlecht ändern, ohne den Verlauf zu verlieren (SUPER PRO/ELITE)\n"
+            "/switch_style — Stil ändern, ohne den Verlauf zu verlieren (SUPER PRO/ELITE)"
         ),
         "help_hint": "📖 /help — die vollständige Befehlsliste.",
         "character_create_prompt": "🎭 **Erstelle deinen eigenen Charakter!**\n\nBeschreibe eine beliebige Figur — aus Anime, Filmen, Spielen oder denk dir selbst eine aus.\nSchreibe Namen, Charakter, Aussehen, Herkunft und beliebige Details.\n\n📝 *Beispiel:*\n«Eine Elfe aus der Welt von The Witcher — weise, ruhig, mit langen silbernen Haaren. Sie liebt Sterne und lange Gespräche am Feuer.»\n\n✏️ Schreibe die Beschreibung jetzt — und ich merke sie mir!",
@@ -618,9 +606,9 @@ TEXTS = {
         "xp_bonus_pro": "XP-Bonus: x1.8",
         "xp_bonus_super": "XP-Bonus: x2.5",
         "xp_bonus_elite": "XP-Bonus: x3.5",
-        "profile_sub_pro": "🔥 PRO aktiv (50 Nachrichten pro Tag, Gedächtnis 60 Nachrichten)",
-        "profile_sub_super": "✨ SUPER PRO aktiv (100 Nachrichten pro Tag, Gedächtnis 100 Nachrichten)",
-        "profile_sub_elite": "💎 ELITE aktiv (150 Nachrichten pro Tag, Gedächtnis 150 Nachrichten)",
+        "profile_sub_pro": "🔥 PRO aktiv (Gedächtnis 60 Nachrichten)",
+        "profile_sub_super": "✨ SUPER PRO aktiv (Gedächtnis 100 Nachrichten)",
+        "profile_sub_elite": "💎 ELITE aktiv (Gedächtnis 150 Nachrichten)",
         "profile_sub_inactive": "❌ inaktiv (Gedächtnis 30 Nachrichten)",
         "profile_sub_label": "Abo: {status}",
         "profile_expiry": "Abo endet am: {date}",
@@ -698,13 +686,13 @@ TEXTS = {
         "bundles_title": "🎁 **Bundle kaufen**\n\nEin Bundle enthält Energydrinks ⚡ (Energie deines Begleiters) und Bucks 💵 (für Essen und Geschenke im Shop). Wähle ein Bundle:",
         "bundle_btn": "{energizers}⚡ + {bucks}💵 — {price} ⭐",
         "invoice_pro_title": "PRO-Abo für einen Monat",
-        "invoice_pro_desc": "50 Nachrichten pro Tag, Gedächtnis 60 Nachrichten, Stile Leidenschaftlich und Magnetisch.",
+        "invoice_pro_desc": "Gedächtnis 60 Nachrichten, Stile Leidenschaftlich und Magnetisch.",
         "invoice_pro_label": "PRO Monat",
         "invoice_super_title": "SUPER PRO-Abo für einen Monat",
-        "invoice_super_desc": "100 Nachrichten pro Tag, Gedächtnis 100 Nachrichten, alle Stile inklusive 18+.",
+        "invoice_super_desc": "Gedächtnis 100 Nachrichten, alle Stile inklusive 18+.",
         "invoice_super_label": "SUPER PRO Monat",
         "invoice_elite_title": "ELITE-Abo für einen Monat",
-        "invoice_elite_desc": "150 Nachrichten pro Tag, Gedächtnis 150 Nachrichten, alle Stile inklusive 18+, XP x3.5, minimaler Energie-/Sättigungsverbrauch.",
+        "invoice_elite_desc": "Gedächtnis 150 Nachrichten, alle Stile inklusive 18+, XP x3.5, minimaler Energie-/Sättigungsverbrauch.",
         "invoice_elite_label": "ELITE Monat",
         "invoice_upgrade_title": "Upgrade auf SUPER PRO",
         "invoice_upgrade_desc": "Hebt PRO für die Restlaufzeit auf SUPER PRO an. 245⭐.",
@@ -737,7 +725,7 @@ TEXTS = {
         "asleep_message": "😴 Dein Begleiter schläft tief und fest und kann gerade nicht antworten. Er/sie wacht von selbst in etwa {minutes} Min. auf — oder wecke ihn sofort mit einem Energydrink ⚡.",
         "wake_energizer_btn": "⚡ Mit Energydrink wecken",
         "woken_up": "⚡ Energydrink getrunken — dein Begleiter ist wieder hellwach!",
-        "stats_line": "⚡ Energie: {energy}/150   🍗 Sättigung: {satiety}/100\n⚡ Energydrinks: {energizers}   💵 Bucks: {bucks}",
+        "stats_line": "⚡ Energie: {energy}/150   🍗 Sättigung: {satiety}/100\n{mood_emoji} Stimmung: {mood_bar} ({mood_value})\n⚡ Energydrinks: {energizers}   💵 Bucks: {bucks} — ausgeben im 🛍 Shop\n🔥 Szenen: {scenes}",
         "wake_now_btn": "💳 Jetzt wecken für {price}⭐",
         "invoice_wake_title": "Begleiter wecken",
         "invoice_wake_desc": "Füllt die Energie deines Begleiters sofort komplett auf.",
@@ -1309,13 +1297,19 @@ INTIM_DOMINANTS = {
     "any": {"emoji": "\U0001f3ad", "ru": "Не важно", "en": "Any", "de": "Egal",
             "prompt": ("Инициативу в сцене можешь проявлять сама, по ситуации — то беря её в свои "
                        "руки, то уступая собеседнику.")},
-    "character": {"emoji": "\U0001f525", "ru": "Инициативу проявляю я", "en": "I take the lead", "de": "Ich übernehme die Führung",
+    # ru/en/de-подписи НАРОЧНО в третьем/втором лице ("персонаж"/"ты"), а не "я"/"собеседник" —
+    # старые подписи были написаны от лица персонажа ("я" = персонаж, "собеседник" = игрок), но
+    # пользователь читает кнопку меню как обращённую К НЕМУ и естественно понимает "я" как себя,
+    # а "собеседник" как персонажа — то есть ровно наоборот. Отсюда были жалобы "выбрал одно,
+    # получил противоположное", хотя генерация сцены каждый раз честно следовала выбранному
+    # dominant — путаница была только в подписи кнопки, не в промпте ниже.
+    "character": {"emoji": "\U0001f525", "ru": "Инициативу проявляет персонаж", "en": "The character leads", "de": "Der Charakter führt",
                   "prompt": ("В этой сцене инициативу и темп задаёшь ТЫ: именно твой персонаж действует "
                              "первым — тянет, толкает, направляет, раздевает, командует. Пиши действия "
                              "как свои собственные шаги («*Толкаю тебя к стене...*», «*Провожу губами "
                              "по...*»). Собеседник — тот, на кого направлена инициатива: он в основном "
                              "реагирует, подчиняется, отвечает на твои действия.")},
-    "user": {"emoji": "\U0001f60c", "ru": "Инициативу проявляет собеседник", "en": "My partner leads", "de": "Mein Partner führt",
+    "user": {"emoji": "\U0001f60c", "ru": "Инициативу проявляешь ты", "en": "You take the lead", "de": "Du führst",
               "prompt": ("В этой сцене инициативу задаёт СОБЕСЕДНИК: именно он действует первым — "
                          "хватает, прижимает, раздевает, направляет тебя. Описывай его действия как "
                          "совершающиеся над тобой и вокруг тебя, обращаясь к нему на «ты» («*Ты "
@@ -1603,6 +1597,24 @@ MOOD_MAX = 100  # настроение хранится как -100..100 (та �
                  # чтобы эффекты подарков — например "каблуки +25 настроения" — были буквальными числами)
 
 
+def mood_bar(mood, segments=10):
+    """Визуальная шкала настроения для профиля/меню — -100..100 в segments закрашенных блоков."""
+    filled = max(0, min(segments, round((mood + MOOD_MAX) / (2 * MOOD_MAX) * segments)))
+    return "🟩" * filled + "⬜" * (segments - filled)
+
+
+def mood_emoji(mood):
+    if mood <= -70:
+        return "😢"
+    elif mood <= -30:
+        return "😕"
+    elif mood < 30:
+        return "😐"
+    elif mood < 70:
+        return "🙂"
+    return "😍"
+
+
 def build_mood_rule(user):
     """Единое описание настроения — раньше один и тот же диапазон описывался дважды (тут и в
     build_intimacy_rule), вразнобой по порогам, теперь один источник правды."""
@@ -1772,12 +1784,17 @@ def build_hunger_rule(user):
 
 
 def stats_line_text(user):
+    mood = user.get("mood", 0)
     return get_text(
         user, "stats_line",
         energy=int(round(user.get("energy", ENERGY_MAX))),
         satiety=int(round(user.get("satiety", SATIETY_MAX))),
         energizers=user.get("energizers", 0),
         bucks=user.get("bucks", 0),
+        mood_emoji=mood_emoji(mood),
+        mood_bar=mood_bar(mood),
+        mood_value=int(round(mood)),
+        scenes=intim_scenes_available(user),
     )
 
 
@@ -1812,13 +1829,19 @@ LANGUAGE_RULES = {
     # перевешивали одну строку системного промпта).
     "ru": ("**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на РУССКОМ языке, независимо от языка "
            "предыдущих сообщений в истории диалога ниже (пользователь мог только что сменить "
-           "язык командой /language) — начиная с этого ответа общайся исключительно на русском."),
+           "язык командой /language) — начиная с этого ответа общайся исключительно на русском. "
+           "Это касается ВСЕГО текста ответа целиком, включая описания действий в *звёздочках* — "
+           "они тоже на русском, а не только реплики в кавычках."),
     "en": ("**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на АНГЛИЙСКОМ языке, независимо от языка "
            "предыдущих сообщений в истории диалога ниже (пользователь мог только что сменить "
-           "язык командой /language) — начиная с этого ответа общайся исключительно на английском."),
+           "язык командой /language) — начиная с этого ответа общайся исключительно на английском. "
+           "Это касается ВСЕГО текста ответа целиком, включая описания действий в *звёздочках* — "
+           "они тоже на английском, а не только реплики."),
     "de": ("**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на НЕМЕЦКОМ языке, независимо от языка "
            "предыдущих сообщений в истории диалога ниже (пользователь мог только что сменить "
-           "язык командой /language) — начиная с этого ответа общайся исключительно на немецком."),
+           "язык командой /language) — начиная с этого ответа общайся исключительно на немецком. "
+           "Это касается ВСЕГО текста ответа целиком, включая описания действий в *звёздочках* — "
+           "они тоже на немецком, а не только реплики."),
 }
 
 
@@ -2350,18 +2373,16 @@ HELP_LANG_HINT = "🌍 Не тот язык? / Wrong language? / Falsche Sprache
 
 @dp.message(Command("help"))
 async def help_cmd(message: types.Message):
-    """Список команд собирается по частям — чтобы пользователь видел только то, что реально
-    доступно на его тарифе, а не команды SUPER PRO/ELITE, которыми он всё равно не может
-    воспользоваться. Подсказка про /language всегда на трёх языках сразу и в самом верху —
-    если при регистрации случайно выбрали не тот язык, весь остальной текст читать будет
-    нечем, а эту строку так или иначе можно прочитать и найти команду для смены языка.
-    Без parse_mode: команды вроде /reset_character содержат "_", а он непарный в тексте —
-    Telegram Markdown не может найти закрывающий символ и тихо отклоняет всё сообщение
-    целиком (именно поэтому /help не отвечал вообще ничего)."""
+    """Единый список команд для всех — включая SUPER PRO/ELITE команды с пометкой в скобках,
+    чтобы пользователь знал, что они вообще существуют, даже если пока недоступны. Подсказка
+    про /language всегда на трёх языках сразу и в самом верху — если при регистрации случайно
+    выбрали не тот язык, весь остальной текст читать будет нечем, а эту строку так или иначе
+    можно прочитать и найти команду для смены языка. Без parse_mode: команды вроде
+    /reset_character содержат "_", а он непарный в тексте — Telegram Markdown не может найти
+    закрывающий символ и тихо отклоняет всё сообщение целиком (именно поэтому /help не отвечал
+    вообще ничего)."""
     user = get_user(message.from_user.id)
     text = HELP_LANG_HINT + "\n\n" + get_text(user, "help_title") + "\n\n" + get_text(user, "help_base")
-    if get_subscription_level(user) in ("super_pro", "elite"):
-        text += "\n\n" + get_text(user, "help_subscriber_extra")
     await message.answer(text)
 
 
@@ -3760,12 +3781,16 @@ def build_intim_prompt(user, scene_type, location, dominant="any"):
 
     user_gender = user.get("user_gender", "male")
     if user_gender == "male":
-        gender_context = "Ты обращаешься к нему в мужском роде (ты, он, ему, его)."
+        gender_context = ("Ты обращаешься к нему в мужском роде («ты», «он», «ему», «его») — И ВАЖНО: "
+                           "прилагательные/причастия о нём тоже в мужском роде («ты способен», «ты готов», "
+                           "«ты был» — а не «способна», «готова», «была»).")
         anatomy_rule = ("У собеседника есть половой член. Если в сцене есть оральный секс, направленный "
                          "НА собеседника — это минет (оральная стимуляция члена), никогда не куни: у "
                          "собеседника нет вульвы.\n")
     else:
-        gender_context = "Ты обращаешься к ней в женском роде (ты, она, ей, её)."
+        gender_context = ("Ты обращаешься к ней в женском роде («ты», «она», «ей», «её») — И ВАЖНО: "
+                           "прилагательные/причастия о ней тоже в женском роде («ты способна», «ты готова», "
+                           "«ты была» — а не «способен», «готов», «был»).")
         anatomy_rule = ("У собеседницы нет полового члена — есть вульва. Если в сцене есть оральный секс, "
                          "направленный НА собеседницу — это куни (оральная стимуляция клитора/влагалища), "
                          "никогда не минет: собеседнице физически нечего сосать.\n")
@@ -3774,9 +3799,13 @@ def build_intim_prompt(user, scene_type, location, dominant="any"):
         if user["gender"] == "male":
             anatomy_rule += ("У тебя есть половой член. Если собеседник доставляет оральные ласки ТЕБЕ — это "
                               "минет, никогда не куни: у тебя нет вульвы.\n")
+            anatomy_rule += ("ВАЖНО про себя: ты мужчина, поэтому глаголы и прилагательные о себе — в мужском "
+                              "роде («я думал», «я был готов» — а не «думала», «была готова»).\n")
         else:
             anatomy_rule += ("У тебя нет полового члена — есть вульва. Если собеседник доставляет оральные "
                               "ласки ТЕБЕ — это куни, никогда не минет: тебе физически нечего сосать.\n")
+            anatomy_rule += ("ВАЖНО про себя: ты женщина, поэтому глаголы и прилагательные о себе — в женском "
+                              "роде («я думала», «я была готова» — а не «думал», «был готов»).\n")
 
     prompt = (
         f"{name_ban}"
