@@ -2454,17 +2454,21 @@ async def send_main_menu(chat_id, user):
     style_label = style_display_label(get_display_style(user), user, with_emoji=False)
 
     xp_badge = get_xp_badge(user)
-    multiplier_text = get_text(user, XP_BONUS_TEXT_KEY[level]) if level in XP_BONUS_TEXT_KEY else ""
+
+    # Главное меню — краткий экран "на каждый день": персонаж/стиль/уровень и подсказки команд.
+    # Полная статистика (энергия/сытость/настроение/баксы/сцены, бонус XP) никуда не делась —
+    # она осталась в "Мой профиль", чтобы не перегружать самый часто открываемый экран.
+    title_block = get_text(user, "main_menu")
+    if badge:
+        title_block += f"\n{badge}"
 
     menu_text = (
-        f"{badge}\n\n"
-        f"{get_text(user, 'hot_hint')}\n"
-        f"{get_text(user, 'help_hint')}\n\n"
+        f"{title_block}\n\n"
         f"{get_text(user, 'menu_current_partner', gender=gender_name, world=world_name)}\n"
         f"{get_text(user, 'menu_style_line', style=style_label)}\n"
-        f"{xp_badge}\n"
-        f"{multiplier_text}\n\n"
-        f"{stats_line_text(user)}\n\n"
+        f"{xp_badge}\n\n"
+        f"{get_text(user, 'hot_hint')}\n"
+        f"{get_text(user, 'help_hint')}\n\n"
         f"{get_text(user, 'menu_write_prompt')}"
     )
 
