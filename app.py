@@ -200,7 +200,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
         "subs_title": "👑 Подписки Role Duel",
-        "subs_body": "🔥 PRO (250⭐/мес)\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-40%)\n• +80💵 баксов и +1⚡ энергетик каждый день\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-70%)\n• +200💵 баксов и +3⚡ энергетика каждый день\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (800⭐/мес)\n• Всё, что есть в SUPER PRO\n• Память: 150 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-85%)\n• +350💵 баксов и +6⚡ энергетиков каждый день\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_body": "🔥 PRO (250⭐/мес)\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-40%)\n• +80💵 баксов и +2⚡ энергетика каждый день\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-70%)\n• +200💵 баксов и +3⚡ энергетика каждый день\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (800⭐/мес)\n• Всё, что есть в SUPER PRO\n• Память: 150 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-85%)\n• +350💵 баксов и +6⚡ энергетиков каждый день\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐/мес",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐/мес",
         "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐/мес",
@@ -439,7 +439,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
         "subs_title": "👑 Role Duel Subscriptions",
-        "subs_body": "🔥 PRO (250⭐ per month)\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-40%)\n• +80💵 bucks and +1⚡ energizer every day\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-70%)\n• +200💵 bucks and +3⚡ energizers every day\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (800⭐ per month)\n• Everything in SUPER PRO\n• Memory: 150 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-85%)\n• +350💵 bucks and +6⚡ energizers every day\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_body": "🔥 PRO (250⭐ per month)\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-40%)\n• +80💵 bucks and +2⚡ energizers every day\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-70%)\n• +200💵 bucks and +3⚡ energizers every day\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (800⭐ per month)\n• Everything in SUPER PRO\n• Memory: 150 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-85%)\n• +350💵 bucks and +6⚡ energizers every day\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐ per month",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ per month",
         "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐ per month",
@@ -678,7 +678,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
         "subs_title": "👑 Role Duel Abos",
-        "subs_body": "🔥 PRO (250⭐ pro Monat)\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-40%)\n• +80💵 Bucks und +1⚡ Energydrink jeden Tag\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-70%)\n• +200💵 Bucks und +3⚡ Energydrinks jeden Tag\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (800⭐ pro Monat)\n• Alles aus SUPER PRO\n• Gedächtnis: 150 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-85%)\n• +350💵 Bucks und +6⚡ Energydrinks jeden Tag\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
+        "subs_body": "🔥 PRO (250⭐ pro Monat)\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-40%)\n• +80💵 Bucks und +2⚡ Energydrinks jeden Tag\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-70%)\n• +200💵 Bucks und +3⚡ Energydrinks jeden Tag\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (800⭐ pro Monat)\n• Alles aus SUPER PRO\n• Gedächtnis: 150 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-85%)\n• +350💵 Bucks und +6⚡ Energydrinks jeden Tag\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
         "subs_btn_pro": "🔥 PRO — 250 ⭐ pro Monat",
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ pro Monat",
         "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐ pro Monat",
@@ -876,6 +876,8 @@ ELITE_IMAGE_URL = "https://i.ibb.co/1tTzMSQ9/image.png"  # статичная к
 MAIN_MENU_IMAGE_URL = "https://i.ibb.co/xSDWKM52/image.jpg"
 
 ADMIN_IDS = [7287815074, 8078585678, 5507779506]
+# maintenance_mode: значение по умолчанию до чтения data.json — реальное состояние
+# ставится ниже, сразу после user_data = load_data(), чтобы переживать рестарт бота.
 maintenance_mode = False
 
 # На хостинге bot.host.ru контейнер пересобирается из GitHub при каждом деплое
@@ -951,6 +953,7 @@ def sync_data():
     старый контейнер не остановился после передеплоя): каждый процесс держит свой
     снимок user_data и при сохранении затирает чужие изменения. Из-за этого,
     в частности, уже выбранный язык мог "исчезнуть" на следующем шаге регистрации."""
+    global maintenance_mode
     mtime = _file_mtime()
     if mtime is None or mtime == _data_mtime:
         return
@@ -963,9 +966,17 @@ def sync_data():
             current.update(record)
         else:
             user_data[user_id] = record
+    settings = user_data.get("__settings__")
+    if isinstance(settings, dict) and "maintenance_mode" in settings:
+        maintenance_mode = bool(settings["maintenance_mode"])
 
 
 user_data = load_data()
+# __settings__ — служебная запись внутри того же data.json (не профиль пользователя),
+# чтобы режим техработ переживал рестарт бота: раньше maintenance_mode был чистой
+# переменной в памяти процесса и при каждом передеплое (пересборка контейнера из
+# GitHub) молча сбрасывался в False, даже если админ явно включал техработы.
+maintenance_mode = bool(user_data.get("__settings__", {}).get("maintenance_mode", False))
 
 
 
@@ -1513,7 +1524,10 @@ FREE_DAILY_BUCKS = 15  # бесплатный источник баксов и �
 
 
 FREE_SPINS_PER_DAY = {"pro": 2, "super_pro": 3, "elite": 5}  # без подписки — 1 (значение по умолчанию ниже)
-ENERGIZERS_DAILY_STIPEND = {"pro": 1, "super_pro": 3, "elite": 6}  # такая же ежедневная "подпитка", но энергетиками
+ENERGIZERS_DAILY_STIPEND = {"pro": 2, "super_pro": 3, "elite": 6}  # такая же ежедневная "подпитка", но энергетиками
+# pro было 1/день — при цене подписки это выходило дороже за энергетик, чем в самом дешёвом
+# бандле (250⭐/30 vs 30⭐/5 = 8.3 vs 6 ⭐ за энергетик), тогда как баксы в подписке уже в разы
+# дешевле, чем в бандле — несправедливость была именно в этой цифре, не во всей подписке.
 
 
 def free_spins_allowed(user):
@@ -3547,9 +3561,13 @@ async def maintenance_cmd(message: types.Message):
         return
     if args[1].lower() == "on":
         maintenance_mode = True
+        user_data.setdefault("__settings__", {})["maintenance_mode"] = True
+        save_data(user_data)
         await message.answer("🛠️ Техобслуживание ВКЛ.")
     elif args[1].lower() == "off":
         maintenance_mode = False
+        user_data.setdefault("__settings__", {})["maintenance_mode"] = False
+        save_data(user_data)
         await message.answer("✅ Техобслуживание ВЫКЛ.")
     else:
         await message.answer("❌ on или off")
@@ -4411,7 +4429,7 @@ async def main():
     print("🚀 Role Duel запущен!")
     print(f"🧠 Модель: {AI_MODEL or resolve_model('ai')} | интим-сцены: {INTIM_MODEL or resolve_model('intim')}")
     print(f"💾 Данные сохраняются в {os.path.abspath(DATA_FILE)}")
-    print(f"👥 Загружено профилей: {len(user_data)}")
+    print(f"👥 Загружено профилей: {len([k for k in user_data if k != '__settings__'])}")
     print(f"💳 Способы оплаты: {', '.join(available_payment_methods())}")
     print("✅ БОТ ГОТОВ К РАБОТЕ!")
 
