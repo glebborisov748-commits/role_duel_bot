@@ -872,6 +872,7 @@ def call_ai(explicit_model, cache_key, **kwargs):
 
 PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh4eWJ2Zzg0bTVlbWE2ZzFicHlsMXNibXp3dXdsayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GGSbxfzvec3PYZbFOM/giphy.gif"
 SUPER_PRO_GIF_URL = "https://media.giphy.com/media/DbHZXBo5WFPZX7QpXj/giphy.gif"
+ELITE_IMAGE_URL = "https://i.ibb.co/1tTzMSQ9/image.png"  # статичная картинка, не gif — шлём через send_photo
 MAIN_MENU_IMAGE_URL = "https://i.ibb.co/xSDWKM52/image.jpg"
 
 ADMIN_IDS = [7287815074, 8078585678, 5507779506]
@@ -987,6 +988,7 @@ def get_user(user_id):
             "history": [],
             "last_menu_message_id": None,
             "xp": 0,
+            "xp_migrated_v2": True,  # новый пользователь — сразу на новой прогрессивной шкале, мигрировать нечего
             "mood": 0,
             "location": "unknown",
             "negative_count": 0,
@@ -1037,6 +1039,7 @@ def get_user(user_id):
             "last_menu_message_id": None,
             "subscription": {"active": False, "expires_at": None, "level": None},
             "xp": 0,
+            "xp_migrated_v2": False,  # отсутствие ключа = ещё не мигрировал на новую шкалу уровней
             "mood": 0,
             "location": "unknown",
             "negative_count": 0,
@@ -1088,6 +1091,23 @@ def get_user(user_id):
             user["personality_ready"] = False
         if user.get("style") not in STYLES:
             user["style"] = "warm"
+
+        # МИГРАЦИЯ ШКАЛЫ XP: раньше каждый уровень стоил одинаково (LEGACY_XP_PER_LEVEL=200),
+        # теперь стоимость растёт с каждым уровнем (LEVEL_XP_COST). Без пересчёта уже
+        # накопленный xp читался бы по новым, более низким для старта порогам — например
+        # xp в [400,600) раньше означал уровень 3, а по новым порогам это уже готовые 5,
+        # то есть уровень скакнул бы вперёд без каких-либо новых действий пользователя.
+        # Пересчитываем один раз так, чтобы старый уровень и грубо прогресс внутри него
+        # сохранились, а дальше уже действует новая, более крутая шкала.
+        if not user.get("xp_migrated_v2"):
+            old_xp = max(0, user.get("xp", 0))
+            old_level = min(10, old_xp // LEGACY_XP_PER_LEVEL + 1)
+            if old_level >= 10:
+                user["xp"] = LEVEL_XP_THRESHOLD[10]
+            else:
+                progress_fraction = (old_xp % LEGACY_XP_PER_LEVEL) / LEGACY_XP_PER_LEVEL
+                user["xp"] = int(LEVEL_XP_THRESHOLD[old_level] + progress_fraction * LEVEL_XP_COST[old_level])
+            user["xp_migrated_v2"] = True
 
         apply_passive_stat_regen(user)
         apply_mood_inactivity_decay(user)
@@ -1212,6 +1232,7 @@ LEVEL_XP_COST = {1: 20, 2: 40, 3: 100, 4: 180, 5: 280, 6: 400, 7: 550, 8: 750, 9
 LEVEL_XP_THRESHOLD = {1: 0}
 for _lvl in range(2, 11):
     LEVEL_XP_THRESHOLD[_lvl] = LEVEL_XP_THRESHOLD[_lvl - 1] + LEVEL_XP_COST[_lvl - 1]
+LEGACY_XP_PER_LEVEL = 200  # старая плоская шкала — только для миграции xp уже играющих пользователей, см. get_user()
 XP_MULTIPLIER = {"pro": 1.8, "super_pro": 2.5, "elite": 3.5}
 XP_BONUS_TEXT_KEY = {"pro": "xp_bonus_pro", "super_pro": "xp_bonus_super", "elite": "xp_bonus_elite"}
 
@@ -2522,10 +2543,8 @@ async def show_profile(msg, user):
     old_msg_id = msg.message_id
     try:
         if level == "elite":
-            # Пока используем ту же анимацию, что и SUPER PRO — отдельного GIF для ELITE
-            # никто не присылал; поменять легко, просто задав свой ELITE_GIF_URL.
-            await bot.send_animation(chat_id, animation=SUPER_PRO_GIF_URL, caption=caption,
-                                      reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
+            await bot.send_photo(chat_id, photo=ELITE_IMAGE_URL, caption=caption,
+                                  reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
         elif level == "super_pro":
             await bot.send_animation(chat_id, animation=SUPER_PRO_GIF_URL, caption=caption,
                                       reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
