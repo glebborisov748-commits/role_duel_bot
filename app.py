@@ -206,7 +206,7 @@ TEXTS = {
         "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐/мес",
         "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (245⭐)",
         "bundles_title": "🎁 **Купить бандл**\n\nБандл — это энергетики ⚡ (энергия персонажа) и баксы 💵 (на еду и подарки в магазине). Выбери бандл:",
-        "bundle_btn": "{energizers}⚡ + {bucks}💵 — {price} ⭐",
+        "bundle_btn": "{emoji} {name} — {energizers}⚡ + {bucks}💵 — {price} ⭐",
         "invoice_pro_title": "PRO подписка на месяц",
         "invoice_pro_desc": "Память 60 сообщений, стили Страстный и Магнетический.",
         "invoice_pro_label": "PRO месяц",
@@ -219,7 +219,7 @@ TEXTS = {
         "invoice_upgrade_title": "Апгрейд до SUPER PRO",
         "invoice_upgrade_desc": "Повысьте PRO до SUPER PRO на оставшийся срок. 245⭐.",
         "invoice_upgrade_label": "Апгрейд",
-        "invoice_bundle_title": "Бандл: {energizers}⚡ + {bucks}💵",
+        "invoice_bundle_title": "{name}: {energizers}⚡ + {bucks}💵",
         "invoice_bundle_desc": "{energizers} энергетиков и {bucks} баксов за {price}⭐",
         "invoice_bundle_label": "Бандл",
         "payment_bundle_success": "✅ Получено: {energizers}⚡ энергетиков и {bucks}💵 баксов!",
@@ -445,7 +445,7 @@ TEXTS = {
         "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐ per month",
         "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (245⭐)",
         "bundles_title": "🎁 **Buy a bundle**\n\nA bundle gives you energizers ⚡ (your companion's energy) and bucks 💵 (for food and gifts in the shop). Choose a bundle:",
-        "bundle_btn": "{energizers}⚡ + {bucks}💵 — {price} ⭐",
+        "bundle_btn": "{emoji} {name} — {energizers}⚡ + {bucks}💵 — {price} ⭐",
         "invoice_pro_title": "PRO subscription for a month",
         "invoice_pro_desc": "60-message memory, Passionate and Magnetic styles.",
         "invoice_pro_label": "PRO month",
@@ -458,7 +458,7 @@ TEXTS = {
         "invoice_upgrade_title": "Upgrade to SUPER PRO",
         "invoice_upgrade_desc": "Upgrade PRO to SUPER PRO for the remaining time. 245⭐.",
         "invoice_upgrade_label": "Upgrade",
-        "invoice_bundle_title": "Bundle: {energizers}⚡ + {bucks}💵",
+        "invoice_bundle_title": "{name}: {energizers}⚡ + {bucks}💵",
         "invoice_bundle_desc": "{energizers} energizers and {bucks} bucks for {price}⭐",
         "invoice_bundle_label": "Bundle",
         "payment_bundle_success": "✅ Received: {energizers}⚡ energizers and {bucks}💵 bucks!",
@@ -684,7 +684,7 @@ TEXTS = {
         "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐ pro Monat",
         "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO (245⭐)",
         "bundles_title": "🎁 **Bundle kaufen**\n\nEin Bundle enthält Energydrinks ⚡ (Energie deines Begleiters) und Bucks 💵 (für Essen und Geschenke im Shop). Wähle ein Bundle:",
-        "bundle_btn": "{energizers}⚡ + {bucks}💵 — {price} ⭐",
+        "bundle_btn": "{emoji} {name} — {energizers}⚡ + {bucks}💵 — {price} ⭐",
         "invoice_pro_title": "PRO-Abo für einen Monat",
         "invoice_pro_desc": "Gedächtnis 60 Nachrichten, Stile Leidenschaftlich und Magnetisch.",
         "invoice_pro_label": "PRO Monat",
@@ -697,7 +697,7 @@ TEXTS = {
         "invoice_upgrade_title": "Upgrade auf SUPER PRO",
         "invoice_upgrade_desc": "Hebt PRO für die Restlaufzeit auf SUPER PRO an. 245⭐.",
         "invoice_upgrade_label": "Upgrade",
-        "invoice_bundle_title": "Bundle: {energizers}⚡ + {bucks}💵",
+        "invoice_bundle_title": "{name}: {energizers}⚡ + {bucks}💵",
         "invoice_bundle_desc": "{energizers} Energydrinks und {bucks} Bucks für {price}⭐",
         "invoice_bundle_label": "Bundle",
         "payment_bundle_success": "✅ Erhalten: {energizers}⚡ Energydrinks und {bucks}💵 Bucks!",
@@ -2836,7 +2836,7 @@ async def profile_bundles(call: types.CallbackQuery):
         await call.answer(get_text(user, "need_character_alert"), show_alert=True)
         return
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "bundle_btn", **BUNDLES[key], price=PRODUCTS[key]["stars"]),
+        [InlineKeyboardButton(text=bundle_option_label(key, user),
                               callback_data=f"buy:{key}", style="success")]
         for key in BUNDLES
     ] + [
@@ -3149,10 +3149,21 @@ for _product in PRODUCTS.values():
 # Что именно выдаёт каждый бандл — энергетики (⚡ энергия) и баксы (💵 еда/подарки в магазине);
 # сообщений в игре больше нет вообще, чат ограничивает только энергия/сон.
 BUNDLES = {
-    "bundle_small": {"energizers": 5, "bucks": 60},
-    "bundle_medium": {"energizers": 14, "bucks": 180},
-    "bundle_large": {"energizers": 36, "bucks": 500},
+    "bundle_small": {"energizers": 5, "bucks": 60, "emoji": "🎒",
+                      "ru": "Стартовый набор", "en": "Starter Pack", "de": "Starter-Paket"},
+    "bundle_medium": {"energizers": 14, "bucks": 180, "emoji": "⚖️",
+                       "ru": "Средний набор", "en": "Medium Pack", "de": "Mittleres Paket"},
+    "bundle_large": {"energizers": 36, "bucks": 500, "emoji": "👑",
+                      "ru": "VIP набор", "en": "VIP Pack", "de": "VIP-Paket"},
 }
+
+
+def bundle_option_label(key, user):
+    item = BUNDLES[key]
+    lang = user.get("lang", "ru")
+    name = item.get(lang, item["ru"])
+    return get_text(user, "bundle_btn", emoji=item["emoji"], name=name,
+                     energizers=item["energizers"], bucks=item["bucks"], price=PRODUCTS[key]["stars"])
 
 
 def is_method_enabled(method):
@@ -3192,7 +3203,8 @@ def product_invoice_texts(user, payload):
     if payload in BUNDLES:
         bundle = BUNDLES[payload]
         price = PRODUCTS[payload]["stars"]
-        return (get_text(user, "invoice_bundle_title", **bundle),
+        name = bundle.get(user.get("lang", "ru"), bundle["ru"])
+        return (get_text(user, "invoice_bundle_title", name=name, **bundle),
                 get_text(user, "invoice_bundle_desc", price=price, **bundle),
                 get_text(user, "invoice_bundle_label"))
     return (get_text(user, "spin_wheel"), get_text(user, "spin_invoice_desc"),
