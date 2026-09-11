@@ -13,7 +13,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import (
     InlineKeyboardMarkup, InlineKeyboardButton, LabeledPrice,
-    ReplyKeyboardMarkup, KeyboardButton, BotCommand
+    ReplyKeyboardMarkup, KeyboardButton, BotCommand, FSInputFile
 )
 import httpx
 from dotenv import load_dotenv
@@ -878,7 +878,11 @@ def call_ai(explicit_model, cache_key, **kwargs):
 
 PRO_GIF_URL = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGJ5aTRkejlwMGh4eWJ2Zzg0bTVlbWE2ZzFicHlsMXNibXp3dXdsayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/GGSbxfzvec3PYZbFOM/giphy.gif"
 SUPER_PRO_GIF_URL = "https://media.giphy.com/media/DbHZXBo5WFPZX7QpXj/giphy.gif"
-ELITE_IMAGE_URL = "https://i.ibb.co/1tTzMSQ9/image.png"  # статичная картинка, не gif — шлём через send_photo
+ELITE_BADGE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "elite_badge.jpg")
+# Локальный файл, а не ссылка на внешний хостинг: картинка по URL (ibb.co) весила несколько
+# мегабайт и её выкачивание регулярно рвалось/зависало — то же самое, скорее всего, происходило
+# и у самого Telegram при попытке подтянуть её на sendPhoto, отчего фото молча не показывалось.
+# Файл лежит в репозитории и едет с каждым деплоем (см. комментарий у DATA_DIR).
 MAIN_MENU_IMAGE_URL = "https://i.ibb.co/xSDWKM52/image.jpg"
 
 ADMIN_IDS = [7287815074, 8078585678, 5507779506]
@@ -2583,7 +2587,7 @@ async def show_profile(msg, user):
     old_msg_id = msg.message_id
     try:
         if level == "elite":
-            await bot.send_photo(chat_id, photo=ELITE_IMAGE_URL, caption=caption,
+            await bot.send_photo(chat_id, photo=FSInputFile(ELITE_BADGE_PATH), caption=caption,
                                   reply_markup=get_profile_keyboard(user), parse_mode="Markdown")
         elif level == "super_pro":
             await bot.send_animation(chat_id, animation=SUPER_PRO_GIF_URL, caption=caption,
