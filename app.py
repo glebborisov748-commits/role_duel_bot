@@ -205,8 +205,9 @@ TEXTS = {
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐/мес",
         "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐/мес",
         "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (245⭐)",
-        "bundles_title": "🎁 **Купить бандл**\n\nБандл — это энергетики ⚡ (энергия персонажа) и баксы 💵 (на еду и подарки в магазине). Выбери бандл:",
-        "bundle_btn": "{emoji} {name} — {energizers}⚡ + {bucks}💵 — {price} ⭐",
+        "bundles_title": "🎁 **Купить бандл**\n\nБандл — это энергетики ⚡ (энергия персонажа) и баксы 💵 (на еду и подарки в магазине). Что даёт каждый:",
+        "bundle_btn": "{emoji} {name} — {price} ⭐",
+        "bundle_breakdown_line": "{emoji} {name} — {energizers}⚡ энергетиков + {bucks}💵 баксов",
         "invoice_pro_title": "PRO подписка на месяц",
         "invoice_pro_desc": "Память 60 сообщений, стили Страстный и Магнетический.",
         "invoice_pro_label": "PRO месяц",
@@ -244,8 +245,9 @@ TEXTS = {
         "low_energy_nudge": "😴 Собеседник начинает уставать и клонит в сон... Может, взбодришь энергетиком?",
         "not_enough_bucks": "❌ Не хватает баксов: нужно ещё {n}💵.",
         "not_enough_energizers": "❌ Нет энергетиков. Купи бандл, чтобы разбудить персонажа сразу ⚡.",
-        "asleep_message": "😴 Персонаж крепко спит и сейчас не может ответить. Проснётся сам примерно через {minutes} мин. — или разбуди прямо сейчас энергетиком ⚡.",
+        "asleep_message": "😴 Персонаж крепко спит и сейчас не может ответить — сам он не проснётся, разбуди его энергетиком ⚡ или сразу и полностью за {price}⭐.",
         "wake_energizer_btn": "⚡ Разбудить энергетиком",
+        "no_energizers_shop_btn": "🛍 Нет энергетиков — купить",
         "woken_up": "⚡ Энергетик выпит — персонаж снова бодр и на связи!",
         "stats_line": "⚡ Энергия: {energy}/150   🍗 Сытость: {satiety}/100\n{mood_emoji} Настроение: {mood_bar} ({mood_value})\n⚡ Энергетиков: {energizers}   💵 Баксов: {bucks} — потратить можно в 🛍 Магазине\n🔥 Сцен: {scenes}",
         "wake_now_btn": "💳 Разбудить сейчас за {price}⭐",
@@ -256,7 +258,7 @@ TEXTS = {
         "notifications_off_btn": "🔕 Уведомления: ВЫКЛ",
         "notifications_muted_alert": "🔕 Уведомления отключены.",
         "notifications_unmuted_alert": "🔔 Уведомления включены.",
-        "mute_requires_sub_alert": "🔒 Отключение уведомлений доступно только с подпиской SUPER PRO.",
+        "mute_requires_sub_alert": "🔒 Отключение уведомлений доступно только с подпиской SUPER PRO или ELITE.",
         "payment_pro_success": "✅ PRO подписка активирована на месяц!",
         "payment_super_success": "✅ SUPER PRO подписка активирована на месяц!",
         "payment_elite_success": "✅ ELITE подписка активирована на месяц!",
@@ -444,8 +446,9 @@ TEXTS = {
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ per month",
         "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐ per month",
         "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (245⭐)",
-        "bundles_title": "🎁 **Buy a bundle**\n\nA bundle gives you energizers ⚡ (your companion's energy) and bucks 💵 (for food and gifts in the shop). Choose a bundle:",
-        "bundle_btn": "{emoji} {name} — {energizers}⚡ + {bucks}💵 — {price} ⭐",
+        "bundles_title": "🎁 **Buy a bundle**\n\nA bundle gives you energizers ⚡ (your companion's energy) and bucks 💵 (for food and gifts in the shop). What each one gives:",
+        "bundle_btn": "{emoji} {name} — {price} ⭐",
+        "bundle_breakdown_line": "{emoji} {name} — {energizers}⚡ energizers + {bucks}💵 bucks",
         "invoice_pro_title": "PRO subscription for a month",
         "invoice_pro_desc": "60-message memory, Passionate and Magnetic styles.",
         "invoice_pro_label": "PRO month",
@@ -483,8 +486,9 @@ TEXTS = {
         "low_energy_nudge": "😴 Your companion is starting to feel drowsy... Maybe perk them up with an energizer?",
         "not_enough_bucks": "❌ Not enough bucks: you need {n}💵 more.",
         "not_enough_energizers": "❌ No energizers left. Buy a bundle to wake your companion up right away ⚡.",
-        "asleep_message": "😴 Your companion is fast asleep and can't reply right now. They'll wake up on their own in about {minutes} min. — or wake them up right away with an energizer ⚡.",
+        "asleep_message": "😴 Your companion is fast asleep and can't reply right now — they won't wake up on their own, so wake them with an energizer ⚡ or instantly and fully for {price}⭐.",
         "wake_energizer_btn": "⚡ Wake up with an energizer",
+        "no_energizers_shop_btn": "🛍 No energizers — buy some",
         "woken_up": "⚡ Energizer used — your companion is wide awake again!",
         "stats_line": "⚡ Energy: {energy}/150   🍗 Satiety: {satiety}/100\n{mood_emoji} Mood: {mood_bar} ({mood_value})\n⚡ Energizers: {energizers}   💵 Bucks: {bucks} — spend them in the 🛍 Shop\n🔥 Scenes: {scenes}",
         "wake_now_btn": "💳 Wake up now for {price}⭐",
@@ -495,7 +499,7 @@ TEXTS = {
         "notifications_off_btn": "🔕 Notifications: OFF",
         "notifications_muted_alert": "🔕 Notifications muted.",
         "notifications_unmuted_alert": "🔔 Notifications unmuted.",
-        "mute_requires_sub_alert": "🔒 Muting notifications is available with a SUPER PRO subscription only.",
+        "mute_requires_sub_alert": "🔒 Muting notifications is available with a SUPER PRO or ELITE subscription only.",
         "payment_pro_success": "✅ PRO subscription activated for a month!",
         "payment_super_success": "✅ SUPER PRO subscription activated for a month!",
         "payment_elite_success": "✅ ELITE subscription activated for a month!",
@@ -683,8 +687,9 @@ TEXTS = {
         "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ pro Monat",
         "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐ pro Monat",
         "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO (245⭐)",
-        "bundles_title": "🎁 **Bundle kaufen**\n\nEin Bundle enthält Energydrinks ⚡ (Energie deines Begleiters) und Bucks 💵 (für Essen und Geschenke im Shop). Wähle ein Bundle:",
-        "bundle_btn": "{emoji} {name} — {energizers}⚡ + {bucks}💵 — {price} ⭐",
+        "bundles_title": "🎁 **Bundle kaufen**\n\nEin Bundle enthält Energydrinks ⚡ (Energie deines Begleiters) und Bucks 💵 (für Essen und Geschenke im Shop). Das bekommst du:",
+        "bundle_btn": "{emoji} {name} — {price} ⭐",
+        "bundle_breakdown_line": "{emoji} {name} — {energizers}⚡ Energydrinks + {bucks}💵 Bucks",
         "invoice_pro_title": "PRO-Abo für einen Monat",
         "invoice_pro_desc": "Gedächtnis 60 Nachrichten, Stile Leidenschaftlich und Magnetisch.",
         "invoice_pro_label": "PRO Monat",
@@ -722,8 +727,9 @@ TEXTS = {
         "low_energy_nudge": "😴 Dein Begleiter wird langsam müde und schläfrig... Vielleicht mit einem Energydrink aufmuntern?",
         "not_enough_bucks": "❌ Nicht genug Bucks: dir fehlen noch {n}💵.",
         "not_enough_energizers": "❌ Keine Energydrinks mehr. Kaufe ein Bundle, um deinen Begleiter sofort aufzuwecken ⚡.",
-        "asleep_message": "😴 Dein Begleiter schläft tief und fest und kann gerade nicht antworten. Er/sie wacht von selbst in etwa {minutes} Min. auf — oder wecke ihn sofort mit einem Energydrink ⚡.",
+        "asleep_message": "😴 Dein Begleiter schläft tief und fest und kann gerade nicht antworten — von selbst wacht er/sie nicht auf, also weck ihn/sie mit einem Energydrink ⚡ oder sofort und vollständig für {price}⭐.",
         "wake_energizer_btn": "⚡ Mit Energydrink wecken",
+        "no_energizers_shop_btn": "🛍 Keine Energydrinks — kaufen",
         "woken_up": "⚡ Energydrink getrunken — dein Begleiter ist wieder hellwach!",
         "stats_line": "⚡ Energie: {energy}/150   🍗 Sättigung: {satiety}/100\n{mood_emoji} Stimmung: {mood_bar} ({mood_value})\n⚡ Energydrinks: {energizers}   💵 Bucks: {bucks} — ausgeben im 🛍 Shop\n🔥 Szenen: {scenes}",
         "wake_now_btn": "💳 Jetzt wecken für {price}⭐",
@@ -734,7 +740,7 @@ TEXTS = {
         "notifications_off_btn": "🔕 Benachrichtigungen: AUS",
         "notifications_muted_alert": "🔕 Benachrichtigungen stummgeschaltet.",
         "notifications_unmuted_alert": "🔔 Benachrichtigungen aktiviert.",
-        "mute_requires_sub_alert": "🔒 Benachrichtigungen stummschalten ist nur mit einem SUPER PRO-Abo möglich.",
+        "mute_requires_sub_alert": "🔒 Benachrichtigungen stummschalten ist nur mit einem SUPER PRO- oder ELITE-Abo möglich.",
         "payment_pro_success": "✅ PRO-Abo für einen Monat aktiviert!",
         "payment_super_success": "✅ SUPER PRO-Abo für einen Monat aktiviert!",
         "payment_elite_success": "✅ ELITE-Abo für einen Monat aktiviert!",
@@ -999,7 +1005,8 @@ def get_user(user_id):
             "history": [],
             "last_menu_message_id": None,
             "xp": 0,
-            "xp_migrated_v2": True,  # новый пользователь — сразу на новой прогрессивной шкале, мигрировать нечего
+            "xp_migrated_v2": True,  # новый пользователь — сразу на текущей шкале, мигрировать нечего
+            "xp_migrated_v3": True,
             "mood": 0,
             "location": "unknown",
             "negative_count": 0,
@@ -1050,7 +1057,8 @@ def get_user(user_id):
             "last_menu_message_id": None,
             "subscription": {"active": False, "expires_at": None, "level": None},
             "xp": 0,
-            "xp_migrated_v2": False,  # отсутствие ключа = ещё не мигрировал на новую шкалу уровней
+            "xp_migrated_v2": False,  # отсутствие ключа = ещё не мигрировал на шкалу уровней v2
+            "xp_migrated_v3": False,  # отсутствие ключа = ещё не мигрировал на шкалу уровней v3
             "mood": 0,
             "location": "unknown",
             "negative_count": 0,
@@ -1103,22 +1111,38 @@ def get_user(user_id):
         if user.get("style") not in STYLES:
             user["style"] = "warm"
 
-        # МИГРАЦИЯ ШКАЛЫ XP: раньше каждый уровень стоил одинаково (LEGACY_XP_PER_LEVEL=200),
-        # теперь стоимость растёт с каждым уровнем (LEVEL_XP_COST). Без пересчёта уже
-        # накопленный xp читался бы по новым, более низким для старта порогам — например
-        # xp в [400,600) раньше означал уровень 3, а по новым порогам это уже готовые 5,
-        # то есть уровень скакнул бы вперёд без каких-либо новых действий пользователя.
-        # Пересчитываем один раз так, чтобы старый уровень и грубо прогресс внутри него
-        # сохранились, а дальше уже действует новая, более крутая шкала.
+        # МИГРАЦИЯ ШКАЛЫ XP (v1 -> v2): раньше каждый уровень стоил одинаково (LEGACY_XP_PER_LEVEL=200),
+        # v2 сделала стоимость растущей с уровнем. Без пересчёта уже накопленный xp читался бы по
+        # порогам v2 напрямую и уровень мог скакнуть вперёд без каких-либо новых действий
+        # пользователя. Пересчитываем один раз так, чтобы старый уровень и грубо прогресс внутри
+        # него сохранились.
         if not user.get("xp_migrated_v2"):
             old_xp = max(0, user.get("xp", 0))
             old_level = min(10, old_xp // LEGACY_XP_PER_LEVEL + 1)
             if old_level >= 10:
-                user["xp"] = LEVEL_XP_THRESHOLD[10]
+                user["xp"] = LEGACY_V2_LEVEL_XP_THRESHOLD[10]
             else:
                 progress_fraction = (old_xp % LEGACY_XP_PER_LEVEL) / LEGACY_XP_PER_LEVEL
-                user["xp"] = int(LEVEL_XP_THRESHOLD[old_level] + progress_fraction * LEVEL_XP_COST[old_level])
+                user["xp"] = int(LEGACY_V2_LEVEL_XP_THRESHOLD[old_level] + progress_fraction * LEGACY_V2_LEVEL_XP_COST[old_level])
             user["xp_migrated_v2"] = True
+
+        # МИГРАЦИЯ ШКАЛЫ XP (v2 -> v3): по фидбэку даже v2 копился слишком быстро — весь масштаб
+        # поднят (см. LEVEL_XP_COST). Та же логика на ступень позже: без неё уровень, уже
+        # смигрированный на v2, скакнул бы теперь НАЗАД при чтении по значительно более высоким
+        # порогам v3.
+        if not user.get("xp_migrated_v3"):
+            old_xp = max(0, user.get("xp", 0))
+            old_level = 1
+            for lvl in range(2, 11):
+                if old_xp >= LEGACY_V2_LEVEL_XP_THRESHOLD[lvl]:
+                    old_level = lvl
+            if old_level >= 10:
+                user["xp"] = LEVEL_XP_THRESHOLD[10]
+            else:
+                cost_v2 = LEGACY_V2_LEVEL_XP_COST[old_level]
+                progress_fraction = (old_xp - LEGACY_V2_LEVEL_XP_THRESHOLD[old_level]) / cost_v2 if cost_v2 else 0
+                user["xp"] = int(LEVEL_XP_THRESHOLD[old_level] + progress_fraction * LEVEL_XP_COST[old_level])
+            user["xp_migrated_v3"] = True
 
         apply_passive_stat_regen(user)
         apply_mood_inactivity_decay(user)
@@ -1238,12 +1262,22 @@ ADULT_BADGE = "18+"
 # Стоимость (в XP) перехода С уровня N НА уровень N+1 — каждый следующий уровень требует
 # больше, чем предыдущий: первое сближение лёгкое и быстрое, а дальше — как и в реальных
 # отношениях — узнавать друг друга и завоёвывать доверие сложнее и дольше.
-LEVEL_XP_COST = {1: 20, 2: 40, 3: 100, 4: 180, 5: 280, 6: 400, 7: 550, 8: 750, 9: 1000}
+# v3: по фидбэку даже v2 (20/40/100/...) копился слишком быстро — весь масштаб поднят.
+LEVEL_XP_COST = {1: 100, 2: 170, 3: 260, 4: 380, 5: 520, 6: 680, 7: 860, 8: 1060, 9: 1280}
 # Суммарный XP, необходимый для ДОСТИЖЕНИЯ уровня N (level=1 — старт, 0 XP).
 LEVEL_XP_THRESHOLD = {1: 0}
 for _lvl in range(2, 11):
     LEVEL_XP_THRESHOLD[_lvl] = LEVEL_XP_THRESHOLD[_lvl - 1] + LEVEL_XP_COST[_lvl - 1]
-LEGACY_XP_PER_LEVEL = 200  # старая плоская шкала — только для миграции xp уже играющих пользователей, см. get_user()
+
+# Предыдущие шкалы — нужны ТОЛЬКО для миграции xp уже играющих пользователей (см. get_user()),
+# сами больше нигде не используются. v1 — совсем старая, плоская (200 xp на любой уровень).
+# v2 — первая прогрессивная, оказавшаяся по фидбэку всё ещё слишком быстрой.
+LEGACY_XP_PER_LEVEL = 200  # v1
+LEGACY_V2_LEVEL_XP_COST = {1: 20, 2: 40, 3: 100, 4: 180, 5: 280, 6: 400, 7: 550, 8: 750, 9: 1000}
+LEGACY_V2_LEVEL_XP_THRESHOLD = {1: 0}
+for _lvl in range(2, 11):
+    LEGACY_V2_LEVEL_XP_THRESHOLD[_lvl] = LEGACY_V2_LEVEL_XP_THRESHOLD[_lvl - 1] + LEGACY_V2_LEVEL_XP_COST[_lvl - 1]
+
 XP_MULTIPLIER = {"pro": 1.8, "super_pro": 2.5, "elite": 3.5}
 XP_BONUS_TEXT_KEY = {"pro": "xp_bonus_pro", "super_pro": "xp_bonus_super", "elite": "xp_bonus_elite"}
 
@@ -1710,9 +1744,6 @@ ENERGY_COST_MESSAGE = 12  # бак вырос в 1.5 раза (100->150), но �
                           # сообщений на полный бак стало МЕНЬШЕ, чем раньше (было ~16.7, теперь ~12.5)
 SATIETY_COST_MESSAGE = 3
 ENERGIZER_RESTORE_AMOUNT = 98  # 65% от нового бака в 150 (150*0.65=97.5, округлено)
-SLEEP_NAP_MINUTES = 20  # фиксированная длительность "сна": пассивная регенерация энергии идёт
-                          # непрерывно и сама по себе не должна досрочно снимать блокировку чата —
-                          # иначе при регене ~2.5/мин чат разблокировался бы уже через минуту
 STAT_DECAY_MULTIPLIER = {"pro": 0.6, "super_pro": 0.3, "elite": 0.15}  # подписчики устают/голодают медленнее
 INTIMACY_LEVEL_DECAY_STEP = 0.1  # чем ближе вы, тем персонаж "требовательнее": на 1 уровне — как
                                   # обычно, на 10 — почти вдвое быстрее тратит энергию и сытость
@@ -1773,32 +1804,16 @@ def apply_activity_stat_cost(user, energy_cost, satiety_cost):
     user["energy"] = max(0, prev_energy - energy_cost * mult)
     user["satiety"] = max(0, user.get("satiety", SATIETY_MAX) - satiety_cost * mult)
     if prev_energy > 0 and user["energy"] <= 0:
-        # Энергия только что впервые дошла до 0 — фиксируем время пробуждения. Дальше
-        # is_asleep() смотрит именно на sleep_until, а не на текущую энергию: иначе
-        # непрерывный пассивный регенерации энергии почти сразу же "будил" бы персонажа.
-        user["sleep_until"] = (datetime.now() + timedelta(minutes=SLEEP_NAP_MINUTES)).isoformat()
+        # Энергия только что впервые дошла до 0 — фиксируем момент засыпания. sleep_until
+        # больше НЕ таймер пробуждения (раньше был +20 минут, и по истечении персонаж
+        # просыпался сам, бесплатно) — теперь это просто факт "спит", который снимается
+        # только явным действием (энергетик или платное "разбудить сейчас"), а не временем:
+        # is_asleep() смотрит только на то, установлено ли поле, а не на его значение.
+        user["sleep_until"] = datetime.now().isoformat()
 
 
 def is_asleep(user):
-    sleep_until = user.get("sleep_until")
-    if not sleep_until:
-        return False
-    try:
-        return datetime.fromisoformat(sleep_until) > datetime.now()
-    except (ValueError, TypeError):
-        return False
-
-
-def sleep_minutes_left(user):
-    """Сколько минут осталось до конца сна, округлённо вверх, минимум 1 (только для отображения)."""
-    sleep_until = user.get("sleep_until")
-    if not sleep_until:
-        return 0
-    try:
-        remaining = (datetime.fromisoformat(sleep_until) - datetime.now()).total_seconds() / 60
-    except (ValueError, TypeError):
-        return 0
-    return max(1, math.ceil(remaining))
+    return bool(user.get("sleep_until"))
 
 
 def use_energizer(user):
@@ -1937,7 +1952,9 @@ def build_prompt(user):
         "Между действием и репликой – пустая строка.\n"
         "**РЕАКЦИЯ НА СООБЩЕНИЕ:** В самом конце ответа, после завершения всей фразы, напиши в скобках одну "
         "из эмоций: (смех), (радость), (любовь), (удивление), (грусть), (злость), (поддержка), (интрига), "
-        "(флирт), (приветствие), (вопрос).\n"
+        "(флирт), (приветствие), (вопрос). Это служебный тег для системы, а не часть истории — слово ВСЕГДА "
+        "остаётся русским из этого списка, даже если весь остальной ответ на другом языке. Пиши его голыми "
+        "скобками, без звёздочек и любого другого форматирования вокруг, точно последними символами ответа.\n"
         "**СТРУКТУРА ОТВЕТА:** Чередуй действие и реплику. Первым идёт действие, затем реплика. Минимум 2 пары "
         "(действие + реплика).\n"
         "**ОБЪЁМ:** Пиши развёрнуто (3–5 предложений на реплику).\n"
@@ -2849,6 +2866,14 @@ async def profile_bundles(call: types.CallbackQuery):
     if not user["personality_ready"]:
         await call.answer(get_text(user, "need_character_alert"), show_alert=True)
         return
+    # Кнопки теперь просто "название — цена" без сырых "5⚡+60💵" в них — сама расшифровка,
+    # что именно даёт каждый бандл, вынесена в текст сообщения над кнопками.
+    breakdown = "\n".join(
+        get_text(user, "bundle_breakdown_line", emoji=item["emoji"],
+                  name=item.get(user.get("lang", "ru"), item["ru"]),
+                  energizers=item["energizers"], bucks=item["bucks"])
+        for item in BUNDLES.values()
+    )
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=bundle_option_label(key, user),
                               callback_data=f"buy:{key}", style="success")]
@@ -2856,7 +2881,8 @@ async def profile_bundles(call: types.CallbackQuery):
     ] + [
         [InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")]
     ])
-    await call.message.answer(get_text(user, "bundles_title"), reply_markup=keyboard, parse_mode="Markdown")
+    await call.message.answer(get_text(user, "bundles_title") + "\n" + breakdown,
+                              reply_markup=keyboard, parse_mode="Markdown")
     await call.answer()
 
 
@@ -3040,7 +3066,7 @@ async def maybe_send_energy_nudge(chat_id, user):
             pass
     user["last_energy_nudge"] = datetime.now().isoformat()
     save_data(user_data)
-    await bot.send_message(chat_id, get_text(user, "low_energy_nudge"), reply_markup=get_wake_kb(user))
+    await bot.send_message(chat_id, get_text(user, "low_energy_nudge"), reply_markup=get_energy_nudge_kb(user))
 
 
 @dp.callback_query(lambda c: c.data == "profile_shop")
@@ -3727,14 +3753,27 @@ def get_intim_buy_kb(user):
 
 
 def get_wake_kb(user):
-    """Показывается только когда собеседник "спит" (energy <= 0). Если есть свой энергетик —
-    им можно разбудить бесплатно; в любом случае ниже есть мгновенная платная кнопка "разбудить
-    сейчас" — она нужна именно тем, кто не хочет ждать и не хочет запасаться энергетиками заранее."""
+    """Показывается только когда собеседник по-настоящему "спит" (energy <= 0, is_asleep()==True).
+    Если есть свой энергетик — им можно разбудить бесплатно; в любом случае ниже есть мгновенная
+    платная кнопка "разбудить сейчас" — она нужна именно тем, кто не хочет ждать и не хочет
+    запасаться энергетиками заранее."""
     rows = []
     if user.get("energizers", 0) > 0:
         rows.append([InlineKeyboardButton(text=get_text(user, "wake_energizer_btn"), callback_data="wake_up", style="success")])
     rows.append([InlineKeyboardButton(text=get_text(user, "wake_now_btn", price=PRODUCTS["wake_now"]["stars"]),
                                       callback_data="buy:wake_now", style="success")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+def get_energy_nudge_kb(user):
+    """Для "сонной" подсказки (energy низкая, но ещё НЕ спит) — в отличие от get_wake_kb здесь
+    не должно быть платной кнопки "разбудить сейчас": будить ещё некого, собеседник и так
+    отвечает. Если есть энергетик — предлагаем взбодриться им; если их нет — ведём в магазин
+    их купить, а не сразу к оплате звёздами за то, что ещё не наступило."""
+    if user.get("energizers", 0) > 0:
+        rows = [[InlineKeyboardButton(text=get_text(user, "wake_energizer_btn"), callback_data="wake_up", style="success")]]
+    else:
+        rows = [[InlineKeyboardButton(text=get_text(user, "no_energizers_shop_btn"), callback_data="profile_bundles", style="success")]]
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -4038,7 +4077,10 @@ async def intim_continue_cb(call: types.CallbackQuery):
 #  ВСПОМОГАТЕЛЬНОЕ ДЛЯ ОТВЕТОВ ИИ
 # ============================================================
 def extract_reaction_from_answer(text):
-    match = re.search(r'\(([^)]+)\)$', text)
+    # \*? и \s*$ — на случай, если модель всё же обернула тег в звёздочки (как остальные
+    # действия по ФОРМАТИРОВАНИЮ) или оставила что-то после него: без этой терпимости тег
+    # не распознаётся и утекает пользователю как есть, например "*(смех)*" в конце ответа.
+    match = re.search(r'\*?\(([^)]+)\)\*?\s*$', text)
     if not match:
         return None, text
     reaction_key = match.group(1).strip().lower()
@@ -4048,7 +4090,9 @@ def extract_reaction_from_answer(text):
         "флирт": "😉", "приветствие": "👋", "вопрос": "🤔"
     }
     reaction = reaction_map.get(reaction_key)
-    clean_text = re.sub(r'\s*\([^)]+\)$', '', text).strip()
+    if reaction is None:
+        return None, text
+    clean_text = text[:match.start()].rstrip()
     return reaction, clean_text
 
 
@@ -4267,7 +4311,7 @@ async def handle_message(message: types.Message):
     # не генерируем (экономит и токены, и веру в механику), а кнопки навигации выше уже
     # обработаны и по-прежнему работают, чтобы можно было зайти в профиль и разбудить/покормить.
     if is_asleep(user):
-        await message.answer(get_text(user, "asleep_message", minutes=sleep_minutes_left(user)), reply_markup=get_wake_kb(user))
+        await message.answer(get_text(user, "asleep_message", price=PRODUCTS["wake_now"]["stars"]), reply_markup=get_wake_kb(user))
         return
 
     # 5. Режим редактирования последнего сообщения
