@@ -50,8 +50,8 @@ TEXTS = {
         "channel": "📢 Перейти в канал",
         "free": "🎁 Бесплатно ({left}/{total})",
         "tomorrow": "⏳ Завтра",
-        "spin_paid": "💎 Крутить за 10⭐",
-        "spin_more": "💎 Крутить ещё за 10⭐",
+        "spin_paid": "💎 Крутить за 15⭐",
+        "spin_more": "💎 Крутить ещё за 15⭐",
         "welcome": "👋 Добро пожаловать!",
         "age_confirm": "🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
         "age_ok": "✅ Возраст подтверждён.",
@@ -143,7 +143,7 @@ TEXTS = {
         "world_name_anime": "аниме-мира",
         "spin_already": "⏳ Ты уже крутил сегодня! Завтра будет новое бесплатное вращение.",
         "spin_tomorrow_alert": "⏳ Бесплатное вращение будет доступно завтра!",
-        "spin_invoice_desc": "Платное вращение — 10⭐. Удачи!",
+        "spin_invoice_desc": "Платное вращение — 15⭐. Удачи!",
         "spin_invoice_label": "Прокрутка",
         "spin_rolling": "🎰 Крутим...",
         "spin_almost": "🎰 Почти выпало: {name}",
@@ -294,8 +294,8 @@ TEXTS = {
         "channel": "📢 Go to channel",
         "free": "🎁 Free ({left}/{total})",
         "tomorrow": "⏳ Tomorrow",
-        "spin_paid": "💎 Spin for 10⭐",
-        "spin_more": "💎 Spin again for 10⭐",
+        "spin_paid": "💎 Spin for 15⭐",
+        "spin_more": "💎 Spin again for 15⭐",
         "welcome": "👋 Welcome!",
         "age_confirm": "🔞 **WARNING!**\nThis bot is for 18+ only.\nConfirm your age:",
         "age_ok": "✅ Age confirmed.",
@@ -387,7 +387,7 @@ TEXTS = {
         "world_name_anime": "the anime world",
         "spin_already": "⏳ You already spun today! A new free spin will be available tomorrow.",
         "spin_tomorrow_alert": "⏳ The free spin will be available tomorrow!",
-        "spin_invoice_desc": "Paid spin — 10⭐. Good luck!",
+        "spin_invoice_desc": "Paid spin — 15⭐. Good luck!",
         "spin_invoice_label": "Spin",
         "spin_rolling": "🎰 Spinning...",
         "spin_almost": "🎰 Almost got: {name}",
@@ -538,8 +538,8 @@ TEXTS = {
         "channel": "📢 Zum Kanal",
         "free": "🎁 Gratis ({left}/{total})",
         "tomorrow": "⏳ Morgen",
-        "spin_paid": "💎 Für 10⭐ drehen",
-        "spin_more": "💎 Nochmal für 10⭐ drehen",
+        "spin_paid": "💎 Für 15⭐ drehen",
+        "spin_more": "💎 Nochmal für 15⭐ drehen",
         "welcome": "👋 Willkommen!",
         "age_confirm": "🔞 **ACHTUNG!**\nDieser Bot ist nur für Personen ab 18 Jahren.\nBestätige dein Alter:",
         "age_ok": "✅ Alter bestätigt.",
@@ -631,7 +631,7 @@ TEXTS = {
         "world_name_anime": "der Anime-Welt",
         "spin_already": "⏳ Du hast heute schon gedreht! Morgen gibt es eine neue Gratisdrehung.",
         "spin_tomorrow_alert": "⏳ Die Gratisdrehung gibt es morgen wieder!",
-        "spin_invoice_desc": "Bezahlte Drehung — 10⭐. Viel Glück!",
+        "spin_invoice_desc": "Bezahlte Drehung — 15⭐. Viel Glück!",
         "spin_invoice_label": "Drehung",
         "spin_rolling": "🎰 Es dreht sich...",
         "spin_almost": "🎰 Fast gewonnen: {name}",
@@ -3213,26 +3213,26 @@ PAYMENT_TIMEOUT_MINUTES = 60  # через сколько снимаем нео�
 
 # Цена одного и того же товара в разных валютах. Звёзды — как было, рубли и
 # доллары правь здесь же: это единственное место, где заданы цены.
-# Все цены теперь РЕАЛЬНАЯ конвертация, а не "рубли=звёзды 1:1": rub — это якорь (та цена,
-# что уже настроена всей экономикой прошлых раундов, её не трогаем), а stars и usd посчитаны
-# от неё через настоящий курс на 12.09.2026: 1 звезда ≈ $0.014 (официальный курс Telegram,
-# TON/200 — не курс покупки через App Store/Google Play, там дороже из-за комиссии самих
-# Apple/Google, ~$0.02, которую мы всё равно не получаем) × ~84.26₽/$ (ЦБ) ≈ 1.18₽/звезда.
-# Звёзды округлены ВНИЗ до красивого числа — то есть в звёздах теперь честно дешевле (меньше),
-# чем номинал в рублях, а не одна и та же цифра в двух валютах.
+# РЕАЛЬНАЯ конвертация звёзд/рублей/долларов, а не "рубли=звёзды 1:1": курс на 12.09.2026 —
+# 1 звезда ≈ $0.014 (официальный курс Telegram, TON/200 — не курс покупки через App
+# Store/Google Play, там дороже из-за комиссии самих Apple/Google, ~$0.02, которую мы всё
+# равно не получаем) × ~84.26₽/$ (ЦБ) ≈ 1.18₽/звезда. У каждого товара своя пара
+# "якорь -> производное":
+#   - подписки/апгрейд — якорь rub (та цена, что уже настроена экономикой прошлых раундов),
+#     stars посчитаны от неё и округлены ВНИЗ до красивого числа;
+#   - горячая сцена, бандлы, платная прокрутка, разбудить сейчас — явно попросили звёзды
+#     оставить/вернуть как есть, так что здесь наоборот: якорь stars, rub/usd посчитаны от них.
 PRODUCTS = {
     "subscribe_pro": {"stars": 220, "usd": 3.1, "rub": 260},
     "subscribe_super": {"stars": 500, "usd": 7.1, "rub": 600},
     "subscribe_elite": {"stars": 1000, "usd": 14.2, "rub": 1200},
     "upgrade_to_super": {"stars": 350, "usd": 5.0, "rub": 420},
-    "bundle_small": {"stars": 25, "usd": 0.4, "rub": 30},
-    "bundle_medium": {"stars": 65, "usd": 0.9, "rub": 80},
-    "bundle_large": {"stars": 160, "usd": 2.4, "rub": 200},
-    "spin_paid_20": {"stars": 10, "usd": 0.2, "rub": 15},
-    # intim_scene — цена задана наоборот: 45⭐ явно попросили как якорь, rub/usd посчитаны ОТ
-    # звёзд тем же курсом (45 × 1.1796 ≈ 53₽), а не звёзды от рублей, как у всех остальных выше.
+    "bundle_small": {"stars": 30, "usd": 0.4, "rub": 35},
+    "bundle_medium": {"stars": 80, "usd": 1.1, "rub": 94},
+    "bundle_large": {"stars": 200, "usd": 2.8, "rub": 236},
+    "spin_paid_20": {"stars": 15, "usd": 0.2, "rub": 18},
     "intim_scene": {"stars": 45, "usd": 0.6, "rub": 53},
-    "wake_now": {"stars": 40, "usd": 0.6, "rub": 50},
+    "wake_now": {"stars": 50, "usd": 0.7, "rub": 59},
 }
 # Подстраховка на случай, если когда-нибудь добавят товар без явного rub — тогда он по
 # умолчанию будет 1:1 со звёздами, а не упадёт с KeyError.
