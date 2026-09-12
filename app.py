@@ -200,11 +200,11 @@ TEXTS = {
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
         "subs_title": "👑 Подписки Role Duel",
-        "subs_body": "🔥 PRO (250⭐/мес)\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-40%)\n• +80💵 баксов и +2⚡ энергетика каждый день\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (450⭐/мес)\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-70%)\n• +200💵 баксов и +3⚡ энергетика каждый день\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (800⭐/мес)\n• Всё, что есть в SUPER PRO\n• Память: 150 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-85%)\n• +350💵 баксов и +6⚡ энергетиков каждый день\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n\n⬆️ Апгрейд до SUPER PRO (245⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
-        "subs_btn_pro": "🔥 PRO — 250 ⭐/мес",
-        "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐/мес",
-        "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐/мес",
-        "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (245⭐)",
+        "subs_body": "🔥 PRO (260⭐/мес)\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-35%)\n• +80💵 баксов и +2⚡ энергетика каждый день\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (600⭐/мес)\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-40%)\n• +200💵 баксов и +3⚡ энергетика каждый день\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (1300⭐/мес)\n• Всё, что есть в SUPER PRO\n• Память: 150 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-50%)\n• +350💵 баксов и +4⚡ энергетика каждый день\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (420⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_btn_pro": "🔥 PRO — 260 ⭐/мес",
+        "subs_btn_super": "✨ SUPER PRO ✨ — 600 ⭐/мес",
+        "subs_btn_elite": "💎 ELITE 💎 — 1300 ⭐/мес",
+        "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (420⭐)",
         "bundles_title": "🎁 **Купить бандл**\n\nБандл — это энергетики ⚡ (энергия персонажа) и баксы 💵 (на еду и подарки в магазине). Что даёт каждый:",
         "bundle_btn": "{emoji} {name} — {price} ⭐",
         "bundle_breakdown_line": "{emoji} {name} — {energizers}⚡ энергетиков + {bucks}💵 баксов",
@@ -218,7 +218,7 @@ TEXTS = {
         "invoice_elite_desc": "Память 150 сообщений, все стили включая 18+, XP x3.5, минимальный расход энергии/сытости.",
         "invoice_elite_label": "ELITE месяц",
         "invoice_upgrade_title": "Апгрейд до SUPER PRO",
-        "invoice_upgrade_desc": "Повысьте PRO до SUPER PRO на оставшийся срок. 245⭐.",
+        "invoice_upgrade_desc": "Повысьте PRO до SUPER PRO на оставшийся срок. 420⭐.",
         "invoice_upgrade_label": "Апгрейд",
         "invoice_bundle_title": "{name}: {energizers}⚡ + {bucks}💵",
         "invoice_bundle_desc": "{energizers} энергетиков и {bucks} баксов за {price}⭐",
@@ -251,6 +251,9 @@ TEXTS = {
         "woken_up": "⚡ Энергетик выпит — персонаж снова бодр и на связи!",
         "stats_line": "⚡ Энергия: {energy}/150   🍗 Сытость: {satiety}/100\n{mood_emoji} Настроение: {mood_bar} ({mood_value})\n⚡ Энергетиков: {energizers}   💵 Баксов: {bucks} — потратить можно в 🛍 Магазине\n🔥 Сцен: {scenes}",
         "wake_now_btn": "💳 Разбудить сейчас за {price}⭐",
+        "elite_free_wake_btn": "🎁 Бесплатно разбудить (ELITE, раз в неделю)",
+        "elite_free_wake_used_alert": "🎁 Бесплатное пробуждение уже использовано на этой неделе — вернётся в понедельник.",
+        "elite_free_wake_success": "🎁 ELITE-плюшка использована: персонаж разбужен мгновенно и бесплатно! Снова будет доступно через неделю.",
         "invoice_wake_title": "Разбудить персонажа",
         "invoice_wake_desc": "Мгновенно поднимает энергию персонажа до максимума.",
         "invoice_wake_label": "Разбудить",
@@ -441,11 +444,11 @@ TEXTS = {
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
         "subs_title": "👑 Role Duel Subscriptions",
-        "subs_body": "🔥 PRO (250⭐ per month)\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-40%)\n• +80💵 bucks and +2⚡ energizers every day\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (450⭐ per month)\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-70%)\n• +200💵 bucks and +3⚡ energizers every day\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (800⭐ per month)\n• Everything in SUPER PRO\n• Memory: 150 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-85%)\n• +350💵 bucks and +6⚡ energizers every day\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n\n⬆️ Upgrade to SUPER PRO (245⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
-        "subs_btn_pro": "🔥 PRO — 250 ⭐ per month",
-        "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ per month",
-        "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐ per month",
-        "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (245⭐)",
+        "subs_body": "🔥 PRO (260⭐ per month)\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-35%)\n• +80💵 bucks and +2⚡ energizers every day\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (600⭐ per month)\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-40%)\n• +200💵 bucks and +3⚡ energizers every day\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (1300⭐ per month)\n• Everything in SUPER PRO\n• Memory: 150 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-50%)\n• +350💵 bucks and +4⚡ energizers every day\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (420⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_btn_pro": "🔥 PRO — 260 ⭐ per month",
+        "subs_btn_super": "✨ SUPER PRO ✨ — 600 ⭐ per month",
+        "subs_btn_elite": "💎 ELITE 💎 — 1300 ⭐ per month",
+        "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (420⭐)",
         "bundles_title": "🎁 **Buy a bundle**\n\nA bundle gives you energizers ⚡ (your companion's energy) and bucks 💵 (for food and gifts in the shop). What each one gives:",
         "bundle_btn": "{emoji} {name} — {price} ⭐",
         "bundle_breakdown_line": "{emoji} {name} — {energizers}⚡ energizers + {bucks}💵 bucks",
@@ -459,7 +462,7 @@ TEXTS = {
         "invoice_elite_desc": "150-message memory, all styles including 18+, XP x3.5, minimal energy/satiety drain.",
         "invoice_elite_label": "ELITE month",
         "invoice_upgrade_title": "Upgrade to SUPER PRO",
-        "invoice_upgrade_desc": "Upgrade PRO to SUPER PRO for the remaining time. 245⭐.",
+        "invoice_upgrade_desc": "Upgrade PRO to SUPER PRO for the remaining time. 420⭐.",
         "invoice_upgrade_label": "Upgrade",
         "invoice_bundle_title": "{name}: {energizers}⚡ + {bucks}💵",
         "invoice_bundle_desc": "{energizers} energizers and {bucks} bucks for {price}⭐",
@@ -492,6 +495,9 @@ TEXTS = {
         "woken_up": "⚡ Energizer used — your companion is wide awake again!",
         "stats_line": "⚡ Energy: {energy}/150   🍗 Satiety: {satiety}/100\n{mood_emoji} Mood: {mood_bar} ({mood_value})\n⚡ Energizers: {energizers}   💵 Bucks: {bucks} — spend them in the 🛍 Shop\n🔥 Scenes: {scenes}",
         "wake_now_btn": "💳 Wake up now for {price}⭐",
+        "elite_free_wake_btn": "🎁 Free wake-up (ELITE, once a week)",
+        "elite_free_wake_used_alert": "🎁 You've already used your free wake-up this week — it resets on Monday.",
+        "elite_free_wake_success": "🎁 ELITE perk used: your companion is instantly and freely awake! Available again in a week.",
         "invoice_wake_title": "Wake up your companion",
         "invoice_wake_desc": "Instantly refills your companion's energy to full.",
         "invoice_wake_label": "Wake up",
@@ -682,11 +688,11 @@ TEXTS = {
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
         "subs_title": "👑 Role Duel Abos",
-        "subs_body": "🔥 PRO (250⭐ pro Monat)\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-40%)\n• +80💵 Bucks und +2⚡ Energydrinks jeden Tag\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (450⭐ pro Monat)\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-70%)\n• +200💵 Bucks und +3⚡ Energydrinks jeden Tag\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (800⭐ pro Monat)\n• Alles aus SUPER PRO\n• Gedächtnis: 150 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-85%)\n• +350💵 Bucks und +6⚡ Energydrinks jeden Tag\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n\n⬆️ Upgrade auf SUPER PRO (245⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
-        "subs_btn_pro": "🔥 PRO — 250 ⭐ pro Monat",
-        "subs_btn_super": "✨ SUPER PRO ✨ — 450 ⭐ pro Monat",
-        "subs_btn_elite": "💎 ELITE 💎 — 800 ⭐ pro Monat",
-        "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO (245⭐)",
+        "subs_body": "🔥 PRO (260⭐ pro Monat)\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-35%)\n• +80💵 Bucks und +2⚡ Energydrinks jeden Tag\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (600⭐ pro Monat)\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-40%)\n• +200💵 Bucks und +3⚡ Energydrinks jeden Tag\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (1300⭐ pro Monat)\n• Alles aus SUPER PRO\n• Gedächtnis: 150 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-50%)\n• +350💵 Bucks und +4⚡ Energydrinks jeden Tag\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (420⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
+        "subs_btn_pro": "🔥 PRO — 260 ⭐ pro Monat",
+        "subs_btn_super": "✨ SUPER PRO ✨ — 600 ⭐ pro Monat",
+        "subs_btn_elite": "💎 ELITE 💎 — 1300 ⭐ pro Monat",
+        "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO (420⭐)",
         "bundles_title": "🎁 **Bundle kaufen**\n\nEin Bundle enthält Energydrinks ⚡ (Energie deines Begleiters) und Bucks 💵 (für Essen und Geschenke im Shop). Das bekommst du:",
         "bundle_btn": "{emoji} {name} — {price} ⭐",
         "bundle_breakdown_line": "{emoji} {name} — {energizers}⚡ Energydrinks + {bucks}💵 Bucks",
@@ -700,7 +706,7 @@ TEXTS = {
         "invoice_elite_desc": "Gedächtnis 150 Nachrichten, alle Stile inklusive 18+, XP x3.5, minimaler Energie-/Sättigungsverbrauch.",
         "invoice_elite_label": "ELITE Monat",
         "invoice_upgrade_title": "Upgrade auf SUPER PRO",
-        "invoice_upgrade_desc": "Hebt PRO für die Restlaufzeit auf SUPER PRO an. 245⭐.",
+        "invoice_upgrade_desc": "Hebt PRO für die Restlaufzeit auf SUPER PRO an. 420⭐.",
         "invoice_upgrade_label": "Upgrade",
         "invoice_bundle_title": "{name}: {energizers}⚡ + {bucks}💵",
         "invoice_bundle_desc": "{energizers} Energydrinks und {bucks} Bucks für {price}⭐",
@@ -733,6 +739,9 @@ TEXTS = {
         "woken_up": "⚡ Energydrink getrunken — dein Begleiter ist wieder hellwach!",
         "stats_line": "⚡ Energie: {energy}/150   🍗 Sättigung: {satiety}/100\n{mood_emoji} Stimmung: {mood_bar} ({mood_value})\n⚡ Energydrinks: {energizers}   💵 Bucks: {bucks} — ausgeben im 🛍 Shop\n🔥 Szenen: {scenes}",
         "wake_now_btn": "💳 Jetzt wecken für {price}⭐",
+        "elite_free_wake_btn": "🎁 Gratis wecken (ELITE, einmal pro Woche)",
+        "elite_free_wake_used_alert": "🎁 Du hast dein gratis Aufwecken diese Woche schon genutzt — ab Montag wieder verfügbar.",
+        "elite_free_wake_success": "🎁 ELITE-Bonus genutzt: dein Begleiter ist sofort und kostenlos wach! In einer Woche wieder verfügbar.",
         "invoice_wake_title": "Begleiter wecken",
         "invoice_wake_desc": "Füllt die Energie deines Begleiters sofort komplett auf.",
         "invoice_wake_label": "Wecken",
@@ -1567,10 +1576,14 @@ FREE_DAILY_BUCKS = 15  # бесплатный источник баксов и �
 
 
 FREE_SPINS_PER_DAY = {"pro": 2, "super_pro": 3, "elite": 5}  # без подписки — 1 (значение по умолчанию ниже)
-ENERGIZERS_DAILY_STIPEND = {"pro": 2, "super_pro": 3, "elite": 6}  # такая же ежедневная "подпитка", но энергетиками
+ENERGIZERS_DAILY_STIPEND = {"pro": 2, "super_pro": 3, "elite": 4}  # такая же ежедневная "подпитка", но энергетиками
 # pro было 1/день — при цене подписки это выходило дороже за энергетик, чем в самом дешёвом
 # бандле (250⭐/30 vs 30⭐/5 = 8.3 vs 6 ⭐ за энергетик), тогда как баксы в подписке уже в разы
 # дешевле, чем в бандле — несправедливость была именно в этой цифре, не во всей подписке.
+# elite было 6/день — вместе со старым decay=0.15 и памятью 150 сообщений это одна из причин
+# огромного отрицательного margin (см. STAT_DECAY_MULTIPLIER); урезано до 4/день, а взамен
+# ELITE получил новую бесплатную еженедельную плюшку (см. elite_free_wake_available) —
+# не завязанную на ИИ-токены, только на факт подписки.
 
 
 def free_spins_allowed(user):
@@ -1758,7 +1771,12 @@ ENERGIZER_RESTORE_AMOUNT = 78  # было 98 (65% бака) — точечно �
                                # сопутствующего удвоения количеств бандлов/стипендов (в отличие
                                # от прошлой попытки уполовинить до 50, которая смотрелась чрезмерно
                                # в связке с удвоенными "72 энергетика за 200" и была отклонена).
-STAT_DECAY_MULTIPLIER = {"pro": 0.6, "super_pro": 0.3, "elite": 0.15}  # подписчики устают/голодают медленнее
+STAT_DECAY_MULTIPLIER = {"pro": 0.65, "super_pro": 0.6, "elite": 0.5}  # подписчики устают/голодают
+# медленнее. Было 0.6/0.3/0.15 — при реальной стоимости токенов (провод.ai) и курсе Lava 1⭐=1₽
+# это давало SUPER PRO и ELITE отрицательную маржу (-560₽ и -4868₽/мес на активного подписчика
+# при 100% использовании дневного лимита энергетиков), т.к. скидка на трату энергии напрямую
+# увеличивает число сообщений, которые можно написать на один и тот же дневной стипенд
+# энергетиков — а каждое сообщение стоит реальных денег в ИИ вне зависимости от decay.
 INTIMACY_LEVEL_DECAY_STEP = 0.1  # чем ближе вы, тем персонаж "требовательнее": на 1 уровне — как
                                   # обычно, на 10 — почти вдвое быстрее тратит энергию и сытость
 # У /hot нет стоимости энергии/сытости и нет проверки is_asleep(user) — это отдельный платный
@@ -1841,6 +1859,18 @@ def use_energizer(user):
     user["sleep_until"] = None
     save_data(user_data)
     return True
+
+
+def elite_free_wake_available(user):
+    """ELITE-эксклюзив без единого лишнего токена ИИ: раз в календарную неделю (ISO, с
+    понедельника) можно разбудить персонажа мгновенно и полностью бесплатно — как платный
+    wake_now, но без звёзд и без траты энергетика. Флаг — просто номер недели, когда плюшку
+    использовали последний раз; сравнение с текущей неделей и даёт доступность."""
+    if get_subscription_level(user) != "elite":
+        return False
+    now = datetime.now()
+    week_key = f"{now.isocalendar()[0]}-W{now.isocalendar()[1]}"
+    return user.get("elite_free_wake_week") != week_key
 
 
 def build_energy_rule(user):
@@ -3184,10 +3214,10 @@ PAYMENT_TIMEOUT_MINUTES = 60  # через сколько снимаем нео�
 # Цена одного и того же товара в разных валютах. Звёзды — как было, рубли и
 # доллары правь здесь же: это единственное место, где заданы цены.
 PRODUCTS = {
-    "subscribe_pro": {"stars": 250, "usd": 4.5},
-    "subscribe_super": {"stars": 450, "usd": 7.9},
-    "subscribe_elite": {"stars": 800, "usd": 14.5},
-    "upgrade_to_super": {"stars": 245, "usd": 4.4},
+    "subscribe_pro": {"stars": 260, "usd": 4.7},
+    "subscribe_super": {"stars": 600, "usd": 10.5},
+    "subscribe_elite": {"stars": 1300, "usd": 22.8},
+    "upgrade_to_super": {"stars": 420, "usd": 7.5},
     "bundle_small": {"stars": 30, "usd": 0.7},
     "bundle_medium": {"stars": 80, "usd": 1.7},
     "bundle_large": {"stars": 200, "usd": 3.9},
@@ -3773,8 +3803,10 @@ def get_wake_kb(user):
     """Показывается только когда собеседник по-настоящему "спит" (energy <= 0, is_asleep()==True).
     Если есть свой энергетик — им можно разбудить бесплатно; в любом случае ниже есть мгновенная
     платная кнопка "разбудить сейчас" — она нужна именно тем, кто не хочет ждать и не хочет
-    запасаться энергетиками заранее."""
+    запасаться энергетиками заранее. У ELITE сверху ещё и бесплатная кнопка раз в неделю."""
     rows = []
+    if elite_free_wake_available(user):
+        rows.append([InlineKeyboardButton(text=get_text(user, "elite_free_wake_btn"), callback_data="elite_free_wake", style="success")])
     if user.get("energizers", 0) > 0:
         rows.append([InlineKeyboardButton(text=get_text(user, "wake_energizer_btn"), callback_data="wake_up", style="success")])
     rows.append([InlineKeyboardButton(text=get_text(user, "wake_now_btn", price=PRODUCTS["wake_now"]["stars"]),
@@ -3802,6 +3834,21 @@ async def wake_up_cb(call: types.CallbackQuery):
         await call.answer()
     else:
         await call.answer(get_text(user, "not_enough_energizers"), show_alert=True)
+
+
+@dp.callback_query(lambda c: c.data == "elite_free_wake")
+async def elite_free_wake_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    if not elite_free_wake_available(user):
+        await call.answer(get_text(user, "elite_free_wake_used_alert"), show_alert=True)
+        return
+    now = datetime.now()
+    user["elite_free_wake_week"] = f"{now.isocalendar()[0]}-W{now.isocalendar()[1]}"
+    user["energy"] = ENERGY_MAX
+    user["sleep_until"] = None
+    save_data(user_data)
+    await call.message.answer(get_text(user, "elite_free_wake_success"))
+    await call.answer()
 
 
 async def show_intim_menu(chat_id, user):
