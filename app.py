@@ -178,7 +178,7 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Твоя подписка закончилась, выбери бесплатный стиль:",
         "quarrel": "💢 Ссора! Уровень близости снижен.",
         "generation_error": "⚠️ Ошибка генерации ответа: {error}",
-        "intim_buy_btn": "🔥 Купить горячую сцену (35⭐)",
+        "intim_buy_btn": "🔥 Купить горячую сцену (45⭐)",
         "intim_menu_title": "🔥 **Горячая сцена**\n\nДоступно сцен: {n}\nВыбери, что будет происходить:",
         "intim_choose_location": "📍 Выбери место:",
         "intim_choose_dominant": "🎭 Кто проявляет инициативу?",
@@ -422,7 +422,7 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Your subscription has ended, pick a free style:",
         "quarrel": "💢 A quarrel! Your closeness level dropped.",
         "generation_error": "⚠️ Failed to generate a reply: {error}",
-        "intim_buy_btn": "🔥 Buy a hot scene (35⭐)",
+        "intim_buy_btn": "🔥 Buy a hot scene (45⭐)",
         "intim_menu_title": "🔥 **Hot scene**\n\nScenes available: {n}\nChoose what happens:",
         "intim_choose_location": "📍 Choose a place:",
         "intim_choose_dominant": "🎭 Who takes the lead?",
@@ -666,7 +666,7 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Dein Abo ist abgelaufen, wähle einen kostenlosen Stil:",
         "quarrel": "💢 Streit! Dein Nähe-Level ist gesunken.",
         "generation_error": "⚠️ Antwort konnte nicht erzeugt werden: {error}",
-        "intim_buy_btn": "🔥 Heiße Szene kaufen (35⭐)",
+        "intim_buy_btn": "🔥 Heiße Szene kaufen (45⭐)",
         "intim_menu_title": "🔥 **Heiße Szene**\n\nVerfügbare Szenen: {n}\nWähle, was passiert:",
         "intim_choose_location": "📍 Wähle einen Ort:",
         "intim_choose_dominant": "🎭 Wer übernimmt die Führung?",
@@ -3229,7 +3229,9 @@ PRODUCTS = {
     "bundle_medium": {"stars": 65, "usd": 0.9, "rub": 80},
     "bundle_large": {"stars": 160, "usd": 2.4, "rub": 200},
     "spin_paid_20": {"stars": 10, "usd": 0.2, "rub": 15},
-    "intim_scene": {"stars": 35, "usd": 0.5, "rub": 45},
+    # intim_scene — цена задана наоборот: 45⭐ явно попросили как якорь, rub/usd посчитаны ОТ
+    # звёзд тем же курсом (45 × 1.1796 ≈ 53₽), а не звёзды от рублей, как у всех остальных выше.
+    "intim_scene": {"stars": 45, "usd": 0.6, "rub": 53},
     "wake_now": {"stars": 40, "usd": 0.6, "rub": 50},
 }
 # Подстраховка на случай, если когда-нибудь добавят товар без явного rub — тогда он по
