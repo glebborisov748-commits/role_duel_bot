@@ -4349,6 +4349,12 @@ async def handle_message(message: types.Message):
                 gender = user.get("gender", "female")
                 version = random.choice([1, 2])
                 key = f"welcome_back_{gender}" if version == 1 else f"welcome_back_{gender}_2"
+                # last_activity обновляем СРАЗУ и ДО await — иначе, если пользователь успевает
+                # прислать второе сообщение, пока первое ещё ждёт ответа ИИ (last_activity
+                # обновляется только после него, в generate_and_reply), второй обработчик видит
+                # тот же старый last_activity и шлёт это же приветствие повторно.
+                user["last_activity"] = datetime.now().isoformat()
+                save_data(user_data)
                 await message.answer(get_text(user, key))
         except Exception:
             pass
