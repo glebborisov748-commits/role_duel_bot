@@ -1151,7 +1151,7 @@ def get_user(user_id):
                 user["xp"] = int(LEVEL_XP_THRESHOLD[old_level] + progress_fraction * LEVEL_XP_COST[old_level])
             user["xp_migrated_v3"] = True
 
-        apply_passive_stat_regen(user)
+        apply_passive_satiety_decay(user)
         apply_mood_inactivity_decay(user)
         save_data(user_data)
     return user_data[user_id]
@@ -1750,7 +1750,9 @@ def get_time_of_day(user):
 # не переименовывать вдвое больше мест без необходимости.
 ENERGY_MAX = 150
 SATIETY_MAX = 100
-SATIETY_REGEN_MINUTES_FULL = 180  # сытость сама восстанавливается намного медленнее — еда остаётся ценной
+SATIETY_INACTIVITY_DECAY_MINUTES = 180  # без активности сытость сама падает с полной до нуля примерно
+                                          # за 3 часа — реалистичнее, чем раньше (сама "восстанавливалась"
+                                          # без еды): не покормили — значит проголодался, а не наоборот
 ENERGY_COST_MESSAGE = 12  # бак вырос в 1.5 раза (100->150), но стоимость сообщения выросла вдвое —
                           # сообщений на полный бак стало МЕНЬШЕ, чем раньше (было ~16.7, теперь ~12.5)
 SATIETY_COST_MESSAGE = 6  # было 3 (3% от бака за сообщение — заметно медленнее, чем энергия при
@@ -1767,12 +1769,11 @@ INTIMACY_LEVEL_DECAY_STEP = 0.1  # чем ближе вы, тем персона
 # и generate_intim_scene): тамагочи-механика на него не распространяется ни в одну, ни в другую сторону.
 
 
-def apply_passive_stat_regen(user):
-    """Сытость понемногу восстанавливается сама, пока пользователь не пишет — еда всё равно
-    остаётся ценной, просто ускоряет и добавляет бонус сверху, а не единственный способ. Энергия
-    же теперь НЕ восстанавливается сама вообще — раньше можно было просто выжидать между
-    сообщениями и никогда по-настоящему не упираться в лимит; единственный источник энергии
-    теперь — энергетики (бесплатные или купленные) и платное "разбудить сейчас"."""
+def apply_passive_satiety_decay(user):
+    """Сытость сама падает, пока пользователь не пишет — как в жизни: не покормили, значит
+    персонаж проголодался, а не наоборот (раньше она "регенерировала" сама без еды, что было
+    нереалистично). Энергия в этом не участвует вообще — она теперь не восстанавливается сама
+    ни при каких условиях, только энергетиком или платным "разбудить сейчас"."""
     now = datetime.now()
     last = user.get("last_stat_tick")
     if last:
@@ -1781,7 +1782,7 @@ def apply_passive_stat_regen(user):
         except (ValueError, TypeError):
             elapsed_min = 0
         if elapsed_min > 0:
-            user["satiety"] = min(SATIETY_MAX, user.get("satiety", SATIETY_MAX) + elapsed_min * (SATIETY_MAX / SATIETY_REGEN_MINUTES_FULL))
+            user["satiety"] = max(0, user.get("satiety", SATIETY_MAX) - elapsed_min * (SATIETY_MAX / SATIETY_INACTIVITY_DECAY_MINUTES))
     user["last_stat_tick"] = now.isoformat()
 
 
