@@ -2758,7 +2758,7 @@ async def spin_free(call: types.CallbackQuery):
 async def spin_paid(call: types.CallbackQuery):
     """Платная прокрутка идёт через тот же выбор способа оплаты, что и подписки."""
     user = get_user(call.from_user.id)
-    methods = available_payment_methods()
+    methods = available_payment_methods("spin_paid_20")
     if len(methods) == 1:
         await start_payment(call, user, methods[0], "spin_paid_20")
     else:
@@ -3279,8 +3279,20 @@ def is_method_enabled(method):
     return False
 
 
-def available_payment_methods():
-    return [m for m in ("stars", "crypto", "lava") if is_method_enabled(m)]
+# Товары, открывающие откровенный контент (стили "Грубый"/"Соблазн" с adult=True, апгрейд до
+# них, горячая сцена) — по ним оплата через Lava недоступна: это НЕ маскировка (слова в текстах
+# не меняются), а честное разведение каналов оплаты по тому, что товар реально даёт. PRO
+# (без adult-стилей) на Lava остаётся, т.к. там действует SAFE_CONTENT_RULE и явного контента
+# в принципе не бывает. Бандлы/энергетики/прокрутки/разбудить сейчас — нейтральные, сами по
+# себе доступ к 18+ не открывают, тоже остаются на Lava.
+LAVA_RESTRICTED_PRODUCTS = {"subscribe_super", "subscribe_elite", "upgrade_to_super", "intim_scene"}
+
+
+def available_payment_methods(payload=None):
+    methods = [m for m in ("stars", "crypto", "lava") if is_method_enabled(m)]
+    if payload in LAVA_RESTRICTED_PRODUCTS:
+        methods = [m for m in methods if m != "lava"]
+    return methods
 
 
 def product_invoice_texts(user, payload):
@@ -3555,7 +3567,7 @@ def get_payment_methods_kb(user, payload):
         "lava": get_text(user, "pay_lava", amount=prices["rub"]),
     }
     rows = [[InlineKeyboardButton(text=labels[method], callback_data=f"pay:{method}:{payload}", style="success")]
-            for method in available_payment_methods()]
+            for method in available_payment_methods(payload)]
     rows.append([InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -3582,7 +3594,7 @@ async def buy_product(call: types.CallbackQuery):
         await call.answer(blocked, show_alert=True)
         return
 
-    methods = available_payment_methods()
+    methods = available_payment_methods(payload)
     if len(methods) == 1:
         # выбирать не из чего — сразу счёт, как было раньше
         await start_payment(call, user, methods[0], payload)
@@ -3597,7 +3609,11 @@ async def buy_product(call: types.CallbackQuery):
 async def pay_with_method(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     _, method, payload = call.data.split(":", 2)
-    if payload not in PRODUCTS or not is_method_enabled(method):
+    # available_payment_methods(payload), а не голый is_method_enabled(method) — вторая только
+    # проверяет, что Lava вообще настроена, но не что она разрешена ИМЕННО для этого товара;
+    # без этой проверки старая/подделанная callback-кнопка могла бы провести Lava-оплату
+    # 18+-товара в обход того, что показывается в клавиатуре.
+    if payload not in PRODUCTS or method not in available_payment_methods(payload):
         await call.answer()
         return
 
