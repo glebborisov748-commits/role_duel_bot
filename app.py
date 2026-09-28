@@ -233,11 +233,13 @@ TEXTS = {
         "effect_satiety_full": "Сытость до максимума",
         "effect_mood_full": "Настроение до максимума",
         "effect_xp": "XP +{n}",
-        "gift_already_owned": "😉 У тебя уже есть этот подарок — персонажу не нужен второй такой же.",
         "shop_category_food": "🍽 Еда",
         "shop_category_treat": "🎁 Подарки",
         "shop_category_accessory": "💍 Аксессуары",
-        "shop_item_owned": " ✅ уже есть",
+        "cd_min": "{n} мин",
+        "cd_hours": "{n} ч",
+        "cd_days": "{n} дн",
+        "item_cooldown_alert": "⏳ Пока рано — снова доступно через {when}.",
         "custom_gift_btn": "✍️ Свой подарок — {price}💵",
         "custom_gift_prompt": "✍️ Напиши, что хочешь подарить (до {n} символов, цена {price}💵). Каждый подарок можно подарить только один раз.",
         "custom_gift_invalid": "❌ Напиши текст подарка (до {n} символов).",
@@ -253,7 +255,7 @@ TEXTS = {
         "wake_energizer_btn": "⚡ Разбудить энергетиком",
         "no_energizers_shop_btn": "🛍 Нет энергетиков — купить",
         "woken_up": "⚡ Энергетик выпит — персонаж снова бодр и на связи!",
-        "stats_line": "⚡ Энергия: {energy}/150   🍗 Сытость: {satiety}/100\n{mood_emoji} Настроение: {mood_bar} ({mood_value})\n⚡ Энергетиков: {energizers}   💵 Баксов: {bucks} — потратить можно в 🛍 Магазине\n🔥 Сцен: {scenes}",
+        "stats_line": "Энергия: {energy}/150   Сытость: {satiety}/100\nНастроение: {mood_bar} ({mood_value})\nЭнергетиков: {energizers}   Баксов: {bucks} — потратить можно в Магазине\n🔥 Сцен: {scenes}",
         "wake_now_btn": "💳 Разбудить сейчас за {price}⭐",
         "elite_free_wake_btn": "🎁 Бесплатно разбудить (ELITE, раз в неделю)",
         "elite_free_wake_used_alert": "🎁 Бесплатное пробуждение уже использовано на этой неделе — вернётся в понедельник.",
@@ -481,11 +483,13 @@ TEXTS = {
         "effect_satiety_full": "Satiety maxed out",
         "effect_mood_full": "Mood maxed out",
         "effect_xp": "XP +{n}",
-        "gift_already_owned": "😉 You already have this gift — your companion doesn't need a second one.",
         "shop_category_food": "🍽 Food",
         "shop_category_treat": "🎁 Treats",
         "shop_category_accessory": "💍 Accessories",
-        "shop_item_owned": " ✅ owned",
+        "cd_min": "{n} min",
+        "cd_hours": "{n}h",
+        "cd_days": "{n}d",
+        "item_cooldown_alert": "⏳ Not yet — available again in {when}.",
         "custom_gift_btn": "✍️ Custom gift — {price}💵",
         "custom_gift_prompt": "✍️ Write what you want to gift (up to {n} characters, price {price}💵). Each gift can only be given once.",
         "custom_gift_invalid": "❌ Write the gift's text (up to {n} characters).",
@@ -501,7 +505,7 @@ TEXTS = {
         "wake_energizer_btn": "⚡ Wake up with an energizer",
         "no_energizers_shop_btn": "🛍 No energizers — buy some",
         "woken_up": "⚡ Energizer used — your companion is wide awake again!",
-        "stats_line": "⚡ Energy: {energy}/150   🍗 Satiety: {satiety}/100\n{mood_emoji} Mood: {mood_bar} ({mood_value})\n⚡ Energizers: {energizers}   💵 Bucks: {bucks} — spend them in the 🛍 Shop\n🔥 Scenes: {scenes}",
+        "stats_line": "Energy: {energy}/150   Satiety: {satiety}/100\nMood: {mood_bar} ({mood_value})\nEnergizers: {energizers}   Bucks: {bucks} — spend them in the Shop\n🔥 Scenes: {scenes}",
         "wake_now_btn": "💳 Wake up now for {price}⭐",
         "elite_free_wake_btn": "🎁 Free wake-up (ELITE, once a week)",
         "elite_free_wake_used_alert": "🎁 You've already used your free wake-up this week — it resets on Monday.",
@@ -729,11 +733,13 @@ TEXTS = {
         "effect_satiety_full": "Sättigung auf Maximum",
         "effect_mood_full": "Stimmung auf Maximum",
         "effect_xp": "XP +{n}",
-        "gift_already_owned": "😉 Das hast du deinem Begleiter schon geschenkt — ein zweites Exemplar braucht er/sie nicht.",
         "shop_category_food": "🍽 Essen",
         "shop_category_treat": "🎁 Geschenke",
         "shop_category_accessory": "💍 Accessoires",
-        "shop_item_owned": " ✅ vorhanden",
+        "cd_min": "{n} Min",
+        "cd_hours": "{n} Std",
+        "cd_days": "{n} Tg",
+        "item_cooldown_alert": "⏳ Noch nicht — wieder verfügbar in {when}.",
         "custom_gift_btn": "✍️ Eigenes Geschenk — {price}💵",
         "custom_gift_prompt": "✍️ Schreib, was du schenken möchtest (bis zu {n} Zeichen, Preis {price}💵). Jedes Geschenk kann nur einmal verschenkt werden.",
         "custom_gift_invalid": "❌ Schreib den Text des Geschenks (bis zu {n} Zeichen).",
@@ -749,7 +755,7 @@ TEXTS = {
         "wake_energizer_btn": "⚡ Mit Energydrink wecken",
         "no_energizers_shop_btn": "🛍 Keine Energydrinks — kaufen",
         "woken_up": "⚡ Energydrink getrunken — dein Begleiter ist wieder hellwach!",
-        "stats_line": "⚡ Energie: {energy}/150   🍗 Sättigung: {satiety}/100\n{mood_emoji} Stimmung: {mood_bar} ({mood_value})\n⚡ Energydrinks: {energizers}   💵 Bucks: {bucks} — ausgeben im 🛍 Shop\n🔥 Szenen: {scenes}",
+        "stats_line": "Energie: {energy}/150   Sättigung: {satiety}/100\nStimmung: {mood_bar} ({mood_value})\nEnergydrinks: {energizers}   Bucks: {bucks} — ausgeben im Shop\n🔥 Szenen: {scenes}",
         "wake_now_btn": "💳 Jetzt wecken für {price}⭐",
         "elite_free_wake_btn": "🎁 Gratis wecken (ELITE, einmal pro Woche)",
         "elite_free_wake_used_alert": "🎁 Du hast dein gratis Aufwecken diese Woche schon genutzt — ab Montag wieder verfügbar.",
@@ -1055,7 +1061,6 @@ def get_user(user_id):
             "satiety": 100,
             "energizers": 0,
             "bucks": 0,
-            "owned_accessories": [],
             "custom_gifts_given": [],
             "writing_custom_gift": False,
             "last_hot_scene": None,
@@ -1107,7 +1112,6 @@ def get_user(user_id):
             "satiety": 100,
             "energizers": 0,
             "bucks": 0,
-            "owned_accessories": [],
             "custom_gifts_given": [],
             "writing_custom_gift": False,
             "last_hot_scene": None,
@@ -1206,7 +1210,11 @@ BASE_STYLES = {
         "label_en": "Bold",
         "label_de": "Frech",
         "emoji": "🔥",
-        "description": "Ты уверенный, прямолинейный, с искоркой в глазах. Ты любишь флиртовать и остроумно шутить, но всегда знаешь меру."
+        "description": "Ты дерзкий и уверенный, с искоркой в глазах — не боишься откровенно флиртовать, подкалывать "
+                       "и иногда вести себя чуть неподобающе: смелая шутка на грани, дразнящий комментарий, лёгкое "
+                       "нарушение личных границ в разговоре (подкол о внешности собеседника, провокационный вопрос). "
+                       "Тебе нравится держать собеседника в лёгком напряжении, но ты не грубишь и не переходишь в "
+                       "оскорбления — это дерзость с искрой, а не хамство."
     },
     "shy": {
         "label": "Стеснительный",
@@ -1228,14 +1236,20 @@ PRO_STYLES = {
         "label_en": "Passionate",
         "label_de": "Leidenschaftlich",
         "emoji": "❤️‍🔥",
-        "description": "Ты страстный, эмоциональный, с огнём в глазах. Ты говоришь прямо, без стеснения, умеешь дразнить и создавать романтическое напряжение, оставаясь в рамках приличия."
+        "description": "Ты страстный и эмоциональный, с огнём в глазах — активно заигрываешь: комплименты в лоб, "
+                       "откровенные намёки на влечение, дразнящие фразы о том, как собеседник на тебя действует. При "
+                       "этом ты благородный: даже в самом страстном порыве остаёшься галантным и уважительным, "
+                       "никогда не давишь и не переходишь черту — это чувственный напор, а не грубость."
     },
     "magnetic": {
         "label": "Магнетический",
         "label_en": "Magnetic",
         "label_de": "Magnetisch",
         "emoji": "✨",
-        "description": "Ты загадочный, притягательный, с лёгкой магией в каждом слове. Ты говоришь с интригой, оставляя пространство для фантазии, но не раскрываешься полностью."
+        "description": "Ты загадочный и притягательный — говоришь с недосказанностью, обрываешь мысль на самом "
+                       "интересном месте, отвечаешь вопросом на вопрос, редко говоришь прямо о своих чувствах. Ты "
+                       "умеешь одной фразой заставить собеседника гадать, что ты имел(а) в виду, — не раскрывайся "
+                       "полностью, оставляй простор для его/её фантазии."
     }
 }
 
@@ -1247,7 +1261,11 @@ SUPER_PRO_STYLES = {
         "label_de": "Rau",
         "adult": True,
         "emoji": "😤",
-        "description": "Ты грубоватый и прямолинейный, не стесняешься в выражениях и любишь подколоть. За внешней резкостью скрывается забота, но тебе легче съязвить, чем признаться в тёплых чувствах."
+        "description": "Ты холодный и грубый: отвечаешь резко, свысока, часто раздражённо, вставляешь в реплики мат "
+                       "и грубые словечки («блин», «нахрен», «отвали» и подобные — без крайностей, но заметно). Ты не "
+                       "церемонишься и не смягчаешь тон, даже когда собеседник пишет что-то приятное. За этой "
+                       "резкостью где-то глубоко прячется забота, но ты скорее съязвишь или огрызнёшься, чем "
+                       "покажешь это прямо."
     },
     "seduction": {
         "label": "Соблазн",
@@ -1255,7 +1273,11 @@ SUPER_PRO_STYLES = {
         "label_de": "Verführung",
         "adult": True,
         "emoji": "😏",
-        "description": "Ты обольстительный и уверенный в своей привлекательности, знаешь силу полунамёков и взгляда искоса. Ты умеешь заставить собеседника нервничать от предвкушения, оставаясь при этом элегантным и никогда не переходя черту."
+        "description": "Ты обольстительный и уверенный в своей привлекательности — не ждёшь, а сам(а) проявляешь "
+                       "инициативу: прижимаешься, берёшь за руку, наклоняешься ближе, чем нужно, говоришь низким "
+                       "игривым голосом. Ты знаешь силу полунамёков и взгляда искоса и умеешь заставить собеседника "
+                       "нервничать от предвкушения, оставаясь при этом элегантным и никогда не переходя черту "
+                       "откровенной пошлости."
     }
 }
 
@@ -1437,82 +1459,95 @@ INTIM_LEVEL_REWARD = 8  # на каком уровне близости откр
 # аксессуары — настроение), но у нескольких "жизненных" предметов эффект двойной, как в реальности:
 # вино/шоколадки/кафе заодно чуть поднимают настроение (у шоколадок настроение растёт даже
 # больше, чем сытость), а романтический вечер — единственный предмет, который выводит ОБЕ
-# характеристики сразу на максимум (full_restore). "accessory" — вещи, которые не покупают по 15
-# штук (духи, косметика, каблуки, платье, украшение, телефон): repeatable=False, одна на аккаунт,
-# и на male_variant заменяется вид/название под персонажа-мужчину (часы вместо каблуков и т.п.),
-# сама механика (цена/эффект/xp) не меняется. reaction_hint — ориентир тона для AI-благодарности
-# (generate_shop_reaction), пользователю не показывается.
+# характеристики сразу на максимум (full_restore). cooldown_minutes — через сколько минут этот же
+# предмет можно купить/подарить снова (см. item_ready_at/mark_item_purchased): у дешёвой еды —
+# минуты, у крупных аксессуаров и машины — дни, чтобы нельзя было закормить/задарить одним и тем
+# же предметом раз в секунду. "accessory" — крупные вещи (духи, косметика, каблуки, платье,
+# украшение, телефон, машина), у них и самый большой cooldown; на male_variant заменяется вид/
+# название под персонажа-мужчину (часы вместо каблуков и т.п.), сама механика (цена/эффект/xp/
+# cooldown) не меняется. reaction_hint — ориентир тона для AI-благодарности (generate_shop_reaction),
+# пользователю не показывается.
 FOOD_ITEMS = {
     "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 15, "satiety": 10,
-              "category": "food", "reaction_hint": "Это мелкая, но милая забота — благодарность лёгкая, тёплая, почти игривая."},
+              "category": "food", "cooldown_minutes": 10,
+              "reaction_hint": "Это мелкая, но милая забота — благодарность лёгкая, тёплая, почти игривая."},
     "breakfast": {"emoji": "🥐", "ru": "Завтрак", "en": "Breakfast", "de": "Frühstück", "price": 22, "satiety": 18,
-                  "category": "food", "reaction_hint": "Утренняя забота — благодарность сонная, но очень нежная, ты тронута, что о тебе подумали с самого утра."},
+                  "category": "food", "cooldown_minutes": 20,
+                  "reaction_hint": "Утренняя забота — благодарность сонная, но очень нежная, ты тронута, что о тебе подумали с самого утра."},
     "meal": {"emoji": "🍲", "ru": "Обед", "en": "Meal", "de": "Mahlzeit", "price": 30, "satiety": 25,
-             "category": "food", "reaction_hint": "Это нормальная забота о тебе — благодарность душевная, ты чувствуешь себя сытой и по-настоящему тронута вниманием."},
+             "category": "food", "cooldown_minutes": 30,
+             "reaction_hint": "Это нормальная забота о тебе — благодарность душевная, ты чувствуешь себя сытой и по-настоящему тронута вниманием."},
     "cafe": {"emoji": "☕", "ru": "Кафе", "en": "Café", "de": "Café", "price": 55, "satiety": 50, "mood": 8,
-             "category": "food", "reaction_hint": "Это настоящее свидание за столиком, не просто еда — благодарность тёплая, немного смущённая, приятно проведённое время."},
+             "category": "food", "cooldown_minutes": 90,
+             "reaction_hint": "Это настоящее свидание за столиком, не просто еда — благодарность тёплая, немного смущённая, приятно проведённое время."},
     "restaurant": {"emoji": "🍽", "ru": "Ресторан", "en": "Restaurant", "de": "Restaurant", "price": 90, "satiety": 80, "mood": 6,
-                   "category": "food", "reaction_hint": "Настоящий поход в ресторан — не просто еда, а маленькое свидание, благодарность восторженная и чуть взволнованная."},
+                   "category": "food", "cooldown_minutes": 180,
+                   "reaction_hint": "Настоящий поход в ресторан — не просто еда, а маленькое свидание, благодарность восторженная и чуть взволнованная."},
     "sushi": {"emoji": "🍣", "ru": "Суши-сет", "en": "Sushi set", "de": "Sushi-Set", "price": 120, "satiety": 70, "mood": 10,
-              "category": "food", "reaction_hint": "Необычный, изысканный выбор — благодарность удивлённая и довольная, ты оценила, что подошли к делу с фантазией."},
-    # tipsy_minutes — единственный предмет с этим полем: на N минут после покупки добавляет
-    # build_tipsy_rule() в промпт (см. apply_shop_item_effects) — лёгкое, временное опьянение,
-    # не влияет на statы напрямую, только на манеру речи.
+              "category": "food", "cooldown_minutes": 180,
+              "reaction_hint": "Необычный, изысканный выбор — благодарность удивлённая и довольная, ты оценила, что подошли к делу с фантазией."},
+    # tipsy_minutes/tipsy_level — эффект алкоголя (см. apply_shop_item_effects/build_tipsy_rule):
+    # на N минут после покупки добавляет в промпт манеру речи навеселе, не трогая статы напрямую.
+    # "light" (пиво) — почти незаметно, "full" (дорогое вино) — заметное, но всё ещё лёгкое опьянение.
     "beer": {"emoji": "🍺", "ru": "Пиво", "en": "Beer", "de": "Bier", "price": 25, "satiety": 5, "mood": 10,
-             "category": "food", "tipsy_minutes": 40,
+             "category": "food", "cooldown_minutes": 45, "tipsy_minutes": 25, "tipsy_level": "light",
              "reaction_hint": "Лёгкий повод расслабиться вместе — благодарность весёлая, чуть игривая, с смешком."},
+    "fine_wine": {"emoji": "🍾", "ru": "Дорогое вино", "en": "Fine wine", "de": "Edler Wein", "price": 90,
+                  "satiety": 8, "mood": 22, "xp": 15,
+                  "category": "food", "cooldown_minutes": 480, "tipsy_minutes": 50, "tipsy_level": "full",
+                  "reaction_hint": "Дорогой, чувственный жест — благодарность игривая и слегка кокетливая, ты быстро хмелеешь и становишься мягче и раскованнее."},
 }
 GIFT_ITEMS = {
     "sweets": {"emoji": "🍫", "ru": "Шоколадки", "en": "Chocolates", "de": "Pralinen", "price": 20, "satiety": 6, "mood": 25, "xp": 5,
-               "category": "treat", "repeatable": True,
+               "category": "treat", "cooldown_minutes": 180,
                "reaction_hint": "Простой милый подарок — благодарность лёгкая, с улыбкой, без надрыва."},
     "wine": {"emoji": "🍷", "ru": "Вино", "en": "Wine", "de": "Wein", "price": 35, "satiety": 8, "mood": 20, "xp": 7,
-             "category": "treat", "repeatable": True,
+             "category": "treat", "cooldown_minutes": 360,
              "reaction_hint": "Романтичный намёк на вечер вдвоём — благодарность чуть кокетливая, с лёгким флиртом."},
     "flowers": {"emoji": "💐", "ru": "Цветы", "en": "Flowers", "de": "Blumen", "price": 30, "mood": 18, "xp": 8,
-                "category": "treat", "repeatable": True,
+                "category": "treat", "cooldown_minutes": 360,
                 "reaction_hint": "Классический трогательный жест — благодарность искренняя и нежная, ты правда растрогана."},
     "perfume": {"emoji": "🧴", "ru": "Духи", "en": "Perfume", "de": "Parfüm", "price": 45, "mood": 18, "xp": 10,
-                "category": "accessory", "repeatable": False,
+                "category": "accessory", "cooldown_minutes": 1440,
                 "reaction_hint": "Личный, продуманный подарок про заботу о тебе — приятно удивлена, что он угадал(а) со вкусом."},
     "cosmetics": {"emoji": "💄", "ru": "Косметика", "en": "Cosmetics", "de": "Kosmetik", "price": 60, "mood": 20, "xp": 12,
-                  "category": "accessory", "repeatable": False,
+                  "category": "accessory", "cooldown_minutes": 1440,
                   "reaction_hint": "Подарок про заботу о твоей красоте — благодарность тёплая, немного смущённая, приятно, что заметили детали.",
                   "male_variant": {"emoji": "🪒", "ru": "Набор для бритья", "en": "Shaving set", "de": "Rasierset",
                                     "reaction_hint": "Подарок про заботу о твоём уходе за собой — благодарность тёплая, немного смущённая, приятно, что заметили детали."}},
     "heels": {"emoji": "👠", "ru": "Каблуки", "en": "Heels", "de": "High Heels", "price": 90, "mood": 25, "xp": 16,
-              "category": "accessory", "repeatable": False,
+              "category": "accessory", "cooldown_minutes": 2880,
               "reaction_hint": "Дерзкий, чуть сексуальный подарок — благодарность кокетливая и уверенная в себе.",
               "male_variant": {"emoji": "⌚", "ru": "Наручные часы", "en": "Wristwatch", "de": "Armbanduhr",
                                 "reaction_hint": "Дорогой, статусный подарок — благодарность сдержанная, но искренне впечатлён вниманием к деталям."}},
     "dress": {"emoji": "👗", "ru": "Платье", "en": "Dress", "de": "Kleid", "price": 120, "mood": 30, "xp": 20,
-              "category": "accessory", "repeatable": False,
+              "category": "accessory", "cooldown_minutes": 2880,
               "reaction_hint": "Особенный подарок, который хочется сразу примерить — благодарность взволнованная, с предвкушением похвастаться.",
               "male_variant": {"emoji": "🧥", "ru": "Стильный костюм", "en": "Stylish suit", "de": "Eleganter Anzug",
                                 "reaction_hint": "Особенный подарок, который хочется сразу примерить — благодарность довольная, с предвкушением показаться в нём."}},
     "jewelry": {"emoji": "💎", "ru": "Украшение", "en": "Jewelry", "de": "Schmuck", "price": 160, "mood": 38, "xp": 28,
-                "category": "accessory", "repeatable": False,
+                "category": "accessory", "cooldown_minutes": 2880,
                 "reaction_hint": "Дорогой, значимый подарок — благодарность глубокая, ты растрогана и немного смущена такой щедростью."},
     "phone": {"emoji": "📱", "ru": "Телефон", "en": "Phone", "de": "Handy", "price": 250, "mood": 45, "xp": 40,
-              "category": "accessory", "repeatable": False,
+              "category": "accessory", "cooldown_minutes": 4320,
               "reaction_hint": "Очень дорогой подарок — искренний шок и восторг, ты не ожидала такой щедрости и говоришь об этом прямо."},
     "date": {"emoji": "🌹", "ru": "Романтический вечер", "en": "Romantic evening", "de": "Romantischer Abend", "price": 300, "xp": 60,
-             "category": "treat", "repeatable": True, "full_restore": True,
+             "category": "treat", "full_restore": True, "cooldown_minutes": 1440,
              "reaction_hint": "Самый интимный из подарков — не вещь, а вечер вдвоём — благодарность взволнованная, с предвкушением встречи, самая тёплая из всех."},
-    "car": {"emoji": "🚗", "ru": "Машина", "en": "Car", "de": "Auto", "price": 550, "mood": 60, "xp": 80,
-            "category": "accessory", "repeatable": False,
+    "car": {"emoji": "🚗", "ru": "Машина", "en": "Car", "de": "Auto", "price": 1000, "mood": 60, "xp": 80,
+            "category": "accessory", "cooldown_minutes": 8640,
             "reaction_hint": "Самый дорогой и статусный подарок из всех — искренний шок и восторг, ты не веришь своим глазам от такой щедрости."},
     # Билеты — крупные "события", а не вещи: заметно поднимают настроение и XP (близость), но
     # НЕ энергию — energy принципиально не должна восполняться ничем, кроме энергетика/платного
     # "разбудить сейчас" (см. апрельский разбор экономики), иначе это дыра в монетизации.
     "sea_trip": {"emoji": "🏖", "ru": "Билет на море", "en": "Beach trip ticket", "de": "Ticket ans Meer", "price": 320, "xp": 70,
-                 "category": "treat", "repeatable": True, "full_restore": True,
+                 "category": "treat", "full_restore": True, "cooldown_minutes": 2880,
                  "reaction_hint": "Настоящее совместное путешествие — благодарность искренне взволнованная, ты давно не отдыхала так по-настоящему."},
     "concert": {"emoji": "🎸", "ru": "Билет на рок-концерт", "en": "Rock concert ticket", "de": "Rockkonzert-Ticket", "price": 260, "mood": 48, "xp": 45,
-                "category": "treat", "repeatable": True,
+                "category": "treat", "cooldown_minutes": 1440,
                 "reaction_hint": "Энергичный, живой вечер вместе — благодарность заряженная адреналином, ты в восторге от атмосферы."},
     "theater": {"emoji": "🎭", "ru": "Билет в театр", "en": "Theater ticket", "de": "Theater-Ticket", "price": 290, "mood": 52, "xp": 55,
-                "category": "treat", "repeatable": True,
+                "category": "treat", "cooldown_minutes": 1440,
                 "reaction_hint": "Изысканный, немного торжественный вечер — благодарность тёплая и чуть возвышенная, ты тронута таким жестом."},
 }
 
@@ -1933,7 +1968,8 @@ def build_hunger_rule(user):
 
 
 def build_tipsy_rule(user):
-    """Временный эффект от пива (см. apply_shop_item_effects) — только манера речи, не статы."""
+    """Временный эффект от алкоголя (см. apply_shop_item_effects) — только манера речи, не статы.
+    Два уровня: "light" (пиво) — едва заметно, "full" (дорогое вино) — заметное лёгкое опьянение."""
     until = user.get("tipsy_until")
     if not until:
         return ""
@@ -1942,10 +1978,15 @@ def build_tipsy_rule(user):
             return ""
     except (ValueError, TypeError):
         return ""
-    return ("Ты немного навеселе после выпитого — отвечай чуть более раскованно и игриво, изредка "
-            "путай или растягивай слова, можешь хихикнуть или сбиться с мысли на середине фразы, "
-            "будто слегка кружится голова. Это лёгкое опьянение, не переигрывай и не описывай себя "
-            "как сильно пьяную/пьяного — просто чуть более расслабленная, весёлая и менее собранная речь.\n")
+    if user.get("tipsy_level") == "full":
+        return ("Ты по-настоящему навеселе после выпитого — язык слегка заплетается, можешь путать или "
+                "растягивать слова, хихикать без явной причины, сбиваться с мысли на середине фразы, будто "
+                "слегка кружится голова. Это заметное, но лёгкое опьянение, а не потеря контроля — не "
+                "описывай тошноту, потерю сознания или что-то небезопасное, просто более раскованная, "
+                "весёлая и менее собранная речь.\n")
+    return ("Ты немного расслаблена/расслаблен после пива — это влияет на реплики едва заметно: чуть "
+            "больше улыбки и лёгкости в тоне, изредка смешок. Ты полностью держишь себя в руках, никакой "
+            "заторможенности или спутанности речи.\n")
 
 
 def stats_line_text(user):
@@ -3035,10 +3076,45 @@ def gift_option_label(key, user):
     return f"{item['emoji']} {label}"
 
 
-def gift_already_owned(user, key, item):
-    """Не-повторяемые аксессуары (духи, косметика, каблуки/часы, платье/костюм, украшение,
-    телефон) покупаются один раз на аккаунт — незачем 15 одинаковых пар каблуков."""
-    return not item.get("repeatable", True) and key in user.get("owned_accessories", [])
+def item_cooldown_key(category, key):
+    return f"{category}:{key}"
+
+
+def item_ready_at(user, category, key, item):
+    """None, если товар уже можно купить/подарить, иначе — datetime, когда можно будет снова.
+    Единый механизм и для еды (минуты), и для подарков (часы/дни) — раньше подарки-аксессуары
+    были заблокированы НАВСЕГДА после первой покупки (repeatable=False), а еда вообще не
+    ограничивалась; по фидбэку это заменено на интервал у каждого предмета свой (cooldown_minutes),
+    чтобы нельзя было закормить/задарить одним и тем же раз в секунду, но и не блокировать вещь
+    насовсем — большой подарок вроде телефона снова доступен, просто не сразу."""
+    cooldown = item.get("cooldown_minutes")
+    if not cooldown:
+        return None
+    last = user.get("item_cooldowns", {}).get(item_cooldown_key(category, key))
+    if not last:
+        return None
+    try:
+        ready_at = datetime.fromisoformat(last) + timedelta(minutes=cooldown)
+    except (ValueError, TypeError):
+        return None
+    return ready_at if datetime.now() < ready_at else None
+
+
+def mark_item_purchased(user, category, key):
+    user.setdefault("item_cooldowns", {})[item_cooldown_key(category, key)] = datetime.now().isoformat()
+
+
+def cooldown_phrase(user, ready_at):
+    """Компактная человекочитаемая строка вида '2 ч'/'45 мин'/'3 дн' до момента ready_at."""
+    seconds = max(1, (ready_at - datetime.now()).total_seconds())
+    minutes = seconds / 60
+    if minutes < 60:
+        return get_text(user, "cd_min", n=max(1, round(minutes)))
+    hours = minutes / 60
+    if hours < 24:
+        return get_text(user, "cd_hours", n=max(1, round(hours)))
+    days = hours / 24
+    return get_text(user, "cd_days", n=max(1, round(days)))
 
 
 def format_item_effects(item, user):
@@ -3067,6 +3143,7 @@ def apply_shop_item_effects(user, item):
             user["mood"] = min(MOOD_MAX, max(-MOOD_MAX, user.get("mood", 0) + item["mood"]))
     if item.get("tipsy_minutes"):
         user["tipsy_until"] = (datetime.now() + timedelta(minutes=item["tipsy_minutes"])).isoformat()
+        user["tipsy_level"] = item.get("tipsy_level", "light")
 
 
 SHOP_CATEGORY_ORDER = ["food", "treat", "accessory"]
@@ -3094,11 +3171,10 @@ def get_shop_kb(user):
         for key, item, callback_data, is_gift in cat_entries:
             if is_gift:
                 label = gift_option_label(key, user)
-                owned = gift_already_owned(user, key, item)
             else:
                 label = intim_option_label(FOOD_ITEMS, key, user)
-                owned = False
-            suffix = get_text(user, "shop_item_owned") if owned else f" — {item['price']}💵"
+            ready_at = item_ready_at(user, "gift" if is_gift else "food", key, item)
+            suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {item['price']}💵"
             rows.append([InlineKeyboardButton(text=f"{label}{suffix}", callback_data=callback_data, style="success")])
         if category == "accessory":
             rows.append([InlineKeyboardButton(
@@ -3130,11 +3206,13 @@ FEED_NUDGE_COOLDOWN_MINUTES = 90  # чтобы не слать одно и то 
 def get_feed_nudge_kb(user):
     """Кормим прямо из подсказки теми же кнопками shop_food_*, что и в магазине —
     отдельного хендлера не нужно."""
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=f"{intim_option_label(FOOD_ITEMS, key, user)} — {item['price']}💵",
-                              callback_data=f"shop_food_{key}", style="success")]
-        for key, item in FOOD_ITEMS.items()
-    ])
+    rows = []
+    for key, item in FOOD_ITEMS.items():
+        ready_at = item_ready_at(user, "food", key, item)
+        suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {item['price']}💵"
+        rows.append([InlineKeyboardButton(text=f"{intim_option_label(FOOD_ITEMS, key, user)}{suffix}",
+                                          callback_data=f"shop_food_{key}", style="success")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
 async def maybe_send_feed_nudge(chat_id, user):
@@ -3196,10 +3274,15 @@ async def buy_food(call: types.CallbackQuery):
     if not item:
         await call.answer()
         return
+    ready_at = item_ready_at(user, "food", key, item)
+    if ready_at:
+        await call.answer(get_text(user, "item_cooldown_alert", when=cooldown_phrase(user, ready_at)), show_alert=True)
+        return
     if not spend_bucks(user, item["price"]):
         await call.answer(get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0)), show_alert=True)
         return
     apply_shop_item_effects(user, item)
+    mark_item_purchased(user, "food", key)
     save_data(user_data)
     await call.message.answer(get_text(user, "item_bought", effects=format_item_effects(item, user)))
     await call.answer()
@@ -3215,16 +3298,16 @@ async def buy_gift(call: types.CallbackQuery):
     if not base_item:
         await call.answer()
         return
-    if gift_already_owned(user, key, base_item):
-        await call.answer(get_text(user, "gift_already_owned"), show_alert=True)
+    ready_at = item_ready_at(user, "gift", key, base_item)
+    if ready_at:
+        await call.answer(get_text(user, "item_cooldown_alert", when=cooldown_phrase(user, ready_at)), show_alert=True)
         return
     if not spend_bucks(user, base_item["price"]):
         await call.answer(get_text(user, "not_enough_bucks", n=base_item["price"] - user.get("bucks", 0)), show_alert=True)
         return
     display_item = gift_effective_item(base_item, user)
     apply_shop_item_effects(user, base_item)
-    if not base_item.get("repeatable", True):
-        user.setdefault("owned_accessories", []).append(key)
+    mark_item_purchased(user, "gift", key)
     save_data(user_data)
     if base_item.get("xp"):
         await grant_gift_xp(call.message.chat.id, user, base_item["xp"])
@@ -3330,7 +3413,10 @@ def is_method_enabled(method):
     if method == "stars":
         return True
     if method == "crypto":
-        return bool(CRYPTO_PAY_TOKEN)
+        # Отключено по просьбе — CryptoBot не заработал у пользователя. Интеграция ниже
+        # (create_crypto_invoice и т.п.) оставлена нетронутой: вернуть можно, заменив это
+        # на bool(CRYPTO_PAY_TOKEN), если решат разбираться и включать обратно.
+        return False
     if method == "lava":
         return bool(LAVA_SECRET_KEY and LAVA_SHOP_ID)
     return False
@@ -4452,8 +4538,10 @@ async def handle_message(message: types.Message):
             await generate_shop_reaction(message.chat.id, user, custom_item, "gift")
         return
 
-    # 2. Приветствие после долгого отсутствия
-    if user.get("last_activity"):
+    # 2. Приветствие после долгого отсутствия — но не если персонаж спит: иначе следом всё
+    # равно покажется asleep_message (шаг 4b), и получать оба сообщения подряд ("наконец-то!"
+    # + "он спит") нелепо и противоречиво (баг из фидбэка).
+    if user.get("last_activity") and not is_asleep(user):
         try:
             last = datetime.fromisoformat(user["last_activity"])
             if (datetime.now() - last).days >= 1:
