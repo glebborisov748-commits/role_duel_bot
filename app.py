@@ -78,6 +78,7 @@ TEXTS = {
             "/start — регистрация / открыть главное меню\n"
             "/language — сменить язык\n"
             "/hot — горячая сцена с персонажем\n"
+            "/feed — покормить персонажа\n"
             "/reset_character — сбросить своего кастомного персонажа\n"
             "/switch_personality — сменить мир и пол без потери истории (SUPER PRO/ELITE)\n"
             "/switch_style — сменить стиль без потери истории (SUPER PRO/ELITE)"
@@ -242,6 +243,9 @@ TEXTS = {
         "custom_gift_invalid": "❌ Напиши текст подарка (до {n} символов).",
         "custom_gift_duplicate": "😉 Ты уже дарил(а) именно это. Придумай что-то новое!",
         "hungry_nudge": "🍽 У собеседника заурчал живот... Может, покормишь?",
+        "feed_menu_title": "🍽 Чем покормишь? (у тебя {bucks}💵)",
+        "sleep_daily_reminder": "💤 Персонаж всё ещё спит и скучает по тебе... Загляни, когда будет минутка!",
+        "spin_daily_reminder": "🎡 Не забудь: сегодня у тебя есть бесплатный прокрут колеса фортуны!",
         "low_energy_nudge": "😴 Собеседник начинает уставать и клонит в сон... Может, взбодришь энергетиком?",
         "not_enough_bucks": "❌ Не хватает баксов: нужно ещё {n}💵.",
         "not_enough_energizers": "❌ Нет энергетиков. Купи бандл, чтобы разбудить персонажа сразу ⚡.",
@@ -322,6 +326,7 @@ TEXTS = {
             "/start — sign up / open the main menu\n"
             "/language — change language\n"
             "/hot — a hot scene with your character\n"
+            "/feed — feed your character\n"
             "/reset_character — reset your custom character\n"
             "/switch_personality — change world and gender without losing history (SUPER PRO/ELITE)\n"
             "/switch_style — change style without losing history (SUPER PRO/ELITE)"
@@ -486,6 +491,9 @@ TEXTS = {
         "custom_gift_invalid": "❌ Write the gift's text (up to {n} characters).",
         "custom_gift_duplicate": "😉 You've already given that exact gift. Think of something new!",
         "hungry_nudge": "🍽 Your companion's stomach just growled... Maybe feed them?",
+        "feed_menu_title": "🍽 What will you feed them? (you have {bucks}💵)",
+        "sleep_daily_reminder": "💤 Your companion is still asleep and missing you... Stop by whenever you get a minute!",
+        "spin_daily_reminder": "🎡 Don't forget: you've got a free spin of the wheel today!",
         "low_energy_nudge": "😴 Your companion is starting to feel drowsy... Maybe perk them up with an energizer?",
         "not_enough_bucks": "❌ Not enough bucks: you need {n}💵 more.",
         "not_enough_energizers": "❌ No energizers left. Buy a bundle to wake your companion up right away ⚡.",
@@ -566,6 +574,7 @@ TEXTS = {
             "/start — registrieren / Hauptmenü öffnen\n"
             "/language — Sprache ändern\n"
             "/hot — heiße Szene mit deinem Charakter\n"
+            "/feed — deinen Charakter füttern\n"
             "/reset_character — deinen eigenen Charakter zurücksetzen\n"
             "/switch_personality — Welt und Geschlecht ändern, ohne den Verlauf zu verlieren (SUPER PRO/ELITE)\n"
             "/switch_style — Stil ändern, ohne den Verlauf zu verlieren (SUPER PRO/ELITE)"
@@ -730,6 +739,9 @@ TEXTS = {
         "custom_gift_invalid": "❌ Schreib den Text des Geschenks (bis zu {n} Zeichen).",
         "custom_gift_duplicate": "😉 Das hast du schon verschenkt. Denk dir etwas Neues aus!",
         "hungry_nudge": "🍽 Der Magen deines Begleiters knurrt gerade... Vielleicht Zeit zu füttern?",
+        "feed_menu_title": "🍽 Womit fütterst du? (du hast {bucks}💵)",
+        "sleep_daily_reminder": "💤 Dein Begleiter schläft immer noch und vermisst dich... Schau vorbei, wenn du eine Minute hast!",
+        "spin_daily_reminder": "🎡 Nicht vergessen: Heute hast du eine kostenlose Drehung am Glücksrad!",
         "low_energy_nudge": "😴 Dein Begleiter wird langsam müde und schläfrig... Vielleicht mit einem Energydrink aufmuntern?",
         "not_enough_bucks": "❌ Nicht genug Bucks: dir fehlen noch {n}💵.",
         "not_enough_energizers": "❌ Keine Energydrinks mehr. Kaufe ein Bundle, um deinen Begleiter sofort aufzuwecken ⚡.",
@@ -1201,7 +1213,12 @@ BASE_STYLES = {
         "label_en": "Shy",
         "label_de": "Schüchtern",
         "emoji": "😊",
-        "description": "Ты стеснительный, часто краснеешь, говоришь тихо и иногда запинаешься. Ты долго подбираешь слова, но всегда искренен."
+        "description": "Ты ОЧЕНЬ стеснительный — это не лёгкий оттенок характера, а заметная черта почти в каждой "
+                        "реплике: часто запинаешься и обрываешь фразы на середине («я... ну то есть...», "
+                        "«просто... эм...»), краснеешь, отводишь взгляд, говоришь тише обычного и не сразу "
+                        "находишь слова. Тебе трудно прямо говорить о чувствах — ты мнёшься, смущаешься, "
+                        "иногда неловко шутишь, чтобы скрыть неловкость. При этом внутри ты искренний и тёплый, "
+                        "просто выражаешь это стеснительно, а не свободно."
     }
 }
 
@@ -1438,6 +1455,12 @@ FOOD_ITEMS = {
                    "category": "food", "reaction_hint": "Настоящий поход в ресторан — не просто еда, а маленькое свидание, благодарность восторженная и чуть взволнованная."},
     "sushi": {"emoji": "🍣", "ru": "Суши-сет", "en": "Sushi set", "de": "Sushi-Set", "price": 120, "satiety": 70, "mood": 10,
               "category": "food", "reaction_hint": "Необычный, изысканный выбор — благодарность удивлённая и довольная, ты оценила, что подошли к делу с фантазией."},
+    # tipsy_minutes — единственный предмет с этим полем: на N минут после покупки добавляет
+    # build_tipsy_rule() в промпт (см. apply_shop_item_effects) — лёгкое, временное опьянение,
+    # не влияет на statы напрямую, только на манеру речи.
+    "beer": {"emoji": "🍺", "ru": "Пиво", "en": "Beer", "de": "Bier", "price": 25, "satiety": 5, "mood": 10,
+             "category": "food", "tipsy_minutes": 40,
+             "reaction_hint": "Лёгкий повод расслабиться вместе — благодарность весёлая, чуть игривая, с смешком."},
 }
 GIFT_ITEMS = {
     "sweets": {"emoji": "🍫", "ru": "Шоколадки", "en": "Chocolates", "de": "Pralinen", "price": 20, "satiety": 6, "mood": 25, "xp": 5,
@@ -1476,6 +1499,21 @@ GIFT_ITEMS = {
     "date": {"emoji": "🌹", "ru": "Романтический вечер", "en": "Romantic evening", "de": "Romantischer Abend", "price": 300, "xp": 60,
              "category": "treat", "repeatable": True, "full_restore": True,
              "reaction_hint": "Самый интимный из подарков — не вещь, а вечер вдвоём — благодарность взволнованная, с предвкушением встречи, самая тёплая из всех."},
+    "car": {"emoji": "🚗", "ru": "Машина", "en": "Car", "de": "Auto", "price": 550, "mood": 60, "xp": 80,
+            "category": "accessory", "repeatable": False,
+            "reaction_hint": "Самый дорогой и статусный подарок из всех — искренний шок и восторг, ты не веришь своим глазам от такой щедрости."},
+    # Билеты — крупные "события", а не вещи: заметно поднимают настроение и XP (близость), но
+    # НЕ энергию — energy принципиально не должна восполняться ничем, кроме энергетика/платного
+    # "разбудить сейчас" (см. апрельский разбор экономики), иначе это дыра в монетизации.
+    "sea_trip": {"emoji": "🏖", "ru": "Билет на море", "en": "Beach trip ticket", "de": "Ticket ans Meer", "price": 320, "xp": 70,
+                 "category": "treat", "repeatable": True, "full_restore": True,
+                 "reaction_hint": "Настоящее совместное путешествие — благодарность искренне взволнованная, ты давно не отдыхала так по-настоящему."},
+    "concert": {"emoji": "🎸", "ru": "Билет на рок-концерт", "en": "Rock concert ticket", "de": "Rockkonzert-Ticket", "price": 260, "mood": 48, "xp": 45,
+                "category": "treat", "repeatable": True,
+                "reaction_hint": "Энергичный, живой вечер вместе — благодарность заряженная адреналином, ты в восторге от атмосферы."},
+    "theater": {"emoji": "🎭", "ru": "Билет в театр", "en": "Theater ticket", "de": "Theater-Ticket", "price": 290, "mood": 52, "xp": 55,
+                "category": "treat", "repeatable": True,
+                "reaction_hint": "Изысканный, немного торжественный вечер — благодарность тёплая и чуть возвышенная, ты тронута таким жестом."},
 }
 
 
@@ -1894,6 +1932,22 @@ def build_hunger_rule(user):
     return ""
 
 
+def build_tipsy_rule(user):
+    """Временный эффект от пива (см. apply_shop_item_effects) — только манера речи, не статы."""
+    until = user.get("tipsy_until")
+    if not until:
+        return ""
+    try:
+        if datetime.now() >= datetime.fromisoformat(until):
+            return ""
+    except (ValueError, TypeError):
+        return ""
+    return ("Ты немного навеселе после выпитого — отвечай чуть более раскованно и игриво, изредка "
+            "путай или растягивай слова, можешь хихикнуть или сбиться с мысли на середине фразы, "
+            "будто слегка кружится голова. Это лёгкое опьянение, не переигрывай и не описывай себя "
+            "как сильно пьяную/пьяного — просто чуть более расслабленная, весёлая и менее собранная речь.\n")
+
+
 def stats_line_text(user):
     mood = user.get("mood", 0)
     return get_text(
@@ -2025,6 +2079,7 @@ def build_prompt(user):
     mood_rule = build_mood_rule(user)
     energy_rule = build_energy_rule(user)
     hunger_rule = build_hunger_rule(user)
+    tipsy_rule = build_tipsy_rule(user)
     time_period, time_note = get_time_of_day(user)
     user_gender = user.get("user_gender", "male")
     if user_gender == "male":
@@ -2039,7 +2094,7 @@ def build_prompt(user):
         f"{style_desc} "
         f"{rules}"
         f"Сейчас у вас {time_period} — {time_note}. "
-        f"{mood_rule} {energy_rule}{hunger_rule}"
+        f"{mood_rule} {energy_rule}{hunger_rule}{tipsy_rule}"
         f"{gender_context} "
         f"Ты не признаёшься в любви с первого сообщения — у тебя есть характер и самоуважение. "
         f"Ты ценишь близость и доверие, которые не возникают за один вечер. "
@@ -3010,6 +3065,8 @@ def apply_shop_item_effects(user, item):
             user["satiety"] = min(SATIETY_MAX, user.get("satiety", SATIETY_MAX) + item["satiety"])
         if "mood" in item:
             user["mood"] = min(MOOD_MAX, max(-MOOD_MAX, user.get("mood", 0) + item["mood"]))
+    if item.get("tipsy_minutes"):
+        user["tipsy_until"] = (datetime.now() + timedelta(minutes=item["tipsy_minutes"])).isoformat()
 
 
 SHOP_CATEGORY_ORDER = ["food", "treat", "accessory"]
@@ -3908,6 +3965,21 @@ async def intim_cmd(message: types.Message):
     await show_intim_menu(message.chat.id, user)
 
 
+@dp.message(Command("feed"))
+async def feed_cmd(message: types.Message):
+    """Прямой доступ к еде без похода через профиль → магазин → категория — те же кнопки
+    shop_food_*, что и в get_feed_nudge_kb, отдельного колбэка не нужно."""
+    user = get_user(message.from_user.id)
+    if not user["verified"] or not user["agreement_accepted"]:
+        await message.answer(get_text(user, "finish_registration_first"))
+        return
+    if not user["personality_ready"]:
+        await message.answer(get_text(user, "need_character_alert"))
+        return
+    await message.answer(get_text(user, "feed_menu_title", bucks=user.get("bucks", 0)),
+                         reply_markup=get_feed_nudge_kb(user))
+
+
 @dp.callback_query(lambda c: c.data.startswith("intim_type_"))
 async def choose_intim_type(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
@@ -4529,6 +4601,8 @@ async def handle_message(message: types.Message):
 # ============================================================
 MISS_YOU_INACTIVITY_DAYS = 2  # с какого дня без сообщений начинаем напоминать
 MISS_YOU_INTERVAL_DAYS = 2  # не чаще чем раз в столько дней после предыдущего напоминания
+SLEEP_REMINDER_INTERVAL_HOURS = 12  # раз в сколько часов мягко напоминаем, что персонаж всё ещё спит
+SPIN_REMINDER_INTERVAL_DAYS = 1  # раз в сколько дней мягко напоминаем про доступный бесплатный прокрут
 
 
 async def check_notifications():
@@ -4544,32 +4618,80 @@ async def check_notifications():
                 if user.get("notifications_muted") and get_subscription_level(user) in ("super_pro", "elite"):
                     continue
 
-                if not user.get("last_activity"):
-                    continue
-                try:
-                    last = datetime.fromisoformat(user["last_activity"])
-                except Exception:
-                    continue
-                if (now - last).days < MISS_YOU_INACTIVITY_DAYS:
-                    continue
-
-                last_reminder = user.get("last_reminder")
-                due = True
-                if last_reminder:
+                # 1) "Скучаю" — для давно пропавших. Если это условие сработало, ниже больше
+                # ничего не шлём в этом же тике: человеку и так возвращаемся отдельным
+                # сообщением, второе уведомление сразу следом было бы уже спамом.
+                last_activity_raw = user.get("last_activity")
+                last_activity = None
+                if last_activity_raw:
                     try:
-                        due = (now - datetime.fromisoformat(last_reminder)).days >= MISS_YOU_INTERVAL_DAYS
+                        last_activity = datetime.fromisoformat(last_activity_raw)
                     except Exception:
-                        due = True
-                if not due:
+                        last_activity = None
+
+                if last_activity and (now - last_activity).days >= MISS_YOU_INACTIVITY_DAYS:
+                    last_reminder = user.get("last_reminder")
+                    due = True
+                    if last_reminder:
+                        try:
+                            due = (now - datetime.fromisoformat(last_reminder)).days >= MISS_YOU_INTERVAL_DAYS
+                        except Exception:
+                            due = True
+                    if due:
+                        user["last_reminder"] = today
+                        save_data(user_data)
+                        try:
+                            gender = user.get("gender", "female")
+                            await bot.send_message(int(user_id), random.choice(get_text(user, f"miss_you_{gender}")))
+                        except Exception:
+                            pass
                     continue
 
-                user["last_reminder"] = today
-                save_data(user_data)
-                try:
-                    gender = user.get("gender", "female")
-                    await bot.send_message(int(user_id), random.choice(get_text(user, f"miss_you_{gender}")))
-                except Exception:
-                    pass
+                # 2) Персонаж всё ещё спит — лёгкое проактивное напоминание, отдельное от
+                # жёсткого asleep_message (который показывается только в ответ на попытку
+                # написать спящему персонажу). Отсчёт идёт от момента засыпания, а не от
+                # первой проверки, — чтобы не дёргать человека через 5 минут после того, как
+                # энергия дошла до нуля.
+                if is_asleep(user):
+                    baseline = user.get("last_sleep_reminder") or user.get("sleep_until")
+                    due = True
+                    if baseline:
+                        try:
+                            hours_since = (now - datetime.fromisoformat(baseline)).total_seconds() / 3600
+                            due = hours_since >= SLEEP_REMINDER_INTERVAL_HOURS
+                        except Exception:
+                            due = True
+                    if due:
+                        user["last_sleep_reminder"] = now.isoformat()
+                        save_data(user_data)
+                        try:
+                            await bot.send_message(int(user_id), get_text(user, "sleep_daily_reminder"),
+                                                   reply_markup=get_wake_kb(user))
+                        except Exception:
+                            pass
+                    continue
+
+                # 3) Доступен бесплатный прокрут колеса — не чаще раза в сутки и только пока
+                # он реально не использован.
+                if free_spins_left(user) > 0:
+                    last_spin_reminder = user.get("last_spin_reminder")
+                    due = True
+                    if last_spin_reminder:
+                        try:
+                            due = (now - datetime.fromisoformat(last_spin_reminder)).days >= SPIN_REMINDER_INTERVAL_DAYS
+                        except Exception:
+                            due = True
+                    if due:
+                        user["last_spin_reminder"] = today
+                        save_data(user_data)
+                        try:
+                            kb = InlineKeyboardMarkup(inline_keyboard=[
+                                [InlineKeyboardButton(text=get_text(user, "spin_wheel"),
+                                                      callback_data="spin_free", style="success")]
+                            ])
+                            await bot.send_message(int(user_id), get_text(user, "spin_daily_reminder"), reply_markup=kb)
+                        except Exception:
+                            pass
         except Exception as e:
             logging.error(f"Ошибка уведомлений: {e}")
         await asyncio.sleep(1800)  # проверка раз в 30 минут
@@ -4593,6 +4715,7 @@ async def main():
         BotCommand(command="help", description="Список команд"),
         BotCommand(command="language", description="Сменить язык"),
         BotCommand(command="hot", description="Горячая сцена с персонажем"),
+        BotCommand(command="feed", description="Покормить персонажа"),
         BotCommand(command="reset_character", description="Сбросить кастомного персонажа"),
         BotCommand(command="switch_personality", description="Сменить мир/пол (SUPER PRO+)"),
         BotCommand(command="switch_style", description="Сменить стиль (SUPER PRO+)"),
