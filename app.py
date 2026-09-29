@@ -243,6 +243,8 @@ TEXTS = {
         "custom_gift_btn": "✍️ Свой подарок — {price}💵",
         "custom_gift_prompt": "✍️ Напиши, что хочешь подарить (до {n} символов, цена {price}💵). Каждый подарок можно подарить только один раз.",
         "custom_gift_invalid": "❌ Напиши текст подарка (до {n} символов).",
+        "item_note_prompt": "✍️ Напиши, что хочешь сказать вместе с этим (до {n} символов).",
+        "item_note_invalid": "❌ Напиши текст сообщения (до {n} символов).",
         "custom_gift_duplicate": "😉 Ты уже дарил(а) именно это. Придумай что-то новое!",
         "hungry_nudge": "🍽 У собеседника заурчал живот... Может, покормишь?",
         "feed_menu_title": "🍽 Чем покормишь? (у тебя {bucks}💵)",
@@ -493,6 +495,8 @@ TEXTS = {
         "custom_gift_btn": "✍️ Custom gift — {price}💵",
         "custom_gift_prompt": "✍️ Write what you want to gift (up to {n} characters, price {price}💵). Each gift can only be given once.",
         "custom_gift_invalid": "❌ Write the gift's text (up to {n} characters).",
+        "item_note_prompt": "✍️ Write what you want to say along with this (up to {n} characters).",
+        "item_note_invalid": "❌ Write your message text (up to {n} characters).",
         "custom_gift_duplicate": "😉 You've already given that exact gift. Think of something new!",
         "hungry_nudge": "🍽 Your companion's stomach just growled... Maybe feed them?",
         "feed_menu_title": "🍽 What will you feed them? (you have {bucks}💵)",
@@ -743,6 +747,8 @@ TEXTS = {
         "custom_gift_btn": "✍️ Eigenes Geschenk — {price}💵",
         "custom_gift_prompt": "✍️ Schreib, was du schenken möchtest (bis zu {n} Zeichen, Preis {price}💵). Jedes Geschenk kann nur einmal verschenkt werden.",
         "custom_gift_invalid": "❌ Schreib den Text des Geschenks (bis zu {n} Zeichen).",
+        "item_note_prompt": "✍️ Schreib, was du dazu sagen möchtest (bis zu {n} Zeichen).",
+        "item_note_invalid": "❌ Schreib deinen Nachrichtentext (bis zu {n} Zeichen).",
         "custom_gift_duplicate": "😉 Das hast du schon verschenkt. Denk dir etwas Neues aus!",
         "hungry_nudge": "🍽 Der Magen deines Begleiters knurrt gerade... Vielleicht Zeit zu füttern?",
         "feed_menu_title": "🍽 Womit fütterst du? (du hast {bucks}💵)",
@@ -3157,6 +3163,11 @@ CUSTOM_GIFT_PRICE = 100
 CUSTOM_GIFT_MOOD_RANGE = (18, 45)
 CUSTOM_GIFT_MAX_LEN = 60
 
+# Личная подпись к обычному (каталожному) подарку/еде — в отличие от custom-подарка это не
+# отдельный предмет со своей ценой, а просто пара слов от пользователя поверх штатной покупки,
+# см. execute_item_purchase/generate_shop_reaction.
+ITEM_NOTE_MAX_LEN = 150
+
 
 def get_shop_kb(user):
     entries = [(key, item, f"shop_food_{key}", False) for key, item in FOOD_ITEMS.items()]
@@ -3173,9 +3184,13 @@ def get_shop_kb(user):
                 label = gift_option_label(key, user)
             else:
                 label = intim_option_label(FOOD_ITEMS, key, user)
-            ready_at = item_ready_at(user, "gift" if is_gift else "food", key, item)
+            category = "gift" if is_gift else "food"
+            ready_at = item_ready_at(user, category, key, item)
             suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {item['price']}💵"
-            rows.append([InlineKeyboardButton(text=f"{label}{suffix}", callback_data=callback_data, style="success")])
+            rows.append([
+                InlineKeyboardButton(text=f"{label}{suffix}", callback_data=callback_data, style="success"),
+                InlineKeyboardButton(text="✍️", callback_data=f"note_{category}_{key}", style="success"),
+            ])
         if category == "accessory":
             rows.append([InlineKeyboardButton(
                 text=get_text(user, "custom_gift_btn", price=CUSTOM_GIFT_PRICE),
@@ -3210,8 +3225,11 @@ def get_feed_nudge_kb(user):
     for key, item in FOOD_ITEMS.items():
         ready_at = item_ready_at(user, "food", key, item)
         suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {item['price']}💵"
-        rows.append([InlineKeyboardButton(text=f"{intim_option_label(FOOD_ITEMS, key, user)}{suffix}",
-                                          callback_data=f"shop_food_{key}", style="success")])
+        rows.append([
+            InlineKeyboardButton(text=f"{intim_option_label(FOOD_ITEMS, key, user)}{suffix}",
+                                 callback_data=f"shop_food_{key}", style="success"),
+            InlineKeyboardButton(text="✍️", callback_data=f"note_food_{key}", style="success"),
+        ])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -3266,6 +3284,23 @@ async def profile_shop(call: types.CallbackQuery):
     await call.answer()
 
 
+async def execute_item_purchase(chat_id, user, category, key, item, note=None):
+    """Общая часть после того, как cooldown и баксы уже проверены и списаны вызывающим:
+    применяет эффекты, отмечает cooldown, подтверждает покупку и (если не спит) просит ИИ
+    отреагировать в характере — опционально на личные слова пользователя (note), см.
+    generate_shop_reaction. Используется и мгновенной покупкой (buy_food/buy_gift), и покупкой
+    с запиской (см. writing_item_note в handle_message)."""
+    display_item = gift_effective_item(item, user) if category == "gift" else item
+    apply_shop_item_effects(user, item)
+    mark_item_purchased(user, category, key)
+    save_data(user_data)
+    if item.get("xp"):
+        await grant_gift_xp(chat_id, user, item["xp"])
+    await bot.send_message(chat_id, get_text(user, "item_bought", effects=format_item_effects(item, user)))
+    if not is_asleep(user):
+        await generate_shop_reaction(chat_id, user, display_item, category, note=note)
+
+
 @dp.callback_query(lambda c: c.data.startswith("shop_food_"))
 async def buy_food(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
@@ -3281,13 +3316,8 @@ async def buy_food(call: types.CallbackQuery):
     if not spend_bucks(user, item["price"]):
         await call.answer(get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0)), show_alert=True)
         return
-    apply_shop_item_effects(user, item)
-    mark_item_purchased(user, "food", key)
-    save_data(user_data)
-    await call.message.answer(get_text(user, "item_bought", effects=format_item_effects(item, user)))
     await call.answer()
-    if not is_asleep(user):
-        await generate_shop_reaction(call.message.chat.id, user, item, "food")
+    await execute_item_purchase(call.message.chat.id, user, "food", key, item)
 
 
 @dp.callback_query(lambda c: c.data.startswith("shop_gift_"))
@@ -3305,16 +3335,36 @@ async def buy_gift(call: types.CallbackQuery):
     if not spend_bucks(user, base_item["price"]):
         await call.answer(get_text(user, "not_enough_bucks", n=base_item["price"] - user.get("bucks", 0)), show_alert=True)
         return
-    display_item = gift_effective_item(base_item, user)
-    apply_shop_item_effects(user, base_item)
-    mark_item_purchased(user, "gift", key)
-    save_data(user_data)
-    if base_item.get("xp"):
-        await grant_gift_xp(call.message.chat.id, user, base_item["xp"])
-    await call.message.answer(get_text(user, "item_bought", effects=format_item_effects(base_item, user)))
     await call.answer()
-    if not is_asleep(user):
-        await generate_shop_reaction(call.message.chat.id, user, display_item, "gift")
+    await execute_item_purchase(call.message.chat.id, user, "gift", key, base_item)
+
+
+@dp.callback_query(lambda c: c.data.startswith("note_food_") or c.data.startswith("note_gift_"))
+async def shop_item_note_start(call: types.CallbackQuery):
+    """Кнопка ✍️ рядом с предметом — та же покупка, что и обычная кнопка, но перед списанием
+    просит пользователя написать личное сообщение, которое попадёт и в подтверждение, и в
+    промпт ИИ-реакции (см. execute_item_purchase/generate_shop_reaction). cooldown и баксы
+    проверяем уже здесь, чтобы не просить писать душевные слова, а потом отказать."""
+    user = get_user(call.from_user.id)
+    is_gift = call.data.startswith("note_gift_")
+    category = "gift" if is_gift else "food"
+    key = call.data[len(f"note_{category}_"):]
+    catalog = GIFT_ITEMS if is_gift else FOOD_ITEMS
+    item = catalog.get(key)
+    if not item:
+        await call.answer()
+        return
+    ready_at = item_ready_at(user, category, key, item)
+    if ready_at:
+        await call.answer(get_text(user, "item_cooldown_alert", when=cooldown_phrase(user, ready_at)), show_alert=True)
+        return
+    if user.get("bucks", 0) < item["price"]:
+        await call.answer(get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0)), show_alert=True)
+        return
+    user["writing_item_note"] = {"category": category, "key": key}
+    save_data(user_data)
+    await call.message.answer(get_text(user, "item_note_prompt", n=ITEM_NOTE_MAX_LEN))
+    await call.answer()
 
 
 @dp.callback_query(lambda c: c.data == "profile_back")
@@ -4430,27 +4480,37 @@ async def _keep_typing(chat_id):
         pass
 
 
-def build_shop_reaction_instruction(item, kind):
+def build_shop_reaction_instruction(item, kind, note=None):
     """kind: "food" или "gift". Даёт модели конкретный повод и эмоциональный ориентир
     (reaction_hint), чтобы благодарность не была одинаковым шаблоном для всех предметов —
-    снек и романтический вечер должны звучать по-разному."""
+    снек и романтический вечер должны звучать по-разному. note — личные слова пользователя
+    (см. generate_shop_reaction) — если есть, модель обязана ответить именно на них."""
     hint = item.get("reaction_hint", "")
     verb = "покормил(а)" if kind == "food" else "подарил(а)"
+    preposition = "тебя" if kind == "food" else "тебе"
     thing = item["ru"].lower()
+    note_rule = (f" При этом он(а) сказал(а) тебе: «{note}» — обязательно отреагируй именно на "
+                 f"эти слова, а не только на сам подарок." if note else "")
     return (
-        f"\n\nСобеседник только что {verb} тебя: «{thing}». {hint} Отреагируй и поблагодари "
-        f"в характере — коротко (1-2 реплики), не шаблонно, с реакцией именно на ЭТО, а не общими "
-        f"словами благодарности, которые подошли бы к любому подарку."
+        f"\n\nСобеседник только что {verb} {preposition}: «{thing}».{note_rule} {hint} Отреагируй и "
+        f"поблагодари в характере — коротко (1-2 реплики), не шаблонно, с реакцией именно на ЭТО, "
+        f"а не общими словами благодарности, которые подошли бы к любому подарку."
     )
 
 
-async def generate_shop_reaction(chat_id, user, item, kind):
+async def generate_shop_reaction(chat_id, user, item, kind, note=None):
     """Просит ИИ отреагировать и поблагодарить в характере за конкретную еду/подарок —
     полноценная реплика персонажа через build_prompt(user), а не статичный текст,
-    и разная в зависимости от того, что именно куплено (см. reaction_hint у предмета)."""
-    system_prompt = build_prompt(user) + build_shop_reaction_instruction(item, kind)
+    и разная в зависимости от того, что именно куплено (см. reaction_hint у предмета).
+    note — необязательные личные слова, сказанные пользователем вместе с покупкой (см.
+    writing_item_note в handle_message) — попадают и в системный промпт, и прямой речью в
+    синтетическую реплику ниже, чтобы ИИ реагировал на них, а не только на сам факт подарка."""
+    system_prompt = build_prompt(user) + build_shop_reaction_instruction(item, kind, note=note)
     action_word = "кормит" if kind == "food" else "дарит"
-    action_text = f"*{action_word} тебя: {item['ru'].lower()}*"
+    preposition = "тебя" if kind == "food" else "тебе"
+    action_text = f"*{action_word} {preposition}: {item['ru'].lower()}*"
+    if note:
+        action_text += f" {note}"
     history_tail = user["history"][-6:]
 
     typing_task = asyncio.create_task(_keep_typing(chat_id))
@@ -4536,6 +4596,34 @@ async def handle_message(message: types.Message):
         await message.answer(get_text(user, "item_bought", effects=format_item_effects(custom_item, user)))
         if not is_asleep(user):
             await generate_shop_reaction(message.chat.id, user, custom_item, "gift")
+        return
+
+    # 1c. Личная подпись к обычному (каталожному) подарку/еде — запущена кнопкой ✍️ рядом с
+    # предметом (см. shop_item_note_start). В отличие от writing_custom_gift это НЕ отдельный
+    # предмет: cooldown/баксы уже проверены при нажатии кнопки, но перепроверяем на всякий
+    # случай — между нажатием и вводом текста могло пройти время (или он успел купить то же
+    # самое где-то ещё).
+    if user.get("writing_item_note"):
+        note_state = user["writing_item_note"]
+        user["writing_item_note"] = None
+        save_data(user_data)
+        category = note_state.get("category")
+        key = note_state.get("key")
+        item = (GIFT_ITEMS if category == "gift" else FOOD_ITEMS).get(key) if category else None
+        if not item:
+            return
+        note_text = message.text.strip()
+        if not note_text or len(note_text) > ITEM_NOTE_MAX_LEN:
+            await message.answer(get_text(user, "item_note_invalid", n=ITEM_NOTE_MAX_LEN))
+            return
+        ready_at = item_ready_at(user, category, key, item)
+        if ready_at:
+            await message.answer(get_text(user, "item_cooldown_alert", when=cooldown_phrase(user, ready_at)))
+            return
+        if not spend_bucks(user, item["price"]):
+            await message.answer(get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0)))
+            return
+        await execute_item_purchase(message.chat.id, user, category, key, item, note=note_text)
         return
 
     # 2. Приветствие после долгого отсутствия — но не если персонаж спит: иначе следом всё
