@@ -8,13 +8,15 @@ import logging
 import random
 import re
 from datetime import datetime, timedelta
+from urllib.parse import parse_qsl
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import (
     InlineKeyboardMarkup, InlineKeyboardButton, LabeledPrice,
-    ReplyKeyboardMarkup, KeyboardButton, BotCommand, FSInputFile
+    ReplyKeyboardMarkup, KeyboardButton, BotCommand, FSInputFile, WebAppInfo
 )
+from aiohttp import web
 import httpx
 from dotenv import load_dotenv
 from openai import OpenAI, APITimeoutError
@@ -254,6 +256,14 @@ TEXTS = {
         "character_died_overdrink": "💔 Персонаж не пережил такого количества алкоголя — сердце не выдержало.\n\nВся история общения и уровень близости потеряны.\n\nМожешь воскресить персонажа дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
         "character_died_dehydration": "💔 Персонаж слишком долго обходился без воды — организм не выдержал обезвоживания.\n\nВся история общения и уровень близости потеряны.\n\nМожешь воскресить персонажа дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
         "overfeed_refuse_alert": "❌ Персонаж наелся и отказывается есть ещё — дай сытости немного снизиться.",
+        "webapp_title": "🛍 Магазин",
+        "webapp_buy_btn": "Купить",
+        "webapp_note_placeholder": "Записка (необязательно)",
+        "webapp_refuse_badge": "Не хочет",
+        "webapp_bought_toast": "✅ Куплено! Ответ персонажа — в чате.",
+        "webapp_open_chat_hint": "Ответ персонажа появится в чате с ботом",
+        "webapp_character_not_ready": "Сначала создай персонажа в чате с ботом.",
+        "webapp_loading": "Загрузка…",
         "defibrillator_btn": "🔌 Дефибриллятор — воскресить за {price}⭐",
         "new_character_btn": "🆕 Начать заново с новым персонажем",
         "new_character_started": "🆕 Хорошо, начнём с чистого листа.",
@@ -532,6 +542,14 @@ TEXTS = {
         "character_died_overdrink": "💔 Your companion didn't survive that much alcohol — their heart gave out.\n\nAll chat history and closeness level are lost.\n\nYou can revive your companion with a defibrillator (with the whole history) or start over with a new character.",
         "character_died_dehydration": "💔 Your companion went without water for too long — their body couldn't take the dehydration.\n\nAll chat history and closeness level are lost.\n\nYou can revive your companion with a defibrillator (with the whole history) or start over with a new character.",
         "overfeed_refuse_alert": "❌ Your companion is full and refuses to eat more — let their satiety drop a bit first.",
+        "webapp_title": "🛍 Shop",
+        "webapp_buy_btn": "Buy",
+        "webapp_note_placeholder": "Note (optional)",
+        "webapp_refuse_badge": "Doesn't want it",
+        "webapp_bought_toast": "✅ Purchased! Your companion's reaction is in the chat.",
+        "webapp_open_chat_hint": "Your companion's reaction will appear in the chat with the bot",
+        "webapp_character_not_ready": "Create a character in the chat with the bot first.",
+        "webapp_loading": "Loading…",
         "defibrillator_btn": "🔌 Defibrillator — revive for {price}⭐",
         "new_character_btn": "🆕 Start over with a new character",
         "new_character_started": "🆕 Alright, starting with a clean slate.",
@@ -810,6 +828,14 @@ TEXTS = {
         "character_died_overdrink": "💔 Dein Begleiter hat so viel Alkohol nicht überlebt — das Herz hat nicht mitgemacht.\n\nDer gesamte Chatverlauf und das Nähe-Level sind verloren.\n\nDu kannst deinen Begleiter mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
         "character_died_dehydration": "💔 Dein Begleiter war zu lange ohne Wasser — der Körper hat die Dehydrierung nicht überstanden.\n\nDer gesamte Chatverlauf und das Nähe-Level sind verloren.\n\nDu kannst deinen Begleiter mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
         "overfeed_refuse_alert": "❌ Dein Begleiter ist satt und weigert sich, mehr zu essen — lass die Sättigung erst etwas sinken.",
+        "webapp_title": "🛍 Shop",
+        "webapp_buy_btn": "Kaufen",
+        "webapp_note_placeholder": "Notiz (optional)",
+        "webapp_refuse_badge": "Will nicht",
+        "webapp_bought_toast": "✅ Gekauft! Die Reaktion deines Begleiters steht im Chat.",
+        "webapp_open_chat_hint": "Die Reaktion deines Begleiters erscheint im Chat mit dem Bot",
+        "webapp_character_not_ready": "Erstelle zuerst einen Charakter im Chat mit dem Bot.",
+        "webapp_loading": "Lädt…",
         "defibrillator_btn": "🔌 Defibrillator — wiederbeleben für {price}⭐",
         "new_character_btn": "🆕 Neu anfangen mit einem neuen Charakter",
         "new_character_started": "🆕 Gut, wir fangen mit einem sauberen Blatt an.",
@@ -888,6 +914,12 @@ PROVOD_API_KEY = os.getenv("PROVOD_API_KEY")
 
 if not BOT_TOKEN or not PROVOD_API_KEY:
     raise ValueError("Заполни BOT_TOKEN и PROVOD_API_KEY в .env!")
+
+# Telegram Mini App (веб-магазин) — полностью опциональная фича: пусто по умолчанию, ничего не
+# меняет в поведении бота, пока хостинг не даст реальный публичный HTTPS-адрес и его не пропишут
+# сюда через переменную окружения. См. run_webapp_server/get_profile_keyboard.
+WEBAPP_URL = os.getenv("WEBAPP_URL", "").rstrip("/")
+WEBAPP_PORT = int(os.getenv("WEBAPP_PORT") or os.getenv("PORT") or 8080)
 
 client = OpenAI(api_key=PROVOD_API_KEY, base_url="https://api.provod.ai/v1")
 bot = Bot(token=BOT_TOKEN)
@@ -2523,9 +2555,17 @@ def get_main_menu_keyboard(user):
 
 def get_profile_keyboard(user):
     mute_key = "notifications_off_btn" if user.get("notifications_muted") else "notifications_on_btn"
+    # Mini App (веб-магазин) вместо инлайн-клавиатуры — только если хостинг реально отдаёт
+    # WEBAPP_URL публично (см. run_webapp_server); иначе кнопка как и раньше открывает
+    # get_shop_kb через profile_shop, безо всяких условий на стороне пользователя.
+    if WEBAPP_URL:
+        shop_button = InlineKeyboardButton(text=get_text(user, "shop_btn"),
+                                            web_app=WebAppInfo(url=f"{WEBAPP_URL}/shop"), style="success")
+    else:
+        shop_button = InlineKeyboardButton(text=get_text(user, "shop_btn"), callback_data="profile_shop", style="success")
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=get_text(user, "buy_bundles"), callback_data="profile_bundles", style="success")],
-        [InlineKeyboardButton(text=get_text(user, "shop_btn"), callback_data="profile_shop", style="success")],
+        [shop_button],
         [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")],
         [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
         [InlineKeyboardButton(text=get_text(user, mute_key), callback_data="toggle_notifications", style="primary")],
@@ -5333,6 +5373,573 @@ async def handle_message(message: types.Message):
 
 
 # ============================================================
+#  TELEGRAM MINI APP (веб-магазин) — см. WEBAPP_URL в начале файла.
+# ============================================================
+# Полностью отдельная надстройка поверх уже существующего инлайн-магазина: сам магазин
+# (execute_item_purchase/buy_food/buy_gift/buy_medicine/FOOD_ITEMS/GIFT_ITEMS/MEDICINE_ITEMS)
+# не меняется ни на строчку — здесь только новый способ до него достучаться, с теми же
+# правилами. Если WEBAPP_URL не задан, ничего из этого раздела даже не запускается
+# (см. run_webapp_server/main), кнопка "Магазин" остаётся прежней.
+
+
+def validate_webapp_init_data(init_data, max_age_seconds=86400):
+    """Проверяет подпись initData, которую Mini App кладёт в каждый запрос к нам — официальный
+    алгоритм Telegram (core.telegram.org/bots/webapps#validating-data-received-via-the-mini-app):
+    secret_key = HMAC_SHA256(key="WebAppData", msg=BOT_TOKEN), затем сверяем присланный hash с
+    HMAC_SHA256(key=secret_key, msg=data_check_string). Без этой проверки на сервере нет иного
+    способа узнать, кто на самом деле стоит за запросом — страница открывается по обычной
+    публичной ссылке. Возвращает распарсенный dict (поле "user" уже как dict, не JSON-строка)
+    при успехе, иначе None."""
+    if not init_data:
+        return None
+    try:
+        parsed = dict(parse_qsl(init_data, strict_parsing=True))
+    except ValueError:
+        return None
+    received_hash = parsed.pop("hash", None)
+    if not received_hash:
+        return None
+    data_check_string = "\n".join(f"{k}={v}" for k, v in sorted(parsed.items()))
+    secret_key = hmac.new(b"WebAppData", BOT_TOKEN.encode(), hashlib.sha256).digest()
+    computed_hash = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(computed_hash, received_hash):
+        return None
+    try:
+        auth_date = int(parsed.get("auth_date", 0))
+    except (TypeError, ValueError):
+        return None
+    if auth_date <= 0 or (datetime.now().timestamp() - auth_date) > max_age_seconds:
+        return None
+    try:
+        parsed["user"] = json.loads(parsed["user"])
+    except (KeyError, json.JSONDecodeError, TypeError):
+        return None
+    return parsed
+
+
+def resolve_webapp_user(init_data):
+    """Общий шлюз для обоих API-хендлеров ниже: проверяет подпись, затем применяет те же
+    ворота, что и обычный чат (техработы, не подтверждён/нет персонажа, мёртв — см.
+    handle_message). Возвращает (user_id, user, None) при успехе, иначе (None, None, error-dict)."""
+    parsed = validate_webapp_init_data(init_data)
+    if not parsed:
+        return None, None, {"ok": False, "error": "auth", "message": "Invalid Telegram signature"}
+    tg_user = parsed.get("user") or {}
+    user_id = tg_user.get("id")
+    if not user_id:
+        return None, None, {"ok": False, "error": "auth", "message": "Missing user id"}
+    user_id = int(user_id)
+    user = get_user(user_id)
+    if maintenance_mode and user_id not in ADMIN_IDS:
+        return None, None, {"ok": False, "error": "maintenance", "message": get_text(user, "maintenance")}
+    if not (user["verified"] and user["agreement_accepted"] and user["personality_ready"]):
+        return None, None, {"ok": False, "error": "not_ready", "message": get_text(user, "webapp_character_not_ready")}
+    if user.get("dead"):
+        return None, None, {"ok": False, "error": "dead", "message": get_text(user, "character_died")}
+    return user_id, user, None
+
+
+def serialize_shop_state(user):
+    """Полный снимок магазина + статов персонажа для Mini App — JSON-сериализуемый dict.
+    Названия/эффекты уже локализованы под user["lang"] (та же логика, что и в get_shop_kb),
+    фронтенду не нужна своя i18n-логика для содержимого каталога."""
+    lang = user.get("lang", "ru")
+
+    def serialize_item(mapping, key, is_gift):
+        base_item = mapping[key]
+        item = gift_effective_item(base_item, user) if is_gift else base_item
+        category = "gift" if is_gift else "food"
+        ready_at = item_ready_at(user, category, key, base_item)
+        return {
+            "key": key,
+            "category": category,
+            "emoji": item["emoji"],
+            "name": item.get(lang, item["ru"]),
+            "price": item["price"],
+            "effects": format_item_effects(item, user),
+            "ready_in": cooldown_phrase(user, ready_at) if ready_at else None,
+            "refuse": (not is_gift) and overfeed_would_refuse(user, base_item),
+        }
+
+    categories = []
+    for shop_category in SHOP_CATEGORY_ORDER:
+        items = [serialize_item(FOOD_ITEMS, key, False)
+                 for key, it in FOOD_ITEMS.items() if it.get("category") == shop_category]
+        items += [serialize_item(GIFT_ITEMS, key, True)
+                  for key, it in GIFT_ITEMS.items() if it.get("category") == shop_category]
+        if items:
+            categories.append({"key": shop_category, "name": get_text(user, SHOP_CATEGORY_TEXT_KEY[shop_category]), "items": items})
+
+    medicine = []
+    if user.get("illness"):
+        for key, item in MEDICINE_ITEMS.items():
+            medicine.append({
+                "key": key, "emoji": item["emoji"], "name": item.get(lang, item["ru"]),
+                "price": item["price"], "cures": sorted(item["cures"]),
+            })
+
+    illness_label = None
+    if user.get("illness"):
+        info = ILLNESSES[user["illness"]]
+        illness_label = f"{info['emoji']} {info.get(lang, info['ru'])}"
+
+    return {
+        "lang": lang,
+        "bucks": user.get("bucks", 0),
+        "energy": int(round(user.get("energy", ENERGY_MAX))),
+        "energy_max": ENERGY_MAX,
+        "satiety": int(round(user.get("satiety", SATIETY_MAX))),
+        "satiety_max": SATIETY_MAX,
+        "water": int(round(user.get("water", WATER_MAX))),
+        "water_max": WATER_MAX,
+        "mood_emoji": mood_emoji(user.get("mood", 0)),
+        "mood_value": int(round(user.get("mood", 0))),
+        "illness": illness_label,
+        "asleep": is_asleep(user),
+        "categories": categories,
+        "medicine": medicine,
+        "note_max_len": ITEM_NOTE_MAX_LEN,
+        "ui": {k: get_text(user, k) for k in (
+            "webapp_title", "webapp_buy_btn", "webapp_note_placeholder", "webapp_refuse_badge",
+            "webapp_bought_toast", "webapp_open_chat_hint", "webapp_loading", "shop_category_medicine",
+        )},
+    }
+
+
+async def perform_webapp_purchase(user, user_id, category, key, note=None):
+    """Та же последовательность проверок, что в buy_food/buy_gift/buy_medicine и в
+    writing_item_note-ветке handle_message — просто вызывается из API, а не из
+    callback-хендлера. Содержательная логика по-прежнему только в execute_item_purchase."""
+    catalog = {"food": FOOD_ITEMS, "gift": GIFT_ITEMS, "medicine": MEDICINE_ITEMS}.get(category)
+    item = catalog.get(key) if catalog else None
+    if not item:
+        return {"ok": False, "error": "Not found"}
+
+    if category == "medicine":
+        illness = user.get("illness")
+        if not illness:
+            return {"ok": False, "error": get_text(user, "not_sick_alert")}
+        if illness not in item["cures"]:
+            return {"ok": False, "error": get_text(user, "wrong_medicine_alert")}
+    else:
+        ready_at = item_ready_at(user, category, key, item)
+        if ready_at:
+            return {"ok": False, "error": get_text(user, "item_cooldown_alert", when=cooldown_phrase(user, ready_at))}
+        if category == "food" and overfeed_would_refuse(user, item):
+            return {"ok": False, "error": get_text(user, "overfeed_refuse_alert")}
+
+    if note is not None:
+        note = note.strip() or None
+        if note and len(note) > ITEM_NOTE_MAX_LEN:
+            return {"ok": False, "error": get_text(user, "item_note_invalid", n=ITEM_NOTE_MAX_LEN)}
+
+    if not spend_bucks(user, item["price"]):
+        return {"ok": False, "error": get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0))}
+
+    await execute_item_purchase(user_id, user, category, key, item, note=note)
+    return {"ok": True}
+
+
+# Статичная HTML/CSS/JS-страница Mini App — персонализация (язык, статы, каталог) целиком
+# на фронтенде через /api/state и /api/buy: initData Telegram кладёт во фрагмент URL (#...),
+# который браузер никогда не отправляет на сервер, так что сама страница не может быть
+# отрендерена под конкретного пользователя на этапе GET /shop.
+SHOP_PAGE_HTML = '''<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Shop</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  html, body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--tg-theme-bg-color, #ffffff);
+    color: var(--tg-theme-text-color, #111111);
+  }
+  body { padding-bottom: 24px; }
+  #stats {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--tg-theme-secondary-bg-color, #f2f2f2);
+    border-bottom: 1px solid rgba(127,127,127,.2);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  #illness-badge {
+    display: none;
+    padding: 8px 14px 0;
+    font-size: 13px;
+    color: #cf5b5b;
+  }
+  #tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 10px 14px 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tab {
+    flex: 0 0 auto;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: var(--tg-theme-secondary-bg-color, #eee);
+    color: var(--tg-theme-text-color, #111);
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+  }
+  .tab.active {
+    background: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, #ffffff);
+  }
+  #items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 10px 14px 20px;
+  }
+  .card {
+    border: 1px solid rgba(127,127,127,.25);
+    border-radius: 14px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .card-top { display: flex; align-items: center; justify-content: space-between; }
+  .card-emoji { font-size: 26px; }
+  .note-toggle {
+    font-size: 15px;
+    background: none;
+    border: none;
+    padding: 4px;
+    opacity: .55;
+  }
+  .card-name { font-size: 14px; font-weight: 600; line-height: 1.25; }
+  .card-effects { font-size: 12px; color: var(--tg-theme-hint-color, #888); min-height: 14px; }
+  .card-note {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(127,127,127,.3);
+    background: var(--tg-theme-bg-color, #fff);
+    color: inherit;
+    display: none;
+  }
+  .card-note.shown { display: block; }
+  .card-footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .price { font-size: 13px; font-weight: 700; }
+  .buy-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    background: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, #ffffff);
+  }
+  .buy-btn:disabled { opacity: .45; }
+  .badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 8px;
+    border-radius: 8px;
+    background: rgba(127,127,127,.18);
+    color: var(--tg-theme-hint-color, #888);
+  }
+  #footer-hint {
+    text-align: center;
+    font-size: 12px;
+    color: var(--tg-theme-hint-color, #888);
+    padding: 8px 14px 20px;
+  }
+  #full-screen-msg {
+    display: none;
+    padding: 60px 24px;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+  <div id="stats"></div>
+  <div id="illness-badge"></div>
+  <div id="tabs"></div>
+  <div id="items">Loading…</div>
+  <div id="footer-hint"></div>
+  <div id="full-screen-msg"></div>
+
+<script>
+(function () {
+  var tg = (window.Telegram && window.Telegram.WebApp) || null;
+  function safe(fn) { try { fn(); } catch (e) { /* older Telegram client: ignore */ } }
+  if (tg) { safe(function () { tg.ready(); }); safe(function () { tg.expand(); }); }
+
+  var state = null;
+  var activeTab = null;
+  var busyKeys = {};
+
+  function initData() { return tg ? tg.initData : ""; }
+
+  function api(path, opts) {
+    opts = opts || {};
+    opts.headers = Object.assign({"X-Telegram-Init-Data": initData()}, opts.headers || {});
+    return fetch(path, opts).then(function (r) { return r.json(); });
+  }
+
+  function showFullScreen(text) {
+    ["stats", "illness-badge", "tabs", "items", "footer-hint"].forEach(function (id) {
+      document.getElementById(id).style.display = "none";
+    });
+    var el = document.getElementById("full-screen-msg");
+    el.style.display = "block";
+    el.textContent = text;
+  }
+
+  function renderStats(s) {
+    var el = document.getElementById("stats");
+    el.innerHTML = "";
+    [
+      "💵 " + s.bucks,
+      "⚡ " + s.energy + "/" + s.energy_max,
+      "🍽 " + s.satiety + "/" + s.satiety_max,
+      "💧 " + s.water + "/" + s.water_max,
+      s.mood_emoji + " " + (s.mood_value > 0 ? "+" : "") + s.mood_value
+    ].forEach(function (p) {
+      var span = document.createElement("span");
+      span.textContent = p;
+      el.appendChild(span);
+    });
+    var badge = document.getElementById("illness-badge");
+    if (s.illness) { badge.textContent = s.illness; badge.style.display = "block"; }
+    else { badge.style.display = "none"; }
+  }
+
+  function categoryList(s) {
+    var list = s.categories.map(function (c) { return {key: c.key, name: c.name, items: c.items}; });
+    if (s.medicine && s.medicine.length) {
+      list.unshift({
+        key: "medicine",
+        name: s.ui.shop_category_medicine,
+        items: s.medicine.map(function (m) {
+          return {key: m.key, category: "medicine", emoji: m.emoji, name: m.name, price: m.price,
+                  effects: "", ready_in: null, refuse: false};
+        })
+      });
+    }
+    return list;
+  }
+
+  function renderTabs(s) {
+    var cats = categoryList(s);
+    if (!activeTab || !cats.some(function (c) { return c.key === activeTab; })) {
+      activeTab = cats.length ? cats[0].key : null;
+    }
+    var el = document.getElementById("tabs");
+    el.innerHTML = "";
+    cats.forEach(function (c) {
+      var btn = document.createElement("button");
+      btn.className = "tab" + (c.key === activeTab ? " active" : "");
+      btn.textContent = c.name;
+      btn.onclick = function () { activeTab = c.key; render(); };
+      el.appendChild(btn);
+    });
+  }
+
+  function makeCard(s, item) {
+    var card = document.createElement("div");
+    card.className = "card";
+
+    var top = document.createElement("div");
+    top.className = "card-top";
+    var emoji = document.createElement("div");
+    emoji.className = "card-emoji";
+    emoji.textContent = item.emoji;
+    top.appendChild(emoji);
+
+    var noteBox = null;
+    if (item.category !== "medicine") {
+      var toggle = document.createElement("button");
+      toggle.className = "note-toggle";
+      toggle.textContent = "✍️";
+      noteBox = document.createElement("input");
+      noteBox.className = "card-note";
+      noteBox.type = "text";
+      noteBox.placeholder = s.ui.webapp_note_placeholder;
+      noteBox.maxLength = s.note_max_len;
+      toggle.onclick = function () {
+        noteBox.classList.toggle("shown");
+        if (noteBox.classList.contains("shown")) noteBox.focus();
+      };
+      top.appendChild(toggle);
+    }
+    card.appendChild(top);
+
+    var name = document.createElement("div");
+    name.className = "card-name";
+    name.textContent = item.name;
+    card.appendChild(name);
+
+    var effects = document.createElement("div");
+    effects.className = "card-effects";
+    effects.textContent = item.effects || "";
+    card.appendChild(effects);
+
+    if (noteBox) card.appendChild(noteBox);
+
+    var footer = document.createElement("div");
+    footer.className = "card-footer";
+    var itemKey = item.category + ":" + item.key;
+
+    if (item.ready_in) {
+      var badge = document.createElement("span");
+      badge.className = "badge";
+      badge.textContent = "⏳ " + item.ready_in;
+      footer.appendChild(badge);
+    } else if (item.refuse) {
+      var rbadge = document.createElement("span");
+      rbadge.className = "badge";
+      rbadge.textContent = "🙅 " + s.ui.webapp_refuse_badge;
+      footer.appendChild(rbadge);
+    } else {
+      var price = document.createElement("span");
+      price.className = "price";
+      price.textContent = item.price + "💵";
+      footer.appendChild(price);
+
+      var buyBtn = document.createElement("button");
+      buyBtn.className = "buy-btn";
+      buyBtn.textContent = s.ui.webapp_buy_btn;
+      if (busyKeys[itemKey]) buyBtn.disabled = true;
+      buyBtn.onclick = function () { buy(item.category, item.key, noteBox ? noteBox.value : ""); };
+      footer.appendChild(buyBtn);
+    }
+    card.appendChild(footer);
+    return card;
+  }
+
+  function renderItems(s) {
+    var cats = categoryList(s);
+    var current = cats.filter(function (c) { return c.key === activeTab; })[0];
+    var el = document.getElementById("items");
+    el.innerHTML = "";
+    if (!current) return;
+    current.items.forEach(function (item) { el.appendChild(makeCard(s, item)); });
+  }
+
+  function render() {
+    if (!state) return;
+    renderStats(state);
+    renderTabs(state);
+    renderItems(state);
+    document.getElementById("footer-hint").textContent = state.ui.webapp_open_chat_hint;
+  }
+
+  function buy(category, key, note) {
+    var itemKey = category + ":" + key;
+    busyKeys[itemKey] = true;
+    render();
+    api("/api/buy", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({category: category, key: key, note: note || null})
+    }).then(function (res) {
+      delete busyKeys[itemKey];
+      if (res.state) state = res.state;
+      if (res.ok) {
+        safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
+        safe(function () { tg.showPopup({message: state.ui.webapp_bought_toast}); });
+      } else {
+        safe(function () { tg.HapticFeedback.notificationOccurred("error"); });
+        safe(function () { tg.showAlert(res.error || res.message || "Error"); });
+      }
+      render();
+    }).catch(function () {
+      delete busyKeys[itemKey];
+      render();
+    });
+  }
+
+  function load() {
+    api("/api/state").then(function (res) {
+      if (!res.ok) { showFullScreen(res.message || res.error || "Error"); return; }
+      state = res.state;
+      render();
+    }).catch(function () { showFullScreen("Network error"); });
+  }
+
+  load();
+})();
+</script>
+</body>
+</html>
+'''
+
+
+async def shop_page_handler(request):
+    return web.Response(text=SHOP_PAGE_HTML, content_type="text/html")
+
+
+async def api_state_handler(request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    return web.json_response({"ok": True, "state": serialize_shop_state(user)})
+
+
+async def api_buy_handler(request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    try:
+        body = await request.json()
+    except (json.JSONDecodeError, ValueError):
+        return web.json_response({"ok": False, "error": "Bad request"}, status=400)
+    category = body.get("category")
+    key = body.get("key")
+    note = body.get("note")
+    if not isinstance(category, str) or not isinstance(key, str):
+        return web.json_response({"ok": False, "error": "Bad request"}, status=400)
+    if note is not None and not isinstance(note, str):
+        note = None
+    result = await perform_webapp_purchase(user, user_id, category, key, note=note)
+    result["state"] = serialize_shop_state(user)
+    return web.json_response(result)
+
+
+async def run_webapp_server():
+    app_web = web.Application()
+    app_web.router.add_get("/shop", shop_page_handler)
+    app_web.router.add_get("/api/state", api_state_handler)
+    app_web.router.add_post("/api/buy", api_buy_handler)
+    runner = web.AppRunner(app_web)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", WEBAPP_PORT)
+    await site.start()
+    logging.info(f"🛍 Mini App слушает на 0.0.0.0:{WEBAPP_PORT}, публичный адрес: {WEBAPP_URL}/shop")
+    while True:
+        await asyncio.sleep(3600)
+
+
+# ============================================================
 #  УВЕДОМЛЕНИЯ (ЕЖЕДНЕВНЫЕ И "СКУЧАЮ")
 # ============================================================
 MISS_YOU_INACTIVITY_DAYS = 2  # с какого дня без сообщений начинаем напоминать
@@ -5518,6 +6125,7 @@ async def main():
     print(f"💾 Данные сохраняются в {os.path.abspath(DATA_FILE)}")
     print(f"👥 Загружено профилей: {len([k for k in user_data if k != '__settings__'])}")
     print(f"💳 Способы оплаты: {', '.join(available_payment_methods())}")
+    print(f"🛍 Mini App магазин: {'включён, ' + WEBAPP_URL + '/shop' if WEBAPP_URL else 'выключен (WEBAPP_URL не задан)'}")
     print("✅ БОТ ГОТОВ К РАБОТЕ!")
 
     # Нативное меню команд Telegram (кнопка "/" рядом с полем ввода) — всегда на русском,
@@ -5534,6 +6142,8 @@ async def main():
         BotCommand(command="switch_style", description="Сменить стиль (SUPER PRO+)"),
     ])
 
+    if WEBAPP_URL:
+        asyncio.create_task(run_webapp_server())
     asyncio.create_task(check_notifications())
     asyncio.create_task(check_pending_payments())
     await dp.start_polling(bot)
