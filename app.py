@@ -5699,7 +5699,12 @@ SHOP_PAGE_HTML = '''<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Shop</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+  window.__tgSdkSettled = false;
+  window.__tgSdkOnSettle = function () { window.__tgSdkSettled = true; if (window.__tgTryBoot) window.__tgTryBoot(); };
+</script>
+<script src="https://telegram.org/js/telegram-web-app.js" async
+        onload="window.__tgSdkOnSettle()" onerror="window.__tgSdkOnSettle()"></script>
 <style>
   html, body {
     margin: 0;
@@ -5838,6 +5843,10 @@ SHOP_PAGE_HTML = '''<!doctype html>
 
 <script>
 (function () {
+  var booted = false;
+  function boot() {
+  if (booted) return;
+  booted = true;
   var tg = (window.Telegram && window.Telegram.WebApp) || null;
   function safe(fn) { try { fn(); } catch (e) { /* older Telegram client: ignore */ } }
   if (tg) { safe(function () { tg.ready(); }); safe(function () { tg.expand(); }); }
@@ -6070,6 +6079,18 @@ SHOP_PAGE_HTML = '''<!doctype html>
   }
 
   load();
+  }
+
+  // telegram-web-app.js бывает не просто падает, а зависает на некоторых сетях — тогда этот
+  // <script> так и не подгружается и обычный "скрипт не загрузился" fallback не срабатывает
+  // вообще никак, а раз это блокирующий (без async было раньше) тег в <head>, вообще весь
+  // остальной JS страницы, включая этот блок, просто никогда не начинал выполняться: ни
+  // ошибки, ни спиннера — тупо пустой экран без единого запроса на сервер. Теперь скрипт
+  // async и boot() запускается либо по его onload/onerror (см. <head>), либо в любом случае
+  // не позже чем через 3с — какая бы судьба у внешнего скрипта ни была.
+  window.__tgTryBoot = function () { if (window.__tgSdkSettled) boot(); };
+  window.__tgTryBoot();
+  setTimeout(boot, 3000);
 })();
 </script>
 </body>
@@ -6174,7 +6195,12 @@ SPIN_PAGE_HTML = '''<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Spin</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+  window.__tgSdkSettled = false;
+  window.__tgSdkOnSettle = function () { window.__tgSdkSettled = true; if (window.__tgTryBoot) window.__tgTryBoot(); };
+</script>
+<script src="https://telegram.org/js/telegram-web-app.js" async
+        onload="window.__tgSdkOnSettle()" onerror="window.__tgSdkOnSettle()"></script>
 <style>
   html, body {
     margin: 0;
@@ -6355,6 +6381,10 @@ SPIN_PAGE_HTML = '''<!doctype html>
 
 <script>
 (function () {
+  var booted = false;
+  function boot() {
+  if (booted) return;
+  booted = true;
   var tg = (window.Telegram && window.Telegram.WebApp) || null;
   function safe(fn) { try { fn(); } catch (e) { /* older Telegram client: ignore */ } }
   if (tg) { safe(function () { tg.ready(); }); safe(function () { tg.expand(); }); }
@@ -6626,6 +6656,18 @@ SPIN_PAGE_HTML = '''<!doctype html>
   }
 
   load();
+  }
+
+  // telegram-web-app.js бывает не просто падает, а зависает на некоторых сетях — тогда этот
+  // <script> так и не подгружается и обычный "скрипт не загрузился" fallback не срабатывает
+  // вообще никак, а раз это блокирующий (без async было раньше) тег в <head>, вообще весь
+  // остальной JS страницы, включая этот блок, просто никогда не начинал выполняться: ни
+  // ошибки, ни спиннера — тупо пустой экран без единого запроса на сервер. Теперь скрипт
+  // async и boot() запускается либо по его onload/onerror (см. <head>), либо в любом случае
+  // не позже чем через 3с — какая бы судьба у внешнего скрипта ни была.
+  window.__tgTryBoot = function () { if (window.__tgSdkSettled) boot(); };
+  window.__tgTryBoot();
+  setTimeout(boot, 3000);
 })();
 </script>
 </body>
