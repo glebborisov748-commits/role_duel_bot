@@ -2578,16 +2578,22 @@ def get_full_kb(user):
     # "Редактировать" убрана совсем — то же самое теперь доступно через нативный жест
     # редактирования сообщения в самом Телеграме (см. handle_edited_message), отдельная кнопка
     # для этого больше не нужна. На её месте теперь "Наш канал" (было выше), а на месте "Наш
-    # канал" — "Магазин": Mini App-кнопка, если настроен WEBAPP_URL, иначе как раньше открывает
-    # инлайн-каталог (см. shop_reply).
-    if WEBAPP_URL:
-        shop_button = KeyboardButton(text=get_text(user, "shop_btn"),
-                                     web_app=WebAppInfo(url=f"{WEBAPP_URL}/shop"), style="success")
-        spin_button = KeyboardButton(text=get_text(user, "spin_wheel"),
-                                     web_app=WebAppInfo(url=f"{WEBAPP_URL}/spin"))
-    else:
-        shop_button = KeyboardButton(text=get_text(user, "shop_btn"), style="success")
-        spin_button = KeyboardButton(text=get_text(user, "spin_wheel"))
+    # канал" — "Магазин".
+    #
+    # ВАЖНО: обе кнопки — ПРОСТОЙ текст, без web_app= напрямую здесь, даже когда WEBAPP_URL
+    # настроен. Это не упрощение "на будущее" — это обход документированного ограничения самого
+    # Телеграма: Telegram.WebApp.initData ГАРАНТИРОВАННО пустая, если Mini App открыт через
+    # web_app на кнопке ПОСТОЯННОЙ reply-клавиатуры (в отличие от кнопки в инлайн-клавиатуре
+    # конкретного сообщения) — см. https://core.telegram.org/bots/webapps, раздел про initData
+    # ("It is empty if the Mini App was launched from a keyboard button..."). Именно из-за этого
+    # "Магазин"/"Колесо фортуны" в этой клавиатуре стабильно ловили "Invalid Telegram signature"
+    # у реальных пользователей, сколько код ни проверяй и как клавиатуру ни обновляй — initData
+    # тут в принципе не может прийти, это не баг конкретной реализации. Поэтому тут — обычные
+    # текстовые кнопки; сам переход в Mini App происходит в их хендлерах (shop_reply,
+    # spin_button_handler -> send_spin_menu), которые шлют СВЕЖЕЕ сообщение с инлайн-кнопкой —
+    # у инлайн-кнопок initData приходит нормально.
+    shop_button = KeyboardButton(text=get_text(user, "shop_btn"), style="success")
+    spin_button = KeyboardButton(text=get_text(user, "spin_wheel"))
     return ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text=get_text(user, "main_menu")), KeyboardButton(text=get_text(user, "my_profile"))],
@@ -3179,12 +3185,23 @@ async def channel_reply(message: types.Message):
 
 @dp.message(lambda m: is_button(m.text, "shop_btn"))
 async def shop_reply(message: types.Message):
-    """Срабатывает только пока WEBAPP_URL не настроен — иначе кнопка в get_full_kb сама
-    открывает Mini App через web_app, и сюда обычным текстовым сообщением вообще не долетает."""
+    """Кнопка "Магазин" в get_full_kb — обычная текстовая (см. комментарий там про то, почему
+    НЕ web_app напрямую на постоянной клавиатуре). Если Mini App настроен (WEBAPP_URL) — шлём
+    свежее сообщение с инлайн-кнопкой web_app (та же схема, что и send_spin_menu для колеса):
+    у инлайн-кнопок, в отличие от кнопок постоянной клавиатуры, initData приходит нормально.
+    Иначе — как раньше, старый инлайн-каталог."""
     await safe_delete(message)
     user = get_user(message.from_user.id)
     if not user["personality_ready"]:
         await message.answer(get_text(user, "need_character_alert"))
+        return
+    if WEBAPP_URL:
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=get_text(user, "shop_btn"),
+                                  web_app=WebAppInfo(url=f"{WEBAPP_URL}/shop"), style="success")]
+        ])
+        await message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)),
+                              reply_markup=keyboard, parse_mode="Markdown")
         return
     await message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)),
                           reply_markup=get_shop_kb(user), parse_mode="Markdown")
