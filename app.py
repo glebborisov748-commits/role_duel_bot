@@ -81,7 +81,8 @@ TEXTS = {
             "/language — сменить язык\n"
             "/hot — горячая сцена с персонажем\n"
             "/feed — покормить персонажа\n"
-            "/work — отправить персонажа на работу за баксы\n"
+            "/work — пойти на работу за баксы для персонажа\n"
+            "/spin — колесо фортуны\n"
             "/reset_character — сбросить своего кастомного персонажа\n"
             "/switch_personality — сменить мир и пол без потери истории (SUPER PRO/ELITE)\n"
             "/switch_style — сменить стиль без потери истории (SUPER PRO/ELITE)"
@@ -375,7 +376,8 @@ TEXTS = {
             "/language — change language\n"
             "/hot — a hot scene with your character\n"
             "/feed — feed your character\n"
-            "/work — send your character to work for bucks\n"
+            "/work — go to work for bucks for your character\n"
+            "/spin — the wheel of fortune\n"
             "/reset_character — reset your custom character\n"
             "/switch_personality — change world and gender without losing history (SUPER PRO/ELITE)\n"
             "/switch_style — change style without losing history (SUPER PRO/ELITE)"
@@ -669,7 +671,8 @@ TEXTS = {
             "/language — Sprache ändern\n"
             "/hot — heiße Szene mit deinem Charakter\n"
             "/feed — deinen Charakter füttern\n"
-            "/work — deinen Charakter arbeiten schicken, für Bucks\n"
+            "/work — für Bucks für deinen Charakter arbeiten gehen\n"
+            "/spin — das Glücksrad\n"
             "/reset_character — deinen eigenen Charakter zurücksetzen\n"
             "/switch_personality — Welt und Geschlecht ändern, ohne den Verlauf zu verlieren (SUPER PRO/ELITE)\n"
             "/switch_style — Stil ändern, ohne den Verlauf zu verlieren (SUPER PRO/ELITE)"
@@ -3248,12 +3251,22 @@ async def handle_edited_message(message: types.Message):
 # ============================================================
 #  КОЛЕСО ФОРТУНЫ
 # ============================================================
-@dp.message(lambda m: is_button(m.text, "spin_wheel"))
-async def spin_button_handler(message: types.Message):
-    await safe_delete(message)
-    user = get_user(message.from_user.id)
+async def send_spin_menu(message: types.Message, user):
+    """Общая логика для кнопки "Колесо фортуны" в клавиатуре и команды /spin — раньше у кнопки
+    команды не было вообще (набрать /spin вручную ничего не делало), и сама кнопка не смотрела
+    на WEBAPP_URL (всегда открывала старое инлайн-меню, даже когда колесо уже доступно как
+    Mini App). Теперь оба входа ведут сюда и одинаково открывают Mini App, если он настроен —
+    та же логика, что уже была у /feed -> get_feed_nudge_kb."""
     if not user["verified"] or not user["personality_ready"]:
         await message.answer(get_text(user, "finish_registration_spin"))
+        return
+
+    if WEBAPP_URL:
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=get_text(user, "spin_wheel"),
+                                  web_app=WebAppInfo(url=f"{WEBAPP_URL}/spin"), style="success")]
+        ])
+        await message.answer(get_text(user, "spin_title"), reply_markup=keyboard, parse_mode="Markdown")
         return
 
     left = free_spins_left(user)
@@ -3274,6 +3287,24 @@ async def spin_button_handler(message: types.Message):
         reply_markup=keyboard,
         parse_mode="Markdown"
     )
+
+
+@dp.message(lambda m: is_button(m.text, "spin_wheel"))
+async def spin_button_handler(message: types.Message):
+    await safe_delete(message)
+    user = get_user(message.from_user.id)
+    await send_spin_menu(message, user)
+
+
+@dp.message(Command("spin"))
+async def spin_cmd(message: types.Message):
+    """/spin никогда не существовал как команда — при настроенном WEBAPP_URL кнопка в
+    клавиатуре открывает Mini App нативно, минуя любой текстовый хендлер, а вручную набранное
+    "/spin" не попадало вообще никуда (handle_message молча игнорирует любой текст с "/"),
+    так что бот просто не отвечал. Не выводим её в нативное меню "/" — так же, как /feed и
+    /work, чтобы не захламлять список: кнопка "Колесо фортуны" уже даёт тот же результат."""
+    user = get_user(message.from_user.id)
+    await send_spin_menu(message, user)
 
 
 @dp.callback_query(lambda c: c.data == "spin_free")
