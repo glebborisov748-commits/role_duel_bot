@@ -2608,18 +2608,12 @@ def get_main_menu_keyboard(user):
 
 
 def get_profile_keyboard(user):
+    # Магазин еды/подарков сюда больше не выводим — профиль теперь только про покупки баксов
+    # (бандлы/подписка/сцены) и переключатель уведомлений; сам магазин живёт в главной
+    # reply-клавиатуре (см. get_full_kb), там же, где колесо фортуны.
     mute_key = "notifications_off_btn" if user.get("notifications_muted") else "notifications_on_btn"
-    # Mini App (веб-магазин) вместо инлайн-клавиатуры — только если хостинг реально отдаёт
-    # WEBAPP_URL публично (см. run_webapp_server); иначе кнопка как и раньше открывает
-    # get_shop_kb через profile_shop, безо всяких условий на стороне пользователя.
-    if WEBAPP_URL:
-        shop_button = InlineKeyboardButton(text=get_text(user, "shop_btn"),
-                                            web_app=WebAppInfo(url=f"{WEBAPP_URL}/shop"), style="success")
-    else:
-        shop_button = InlineKeyboardButton(text=get_text(user, "shop_btn"), callback_data="profile_shop", style="success")
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=get_text(user, "buy_bundles"), callback_data="profile_bundles", style="success")],
-        [shop_button],
         [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")],
         [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
         [InlineKeyboardButton(text=get_text(user, mute_key), callback_data="toggle_notifications", style="primary")],
