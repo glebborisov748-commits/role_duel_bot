@@ -265,7 +265,8 @@ TEXTS = {
         "webapp_character_not_ready": "Сначала создай персонажа в чате с ботом.",
         "webapp_loading": "Загрузка…",
         "webapp_spin_btn": "Крутить",
-        "webapp_spin_paid_hint": "Платное вращение пока доступно только в чате с ботом — закрой это окно и нажми там «💎 Крутить за {price}⭐».",
+        "webapp_spin_paid_pending": "Обрабатываем оплату…",
+        "webapp_spin_invoice_error": "Не удалось создать счёт. Попробуй ещё раз.",
         "defibrillator_btn": "🔌 Дефибриллятор — воскресить за {price}⭐",
         "new_character_btn": "🆕 Начать заново с новым персонажем",
         "new_character_started": "🆕 Хорошо, начнём с чистого листа.",
@@ -558,7 +559,8 @@ TEXTS = {
         "webapp_character_not_ready": "Create a character in the chat with the bot first.",
         "webapp_loading": "Loading…",
         "webapp_spin_btn": "Spin",
-        "webapp_spin_paid_hint": "Paid spins are only available in the chat with the bot for now — close this window and tap \"💎 Spin for {price}⭐\" there.",
+        "webapp_spin_paid_pending": "Processing payment…",
+        "webapp_spin_invoice_error": "Could not create the invoice. Please try again.",
         "defibrillator_btn": "🔌 Defibrillator — revive for {price}⭐",
         "new_character_btn": "🆕 Start over with a new character",
         "new_character_started": "🆕 Alright, starting with a clean slate.",
@@ -851,7 +853,8 @@ TEXTS = {
         "webapp_character_not_ready": "Erstelle zuerst einen Charakter im Chat mit dem Bot.",
         "webapp_loading": "Lädt…",
         "webapp_spin_btn": "Drehen",
-        "webapp_spin_paid_hint": "Bezahlte Drehungen sind vorerst nur im Chat mit dem Bot verfügbar — schließe dieses Fenster und tippe dort auf „💎 Für {price}⭐ drehen“.",
+        "webapp_spin_paid_pending": "Zahlung wird verarbeitet…",
+        "webapp_spin_invoice_error": "Rechnung konnte nicht erstellt werden. Bitte versuche es erneut.",
         "defibrillator_btn": "🔌 Defibrillator — wiederbeleben für {price}⭐",
         "new_character_btn": "🆕 Neu anfangen mit einem neuen Charakter",
         "new_character_started": "🆕 Gut, wir fangen mit einem sauberen Blatt an.",
@@ -4050,6 +4053,11 @@ PRODUCTS = {
     "bundle_medium": {"stars": 80, "usd": 1.1, "rub": 94},
     "bundle_large": {"stars": 200, "usd": 2.8, "rub": 236},
     "spin_paid_20": {"stars": 15, "usd": 0.2, "rub": 18},
+    # Тот же платный прокрут и та же цена, что у spin_paid_20 — отдельный payload только чтобы
+    # grant_product мог отличить оплату из Mini App (создана через api_spin_paid_invoice_handler
+    # + openInvoice) от чатовой и не запускать поверх неё чатовую фейковую анимацию прокрутки:
+    # сам прокрут в этом случае уже показан колесом прямо в Mini App.
+    "spin_paid_webapp": {"stars": 15, "usd": 0.2, "rub": 18},
     "intim_scene": {"stars": 45, "usd": 0.6, "rub": 53},
     "wake_now": {"stars": 50, "usd": 0.7, "rub": 59},
     "defibrillator": {"stars": 120, "usd": 1.7, "rub": 142},
@@ -4300,6 +4308,19 @@ async def grant_product(user, payload, chat_id):
         await bot.send_message(chat_id, get_text(user, "defibrillator_success"))
     elif payload == "spin_paid_20":
         await spin_result(chat_id, user, free=False)
+    elif payload == "spin_paid_webapp":
+        # Прокрут уже анимируется в самом Mini App (см. SPIN_PAGE_HTML) — здесь только
+        # начисляем приз и кладём результат туда, где его подберёт опрос
+        # api_spin_paid_result_handler, плюс короткое подтверждение в чат для истории.
+        chosen = choose_spin_prize()
+        result_text = apply_spin_prize(user, chosen)
+        user["webapp_paid_spin_pending"] = {
+            "prize_index": SPIN_PRIZES.index(chosen),
+            "result_text": result_text,
+        }
+        save_data(user_data)
+        mode_text = get_text(user, "spin_mode_paid")
+        await bot.send_message(chat_id, get_text(user, "spin_result_header", result=result_text, mode=mode_text))
 
 
 async def check_pending_payments():
@@ -6045,16 +6066,19 @@ def serialize_spin_state(user):
             "tomorrow_label": get_text(user, "tomorrow"),
             "paid_label": get_text(user, "spin_paid"),
             "spin_btn": get_text(user, "webapp_spin_btn"),
-            "paid_hint": get_text(user, "webapp_spin_paid_hint", price=PRODUCTS["spin_paid_20"]["stars"]),
+            "paid_pending_label": get_text(user, "webapp_spin_paid_pending"),
+            "invoice_error": get_text(user, "webapp_spin_invoice_error"),
             "open_chat_hint": get_text(user, "webapp_open_chat_hint"),
         },
     }
 
 
 async def perform_webapp_spin(user, user_id):
-    """Только бесплатное вращение — платное пока остаётся в чате (Stars-инвойс не встроен в
-    Mini App, см. webapp_spin_paid_hint). Эффекты и текст результата общие с чатовым /колесо
-    (apply_spin_prize), плюс зеркалится подтверждением в обычный чат, как и покупки в магазине."""
+    """Бесплатное вращение — мгновенное, без оплаты. Платное вращение из Mini App идёт другим
+    путём (api_spin_paid_invoice_handler + openInvoice + grant_product/spin_paid_webapp), т.к.
+    требует реального Stars-платежа, а не просто списания бесплатной попытки. Эффекты и текст
+    результата здесь общие с чатовым /колесо (apply_spin_prize), плюс зеркалится подтверждением
+    в обычный чат, как и покупки в магазине."""
     if free_spins_left(user) <= 0:
         return {"ok": False, "error": get_text(user, "spin_already")}
     user["free_spins_used"] = user.get("free_spins_used", 0) + 1
@@ -6211,6 +6235,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
 
   var state = null;
   var spinning = false;
+  var paidStatusText = null;
   var currentRotation = 0;
   var colors = ["#ff6b6b", "#4ecdc4", "#ffd93d", "#6c5ce7", "#1dd1a1", "#feca57"];
 
@@ -6289,11 +6314,9 @@ SPIN_PAGE_HTML = '''<!doctype html>
 
     var paidBtn = document.createElement("button");
     paidBtn.className = "action-btn secondary";
-    paidBtn.textContent = s.ui.paid_label;
+    paidBtn.textContent = paidStatusText || s.ui.paid_label;
     paidBtn.disabled = spinning;
-    paidBtn.onclick = function () {
-      safe(function () { tg.showAlert(s.ui.paid_hint); });
-    };
+    paidBtn.onclick = spinPaid;
     el.appendChild(paidBtn);
   }
 
@@ -6303,6 +6326,23 @@ SPIN_PAGE_HTML = '''<!doctype html>
     buildWheel(state.prizes);
     renderActions(state);
     document.getElementById("footer-hint").textContent = state.ui.open_chat_hint;
+  }
+
+  // Общий хвост и для бесплатного, и для платного прокрута: анимация колеса до нужного сектора,
+  // затем баннер с результатом. prizeIndex/resultText приходят либо сразу от /api/spin/free,
+  // либо, для платного, от опроса /api/spin/paid/result после подтверждения оплаты.
+  function showSpinOutcome(prizeIndex, resultText) {
+    spinToIndex(prizeIndex, state.prizes.length);
+    setTimeout(function () {
+      spinning = false;
+      paidStatusText = null;
+      var banner = document.getElementById("result-banner");
+      banner.textContent = resultText.replace(/\*/g, "");
+      banner.style.display = "block";
+      renderStats(state);
+      renderActions(state);
+      safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
+    }, 4100);
   }
 
   function spinFree() {
@@ -6319,19 +6359,75 @@ SPIN_PAGE_HTML = '''<!doctype html>
         safe(function () { tg.showAlert(res.error || "Error"); });
         return;
       }
-      spinToIndex(res.prize_index, state.prizes.length);
-      setTimeout(function () {
-        spinning = false;
-        var banner = document.getElementById("result-banner");
-        banner.textContent = res.result_text.replace(/\*/g, "");
-        banner.style.display = "block";
-        renderStats(state);
-        renderActions(state);
-        safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
-      }, 4100);
+      showSpinOutcome(res.prize_index, res.result_text);
     }).catch(function () {
       spinning = false;
       renderActions(state);
+    });
+  }
+
+  // Платный прокрут: сначала просим у бота ссылку на Stars-счёт, открываем её нативным
+  // openInvoice() прямо поверх колеса (без выхода в чат) — сам платёж полностью ведёт Telegram.
+  // Когда openInvoice() говорит "paid"/"pending", реальное начисление приза ещё может не успеть
+  // долететь до бота (это отдельный апдейт), поэтому опрашиваем /api/spin/paid/result, пока
+  // результат не появится, и только тогда крутим колесо — точно так же, как для бесплатного.
+  function spinPaid() {
+    if (spinning || !state) return;
+    if (!tg || !tg.openInvoice) {
+      safe(function () { tg.showAlert(state.ui.invoice_error); });
+      return;
+    }
+    spinning = true;
+    paidStatusText = state.ui.paid_pending_label;
+    document.getElementById("result-banner").style.display = "none";
+    renderActions(state);
+    api("/api/spin/paid/invoice", {method: "POST"}).then(function (res) {
+      if (!res.ok) {
+        spinning = false;
+        paidStatusText = null;
+        renderActions(state);
+        safe(function () { tg.showAlert(res.error || state.ui.invoice_error); });
+        return;
+      }
+      tg.openInvoice(res.invoice_url, function (result) {
+        if (result.status === "paid" || result.status === "pending") {
+          pollPaidResult(20);
+        } else {
+          spinning = false;
+          paidStatusText = null;
+          renderActions(state);
+        }
+      });
+    }).catch(function () {
+      spinning = false;
+      paidStatusText = null;
+      renderActions(state);
+    });
+  }
+
+  function pollPaidResult(attemptsLeft) {
+    api("/api/spin/paid/result").then(function (res) {
+      if (res.ok && res.ready) {
+        if (res.state) state = res.state;
+        showSpinOutcome(res.prize_index, res.result_text);
+        return;
+      }
+      if (attemptsLeft <= 1) {
+        spinning = false;
+        paidStatusText = null;
+        renderActions(state);
+        safe(function () { tg.showAlert(state.ui.open_chat_hint); });
+        return;
+      }
+      setTimeout(function () { pollPaidResult(attemptsLeft - 1); }, 700);
+    }).catch(function () {
+      if (attemptsLeft <= 1) {
+        spinning = false;
+        paidStatusText = null;
+        renderActions(state);
+        return;
+      }
+      setTimeout(function () { pollPaidResult(attemptsLeft - 1); }, 700);
     });
   }
 
@@ -6373,6 +6469,48 @@ async def api_spin_free_handler(request):
     return web.json_response(result)
 
 
+async def api_spin_paid_invoice_handler(request):
+    """Просит у Bot API ссылку на Stars-счёт для платного прокрута — открывается на фронтенде
+    через Telegram.WebApp.openInvoice() прямо поверх колеса, без выхода в чат. Сам платёж всё
+    равно проводит нативный Telegram (тот же pre_checkout_query/successful_payment апдейт, что
+    и у обычных счетов в чате, см. payment_success) — мы только получаем ссылку на него."""
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    title, description, label = product_invoice_texts(user, "spin_paid_webapp")
+    try:
+        invoice_url = await bot.create_invoice_link(
+            title=title,
+            description=description,
+            payload="spin_paid_webapp",
+            provider_token="",
+            currency="XTR",
+            prices=[LabeledPrice(label=label, amount=PRODUCTS["spin_paid_webapp"]["stars"])],
+        )
+    except Exception as e:
+        logging.error(f"create_invoice_link (spin_paid_webapp) для {user_id}: {e}")
+        return web.json_response({"ok": False, "error": get_text(user, "webapp_spin_invoice_error")})
+    return web.json_response({"ok": True, "invoice_url": invoice_url})
+
+
+async def api_spin_paid_result_handler(request):
+    """openInvoice() сообщает фронтенду "paid"/"pending" ещё до того, как бот гарантированно
+    обработает successful_payment (это отдельный, асинхронный апдейт) — поэтому фронтенд после
+    такого статуса опрашивает этот эндпоинт, пока результат не появится (см. grant_product,
+    payload spin_paid_webapp). Результат отдаётся ровно один раз (pop), чтобы случайная более
+    поздняя загрузка страницы не подхватила чужой/устаревший прокрут."""
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    pending = user.pop("webapp_paid_spin_pending", None)
+    if not pending:
+        return web.json_response({"ok": True, "ready": False})
+    save_data(user_data)
+    return web.json_response({"ok": True, "ready": True, "state": serialize_spin_state(user), **pending})
+
+
 async def run_webapp_server():
     app_web = web.Application()
     app_web.router.add_get("/", root_health_handler)
@@ -6382,6 +6520,8 @@ async def run_webapp_server():
     app_web.router.add_get("/spin", spin_page_handler)
     app_web.router.add_get("/api/spin/state", api_spin_state_handler)
     app_web.router.add_post("/api/spin/free", api_spin_free_handler)
+    app_web.router.add_post("/api/spin/paid/invoice", api_spin_paid_invoice_handler)
+    app_web.router.add_get("/api/spin/paid/result", api_spin_paid_result_handler)
     runner = web.AppRunner(app_web)
     await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", WEBAPP_PORT)
