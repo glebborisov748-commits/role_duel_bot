@@ -79,6 +79,7 @@ TEXTS = {
             "/language — сменить язык\n"
             "/hot — горячая сцена с персонажем\n"
             "/feed — покормить персонажа\n"
+            "/work — отправить персонажа на работу за баксы\n"
             "/reset_character — сбросить своего кастомного персонажа\n"
             "/switch_personality — сменить мир и пол без потери истории (SUPER PRO/ELITE)\n"
             "/switch_style — сменить стиль без потери истории (SUPER PRO/ELITE)"
@@ -242,6 +243,22 @@ TEXTS = {
         "item_cooldown_alert": "⏳ Пока рано — снова доступно через {when}.",
         "shop_note_menu_btn": "✍️ Подарить/покормить с запиской",
         "shop_note_title": "✍️ Выбери, что подаришь со своими словами (у тебя {bucks}💵)",
+        "shop_category_medicine": "💊 Лекарства",
+        "illness_status_line": "{emoji} Болеет: {name} — лекарство есть в 🛍 Магазине",
+        "intim_blocked_illness": "🤒 Персонаж слишком плохо себя чувствует для этого сейчас — сначала вылечи его в 🛍 Магазине.",
+        "not_sick_alert": "😊 Персонаж сейчас не болеет — лекарство ни к чему.",
+        "wrong_medicine_alert": "❌ Это лекарство не от этой болезни — нужно другое.",
+        "character_died": "💔 Персонаж не пережил такого количества еды и питья — сердце не выдержало.\n\nВся история общения и уровень близости потеряны.\n\nМожешь воскресить персонажа дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
+        "defibrillator_btn": "🔌 Дефибриллятор — воскресить за {price}⭐",
+        "new_character_btn": "🆕 Начать заново с новым персонажем",
+        "new_character_started": "🆕 Хорошо, начнём с чистого листа.",
+        "defibrillator_success": "🔌 Дефибриллятор сработал! Персонаж снова с тобой, вся история на месте.",
+        "invoice_defib_title": "Дефибриллятор",
+        "invoice_defib_desc": "Полностью воскрешает персонажа: история общения и уровень близости сохраняются.",
+        "invoice_defib_label": "Дефибриллятор",
+        "still_working": "💼 Персонаж ещё на работе, вернётся позже.",
+        "work_started": "💼 Персонаж отправился на работу — вернётся через {minutes} мин. с баксами. Пока он работает, пообщаться не получится.",
+        "work_finished": "💼 Персонаж вернулся с работы и заработал {bucks}💵!",
         "custom_gift_btn": "✍️ Свой подарок — {price}💵",
         "custom_gift_prompt": "✍️ Напиши, что хочешь подарить (до {n} символов, цена {price}💵). Каждый подарок можно подарить только один раз.",
         "custom_gift_invalid": "❌ Напиши текст подарка (до {n} символов).",
@@ -333,6 +350,7 @@ TEXTS = {
             "/language — change language\n"
             "/hot — a hot scene with your character\n"
             "/feed — feed your character\n"
+            "/work — send your character to work for bucks\n"
             "/reset_character — reset your custom character\n"
             "/switch_personality — change world and gender without losing history (SUPER PRO/ELITE)\n"
             "/switch_style — change style without losing history (SUPER PRO/ELITE)"
@@ -496,6 +514,22 @@ TEXTS = {
         "item_cooldown_alert": "⏳ Not yet — available again in {when}.",
         "shop_note_menu_btn": "✍️ Gift or feed with a note",
         "shop_note_title": "✍️ Choose what to gift with your own words (you have {bucks}💵)",
+        "shop_category_medicine": "💊 Medicine",
+        "illness_status_line": "{emoji} Sick: {name} — medicine is in the 🛍 Shop",
+        "intim_blocked_illness": "🤒 Your companion feels too unwell for that right now — cure them in the 🛍 Shop first.",
+        "not_sick_alert": "😊 Your companion isn't sick right now — no need for medicine.",
+        "wrong_medicine_alert": "❌ This medicine doesn't treat this illness — you need a different one.",
+        "character_died": "💔 Your companion didn't survive that much food and drink — their heart gave out.\n\nAll chat history and closeness level are lost.\n\nYou can revive your companion with a defibrillator (with the whole history) or start over with a new character.",
+        "defibrillator_btn": "🔌 Defibrillator — revive for {price}⭐",
+        "new_character_btn": "🆕 Start over with a new character",
+        "new_character_started": "🆕 Alright, starting with a clean slate.",
+        "defibrillator_success": "🔌 The defibrillator worked! Your companion is back, with the whole history intact.",
+        "invoice_defib_title": "Defibrillator",
+        "invoice_defib_desc": "Fully revives your companion: chat history and closeness level are preserved.",
+        "invoice_defib_label": "Defibrillator",
+        "still_working": "💼 Your companion is still at work, they'll be back later.",
+        "work_started": "💼 Your companion went to work — they'll be back in {minutes} min. with bucks. You won't be able to chat while they're working.",
+        "work_finished": "💼 Your companion came back from work and earned {bucks}💵!",
         "custom_gift_btn": "✍️ Custom gift — {price}💵",
         "custom_gift_prompt": "✍️ Write what you want to gift (up to {n} characters, price {price}💵). Each gift can only be given once.",
         "custom_gift_invalid": "❌ Write the gift's text (up to {n} characters).",
@@ -587,6 +621,7 @@ TEXTS = {
             "/language — Sprache ändern\n"
             "/hot — heiße Szene mit deinem Charakter\n"
             "/feed — deinen Charakter füttern\n"
+            "/work — deinen Charakter arbeiten schicken, für Bucks\n"
             "/reset_character — deinen eigenen Charakter zurücksetzen\n"
             "/switch_personality — Welt und Geschlecht ändern, ohne den Verlauf zu verlieren (SUPER PRO/ELITE)\n"
             "/switch_style — Stil ändern, ohne den Verlauf zu verlieren (SUPER PRO/ELITE)"
@@ -750,6 +785,22 @@ TEXTS = {
         "item_cooldown_alert": "⏳ Noch nicht — wieder verfügbar in {when}.",
         "shop_note_menu_btn": "✍️ Schenken/Füttern mit Notiz",
         "shop_note_title": "✍️ Wähle, was du mit eigenen Worten schenkst (du hast {bucks}💵)",
+        "shop_category_medicine": "💊 Medikamente",
+        "illness_status_line": "{emoji} Krank: {name} — Medikamente gibt es im 🛍 Shop",
+        "intim_blocked_illness": "🤒 Dein Begleiter fühlt sich dafür gerade zu schlecht — heile ihn/sie zuerst im 🛍 Shop.",
+        "not_sick_alert": "😊 Dein Begleiter ist gerade nicht krank — kein Medikament nötig.",
+        "wrong_medicine_alert": "❌ Dieses Medikament hilft nicht gegen diese Krankheit — du brauchst ein anderes.",
+        "character_died": "💔 Dein Begleiter hat so viel Essen und Trinken nicht überlebt — das Herz hat nicht mitgemacht.\n\nDer gesamte Chatverlauf und das Nähe-Level sind verloren.\n\nDu kannst deinen Begleiter mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
+        "defibrillator_btn": "🔌 Defibrillator — wiederbeleben für {price}⭐",
+        "new_character_btn": "🆕 Neu anfangen mit einem neuen Charakter",
+        "new_character_started": "🆕 Gut, wir fangen mit einem sauberen Blatt an.",
+        "defibrillator_success": "🔌 Der Defibrillator hat funktioniert! Dein Begleiter ist zurück, die ganze Geschichte ist erhalten.",
+        "invoice_defib_title": "Defibrillator",
+        "invoice_defib_desc": "Belebt deinen Begleiter vollständig wieder: Chatverlauf und Nähe-Level bleiben erhalten.",
+        "invoice_defib_label": "Defibrillator",
+        "still_working": "💼 Dein Begleiter ist noch bei der Arbeit, kommt später zurück.",
+        "work_started": "💼 Dein Begleiter ist zur Arbeit gegangen — kommt in {minutes} Min. mit Bucks zurück. Solange kann nicht gechattet werden.",
+        "work_finished": "💼 Dein Begleiter ist von der Arbeit zurück und hat {bucks}💵 verdient!",
         "custom_gift_btn": "✍️ Eigenes Geschenk — {price}💵",
         "custom_gift_prompt": "✍️ Schreib, was du schenken möchtest (bis zu {n} Zeichen, Preis {price}💵). Jedes Geschenk kann nur einmal verschenkt werden.",
         "custom_gift_invalid": "❌ Schreib den Text des Geschenks (bis zu {n} Zeichen).",
@@ -1563,6 +1614,29 @@ GIFT_ITEMS = {
                 "reaction_hint": "Изысканный, немного торжественный вечер — благодарность тёплая и чуть возвышенная, ты тронута таким жестом."},
 }
 
+# Болезнь: редкий случайный "тамагочи"-риск (см. _maybe_get_sick), а не наказание за
+# невнимательность — не убивает и не портит статы напрямую, только меняет манеру речи
+# (build_illness_rule) и закрывает /hot, пока не вылечишься (см. intim_cmd/intim_continue_cb).
+# "cold" сама перерастает в "bronchitis", если её долго игнорировать (см. _maybe_escalate_illness).
+ILLNESSES = {
+    "cold": {"emoji": "🤧", "ru": "Простуда", "en": "Cold", "de": "Erkältung"},
+    "bronchitis": {"emoji": "🤒", "ru": "Бронхит", "en": "Bronchitis", "de": "Bronchitis"},
+}
+ILLNESS_DAILY_CHANCE = 0.04  # шанс заболеть за день, только если сейчас не болен
+ILLNESS_ESCALATE_HOURS = 48  # столько часов невылеченная простуда терпит, потом становится бронхитом
+
+# Лекарства — отдельная категория магазина, видна только когда персонаж реально болен (см.
+# get_shop_kb). "cures" — какие болезни снимает; сильное лечит и то, и другое, чтобы нельзя было
+# по ошибке купить не то и остаться ни с чем (см. buy_medicine).
+MEDICINE_ITEMS = {
+    "light_medicine": {"emoji": "💊", "ru": "Лёгкое лекарство", "en": "Mild medicine", "de": "Leichtes Medikament",
+                        "price": 40, "mood": 8, "cures": {"cold"},
+                        "reaction_hint": "Забота во время болезни — благодарность тёплая, голос слабый, но искренний."},
+    "strong_medicine": {"emoji": "💉", "ru": "Сильное лекарство", "en": "Strong medicine", "de": "Starkes Medikament",
+                         "price": 90, "mood": 15, "cures": {"cold", "bronchitis"},
+                         "reaction_hint": "Серьёзная забота во время тяжёлой болезни — искреннее облегчение и глубокая благодарность."},
+}
+
 
 def intim_option_label(mapping, key, user):
     option = mapping[key]
@@ -1713,13 +1787,42 @@ def free_spins_left(user):
     return max(0, free_spins_allowed(user) - user.get("free_spins_used", 0))
 
 
+def _maybe_get_sick(user):
+    """Небольшой случайный шанс заболеть раз в день — только если персонаж уже создан, ещё не
+    болен и не мёртв (иначе бессмысленно). См. ILLNESSES/ILLNESS_DAILY_CHANCE."""
+    if not user.get("personality_ready") or user.get("illness") or user.get("dead"):
+        return
+    if random.random() < ILLNESS_DAILY_CHANCE:
+        user["illness"] = "cold"
+        user["illness_since"] = datetime.now().isoformat()
+
+
+def _maybe_escalate_illness(user):
+    """Невылеченная простуда сама превращается в бронхит через ILLNESS_ESCALATE_HOURS —
+    стимул вылечиться, а не просто подождать, пока само пройдёт (само не проходит)."""
+    if user.get("illness") != "cold":
+        return
+    since = user.get("illness_since")
+    if not since:
+        return
+    try:
+        hours = (datetime.now() - datetime.fromisoformat(since)).total_seconds() / 3600
+    except (ValueError, TypeError):
+        return
+    if hours >= ILLNESS_ESCALATE_HOURS:
+        user["illness"] = "bronchitis"
+        user["illness_since"] = datetime.now().isoformat()
+
+
 def _reset_daily_quota_if_needed(user):
     level = get_subscription_level(user)
     today = datetime.now().date().isoformat()
+    _maybe_escalate_illness(user)
     if user.get("last_daily_reset") == today:
         return
     user["last_daily_reset"] = today
     user["free_spins_used"] = 0
+    _maybe_get_sick(user)
     if level:
         user[FREE_INTIM_FIELD[level]] = FREE_INTIM_SCENES[level]
         user["bucks"] = user.get("bucks", 0) + BUCKS_DAILY_STIPEND[level]
@@ -1960,6 +2063,41 @@ def is_asleep(user):
     return bool(user.get("sleep_until"))
 
 
+# "Работа" — свободный (не требующий звёзд) способ заработать баксы: персонаж уходит на
+# фиксированное время, всё это время обычный чат недоступен (см. handle_message), а по
+# возвращении сразу начисляются баксы. /hot нарочно остаётся доступен, той же логикой, что и
+# при сне (см. intim_cmd) — платный раздел тамагочи-механикой не ограничивается.
+WORK_DURATION_MINUTES = 120
+WORK_PAYOUT_BUCKS = 70
+
+
+def is_working(user):
+    until = user.get("working_until")
+    if not until:
+        return False
+    try:
+        return datetime.now() < datetime.fromisoformat(until)
+    except (ValueError, TypeError):
+        return False
+
+
+def finish_work_if_done(user):
+    """True, если персонаж только что вернулся с работы (баксы уже начислены и сохранены)."""
+    until = user.get("working_until")
+    if not until:
+        return False
+    try:
+        done = datetime.now() >= datetime.fromisoformat(until)
+    except (ValueError, TypeError):
+        done = True
+    if not done:
+        return False
+    user["working_until"] = None
+    user["bucks"] = user.get("bucks", 0) + WORK_PAYOUT_BUCKS
+    save_data(user_data)
+    return True
+
+
 def use_energizer(user):
     """Возвращает True, если энергетик найден и использован. Восполняет ENERGIZER_RESTORE_AMOUNT,
     а не сразу до максимума, и сразу снимает sleep_until — так энергетик всегда мгновенно
@@ -2028,9 +2166,24 @@ def build_tipsy_rule(user):
             "заторможенности или спутанности речи.\n")
 
 
+def build_illness_rule(user):
+    """Манера речи во время болезни (см. ILLNESSES/_maybe_get_sick) — статы напрямую не трогает,
+    ограничивает только доступ к /hot (см. intim_cmd)."""
+    illness = user.get("illness")
+    if illness == "cold":
+        return ("Ты немного приболела/приболел — лёгкая простуда: иногда шмыгаешь носом или коротко "
+                "покашливаешь в описании действия, отвечаешь чуть более устало и сухо, чем обычно, но в "
+                "целом держишься бодро и вовлечена/вовлечён в разговор.\n")
+    if illness == "bronchitis":
+        return ("Тебе по-настоящему нездоровится — сильный кашель и слабость: часто кашляешь в описании "
+                "действия, голос слабый и хриплый, реплики короче обычного, трудно долго фокусироваться "
+                "на разговоре, но ты всё равно стараешься отвечать, а не игнорируешь собеседника.\n")
+    return ""
+
+
 def stats_line_text(user):
     mood = user.get("mood", 0)
-    return get_text(
+    line = get_text(
         user, "stats_line",
         energy=int(round(user.get("energy", ENERGY_MAX))),
         satiety=int(round(user.get("satiety", SATIETY_MAX))),
@@ -2040,6 +2193,12 @@ def stats_line_text(user):
         mood_value=int(round(mood)),
         scenes=intim_scenes_available(user),
     )
+    illness = user.get("illness")
+    if illness:
+        info = ILLNESSES[illness]
+        name = info.get(user.get("lang", "ru"), info["ru"])
+        line += "\n" + get_text(user, "illness_status_line", emoji=info["emoji"], name=name)
+    return line
 
 
 def get_level_congratulation(user, level):
@@ -2159,6 +2318,7 @@ def build_prompt(user):
     energy_rule = build_energy_rule(user)
     hunger_rule = build_hunger_rule(user)
     tipsy_rule = build_tipsy_rule(user)
+    illness_rule = build_illness_rule(user)
     time_period, time_note = get_time_of_day(user)
     user_gender = user.get("user_gender", "male")
     if user_gender == "male":
@@ -2173,7 +2333,7 @@ def build_prompt(user):
         f"{style_desc} "
         f"{rules}"
         f"Сейчас у вас {time_period} — {time_note}. "
-        f"{mood_rule} {energy_rule}{hunger_rule}{tipsy_rule}"
+        f"{mood_rule} {energy_rule}{hunger_rule}{tipsy_rule}{illness_rule}"
         f"{gender_context} "
         f"Ты не признаёшься в любви с первого сообщения — у тебя есть характер и самоуважение. "
         f"Ты ценишь близость и доверие, которые не возникают за один вечер. "
@@ -2641,6 +2801,41 @@ async def reset_character_cmd(message: types.Message):
     user["history"] = []
     save_data(user_data)
     await message.answer(get_text(user, "character_reset"))
+
+
+@dp.callback_query(lambda c: c.data == "revive_new_character")
+async def revive_new_character(call: types.CallbackQuery):
+    """Бесплатная альтернатива дефибриллятору на экране смерти (см. get_death_kb) — в отличие
+    от него реально теряются история и уровень близости (xp/last_level), как и предупреждали:
+    полный чистый старт, а не просто снятие флага. Баксы/энергетики/подписка/статус лекарств и
+    т.п. НЕ трогаем — это не "часть отношений", а вещи пользователя, наказывать за них незачем."""
+    user = get_user(call.from_user.id)
+    user["dead"] = False
+    user["history"] = []
+    user["xp"] = 0
+    user["last_level"] = 0
+    user["custom_character"] = None
+    user["personality_ready"] = False
+    user["world"] = None
+    user["gender"] = None
+    user["switching_personality"] = False
+    user["mood"] = 0
+    user["satiety"] = SATIETY_MAX
+    user["energy"] = ENERGY_MAX
+    user["sleep_until"] = None
+    user["tipsy_until"] = None
+    user["tipsy_level"] = None
+    user["illness"] = None
+    user["illness_since"] = None
+    user["overfeed_strikes"] = 0
+    user["working_until"] = None
+    user["intim_scene_unlocked"] = False
+    user["last_hot_scene"] = None
+    save_data(user_data)
+    await safe_delete(call.message)
+    await call.message.answer(get_text(user, "new_character_started"))
+    await bot.send_message(call.message.chat.id, get_text(user, "choose_world"), reply_markup=get_world_kb(user), parse_mode="Markdown")
+    await call.answer()
 
 
 HELP_LANG_HINT = "🌍 Не тот язык? / Wrong language? / Falsche Sprache? → /language"
@@ -3153,6 +3348,13 @@ def gift_option_label(key, user):
     return f"{item['emoji']} {label}"
 
 
+def medicine_option_label(key, user):
+    item = MEDICINE_ITEMS[key]
+    lang = user.get("lang", "ru")
+    label = item.get(lang, item["ru"])
+    return f"{item['emoji']} {label}"
+
+
 def item_cooldown_key(category, key):
     return f"{category}:{key}"
 
@@ -3248,6 +3450,13 @@ def get_shop_kb(user):
     entries += [(key, item, f"shop_gift_{key}", True) for key, item in GIFT_ITEMS.items()]
 
     rows = []
+    # Лекарства — только пока персонаж реально болен (см. ILLNESSES), сверху, до остальных
+    # категорий: это самое срочное, что вообще может понадобиться в магазине сейчас.
+    if user.get("illness"):
+        rows.append([InlineKeyboardButton(text=get_text(user, "shop_category_medicine"), callback_data="shop_noop")])
+        for key, item in MEDICINE_ITEMS.items():
+            rows.append([InlineKeyboardButton(text=f"{medicine_option_label(key, user)} — {item['price']}💵",
+                                              callback_data=f"shop_medicine_{key}", style="success")])
     for category in SHOP_CATEGORY_ORDER:
         cat_entries = [e for e in entries if e[1].get("category") == category]
         if not cat_entries:
@@ -3389,12 +3598,73 @@ async def profile_shop(call: types.CallbackQuery):
     await call.answer()
 
 
+# Насильное перекармливание/перепаивание — предупреждение, а потом смерть, если продолжать
+# (друг подсказал, пользователь явно согласился на смерть именно за это, в отличие от болезни).
+# Считаем только подряд идущие покупки ЕДЫ при уже почти полной сытости — обычное кормление
+# голодного персонажа порог не задевает вообще (см. update_overfeed_strikes).
+OVERFEED_SATIETY_THRESHOLD = 95
+OVERFEED_WARN_STRIKES = 2
+OVERFEED_DEATH_STRIKES = 4
+OVERFEED_WARNING_HINT = (
+    "Это уже слишком много подряд — тебя откровенно перекармливают/перепаивают через силу. Ты "
+    "не благодаришь, а раздражённо и устало просишь остановиться («Хватит, хватит...»), "
+    "отталкиваешь следующую порцию, тебе физически нехорошо от того, что в тебя запихивают."
+)
+
+
+def update_overfeed_strikes(user, item):
+    """None — обычная покупка; "warning" — персонаж уже почти под завязку, но ещё держится;
+    "death" — перекормили/перепоили слишком много раз подряд. Считаем только предметы с
+    эффектом на сытость (напитки вроде пива сюда тоже входят — у них есть "satiety")."""
+    if not item.get("satiety") or user.get("satiety", 0) < OVERFEED_SATIETY_THRESHOLD:
+        user["overfeed_strikes"] = 0
+        return None
+    user["overfeed_strikes"] = user.get("overfeed_strikes", 0) + 1
+    if user["overfeed_strikes"] >= OVERFEED_DEATH_STRIKES:
+        return "death"
+    if user["overfeed_strikes"] >= OVERFEED_WARN_STRIKES:
+        return "warning"
+    return None
+
+
+def get_death_kb(user):
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=get_text(user, "defibrillator_btn", price=PRODUCTS["defibrillator"]["stars"]),
+                              callback_data="buy:defibrillator", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "new_character_btn"), callback_data="revive_new_character", style="danger")],
+    ])
+
+
+async def kill_character(chat_id, user):
+    """Персонаж НИЧЕГО не теряет физически в этот момент — умер он лишь флагом "dead", который
+    блокирует чат (см. handle_message). Настоящая потеря истории/близости происходит, только
+    если пользователь сам выберет бесплатный вариант "новый персонаж" на экране смерти —
+    дефибриллятор просто снимает флаг, ничего восстанавливать не нужно, ведь ничего не стёрлось."""
+    user["dead"] = True
+    user["overfeed_strikes"] = 0
+    save_data(user_data)
+    await bot.send_message(chat_id, get_text(user, "character_died"), reply_markup=get_death_kb(user))
+
+
 async def execute_item_purchase(chat_id, user, category, key, item, note=None):
     """Общая часть после того, как cooldown и баксы уже проверены и списаны вызывающим:
     применяет эффекты, отмечает cooldown, подтверждает покупку и (если не спит) просит ИИ
     отреагировать в характере — опционально на личные слова пользователя (note), см.
-    generate_shop_reaction. Используется и мгновенной покупкой (buy_food/buy_gift), и покупкой
-    с запиской (см. writing_item_note в handle_message)."""
+    generate_shop_reaction. Используется и мгновенной покупкой (buy_food/buy_gift/buy_medicine),
+    и покупкой с запиской (см. writing_item_note в handle_message) — оба пути должны одинаково
+    попадать под перекорм/лечение, поэтому проверки ниже, а не в вызывающих хендлерах."""
+    if category == "food":
+        overfed = update_overfeed_strikes(user, item)
+        if overfed == "death":
+            await kill_character(chat_id, user)
+            return
+        if overfed == "warning":
+            item = {**item, "reaction_hint": OVERFEED_WARNING_HINT}
+
+    if category == "medicine":
+        user["illness"] = None
+        user["illness_since"] = None
+
     display_item = gift_effective_item(item, user) if category == "gift" else item
     apply_shop_item_effects(user, item)
     mark_item_purchased(user, category, key)
@@ -3442,6 +3712,28 @@ async def buy_gift(call: types.CallbackQuery):
         return
     await call.answer()
     await execute_item_purchase(call.message.chat.id, user, "gift", key, base_item)
+
+
+@dp.callback_query(lambda c: c.data.startswith("shop_medicine_"))
+async def buy_medicine(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    key = call.data[len("shop_medicine_"):]
+    item = MEDICINE_ITEMS.get(key)
+    if not item:
+        await call.answer()
+        return
+    illness = user.get("illness")
+    if not illness:
+        await call.answer(get_text(user, "not_sick_alert"), show_alert=True)
+        return
+    if illness not in item["cures"]:
+        await call.answer(get_text(user, "wrong_medicine_alert"), show_alert=True)
+        return
+    if not spend_bucks(user, item["price"]):
+        await call.answer(get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0)), show_alert=True)
+        return
+    await call.answer()
+    await execute_item_purchase(call.message.chat.id, user, "medicine", key, item)
 
 
 @dp.callback_query(lambda c: c.data.startswith("note_food_") or c.data.startswith("note_gift_"))
@@ -3535,6 +3827,7 @@ PRODUCTS = {
     "spin_paid_20": {"stars": 15, "usd": 0.2, "rub": 18},
     "intim_scene": {"stars": 45, "usd": 0.6, "rub": 53},
     "wake_now": {"stars": 50, "usd": 0.7, "rub": 59},
+    "defibrillator": {"stars": 120, "usd": 1.7, "rub": 142},
 }
 # Подстраховка на случай, если когда-нибудь добавят товар без явного rub — тогда он по
 # умолчанию будет 1:1 со звёздами, а не упадёт с KeyError.
@@ -3582,8 +3875,9 @@ def is_method_enabled(method):
 # не меняются), а честное разведение каналов оплаты по тому, что товар реально даёт. PRO
 # (без adult-стилей) на Lava остаётся, т.к. там действует SAFE_CONTENT_RULE и явного контента
 # в принципе не бывает. Бандлы/энергетики/прокрутки/разбудить сейчас — нейтральные, сами по
-# себе доступ к 18+ не открывают, тоже остаются на Lava.
-LAVA_RESTRICTED_PRODUCTS = {"subscribe_super", "subscribe_elite", "upgrade_to_super", "intim_scene"}
+# себе доступ к 18+ не открывают, тоже остаются на Lava. Дефибриллятор — туда же: восстанавливает
+# в том числе историю adult-стилей/сцен, если она была, так что по той же логике не для Lava.
+LAVA_RESTRICTED_PRODUCTS = {"subscribe_super", "subscribe_elite", "upgrade_to_super", "intim_scene", "defibrillator"}
 
 
 def available_payment_methods(payload=None):
@@ -3613,6 +3907,9 @@ def product_invoice_texts(user, payload):
     if payload == "wake_now":
         return (get_text(user, "invoice_wake_title"), get_text(user, "invoice_wake_desc"),
                 get_text(user, "invoice_wake_label"))
+    if payload == "defibrillator":
+        return (get_text(user, "invoice_defib_title"), get_text(user, "invoice_defib_desc"),
+                get_text(user, "invoice_defib_label"))
     if payload in BUNDLES:
         bundle = BUNDLES[payload]
         price = PRODUCTS[payload]["stars"]
@@ -3770,6 +4067,12 @@ async def grant_product(user, payload, chat_id):
         user["sleep_until"] = None
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "woken_up"))
+    elif payload == "defibrillator":
+        # Ничего не восстанавливаем — "смерть" была лишь флагом, ничего физически не стёрлось
+        # (см. kill_character), так что просто снимаем блокировку чата.
+        user["dead"] = False
+        save_data(user_data)
+        await bot.send_message(chat_id, get_text(user, "defibrillator_success"))
     elif payload == "spin_paid_20":
         await spin_result(chat_id, user, free=False)
 
@@ -4202,7 +4505,11 @@ async def intim_cmd(message: types.Message):
         return
     # /hot нарочно не проверяет is_asleep(user) — это отдельный платный раздел именно для тех,
     # кто не хочет ждать (ни уровня близости, ни "сна" персонажа): раз сцена куплена/доступна,
-    # она выдаётся сразу, тамагочи-механика на неё не распространяется.
+    # она выдаётся сразу, тамагочи-механика на неё не распространяется. Болезнь — намеренное
+    # ИСКЛЮЧЕНИЕ из этого правила (явно попросили): персонажу физически не до того.
+    if user.get("illness"):
+        await message.answer(get_text(user, "intim_blocked_illness"))
+        return
     await show_intim_menu(message.chat.id, user)
 
 
@@ -4219,6 +4526,32 @@ async def feed_cmd(message: types.Message):
         return
     await message.answer(get_text(user, "feed_menu_title", bucks=user.get("bucks", 0)),
                          reply_markup=get_feed_nudge_kb(user))
+
+
+@dp.message(Command("work"))
+async def work_cmd(message: types.Message):
+    """Свободный (без звёзд) способ заработать баксы: персонаж уходит на WORK_DURATION_MINUTES,
+    всё это время обычный чат недоступен (см. handle_message), но /hot по-прежнему работает —
+    та же логика, что и у сна (см. intim_cmd)."""
+    user = get_user(message.from_user.id)
+    if not user["verified"] or not user["agreement_accepted"]:
+        await message.answer(get_text(user, "finish_registration_first"))
+        return
+    if not user["personality_ready"]:
+        await message.answer(get_text(user, "need_character_alert"))
+        return
+    if user.get("dead"):
+        await message.answer(get_text(user, "character_died"), reply_markup=get_death_kb(user))
+        return
+    if is_asleep(user):
+        await message.answer(get_text(user, "asleep_message", price=PRODUCTS["wake_now"]["stars"]), reply_markup=get_wake_kb(user))
+        return
+    if is_working(user):
+        await message.answer(get_text(user, "still_working"))
+        return
+    user["working_until"] = (datetime.now() + timedelta(minutes=WORK_DURATION_MINUTES)).isoformat()
+    save_data(user_data)
+    await message.answer(get_text(user, "work_started", minutes=WORK_DURATION_MINUTES))
 
 
 @dp.callback_query(lambda c: c.data.startswith("intim_type_"))
@@ -4477,6 +4810,9 @@ async def intim_continue_cb(call: types.CallbackQuery):
     if not last:
         await call.answer()
         return
+    if user.get("illness"):
+        await call.answer(get_text(user, "intim_blocked_illness"), show_alert=True)
+        return
     kind = consume_intim_scene(user)
     if kind is None:
         await call.answer(get_text(user, "intim_none"), show_alert=True)
@@ -4601,7 +4937,7 @@ def build_shop_reaction_instruction(item, kind, note=None):
     снек и романтический вечер должны звучать по-разному. note — личные слова пользователя
     (см. generate_shop_reaction) — если есть, модель обязана ответить именно на них."""
     hint = item.get("reaction_hint", "")
-    verb = "покормил(а)" if kind == "food" else "подарил(а)"
+    verb = "покормил(а)" if kind == "food" else ("вылечил(а)" if kind == "medicine" else "подарил(а)")
     preposition = "тебя" if kind == "food" else "тебе"
     thing = item["ru"].lower()
     note_rule = (f" При этом он(а) сказал(а) тебе: «{note}» — обязательно отреагируй именно на "
@@ -4621,7 +4957,7 @@ async def generate_shop_reaction(chat_id, user, item, kind, note=None):
     writing_item_note в handle_message) — попадают и в системный промпт, и прямой речью в
     синтетическую реплику ниже, чтобы ИИ реагировал на них, а не только на сам факт подарка."""
     system_prompt = build_prompt(user) + build_shop_reaction_instruction(item, kind, note=note)
-    action_word = "кормит" if kind == "food" else "дарит"
+    action_word = "кормит" if kind == "food" else ("лечит" if kind == "medicine" else "дарит")
     preposition = "тебя" if kind == "food" else "тебе"
     action_text = f"*{action_word} {preposition}: {item['ru'].lower()}*"
     if note:
@@ -4744,7 +5080,7 @@ async def handle_message(message: types.Message):
     # 2. Приветствие после долгого отсутствия — но не если персонаж спит: иначе следом всё
     # равно покажется asleep_message (шаг 4b), и получать оба сообщения подряд ("наконец-то!"
     # + "он спит") нелепо и противоречиво (баг из фидбэка).
-    if user.get("last_activity") and not is_asleep(user):
+    if user.get("last_activity") and not is_asleep(user) and not user.get("dead"):
         try:
             last = datetime.fromisoformat(user["last_activity"])
             if (datetime.now() - last).days >= 1:
@@ -4772,6 +5108,13 @@ async def handle_message(message: types.Message):
         await message.answer(get_text(user, "create_character_first"))
         return
 
+    # 3b. Персонаж умер (перекорм/перепой, см. kill_character) — блокируем вообще всё, включая
+    # кнопки навигации ниже: выйти можно только с экрана смерти (дефибриллятор или новый
+    # персонаж), поэтому проверка стоит ДО игнора команд/кнопок, а не после.
+    if user.get("dead"):
+        await message.answer(get_text(user, "character_died"), reply_markup=get_death_kb(user))
+        return
+
     # 4. Игнорируем команды и кнопки клавиатуры
     if message.text.startswith("/"):
         return
@@ -4785,6 +5128,16 @@ async def handle_message(message: types.Message):
     if is_asleep(user):
         await message.answer(get_text(user, "asleep_message", price=PRODUCTS["wake_now"]["stars"]), reply_markup=get_wake_kb(user))
         return
+
+    # 4c. Персонаж на работе (см. /work) — обычный чат недоступен, пока не вернётся. Если время
+    # уже вышло, это же сообщение и завершает работу (начисляет баксы) и обрабатывается дальше
+    # как обычно — не нужно присылать что-то ещё раз, чтобы "заметить" возвращение.
+    if user.get("working_until"):
+        if finish_work_if_done(user):
+            await message.answer(get_text(user, "work_finished", bucks=WORK_PAYOUT_BUCKS))
+        else:
+            await message.answer(get_text(user, "still_working"))
+            return
 
     # 5. Режим редактирования последнего сообщения
     if user.get("editing_message"):
@@ -4895,6 +5248,11 @@ async def check_notifications():
             for user_id, user in list(user_data.items()):
                 if not user.get("verified") or not user.get("personality_ready"):
                     continue
+                # Мёртвому персонажу не шлём обычные напоминания (скучаю/спин/сон) — это
+                # тонально дико, пока экран смерти не закрыт дефибриллятором или новым
+                # персонажем; отдельного "напоминания о смерти" пока нет, не нужно плодить типы.
+                if user.get("dead"):
+                    continue
                 # Отключение уведомлений — привилегия SUPER PRO: если подписка упала до PRO или
                 # истекла, напоминания сами возобновятся — отдельно снимать флаг не нужно.
                 if user.get("notifications_muted") and get_subscription_level(user) in ("super_pro", "elite"):
@@ -4998,6 +5356,7 @@ async def main():
         BotCommand(command="language", description="Сменить язык"),
         BotCommand(command="hot", description="Горячая сцена с персонажем"),
         BotCommand(command="feed", description="Покормить персонажа"),
+        BotCommand(command="work", description="Отправить на работу за баксы"),
         BotCommand(command="reset_character", description="Сбросить кастомного персонажа"),
         BotCommand(command="switch_personality", description="Сменить мир/пол (SUPER PRO+)"),
         BotCommand(command="switch_style", description="Сменить стиль (SUPER PRO+)"),
