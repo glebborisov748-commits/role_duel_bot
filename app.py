@@ -5818,7 +5818,19 @@ SHOP_PAGE_HTML = '''<!doctype html>
   function api(path, opts) {
     opts = opts || {};
     opts.headers = Object.assign({"X-Telegram-Init-Data": initData()}, opts.headers || {});
-    return fetch(path, opts).then(function (r) { return r.json(); });
+    // Без таймаута зависший fetch (сеть, зависший прокси и т.п.) оставлял страницу молча
+    // висеть вечно без вообще какой-либо обратной связи — ни ошибки, ни данных. Теперь через
+    // 10с запрос обрывается сам и уходит в .catch() у вызывающей стороны.
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function () { controller.abort(); }, 10000);
+    opts.signal = controller.signal;
+    return fetch(path, opts).then(function (r) {
+      clearTimeout(timeoutId);
+      return r.json();
+    }, function (e) {
+      clearTimeout(timeoutId);
+      throw e;
+    });
   }
 
   function showFullScreen(text) {
@@ -5963,10 +5975,14 @@ SHOP_PAGE_HTML = '''<!doctype html>
 
   function render() {
     if (!state) return;
-    renderStats(state);
-    renderTabs(state);
-    renderItems(state);
-    document.getElementById("footer-hint").textContent = state.ui.webapp_open_chat_hint;
+    try {
+      renderStats(state);
+      renderTabs(state);
+      renderItems(state);
+      document.getElementById("footer-hint").textContent = state.ui.webapp_open_chat_hint;
+    } catch (e) {
+      showFullScreen("Render error: " + (e && e.message || e));
+    }
   }
 
   function buy(category, key, note) {
@@ -5999,7 +6015,9 @@ SHOP_PAGE_HTML = '''<!doctype html>
       if (!res.ok) { showFullScreen(res.message || res.error || "Error"); return; }
       state = res.state;
       render();
-    }).catch(function () { showFullScreen("Network error"); });
+    }).catch(function (e) {
+      showFullScreen("Network error: " + (e && (e.name === "AbortError" ? "timeout" : e.message) || "unknown"));
+    });
   }
 
   load();
@@ -6301,7 +6319,19 @@ SPIN_PAGE_HTML = '''<!doctype html>
   function api(path, opts) {
     opts = opts || {};
     opts.headers = Object.assign({"X-Telegram-Init-Data": initData()}, opts.headers || {});
-    return fetch(path, opts).then(function (r) { return r.json(); });
+    // Тот же таймаут, что и в SHOP_PAGE_HTML — без него зависший fetch оставлял страницу молча
+    // висеть вечно (даже оболочка колеса, которая рисуется чистым CSS без всякого JS, никак это
+    // не выдавала — только по факту, что цвета/кнопки так и не появились).
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function () { controller.abort(); }, 10000);
+    opts.signal = controller.signal;
+    return fetch(path, opts).then(function (r) {
+      clearTimeout(timeoutId);
+      return r.json();
+    }, function (e) {
+      clearTimeout(timeoutId);
+      throw e;
+    });
   }
 
   function showFullScreen(text) {
@@ -6405,11 +6435,15 @@ SPIN_PAGE_HTML = '''<!doctype html>
 
   function render() {
     if (!state) return;
-    renderStats(state);
-    buildWheel(state.prizes);
-    buildPegs();
-    renderActions(state);
-    document.getElementById("footer-hint").textContent = state.ui.open_chat_hint;
+    try {
+      renderStats(state);
+      buildWheel(state.prizes);
+      buildPegs();
+      renderActions(state);
+      document.getElementById("footer-hint").textContent = state.ui.open_chat_hint;
+    } catch (e) {
+      showFullScreen("Render error: " + (e && e.message || e));
+    }
   }
 
   // Общий хвост и для бесплатного, и для платного прокрута: анимация колеса до нужного сектора,
@@ -6520,7 +6554,9 @@ SPIN_PAGE_HTML = '''<!doctype html>
       if (!res.ok) { showFullScreen(res.message || res.error || "Error"); return; }
       state = res.state;
       render();
-    }).catch(function () { showFullScreen("Network error"); });
+    }).catch(function (e) {
+      showFullScreen("Network error: " + (e && (e.name === "AbortError" ? "timeout" : e.message) || "unknown"));
+    });
   }
 
   load();
