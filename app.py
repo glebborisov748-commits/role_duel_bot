@@ -240,6 +240,8 @@ TEXTS = {
         "cd_hours": "{n} ч",
         "cd_days": "{n} дн",
         "item_cooldown_alert": "⏳ Пока рано — снова доступно через {when}.",
+        "shop_note_menu_btn": "✍️ Подарить/покормить с запиской",
+        "shop_note_title": "✍️ Выбери, что подаришь со своими словами (у тебя {bucks}💵)",
         "custom_gift_btn": "✍️ Свой подарок — {price}💵",
         "custom_gift_prompt": "✍️ Напиши, что хочешь подарить (до {n} символов, цена {price}💵). Каждый подарок можно подарить только один раз.",
         "custom_gift_invalid": "❌ Напиши текст подарка (до {n} символов).",
@@ -257,7 +259,7 @@ TEXTS = {
         "wake_energizer_btn": "⚡ Разбудить энергетиком",
         "no_energizers_shop_btn": "🛍 Нет энергетиков — купить",
         "woken_up": "⚡ Энергетик выпит — персонаж снова бодр и на связи!",
-        "stats_line": "Энергия: {energy}/150   Сытость: {satiety}/100\nНастроение: {mood_bar} ({mood_value})\nЭнергетиков: {energizers}   Баксов: {bucks} — потратить можно в Магазине\n🔥 Сцен: {scenes}",
+        "stats_line": "Энергия: {energy}/150   Сытость: {satiety}/100\nНастроение: {mood_emoji} ({mood_value})\nЭнергетиков: {energizers}   Баксов: {bucks} — потратить можно в Магазине\n🔥 Сцен: {scenes}",
         "wake_now_btn": "💳 Разбудить сейчас за {price}⭐",
         "elite_free_wake_btn": "🎁 Бесплатно разбудить (ELITE, раз в неделю)",
         "elite_free_wake_used_alert": "🎁 Бесплатное пробуждение уже использовано на этой неделе — вернётся в понедельник.",
@@ -492,6 +494,8 @@ TEXTS = {
         "cd_hours": "{n}h",
         "cd_days": "{n}d",
         "item_cooldown_alert": "⏳ Not yet — available again in {when}.",
+        "shop_note_menu_btn": "✍️ Gift or feed with a note",
+        "shop_note_title": "✍️ Choose what to gift with your own words (you have {bucks}💵)",
         "custom_gift_btn": "✍️ Custom gift — {price}💵",
         "custom_gift_prompt": "✍️ Write what you want to gift (up to {n} characters, price {price}💵). Each gift can only be given once.",
         "custom_gift_invalid": "❌ Write the gift's text (up to {n} characters).",
@@ -509,7 +513,7 @@ TEXTS = {
         "wake_energizer_btn": "⚡ Wake up with an energizer",
         "no_energizers_shop_btn": "🛍 No energizers — buy some",
         "woken_up": "⚡ Energizer used — your companion is wide awake again!",
-        "stats_line": "Energy: {energy}/150   Satiety: {satiety}/100\nMood: {mood_bar} ({mood_value})\nEnergizers: {energizers}   Bucks: {bucks} — spend them in the Shop\n🔥 Scenes: {scenes}",
+        "stats_line": "Energy: {energy}/150   Satiety: {satiety}/100\nMood: {mood_emoji} ({mood_value})\nEnergizers: {energizers}   Bucks: {bucks} — spend them in the Shop\n🔥 Scenes: {scenes}",
         "wake_now_btn": "💳 Wake up now for {price}⭐",
         "elite_free_wake_btn": "🎁 Free wake-up (ELITE, once a week)",
         "elite_free_wake_used_alert": "🎁 You've already used your free wake-up this week — it resets on Monday.",
@@ -744,6 +748,8 @@ TEXTS = {
         "cd_hours": "{n} Std",
         "cd_days": "{n} Tg",
         "item_cooldown_alert": "⏳ Noch nicht — wieder verfügbar in {when}.",
+        "shop_note_menu_btn": "✍️ Schenken/Füttern mit Notiz",
+        "shop_note_title": "✍️ Wähle, was du mit eigenen Worten schenkst (du hast {bucks}💵)",
         "custom_gift_btn": "✍️ Eigenes Geschenk — {price}💵",
         "custom_gift_prompt": "✍️ Schreib, was du schenken möchtest (bis zu {n} Zeichen, Preis {price}💵). Jedes Geschenk kann nur einmal verschenkt werden.",
         "custom_gift_invalid": "❌ Schreib den Text des Geschenks (bis zu {n} Zeichen).",
@@ -761,7 +767,7 @@ TEXTS = {
         "wake_energizer_btn": "⚡ Mit Energydrink wecken",
         "no_energizers_shop_btn": "🛍 Keine Energydrinks — kaufen",
         "woken_up": "⚡ Energydrink getrunken — dein Begleiter ist wieder hellwach!",
-        "stats_line": "Energie: {energy}/150   Sättigung: {satiety}/100\nStimmung: {mood_bar} ({mood_value})\nEnergydrinks: {energizers}   Bucks: {bucks} — ausgeben im Shop\n🔥 Szenen: {scenes}",
+        "stats_line": "Energie: {energy}/150   Sättigung: {satiety}/100\nStimmung: {mood_emoji} ({mood_value})\nEnergydrinks: {energizers}   Bucks: {bucks} — ausgeben im Shop\n🔥 Szenen: {scenes}",
         "wake_now_btn": "💳 Jetzt wecken für {price}⭐",
         "elite_free_wake_btn": "🎁 Gratis wecken (ELITE, einmal pro Woche)",
         "elite_free_wake_used_alert": "🎁 Du hast dein gratis Aufwecken diese Woche schon genutzt — ab Montag wieder verfügbar.",
@@ -1623,6 +1629,39 @@ def get_subscription_level(user):
     return user["subscription"].get("level", None)
 
 
+SUBSCRIPTION_LEVEL_RANK = {"pro": 1, "super_pro": 2, "elite": 3}
+
+
+def grant_subscription_days(user, won_level, days):
+    """Награда днями подписки (колесо фортуны и т.п.) — НЕ прямая запись в user["subscription"],
+    иначе выигрыш более низкого уровня, чем уже есть (например PRO при живой SUPER PRO/ELITE),
+    тихо понижал бы подписку, а выигрыш того же уровня укорачивал бы уже накопленный срок,
+    затирая expires_at более близкой датой. Вместо этого: если текущий уровень выше или равен
+    выигранному — уровень не трогаем, просто продлеваем; если ниже (или подписки нет вообще) —
+    повышаем до выигранного. Отсчёт продления всегда от более поздней даты (текущий expires_at
+    или сейчас), а не от "сейчас" безусловно."""
+    sub = user["subscription"]
+    now = datetime.now()
+    current_level = sub.get("level")
+    current_expires = None
+    if sub.get("active") and sub.get("expires_at"):
+        try:
+            current_expires = datetime.fromisoformat(sub["expires_at"])
+        except (ValueError, TypeError):
+            current_expires = None
+    is_active = bool(current_expires and current_expires > now)
+
+    if is_active and SUBSCRIPTION_LEVEL_RANK.get(current_level, 0) >= SUBSCRIPTION_LEVEL_RANK.get(won_level, 0):
+        new_level = current_level
+    else:
+        new_level = won_level
+    baseline = current_expires if is_active else now
+
+    sub["active"] = True
+    sub["level"] = new_level
+    sub["expires_at"] = (baseline + timedelta(days=days)).isoformat()
+
+
 def get_display_style(user):
     style = user.get("style", "warm")
     if not is_style_unlocked(style, user):
@@ -1782,12 +1821,6 @@ def build_intimacy_rule(user):
 
 MOOD_MAX = 100  # настроение хранится как -100..100 (та же "сотенная" шкала, что у энергии/сытости,
                  # чтобы эффекты подарков — например "каблуки +25 настроения" — были буквальными числами)
-
-
-def mood_bar(mood, segments=10):
-    """Визуальная шкала настроения для профиля/меню — -100..100 в segments закрашенных блоков."""
-    filled = max(0, min(segments, round((mood + MOOD_MAX) / (2 * MOOD_MAX) * segments)))
-    return "🟩" * filled + "⬜" * (segments - filled)
 
 
 def mood_emoji(mood):
@@ -2004,7 +2037,6 @@ def stats_line_text(user):
         energizers=user.get("energizers", 0),
         bucks=user.get("bucks", 0),
         mood_emoji=mood_emoji(mood),
-        mood_bar=mood_bar(mood),
         mood_value=int(round(mood)),
         scenes=intim_scenes_available(user),
     )
@@ -2800,6 +2832,20 @@ async def channel_reply(message: types.Message):
 # ============================================================
 #  РЕДАКТИРОВАНИЕ ПОСЛЕДНЕГО СООБЩЕНИЯ (было объявлено, но не реализовано)
 # ============================================================
+def trim_history_to_last_user_message(user):
+    """Обрезает историю до (не включая) последней пользовательской реплики — общая часть и
+    для редактирования по кнопке (edit_button_handler), и для нативного редактирования
+    сообщения прямо в Телеграме (см. handle_edited_message)."""
+    history = user.get("history", [])
+    last_user_idx = None
+    for i in range(len(history) - 1, -1, -1):
+        if history[i].get("role") == "user":
+            last_user_idx = i
+            break
+    if last_user_idx is not None:
+        user["history"] = history[:last_user_idx]
+
+
 @dp.message(lambda m: is_button(m.text, "edit"))
 async def edit_button_handler(message: types.Message):
     await safe_delete(message)
@@ -2810,6 +2856,35 @@ async def edit_button_handler(message: types.Message):
     user["editing_message"] = True
     save_data(user_data)
     await message.answer(get_text(user, "edit_prompt"))
+
+
+@dp.edited_message()
+async def handle_edited_message(message: types.Message):
+    """Более лёгкая альтернатива кнопке "Редактировать": правишь своё последнее сообщение
+    прямо в Телеграме (долгий тап → Изменить) — без отдельного шага "теперь пришли новый
+    текст". Опирается на ту же обрезку истории, что и кнопка (trim_history_to_last_user_message):
+    Telegram не сообщает, какое по счёту сообщение отредактировали, поэтому, как и кнопка, это
+    всегда считается редактированием именно ПОСЛЕДНЕЙ реплики пользователя."""
+    if not message.text:
+        return
+    user = get_user(message.from_user.id)
+    if not user["verified"] or not user["agreement_accepted"] or not user["personality_ready"]:
+        return
+    if maintenance_mode and message.from_user.id not in ADMIN_IDS:
+        return
+    if is_asleep(user):
+        return
+    # Если сейчас ждём что-то особое (редактирование по кнопке, свой подарок, записку к
+    # покупке, текст нового персонажа) — не вмешиваемся, чтобы не перехватить это ожидание.
+    if (user.get("editing_message") or user.get("writing_custom_gift")
+            or user.get("writing_item_note") or user.get("creating_character")):
+        return
+    if not any(h.get("role") == "user" for h in user.get("history", [])):
+        return
+    trim_history_to_last_user_message(user)
+    user["history"].append({"role": "user", "content": message.text})
+    save_data(user_data)
+    await generate_and_reply(message, user)
 
 
 # ============================================================
@@ -2936,16 +3011,12 @@ async def spin_result(chat_id, user, free=False):
         user["intim_scenes"] = user.get("intim_scenes", 0) + chosen["value"]
         result_text = get_text(user, "spin_win_intim", value=chosen["value"])
     elif chosen["type"] == "subscription_pro":
-        user["subscription"]["active"] = True
-        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=5)).isoformat()
-        user["subscription"]["level"] = "pro"
+        grant_subscription_days(user, "pro", 5)
         user["last_daily_reset"] = None
         _reset_daily_quota_if_needed(user)
         result_text = get_text(user, "spin_win_pro")
     elif chosen["type"] == "subscription_super":
-        user["subscription"]["active"] = True
-        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=3)).isoformat()
-        user["subscription"]["level"] = "super_pro"
+        grant_subscription_days(user, "super_pro", 3)
         user["last_daily_reset"] = None
         _reset_daily_quota_if_needed(user)
         result_text = get_text(user, "spin_win_super")
@@ -3170,6 +3241,9 @@ ITEM_NOTE_MAX_LEN = 150
 
 
 def get_shop_kb(user):
+    """Один товар — один ряд на всю ширину: раньше в паре с этой кнопкой была ещё и ✍️ для
+    записки, из-за чего у каждой кнопки оставалась едва половина ширины и текст (вместе с ценой)
+    обрезался Телеграмом. Подарок/еда с запиской теперь отдельный экран — см. get_shop_note_kb."""
     entries = [(key, item, f"shop_food_{key}", False) for key, item in FOOD_ITEMS.items()]
     entries += [(key, item, f"shop_gift_{key}", True) for key, item in GIFT_ITEMS.items()]
 
@@ -3184,20 +3258,54 @@ def get_shop_kb(user):
                 label = gift_option_label(key, user)
             else:
                 label = intim_option_label(FOOD_ITEMS, key, user)
-            category = "gift" if is_gift else "food"
-            ready_at = item_ready_at(user, category, key, item)
+            ready_at = item_ready_at(user, "gift" if is_gift else "food", key, item)
             suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {item['price']}💵"
-            rows.append([
-                InlineKeyboardButton(text=f"{label}{suffix}", callback_data=callback_data, style="success"),
-                InlineKeyboardButton(text="✍️", callback_data=f"note_{category}_{key}", style="success"),
-            ])
+            rows.append([InlineKeyboardButton(text=f"{label}{suffix}", callback_data=callback_data, style="success")])
+        # ВАЖНО: было "category = ..." внутри цикла выше — это затирало переменную внешнего
+        # цикла (SHOP_CATEGORY_ORDER: food/treat/accessory), из-за чего проверка ниже никогда
+        # не срабатывала и кнопка "Свой подарок" молча пропадала из магазина. Убрано.
         if category == "accessory":
             rows.append([InlineKeyboardButton(
                 text=get_text(user, "custom_gift_btn", price=CUSTOM_GIFT_PRICE),
                 callback_data="shop_custom_gift_start", style="success")])
 
+    rows.append([InlineKeyboardButton(text=get_text(user, "shop_note_menu_btn"), callback_data="shop_note_menu", style="success")])
     rows.append([InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+def get_shop_note_kb(user):
+    """Тот же каталог, что в get_shop_kb, но кнопки ведут в написание личного сообщения (см.
+    shop_item_note_start) вместо мгновенной покупки — отдельный экран, чтобы основной список
+    магазина оставался в один столбец и не обрезался (см. get_shop_kb)."""
+    entries = [(key, item, f"note_food_{key}", False) for key, item in FOOD_ITEMS.items()]
+    entries += [(key, item, f"note_gift_{key}", True) for key, item in GIFT_ITEMS.items()]
+
+    rows = []
+    for category in SHOP_CATEGORY_ORDER:
+        cat_entries = [e for e in entries if e[1].get("category") == category]
+        if not cat_entries:
+            continue
+        rows.append([InlineKeyboardButton(text=get_text(user, SHOP_CATEGORY_TEXT_KEY[category]), callback_data="shop_noop")])
+        for key, item, callback_data, is_gift in cat_entries:
+            if is_gift:
+                label = gift_option_label(key, user)
+            else:
+                label = intim_option_label(FOOD_ITEMS, key, user)
+            ready_at = item_ready_at(user, "gift" if is_gift else "food", key, item)
+            suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {item['price']}💵"
+            rows.append([InlineKeyboardButton(text=f"{label}{suffix}", callback_data=callback_data, style="success")])
+
+    rows.append([InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_shop", style="danger")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+@dp.callback_query(lambda c: c.data == "shop_note_menu")
+async def shop_note_menu(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    await call.message.answer(get_text(user, "shop_note_title", bucks=user.get("bucks", 0)),
+                              reply_markup=get_shop_note_kb(user), parse_mode="Markdown")
+    await call.answer()
 
 
 @dp.callback_query(lambda c: c.data == "shop_custom_gift_start")
@@ -3225,11 +3333,8 @@ def get_feed_nudge_kb(user):
     for key, item in FOOD_ITEMS.items():
         ready_at = item_ready_at(user, "food", key, item)
         suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {item['price']}💵"
-        rows.append([
-            InlineKeyboardButton(text=f"{intim_option_label(FOOD_ITEMS, key, user)}{suffix}",
-                                 callback_data=f"shop_food_{key}", style="success"),
-            InlineKeyboardButton(text="✍️", callback_data=f"note_food_{key}", style="success"),
-        ])
+        rows.append([InlineKeyboardButton(text=f"{intim_option_label(FOOD_ITEMS, key, user)}{suffix}",
+                                          callback_data=f"shop_food_{key}", style="success")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -4396,14 +4501,24 @@ def extract_reaction_from_answer(text):
         return None, text
     reaction_key = match.group(1).strip().lower()
     reaction_map = {
-        "смех": "😂", "радость": "😊", "любовь": "❤️", "удивление": "😮",
-        "грусть": "😔", "злость": "😡", "поддержка": "👍", "интрига": "😏",
-        "флирт": "😉", "приветствие": "👋", "вопрос": "🤔"
+        "смех": "😂", "laughter": "😂", "laugh": "😂",
+        "радость": "😊", "joy": "😊", "happiness": "😊", "happy": "😊",
+        "любовь": "❤️", "love": "❤️",
+        "удивление": "😮", "surprise": "😮", "surprised": "😮",
+        "грусть": "😔", "sadness": "😔", "sad": "😔",
+        "злость": "😡", "anger": "😡", "angry": "😡",
+        "поддержка": "👍", "support": "👍",
+        "интрига": "😏", "intrigue": "😏",
+        "флирт": "😉", "flirt": "😉", "flirting": "😉",
+        "приветствие": "👋", "greeting": "👋", "hello": "👋",
+        "вопрос": "🤔", "question": "🤔",
     }
-    reaction = reaction_map.get(reaction_key)
-    if reaction is None:
-        return None, text
+    # Тег вырезаем из видимого текста ВСЕГДА, а не только когда слово узнано — иначе, стоит
+    # модели написать тег не строго по списку (например "(flirt)" вместо "(флирт)", хотя
+    # промпт явно требует русское слово), он утекает пользователю как есть. Без эмодзи-реакции
+    # в этом случае просто обойдёмся — это не критично, а утечка текста в чат критична.
     clean_text = text[:match.start()].rstrip()
+    reaction = reaction_map.get(reaction_key)
     return reaction, clean_text
 
 
@@ -4674,16 +4789,7 @@ async def handle_message(message: types.Message):
     # 5. Режим редактирования последнего сообщения
     if user.get("editing_message"):
         user["editing_message"] = False
-        history = user.get("history", [])
-        # находим индекс последнего сообщения пользователя и обрезаем всё, что было после —
-        # раньше редактирование вообще не влияло на историю, поэтому ИИ "помнил" старую реплику
-        last_user_idx = None
-        for i in range(len(history) - 1, -1, -1):
-            if history[i].get("role") == "user":
-                last_user_idx = i
-                break
-        if last_user_idx is not None:
-            user["history"] = history[:last_user_idx]
+        trim_history_to_last_user_message(user)
         await message.answer(get_text(user, "edit_success"))
         user["history"].append({"role": "user", "content": message.text})
         save_data(user_data)
