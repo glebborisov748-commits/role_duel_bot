@@ -264,6 +264,8 @@ TEXTS = {
         "webapp_open_chat_hint": "Ответ персонажа появится в чате с ботом",
         "webapp_character_not_ready": "Сначала создай персонажа в чате с ботом.",
         "webapp_loading": "Загрузка…",
+        "webapp_spin_btn": "Крутить",
+        "webapp_spin_paid_hint": "Платное вращение пока доступно только в чате с ботом — закрой это окно и нажми там «💎 Крутить за {price}⭐».",
         "defibrillator_btn": "🔌 Дефибриллятор — воскресить за {price}⭐",
         "new_character_btn": "🆕 Начать заново с новым персонажем",
         "new_character_started": "🆕 Хорошо, начнём с чистого листа.",
@@ -271,9 +273,14 @@ TEXTS = {
         "invoice_defib_title": "Дефибриллятор",
         "invoice_defib_desc": "Полностью воскрешает персонажа: история общения и уровень близости сохраняются.",
         "invoice_defib_label": "Дефибриллятор",
-        "still_working": "💼 Персонаж ещё на работе, вернётся позже.",
-        "work_started": "💼 Персонаж отправился на работу — вернётся через {minutes} мин. с баксами. Пока он работает, пообщаться не получится.",
-        "work_finished": "💼 Персонаж вернулся с работы и заработал {bucks}💵!",
+        "still_working": [
+            "💼 Ты ещё на работе — осталось примерно {minutes_left} мин.",
+            "💼 Работа продолжается, вернёшься примерно через {minutes_left} мин.",
+            "💼 Ещё трудишься — до возвращения около {minutes_left} мин.",
+            "💼 Пока ты на работе — осталось где-то {minutes_left} мин., потерпи."
+        ],
+        "work_started": "💼 Идёшь работать — вернёшься через {minutes} мин. с баксами на подарок персонажу. Пока ты на работе, чат недоступен.",
+        "work_finished": "💼 Работа окончена: +{bucks}💵. Можно порадовать персонажа подарком!",
         "custom_gift_btn": "✍️ Свой подарок — {price}💵",
         "custom_gift_prompt": "✍️ Напиши, что хочешь подарить (до {n} символов, цена {price}💵). Каждый подарок можно подарить только один раз.",
         "custom_gift_invalid": "❌ Напиши текст подарка (до {n} символов).",
@@ -550,6 +557,8 @@ TEXTS = {
         "webapp_open_chat_hint": "Your companion's reaction will appear in the chat with the bot",
         "webapp_character_not_ready": "Create a character in the chat with the bot first.",
         "webapp_loading": "Loading…",
+        "webapp_spin_btn": "Spin",
+        "webapp_spin_paid_hint": "Paid spins are only available in the chat with the bot for now — close this window and tap \"💎 Spin for {price}⭐\" there.",
         "defibrillator_btn": "🔌 Defibrillator — revive for {price}⭐",
         "new_character_btn": "🆕 Start over with a new character",
         "new_character_started": "🆕 Alright, starting with a clean slate.",
@@ -557,9 +566,14 @@ TEXTS = {
         "invoice_defib_title": "Defibrillator",
         "invoice_defib_desc": "Fully revives your companion: chat history and closeness level are preserved.",
         "invoice_defib_label": "Defibrillator",
-        "still_working": "💼 Your companion is still at work, they'll be back later.",
-        "work_started": "💼 Your companion went to work — they'll be back in {minutes} min. with bucks. You won't be able to chat while they're working.",
-        "work_finished": "💼 Your companion came back from work and earned {bucks}💵!",
+        "still_working": [
+            "💼 You're still at work — about {minutes_left} min left.",
+            "💼 Still working, you'll be back in roughly {minutes_left} min.",
+            "💼 Still on the clock — around {minutes_left} min to go.",
+            "💼 Still at work — about {minutes_left} min left, hang in there."
+        ],
+        "work_started": "💼 Heading to work — you'll be back in {minutes} min. with bucks for a gift for your companion. Chat's unavailable while you're at work.",
+        "work_finished": "💼 Work's done: +{bucks}💵. Time to treat your companion to a gift!",
         "custom_gift_btn": "✍️ Custom gift — {price}💵",
         "custom_gift_prompt": "✍️ Write what you want to gift (up to {n} characters, price {price}💵). Each gift can only be given once.",
         "custom_gift_invalid": "❌ Write the gift's text (up to {n} characters).",
@@ -836,6 +850,8 @@ TEXTS = {
         "webapp_open_chat_hint": "Die Reaktion deines Begleiters erscheint im Chat mit dem Bot",
         "webapp_character_not_ready": "Erstelle zuerst einen Charakter im Chat mit dem Bot.",
         "webapp_loading": "Lädt…",
+        "webapp_spin_btn": "Drehen",
+        "webapp_spin_paid_hint": "Bezahlte Drehungen sind vorerst nur im Chat mit dem Bot verfügbar — schließe dieses Fenster und tippe dort auf „💎 Für {price}⭐ drehen“.",
         "defibrillator_btn": "🔌 Defibrillator — wiederbeleben für {price}⭐",
         "new_character_btn": "🆕 Neu anfangen mit einem neuen Charakter",
         "new_character_started": "🆕 Gut, wir fangen mit einem sauberen Blatt an.",
@@ -843,9 +859,14 @@ TEXTS = {
         "invoice_defib_title": "Defibrillator",
         "invoice_defib_desc": "Belebt deinen Begleiter vollständig wieder: Chatverlauf und Nähe-Level bleiben erhalten.",
         "invoice_defib_label": "Defibrillator",
-        "still_working": "💼 Dein Begleiter ist noch bei der Arbeit, kommt später zurück.",
-        "work_started": "💼 Dein Begleiter ist zur Arbeit gegangen — kommt in {minutes} Min. mit Bucks zurück. Solange kann nicht gechattet werden.",
-        "work_finished": "💼 Dein Begleiter ist von der Arbeit zurück und hat {bucks}💵 verdient!",
+        "still_working": [
+            "💼 Du bist noch bei der Arbeit — noch etwa {minutes_left} Min.",
+            "💼 Noch bei der Arbeit, du bist in etwa {minutes_left} Min. zurück.",
+            "💼 Noch im Einsatz — noch ungefähr {minutes_left} Min.",
+            "💼 Noch bei der Arbeit — noch etwa {minutes_left} Min., halt durch."
+        ],
+        "work_started": "💼 Du gehst zur Arbeit — du bist in {minutes} Min. zurück, mit Bucks für ein Geschenk für deinen Begleiter. Solange kann nicht gechattet werden.",
+        "work_finished": "💼 Feierabend: +{bucks}💵. Zeit, deinen Begleiter mit einem Geschenk zu verwöhnen!",
         "custom_gift_btn": "✍️ Eigenes Geschenk — {price}💵",
         "custom_gift_prompt": "✍️ Schreib, was du schenken möchtest (bis zu {n} Zeichen, Preis {price}💵). Jedes Geschenk kann nur einmal verschenkt werden.",
         "custom_gift_invalid": "❌ Schreib den Text des Geschenks (bis zu {n} Zeichen).",
@@ -1587,6 +1608,12 @@ FOOD_ITEMS = {
     "water": {"emoji": "💧", "ru": "Вода", "en": "Water", "de": "Wasser", "price": 10, "water": 40,
               "category": "food", "cooldown_minutes": 8,
               "reaction_hint": "Простая, но нужная забота — благодарность лёгкая, с облегчённой улыбкой."},
+    "sparkling_water": {"emoji": "🥤", "ru": "Газировка", "en": "Soda", "de": "Limonade", "price": 18, "water": 65,
+                         "category": "food", "cooldown_minutes": 15,
+                         "reaction_hint": "Освежающая мелочь с игривой ноткой — благодарность довольная, чуть бодрее обычного."},
+    "coconut_water": {"emoji": "🥥", "ru": "Кокосовая вода", "en": "Coconut water", "de": "Kokoswasser", "price": 35,
+                       "water": 85, "mood": 8, "category": "food", "cooldown_minutes": 40,
+                       "reaction_hint": "Необычный, заботливый выбор — благодарность приятно удивлённая, ты оценила, что подошли к делу с фантазией."},
     "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 15, "satiety": 10,
               "category": "food", "cooldown_minutes": 10,
               "reaction_hint": "Это мелкая, но милая забота — благодарность лёгкая, тёплая, почти игривая."},
@@ -2177,6 +2204,17 @@ def finish_work_if_done(user):
     return True
 
 
+def work_minutes_left(user):
+    until = user.get("working_until")
+    if not until:
+        return 0
+    try:
+        remaining = (datetime.fromisoformat(until) - datetime.now()).total_seconds() / 60
+    except (ValueError, TypeError):
+        return 0
+    return max(1, round(remaining))
+
+
 def use_energizer(user):
     """Возвращает True, если энергетик найден и использован. Восполняет ENERGIZER_RESTORE_AMOUNT,
     а не сразу до максимума, и сразу снимает sleep_until — так энергетик всегда мгновенно
@@ -2531,11 +2569,24 @@ def get_channel_kb(user):
 
 
 def get_full_kb(user):
+    # "Редактировать" убрана совсем — то же самое теперь доступно через нативный жест
+    # редактирования сообщения в самом Телеграме (см. handle_edited_message), отдельная кнопка
+    # для этого больше не нужна. На её месте теперь "Наш канал" (было выше), а на месте "Наш
+    # канал" — "Магазин": Mini App-кнопка, если настроен WEBAPP_URL, иначе как раньше открывает
+    # инлайн-каталог (см. shop_reply).
+    if WEBAPP_URL:
+        shop_button = KeyboardButton(text=get_text(user, "shop_btn"),
+                                     web_app=WebAppInfo(url=f"{WEBAPP_URL}/shop"), style="primary")
+        spin_button = KeyboardButton(text=get_text(user, "spin_wheel"),
+                                     web_app=WebAppInfo(url=f"{WEBAPP_URL}/spin"))
+    else:
+        shop_button = KeyboardButton(text=get_text(user, "shop_btn"), style="primary")
+        spin_button = KeyboardButton(text=get_text(user, "spin_wheel"))
     return ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text=get_text(user, "main_menu")), KeyboardButton(text=get_text(user, "my_profile"))],
-            [KeyboardButton(text=get_text(user, "spin_wheel")), KeyboardButton(text=get_text(user, "our_channel"), style="primary")],
-            [KeyboardButton(text=get_text(user, "edit"))]
+            [spin_button, shop_button],
+            [KeyboardButton(text=get_text(user, "our_channel"))]
         ],
         resize_keyboard=True
     )
@@ -3126,6 +3177,19 @@ async def channel_reply(message: types.Message):
                           reply_markup=get_channel_kb(user), parse_mode="Markdown")
 
 
+@dp.message(lambda m: is_button(m.text, "shop_btn"))
+async def shop_reply(message: types.Message):
+    """Срабатывает только пока WEBAPP_URL не настроен — иначе кнопка в get_full_kb сама
+    открывает Mini App через web_app, и сюда обычным текстовым сообщением вообще не долетает."""
+    await safe_delete(message)
+    user = get_user(message.from_user.id)
+    if not user["personality_ready"]:
+        await message.answer(get_text(user, "need_character_alert"))
+        return
+    await message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)),
+                          reply_markup=get_shop_kb(user), parse_mode="Markdown")
+
+
 # ============================================================
 #  РЕДАКТИРОВАНИЕ ПОСЛЕДНЕГО СООБЩЕНИЯ (было объявлено, но не реализовано)
 # ============================================================
@@ -3257,19 +3321,22 @@ async def spin_back(call: types.CallbackQuery):
 
 
 SPIN_PRIZES = [
-    {"name": "😢 Ничего", "name_en": "😢 Nothing", "name_de": "😢 Nichts", "value": 0, "type": "nothing", "weight": 20},
-    {"name": "20💵 баксов", "name_en": "20💵 bucks", "name_de": "20💵 Bucks", "value": 20, "type": "bucks", "weight": 15},
-    {"name": "40💵 баксов", "name_en": "40💵 bucks", "name_de": "40💵 Bucks", "value": 40, "type": "bucks", "weight": 8},
-    {"name": "100 XP", "name_en": "100 XP", "name_de": "100 XP", "value": 100, "type": "xp", "weight": 16},
-    {"name": "150 XP", "name_en": "150 XP", "name_de": "150 XP", "value": 150, "type": "xp", "weight": 9},
-    {"name": "250 XP", "name_en": "250 XP", "name_de": "250 XP", "value": 250, "type": "xp", "weight": 4},
-    {"name": "🔥 1 горячая сцена", "name_en": "🔥 1 hot scene", "name_de": "🔥 1 heiße Szene", "value": 1, "type": "intim_scenes", "weight": 8},
-    {"name": "🔥🔥 2 горячие сцены", "name_en": "🔥🔥 2 hot scenes", "name_de": "🔥🔥 2 heiße Szenen", "value": 2, "type": "intim_scenes", "weight": 3},
-    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 3},
-    {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 1},
-    {"name": "🎉 150💵 баксов (ДЖЕКПОТ!)", "name_en": "🎉 150💵 bucks (JACKPOT!)", "name_de": "🎉 150💵 Bucks (JACKPOT!)", "value": 150, "type": "bucks", "weight": 0.3},
-    {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "name_de": "🎁 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.4},
-    {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.15},
+    # wheel_label — короткая, язык-независимая подпись сектора для колеса в Mini App (см.
+    # serialize_spin_state/SPIN_PAGE_HTML); полное "name"/"name_en"/"name_de" по-прежнему
+    # используется в чатовом результате (spin_result) и не менялось.
+    {"name": "😢 Ничего", "name_en": "😢 Nothing", "name_de": "😢 Nichts", "value": 0, "type": "nothing", "weight": 20, "wheel_label": "😢"},
+    {"name": "20💵 баксов", "name_en": "20💵 bucks", "name_de": "20💵 Bucks", "value": 20, "type": "bucks", "weight": 15, "wheel_label": "20💵"},
+    {"name": "40💵 баксов", "name_en": "40💵 bucks", "name_de": "40💵 Bucks", "value": 40, "type": "bucks", "weight": 8, "wheel_label": "40💵"},
+    {"name": "100 XP", "name_en": "100 XP", "name_de": "100 XP", "value": 100, "type": "xp", "weight": 16, "wheel_label": "100 XP"},
+    {"name": "150 XP", "name_en": "150 XP", "name_de": "150 XP", "value": 150, "type": "xp", "weight": 9, "wheel_label": "150 XP"},
+    {"name": "250 XP", "name_en": "250 XP", "name_de": "250 XP", "value": 250, "type": "xp", "weight": 4, "wheel_label": "250 XP"},
+    {"name": "🔥 1 горячая сцена", "name_en": "🔥 1 hot scene", "name_de": "🔥 1 heiße Szene", "value": 1, "type": "intim_scenes", "weight": 8, "wheel_label": "🔥"},
+    {"name": "🔥🔥 2 горячие сцены", "name_en": "🔥🔥 2 hot scenes", "name_de": "🔥🔥 2 heiße Szenen", "value": 2, "type": "intim_scenes", "weight": 3, "wheel_label": "🔥🔥"},
+    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 3, "wheel_label": "2⚡"},
+    {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 1, "wheel_label": "4⚡"},
+    {"name": "🎉 150💵 баксов (ДЖЕКПОТ!)", "name_en": "🎉 150💵 bucks (JACKPOT!)", "name_de": "🎉 150💵 Bucks (JACKPOT!)", "value": 150, "type": "bucks", "weight": 0.3, "wheel_label": "🎉150💵"},
+    {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "name_de": "🎁 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.4, "wheel_label": "🎁PRO"},
+    {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.15, "wheel_label": "✨SUPER"},
 ]
 
 
@@ -3278,23 +3345,19 @@ def prize_name(prize, user):
     return prize.get(f"name_{lang}", prize["name"]) if lang != "ru" else prize["name"]
 
 
-async def spin_result(chat_id, user, free=False):
+def choose_spin_prize():
+    """Тот же взвешенный выбор, что раньше был инлайном внутри spin_result — вынесен отдельно,
+    чтобы колесо в Mini App (см. perform_webapp_spin) использовало ТОЧНО те же шансы, не
+    дублируя и не рискуя разойтись с чатовой версией."""
     weighted = []
     for p in SPIN_PRIZES:
         weighted.extend([p] * int(p["weight"] * 10))
-    chosen = random.choice(weighted)
+    return random.choice(weighted)
 
-    msg = await bot.send_message(chat_id, get_text(user, "spin_rolling"))
-    for _ in range(3):
-        await asyncio.sleep(0.5)
-        fake = random.choice(SPIN_PRIZES)
-        try:
-            await msg.edit_text(get_text(user, "spin_almost", name=prize_name(fake, user)))
-        except Exception:
-            pass
-    await asyncio.sleep(0.8)
-    await safe_delete(msg)
 
+def apply_spin_prize(user, chosen):
+    """Начисляет выигрыш и возвращает готовый локализованный текст результата — общая часть
+    между чатовым колесом (spin_result) и колесом в Mini App (perform_webapp_spin)."""
     if chosen["type"] == "bucks":
         user["bucks"] = user.get("bucks", 0) + chosen["value"]
         result_text = get_text(user, "spin_win_bucks", value=chosen["value"])
@@ -3319,7 +3382,24 @@ async def spin_result(chat_id, user, free=False):
         result_text = get_text(user, "spin_win_super")
     else:
         result_text = get_text(user, "spin_nothing")
+    return result_text
 
+
+async def spin_result(chat_id, user, free=False):
+    chosen = choose_spin_prize()
+
+    msg = await bot.send_message(chat_id, get_text(user, "spin_rolling"))
+    for _ in range(3):
+        await asyncio.sleep(0.5)
+        fake = random.choice(SPIN_PRIZES)
+        try:
+            await msg.edit_text(get_text(user, "spin_almost", name=prize_name(fake, user)))
+        except Exception:
+            pass
+    await asyncio.sleep(0.8)
+    await safe_delete(msg)
+
+    result_text = apply_spin_prize(user, chosen)
     save_data(user_data)
 
     rows = []
@@ -3647,8 +3727,15 @@ FEED_NUDGE_COOLDOWN_MINUTES = 90  # чтобы не слать одно и то 
 
 
 def get_feed_nudge_kb(user):
-    """Кормим прямо из подсказки теми же кнопками shop_food_*, что и в магазине —
-    отдельного хендлера не нужно."""
+    """Кормим прямо из подсказки теми же кнопками shop_food_*, что и в магазине — отдельного
+    хендлера не нужно. Если настроен Mini App (WEBAPP_URL) — одна кнопка в магазин вместо
+    длинного списка: полный перечень FOOD_ITEMS прямо во всплывающей подсказке ощущается
+    захламлённым (по фидбэку), тогда как внутри самого Mini App тот же список выглядит опрятно."""
+    if WEBAPP_URL:
+        return InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=get_text(user, "shop_btn"),
+                                  web_app=WebAppInfo(url=f"{WEBAPP_URL}/shop"), style="success")]
+        ])
     rows = []
     for key, item in FOOD_ITEMS.items():
         ready_at = item_ready_at(user, "food", key, item)
@@ -4685,7 +4772,8 @@ async def work_cmd(message: types.Message):
         await message.answer(get_text(user, "asleep_message", price=PRODUCTS["wake_now"]["stars"]), reply_markup=get_wake_kb(user))
         return
     if is_working(user):
-        await message.answer(get_text(user, "still_working"))
+        text = random.choice(get_text(user, "still_working")).format(minutes_left=work_minutes_left(user))
+        await message.answer(text)
         return
     user["working_until"] = (datetime.now() + timedelta(minutes=WORK_DURATION_MINUTES)).isoformat()
     save_data(user_data)
@@ -5259,7 +5347,7 @@ async def handle_message(message: types.Message):
     # 4. Игнорируем команды и кнопки клавиатуры
     if message.text.startswith("/"):
         return
-    for key in ("main_menu", "my_profile", "our_channel", "spin_wheel", "edit"):
+    for key in ("main_menu", "my_profile", "our_channel", "spin_wheel", "edit", "shop_btn"):
         if is_button(message.text, key):
             return
 
@@ -5277,7 +5365,8 @@ async def handle_message(message: types.Message):
         if finish_work_if_done(user):
             await message.answer(get_text(user, "work_finished", bucks=WORK_PAYOUT_BUCKS))
         else:
-            await message.answer(get_text(user, "still_working"))
+            text = random.choice(get_text(user, "still_working")).format(minutes_left=work_minutes_left(user))
+            await message.answer(text)
             return
 
     # 5. Режим редактирования последнего сообщения
@@ -5937,12 +6026,362 @@ async def root_health_handler(request):
     )
 
 
+def serialize_spin_state(user):
+    """Снимок для колеса в Mini App: тот же каталог призов (SPIN_PRIZES), что и в чате, плюс
+    сколько бесплатных вращений осталось. Порядок списка prizes — контракт с фронтендом: индекс
+    в этом списке однозначно определяет, на какой сектор колеса анимация должна "приехать"
+    (см. api_spin_free_handler/SPIN_PAGE_HTML)."""
+    return {
+        "free_left": free_spins_left(user),
+        "free_total": free_spins_allowed(user),
+        "bucks": user.get("bucks", 0),
+        "prizes": [
+            {"index": i, "wheel_label": p["wheel_label"], "name": prize_name(p, user)}
+            for i, p in enumerate(SPIN_PRIZES)
+        ],
+        "ui": {
+            "spin_title": get_text(user, "spin_title"),
+            "free_label": get_text(user, "free", left=free_spins_left(user), total=free_spins_allowed(user)),
+            "tomorrow_label": get_text(user, "tomorrow"),
+            "paid_label": get_text(user, "spin_paid"),
+            "spin_btn": get_text(user, "webapp_spin_btn"),
+            "paid_hint": get_text(user, "webapp_spin_paid_hint", price=PRODUCTS["spin_paid_20"]["stars"]),
+            "open_chat_hint": get_text(user, "webapp_open_chat_hint"),
+        },
+    }
+
+
+async def perform_webapp_spin(user, user_id):
+    """Только бесплатное вращение — платное пока остаётся в чате (Stars-инвойс не встроен в
+    Mini App, см. webapp_spin_paid_hint). Эффекты и текст результата общие с чатовым /колесо
+    (apply_spin_prize), плюс зеркалится подтверждением в обычный чат, как и покупки в магазине."""
+    if free_spins_left(user) <= 0:
+        return {"ok": False, "error": get_text(user, "spin_already")}
+    user["free_spins_used"] = user.get("free_spins_used", 0) + 1
+    chosen = choose_spin_prize()
+    prize_index = SPIN_PRIZES.index(chosen)
+    result_text = apply_spin_prize(user, chosen)
+    save_data(user_data)
+    mode_text = get_text(user, "spin_mode_free")
+    await bot.send_message(user_id, get_text(user, "spin_result_header", result=result_text, mode=mode_text))
+    return {"ok": True, "prize_index": prize_index, "result_text": result_text}
+
+
+# Как и SHOP_PAGE_HTML — полностью статичная страница, вся персонализация через /api/spin/*
+# (initData в URL-фрагменте на сервер не попадает, см. комментарий у SHOP_PAGE_HTML).
+SPIN_PAGE_HTML = '''<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Spin</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  html, body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--tg-theme-bg-color, #ffffff);
+    color: var(--tg-theme-text-color, #111111);
+  }
+  body { padding-bottom: 24px; text-align: center; }
+  #stats {
+    padding: 12px 14px;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  #title {
+    font-size: 18px;
+    font-weight: 700;
+    padding: 0 14px 6px;
+  }
+  #wheel-wrap {
+    position: relative;
+    width: 260px;
+    height: 260px;
+    margin: 18px auto 10px;
+  }
+  #pointer {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 28px;
+    z-index: 3;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,.35));
+  }
+  #wheel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 5px solid var(--tg-theme-button-color, #2481cc);
+    box-shadow: 0 4px 18px rgba(0,0,0,.25);
+    transition: transform 4s cubic-bezier(0.12, 0.67, 0.1, 1);
+  }
+  .wheel-slot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+  }
+  .wheel-slot span {
+    position: absolute;
+    left: 0;
+    top: -108px;
+    transform: translate(-50%, -50%);
+    font-size: 11px;
+    font-weight: 800;
+    color: #1c1c1c;
+    white-space: nowrap;
+  }
+  #hub {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 46px;
+    height: 46px;
+    margin: -23px 0 0 -23px;
+    border-radius: 50%;
+    background: var(--tg-theme-button-color, #2481cc);
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  }
+  #actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 24px 0;
+  }
+  .action-btn {
+    border: none;
+    border-radius: 12px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 700;
+    background: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, #ffffff);
+  }
+  .action-btn.secondary {
+    background: var(--tg-theme-secondary-bg-color, #eee);
+    color: var(--tg-theme-text-color, #111);
+  }
+  .action-btn:disabled { opacity: .45; }
+  #result-banner {
+    display: none;
+    margin: 16px 14px 0;
+    padding: 14px;
+    border-radius: 14px;
+    background: var(--tg-theme-secondary-bg-color, #f2f2f2);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  #footer-hint {
+    font-size: 12px;
+    color: var(--tg-theme-hint-color, #888);
+    padding: 14px 14px 0;
+  }
+  #full-screen-msg {
+    display: none;
+    padding: 60px 24px;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+  <div id="stats"></div>
+  <div id="title"></div>
+  <div id="wheel-wrap">
+    <div id="pointer">▼</div>
+    <div id="wheel"></div>
+    <div id="hub"></div>
+  </div>
+  <div id="result-banner"></div>
+  <div id="actions"></div>
+  <div id="footer-hint"></div>
+  <div id="full-screen-msg"></div>
+
+<script>
+(function () {
+  var tg = (window.Telegram && window.Telegram.WebApp) || null;
+  function safe(fn) { try { fn(); } catch (e) { /* older Telegram client: ignore */ } }
+  if (tg) { safe(function () { tg.ready(); }); safe(function () { tg.expand(); }); }
+
+  var state = null;
+  var spinning = false;
+  var currentRotation = 0;
+  var colors = ["#ff6b6b", "#4ecdc4", "#ffd93d", "#6c5ce7", "#1dd1a1", "#feca57"];
+
+  function initData() { return tg ? tg.initData : ""; }
+
+  function api(path, opts) {
+    opts = opts || {};
+    opts.headers = Object.assign({"X-Telegram-Init-Data": initData()}, opts.headers || {});
+    return fetch(path, opts).then(function (r) { return r.json(); });
+  }
+
+  function showFullScreen(text) {
+    ["stats", "title", "wheel-wrap", "result-banner", "actions", "footer-hint"].forEach(function (id) {
+      document.getElementById(id).style.display = "none";
+    });
+    var el = document.getElementById("full-screen-msg");
+    el.style.display = "block";
+    el.textContent = text;
+  }
+
+  function buildWheel(prizes) {
+    var wheel = document.getElementById("wheel");
+    wheel.innerHTML = "";
+    var n = prizes.length;
+    var sliceAngle = 360 / n;
+    var stops = [];
+    for (var i = 0; i < n; i++) {
+      var color = colors[i % colors.length];
+      stops.push(color + " " + (i * sliceAngle) + "deg " + ((i + 1) * sliceAngle) + "deg");
+    }
+    wheel.style.background = "conic-gradient(" + stops.join(", ") + ")";
+    for (var j = 0; j < n; j++) {
+      var mid = j * sliceAngle + sliceAngle / 2;
+      var slot = document.createElement("div");
+      slot.className = "wheel-slot";
+      slot.style.transform = "rotate(" + mid + "deg)";
+      var label = document.createElement("span");
+      label.textContent = prizes[j].wheel_label;
+      label.style.transform = "translate(-50%, -50%) rotate(" + (-mid) + "deg)";
+      slot.appendChild(label);
+      wheel.appendChild(slot);
+    }
+  }
+
+  function spinToIndex(index, n) {
+    var sliceAngle = 360 / n;
+    var targetMid = index * sliceAngle + sliceAngle / 2;
+    var baseOffset = (360 - targetMid) % 360;
+    var currentMod = ((currentRotation % 360) + 360) % 360;
+    var deltaToBase = ((baseOffset - currentMod) % 360 + 360) % 360;
+    var extraSpins = 5;
+    currentRotation += extraSpins * 360 + deltaToBase;
+    document.getElementById("wheel").style.transform = "rotate(" + currentRotation + "deg)";
+  }
+
+  function renderStats(s) {
+    document.getElementById("stats").textContent = "💵 " + s.bucks;
+    document.getElementById("title").textContent = s.ui.spin_title.replace(/\*/g, "");
+  }
+
+  function renderActions(s) {
+    var el = document.getElementById("actions");
+    el.innerHTML = "";
+
+    var freeBtn = document.createElement("button");
+    freeBtn.className = "action-btn";
+    if (s.free_left > 0) {
+      freeBtn.textContent = s.ui.free_label;
+      freeBtn.disabled = spinning;
+      freeBtn.onclick = spinFree;
+    } else {
+      freeBtn.textContent = s.ui.tomorrow_label;
+      freeBtn.disabled = true;
+    }
+    el.appendChild(freeBtn);
+
+    var paidBtn = document.createElement("button");
+    paidBtn.className = "action-btn secondary";
+    paidBtn.textContent = s.ui.paid_label;
+    paidBtn.disabled = spinning;
+    paidBtn.onclick = function () {
+      safe(function () { tg.showAlert(s.ui.paid_hint); });
+    };
+    el.appendChild(paidBtn);
+  }
+
+  function render() {
+    if (!state) return;
+    renderStats(state);
+    buildWheel(state.prizes);
+    renderActions(state);
+    document.getElementById("footer-hint").textContent = state.ui.open_chat_hint;
+  }
+
+  function spinFree() {
+    if (spinning || !state || state.free_left <= 0) return;
+    spinning = true;
+    document.getElementById("result-banner").style.display = "none";
+    renderActions(state);
+    api("/api/spin/free", {method: "POST"}).then(function (res) {
+      if (res.state) state = res.state;
+      if (!res.ok) {
+        spinning = false;
+        renderActions(state);
+        safe(function () { tg.HapticFeedback.notificationOccurred("error"); });
+        safe(function () { tg.showAlert(res.error || "Error"); });
+        return;
+      }
+      spinToIndex(res.prize_index, state.prizes.length);
+      setTimeout(function () {
+        spinning = false;
+        var banner = document.getElementById("result-banner");
+        banner.textContent = res.result_text.replace(/\*/g, "");
+        banner.style.display = "block";
+        renderStats(state);
+        renderActions(state);
+        safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
+      }, 4100);
+    }).catch(function () {
+      spinning = false;
+      renderActions(state);
+    });
+  }
+
+  function load() {
+    api("/api/spin/state").then(function (res) {
+      if (!res.ok) { showFullScreen(res.message || res.error || "Error"); return; }
+      state = res.state;
+      render();
+    }).catch(function () { showFullScreen("Network error"); });
+  }
+
+  load();
+})();
+</script>
+</body>
+</html>
+'''
+
+
+async def spin_page_handler(request):
+    return web.Response(text=SPIN_PAGE_HTML, content_type="text/html")
+
+
+async def api_spin_state_handler(request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    return web.json_response({"ok": True, "state": serialize_spin_state(user)})
+
+
+async def api_spin_free_handler(request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    result = await perform_webapp_spin(user, user_id)
+    result["state"] = serialize_spin_state(user)
+    return web.json_response(result)
+
+
 async def run_webapp_server():
     app_web = web.Application()
     app_web.router.add_get("/", root_health_handler)
     app_web.router.add_get("/shop", shop_page_handler)
     app_web.router.add_get("/api/state", api_state_handler)
     app_web.router.add_post("/api/buy", api_buy_handler)
+    app_web.router.add_get("/spin", spin_page_handler)
+    app_web.router.add_get("/api/spin/state", api_spin_state_handler)
+    app_web.router.add_post("/api/spin/free", api_spin_free_handler)
     runner = web.AppRunner(app_web)
     await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", WEBAPP_PORT)
@@ -5960,11 +6399,11 @@ MISS_YOU_INTERVAL_DAYS = 2  # не чаще чем раз в столько дн
 SLEEP_REMINDER_INTERVAL_HOURS = 12  # раз в сколько часов мягко напоминаем, что персонаж всё ещё спит
 SPIN_REMINDER_INTERVAL_DAYS = 1  # раз в сколько дней мягко напоминаем про доступный бесплатный прокрут
 THIRST_REMINDER_WATER_THRESHOLD = 20  # тот же порог, что у "сильной жажды" в build_thirst_rule
-THIRST_REMINDER_INTERVAL_HOURS = 4  # вода расходуется быстрее сытости (пассивно до нуля примерно
-                                      # за 2 часа бездействия — см. WATER_INACTIVITY_DECAY_MINUTES),
-                                      # поэтому и напоминание о ней чаще, чем про голод
-HUNGER_REMINDER_INTERVAL_HOURS = 6  # порог сытости берём тот же, что у контекстной подсказки прямо
-                                      # в чате — FEED_NUDGE_SATIETY_THRESHOLD (см. maybe_send_feed_nudge)
+THIRST_REMINDER_INTERVAL_HOURS = 10  # было 4 — если вода весь день не пополняется, это напоминание
+                                       # каждые 4 часа само по себе становится назойливым (жалоба
+                                       # пользователя); 10 часов — максимум 2-3 раза в сутки, но
+                                       # всё ещё чаще, чем про голод (жажда острее)
+HUNGER_REMINDER_INTERVAL_HOURS = 14  # было 6, по той же причине — не чаще пары раз в день
 
 
 async def check_notifications():
@@ -6071,10 +6510,15 @@ async def check_notifications():
                         user["last_spin_reminder"] = today
                         save_data(user_data)
                         try:
-                            kb = InlineKeyboardMarkup(inline_keyboard=[
-                                [InlineKeyboardButton(text=get_text(user, "spin_wheel"),
-                                                      callback_data="spin_free", style="success")]
-                            ])
+                            if WEBAPP_URL:
+                                spin_reminder_btn = InlineKeyboardButton(
+                                    text=get_text(user, "spin_wheel"),
+                                    web_app=WebAppInfo(url=f"{WEBAPP_URL}/spin"), style="success")
+                            else:
+                                spin_reminder_btn = InlineKeyboardButton(
+                                    text=get_text(user, "spin_wheel"),
+                                    callback_data="spin_free", style="success")
+                            kb = InlineKeyboardMarkup(inline_keyboard=[[spin_reminder_btn]])
                             await bot.send_message(int(user_id), get_text(user, "spin_daily_reminder"), reply_markup=kb)
                         except Exception:
                             pass
@@ -6143,13 +6587,14 @@ async def main():
 
     # Нативное меню команд Telegram (кнопка "/" рядом с полем ввода) — всегда на русском,
     # т.к. привязано к языку клиента Telegram, а не к языку, выбранному внутри бота.
+    # /feed и /work убраны из видимого списка команд — по фидбэку, кормёжка теперь удобнее
+    # через кнопку "Магазин" (в т.ч. Mini App), а /work тоже не то, что нужно тыкать часто.
+    # Сами команды при этом продолжают работать, если их набрать руками — просто не подсказываются.
     await bot.set_my_commands([
         BotCommand(command="start", description="Регистрация / главное меню"),
         BotCommand(command="help", description="Список команд"),
         BotCommand(command="language", description="Сменить язык"),
         BotCommand(command="hot", description="Горячая сцена с персонажем"),
-        BotCommand(command="feed", description="Покормить персонажа"),
-        BotCommand(command="work", description="Отправить на работу за баксы"),
         BotCommand(command="reset_character", description="Сбросить кастомного персонажа"),
         BotCommand(command="switch_personality", description="Сменить мир/пол (SUPER PRO+)"),
         BotCommand(command="switch_style", description="Сменить стиль (SUPER PRO+)"),
