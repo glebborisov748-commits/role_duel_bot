@@ -2579,17 +2579,17 @@ def get_full_kb(user):
     # инлайн-каталог (см. shop_reply).
     if WEBAPP_URL:
         shop_button = KeyboardButton(text=get_text(user, "shop_btn"),
-                                     web_app=WebAppInfo(url=f"{WEBAPP_URL}/shop"), style="primary")
+                                     web_app=WebAppInfo(url=f"{WEBAPP_URL}/shop"), style="success")
         spin_button = KeyboardButton(text=get_text(user, "spin_wheel"),
                                      web_app=WebAppInfo(url=f"{WEBAPP_URL}/spin"))
     else:
-        shop_button = KeyboardButton(text=get_text(user, "shop_btn"), style="primary")
+        shop_button = KeyboardButton(text=get_text(user, "shop_btn"), style="success")
         spin_button = KeyboardButton(text=get_text(user, "spin_wheel"))
     return ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text=get_text(user, "main_menu")), KeyboardButton(text=get_text(user, "my_profile"))],
             [spin_button, shop_button],
-            [KeyboardButton(text=get_text(user, "our_channel"))]
+            [KeyboardButton(text=get_text(user, "our_channel"), style="primary")]
         ],
         resize_keyboard=True
     )
