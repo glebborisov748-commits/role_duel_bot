@@ -5493,26 +5493,40 @@ def validate_webapp_init_data(init_data, max_age_seconds=86400):
     HMAC_SHA256(key=secret_key, msg=data_check_string). Без этой проверки на сервере нет иного
     способа узнать, кто на самом деле стоит за запросом — страница открывается по обычной
     публичной ссылке. Возвращает распарсенный dict (поле "user" уже как dict, не JSON-строка)
-    при успехе, иначе None."""
+    при успехе, иначе None. Каждая ветка отказа отдельно логируется (без самого BOT_TOKEN/
+    секрета) — снаружи все они выглядят одинаково как "Invalid Telegram signature", но причины
+    у "не совпал хэш" и "протухший auth_date" совершенно разные, и по одному только сообщению
+    пользователю их не различить — приходится смотреть логи хостинга."""
     if not init_data:
+        logging.warning("webapp initData: пустой (заголовок X-Telegram-Init-Data не пришёл)")
         return None
     try:
         parsed = dict(parse_qsl(init_data, strict_parsing=True))
     except ValueError:
+        logging.warning("webapp initData: не парсится как query-string")
         return None
     received_hash = parsed.pop("hash", None)
     if not received_hash:
+        logging.warning("webapp initData: нет поля hash")
         return None
     data_check_string = "\n".join(f"{k}={v}" for k, v in sorted(parsed.items()))
     secret_key = hmac.new(b"WebAppData", BOT_TOKEN.encode(), hashlib.sha256).digest()
     computed_hash = hmac.new(secret_key, data_check_string.encode(), hashlib.sha256).hexdigest()
     if not hmac.compare_digest(computed_hash, received_hash):
+        token_preview = f"{BOT_TOKEN[:6]}...{BOT_TOKEN[-4:]}" if len(BOT_TOKEN) > 10 else "(слишком короткий)"
+        logging.warning(f"webapp initData: подпись НЕ совпала — скорее всего BOT_TOKEN на хостинге "
+                         f"не тот (лишний пробел/перенос строки/устаревший после смены в BotFather). "
+                         f"Сейчас в переменной окружения BOT_TOKEN={token_preview}, длина={len(BOT_TOKEN)}")
         return None
     try:
         auth_date = int(parsed.get("auth_date", 0))
     except (TypeError, ValueError):
+        logging.warning("webapp initData: auth_date не число")
         return None
-    if auth_date <= 0 or (datetime.now().timestamp() - auth_date) > max_age_seconds:
+    age = datetime.now().timestamp() - auth_date
+    if auth_date <= 0 or age > max_age_seconds:
+        logging.warning(f"webapp initData: подпись верна, но auth_date протух (age={age:.0f}с, "
+                         f"лимит={max_age_seconds}с) — проверь системные часы/часовой пояс контейнера")
         return None
     try:
         parsed["user"] = json.loads(parsed["user"])
@@ -6114,27 +6128,69 @@ SPIN_PAGE_HTML = '''<!doctype html>
   }
   #wheel-wrap {
     position: relative;
-    width: 260px;
-    height: 260px;
-    margin: 18px auto 10px;
+    width: 280px;
+    height: 280px;
+    margin: 22px auto 10px;
   }
   #pointer {
     position: absolute;
-    top: -14px;
+    top: -2px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 28px;
     z-index: 3;
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,.35));
+    width: 0;
+    height: 0;
+    border-left: 13px solid transparent;
+    border-right: 13px solid transparent;
+    border-top: 22px solid #e8383d;
+    filter: drop-shadow(0 3px 3px rgba(0,0,0,.4));
+  }
+  #pointer::after {
+    content: "";
+    position: absolute;
+    top: -26px;
+    left: -7px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #ff8a8d, #e8383d 70%, #a11f23 100%);
+    box-shadow: 0 2px 3px rgba(0,0,0,.35);
+  }
+  #wheel-rim {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-sizing: border-box;
+    padding: 9px;
+    background: radial-gradient(circle at 35% 30%, #ffe9a8, #caa14d 55%, #8a6a26 100%);
+    box-shadow: 0 8px 24px rgba(0,0,0,.35), inset 0 0 0 2px rgba(255,255,255,.25);
   }
   #wheel {
     position: relative;
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    border: 5px solid var(--tg-theme-button-color, #2481cc);
-    box-shadow: 0 4px 18px rgba(0,0,0,.25);
+    overflow: hidden;
+    box-shadow: inset 0 0 0 3px rgba(0,0,0,.25);
     transition: transform 4s cubic-bezier(0.12, 0.67, 0.1, 1);
+  }
+  .peg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+  }
+  .peg span {
+    position: absolute;
+    top: -131px;
+    left: -3px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff8d6, #f0c14b 70%, #a97c1e 100%);
+    box-shadow: 0 0 3px rgba(255,220,120,.9);
   }
   .wheel-slot {
     position: absolute;
@@ -6146,24 +6202,29 @@ SPIN_PAGE_HTML = '''<!doctype html>
   .wheel-slot span {
     position: absolute;
     left: 0;
-    top: -108px;
+    top: -104px;
     transform: translate(-50%, -50%);
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 800;
     color: #1c1c1c;
+    text-shadow: 0 0 3px rgba(255,255,255,.9), 0 0 3px rgba(255,255,255,.9), 0 1px 1px rgba(0,0,0,.25);
     white-space: nowrap;
   }
   #hub {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 46px;
-    height: 46px;
-    margin: -23px 0 0 -23px;
+    width: 50px;
+    height: 50px;
+    margin: -25px 0 0 -25px;
     border-radius: 50%;
-    background: var(--tg-theme-button-color, #2481cc);
+    background: radial-gradient(circle at 35% 30%, #fff6d8, var(--tg-theme-button-color, #2481cc) 65%, #163a56 100%);
     z-index: 2;
-    box-shadow: 0 2px 8px rgba(0,0,0,.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.4), inset 0 0 0 2px rgba(255,255,255,.35);
   }
   #actions {
     display: flex;
@@ -6212,9 +6273,11 @@ SPIN_PAGE_HTML = '''<!doctype html>
   <div id="stats"></div>
   <div id="title"></div>
   <div id="wheel-wrap">
-    <div id="pointer">▼</div>
-    <div id="wheel"></div>
-    <div id="hub"></div>
+    <div id="pointer"></div>
+    <div id="wheel-rim">
+      <div id="wheel"></div>
+    </div>
+    <div id="hub">★</div>
   </div>
   <div id="result-banner"></div>
   <div id="actions"></div>
@@ -6260,7 +6323,14 @@ SPIN_PAGE_HTML = '''<!doctype html>
       var color = colors[i % colors.length];
       stops.push(color + " " + (i * sliceAngle) + "deg " + ((i + 1) * sliceAngle) + "deg");
     }
-    wheel.style.background = "conic-gradient(" + stops.join(", ") + ")";
+    // Тонкие светлые "спицы" между секторами — второй, отдельный conic-gradient слой поверх
+    // цветного, с узкой засветкой в начале каждого периода длиной sliceAngle. Оба слоя считаются
+    // от одного и того же 0deg, поэтому засветка приходится точно на границу цветов.
+    var colorLayer = "conic-gradient(" + stops.join(", ") + ")";
+    var dividerWidth = Math.min(1.6, sliceAngle * 0.12);
+    var dividerLayer = "repeating-conic-gradient(rgba(255,255,255,.55) 0deg " + dividerWidth + "deg, "
+      + "transparent " + dividerWidth + "deg " + sliceAngle + "deg)";
+    wheel.style.background = dividerLayer + ", " + colorLayer;
     for (var j = 0; j < n; j++) {
       var mid = j * sliceAngle + sliceAngle / 2;
       var slot = document.createElement("div");
@@ -6271,6 +6341,25 @@ SPIN_PAGE_HTML = '''<!doctype html>
       label.style.transform = "translate(-50%, -50%) rotate(" + (-mid) + "deg)";
       slot.appendChild(label);
       wheel.appendChild(slot);
+    }
+  }
+
+  // Декоративные "лампочки" по ободу колеса — количество не зависит от числа призов, чисто
+  // визуальный штрих под настоящее колесо фортуны. Строятся один раз на #wheel-rim (сам обод,
+  // не вращается вместе с #wheel), поэтому не мешают анимации прокрута.
+  function buildPegs() {
+    var rim = document.getElementById("wheel-rim");
+    var already = rim.querySelectorAll(".peg");
+    for (var k = 0; k < already.length; k++) { already[k].remove(); }
+    var count = 20;
+    for (var i = 0; i < count; i++) {
+      var deg = (360 / count) * i;
+      var peg = document.createElement("div");
+      peg.className = "peg";
+      peg.style.transform = "rotate(" + deg + "deg)";
+      var dot = document.createElement("span");
+      peg.appendChild(dot);
+      rim.appendChild(peg);
     }
   }
 
@@ -6318,6 +6407,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
     if (!state) return;
     renderStats(state);
     buildWheel(state.prizes);
+    buildPegs();
     renderActions(state);
     document.getElementById("footer-hint").textContent = state.ui.open_chat_hint;
   }
