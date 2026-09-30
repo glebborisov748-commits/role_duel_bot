@@ -5823,6 +5823,8 @@ SHOP_PAGE_HTML = '''<!doctype html>
     text-align: center;
     font-size: 15px;
     line-height: 1.5;
+    white-space: pre-line;
+    word-break: break-word;
   }
 </style>
 </head>
@@ -5845,6 +5847,18 @@ SHOP_PAGE_HTML = '''<!doctype html>
   var busyKeys = {};
 
   function initData() { return tg ? tg.initData : ""; }
+
+  // Сервер видит только "заголовок не пришёл" — но это может быть по двум совсем разным
+  // причинам: telegram-web-app.js вообще не подгрузился (тогда window.Telegram нет), либо он
+  // подгрузился, но сам Telegram почему-то не положил в него initData. Кладём это прямо в текст
+  // ошибки на экране, чтобы не гонять скриншот+лог туда-обратно ещё раз.
+  function diag() {
+    return "[diag] script=" + (window.Telegram ? "loaded" : "NOT loaded")
+      + ", WebApp=" + (tg ? "yes" : "no")
+      + ", platform=" + (tg && tg.platform || "?")
+      + ", version=" + (tg && tg.version || "?")
+      + ", initData.len=" + (tg && tg.initData ? tg.initData.length : 0);
+  }
 
   function api(path, opts) {
     opts = opts || {};
@@ -6043,11 +6057,15 @@ SHOP_PAGE_HTML = '''<!doctype html>
 
   function load() {
     api("/api/state").then(function (res) {
-      if (!res.ok) { showFullScreen(res.message || res.error || "Error"); return; }
+      if (!res.ok) {
+        var extra = res.error === "auth" ? "\n\n" + diag() : "";
+        showFullScreen((res.message || res.error || "Error") + extra);
+        return;
+      }
       state = res.state;
       render();
     }).catch(function (e) {
-      showFullScreen("Network error: " + (e && (e.name === "AbortError" ? "timeout" : e.message) || "unknown"));
+      showFullScreen("Network error: " + (e && (e.name === "AbortError" ? "timeout" : e.message) || "unknown") + "\n\n" + diag());
     });
   }
 
@@ -6315,6 +6333,8 @@ SPIN_PAGE_HTML = '''<!doctype html>
     text-align: center;
     font-size: 15px;
     line-height: 1.5;
+    white-space: pre-line;
+    word-break: break-word;
   }
 </style>
 </head>
@@ -6346,6 +6366,17 @@ SPIN_PAGE_HTML = '''<!doctype html>
   var colors = ["#ff6b6b", "#4ecdc4", "#ffd93d", "#6c5ce7", "#1dd1a1", "#feca57"];
 
   function initData() { return tg ? tg.initData : ""; }
+
+  // См. тот же diag() в SHOP_PAGE_HTML — сервер видит только "заголовок не пришёл", а тут
+  // сразу видно, была ли вообще причина (script/WebApp не подгрузились) или initData пустой
+  // при полностью рабочем окружении.
+  function diag() {
+    return "[diag] script=" + (window.Telegram ? "loaded" : "NOT loaded")
+      + ", WebApp=" + (tg ? "yes" : "no")
+      + ", platform=" + (tg && tg.platform || "?")
+      + ", version=" + (tg && tg.version || "?")
+      + ", initData.len=" + (tg && tg.initData ? tg.initData.length : 0);
+  }
 
   function api(path, opts) {
     opts = opts || {};
@@ -6582,11 +6613,15 @@ SPIN_PAGE_HTML = '''<!doctype html>
 
   function load() {
     api("/api/spin/state").then(function (res) {
-      if (!res.ok) { showFullScreen(res.message || res.error || "Error"); return; }
+      if (!res.ok) {
+        var extra = res.error === "auth" ? "\n\n" + diag() : "";
+        showFullScreen((res.message || res.error || "Error") + extra);
+        return;
+      }
       state = res.state;
       render();
     }).catch(function (e) {
-      showFullScreen("Network error: " + (e && (e.name === "AbortError" ? "timeout" : e.message) || "unknown"));
+      showFullScreen("Network error: " + (e && (e.name === "AbortError" ? "timeout" : e.message) || "unknown") + "\n\n" + diag());
     });
   }
 
