@@ -5925,8 +5925,21 @@ async def api_buy_handler(request):
     return web.json_response(result)
 
 
+async def root_health_handler(request):
+    """Корень домена — не часть самого магазина, но некоторые хостинги (в т.ч. reverse-proxy
+    перед контейнером) проверяют живость сервиса именно запросом на "/" перед тем, как вообще
+    начать пускать трафик на остальные пути; без этого маршрута такая проверка ловила бы 404 от
+    aiohttp и могла бы блокировать доступ даже к /shop. Заодно отдаёт человеку, который открыл
+    голый домен в браузере, что-то осмысленное вместо пустого 404."""
+    return web.Response(
+        text='<!doctype html><meta http-equiv="refresh" content="0; url=/shop">OK',
+        content_type="text/html",
+    )
+
+
 async def run_webapp_server():
     app_web = web.Application()
+    app_web.router.add_get("/", root_health_handler)
     app_web.router.add_get("/shop", shop_page_handler)
     app_web.router.add_get("/api/state", api_state_handler)
     app_web.router.add_post("/api/buy", api_buy_handler)
