@@ -231,8 +231,10 @@ TEXTS = {
         "item_bought": "✅ Куплено! {effects}.",
         "effect_satiety": "Сытость +{n}",
         "effect_mood": "Настроение +{n}",
+        "effect_water": "Вода +{n}",
         "effect_satiety_full": "Сытость до максимума",
         "effect_mood_full": "Настроение до максимума",
+        "effect_water_full": "Вода до максимума",
         "effect_xp": "XP +{n}",
         "shop_category_food": "🍽 Еда",
         "shop_category_treat": "🎁 Подарки",
@@ -248,7 +250,10 @@ TEXTS = {
         "intim_blocked_illness": "🤒 Персонаж слишком плохо себя чувствует для этого сейчас — сначала вылечи его в 🛍 Магазине.",
         "not_sick_alert": "😊 Персонаж сейчас не болеет — лекарство ни к чему.",
         "wrong_medicine_alert": "❌ Это лекарство не от этой болезни — нужно другое.",
-        "character_died": "💔 Персонаж не пережил такого количества еды и питья — сердце не выдержало.\n\nВся история общения и уровень близости потеряны.\n\nМожешь воскресить персонажа дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
+        "character_died": "💔 Персонаж мёртв — весь диалог и уровень близости заморожены.\n\nМожешь воскресить его дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
+        "character_died_overdrink": "💔 Персонаж не пережил такого количества алкоголя — сердце не выдержало.\n\nВся история общения и уровень близости потеряны.\n\nМожешь воскресить персонажа дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
+        "character_died_dehydration": "💔 Персонаж слишком долго обходился без воды — организм не выдержал обезвоживания.\n\nВся история общения и уровень близости потеряны.\n\nМожешь воскресить персонажа дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
+        "overfeed_refuse_alert": "❌ Персонаж наелся и отказывается есть ещё — дай сытости немного снизиться.",
         "defibrillator_btn": "🔌 Дефибриллятор — воскресить за {price}⭐",
         "new_character_btn": "🆕 Начать заново с новым персонажем",
         "new_character_started": "🆕 Хорошо, начнём с чистого листа.",
@@ -269,6 +274,8 @@ TEXTS = {
         "feed_menu_title": "🍽 Чем покормишь? (у тебя {bucks}💵)",
         "sleep_daily_reminder": "💤 Персонаж всё ещё спит и скучает по тебе... Загляни, когда будет минутка!",
         "spin_daily_reminder": "🎡 Не забудь: сегодня у тебя есть бесплатный прокрут колеса фортуны!",
+        "thirsty_reminder": "💧 Твой персонаж хочет пить... Загляни, когда будет минутка!",
+        "hungry_reminder": "🍽 Твой персонаж проголодался... Не забудь покормить!",
         "low_energy_nudge": "😴 Собеседник начинает уставать и клонит в сон... Может, взбодришь энергетиком?",
         "not_enough_bucks": "❌ Не хватает баксов: нужно ещё {n}💵.",
         "not_enough_energizers": "❌ Нет энергетиков. Купи бандл, чтобы разбудить персонажа сразу ⚡.",
@@ -276,7 +283,7 @@ TEXTS = {
         "wake_energizer_btn": "⚡ Разбудить энергетиком",
         "no_energizers_shop_btn": "🛍 Нет энергетиков — купить",
         "woken_up": "⚡ Энергетик выпит — персонаж снова бодр и на связи!",
-        "stats_line": "Энергия: {energy}/150   Сытость: {satiety}/100\nНастроение: {mood_emoji} ({mood_value})\nЭнергетиков: {energizers}   Баксов: {bucks} — потратить можно в Магазине\n🔥 Сцен: {scenes}",
+        "stats_line": "Энергия: {energy}/150   Сытость: {satiety}/100   Вода: {water}/100\nНастроение: {mood_emoji} ({mood_value})\nЭнергетиков: {energizers}   Баксов: {bucks} — потратить можно в Магазине\n🔥 Сцен: {scenes}",
         "wake_now_btn": "💳 Разбудить сейчас за {price}⭐",
         "elite_free_wake_btn": "🎁 Бесплатно разбудить (ELITE, раз в неделю)",
         "elite_free_wake_used_alert": "🎁 Бесплатное пробуждение уже использовано на этой неделе — вернётся в понедельник.",
@@ -502,8 +509,10 @@ TEXTS = {
         "item_bought": "✅ Purchased! {effects}.",
         "effect_satiety": "Satiety +{n}",
         "effect_mood": "Mood +{n}",
+        "effect_water": "Water +{n}",
         "effect_satiety_full": "Satiety maxed out",
         "effect_mood_full": "Mood maxed out",
+        "effect_water_full": "Water maxed out",
         "effect_xp": "XP +{n}",
         "shop_category_food": "🍽 Food",
         "shop_category_treat": "🎁 Treats",
@@ -519,7 +528,10 @@ TEXTS = {
         "intim_blocked_illness": "🤒 Your companion feels too unwell for that right now — cure them in the 🛍 Shop first.",
         "not_sick_alert": "😊 Your companion isn't sick right now — no need for medicine.",
         "wrong_medicine_alert": "❌ This medicine doesn't treat this illness — you need a different one.",
-        "character_died": "💔 Your companion didn't survive that much food and drink — their heart gave out.\n\nAll chat history and closeness level are lost.\n\nYou can revive your companion with a defibrillator (with the whole history) or start over with a new character.",
+        "character_died": "💔 Your companion is dead — the whole chat and closeness level are frozen.\n\nYou can revive them with a defibrillator (with the whole history) or start over with a new character.",
+        "character_died_overdrink": "💔 Your companion didn't survive that much alcohol — their heart gave out.\n\nAll chat history and closeness level are lost.\n\nYou can revive your companion with a defibrillator (with the whole history) or start over with a new character.",
+        "character_died_dehydration": "💔 Your companion went without water for too long — their body couldn't take the dehydration.\n\nAll chat history and closeness level are lost.\n\nYou can revive your companion with a defibrillator (with the whole history) or start over with a new character.",
+        "overfeed_refuse_alert": "❌ Your companion is full and refuses to eat more — let their satiety drop a bit first.",
         "defibrillator_btn": "🔌 Defibrillator — revive for {price}⭐",
         "new_character_btn": "🆕 Start over with a new character",
         "new_character_started": "🆕 Alright, starting with a clean slate.",
@@ -540,6 +552,8 @@ TEXTS = {
         "feed_menu_title": "🍽 What will you feed them? (you have {bucks}💵)",
         "sleep_daily_reminder": "💤 Your companion is still asleep and missing you... Stop by whenever you get a minute!",
         "spin_daily_reminder": "🎡 Don't forget: you've got a free spin of the wheel today!",
+        "thirsty_reminder": "💧 Your companion is thirsty... Stop by whenever you get a minute!",
+        "hungry_reminder": "🍽 Your companion is hungry... Don't forget to feed them!",
         "low_energy_nudge": "😴 Your companion is starting to feel drowsy... Maybe perk them up with an energizer?",
         "not_enough_bucks": "❌ Not enough bucks: you need {n}💵 more.",
         "not_enough_energizers": "❌ No energizers left. Buy a bundle to wake your companion up right away ⚡.",
@@ -547,7 +561,7 @@ TEXTS = {
         "wake_energizer_btn": "⚡ Wake up with an energizer",
         "no_energizers_shop_btn": "🛍 No energizers — buy some",
         "woken_up": "⚡ Energizer used — your companion is wide awake again!",
-        "stats_line": "Energy: {energy}/150   Satiety: {satiety}/100\nMood: {mood_emoji} ({mood_value})\nEnergizers: {energizers}   Bucks: {bucks} — spend them in the Shop\n🔥 Scenes: {scenes}",
+        "stats_line": "Energy: {energy}/150   Satiety: {satiety}/100   Water: {water}/100\nMood: {mood_emoji} ({mood_value})\nEnergizers: {energizers}   Bucks: {bucks} — spend them in the Shop\n🔥 Scenes: {scenes}",
         "wake_now_btn": "💳 Wake up now for {price}⭐",
         "elite_free_wake_btn": "🎁 Free wake-up (ELITE, once a week)",
         "elite_free_wake_used_alert": "🎁 You've already used your free wake-up this week — it resets on Monday.",
@@ -773,8 +787,10 @@ TEXTS = {
         "item_bought": "✅ Gekauft! {effects}.",
         "effect_satiety": "Sättigung +{n}",
         "effect_mood": "Stimmung +{n}",
+        "effect_water": "Wasser +{n}",
         "effect_satiety_full": "Sättigung auf Maximum",
         "effect_mood_full": "Stimmung auf Maximum",
+        "effect_water_full": "Wasser auf Maximum",
         "effect_xp": "XP +{n}",
         "shop_category_food": "🍽 Essen",
         "shop_category_treat": "🎁 Geschenke",
@@ -790,7 +806,10 @@ TEXTS = {
         "intim_blocked_illness": "🤒 Dein Begleiter fühlt sich dafür gerade zu schlecht — heile ihn/sie zuerst im 🛍 Shop.",
         "not_sick_alert": "😊 Dein Begleiter ist gerade nicht krank — kein Medikament nötig.",
         "wrong_medicine_alert": "❌ Dieses Medikament hilft nicht gegen diese Krankheit — du brauchst ein anderes.",
-        "character_died": "💔 Dein Begleiter hat so viel Essen und Trinken nicht überlebt — das Herz hat nicht mitgemacht.\n\nDer gesamte Chatverlauf und das Nähe-Level sind verloren.\n\nDu kannst deinen Begleiter mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
+        "character_died": "💔 Dein Begleiter ist tot — der ganze Chatverlauf und das Nähe-Level sind eingefroren.\n\nDu kannst ihn/sie mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
+        "character_died_overdrink": "💔 Dein Begleiter hat so viel Alkohol nicht überlebt — das Herz hat nicht mitgemacht.\n\nDer gesamte Chatverlauf und das Nähe-Level sind verloren.\n\nDu kannst deinen Begleiter mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
+        "character_died_dehydration": "💔 Dein Begleiter war zu lange ohne Wasser — der Körper hat die Dehydrierung nicht überstanden.\n\nDer gesamte Chatverlauf und das Nähe-Level sind verloren.\n\nDu kannst deinen Begleiter mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
+        "overfeed_refuse_alert": "❌ Dein Begleiter ist satt und weigert sich, mehr zu essen — lass die Sättigung erst etwas sinken.",
         "defibrillator_btn": "🔌 Defibrillator — wiederbeleben für {price}⭐",
         "new_character_btn": "🆕 Neu anfangen mit einem neuen Charakter",
         "new_character_started": "🆕 Gut, wir fangen mit einem sauberen Blatt an.",
@@ -811,6 +830,8 @@ TEXTS = {
         "feed_menu_title": "🍽 Womit fütterst du? (du hast {bucks}💵)",
         "sleep_daily_reminder": "💤 Dein Begleiter schläft immer noch und vermisst dich... Schau vorbei, wenn du eine Minute hast!",
         "spin_daily_reminder": "🎡 Nicht vergessen: Heute hast du eine kostenlose Drehung am Glücksrad!",
+        "thirsty_reminder": "💧 Dein Begleiter hat Durst... Schau vorbei, wenn du eine Minute hast!",
+        "hungry_reminder": "🍽 Dein Begleiter hat Hunger... Vergiss nicht, ihn zu füttern!",
         "low_energy_nudge": "😴 Dein Begleiter wird langsam müde und schläfrig... Vielleicht mit einem Energydrink aufmuntern?",
         "not_enough_bucks": "❌ Nicht genug Bucks: dir fehlen noch {n}💵.",
         "not_enough_energizers": "❌ Keine Energydrinks mehr. Kaufe ein Bundle, um deinen Begleiter sofort aufzuwecken ⚡.",
@@ -818,7 +839,7 @@ TEXTS = {
         "wake_energizer_btn": "⚡ Mit Energydrink wecken",
         "no_energizers_shop_btn": "🛍 Keine Energydrinks — kaufen",
         "woken_up": "⚡ Energydrink getrunken — dein Begleiter ist wieder hellwach!",
-        "stats_line": "Energie: {energy}/150   Sättigung: {satiety}/100\nStimmung: {mood_emoji} ({mood_value})\nEnergydrinks: {energizers}   Bucks: {bucks} — ausgeben im Shop\n🔥 Szenen: {scenes}",
+        "stats_line": "Energie: {energy}/150   Sättigung: {satiety}/100   Wasser: {water}/100\nStimmung: {mood_emoji} ({mood_value})\nEnergydrinks: {energizers}   Bucks: {bucks} — ausgeben im Shop\n🔥 Szenen: {scenes}",
         "wake_now_btn": "💳 Jetzt wecken für {price}⭐",
         "elite_free_wake_btn": "🎁 Gratis wecken (ELITE, einmal pro Woche)",
         "elite_free_wake_used_alert": "🎁 Du hast dein gratis Aufwecken diese Woche schon genutzt — ab Montag wieder verfügbar.",
@@ -1531,6 +1552,9 @@ INTIM_LEVEL_REWARD = 8  # на каком уровне близости откр
 # cooldown) не меняется. reaction_hint — ориентир тона для AI-благодарности (generate_shop_reaction),
 # пользователю не показывается.
 FOOD_ITEMS = {
+    "water": {"emoji": "💧", "ru": "Вода", "en": "Water", "de": "Wasser", "price": 10, "water": 40,
+              "category": "food", "cooldown_minutes": 8,
+              "reaction_hint": "Простая, но нужная забота — благодарность лёгкая, с облегчённой улыбкой."},
     "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 15, "satiety": 10,
               "category": "food", "cooldown_minutes": 10,
               "reaction_hint": "Это мелкая, но милая забота — благодарность лёгкая, тёплая, почти игривая."},
@@ -1975,13 +1999,23 @@ def get_time_of_day(user):
 # не переименовывать вдвое больше мест без необходимости.
 ENERGY_MAX = 150
 SATIETY_MAX = 100
+WATER_MAX = 100
 SATIETY_INACTIVITY_DECAY_MINUTES = 180  # без активности сытость сама падает с полной до нуля примерно
                                           # за 3 часа — реалистичнее, чем раньше (сама "восстанавливалась"
                                           # без еды): не покормили — значит проголодался, а не наоборот
+WATER_INACTIVITY_DECAY_MINUTES = 120  # вода уходит быстрее голода (2 часа вместо 3) — жажда реалистично
+                                        # наступает раньше; сама смерть от обезвоживания при этом ждёт
+                                        # ещё DEHYDRATION_DEATH_HOURS ПОСЛЕ обнуления, так что общий запас
+                                        # времени на реакцию не короче, а даже больше, чем кажется по темпу
 ENERGY_COST_MESSAGE = 12  # бак вырос в 1.5 раза (100->150), но стоимость сообщения выросла вдвое —
                           # сообщений на полный бак стало МЕНЬШЕ, чем раньше (было ~16.7, теперь ~12.5)
 SATIETY_COST_MESSAGE = 6  # было 3 (3% от бака за сообщение — заметно медленнее, чем энергия при
                           # 12/150=8%); по просьбе голод должен наступать быстрее, теперь 6%
+WATER_COST_MESSAGE = 8  # чуть быстрее голода (8% против 6%) — та же логика: жажда острее
+DEHYDRATION_DEATH_HOURS = 18  # с момента, когда вода впервые дошла до нуля (water_zero_since),
+                               # и до самой смерти — щедрый запас: несмотря на то что вода тратится
+                               # быстрее сытости, итоговое время на реакцию у игрока не меньше, а
+                               # даже больше, чем в среднем требуется, чтобы заметить голод
 ENERGIZER_RESTORE_AMOUNT = 78  # было 98 (65% бака) — точечно снижено до 78 (52% бака), без
                                # сопутствующего удвоения количеств бандлов/стипендов (в отличие
                                # от прошлой попытки уполовинить до 50, которая смотрелась чрезмерно
@@ -2000,10 +2034,12 @@ INTIMACY_LEVEL_DECAY_STEP = 0.1  # чем ближе вы, тем персона
 
 
 def apply_passive_satiety_decay(user):
-    """Сытость сама падает, пока пользователь не пишет — как в жизни: не покормили, значит
-    персонаж проголодался, а не наоборот (раньше она "регенерировала" сама без еды, что было
-    нереалистично). Энергия в этом не участвует вообще — она теперь не восстанавливается сама
-    ни при каких условиях, только энергетиком или платным "разбудить сейчас"."""
+    """Сытость и вода сами падают, пока пользователь не пишет — как в жизни: не покормили/не
+    напоили, значит персонаж проголодался/хочет пить, а не наоборот (раньше сытость сама
+    "регенерировала", что было нереалистично). Энергия в этом не участвует вообще — она теперь
+    не восстанавливается сама ни при каких условиях, только энергетиком или платным "разбудить
+    сейчас". water_zero_since фиксирует момент, когда вода впервые дошла до нуля — от него
+    считается время до смерти от обезвоживания (см. check_notifications)."""
     now = datetime.now()
     last = user.get("last_stat_tick")
     if last:
@@ -2013,6 +2049,10 @@ def apply_passive_satiety_decay(user):
             elapsed_min = 0
         if elapsed_min > 0:
             user["satiety"] = max(0, user.get("satiety", SATIETY_MAX) - elapsed_min * (SATIETY_MAX / SATIETY_INACTIVITY_DECAY_MINUTES))
+            prev_water = user.get("water", WATER_MAX)
+            user["water"] = max(0, prev_water - elapsed_min * (WATER_MAX / WATER_INACTIVITY_DECAY_MINUTES))
+            if prev_water > 0 and user["water"] <= 0:
+                user["water_zero_since"] = now.isoformat()
     user["last_stat_tick"] = now.isoformat()
 
 
@@ -2045,11 +2085,15 @@ def get_level_decay_multiplier(user):
     return 1.0 + (level - 1) * INTIMACY_LEVEL_DECAY_STEP
 
 
-def apply_activity_stat_cost(user, energy_cost, satiety_cost):
+def apply_activity_stat_cost(user, energy_cost, satiety_cost, water_cost):
     mult = STAT_DECAY_MULTIPLIER.get(get_subscription_level(user), 1.0) * get_level_decay_multiplier(user)
     prev_energy = user.get("energy", ENERGY_MAX)
     user["energy"] = max(0, prev_energy - energy_cost * mult)
     user["satiety"] = max(0, user.get("satiety", SATIETY_MAX) - satiety_cost * mult)
+    prev_water = user.get("water", WATER_MAX)
+    user["water"] = max(0, prev_water - water_cost * mult)
+    if prev_water > 0 and user["water"] <= 0:
+        user["water_zero_since"] = datetime.now().isoformat()
     if prev_energy > 0 and user["energy"] <= 0:
         # Энергия только что впервые дошла до 0 — фиксируем момент засыпания. sleep_until
         # больше НЕ таймер пробуждения (раньше был +20 минут, и по истечении персонаж
@@ -2144,6 +2188,19 @@ def build_hunger_rule(user):
     return ""
 
 
+def build_thirst_rule(user):
+    water = user.get("water", WATER_MAX)
+    if water <= 0:
+        return ("Тебя мучает настоящая жажда, тебе физически нехорошо — отвечай слабо и медленно, "
+                "будто в горле совсем пересохло, речь сбивчивая.\n")
+    elif water <= 20:
+        return ("Тебя мучает сильная жажда — то и дело облизываешь губы, вскользь жалуешься, что очень "
+                "хочешь пить, тон уставший и раздражённый.\n")
+    elif water <= 50:
+        return "Лёгкая жажда — иногда вскользь упоминай, что не прочь попить.\n"
+    return ""
+
+
 def build_tipsy_rule(user):
     """Временный эффект от алкоголя (см. apply_shop_item_effects) — только манера речи, не статы.
     Два уровня: "light" (пиво) — едва заметно, "full" (дорогое вино) — заметное лёгкое опьянение."""
@@ -2187,6 +2244,7 @@ def stats_line_text(user):
         user, "stats_line",
         energy=int(round(user.get("energy", ENERGY_MAX))),
         satiety=int(round(user.get("satiety", SATIETY_MAX))),
+        water=int(round(user.get("water", WATER_MAX))),
         energizers=user.get("energizers", 0),
         bucks=user.get("bucks", 0),
         mood_emoji=mood_emoji(mood),
@@ -2317,6 +2375,7 @@ def build_prompt(user):
     mood_rule = build_mood_rule(user)
     energy_rule = build_energy_rule(user)
     hunger_rule = build_hunger_rule(user)
+    thirst_rule = build_thirst_rule(user)
     tipsy_rule = build_tipsy_rule(user)
     illness_rule = build_illness_rule(user)
     time_period, time_note = get_time_of_day(user)
@@ -2333,7 +2392,7 @@ def build_prompt(user):
         f"{style_desc} "
         f"{rules}"
         f"Сейчас у вас {time_period} — {time_note}. "
-        f"{mood_rule} {energy_rule}{hunger_rule}{tipsy_rule}{illness_rule}"
+        f"{mood_rule} {energy_rule}{hunger_rule}{thirst_rule}{tipsy_rule}{illness_rule}"
         f"{gender_context} "
         f"Ты не признаёшься в любви с первого сообщения — у тебя есть характер и самоуважение. "
         f"Ты ценишь близость и доверие, которые не возникают за один вечер. "
@@ -3401,11 +3460,14 @@ def format_item_effects(item, user):
     if item.get("full_restore"):
         parts.append(get_text(user, "effect_satiety_full"))
         parts.append(get_text(user, "effect_mood_full"))
+        parts.append(get_text(user, "effect_water_full"))
     else:
         if item.get("satiety"):
             parts.append(get_text(user, "effect_satiety", n=item["satiety"]))
         if item.get("mood"):
             parts.append(get_text(user, "effect_mood", n=item["mood"]))
+        if item.get("water"):
+            parts.append(get_text(user, "effect_water", n=item["water"]))
     if item.get("xp"):
         parts.append(get_text(user, "effect_xp", n=item["xp"]))
     return ", ".join(parts)
@@ -3415,11 +3477,17 @@ def apply_shop_item_effects(user, item):
     if item.get("full_restore"):
         user["satiety"] = SATIETY_MAX
         user["mood"] = MOOD_MAX
+        user["water"] = WATER_MAX
+        user["water_zero_since"] = None
     else:
         if "satiety" in item:
             user["satiety"] = min(SATIETY_MAX, user.get("satiety", SATIETY_MAX) + item["satiety"])
         if "mood" in item:
             user["mood"] = min(MOOD_MAX, max(-MOOD_MAX, user.get("mood", 0) + item["mood"]))
+        if "water" in item:
+            user["water"] = min(WATER_MAX, user.get("water", WATER_MAX) + item["water"])
+            if user["water"] > 0:
+                user["water_zero_since"] = None
     if item.get("tipsy_minutes"):
         user["tipsy_until"] = (datetime.now() + timedelta(minutes=item["tipsy_minutes"])).isoformat()
         user["tipsy_level"] = item.get("tipsy_level", "light")
@@ -3598,13 +3666,16 @@ async def profile_shop(call: types.CallbackQuery):
     await call.answer()
 
 
-# Насильное перекармливание/перепаивание — предупреждение, а потом смерть, если продолжать
-# (друг подсказал, пользователь явно согласился на смерть именно за это, в отличие от болезни).
-# Считаем только подряд идущие покупки ЕДЫ при уже почти полной сытости — обычное кормление
-# голодного персонажа порог не задевает вообще (см. update_overfeed_strikes).
+# Насильное перекармливание едой — только предупреждение, потом персонаж САМ отказывается
+# есть дальше (никакой смерти: по фидбэку смерть должна грозить только за перепой алкоголем,
+# у еды нет такой драмы). Перепаивание алкоголем (пиво/дорогое вино — определяем по наличию
+# tipsy_minutes у предмета) — отдельный, более жёсткий счётчик: предупреждение, потом смерть.
+# Считаем только подряд идущие покупки при уже почти полной сытости — обычное кормление
+# голодного персонажа порог вообще не задевает (см. update_overfeed_strikes).
 OVERFEED_SATIETY_THRESHOLD = 95
 OVERFEED_WARN_STRIKES = 2
-OVERFEED_DEATH_STRIKES = 4
+OVERFEED_REFUSE_STRIKES = 4  # еда: дальше персонаж просто отказывается есть (покупка блокируется)
+OVERDRINK_DEATH_STRIKES = 4  # алкоголь: дальше персонаж умирает
 OVERFEED_WARNING_HINT = (
     "Это уже слишком много подряд — тебя откровенно перекармливают/перепаивают через силу. Ты "
     "не благодаришь, а раздражённо и устало просишь остановиться («Хватит, хватит...»), "
@@ -3612,17 +3683,34 @@ OVERFEED_WARNING_HINT = (
 )
 
 
+def overfeed_would_refuse(user, item):
+    """True, если персонаж уже отказывается есть ЭТУ еду — сытость слишком долго под завязку
+    (см. OVERFEED_REFUSE_STRIKES). Только читает состояние, счётчик не трогает — вызывающий
+    обязан проверить это ДО списания баксов (см. buy_food/handle_message), иначе деньги
+    спишутся за еду, которую персонаж физически не станет есть. Алкоголь сюда не входит —
+    у него своя ветка с смертью, а не отказом (см. update_overfeed_strikes)."""
+    if item.get("tipsy_minutes"):
+        return False
+    if not item.get("satiety") or user.get("satiety", 0) < OVERFEED_SATIETY_THRESHOLD:
+        return False
+    return user.get("overfeed_strikes", 0) >= OVERFEED_REFUSE_STRIKES
+
+
 def update_overfeed_strikes(user, item):
     """None — обычная покупка; "warning" — персонаж уже почти под завязку, но ещё держится;
-    "death" — перекормили/перепоили слишком много раз подряд. Считаем только предметы с
-    эффектом на сытость (напитки вроде пива сюда тоже входят — у них есть "satiety")."""
+    "death" — только для алкоголя, перепоили слишком много раз подряд. Еда сюда с "death" не
+    попадает вообще — её накопленные подряд-переедания блокируются заранее (см.
+    overfeed_would_refuse), до списания денег, так что здесь до отказа дело уже не доходит."""
+    is_drink = bool(item.get("tipsy_minutes"))
+    counter_key = "overdrink_strikes" if is_drink else "overfeed_strikes"
     if not item.get("satiety") or user.get("satiety", 0) < OVERFEED_SATIETY_THRESHOLD:
-        user["overfeed_strikes"] = 0
+        user[counter_key] = 0
         return None
-    user["overfeed_strikes"] = user.get("overfeed_strikes", 0) + 1
-    if user["overfeed_strikes"] >= OVERFEED_DEATH_STRIKES:
+    user[counter_key] = user.get(counter_key, 0) + 1
+    strikes = user[counter_key]
+    if is_drink and strikes >= OVERDRINK_DEATH_STRIKES:
         return "death"
-    if user["overfeed_strikes"] >= OVERFEED_WARN_STRIKES:
+    if strikes >= OVERFEED_WARN_STRIKES:
         return "warning"
     return None
 
@@ -3635,28 +3723,32 @@ def get_death_kb(user):
     ])
 
 
-async def kill_character(chat_id, user):
-    """Персонаж НИЧЕГО не теряет физически в этот момент — умер он лишь флагом "dead", который
-    блокирует чат (см. handle_message). Настоящая потеря истории/близости происходит, только
-    если пользователь сам выберет бесплатный вариант "новый персонаж" на экране смерти —
-    дефибриллятор просто снимает флаг, ничего восстанавливать не нужно, ведь ничего не стёрлось."""
+async def kill_character(chat_id, user, cause):
+    """cause: "overdrink" (перепоили алкоголем через силу) или "dehydration" (слишком долго без
+    воды, см. check_notifications). Персонаж НИЧЕГО не теряет физически в этот момент — умер он
+    лишь флагом "dead", который блокирует чат (см. handle_message). Настоящая потеря истории/
+    близости происходит, только если пользователь сам выберет бесплатный вариант "новый
+    персонаж" на экране смерти — дефибриллятор просто снимает флаг, восстанавливать нечего."""
     user["dead"] = True
     user["overfeed_strikes"] = 0
+    user["overdrink_strikes"] = 0
+    user["water_zero_since"] = None
     save_data(user_data)
-    await bot.send_message(chat_id, get_text(user, "character_died"), reply_markup=get_death_kb(user))
+    text_key = "character_died_dehydration" if cause == "dehydration" else "character_died_overdrink"
+    await bot.send_message(chat_id, get_text(user, text_key), reply_markup=get_death_kb(user))
 
 
 async def execute_item_purchase(chat_id, user, category, key, item, note=None):
-    """Общая часть после того, как cooldown и баксы уже проверены и списаны вызывающим:
-    применяет эффекты, отмечает cooldown, подтверждает покупку и (если не спит) просит ИИ
-    отреагировать в характере — опционально на личные слова пользователя (note), см.
+    """Общая часть после того, как cooldown, баксы и "не откажется ли есть это" уже проверены
+    вызывающим: применяет эффекты, отмечает cooldown, подтверждает покупку и (если не спит)
+    просит ИИ отреагировать в характере — опционально на личные слова пользователя (note), см.
     generate_shop_reaction. Используется и мгновенной покупкой (buy_food/buy_gift/buy_medicine),
     и покупкой с запиской (см. writing_item_note в handle_message) — оба пути должны одинаково
-    попадать под перекорм/лечение, поэтому проверки ниже, а не в вызывающих хендлерах."""
+    попадать под перекорм/перепой/лечение, поэтому проверки ниже, а не в вызывающих хендлерах."""
     if category == "food":
         overfed = update_overfeed_strikes(user, item)
         if overfed == "death":
-            await kill_character(chat_id, user)
+            await kill_character(chat_id, user, cause="overdrink")
             return
         if overfed == "warning":
             item = {**item, "reaction_hint": OVERFEED_WARNING_HINT}
@@ -3687,6 +3779,9 @@ async def buy_food(call: types.CallbackQuery):
     ready_at = item_ready_at(user, "food", key, item)
     if ready_at:
         await call.answer(get_text(user, "item_cooldown_alert", when=cooldown_phrase(user, ready_at)), show_alert=True)
+        return
+    if overfeed_would_refuse(user, item):
+        await call.answer(get_text(user, "overfeed_refuse_alert"), show_alert=True)
         return
     if not spend_bucks(user, item["price"]):
         await call.answer(get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0)), show_alert=True)
@@ -4916,7 +5011,7 @@ async def generate_and_reply(message: types.Message, user):
             pass
 
     user["last_activity"] = datetime.now().isoformat()
-    apply_activity_stat_cost(user, ENERGY_COST_MESSAGE, SATIETY_COST_MESSAGE)
+    apply_activity_stat_cost(user, ENERGY_COST_MESSAGE, SATIETY_COST_MESSAGE, WATER_COST_MESSAGE)
     save_data(user_data)
     await maybe_send_feed_nudge(message.chat.id, user)
     await maybe_send_energy_nudge(message.chat.id, user)
@@ -5070,6 +5165,9 @@ async def handle_message(message: types.Message):
         ready_at = item_ready_at(user, category, key, item)
         if ready_at:
             await message.answer(get_text(user, "item_cooldown_alert", when=cooldown_phrase(user, ready_at)))
+            return
+        if category == "food" and overfeed_would_refuse(user, item):
+            await message.answer(get_text(user, "overfeed_refuse_alert"))
             return
         if not spend_bucks(user, item["price"]):
             await message.answer(get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0)))
@@ -5238,6 +5336,12 @@ MISS_YOU_INACTIVITY_DAYS = 2  # с какого дня без сообщений
 MISS_YOU_INTERVAL_DAYS = 2  # не чаще чем раз в столько дней после предыдущего напоминания
 SLEEP_REMINDER_INTERVAL_HOURS = 12  # раз в сколько часов мягко напоминаем, что персонаж всё ещё спит
 SPIN_REMINDER_INTERVAL_DAYS = 1  # раз в сколько дней мягко напоминаем про доступный бесплатный прокрут
+THIRST_REMINDER_WATER_THRESHOLD = 20  # тот же порог, что у "сильной жажды" в build_thirst_rule
+THIRST_REMINDER_INTERVAL_HOURS = 4  # вода расходуется быстрее сытости (пассивно до нуля примерно
+                                      # за 2 часа бездействия — см. WATER_INACTIVITY_DECAY_MINUTES),
+                                      # поэтому и напоминание о ней чаще, чем про голод
+HUNGER_REMINDER_INTERVAL_HOURS = 6  # порог сытости берём тот же, что у контекстной подсказки прямо
+                                      # в чате — FEED_NUDGE_SATIETY_THRESHOLD (см. maybe_send_feed_nudge)
 
 
 async def check_notifications():
@@ -5253,6 +5357,25 @@ async def check_notifications():
                 # персонажем; отдельного "напоминания о смерти" пока нет, не нужно плодить типы.
                 if user.get("dead"):
                     continue
+
+                # Обезвоживание должно тикать и потенциально убивать ФОНОВО, а не только у тех,
+                # кто сам сейчас пишет боту: иначе у молча пропавшего пользователя сохранённое
+                # значение воды никогда не дошло бы до нуля (пассивный расход иначе считается
+                # лениво, только при следующем get_user()), water_zero_since никогда бы не
+                # выставился, и смерть от обезвоживания никогда бы не сработала в фоне. Делаем
+                # это ДО проверки notifications_muted ниже — смерть не должна становиться
+                # отключаемой вместе с обычными напоминаниями.
+                apply_passive_satiety_decay(user)
+                water_zero_since = user.get("water_zero_since")
+                if water_zero_since:
+                    try:
+                        hours_dry = (now - datetime.fromisoformat(water_zero_since)).total_seconds() / 3600
+                    except (ValueError, TypeError):
+                        hours_dry = 0
+                    if hours_dry >= DEHYDRATION_DEATH_HOURS:
+                        await kill_character(int(user_id), user, cause="dehydration")
+                        continue
+
                 # Отключение уведомлений — привилегия SUPER PRO: если подписка упала до PRO или
                 # истекла, напоминания сами возобновятся — отдельно снимать флаг не нужно.
                 if user.get("notifications_muted") and get_subscription_level(user) in ("super_pro", "elite"):
@@ -5332,6 +5455,52 @@ async def check_notifications():
                             await bot.send_message(int(user_id), get_text(user, "spin_daily_reminder"), reply_markup=kb)
                         except Exception:
                             pass
+                    continue
+
+                # 4) Низкий уровень воды — жажда тратится быстрее голода, поэтому и напоминание
+                # чаще (см. THIRST_REMINDER_INTERVAL_HOURS). Отсчёт cooldown — от последнего
+                # такого напоминания, а не от water_zero_since: иначе после первого сообщения
+                # напоминания сразу посыпались бы одно за другим.
+                if user.get("water", WATER_MAX) <= THIRST_REMINDER_WATER_THRESHOLD:
+                    last_thirst_reminder = user.get("last_thirst_reminder")
+                    due = True
+                    if last_thirst_reminder:
+                        try:
+                            hours_since = (now - datetime.fromisoformat(last_thirst_reminder)).total_seconds() / 3600
+                            due = hours_since >= THIRST_REMINDER_INTERVAL_HOURS
+                        except Exception:
+                            due = True
+                    if due:
+                        user["last_thirst_reminder"] = now.isoformat()
+                        save_data(user_data)
+                        try:
+                            await bot.send_message(int(user_id), get_text(user, "thirsty_reminder"),
+                                                   reply_markup=get_feed_nudge_kb(user))
+                        except Exception:
+                            pass
+                    continue
+
+                # 5) Низкая сытость — тот же порог, что у контекстной подсказки в чате
+                # (FEED_NUDGE_SATIETY_THRESHOLD), но это отдельный, проактивный пуш: срабатывает,
+                # даже если пользователь молчит и не может получить подсказку в ответ на сообщение.
+                if user.get("satiety", SATIETY_MAX) <= FEED_NUDGE_SATIETY_THRESHOLD:
+                    last_hunger_reminder = user.get("last_hunger_reminder")
+                    due = True
+                    if last_hunger_reminder:
+                        try:
+                            hours_since = (now - datetime.fromisoformat(last_hunger_reminder)).total_seconds() / 3600
+                            due = hours_since >= HUNGER_REMINDER_INTERVAL_HOURS
+                        except Exception:
+                            due = True
+                    if due:
+                        user["last_hunger_reminder"] = now.isoformat()
+                        save_data(user_data)
+                        try:
+                            await bot.send_message(int(user_id), get_text(user, "hungry_reminder"),
+                                                   reply_markup=get_feed_nudge_kb(user))
+                        except Exception:
+                            pass
+            save_data(user_data)
         except Exception as e:
             logging.error(f"Ошибка уведомлений: {e}")
         await asyncio.sleep(1800)  # проверка раз в 30 минут
