@@ -89,6 +89,9 @@ TEXTS = {
         ),
         "help_hint": "📖 /help — список всех команд.",
         "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
+        "cancel_character_creation_btn": "❌ Отменить",
+        "character_creation_cancelled": "❌ Создание персонажа отменено — можешь просто продолжить общение как обычно.",
+        "character_create_too_short": "✏️ Это слишком коротко для описания персонажа (нужно хотя бы {n} символов) — допиши подробнее, или нажми «Отменить» в сообщении выше.",
         "spin_title": "🎰 **Колесо фортуны**",
         "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 20–150💵 баксов\n• 🔥 Горячие сцены\n• 2–4⚡ энергетика (редко)\n• 🎁 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)",
         "spin_choose": "Выбери вариант:",
@@ -175,6 +178,7 @@ TEXTS = {
         "style_not_found": "❌ Стиль не найден",
         "style_unavailable": "❌ Стиль недоступен",
         "character_updated": "✅ Персонаж обновлён! История сохранена.",
+        "onboarding_tip": "👋 Коротко о механике, чтобы не теряться:\n\n⚡ Энергия тратится на каждое сообщение — кончится, и персонаж «уснёт». Разбудить: энергетик или 🛍 Магазин.\n🍽💧 Сытость и вода тоже тают со временем — подкармливай через 🛍 Магазин.\n💼 Работа и 🎰 Колесо фортуны — бесплатные способы заработать баксы.\n👑 Подписка снимает большинство ограничений и даёт плюшки.\n\nПолный список команд и подробности — /help.",
         "create_character_first": "Сначала создай персонажа через /start",
         "finish_registration_first": "🔞 Сначала пройди регистрацию через /start",
         "finish_registration_spin": "Сначала заверши регистрацию через /start.",
@@ -340,6 +344,7 @@ TEXTS = {
         "illness_immunity_off_btn": "🛡 Иммунитет к болезням: ВЫКЛ",
         "illness_immunity_enabled_alert": "🛡 Иммунитет включён — персонаж больше не будет заболевать.",
         "illness_immunity_disabled_alert": "🛡 Иммунитет выключен — персонаж снова может случайно заболеть.",
+        "illness_immunity_elite_only": "🔒 Иммунитет к болезням доступен только с подпиской ELITE.",
         "payment_pro_success": "✅ PRO подписка активирована на месяц!",
         "payment_super_success": "✅ SUPER PRO подписка активирована на месяц!",
         "payment_elite_success": "✅ ELITE подписка активирована на месяц!",
@@ -410,6 +415,9 @@ TEXTS = {
         ),
         "help_hint": "📖 /help — the full list of commands.",
         "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«An elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire.»\n\n✏️ Write the description now — and I'll remember it!",
+        "cancel_character_creation_btn": "❌ Cancel",
+        "character_creation_cancelled": "❌ Character creation cancelled — feel free to just keep chatting as usual.",
+        "character_create_too_short": "✏️ That's too short for a character description (needs at least {n} characters) — add more detail, or tap \"Cancel\" on the message above.",
         "spin_title": "🎰 **Spin wheel**",
         "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 20–150💵 bucks\n• 🔥 Hot scenes\n• 2–4⚡ energizers (rare)\n• 🎁 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)",
         "spin_choose": "Choose an option:",
@@ -496,6 +504,7 @@ TEXTS = {
         "style_not_found": "❌ Style not found",
         "style_unavailable": "❌ Style unavailable",
         "character_updated": "✅ Character updated! Your history is kept.",
+        "onboarding_tip": "👋 A quick rundown so nothing feels random:\n\n⚡ Energy is spent on every message — run out, and your companion falls \"asleep\". Wake them up with an energizer or in 🛍 Shop.\n🍽💧 Satiety and water drain over time too — feed them via 🛍 Shop.\n💼 Work and 🎰 the Spin wheel are free ways to earn bucks.\n👑 A subscription removes most limits and adds perks.\n\nFull command list and details — /help.",
         "create_character_first": "Create your character first via /start",
         "finish_registration_first": "🔞 Please finish registration via /start first",
         "finish_registration_spin": "Please finish registration via /start first.",
@@ -661,6 +670,7 @@ TEXTS = {
         "illness_immunity_off_btn": "🛡 Illness immunity: OFF",
         "illness_immunity_enabled_alert": "🛡 Immunity enabled — your companion won't get sick anymore.",
         "illness_immunity_disabled_alert": "🛡 Immunity disabled — your companion can randomly get sick again.",
+        "illness_immunity_elite_only": "🔒 Illness immunity is available with an ELITE subscription only.",
         "payment_pro_success": "✅ PRO subscription activated for a month!",
         "payment_super_success": "✅ SUPER PRO subscription activated for a month!",
         "payment_elite_success": "✅ ELITE subscription activated for a month!",
@@ -731,6 +741,9 @@ TEXTS = {
         ),
         "help_hint": "📖 /help — die vollständige Befehlsliste.",
         "character_create_prompt": "🎭 **Erstelle deinen eigenen Charakter!**\n\nBeschreibe eine beliebige Figur — aus Anime, Filmen, Spielen oder denk dir selbst eine aus.\nSchreibe Namen, Charakter, Aussehen, Herkunft und beliebige Details.\n\n📝 *Beispiel:*\n«Eine Elfe aus der Welt von The Witcher — weise, ruhig, mit langen silbernen Haaren. Sie liebt Sterne und lange Gespräche am Feuer.»\n\n✏️ Schreibe die Beschreibung jetzt — und ich merke sie mir!",
+        "cancel_character_creation_btn": "❌ Abbrechen",
+        "character_creation_cancelled": "❌ Charaktererstellung abgebrochen — du kannst einfach normal weiterchatten.",
+        "character_create_too_short": "✏️ Das ist zu kurz für eine Charakterbeschreibung (mindestens {n} Zeichen nötig) — schreib mehr dazu, oder tippe oben auf „Abbrechen\".",
         "spin_title": "🎰 **Glücksrad**",
         "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 20–150💵 Bucks\n• 🔥 Heiße Szenen\n• 2–4⚡ Energydrinks (selten)\n• 🎁 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)",
         "spin_choose": "Wähle eine Option:",
@@ -817,6 +830,7 @@ TEXTS = {
         "style_not_found": "❌ Stil nicht gefunden",
         "style_unavailable": "❌ Stil nicht verfügbar",
         "character_updated": "✅ Charakter aktualisiert! Der Verlauf bleibt erhalten.",
+        "onboarding_tip": "👋 Kurz erklärt, damit nichts zufällig wirkt:\n\n⚡ Energie wird bei jeder Nachricht verbraucht — ist sie leer, „schläft” dein Begleiter ein. Aufwecken: Energydrink oder im 🛍 Shop.\n🍽💧 Sättigung und Wasser sinken auch mit der Zeit — füttern über den 🛍 Shop.\n💼 Arbeit und 🎰 das Glücksrad sind kostenlose Wege, um Bucks zu verdienen.\n👑 Ein Abo entfernt die meisten Limits und bringt Extras.\n\nVolle Befehlsliste und Details — /help.",
         "create_character_first": "Erstelle zuerst deinen Charakter über /start",
         "finish_registration_first": "🔞 Schließe zuerst die Registrierung über /start ab",
         "finish_registration_spin": "Schließe zuerst die Registrierung über /start ab.",
@@ -982,6 +996,7 @@ TEXTS = {
         "illness_immunity_off_btn": "🛡 Krankheitsimmunität: AUS",
         "illness_immunity_enabled_alert": "🛡 Immunität aktiviert — dein Begleiter wird nicht mehr krank.",
         "illness_immunity_disabled_alert": "🛡 Immunität deaktiviert — dein Begleiter kann wieder zufällig krank werden.",
+        "illness_immunity_elite_only": "🔒 Krankheitsimmunität ist nur mit einem ELITE-Abo verfügbar.",
         "payment_pro_success": "✅ PRO-Abo für einen Monat aktiviert!",
         "payment_super_success": "✅ SUPER PRO-Abo für einen Monat aktiviert!",
         "payment_elite_success": "✅ ELITE-Abo für einen Monat aktiviert!",
@@ -1030,6 +1045,27 @@ client = OpenAI(api_key=PROVOD_API_KEY, base_url="https://api.provod.ai/v1")
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 logging.basicConfig(level=logging.INFO)
+
+
+@dp.update.outer_middleware()
+async def remember_username_middleware(handler, event, data):
+    """Единственное место, где username пользователя попадает в user_data. У Bot API нет
+    надёжного способа узнать user_id по произвольному @username "с нуля" — getChat по username
+    срабатывает, только если бот уже где-то видел этого пользователя, да и то не всегда (это и
+    была причина, почему /grant/@username не находил людей). Вместо getChat админ-команды ищут
+    по собственной базе (см. find_user_id_by_username, _resolve_admin_target), а сюда username
+    кладётся заранее на каждом апдейте, где он есть — до того, как он может понадобиться."""
+    from_user = (
+        getattr(getattr(event, "message", None), "from_user", None)
+        or getattr(getattr(event, "callback_query", None), "from_user", None)
+        or getattr(getattr(event, "edited_message", None), "from_user", None)
+    )
+    if from_user and from_user.username:
+        user = get_user(from_user.id)
+        if user.get("username") != from_user.username:
+            user["username"] = from_user.username
+            save_data(user_data)
+    return await handler(event, data)
 
 # Пусто = не задано вручную -> модель ищется сама в каталоге provod.ai (см. resolve_model).
 # Явно заданное значение (переменная окружения AI_MODEL/INTIM_MODEL) всегда в приоритете.
@@ -2806,10 +2842,15 @@ def get_profile_keyboard(user):
         [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
         [InlineKeyboardButton(text=get_text(user, mute_key), callback_data="toggle_notifications", style="primary")],
     ]
-    # Иммунитет к болезням — перк именно ELITE (самый верхний тариф), не SUPER PRO.
+    # Иммунитет к болезням — перк именно ELITE (самый верхний тариф), не SUPER PRO. Кнопка теперь
+    # видна ВСЕМ (не только ELITE) — иначе о фиче просто никто не узнаёт; не-ELITE видит
+    # заблокированный вариант с припиской "(ELITE)", нажатие даёт alert с реальным требованием
+    # (см. toggle_illness_immunity, он и так уже перепроверяет уровень подписки на сервере).
     if get_subscription_level(user) == "elite":
         immunity_key = "illness_immunity_on_btn" if user.get("illness_disabled") else "illness_immunity_off_btn"
         rows.append([InlineKeyboardButton(text=get_text(user, immunity_key), callback_data="toggle_illness_immunity", style="primary")])
+    else:
+        rows.append([InlineKeyboardButton(text="🔒 " + get_text(user, "illness_immunity_off_btn") + " (ELITE)", callback_data="toggle_illness_immunity")])
     rows.append([InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -3062,6 +3103,13 @@ async def choose_scene(call: types.CallbackQuery):
     else:
         await safe_delete(call.message)
         await send_main_menu(call.message.chat.id, user)
+        # Разовая памятка новичку: что откуда берётся и куда идти, если что-то не понятно.
+        # Флаг отдельный от personality_ready — пересоздание/смена персонажа (reset_character
+        # тоже проходит этот же путь) не должны показывать её повторно.
+        if not user.get("onboarding_shown"):
+            user["onboarding_shown"] = True
+            save_data(user_data)
+            await bot.send_message(call.message.chat.id, get_text(user, "onboarding_tip"))
         await call.answer()
 
 
@@ -3107,6 +3155,19 @@ async def switch_style(call: types.CallbackQuery):
 # ============================================================
 #  СОЗДАНИЕ СВОЕГО ПЕРСОНАЖА (SUPER PRO)
 # ============================================================
+CUSTOM_CHARACTER_MIN_LEN = 20  # отсекает вырожденные случаи вроде "привет" (жалоба: человек
+# просто написал обычное приветствие, пока creating_character ещё висел True с прошлого раза,
+# и оно целиком стало персонажем) — короткий текст не принимается, creating_character остаётся
+# True, чтобы можно было сразу дописать подробнее, без повторного нажатия кнопки
+
+
+def get_character_create_cancel_kb(user):
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=get_text(user, "cancel_character_creation_btn"),
+                              callback_data="cancel_character_creation", style="danger")]
+    ])
+
+
 @dp.callback_query(lambda c: c.data == "create_character_locked")
 async def create_character_locked(call: types.CallbackQuery):
     # Перепроверяем актуальный уровень подписки, а не только кнопку: если пользователь
@@ -3115,7 +3176,8 @@ async def create_character_locked(call: types.CallbackQuery):
     # с устаревшей кнопкой навсегда видел бы отказ, даже реально имея доступ.
     user = get_user(call.from_user.id)
     if get_subscription_level(user) in ("super_pro", "elite"):
-        await call.message.answer(get_text(user, "character_create_prompt"), parse_mode="Markdown")
+        await call.message.answer(get_text(user, "character_create_prompt"),
+                                  reply_markup=get_character_create_cancel_kb(user), parse_mode="Markdown")
         user["creating_character"] = True
         save_data(user_data)
         await call.answer()
@@ -3129,9 +3191,20 @@ async def create_character(call: types.CallbackQuery):
     if get_subscription_level(user) not in ("super_pro", "elite"):
         await call.answer(get_text(user, "super_pro_only"), show_alert=True)
         return
-    await call.message.answer(get_text(user, "character_create_prompt"), parse_mode="Markdown")
+    await call.message.answer(get_text(user, "character_create_prompt"),
+                              reply_markup=get_character_create_cancel_kb(user), parse_mode="Markdown")
     user["creating_character"] = True
     save_data(user_data)
+    await call.answer()
+
+
+@dp.callback_query(lambda c: c.data == "cancel_character_creation")
+async def cancel_character_creation(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    user["creating_character"] = False
+    save_data(user_data)
+    await safe_delete(call.message)
+    await bot.send_message(call.message.chat.id, get_text(user, "character_creation_cancelled"))
     await call.answer()
 
 
@@ -4294,7 +4367,7 @@ async def toggle_notifications(call: types.CallbackQuery):
 async def toggle_illness_immunity(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     if get_subscription_level(user) != "elite":
-        await call.answer(get_text(user, "mute_requires_sub_alert"), show_alert=True)
+        await call.answer(get_text(user, "illness_immunity_elite_only"), show_alert=True)
         return
     user["illness_disabled"] = not user.get("illness_disabled", False)
     save_data(user_data)
@@ -4793,13 +4866,36 @@ async def payment_success(message: types.Message):
 # ============================================================
 #  АДМИН-КОМАНДЫ
 # ============================================================
+def find_user_id_by_username(username):
+    """Ищет user_id по сохранённому username (см. remember_username_middleware) — у Bot API нет
+    надёжного способа узнать user_id по @username для произвольного пользователя без этого:
+    getChat срабатывает, только если бот уже видел этого пользователя, да и то не всегда."""
+    target = username.lstrip("@").lower()
+    for user_id, record in user_data.items():
+        if user_id == "__settings__" or not isinstance(record, dict):
+            continue
+        if (record.get("username") or "").lower() == target:
+            return int(user_id)
+    return None
+
+
 async def _resolve_admin_target(message: types.Message, target: str):
     if target.startswith("@"):
+        found = find_user_id_by_username(target)
+        if found is not None:
+            return found
+        # Запасной вариант — иногда срабатывает, если бот уже знает этого пользователя через
+        # Telegram напрямую, но полагаться на это нельзя (см. find_user_id_by_username).
         try:
             return (await bot.get_chat(target)).id
         except Exception:
-            await message.answer("❌ Не найден.")
-            return None
+            pass
+        await message.answer(
+            "❌ Не найден. Такого username нет в базе бота — человек должен хотя бы раз "
+            "написать боту (например /start), прежде чем его можно будет найти по @username. "
+            "Можно также передать числовой user_id вместо @username."
+        )
+        return None
     try:
         return int(target)
     except ValueError:
@@ -4855,7 +4951,8 @@ async def grant_cmd(message: types.Message):
         await message.answer(
             "/grant @username — SUPER PRO\n/grant @username pro — PRO\n/grant @username elite — ELITE\n"
             "/grant @username intim N — N горячих сцен\n/grant @username energizers N — N энергетиков\n"
-            "/grant @username bucks N — N баксов"
+            "/grant @username bucks N — N баксов\n\n"
+            "Отозвать подписку: /revoke_subscription @username"
         )
         return
     user_id = await _resolve_admin_target(message, args[1])
@@ -5568,13 +5665,20 @@ async def handle_message(message: types.Message):
 
     # 1. Создание собственного персонажа (SUPER PRO)
     if user.get("creating_character"):
-        user["custom_character"] = message.text
+        text = message.text.strip()
+        if len(text) < CUSTOM_CHARACTER_MIN_LEN:
+            # Слишком коротко, чтобы быть описанием — жалоба была именно на это: обычное
+            # "привет" становилось целиком персонажем. Флаг НЕ гасим, чтобы можно было сразу
+            # дописать подробнее (см. cancel_character_creation для явного выхода).
+            await message.answer(get_text(user, "character_create_too_short", n=CUSTOM_CHARACTER_MIN_LEN))
+            return
+        user["custom_character"] = text
         user["creating_character"] = False
         # Сбрасываем историю — иначе при ПЕРЕсоздании персонажа старые реплики ("я Бэтмен")
         # остаются в контексте и перевешивают новую личность, которая только что была задана.
         user["history"] = []
         save_data(user_data)
-        await message.answer(get_text(user, "character_created", text=message.text))
+        await message.answer(get_text(user, "character_created", text=text))
         return
 
     # 1b. Свой подарок — свободный текст вместо каталога (аксессуары конечны и одноразовые).
