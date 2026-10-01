@@ -2189,8 +2189,8 @@ WATER_INACTIVITY_DECAY_MINUTES = 120  # вода уходит быстрее г�
                                         # наступает раньше; сама смерть от обезвоживания при этом ждёт
                                         # ещё DEHYDRATION_DEATH_HOURS ПОСЛЕ обнуления, так что общий запас
                                         # времени на реакцию не короче, а даже больше, чем кажется по темпу
-ENERGY_COST_MESSAGE = 12  # бак вырос в 1.5 раза (100->150), но стоимость сообщения выросла вдвое —
-                          # сообщений на полный бак стало МЕНЬШЕ, чем раньше (было ~16.7, теперь ~12.5)
+ENERGY_COST_MESSAGE = 9  # было 12 (~12.5 сообщений на бак) — по фидбэку мало, вернули ближе к
+                          # ~16.7 сообщений/бак, которые были до того повышения
 SATIETY_COST_MESSAGE = 6  # было 3 (3% от бака за сообщение — заметно медленнее, чем энергия при
                           # 12/150=8%); по просьбе голод должен наступать быстрее, теперь 6%
 WATER_COST_MESSAGE = 8  # чуть быстрее голода (8% против 6%) — та же логика: жажда острее
@@ -10650,8 +10650,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
     position: absolute;
     bottom: 6px;
     left: 50%;
-    width: 18%;
-    font-size: 34px;
+    width: 26%;
+    font-size: 46px;
     text-align: center;
     transform: translateX(-50%);
     user-select: none;
@@ -10683,7 +10683,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     left: 0%;
     top: 50%;
     font-size: 28px;
-    transform: translateY(-50%) scaleX(1);
+    transform: translateY(-50%) scaleX(-1);
   }
   #courier-btn {
     margin-top: 16px;
@@ -10700,15 +10700,42 @@ WORK_PAGE_HTML = r'''<!doctype html>
   #courier-feedback.miss { color: #e8383d; }
 
   #game-farm { padding-top: 8px; }
-  .farm-stage {
-    font-size: 64px;
-    line-height: 1;
-    margin: 10px 0 14px;
+  .farm-plot {
+    position: relative;
+    height: 170px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    background: linear-gradient(180deg, #d7f0d0 0%, #d7f0d0 58%, #8a5a34 58%, #6b4423 100%);
   }
-  .farm-stage.ready { animation: farm-bounce 1s ease-in-out infinite; }
+  .farm-plant {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 54px;
+    line-height: 1;
+  }
+  .farm-plant.ready { animation: farm-bounce 1s ease-in-out infinite; }
   @keyframes farm-bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-10px); }
+  }
+  .farm-water-drop {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 36px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .farm-water-drop.disabled { opacity: .3; pointer-events: none; }
+  .farm-water-drop.watering { animation: farm-water-fall .4s ease-in forwards; pointer-events: none; }
+  @keyframes farm-water-fall {
+    0% { top: 12px; opacity: 1; }
+    85% { top: 95px; opacity: 1; }
+    100% { top: 100px; opacity: 0; }
   }
   .farm-status { font-size: 15px; font-weight: 700; margin-bottom: 10px; min-height: 20px; }
   .farm-watered, .farm-preview { font-size: 13px; opacity: .75; margin-bottom: 4px; }
@@ -10783,7 +10810,14 @@ WORK_PAGE_HTML = r'''<!doctype html>
   booted = true;
   var tg = (window.Telegram && window.Telegram.WebApp) || null;
   function safe(fn) { try { fn(); } catch (e) { /* older Telegram client: ignore */ } }
-  if (tg) { safe(function () { tg.ready(); }); safe(function () { tg.expand(); }); }
+  if (tg) {
+    safe(function () { tg.ready(); });
+    safe(function () { tg.expand(); });
+    // Без этого свайп вниз (особенно легко задеть, пока таскаешь корзину в "Заказе") сворачивает
+    // весь Mini App прямо посреди игры — нативный жест Телеграма, отключается именно этим методом
+    // (есть не во всех клиентах, поэтому через safe()).
+    safe(function () { tg.disableVerticalSwipes(); });
+  }
 
   var state = null;
   var activeGame = "clicker";
@@ -10798,7 +10832,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var COURIER_DOOR_START = 0.8;
   var COURIER_DOOR_END = 0.95;
   var COURIER_MAX_LEFT = 88;
-  var BASKET_WIDTH_PCT = 18;
+  var BASKET_WIDTH_PCT = 26;
   var CATCH_EMOJIS = ["🍎", "💧", "🎁", "🍪", "🥤", "🍕"];
 
   function initData() { return tg ? tg.initData : ""; }
@@ -11055,10 +11089,27 @@ WORK_PAGE_HTML = r'''<!doctype html>
     var stageEmoji = "🌱";
     if (farm.progress >= 0.66) stageEmoji = "🌽";
     else if (farm.progress >= 0.33) stageEmoji = "🌿";
-    var stage = document.createElement("div");
-    stage.className = "farm-stage" + (farm.ready ? " ready" : "");
-    stage.textContent = stageEmoji;
-    panel.appendChild(stage);
+
+    var plot = document.createElement("div");
+    plot.className = "farm-plot";
+    panel.appendChild(plot);
+
+    var plant = document.createElement("div");
+    plant.className = "farm-plant" + (farm.ready ? " ready" : "");
+    plant.textContent = stageEmoji;
+    plot.appendChild(plant);
+
+    if (!farm.ready) {
+      var drop = document.createElement("div");
+      drop.className = "farm-water-drop" + (farm.can_water ? "" : " disabled");
+      drop.textContent = "💧";
+      drop.onclick = function () {
+        if (!farm.can_water || farmActionInFlight) return;
+        drop.classList.add("watering");
+        farmAction("water");
+      };
+      plot.appendChild(drop);
+    }
 
     var status = document.createElement("div");
     status.className = "farm-status";
@@ -11101,13 +11152,6 @@ WORK_PAGE_HTML = r'''<!doctype html>
       }
       localTick();
       farmCountdownInterval = setInterval(localTick, 1000);
-
-      var waterBtn = document.createElement("button");
-      waterBtn.className = "farm-action-btn";
-      waterBtn.textContent = state.ui.farm_water_btn;
-      waterBtn.disabled = !farm.can_water;
-      waterBtn.onclick = function () { farmAction("water"); };
-      actionsRow.appendChild(waterBtn);
     }
   }
 
