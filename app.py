@@ -59,8 +59,8 @@ TEXTS = {
         "age_ok": "✅ Возраст подтверждён.",
         "age_no": "🚫 Доступ запрещён. Бот только для 18+.",
         "agreement_intro": "📜 Прежде чем продолжить, ознакомься с пользовательским соглашением и прими его:",
-        "agreement_continue": "➡️ Продолжить",
         "agreement_decide": "📜 Теперь прими решение:",
+        "agreement_too_fast": "⏳ Не так быстро — сначала открой и хотя бы пробегись по соглашению, потом возвращайся принимать решение.",
         "agreement_ok": "✅ Соглашение принято!",
         "agreement_no": "❌ Без принятия соглашения бот не работает.",
         "choose_lang": "🌍 Выбери язык / Choose language:",
@@ -385,8 +385,8 @@ TEXTS = {
         "age_ok": "✅ Age confirmed.",
         "age_no": "🚫 Access denied. 18+ only.",
         "agreement_intro": "📜 Before continuing, please read and accept the terms of service:",
-        "agreement_continue": "➡️ Continue",
         "agreement_decide": "📜 Now make your decision:",
+        "agreement_too_fast": "⏳ Not so fast — open and at least skim the agreement first, then come back to decide.",
         "agreement_ok": "✅ Terms accepted!",
         "agreement_no": "❌ The bot won't work without accepting the terms.",
         "choose_lang": "🌍 Choose language / Выбери язык:",
@@ -711,8 +711,8 @@ TEXTS = {
         "age_ok": "✅ Alter bestätigt.",
         "age_no": "🚫 Zugriff verweigert. Nur ab 18 Jahren.",
         "agreement_intro": "📜 Bevor es weitergeht, lies bitte die Nutzungsvereinbarung und akzeptiere sie:",
-        "agreement_continue": "➡️ Weiter",
         "agreement_decide": "📜 Triff jetzt deine Entscheidung:",
+        "agreement_too_fast": "⏳ Nicht so schnell — öffne zuerst die Vereinbarung und überflieg sie wenigstens, dann triff deine Entscheidung.",
         "agreement_ok": "✅ Vereinbarung akzeptiert!",
         "agreement_no": "❌ Ohne akzeptierte Vereinbarung funktioniert der Bot nicht.",
         "choose_lang": "🌍 Sprache wählen / Choose language:",
@@ -1764,7 +1764,7 @@ FOOD_ITEMS = {
     # хмельного эффекта — убран, остался только этот, настоящий алкогольный вариант.
     "fine_wine": {"emoji": "🍷", "ru": "Вино", "en": "Wine", "de": "Wein", "price": 90,
                   "satiety": 8, "mood": 22, "xp": 15,
-                  "category": "food", "cooldown_minutes": 480, "tipsy_minutes": 50, "tipsy_level": "full",
+                  "category": "food", "cooldown_minutes": 180, "tipsy_minutes": 50, "tipsy_level": "full",
                   "reaction_hint": "Дорогой, чувственный жест — благодарность игривая и слегка кокетливая, ты быстро хмелеешь и становишься мягче и раскованнее."},
 }
 GIFT_ITEMS = {
@@ -1826,7 +1826,10 @@ ILLNESSES = {
     "cold": {"emoji": "🤧", "ru": "Простуда", "en": "Cold", "de": "Erkältung"},
     "bronchitis": {"emoji": "🤒", "ru": "Бронхит", "en": "Bronchitis", "de": "Bronchitis"},
 }
-ILLNESS_DAILY_CHANCE = 0.04  # шанс заболеть за день, только если сейчас не болен
+ILLNESS_DAILY_CHANCE = 0.10  # шанс заболеть за день, только если сейчас не болен — было 0.04
+# (ожидаемое начало болезни ~25 дней, реально ощущалось как "болезни вообще не бывает"); при 0.10
+# больше половины пользователей увидят её уже в первую неделю игры, оставаясь при этом редким
+# случайным риском, а не ежедневной рутиной
 ILLNESS_ESCALATE_HOURS = 48  # столько часов невылеченная простуда терпит, потом становится бронхитом
 
 # Лекарства — отдельная категория магазина, видна только когда персонаж реально болен (см.
@@ -2727,13 +2730,14 @@ AGREEMENT_URLS = {
 
 
 def get_agreement_open_kb(user):
-    """Шаг 1: только ссылка на соглашение + переход дальше. Кнопок Принимаю/Не принимаю
-    здесь нет намеренно — принять соглашение, не открыв его хотя бы на секунду, нельзя."""
-    lang = user.get("lang", "ru")
-    url = AGREEMENT_URLS.get(lang, AGREEMENT_URLS["ru"])
+    """Шаг 1: единственная кнопка — открыть соглашение. Нарочно callback_data, а не url: у Bot
+    API нет способа узнать, нажал ли пользователь url-кнопку (это и была дыра — можно было
+    жать "Принимаю", вообще не открыв документ). Кнопки Принимаю/Не принимаю появляются только
+    ПОСЛЕ этого нажатия (см. agreement_open_link), плюс там же проверяется минимальное время
+    до принятия (см. AGREEMENT_MIN_READ_SECONDS) — то немногое, что вообще можно проверить без
+    настоящего отслеживания чтения."""
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "open_agreement"), url=url, style="primary")],
-        [InlineKeyboardButton(text=get_text(user, "agreement_continue"), callback_data="agreement_opened")],
+        [InlineKeyboardButton(text=get_text(user, "open_agreement"), callback_data="agreement_open_link", style="primary")],
     ])
 
 
@@ -2980,9 +2984,17 @@ async def age_no(call: types.CallbackQuery):
     await call.answer()
 
 
-@dp.callback_query(lambda c: c.data == "agreement_opened")
-async def agreement_opened(call: types.CallbackQuery):
+AGREEMENT_MIN_READ_SECONDS = 3  # минимальное время между нажатием "Открыть соглашение" и
+# "Принимаю" — не доказывает, что реально прочитали, но отсекает мгновенный "дабл-тап" мимо
+# текста; большего без настоящего отслеживания чтения технически не добиться (url-кнопки не
+# присылают боту никакого события при нажатии, см. get_agreement_open_kb)
+
+
+@dp.callback_query(lambda c: c.data == "agreement_open_link")
+async def agreement_open_link(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
+    user["agreement_opened_at"] = datetime.now().isoformat()
+    save_data(user_data)
     await safe_delete(call.message)
     await bot.send_message(call.message.chat.id, get_text(user, "agreement_decide"), reply_markup=get_agreement_kb(user))
     await call.answer()
@@ -2991,6 +3003,16 @@ async def agreement_opened(call: types.CallbackQuery):
 @dp.callback_query(lambda c: c.data == "agreement_accept")
 async def agreement_accept(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
+    opened_at = user.get("agreement_opened_at")
+    elapsed = None
+    if opened_at:
+        try:
+            elapsed = (datetime.now() - datetime.fromisoformat(opened_at)).total_seconds()
+        except (ValueError, TypeError):
+            elapsed = None
+    if elapsed is None or elapsed < AGREEMENT_MIN_READ_SECONDS:
+        await call.answer(get_text(user, "agreement_too_fast"), show_alert=True)
+        return
     user["agreement_accepted"] = True
     save_data(user_data)
     await safe_delete(call.message)
