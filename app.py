@@ -288,6 +288,21 @@ TEXTS = {
         "work_choose_mode": "💼 Куда пойти работать?",
         "work_mode_fast_btn": "⚡ Быстро — {minutes} мин., +{bucks}💵",
         "work_mode_slow_btn": "🏆 Долгая смена — {minutes} мин., +{bucks}💵",
+        "work_play_btn": "🎮 Играть, пока работаешь",
+        "work_minigame_title": "💼 Рабочая смена",
+        "work_minigame_not_working": "Сейчас ты не на работе. Напиши /work в чате, чтобы начать смену.",
+        "work_minigame_timer": "⏳ Осталось: {minutes} мин.",
+        "work_minigame_earnings": "💵 {base} + {bonus} бонус = {total}",
+        "work_tab_clicker": "💼 Офис",
+        "work_tab_catch": "📦 Заказ",
+        "work_tab_rhythm": "🚴 Курьер",
+        "work_clicker_btn": "Работать!",
+        "work_level_up": "🎉 Повышение!",
+        "work_catch_hint": "Лови падающие предметы, пока не закончилась смена!",
+        "work_rhythm_hint": "Жми «Доставить», когда стрелка в зелёной зоне!",
+        "work_rhythm_btn": "Доставить",
+        "work_rhythm_hit": "✅ Точно в срок!",
+        "work_rhythm_miss": "❌ Мимо, попробуй ещё раз!",
         "work_finished": "💼 Работа окончена: +{bucks}💵. Можно порадовать персонажа подарком!",
         "custom_gift_btn": "✍️ Свой подарок — {price}💵",
         "custom_gift_prompt": "✍️ Напиши, что хочешь подарить (до {n} символов, цена {price}💵). Каждый подарок можно подарить только один раз.",
@@ -593,6 +608,21 @@ TEXTS = {
         "work_choose_mode": "💼 Where do you want to work?",
         "work_mode_fast_btn": "⚡ Quick shift — {minutes} min., +{bucks}💵",
         "work_mode_slow_btn": "🏆 Long shift — {minutes} min., +{bucks}💵",
+        "work_play_btn": "🎮 Play while you work",
+        "work_minigame_title": "💼 Work shift",
+        "work_minigame_not_working": "You're not at work right now. Send /work in chat to start a shift.",
+        "work_minigame_timer": "⏳ Time left: {minutes} min.",
+        "work_minigame_earnings": "💵 {base} + {bonus} bonus = {total}",
+        "work_tab_clicker": "💼 Office",
+        "work_tab_catch": "📦 Delivery",
+        "work_tab_rhythm": "🚴 Courier",
+        "work_clicker_btn": "Work!",
+        "work_level_up": "🎉 Promotion!",
+        "work_catch_hint": "Catch the falling items before your shift ends!",
+        "work_rhythm_hint": "Hit \"Deliver\" when the arrow is in the green zone!",
+        "work_rhythm_btn": "Deliver",
+        "work_rhythm_hit": "✅ Right on time!",
+        "work_rhythm_miss": "❌ Missed it, try again!",
         "work_finished": "💼 Work's done: +{bucks}💵. Time to treat your companion to a gift!",
         "custom_gift_btn": "✍️ Custom gift — {price}💵",
         "custom_gift_prompt": "✍️ Write what you want to gift (up to {n} characters, price {price}💵). Each gift can only be given once.",
@@ -898,6 +928,21 @@ TEXTS = {
         "work_choose_mode": "💼 Wo möchtest du arbeiten?",
         "work_mode_fast_btn": "⚡ Kurze Schicht — {minutes} Min., +{bucks}💵",
         "work_mode_slow_btn": "🏆 Lange Schicht — {minutes} Min., +{bucks}💵",
+        "work_play_btn": "🎮 Spielen, während du arbeitest",
+        "work_minigame_title": "💼 Arbeitsschicht",
+        "work_minigame_not_working": "Du arbeitest gerade nicht. Schick /work im Chat, um eine Schicht zu starten.",
+        "work_minigame_timer": "⏳ Verbleibend: {minutes} Min.",
+        "work_minigame_earnings": "💵 {base} + {bonus} Bonus = {total}",
+        "work_tab_clicker": "💼 Büro",
+        "work_tab_catch": "📦 Lieferung",
+        "work_tab_rhythm": "🚴 Kurier",
+        "work_clicker_btn": "Arbeiten!",
+        "work_level_up": "🎉 Beförderung!",
+        "work_catch_hint": "Fang die fallenden Gegenstände, bevor deine Schicht endet!",
+        "work_rhythm_hint": "Drück \"Liefern\", wenn der Zeiger in der grünen Zone ist!",
+        "work_rhythm_btn": "Liefern",
+        "work_rhythm_hit": "✅ Genau rechtzeitig!",
+        "work_rhythm_miss": "❌ Daneben, versuch's nochmal!",
         "work_finished": "💼 Feierabend: +{bucks}💵. Zeit, deinen Begleiter mit einem Geschenk zu verwöhnen!",
         "custom_gift_btn": "✍️ Eigenes Geschenk — {price}💵",
         "custom_gift_prompt": "✍️ Schreib, was du schenken möchtest (bis zu {n} Zeichen, Preis {price}💵). Jedes Geschenk kann nur einmal verschenkt werden.",
@@ -2223,6 +2268,25 @@ WORK_MODES = {
     "slow": {"minutes": 180, "bucks": 180},
 }
 
+# Опциональная мини-игра поверх работы (см. /work -> "Играть, пока работаешь", WORK_PAGE_HTML):
+# раньше работа была чистым таймером — "нажал и жди", без всякого участия. Теперь, если открыть
+# Mini App во время смены, можно реально потапать/поиграть и получить прибавку к зарплате поверх
+# базовой ставки WORK_MODES. Не обязательно: кто не открыл мини-игру, просто получает базовую
+# ставку, как и раньше.
+WORK_MIN_HIT_INTERVAL_SECONDS = 0.1  # анти-спам: не больше ~10 засчитанных "попаданий" в секунду
+                                      # на пользователя — защита от скрипта, долбящего эндпоинт в
+                                      # цикле без всякого реального участия
+WORK_EFFORT_TARGET_HITS = 150  # сколько засчитанных попаданий дают МАКСИМАЛЬНЫЙ бонус — это
+                                 # игровой баланс (где-то минута-две активной игры), не связан с
+                                 # лимитом выше напрямую
+WORK_EFFORT_BONUS_MAX = 0.5  # до +50% поверх базовой ставки при полной "выработке"
+WORK_LEVEL_UP_EVERY = 15  # кликер ("Офис"): тост "Повышение!" каждые N засчитанных тапов
+
+
+def compute_work_bonus(base_bucks, hits):
+    effort_ratio = min(1.0, hits / WORK_EFFORT_TARGET_HITS)
+    return round(base_bucks * WORK_EFFORT_BONUS_MAX * effort_ratio)
+
 
 def is_working(user):
     until = user.get("working_until")
@@ -2238,7 +2302,10 @@ def finish_work_if_done(user):
     """Если персонаж только что вернулся с работы — начисляет баксы (уже сохранено) и
     возвращает сумму выплаты; иначе None. Режим берём из working_mode (выставляется при старте
     работы, см. work_start_mode); если его почему-то нет (например, работа была начата ДО
-    появления режимов) — считаем "slow", чтобы никого не обсчитать при деплое этого изменения."""
+    появления режимов) — считаем "slow", чтобы никого не обсчитать при деплое этого изменения.
+    К базовой ставке добавляется бонус за старания (см. WORK_EFFORT_*), если во время смены играли
+    в мини-игру (см. api_work_hit_handler) — если нет, work_session_hits просто 0 и бонус тоже 0,
+    выплата не отличается от старого поведения."""
     until = user.get("working_until")
     if not until:
         return None
@@ -2250,10 +2317,14 @@ def finish_work_if_done(user):
         return None
     user["working_until"] = None
     mode = WORK_MODES.get(user.get("working_mode"), WORK_MODES["slow"])
-    bucks = mode["bucks"]
-    user["bucks"] = user.get("bucks", 0) + bucks
+    base = mode["bucks"]
+    bonus = compute_work_bonus(base, user.get("work_session_hits", 0))
+    total = base + bonus
+    user["bucks"] = user.get("bucks", 0) + total
+    user["work_session_hits"] = 0
+    user["work_last_hit_at"] = None
     save_data(user_data)
-    return bucks
+    return total
 
 
 def work_minutes_left(user):
@@ -4964,8 +5035,20 @@ async def work_start_mode(call: types.CallbackQuery):
         return
     user["working_until"] = (datetime.now() + timedelta(minutes=WORK_MODES[mode]["minutes"])).isoformat()
     user["working_mode"] = mode
+    user["work_session_hits"] = 0
+    user["work_last_hit_at"] = None
     save_data(user_data)
-    await bot.send_message(call.message.chat.id, get_text(user, "work_started", minutes=WORK_MODES[mode]["minutes"], bucks=WORK_MODES[mode]["bucks"]))
+    started_text = get_text(user, "work_started", minutes=WORK_MODES[mode]["minutes"], bucks=WORK_MODES[mode]["bucks"])
+    if WEBAPP_URL:
+        # Необязательная мини-игра поверх работы (см. WORK_PAGE_HTML) — кто не откроет, просто
+        # получит базовую ставку по таймеру, как и раньше.
+        play_kb = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=get_text(user, "work_play_btn"),
+                                  web_app=WebAppInfo(url=f"{WEBAPP_URL}/work"), style="success")]
+        ])
+        await bot.send_message(call.message.chat.id, started_text, reply_markup=play_kb)
+    else:
+        await bot.send_message(call.message.chat.id, started_text)
     await call.answer()
 
 
@@ -10230,6 +10313,466 @@ SPIN_PAGE_HTML = '''<!doctype html>
 '''
 
 
+def serialize_work_state(user):
+    """Ð¡Ð½Ð¸Ð¼Ð¾Ðº Ð´Ð»Ñ Ð¼Ð¸Ð½Ð¸-Ð¸Ð³ÑÑ Ð¿Ð¾Ð²ÐµÑÑ ÑÐ°Ð±Ð¾ÑÑ (ÑÐ¼. WORK_PAGE_HTML) â ÐºÑÐ¾ Ð½Ðµ Ð¾ÑÐºÑÐ¾ÐµÑ
+    Ð¼Ð¸Ð½Ð¸-Ð¸Ð³ÑÑ, Ð¿ÑÐ¾ÑÑÐ¾ Ð¿Ð¾Ð»ÑÑÐ¸Ñ Ð±Ð°Ð·Ð¾Ð²ÑÑ ÑÑÐ°Ð²ÐºÑ Ð¿Ð¾ ÑÐ°Ð¹Ð¼ÐµÑÑ ÐºÐ°Ðº ÑÐ°Ð½ÑÑÐµ (ÑÐ¼. finish_work_if_done).
+    earnings_template/timer_template Ð½Ð°ÑÐ¾ÑÐ½Ð¾ Ð½ÐµÐ¾ÑÑÐ¾ÑÐ¼Ð°ÑÐ¸ÑÐ¾Ð²Ð°Ð½Ñ (get_text Ð±ÐµÐ· kwargs Ð¿ÑÐ¾ÑÑÐ¾ Ð²Ð¾Ð·Ð²ÑÐ°ÑÐ°ÐµÑ
+    ÑÑÑÐ¾Ð¹ ÑÐ°Ð±Ð»Ð¾Ð½ Ñ Ð¿Ð»ÐµÐ¹ÑÑÐ¾Ð»Ð´ÐµÑÐ°Ð¼Ð¸) â ÐºÐ»Ð¸ÐµÐ½Ñ ÑÐ°Ð¼ Ð¿Ð¾Ð´ÑÑÐ°Ð²Ð»ÑÐµÑ Ð°ÐºÑÑÐ°Ð»ÑÐ½ÑÐµ
+    ÑÐ¸ÑÐ»Ð° Ð¿Ð¾ÑÐ»Ðµ ÐºÐ°Ð¶Ð´Ð¾Ð³Ð¾ Ð¿Ð¾Ð¿Ð°Ð´Ð°Ð½Ð¸Ñ, Ð±ÐµÐ· Ð½Ð¾Ð²Ð¾Ð³Ð¾ Ð·Ð°Ð¿ÑÐ¾ÑÐ° Ðº ÑÐµÑÐ²ÐµÑÑ."""
+    mode = WORK_MODES.get(user.get("working_mode"), WORK_MODES["slow"])
+    hits = user.get("work_session_hits", 0)
+    base = mode["bucks"]
+    bonus = compute_work_bonus(base, hits)
+    return {
+        "working": is_working(user),
+        "minutes_left": work_minutes_left(user),
+        "hits": hits,
+        "target_hits": WORK_EFFORT_TARGET_HITS,
+        "level_up_every": WORK_LEVEL_UP_EVERY,
+        "base_bucks": base,
+        "bonus_bucks": bonus,
+        "total_bucks": base + bonus,
+        "ui": {
+            "title": get_text(user, "work_minigame_title"),
+            "not_working": get_text(user, "work_minigame_not_working"),
+            "timer_template": get_text(user, "work_minigame_timer"),
+            "earnings_template": get_text(user, "work_minigame_earnings"),
+            "tab_clicker": get_text(user, "work_tab_clicker"),
+            "tab_catch": get_text(user, "work_tab_catch"),
+            "tab_rhythm": get_text(user, "work_tab_rhythm"),
+            "clicker_btn": get_text(user, "work_clicker_btn"),
+            "level_up": get_text(user, "work_level_up"),
+            "catch_hint": get_text(user, "work_catch_hint"),
+            "rhythm_hint": get_text(user, "work_rhythm_hint"),
+            "rhythm_btn": get_text(user, "work_rhythm_btn"),
+            "rhythm_hit": get_text(user, "work_rhythm_hit"),
+            "rhythm_miss": get_text(user, "work_rhythm_miss"),
+        },
+    }
+
+
+WORK_PAGE_HTML = r'''<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Work</title>
+<script>
+  window.__tgSdkSettled = false;
+  window.__tgSdkOnSettle = function () { window.__tgSdkSettled = true; if (window.__tgTryBoot) window.__tgTryBoot(); };
+</script>
+<script src="/tg-sdk.js" async
+        onload="window.__tgSdkOnSettle()" onerror="window.__tgSdkOnSettle()"></script>
+<style>
+  html, body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--tg-theme-bg-color, #ffffff);
+    color: var(--tg-theme-text-color, #111111);
+  }
+  body { padding: 0 14px 24px; text-align: center; }
+  #stats { padding: 12px 0; font-size: 15px; font-weight: 700; }
+  #title { font-size: 18px; font-weight: 700; padding-bottom: 4px; }
+  #timer { font-size: 14px; opacity: .75; padding-bottom: 14px; }
+  #tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tab-btn {
+    flex: 1;
+    padding: 10px 4px;
+    border-radius: 10px;
+    border: none;
+    background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+    color: var(--tg-theme-text-color, #111111);
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .tab-btn.active {
+    background: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, #ffffff);
+  }
+  .game-panel { display: none; }
+  #progress-wrap {
+    height: 10px;
+    border-radius: 6px;
+    background: var(--tg-theme-secondary-bg-color, #eee);
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  #progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #4ecdc4, #1dd1a1);
+    transition: width .2s ease;
+  }
+  #hits-label { font-size: 12px; opacity: .7; margin-bottom: 18px; }
+  #level-up-toast {
+    position: fixed;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background: rgba(0,0,0,.82);
+    color: #fff;
+    padding: 14px 22px;
+    border-radius: 14px;
+    font-size: 18px;
+    font-weight: 700;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+    z-index: 10;
+  }
+  #level-up-toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+  #clicker-btn {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: none;
+    background: radial-gradient(circle at 35% 30%, #fff6d8, var(--tg-theme-button-color, #2481cc) 65%, #163a56 100%);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 800;
+    box-shadow: 0 8px 20px rgba(0,0,0,.3);
+    margin: 10px auto 20px;
+    display: block;
+    transition: transform .08s ease;
+  }
+  #clicker-btn.pressed { transform: scale(0.92); }
+
+  #catch-hint, #rhythm-hint { font-size: 13px; opacity: .7; margin-bottom: 10px; }
+  #catch-field {
+    position: relative;
+    height: 240px;
+    border-radius: 14px;
+    background: var(--tg-theme-secondary-bg-color, #f3f3f3);
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .catch-item {
+    position: absolute;
+    top: -34px;
+    font-size: 30px;
+    animation-name: catch-fall;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    cursor: pointer;
+    user-select: none;
+  }
+  .catch-item.caught { transform: scale(1.4); opacity: 0; transition: all .15s ease; }
+  @keyframes catch-fall {
+    from { top: -34px; }
+    to { top: 100%; }
+  }
+
+  #rhythm-track {
+    position: relative;
+    height: 18px;
+    border-radius: 9px;
+    background: var(--tg-theme-secondary-bg-color, #eee);
+    margin: 20px 4px 4px;
+  }
+  #rhythm-zone {
+    position: absolute;
+    left: 40%;
+    width: 20%;
+    height: 100%;
+    border-radius: 9px;
+    background: #8bdc8b;
+  }
+  #rhythm-marker {
+    position: absolute;
+    top: -8px;
+    width: 5px;
+    height: 34px;
+    border-radius: 3px;
+    background: #e8383d;
+    transform: translateX(-50%);
+    box-shadow: 0 2px 4px rgba(0,0,0,.3);
+  }
+  #rhythm-btn {
+    margin-top: 22px;
+    padding: 14px 32px;
+    border-radius: 12px;
+    border: none;
+    background: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, #ffffff);
+    font-size: 16px;
+    font-weight: 700;
+  }
+  #rhythm-feedback { margin-top: 12px; font-size: 14px; font-weight: 700; min-height: 20px; }
+  #rhythm-feedback.hit { color: #1dd1a1; }
+  #rhythm-feedback.miss { color: #e8383d; }
+
+  #full-screen-msg {
+    display: none;
+    padding: 60px 20px;
+    font-size: 15px;
+    line-height: 1.5;
+    white-space: pre-line;
+    word-break: break-word;
+    opacity: .85;
+  }
+</style>
+</head>
+<body>
+  <div id="stats"></div>
+  <div id="title"></div>
+  <div id="timer"></div>
+  <div id="tabs">
+    <button id="tab-clicker" class="tab-btn"></button>
+    <button id="tab-catch" class="tab-btn"></button>
+    <button id="tab-rhythm" class="tab-btn"></button>
+  </div>
+  <div id="progress-wrap"><div id="progress-bar"></div></div>
+  <div id="hits-label"></div>
+
+  <div id="game-clicker" class="game-panel">
+    <button id="clicker-btn"></button>
+  </div>
+
+  <div id="game-catch" class="game-panel">
+    <div id="catch-hint"></div>
+    <div id="catch-field"></div>
+  </div>
+
+  <div id="game-rhythm" class="game-panel">
+    <div id="rhythm-hint"></div>
+    <div id="rhythm-track"><div id="rhythm-zone"></div><div id="rhythm-marker"></div></div>
+    <button id="rhythm-btn"></button>
+    <div id="rhythm-feedback"></div>
+  </div>
+
+  <div id="level-up-toast"></div>
+  <div id="full-screen-msg"></div>
+
+<script>
+(function () {
+  var booted = false;
+  function boot() {
+  if (booted) return;
+  booted = true;
+  var tg = (window.Telegram && window.Telegram.WebApp) || null;
+  function safe(fn) { try { fn(); } catch (e) { /* older Telegram client: ignore */ } }
+  if (tg) { safe(function () { tg.ready(); }); safe(function () { tg.expand(); }); }
+
+  var state = null;
+  var activeGame = "clicker";
+  var catchInterval = null;
+  var rhythmRafId = null;
+  var RHYTHM_PERIOD = 1600;
+  var hitInFlight = false;
+  var countdownInterval = null;
+
+  function initData() { return tg ? tg.initData : ""; }
+
+  function diag() {
+    return "[diag] script=" + (window.Telegram ? "loaded" : "NOT loaded")
+      + ", WebApp=" + (tg ? "yes" : "no")
+      + ", platform=" + (tg && tg.platform || "?")
+      + ", version=" + (tg && tg.version || "?")
+      + ", initData.len=" + (tg && tg.initData ? tg.initData.length : 0);
+  }
+
+  function api(path, opts) {
+    opts = opts || {};
+    opts.headers = Object.assign({"X-Telegram-Init-Data": initData()}, opts.headers || {});
+    var controller = new AbortController();
+    var timeoutId = setTimeout(function () { controller.abort(); }, 10000);
+    opts.signal = controller.signal;
+    return fetch(path, opts).then(function (r) {
+      clearTimeout(timeoutId);
+      return r.json();
+    }, function (e) {
+      clearTimeout(timeoutId);
+      throw e;
+    });
+  }
+
+  function showFullScreen(text) {
+    ["stats", "title", "timer", "tabs", "progress-wrap", "hits-label", "game-clicker", "game-catch", "game-rhythm"].forEach(function (id) {
+      document.getElementById(id).style.display = "none";
+    });
+    var el = document.getElementById("full-screen-msg");
+    el.style.display = "block";
+    el.textContent = text;
+  }
+
+  function stopAllGames() {
+    if (catchInterval) { clearInterval(catchInterval); catchInterval = null; }
+    if (rhythmRafId) { cancelAnimationFrame(rhythmRafId); rhythmRafId = null; }
+    document.getElementById("catch-field").innerHTML = "";
+  }
+
+  function rhythmPosition() {
+    var t = (Date.now() % RHYTHM_PERIOD) / RHYTHM_PERIOD;
+    return t < 0.5 ? t * 2 : (1 - t) * 2;
+  }
+
+  function tickRhythm() {
+    var pos = rhythmPosition();
+    document.getElementById("rhythm-marker").style.left = (pos * 100) + "%";
+    rhythmRafId = requestAnimationFrame(tickRhythm);
+  }
+
+  function startRhythm() {
+    tickRhythm();
+  }
+
+  var CATCH_EMOJIS = ["🍎", "💧", "🎁", "🍪", "🥤", "🍕"];
+  function spawnCatchItem() {
+    var field = document.getElementById("catch-field");
+    if (!field) return;
+    var item = document.createElement("div");
+    item.className = "catch-item";
+    item.textContent = CATCH_EMOJIS[Math.floor(Math.random() * CATCH_EMOJIS.length)];
+    item.style.left = (8 + Math.random() * 78) + "%";
+    item.style.animationDuration = (1.8 + Math.random() * 1.3) + "s";
+    item.addEventListener("click", function () {
+      if (item.dataset.caught) return;
+      item.dataset.caught = "1";
+      item.classList.add("caught");
+      registerHit();
+      setTimeout(function () { item.remove(); }, 160);
+    });
+    item.addEventListener("animationend", function () {
+      if (item.parentNode) item.remove();
+    });
+    field.appendChild(item);
+  }
+
+  function startCatch() {
+    catchInterval = setInterval(spawnCatchItem, 650);
+  }
+
+  function switchGame(name) {
+    activeGame = name;
+    stopAllGames();
+    ["clicker", "catch", "rhythm"].forEach(function (g) {
+      document.getElementById("game-" + g).style.display = g === name ? "block" : "none";
+      document.getElementById("tab-" + g).classList.toggle("active", g === name);
+    });
+    if (name === "catch") startCatch();
+    if (name === "rhythm") startRhythm();
+  }
+
+  function showLevelUp() {
+    var toast = document.getElementById("level-up-toast");
+    toast.textContent = state.ui.level_up;
+    toast.classList.add("show");
+    setTimeout(function () { toast.classList.remove("show"); }, 1100);
+  }
+
+  function formatEarnings(s) {
+    return s.ui.earnings_template
+      .replace("{base}", s.base_bucks)
+      .replace("{bonus}", s.bonus_bucks)
+      .replace("{total}", s.total_bucks);
+  }
+
+  function updateProgress(newState) {
+    var prevHits = state ? state.hits : 0;
+    state = newState;
+    document.getElementById("progress-bar").style.width = Math.min(100, state.hits / state.target_hits * 100) + "%";
+    document.getElementById("hits-label").textContent = state.hits + " / " + state.target_hits;
+    document.getElementById("stats").textContent = formatEarnings(state);
+    if (Math.floor(state.hits / state.level_up_every) > Math.floor(prevHits / state.level_up_every)) {
+      showLevelUp();
+    }
+  }
+
+  function registerHit() {
+    if (hitInFlight || !state || !state.working) return;
+    hitInFlight = true;
+    api("/api/work/hit", { method: "POST" }).then(function (res) {
+      hitInFlight = false;
+      if (res.state) updateProgress(res.state);
+    }).catch(function () { hitInFlight = false; });
+  }
+
+  function startCountdown(minutesLeft) {
+    var endsAt = Date.now() + minutesLeft * 60000;
+    function tick() {
+      var remaining = Math.max(0, Math.round((endsAt - Date.now()) / 60000));
+      document.getElementById("timer").textContent = state.ui.timer_template.replace("{minutes}", remaining);
+      if (endsAt <= Date.now()) {
+        clearInterval(countdownInterval);
+        stopAllGames();
+      }
+    }
+    tick();
+    countdownInterval = setInterval(tick, 1000);
+  }
+
+  function render() {
+    if (!state.working) {
+      showFullScreen(state.ui.not_working);
+      return;
+    }
+    document.getElementById("title").textContent = state.ui.title;
+    document.getElementById("tab-clicker").textContent = state.ui.tab_clicker;
+    document.getElementById("tab-catch").textContent = state.ui.tab_catch;
+    document.getElementById("tab-rhythm").textContent = state.ui.tab_rhythm;
+    document.getElementById("clicker-btn").textContent = state.ui.clicker_btn;
+    document.getElementById("catch-hint").textContent = state.ui.catch_hint;
+    document.getElementById("rhythm-hint").textContent = state.ui.rhythm_hint;
+    document.getElementById("rhythm-btn").textContent = state.ui.rhythm_btn;
+    document.getElementById("stats").textContent = formatEarnings(state);
+
+    document.getElementById("tab-clicker").onclick = function () { switchGame("clicker"); };
+    document.getElementById("tab-catch").onclick = function () { switchGame("catch"); };
+    document.getElementById("tab-rhythm").onclick = function () { switchGame("rhythm"); };
+    document.getElementById("clicker-btn").onclick = function () {
+      var btn = document.getElementById("clicker-btn");
+      btn.classList.add("pressed");
+      setTimeout(function () { btn.classList.remove("pressed"); }, 100);
+      registerHit();
+    };
+    document.getElementById("rhythm-btn").onclick = function () {
+      var pos = rhythmPosition();
+      var feedback = document.getElementById("rhythm-feedback");
+      if (pos >= 0.4 && pos <= 0.6) {
+        feedback.textContent = state.ui.rhythm_hit;
+        feedback.className = "hit";
+        registerHit();
+      } else {
+        feedback.textContent = state.ui.rhythm_miss;
+        feedback.className = "miss";
+      }
+    };
+
+    document.getElementById("progress-bar").style.width = Math.min(100, state.hits / state.target_hits * 100) + "%";
+    document.getElementById("hits-label").textContent = state.hits + " / " + state.target_hits;
+
+    switchGame(activeGame);
+    startCountdown(state.minutes_left);
+  }
+
+  function load() {
+    api("/api/work/state").then(function (res) {
+      if (!res.ok) {
+        var extra = res.error === "auth" ? "\n\n" + diag() : "";
+        showFullScreen((res.message || res.error || "Error") + extra);
+        return;
+      }
+      state = res.state;
+      render();
+    }).catch(function (e) {
+      showFullScreen("Network error: " + (e && (e.name === "AbortError" ? "timeout" : e.message) || "unknown") + "\n\n" + diag());
+    });
+  }
+
+  load();
+  }
+
+  window.__tgTryBoot = function () { if (window.__tgSdkSettled) boot(); };
+  window.__tgTryBoot();
+  setTimeout(boot, 3000);
+})();
+</script>
+</body>
+</html>
+'''
+
+
 async def spin_page_handler(request):
     return web.Response(text=SPIN_PAGE_HTML, content_type="text/html")
 
@@ -10294,6 +10837,48 @@ async def api_spin_paid_result_handler(request):
     return web.json_response({"ok": True, "ready": True, "state": serialize_spin_state(user), **pending})
 
 
+async def work_page_handler(request):
+    return web.Response(text=WORK_PAGE_HTML, content_type="text/html")
+
+
+async def api_work_state_handler(request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    return web.json_response({"ok": True, "state": serialize_work_state(user)})
+
+
+async def api_work_hit_handler(request):
+    """Одно засчитанное "попадание" в мини-игре во время работы (см. WORK_PAGE_HTML) — не чаще
+    WORK_MIN_HIT_INTERVAL_SECONDS с прошлого засчитанного попадания (анти-спам: без этого можно
+    было бы долбить эндпоинт в цикле без всякого реального участия и набрать максимум бонуса за
+    доли секунды) и только пока персонаж СЕЙЧАС реально на работе (иначе можно было бы слать хиты
+    когда угодно, хоть после окончания смены)."""
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    if not is_working(user):
+        return web.json_response({"ok": False, "error": "not_working", "state": serialize_work_state(user)})
+    now = datetime.now()
+    last_hit_raw = user.get("work_last_hit_at")
+    if last_hit_raw:
+        try:
+            elapsed = (now - datetime.fromisoformat(last_hit_raw)).total_seconds()
+        except (ValueError, TypeError):
+            elapsed = WORK_MIN_HIT_INTERVAL_SECONDS
+        if elapsed < WORK_MIN_HIT_INTERVAL_SECONDS:
+            # Слишком рано после прошлого засчитанного попадания -- тихо игнорируем сам тап (не
+            # засчитываем, не двигаем таймер), но всё равно возвращаем текущее состояние, чтобы
+            # фронтенд не разошёлся с сервером.
+            return web.json_response({"ok": True, "state": serialize_work_state(user)})
+    user["work_last_hit_at"] = now.isoformat()
+    user["work_session_hits"] = user.get("work_session_hits", 0) + 1
+    save_data(user_data)
+    return web.json_response({"ok": True, "state": serialize_work_state(user)})
+
+
 async def run_webapp_server():
     app_web = web.Application()
     app_web.router.add_get("/", root_health_handler)
@@ -10306,6 +10891,9 @@ async def run_webapp_server():
     app_web.router.add_post("/api/spin/free", api_spin_free_handler)
     app_web.router.add_post("/api/spin/paid/invoice", api_spin_paid_invoice_handler)
     app_web.router.add_get("/api/spin/paid/result", api_spin_paid_result_handler)
+    app_web.router.add_get("/work", work_page_handler)
+    app_web.router.add_get("/api/work/state", api_work_state_handler)
+    app_web.router.add_post("/api/work/hit", api_work_hit_handler)
     runner = web.AppRunner(app_web)
     await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", WEBAPP_PORT)
