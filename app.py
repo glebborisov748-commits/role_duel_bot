@@ -292,12 +292,15 @@ TEXTS = {
         "work_tab_catch": "📦 Заказ",
         "work_tab_rhythm": "🚴 Курьер",
         "work_tab_farm": "🌽 Ферма",
-        "work_clicker_btn": "Работать!",
-        "work_catch_hint": "Веди корзину из стороны в сторону и лови падающие предметы!",
-        "work_rhythm_hint": "Жми «Доставить», когда курьер у двери!",
-        "work_rhythm_btn": "Доставить",
-        "work_rhythm_hit": "✅ Доставлено!",
-        "work_rhythm_miss": "❌ Мимо, попробуй ещё раз!",
+        "work_clicker_hint": "Печатай, пока инспектор не смотрит — если заметит, баксов не будет!",
+        "work_clicker_hit": "✅ Напечатал!",
+        "work_clicker_caught": "🚨 Попался! Инспектор заметил.",
+        "work_office_status_safe": "🟢 Можно печатать",
+        "work_office_status_watching": "🔴 Инспектор смотрит!",
+        "work_catch_hint": "Веди корзину из стороны в сторону, лови предметы и не лови бомбы 💣!",
+        "work_rhythm_hint": "Жми ▲▼, чтобы перестроиться между полос, и объезжай препятствия — за манёвр платят!",
+        "work_rhythm_hit": "✅ Объехал!",
+        "work_rhythm_miss": "💥 Врезался!",
         "work_multiplier_badge": "×2 — бонус подписки",
         "farm_plant_btn": "🌽 Посадить кукурузу",
         "farm_water_btn": "💧 Полить",
@@ -618,12 +621,15 @@ TEXTS = {
         "work_tab_catch": "📦 Delivery",
         "work_tab_rhythm": "🚴 Courier",
         "work_tab_farm": "🌽 Farm",
-        "work_clicker_btn": "Work!",
-        "work_catch_hint": "Drag the basket side to side and catch the falling items!",
-        "work_rhythm_hint": "Hit \"Deliver\" when the courier's at the door!",
-        "work_rhythm_btn": "Deliver",
-        "work_rhythm_hit": "✅ Delivered!",
-        "work_rhythm_miss": "❌ Missed it, try again!",
+        "work_clicker_hint": "Type while the inspector isn't watching — get caught and you won't get paid!",
+        "work_clicker_hit": "✅ Typed it!",
+        "work_clicker_caught": "🚨 Caught! The inspector saw you.",
+        "work_office_status_safe": "🟢 Safe to type",
+        "work_office_status_watching": "🔴 Inspector's watching!",
+        "work_catch_hint": "Drag the basket side to side, catch the items, and dodge the bombs 💣!",
+        "work_rhythm_hint": "Press ▲▼ to switch lanes and dodge the obstacles — every dodge pays out!",
+        "work_rhythm_hit": "✅ Dodged it!",
+        "work_rhythm_miss": "💥 Crashed!",
         "work_multiplier_badge": "×2 — subscriber bonus",
         "farm_plant_btn": "🌽 Plant corn",
         "farm_water_btn": "💧 Water",
@@ -944,12 +950,15 @@ TEXTS = {
         "work_tab_catch": "📦 Lieferung",
         "work_tab_rhythm": "🚴 Kurier",
         "work_tab_farm": "🌽 Farm",
-        "work_clicker_btn": "Arbeiten!",
-        "work_catch_hint": "Zieh den Korb hin und her und fang die fallenden Gegenstände!",
-        "work_rhythm_hint": "Drück \"Liefern\", wenn der Kurier an der Tür ist!",
-        "work_rhythm_btn": "Liefern",
-        "work_rhythm_hit": "✅ Geliefert!",
-        "work_rhythm_miss": "❌ Daneben, versuch's nochmal!",
+        "work_clicker_hint": "Tipp, solange der Inspektor nicht hinschaut — erwischt er dich, gibt's kein Geld!",
+        "work_clicker_hit": "✅ Getippt!",
+        "work_clicker_caught": "🚨 Erwischt! Der Inspektor hat dich gesehen.",
+        "work_office_status_safe": "🟢 Sicher zu tippen",
+        "work_office_status_watching": "🔴 Der Inspektor schaut!",
+        "work_catch_hint": "Zieh den Korb hin und her, fang die Gegenstände und weich den Bomben 💣 aus!",
+        "work_rhythm_hint": "Drück ▲▼, um die Spur zu wechseln, und weich den Hindernissen aus — jedes Ausweichen zahlt sich aus!",
+        "work_rhythm_hit": "✅ Ausgewichen!",
+        "work_rhythm_miss": "💥 Gecrasht!",
         "work_multiplier_badge": "×2 — Abo-Bonus",
         "farm_plant_btn": "🌽 Mais pflanzen",
         "farm_water_btn": "💧 Gießen",
@@ -10512,10 +10521,13 @@ def serialize_work_state(user):
             "tab_catch": get_text(user, "work_tab_catch"),
             "tab_courier": get_text(user, "work_tab_rhythm"),
             "tab_farm": get_text(user, "work_tab_farm"),
-            "clicker_btn": get_text(user, "work_clicker_btn"),
+            "clicker_hint": get_text(user, "work_clicker_hint"),
+            "clicker_hit": get_text(user, "work_clicker_hit"),
+            "clicker_caught": get_text(user, "work_clicker_caught"),
+            "office_status_safe": get_text(user, "work_office_status_safe"),
+            "office_status_watching": get_text(user, "work_office_status_watching"),
             "catch_hint": get_text(user, "work_catch_hint"),
             "courier_hint": get_text(user, "work_rhythm_hint"),
-            "courier_btn": get_text(user, "work_rhythm_btn"),
             "courier_hit": get_text(user, "work_rhythm_hit"),
             "courier_miss": get_text(user, "work_rhythm_miss"),
             "multiplier_badge": get_text(user, "work_multiplier_badge"),
@@ -10605,23 +10617,80 @@ WORK_PAGE_HTML = r'''<!doctype html>
     to { opacity: 0; transform: translate(-50%, -220%); }
   }
 
-  #clicker-btn {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    border: none;
-    background: radial-gradient(circle at 35% 30%, #fff6d8, var(--tg-theme-button-color, #2481cc) 65%, #163a56 100%);
-    color: #fff;
-    font-size: 17px;
-    font-weight: 800;
-    box-shadow: 0 8px 20px rgba(0,0,0,.3);
-    margin: 20px auto 20px;
-    display: block;
-    transition: transform .08s ease;
+  #office-scene {
+    position: relative;
+    height: 200px;
+    border-radius: 14px;
+    background: var(--tg-theme-secondary-bg-color, #f3f3f3);
+    overflow: hidden;
+    margin-bottom: 10px;
+    border: 3px solid rgba(29,209,161,.5);
+    transition: border-color .25s ease, background-color .25s ease;
   }
-  #clicker-btn.pressed { transform: scale(0.92); }
+  #office-scene.alert { border-color: rgba(255,193,7,.85); }
+  #office-scene.watching { border-color: rgba(232,56,61,.9); background-color: rgba(232,56,61,.08); }
 
-  #catch-hint, #courier-hint { font-size: 13px; opacity: .7; margin-bottom: 10px; }
+  #inspector {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 34px;
+    opacity: 0;
+    transform: translateY(-20px) scale(.7);
+    transition: opacity .25s ease, transform .25s ease;
+  }
+  #office-scene.alert #inspector, #office-scene.watching #inspector {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  #office-scene.watching #inspector { animation: inspector-glare .5s ease infinite alternate; }
+  @keyframes inspector-glare {
+    from { filter: none; }
+    to { filter: drop-shadow(0 0 6px #e8383d); }
+  }
+
+  #office-status {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: rgba(29,209,161,.15);
+    color: #1dd1a1;
+  }
+  #office-scene.watching #office-status { background: rgba(232,56,61,.15); color: #e8383d; }
+
+  #office-keyboard {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .office-key {
+    width: 52px;
+    height: 42px;
+    border-radius: 8px;
+    border: none;
+    border-bottom: 4px solid rgba(0,0,0,.25);
+    background: var(--tg-theme-button-color, #2481cc);
+    color: rgba(255,255,255,.6);
+    font-size: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,.2);
+    transition: transform .08s ease, border-bottom-width .08s ease;
+  }
+  .office-key.pressed { transform: translateY(2px); border-bottom-width: 2px; }
+  .office-key.caught { animation: key-caught .3s ease; }
+  @keyframes key-caught {
+    0%, 100% { filter: none; }
+    40% { filter: drop-shadow(0 0 6px #e8383d) brightness(.7); }
+  }
+
+  #catch-hint, #courier-hint, #clicker-hint { font-size: 13px; opacity: .7; margin-bottom: 10px; }
   #catch-field {
     position: relative;
     height: 260px;
@@ -10642,6 +10711,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
     pointer-events: none;
   }
   .catch-item.caught { transform: scale(1.4); opacity: 0; transition: all .15s ease; }
+  .catch-item.exploded { animation: catch-explode .3s ease-out forwards; }
+  @keyframes catch-explode {
+    0% { transform: scale(1) rotate(0); filter: none; }
+    40% { transform: scale(1.5) rotate(-10deg); filter: drop-shadow(0 0 6px #e8383d); }
+    100% { transform: scale(0.2) rotate(10deg); opacity: 0; }
+  }
   @keyframes catch-fall {
     from { top: -34px; }
     to { top: 100%; }
@@ -10657,47 +10732,73 @@ WORK_PAGE_HTML = r'''<!doctype html>
     user-select: none;
     pointer-events: none;
   }
+  #catch-basket.hit { animation: basket-hit .3s ease; }
+  @keyframes basket-hit {
+    0%, 100% { filter: none; }
+    30% { filter: drop-shadow(0 0 8px #e8383d) brightness(.7); }
+  }
 
-  #courier-track {
+  #courier-road {
     position: relative;
-    height: 74px;
+    height: 180px;
     border-radius: 14px;
-    background: var(--tg-theme-secondary-bg-color, #eee);
-    margin: 16px 0 4px;
+    background: #4a4a4a;
+    margin: 12px 0 10px;
     overflow: hidden;
   }
-  #courier-door {
+  .courier-lane {
     position: absolute;
-    right: 3%;
-    top: 50%;
+    left: 0;
+    right: 0;
+    height: 60px;
+    border-bottom: 2px dashed rgba(255,255,255,.25);
+  }
+  .courier-lane[data-lane="0"] { top: 0; }
+  .courier-lane[data-lane="1"] { top: 60px; }
+  .courier-lane[data-lane="2"] { top: 120px; border-bottom: none; }
+  #courier-rider {
+    position: absolute;
+    left: 8%;
+    top: 30px;
+    font-size: 34px;
+    transform: translate(-50%, -50%) scaleX(-1);
+    transition: top .18s ease;
+    z-index: 3;
+  }
+  #courier-rider.crash { animation: courier-crash .3s ease; }
+  @keyframes courier-crash {
+    0%, 100% { filter: none; }
+    40% { filter: drop-shadow(0 0 8px #e8383d) brightness(.7); transform: translate(-50%, -50%) scaleX(-1) rotate(-15deg); }
+  }
+  .courier-obstacle {
+    position: absolute;
+    left: 100%;
     font-size: 30px;
-    transform: translateY(-50%) scale(1);
-    transition: transform .15s ease, filter .15s ease;
+    transform: translate(-50%, -50%);
+    animation-name: courier-scroll;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
   }
-  #courier-door.active {
-    transform: translateY(-50%) scale(1.25);
-    filter: drop-shadow(0 0 6px #1dd1a1);
+  @keyframes courier-scroll {
+    from { left: 104%; }
+    to { left: -8%; }
   }
-  #courier-marker {
-    position: absolute;
-    left: 0%;
-    top: 50%;
-    font-size: 28px;
-    transform: translateY(-50%) scaleX(-1);
-  }
-  #courier-btn {
-    margin-top: 16px;
-    padding: 14px 32px;
-    border-radius: 12px;
+  .courier-obstacle.hit-flash { filter: drop-shadow(0 0 8px #e8383d); }
+  #courier-controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; }
+  #courier-up, #courier-down {
+    width: 56px;
+    height: 44px;
+    border-radius: 10px;
     border: none;
     background: var(--tg-theme-button-color, #2481cc);
     color: var(--tg-theme-button-text-color, #ffffff);
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 700;
   }
-  #courier-feedback { margin-top: 12px; font-size: 14px; font-weight: 700; min-height: 20px; }
-  #courier-feedback.hit { color: #1dd1a1; }
-  #courier-feedback.miss { color: #e8383d; }
+  #courier-up:disabled, #courier-down:disabled { opacity: .35; }
+  #courier-feedback, #clicker-feedback { margin-top: 12px; font-size: 14px; font-weight: 700; min-height: 20px; }
+  #courier-feedback.hit, #clicker-feedback.hit { color: #1dd1a1; }
+  #courier-feedback.miss, #clicker-feedback.miss { color: #e8383d; }
 
   #game-farm { padding-top: 8px; }
   .farm-plot {
@@ -10778,7 +10879,20 @@ WORK_PAGE_HTML = r'''<!doctype html>
   </div>
 
   <div id="game-clicker" class="game-panel">
-    <button id="clicker-btn"></button>
+    <div id="clicker-hint"></div>
+    <div id="office-scene">
+      <div id="office-status"></div>
+      <div id="inspector">🕵️</div>
+      <div id="office-keyboard">
+        <button class="office-key">•</button>
+        <button class="office-key">•</button>
+        <button class="office-key">•</button>
+        <button class="office-key">•</button>
+        <button class="office-key">•</button>
+        <button class="office-key">•</button>
+      </div>
+    </div>
+    <div id="clicker-feedback"></div>
   </div>
 
   <div id="game-catch" class="game-panel">
@@ -10790,11 +10904,16 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   <div id="game-courier" class="game-panel">
     <div id="courier-hint"></div>
-    <div id="courier-track">
-      <div id="courier-door">🏠</div>
-      <div id="courier-marker">🛵</div>
+    <div id="courier-road">
+      <div class="courier-lane" data-lane="0"></div>
+      <div class="courier-lane" data-lane="1"></div>
+      <div class="courier-lane" data-lane="2"></div>
+      <div id="courier-rider">🛵</div>
     </div>
-    <button id="courier-btn"></button>
+    <div id="courier-controls">
+      <button id="courier-up">▲</button>
+      <button id="courier-down">▼</button>
+    </div>
     <div id="courier-feedback"></div>
   </div>
 
@@ -10824,16 +10943,23 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var catchSpawnInterval = null;
   var catchRafId = null;
   var courierRafId = null;
+  var courierSpawnInterval = null;
+  var officeTimerId = null;
+  var officeState = "safe"; // "safe" | "alert" | "watching" -- see runOfficeState()
+  var OFFICE_SAFE_MIN_MS = 2200, OFFICE_SAFE_MAX_MS = 4200;
+  var OFFICE_ALERT_MS = 700; // telegraph window before "watching" -- gives a fair chance to stop tapping
+  var OFFICE_WATCH_MIN_MS = 1400, OFFICE_WATCH_MAX_MS = 2600;
   var farmCountdownInterval = null;
   var hitInFlight = false;
   var farmActionInFlight = false;
   var dragBound = false;
-  var COURIER_PERIOD = 2600;
-  var COURIER_DOOR_START = 0.8;
-  var COURIER_DOOR_END = 0.95;
-  var COURIER_MAX_LEFT = 88;
+  var COURIER_LANE_Y = [30, 90, 150]; // px centers, matches 3x60px lanes in a 180px-tall #courier-road
+  var courierLane = 1;
+  var COURIER_OBSTACLE_EMOJI = "🚧";
   var BASKET_WIDTH_PCT = 26;
   var CATCH_EMOJIS = ["🍎", "💧", "🎁", "🍪", "🥤", "🍕"];
+  var BOMB_EMOJI = "💣";
+  var BOMB_CHANCE = 0.22;
 
   function initData() { return tg ? tg.initData : ""; }
 
@@ -10906,23 +11032,67 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (catchSpawnInterval) { clearInterval(catchSpawnInterval); catchSpawnInterval = null; }
     if (catchRafId) { cancelAnimationFrame(catchRafId); catchRafId = null; }
     if (courierRafId) { cancelAnimationFrame(courierRafId); courierRafId = null; }
+    if (courierSpawnInterval) { clearInterval(courierSpawnInterval); courierSpawnInterval = null; }
+    if (officeTimerId) { clearTimeout(officeTimerId); officeTimerId = null; }
     stopFarmCountdown();
     var field = document.getElementById("catch-field");
     if (field) {
       var items = field.querySelectorAll(".catch-item");
       items.forEach(function (el) { el.remove(); });
     }
+    var road = document.getElementById("courier-road");
+    if (road) {
+      var obstacles = road.querySelectorAll(".courier-obstacle");
+      obstacles.forEach(function (el) { el.remove(); });
+    }
   }
 
-  // ---------- Office (clicker) ----------
-  function bindClicker() {
-    var btn = document.getElementById("clicker-btn");
-    btn.onclick = function () {
-      btn.classList.add("pressed");
-      setTimeout(function () { btn.classList.remove("pressed"); }, 100);
-      registerHit("clicker", btn.offsetLeft + btn.offsetWidth / 2, btn.offsetTop + 12,
-        document.getElementById("game-clicker"));
-    };
+  // ---------- Office (inspector red-light/green-light) ----------
+  function randRange(min, max) { return min + Math.random() * (max - min); }
+
+  function setOfficeState(next) {
+    officeState = next;
+    var scene = document.getElementById("office-scene");
+    if (scene) scene.className = next;
+    var status = document.getElementById("office-status");
+    if (status) {
+      status.textContent = next === "watching" ? state.ui.office_status_watching : state.ui.office_status_safe;
+    }
+  }
+
+  function runOfficeState(name) {
+    setOfficeState(name);
+    if (name === "safe") {
+      officeTimerId = setTimeout(function () { runOfficeState("alert"); }, randRange(OFFICE_SAFE_MIN_MS, OFFICE_SAFE_MAX_MS));
+    } else if (name === "alert") {
+      officeTimerId = setTimeout(function () { runOfficeState("watching"); }, OFFICE_ALERT_MS);
+    } else {
+      officeTimerId = setTimeout(function () { runOfficeState("safe"); }, randRange(OFFICE_WATCH_MIN_MS, OFFICE_WATCH_MAX_MS));
+    }
+  }
+
+  function startOffice() {
+    runOfficeState("safe");
+  }
+
+  function bindOfficeKeyboard() {
+    var keys = document.querySelectorAll(".office-key");
+    keys.forEach(function (key) {
+      key.onclick = function () {
+        key.classList.add("pressed");
+        setTimeout(function () { key.classList.remove("pressed"); }, 100);
+        var feedback = document.getElementById("clicker-feedback");
+        if (officeState === "watching") {
+          key.classList.add("caught");
+          setTimeout(function () { key.classList.remove("caught"); }, 300);
+          if (feedback) { feedback.textContent = state.ui.clicker_caught; feedback.className = "miss"; }
+        } else {
+          if (feedback) { feedback.textContent = state.ui.clicker_hit; feedback.className = "hit"; }
+          registerHit("clicker", key.offsetLeft + key.offsetWidth / 2, key.offsetTop,
+            document.getElementById("office-scene"));
+        }
+      };
+    });
   }
 
   // ---------- Order (drag basket) ----------
@@ -10959,9 +11129,11 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function spawnCatchItem() {
     var field = document.getElementById("catch-field");
     if (!field) return;
+    var isBomb = Math.random() < BOMB_CHANCE;
     var item = document.createElement("div");
     item.className = "catch-item";
-    item.textContent = CATCH_EMOJIS[Math.floor(Math.random() * CATCH_EMOJIS.length)];
+    item.textContent = isBomb ? BOMB_EMOJI : CATCH_EMOJIS[Math.floor(Math.random() * CATCH_EMOJIS.length)];
+    if (isBomb) item.dataset.bomb = "1";
     item.style.left = (6 + Math.random() * 82) + "%";
     item.style.animationDuration = (2.1 + Math.random() * 1.4) + "s";
     item.addEventListener("animationend", function () {
@@ -10984,10 +11156,18 @@ WORK_PAGE_HTML = r'''<!doctype html>
         if (itemBottom >= basketRect.top && itemBottom <= basketRect.bottom + 10 &&
             itemCenterX >= basketRect.left && itemCenterX <= basketRect.right) {
           item.dataset.caught = "1";
-          item.classList.add("caught");
-          (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 160); })(item);
-          registerHit("catch", basket.offsetLeft + basket.offsetWidth / 2, basket.offsetTop,
-            document.getElementById("catch-field"));
+          if (item.dataset.bomb === "1") {
+            // Бомба -- никакого registerHit, только обратная связь: деньги за это НЕ платятся.
+            item.classList.add("exploded");
+            basket.classList.add("hit");
+            setTimeout(function () { basket.classList.remove("hit"); }, 300);
+            (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 300); })(item);
+          } else {
+            item.classList.add("caught");
+            (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 160); })(item);
+            registerHit("catch", basket.offsetLeft + basket.offsetWidth / 2, basket.offsetTop,
+              document.getElementById("catch-field"));
+          }
         }
       }
     }
@@ -11001,42 +11181,71 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
 
   // ---------- Courier ----------
-  function courierPosition() {
-    return (Date.now() % COURIER_PERIOD) / COURIER_PERIOD;
+  function setCourierLane(lane) {
+    courierLane = Math.max(0, Math.min(2, lane));
+    var rider = document.getElementById("courier-rider");
+    if (rider) rider.style.top = COURIER_LANE_Y[courierLane] + "px";
+    var upBtn = document.getElementById("courier-up");
+    var downBtn = document.getElementById("courier-down");
+    if (upBtn) upBtn.disabled = courierLane === 0;
+    if (downBtn) downBtn.disabled = courierLane === 2;
   }
 
-  function inDeliveryWindow(pos) {
-    return pos >= COURIER_DOOR_START && pos <= COURIER_DOOR_END;
+  function spawnCourierObstacle() {
+    var road = document.getElementById("courier-road");
+    if (!road) return;
+    var lane = Math.floor(Math.random() * 3);
+    var obstacle = document.createElement("div");
+    obstacle.className = "courier-obstacle";
+    obstacle.textContent = COURIER_OBSTACLE_EMOJI;
+    obstacle.dataset.lane = String(lane);
+    obstacle.style.top = COURIER_LANE_Y[lane] + "px";
+    obstacle.style.animationDuration = (2.3 + Math.random() * 0.6) + "s";
+    obstacle.addEventListener("animationend", function () {
+      if (obstacle.parentNode) obstacle.remove();
+    });
+    road.appendChild(obstacle);
   }
 
-  function tickCourier() {
-    var pos = courierPosition();
-    var marker = document.getElementById("courier-marker");
-    var door = document.getElementById("courier-door");
-    if (marker) marker.style.left = (pos * COURIER_MAX_LEFT) + "%";
-    if (door) door.classList.toggle("active", inDeliveryWindow(pos));
-    courierRafId = requestAnimationFrame(tickCourier);
+  function courierCollisionTick() {
+    var road = document.getElementById("courier-road");
+    var rider = document.getElementById("courier-rider");
+    if (road && rider) {
+      var riderRect = rider.getBoundingClientRect();
+      var riderCenterX = riderRect.left + riderRect.width / 2;
+      var obstacles = road.querySelectorAll(".courier-obstacle:not([data-resolved])");
+      for (var i = 0; i < obstacles.length; i++) {
+        var obstacle = obstacles[i];
+        var r = obstacle.getBoundingClientRect();
+        var obstacleCenterX = r.left + r.width / 2;
+        if (obstacleCenterX <= riderCenterX) {
+          obstacle.dataset.resolved = "1";
+          var obstacleLane = parseInt(obstacle.dataset.lane, 10);
+          var feedback = document.getElementById("courier-feedback");
+          if (obstacleLane === courierLane) {
+            obstacle.classList.add("hit-flash");
+            if (feedback) { feedback.textContent = state.ui.courier_miss; feedback.className = "miss"; }
+            rider.classList.add("crash");
+            setTimeout(function () { rider.classList.remove("crash"); }, 300);
+          } else {
+            if (feedback) { feedback.textContent = state.ui.courier_hit; feedback.className = "hit"; }
+            registerHit("courier", riderRect.left + riderRect.width / 2, riderRect.top, road);
+          }
+        }
+      }
+    }
+    courierRafId = requestAnimationFrame(courierCollisionTick);
   }
 
   function startCourier() {
-    tickCourier();
+    setCourierLane(1);
+    courierSpawnInterval = setInterval(spawnCourierObstacle, 900);
+    courierCollisionTick();
   }
 
-  function bindCourierBtn() {
-    document.getElementById("courier-btn").onclick = function () {
-      var pos = courierPosition();
-      var feedback = document.getElementById("courier-feedback");
-      var door = document.getElementById("courier-door");
-      if (inDeliveryWindow(pos)) {
-        feedback.textContent = state.ui.courier_hit;
-        feedback.className = "hit";
-        registerHit("courier", door.offsetLeft + door.offsetWidth / 2, door.offsetTop,
-          document.getElementById("courier-track"));
-      } else {
-        feedback.textContent = state.ui.courier_miss;
-        feedback.className = "miss";
-      }
-    };
+  function bindCourierControls() {
+    document.getElementById("courier-up").onclick = function () { setCourierLane(courierLane - 1); };
+    document.getElementById("courier-down").onclick = function () { setCourierLane(courierLane + 1); };
   }
 
   // ---------- Farm ----------
@@ -11163,6 +11372,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       document.getElementById("game-" + g).style.display = g === name ? "block" : "none";
       document.getElementById("tab-" + g).classList.toggle("active", g === name);
     });
+    if (name === "clicker") startOffice();
     if (name === "catch") startCatch();
     if (name === "courier") startCourier();
     if (name === "farm") renderFarm();
@@ -11183,19 +11393,18 @@ WORK_PAGE_HTML = r'''<!doctype html>
     document.getElementById("tab-catch").textContent = state.ui.tab_catch;
     document.getElementById("tab-courier").textContent = state.ui.tab_courier;
     document.getElementById("tab-farm").textContent = state.ui.tab_farm;
-    document.getElementById("clicker-btn").textContent = state.ui.clicker_btn;
+    document.getElementById("clicker-hint").textContent = state.ui.clicker_hint;
     document.getElementById("catch-hint").textContent = state.ui.catch_hint;
     document.getElementById("courier-hint").textContent = state.ui.courier_hint;
-    document.getElementById("courier-btn").textContent = state.ui.courier_btn;
 
     document.getElementById("tab-clicker").onclick = function () { switchGame("clicker"); };
     document.getElementById("tab-catch").onclick = function () { switchGame("catch"); };
     document.getElementById("tab-courier").onclick = function () { switchGame("courier"); };
     document.getElementById("tab-farm").onclick = function () { switchGame("farm"); };
 
-    bindClicker();
+    bindOfficeKeyboard();
     bindCatchDrag();
-    bindCourierBtn();
+    bindCourierControls();
 
     switchGame(activeGame);
   }
