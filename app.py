@@ -207,7 +207,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
         "subs_title": "👑 Подписки Role Duel",
-        "subs_body": "🔥 PRO (220⭐/мес)\n👉 База для тех, кто только начинает — очень сбалансированный набор.\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-35%)\n• +80💵 баксов и +2⚡ энергетика каждый день\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (500⭐/мес)\n👉 Для тех, кто хочет побольше разных фишек и возможностей.\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-40%)\n• +200💵 баксов и +3⚡ энергетика каждый день\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (1000⭐/мес)\n👉 Для тех, кто ООЧЕНЬ много общается.\n• Всё, что есть в SUPER PRO\n• Память: 150 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-50%)\n• +350💵 баксов и +4⚡ энергетика каждый день\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (350⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_body": "🔥 PRO (220⭐/мес)\n👉 База для тех, кто только начинает — очень сбалансированный набор.\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-35%)\n• +2⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (500⭐/мес)\n👉 Для тех, кто хочет побольше разных фишек и возможностей.\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-40%)\n• +3⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (1000⭐/мес)\n👉 Для тех, кто ООЧЕНЬ много общается.\n• Всё, что есть в SUPER PRO\n• Память: 150 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-50%)\n• +4⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (350⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n🎁 При первой покупке любой подписки — бонус 150💵 баксов!\n\n⚠️ Подписки НЕ продлеваются автоматически.",
         "subs_btn_pro": "🔥 PRO — 220 ⭐/мес",
         "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐/мес",
         "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐/мес",
@@ -252,6 +252,8 @@ TEXTS = {
         "shop_note_title": "✍️ Выбери, что подаришь со своими словами (у тебя {bucks}💵)",
         "shop_category_medicine": "💊 Лекарства",
         "illness_status_line": "{emoji} Болеет: {name} — лекарство есть в 🛍 Магазине",
+        "tipsy_status_light": "🥂 Слегка навеселе — чувствуется лёгкое опьянение.",
+        "tipsy_status_full": "🍾 Хорошенько выпил(а) — реально пьян(а), это чувствуется во всём.",
         "intim_blocked_illness": "🤒 Персонаж слишком плохо себя чувствует для этого сейчас — сначала вылечи его в 🛍 Магазине.",
         "not_sick_alert": "😊 Персонаж сейчас не болеет — лекарство ни к чему.",
         "wrong_medicine_alert": "❌ Это лекарство не от этой болезни — нужно другое.",
@@ -278,32 +280,30 @@ TEXTS = {
         "invoice_defib_title": "Дефибриллятор",
         "invoice_defib_desc": "Полностью воскрешает персонажа: история общения и уровень близости сохраняются.",
         "invoice_defib_label": "Дефибриллятор",
-        "still_working": [
-            "💼 Ты ещё на работе — осталось примерно {minutes_left} мин.",
-            "💼 Работа продолжается, вернёшься примерно через {minutes_left} мин.",
-            "💼 Ещё трудишься — до возвращения около {minutes_left} мин.",
-            "💼 Пока ты на работе — осталось где-то {minutes_left} мин., потерпи."
-        ],
-        "work_started": "💼 Идёшь работать — вернёшься через {minutes} мин. и получишь +{bucks}💵. Пока ты на работе, чат недоступен.",
-        "work_choose_mode": "💼 Куда пойти работать?",
-        "work_mode_fast_btn": "⚡ Быстро — {minutes} мин., +{bucks}💵",
-        "work_mode_slow_btn": "🏆 Долгая смена — {minutes} мин., +{bucks}💵",
-        "work_play_btn": "🎮 Играть, пока работаешь",
-        "work_minigame_title": "💼 Рабочая смена",
-        "work_minigame_not_working": "Сейчас ты не на работе. Напиши /work в чате, чтобы начать смену.",
-        "work_minigame_timer": "⏳ Осталось: {minutes} мин.",
-        "work_minigame_earnings": "💵 {base} + {bonus} бонус = {total}",
+        "work_btn": "💼 Работа",
+        "work_title": "💼 **Работа**\n\nЗарабатывай баксы по-настоящему: тапай в мини-играх — деньги сразу на счету, без ожидания. Плюс ферма — посади, поливай, жди урожай.",
+        "work_webapp_required": "💼 Работа сейчас доступна только в полной версии приложения — попробуй попозже.",
+        "work_minigame_title": "💼 Работа",
         "work_tab_clicker": "💼 Офис",
         "work_tab_catch": "📦 Заказ",
         "work_tab_rhythm": "🚴 Курьер",
+        "work_tab_farm": "🌽 Ферма",
         "work_clicker_btn": "Работать!",
-        "work_level_up": "🎉 Повышение!",
-        "work_catch_hint": "Лови падающие предметы, пока не закончилась смена!",
-        "work_rhythm_hint": "Жми «Доставить», когда стрелка в зелёной зоне!",
+        "work_catch_hint": "Веди корзину из стороны в сторону и лови падающие предметы!",
+        "work_rhythm_hint": "Жми «Доставить», когда курьер у двери!",
         "work_rhythm_btn": "Доставить",
-        "work_rhythm_hit": "✅ Точно в срок!",
+        "work_rhythm_hit": "✅ Доставлено!",
         "work_rhythm_miss": "❌ Мимо, попробуй ещё раз!",
-        "work_finished": "💼 Работа окончена: +{bucks}💵. Можно порадовать персонажа подарком!",
+        "work_multiplier_badge": "×2 — бонус подписки",
+        "farm_plant_btn": "🌽 Посадить кукурузу",
+        "farm_water_btn": "💧 Полить",
+        "farm_harvest_btn": "🧺 Собрать урожай",
+        "farm_growing": "🌱 Растёт… осталось {time}",
+        "farm_ready": "🎉 Урожай созрел! Собирай скорей.",
+        "farm_watered_label": "💧 Полито: {done}/{total}",
+        "farm_payout_preview": "💰 Если собрать сейчас: {amount}💵",
+        "farm_empty_hint": "Грядка пустая — посади кукурузу и загляни попозже!",
+        "farm_ready_push": "🌽 Твоя кукуруза созрела! Заходи в 💼 Работу и собери урожай.",
         "custom_gift_btn": "✍️ Свой подарок — {price}💵",
         "custom_gift_prompt": "✍️ Напиши, что хочешь подарить (до {n} символов, цена {price}💵). Каждый подарок можно подарить только один раз.",
         "custom_gift_invalid": "❌ Напиши текст подарка (до {n} символов).",
@@ -343,6 +343,7 @@ TEXTS = {
         "payment_pro_success": "✅ PRO подписка активирована на месяц!",
         "payment_super_success": "✅ SUPER PRO подписка активирована на месяц!",
         "payment_elite_success": "✅ ELITE подписка активирована на месяц!",
+        "first_subscription_bonus_alert": "🎁 Это твоя первая подписка — держи бонус +{bucks}💵!",
         "payment_upgrade_success": "✅ Апгрейд до SUPER PRO выполнен до {date}!",
     },
     "en": {
@@ -527,7 +528,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
         "subs_title": "👑 Role Duel Subscriptions",
-        "subs_body": "🔥 PRO (220⭐ per month)\n👉 The balanced starting point for those just getting to know their companion.\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-35%)\n• +80💵 bucks and +2⚡ energizers every day\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (500⭐ per month)\n👉 For those who want a lot more features and options.\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-40%)\n• +200💵 bucks and +3⚡ energizers every day\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (1000⭐ per month)\n👉 For those who chat A LOT.\n• Everything in SUPER PRO\n• Memory: 150 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-50%)\n• +350💵 bucks and +4⚡ energizers every day\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (350⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_body": "🔥 PRO (220⭐ per month)\n👉 The balanced starting point for those just getting to know their companion.\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-35%)\n• +2⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (500⭐ per month)\n👉 For those who want a lot more features and options.\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-40%)\n• +3⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (1000⭐ per month)\n👉 For those who chat A LOT.\n• Everything in SUPER PRO\n• Memory: 150 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-50%)\n• +4⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (350⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n🎁 Get a 150💵 bucks bonus on your first subscription purchase!\n\n⚠️ Subscriptions do NOT renew automatically.",
         "subs_btn_pro": "🔥 PRO — 220 ⭐ per month",
         "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐ per month",
         "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐ per month",
@@ -572,6 +573,8 @@ TEXTS = {
         "shop_note_title": "✍️ Choose what to gift with your own words (you have {bucks}💵)",
         "shop_category_medicine": "💊 Medicine",
         "illness_status_line": "{emoji} Sick: {name} — medicine is in the 🛍 Shop",
+        "tipsy_status_light": "🥂 A little tipsy — feeling it slightly.",
+        "tipsy_status_full": "🍾 Properly drunk — it shows in everything right now.",
         "intim_blocked_illness": "🤒 Your companion feels too unwell for that right now — cure them in the 🛍 Shop first.",
         "not_sick_alert": "😊 Your companion isn't sick right now — no need for medicine.",
         "wrong_medicine_alert": "❌ This medicine doesn't treat this illness — you need a different one.",
@@ -598,32 +601,30 @@ TEXTS = {
         "invoice_defib_title": "Defibrillator",
         "invoice_defib_desc": "Fully revives your companion: chat history and closeness level are preserved.",
         "invoice_defib_label": "Defibrillator",
-        "still_working": [
-            "💼 You're still at work — about {minutes_left} min left.",
-            "💼 Still working, you'll be back in roughly {minutes_left} min.",
-            "💼 Still on the clock — around {minutes_left} min to go.",
-            "💼 Still at work — about {minutes_left} min left, hang in there."
-        ],
-        "work_started": "💼 Heading to work — you'll be back in {minutes} min. and get +{bucks}💵. Chat's unavailable while you're at work.",
-        "work_choose_mode": "💼 Where do you want to work?",
-        "work_mode_fast_btn": "⚡ Quick shift — {minutes} min., +{bucks}💵",
-        "work_mode_slow_btn": "🏆 Long shift — {minutes} min., +{bucks}💵",
-        "work_play_btn": "🎮 Play while you work",
-        "work_minigame_title": "💼 Work shift",
-        "work_minigame_not_working": "You're not at work right now. Send /work in chat to start a shift.",
-        "work_minigame_timer": "⏳ Time left: {minutes} min.",
-        "work_minigame_earnings": "💵 {base} + {bonus} bonus = {total}",
+        "work_btn": "💼 Work",
+        "work_title": "💼 **Work**\n\nEarn bucks for real: tap in the mini-games — money lands instantly, no waiting. Plus a farm — plant it, water it, wait for the harvest.",
+        "work_webapp_required": "💼 Work is only available in the full app version right now — try again later.",
+        "work_minigame_title": "💼 Work",
         "work_tab_clicker": "💼 Office",
         "work_tab_catch": "📦 Delivery",
         "work_tab_rhythm": "🚴 Courier",
+        "work_tab_farm": "🌽 Farm",
         "work_clicker_btn": "Work!",
-        "work_level_up": "🎉 Promotion!",
-        "work_catch_hint": "Catch the falling items before your shift ends!",
-        "work_rhythm_hint": "Hit \"Deliver\" when the arrow is in the green zone!",
+        "work_catch_hint": "Drag the basket side to side and catch the falling items!",
+        "work_rhythm_hint": "Hit \"Deliver\" when the courier's at the door!",
         "work_rhythm_btn": "Deliver",
-        "work_rhythm_hit": "✅ Right on time!",
+        "work_rhythm_hit": "✅ Delivered!",
         "work_rhythm_miss": "❌ Missed it, try again!",
-        "work_finished": "💼 Work's done: +{bucks}💵. Time to treat your companion to a gift!",
+        "work_multiplier_badge": "×2 — subscriber bonus",
+        "farm_plant_btn": "🌽 Plant corn",
+        "farm_water_btn": "💧 Water",
+        "farm_harvest_btn": "🧺 Harvest",
+        "farm_growing": "🌱 Growing… {time} left",
+        "farm_ready": "🎉 The harvest is ready! Go collect it.",
+        "farm_watered_label": "💧 Watered: {done}/{total}",
+        "farm_payout_preview": "💰 Harvest now for: {amount}💵",
+        "farm_empty_hint": "The field is empty — plant some corn and check back later!",
+        "farm_ready_push": "🌽 Your corn is ready! Head to 💼 Work and bring in the harvest.",
         "custom_gift_btn": "✍️ Custom gift — {price}💵",
         "custom_gift_prompt": "✍️ Write what you want to gift (up to {n} characters, price {price}💵). Each gift can only be given once.",
         "custom_gift_invalid": "❌ Write the gift's text (up to {n} characters).",
@@ -663,6 +664,7 @@ TEXTS = {
         "payment_pro_success": "✅ PRO subscription activated for a month!",
         "payment_super_success": "✅ SUPER PRO subscription activated for a month!",
         "payment_elite_success": "✅ ELITE subscription activated for a month!",
+        "first_subscription_bonus_alert": "🎁 This is your first subscription — here's a +{bucks}💵 bonus!",
         "payment_upgrade_success": "✅ Upgrade to SUPER PRO done until {date}!",
     },
     "de": {
@@ -847,7 +849,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
         "subs_title": "👑 Role Duel Abos",
-        "subs_body": "🔥 PRO (220⭐ pro Monat)\n👉 Der ausgewogene Einstieg für alle, die ihren Begleiter gerade erst kennenlernen.\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-35%)\n• +80💵 Bucks und +2⚡ Energydrinks jeden Tag\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (500⭐ pro Monat)\n👉 Für alle, die viele zusätzliche Features und Möglichkeiten wollen.\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-40%)\n• +200💵 Bucks und +3⚡ Energydrinks jeden Tag\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (1000⭐ pro Monat)\n👉 Für alle, die SEHR viel chatten.\n• Alles aus SUPER PRO\n• Gedächtnis: 150 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-50%)\n• +350💵 Bucks und +4⚡ Energydrinks jeden Tag\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (350⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n⚠️ Abos verlängern sich NICHT automatisch.",
+        "subs_body": "🔥 PRO (220⭐ pro Monat)\n👉 Der ausgewogene Einstieg für alle, die ihren Begleiter gerade erst kennenlernen.\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-35%)\n• +2⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (500⭐ pro Monat)\n👉 Für alle, die viele zusätzliche Features und Möglichkeiten wollen.\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-40%)\n• +3⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (1000⭐ pro Monat)\n👉 Für alle, die SEHR viel chatten.\n• Alles aus SUPER PRO\n• Gedächtnis: 150 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-50%)\n• +4⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (350⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n🎁 Bei der ersten Abo-Buchung gibt's einen Bonus von 150💵 Bucks!\n\n⚠️ Abos verlängern sich NICHT automatisch.",
         "subs_btn_pro": "🔥 PRO — 220 ⭐ pro Monat",
         "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐ pro Monat",
         "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐ pro Monat",
@@ -892,6 +894,8 @@ TEXTS = {
         "shop_note_title": "✍️ Wähle, was du mit eigenen Worten schenkst (du hast {bucks}💵)",
         "shop_category_medicine": "💊 Medikamente",
         "illness_status_line": "{emoji} Krank: {name} — Medikamente gibt es im 🛍 Shop",
+        "tipsy_status_light": "🥂 Leicht angeheitert — man merkt es ein bisschen.",
+        "tipsy_status_full": "🍾 Ordentlich betrunken — das merkt man gerade an allem.",
         "intim_blocked_illness": "🤒 Dein Begleiter fühlt sich dafür gerade zu schlecht — heile ihn/sie zuerst im 🛍 Shop.",
         "not_sick_alert": "😊 Dein Begleiter ist gerade nicht krank — kein Medikament nötig.",
         "wrong_medicine_alert": "❌ Dieses Medikament hilft nicht gegen diese Krankheit — du brauchst ein anderes.",
@@ -918,32 +922,30 @@ TEXTS = {
         "invoice_defib_title": "Defibrillator",
         "invoice_defib_desc": "Belebt deinen Begleiter vollständig wieder: Chatverlauf und Nähe-Level bleiben erhalten.",
         "invoice_defib_label": "Defibrillator",
-        "still_working": [
-            "💼 Du bist noch bei der Arbeit — noch etwa {minutes_left} Min.",
-            "💼 Noch bei der Arbeit, du bist in etwa {minutes_left} Min. zurück.",
-            "💼 Noch im Einsatz — noch ungefähr {minutes_left} Min.",
-            "💼 Noch bei der Arbeit — noch etwa {minutes_left} Min., halt durch."
-        ],
-        "work_started": "💼 Du gehst zur Arbeit — du bist in {minutes} Min. zurück und bekommst +{bucks}💵. Solange kann nicht gechattet werden.",
-        "work_choose_mode": "💼 Wo möchtest du arbeiten?",
-        "work_mode_fast_btn": "⚡ Kurze Schicht — {minutes} Min., +{bucks}💵",
-        "work_mode_slow_btn": "🏆 Lange Schicht — {minutes} Min., +{bucks}💵",
-        "work_play_btn": "🎮 Spielen, während du arbeitest",
-        "work_minigame_title": "💼 Arbeitsschicht",
-        "work_minigame_not_working": "Du arbeitest gerade nicht. Schick /work im Chat, um eine Schicht zu starten.",
-        "work_minigame_timer": "⏳ Verbleibend: {minutes} Min.",
-        "work_minigame_earnings": "💵 {base} + {bonus} Bonus = {total}",
+        "work_btn": "💼 Arbeit",
+        "work_title": "💼 **Arbeit**\n\nVerdien echte Bucks: Tippe in den Minispielen — das Geld landet sofort, ohne Warten. Plus eine Farm — pflanzen, gießen, auf die Ernte warten.",
+        "work_webapp_required": "💼 Arbeit ist gerade nur in der vollständigen App-Version verfügbar — versuch's später noch mal.",
+        "work_minigame_title": "💼 Arbeit",
         "work_tab_clicker": "💼 Büro",
         "work_tab_catch": "📦 Lieferung",
         "work_tab_rhythm": "🚴 Kurier",
+        "work_tab_farm": "🌽 Farm",
         "work_clicker_btn": "Arbeiten!",
-        "work_level_up": "🎉 Beförderung!",
-        "work_catch_hint": "Fang die fallenden Gegenstände, bevor deine Schicht endet!",
-        "work_rhythm_hint": "Drück \"Liefern\", wenn der Zeiger in der grünen Zone ist!",
+        "work_catch_hint": "Zieh den Korb hin und her und fang die fallenden Gegenstände!",
+        "work_rhythm_hint": "Drück \"Liefern\", wenn der Kurier an der Tür ist!",
         "work_rhythm_btn": "Liefern",
-        "work_rhythm_hit": "✅ Genau rechtzeitig!",
+        "work_rhythm_hit": "✅ Geliefert!",
         "work_rhythm_miss": "❌ Daneben, versuch's nochmal!",
-        "work_finished": "💼 Feierabend: +{bucks}💵. Zeit, deinen Begleiter mit einem Geschenk zu verwöhnen!",
+        "work_multiplier_badge": "×2 — Abo-Bonus",
+        "farm_plant_btn": "🌽 Mais pflanzen",
+        "farm_water_btn": "💧 Gießen",
+        "farm_harvest_btn": "🧺 Ernten",
+        "farm_growing": "🌱 Wächst … noch {time}",
+        "farm_ready": "🎉 Die Ernte ist fertig! Hol sie dir.",
+        "farm_watered_label": "💧 Gegossen: {done}/{total}",
+        "farm_payout_preview": "💰 Jetzt ernten für: {amount}💵",
+        "farm_empty_hint": "Das Feld ist leer — pflanz etwas Mais und schau später wieder vorbei!",
+        "farm_ready_push": "🌽 Dein Mais ist reif! Geh zu 💼 Arbeit und hol die Ernte rein.",
         "custom_gift_btn": "✍️ Eigenes Geschenk — {price}💵",
         "custom_gift_prompt": "✍️ Schreib, was du schenken möchtest (bis zu {n} Zeichen, Preis {price}💵). Jedes Geschenk kann nur einmal verschenkt werden.",
         "custom_gift_invalid": "❌ Schreib den Text des Geschenks (bis zu {n} Zeichen).",
@@ -983,6 +985,7 @@ TEXTS = {
         "payment_pro_success": "✅ PRO-Abo für einen Monat aktiviert!",
         "payment_super_success": "✅ SUPER PRO-Abo für einen Monat aktiviert!",
         "payment_elite_success": "✅ ELITE-Abo für einen Monat aktiviert!",
+        "first_subscription_bonus_alert": "🎁 Das ist dein erstes Abo — hier ist ein Bonus von +{bucks}💵!",
         "payment_upgrade_success": "✅ Upgrade auf SUPER PRO bis {date} erledigt!",
     }
 }
@@ -1927,8 +1930,6 @@ def get_history_limit(user):
         return 30
 
 
-BUCKS_DAILY_STIPEND = {"pro": 80, "super_pro": 200, "elite": 350}  # ежедневная "подпитка" баксов для магазина — подписка
-                                                      # оплачивает не только лимит сообщений, но и часть жизни персонажа
 FREE_DAILY_BUCKS = 15  # бесплатный источник баксов и без подписки — иначе валюту неоткуда взять бесплатно
 
 
@@ -1992,7 +1993,6 @@ def _reset_daily_quota_if_needed(user):
     _maybe_get_sick(user)
     if level:
         user[FREE_INTIM_FIELD[level]] = FREE_INTIM_SCENES[level]
-        user["bucks"] = user.get("bucks", 0) + BUCKS_DAILY_STIPEND[level]
         user["energizers"] = user.get("energizers", 0) + ENERGIZERS_DAILY_STIPEND[level]
     else:
         user["bucks"] = user.get("bucks", 0) + FREE_DAILY_BUCKS
@@ -2255,87 +2255,131 @@ def is_asleep(user):
     return bool(user.get("sleep_until"))
 
 
-# "Работа" — свободный (не требующий звёзд) способ заработать баксы: персонаж уходит на
-# выбранное пользователем время (см. WORK_MODES), всё это время обычный чат недоступен (см.
-# handle_message), а по возвращении сразу начисляются баксы. /hot нарочно остаётся доступен, той
-# же логикой, что и при сне (см. intim_cmd) — платный раздел тамагочи-механикой не ограничивается.
-WORK_MODES = {
-    # "быстрая смена" — для тех, кто не готов ждать 3 часа ради прибавки: меньше суммарно и
-    # хуже баксов/минуту, зато быстро. "долгая смена" — наоборот, лучше ставка и лучше итог,
-    # вознаграждает именно терпение (по просьбе пользователя: "быстрый доход и долгий но зато
-    # много дохода").
-    "fast": {"minutes": 30, "bucks": 25},
-    "slow": {"minutes": 180, "bucks": 180},
-}
+# "Работа" — свободный (не требующий звёзд) способ заработать баксы: 3 мгновенные мини-игры
+# (тапай — баксы сразу на счету, см. WORK_HIT_BUCKS/register_work_hit) + ферма (реально
+# многочасовое ожидание с периодическим поливом, см. FARM_*/farm_state). Раньше это была одна
+# таймерная "смена" (fast/slow), на время которой блокировался обычный чат — по фидбэку это
+# ощущалось криво ("почему играть, ПОКА работаешь?"), поэтому чат теперь не блокируется вообще:
+# мини-апп "Работа" — отдельная поверхность, как Магазин/Колесо (см. send_work_menu), и так же не
+# ограничена тамагочи-механикой (сном и т.п.) — та же логика, что и у /hot (см. intim_cmd).
+WORK_HIT_BUCKS = {"clicker": 2, "catch": 5, "courier": 6}  # мгновенная выплата за одно
+# засчитанное попадание в каждой из 3 игр — суммы подобраны так, чтобы баксы/минуту были примерно
+# одинаковы несмотря на разную частоту попаданий (в кликере тапать можно чаще всего, в курьере
+# попадания самые редкие и точные)
+WORK_MIN_HIT_INTERVAL_SECONDS = 0.1  # анти-спам: не больше ~10 засчитанных попаданий в секунду —
+                                      # заведомо больше реальной скорости тапа, защита именно от
+                                      # скрипта, долбящего эндпоинт в цикле, а не от игрока руками
 
-# Опциональная мини-игра поверх работы (см. /work -> "Играть, пока работаешь", WORK_PAGE_HTML):
-# раньше работа была чистым таймером — "нажал и жди", без всякого участия. Теперь, если открыть
-# Mini App во время смены, можно реально потапать/поиграть и получить прибавку к зарплате поверх
-# базовой ставки WORK_MODES. Не обязательно: кто не открыл мини-игру, просто получает базовую
-# ставку, как и раньше.
-WORK_MIN_HIT_INTERVAL_SECONDS = 0.1  # анти-спам: не больше ~10 засчитанных "попаданий" в секунду
-                                      # на пользователя — защита от скрипта, долбящего эндпоинт в
-                                      # цикле без всякого реального участия
-WORK_EFFORT_TARGET_HITS = 150  # сколько засчитанных попаданий дают МАКСИМАЛЬНЫЙ бонус — это
-                                 # игровой баланс (где-то минута-две активной игры), не связан с
-                                 # лимитом выше напрямую
-WORK_EFFORT_BONUS_MAX = 0.5  # до +50% поверх базовой ставки при полной "выработке"
-WORK_LEVEL_UP_EVERY = 15  # кликер ("Офис"): тост "Повышение!" каждые N засчитанных тапов
+FARM_GROW_HOURS = 4  # сколько реальных часов растёт урожай — настоящее долгое ожидание, которого
+                      # 3 мгновенные игры нарочно лишены (по просьбе пользователя: "не ждать а
+                      # тапать" — для них; ждать нужно именно и только на ферме)
+FARM_WATER_SLOTS = 4  # сколько раз за время роста можно полить ради бонуса к урожаю — слот
+                       # открывается каждые FARM_GROW_HOURS/FARM_WATER_SLOTS часов
+FARM_BASE_PAYOUT = 400  # баксов за урожай вообще без полива — всё равно заметно больше, чем можно
+                         # натапать в мгновенных играх за те же часы, вознаграждает само терпение
+FARM_WATER_BONUS = 50  # + баксов за каждый использованный слот полива (максимум
+                        # FARM_WATER_SLOTS*FARM_WATER_BONUS = 200 сверху, итого до 600 с поливом)
 
 
-def compute_work_bonus(base_bucks, hits):
-    effort_ratio = min(1.0, hits / WORK_EFFORT_TARGET_HITS)
-    return round(base_bucks * WORK_EFFORT_BONUS_MAX * effort_ratio)
+def work_earnings_multiplier(user):
+    """x2 к ЛЮБОМУ заработку на работе (мгновенные игры и сбор урожая) для действующих
+    подписчиков любого уровня — заменяет прежний ежедневный баксовый стипенд (было
+    BUCKS_DAILY_STIPEND, убран по фидбэку "из подписок убери каждый день бабки, сделай просто x2
+    деньги с работы")."""
+    return 2.0 if has_active_subscription(user) else 1.0
 
 
-def is_working(user):
-    until = user.get("working_until")
-    if not until:
-        return False
-    try:
-        return datetime.now() < datetime.fromisoformat(until)
-    except (ValueError, TypeError):
-        return False
+def credit_work_bucks(user, base_amount):
+    """Общая точка начисления для любого заработка на работе — применяет подписочный множитель
+    (см. work_earnings_multiplier) и возвращает фактически начисленную сумму. Не сохраняет сама —
+    вызывающий код сохраняет вместе с остальными изменениями этого же действия."""
+    amount = round(base_amount * work_earnings_multiplier(user))
+    user["bucks"] = user.get("bucks", 0) + amount
+    return amount
 
 
-def finish_work_if_done(user):
-    """Если персонаж только что вернулся с работы — начисляет баксы (уже сохранено) и
-    возвращает сумму выплаты; иначе None. Режим берём из working_mode (выставляется при старте
-    работы, см. work_start_mode); если его почему-то нет (например, работа была начата ДО
-    появления режимов) — считаем "slow", чтобы никого не обсчитать при деплое этого изменения.
-    К базовой ставке добавляется бонус за старания (см. WORK_EFFORT_*), если во время смены играли
-    в мини-игру (см. api_work_hit_handler) — если нет, work_session_hits просто 0 и бонус тоже 0,
-    выплата не отличается от старого поведения."""
-    until = user.get("working_until")
-    if not until:
+def register_work_hit(user, game):
+    """Одно засчитанное попадание в одной из 3 мгновенных игр — сразу начисляет баксы (см.
+    WORK_HIT_BUCKS), без таймера и без сессии. Возвращает фактически начисленную сумму, 0 если
+    попадание отклонено анти-спамом (см. WORK_MIN_HIT_INTERVAL_SECONDS), None при неизвестной
+    игре. Один общий таймер последнего попадания на все 3 игры — играть в две сразу руками всё
+    равно нельзя, упрощение не меняет защиту."""
+    if game not in WORK_HIT_BUCKS:
         return None
-    try:
-        done = datetime.now() >= datetime.fromisoformat(until)
-    except (ValueError, TypeError):
-        done = True
-    if not done:
-        return None
-    user["working_until"] = None
-    mode = WORK_MODES.get(user.get("working_mode"), WORK_MODES["slow"])
-    base = mode["bucks"]
-    bonus = compute_work_bonus(base, user.get("work_session_hits", 0))
-    total = base + bonus
-    user["bucks"] = user.get("bucks", 0) + total
-    user["work_session_hits"] = 0
-    user["work_last_hit_at"] = None
+    now = datetime.now()
+    last_hit_raw = user.get("work_last_hit_at")
+    if last_hit_raw:
+        try:
+            elapsed = (now - datetime.fromisoformat(last_hit_raw)).total_seconds()
+        except (ValueError, TypeError):
+            elapsed = WORK_MIN_HIT_INTERVAL_SECONDS
+        if elapsed < WORK_MIN_HIT_INTERVAL_SECONDS:
+            return 0
+    user["work_last_hit_at"] = now.isoformat()
+    amount = credit_work_bucks(user, WORK_HIT_BUCKS[game])
     save_data(user_data)
-    return total
+    return amount
 
 
-def work_minutes_left(user):
-    until = user.get("working_until")
-    if not until:
-        return 0
+def farm_state(user):
+    """Чистый снимок грядки — ничего не меняет и не сохраняет, в отличие от farm_plant/water/
+    harvest ниже. "Слот полива" открывается, когда прошло достаточно времени с посадки — поливать
+    заранее/впрок нельзя, но пропущенный слот не сгорает: можно полить "задним числом", пока не
+    наступил слот следующий (см. can_water)."""
+    planted_raw = user.get("farm_planted_at")
+    if not planted_raw:
+        return {"planted": False}
     try:
-        remaining = (datetime.fromisoformat(until) - datetime.now()).total_seconds() / 60
+        planted_at = datetime.fromisoformat(planted_raw)
     except (ValueError, TypeError):
-        return 0
-    return max(1, round(remaining))
+        return {"planted": False}
+    elapsed_minutes = max(0.0, (datetime.now() - planted_at).total_seconds() / 60)
+    grow_minutes = FARM_GROW_HOURS * 60
+    slot_minutes = grow_minutes / FARM_WATER_SLOTS
+    slots_opened = min(FARM_WATER_SLOTS, int(elapsed_minutes // slot_minutes) + 1)
+    watered = min(user.get("farm_watered_slots", 0), FARM_WATER_SLOTS)
+    ready = elapsed_minutes >= grow_minutes
+    return {
+        "planted": True,
+        "ready": ready,
+        "progress": min(1.0, elapsed_minutes / grow_minutes),
+        "seconds_left": max(0, round((grow_minutes - elapsed_minutes) * 60)),
+        "watered_slots": watered,
+        "total_slots": FARM_WATER_SLOTS,
+        "can_water": (not ready) and watered < slots_opened,
+        "payout_preview": FARM_BASE_PAYOUT + watered * FARM_WATER_BONUS,
+    }
+
+
+def farm_plant(user):
+    if user.get("farm_planted_at"):
+        return False
+    user["farm_planted_at"] = datetime.now().isoformat()
+    user["farm_watered_slots"] = 0
+    user["farm_ready_notified"] = False
+    save_data(user_data)
+    return True
+
+
+def farm_water(user):
+    snap = farm_state(user)
+    if not snap["planted"] or not snap["can_water"]:
+        return False
+    user["farm_watered_slots"] = snap["watered_slots"] + 1
+    save_data(user_data)
+    return True
+
+
+def farm_harvest(user):
+    snap = farm_state(user)
+    if not snap["planted"] or not snap["ready"]:
+        return None
+    payout = credit_work_bucks(user, snap["payout_preview"])
+    user["farm_planted_at"] = None
+    user["farm_watered_slots"] = 0
+    user["farm_ready_notified"] = False
+    save_data(user_data)
+    return payout
 
 
 def use_energizer(user):
@@ -2397,26 +2441,40 @@ def build_thirst_rule(user):
     return ""
 
 
-def build_tipsy_rule(user):
-    """Временный эффект от алкоголя (см. apply_shop_item_effects) — только манера речи, не статы.
-    Два уровня: "light" (пиво) — едва заметно, "full" (дорогое вино) — заметное лёгкое опьянение."""
+def is_tipsy(user):
+    """True, если эффект алкоголя (см. apply_shop_item_effects) сейчас активен."""
     until = user.get("tipsy_until")
     if not until:
-        return ""
+        return False
     try:
-        if datetime.now() >= datetime.fromisoformat(until):
-            return ""
+        return datetime.now() < datetime.fromisoformat(until)
     except (ValueError, TypeError):
+        return False
+
+
+def build_tipsy_rule(user):
+    """Временный эффект от алкоголя — только манера речи, не статы. Два уровня: "light" (пиво),
+    "full" (дорогое вино). Переписано на конкретные, буквальные примеры вместо общих абстрактных
+    указаний ("будь более раскованной") — абстрактные формулировки модель слишком часто просто
+    игнорировала в итоговом тексте, и по фидбэку пользователя эффект был практически незаметен."""
+    if not is_tipsy(user):
         return ""
     if user.get("tipsy_level") == "full":
-        return ("Ты по-настоящему навеселе после выпитого — язык слегка заплетается, можешь путать или "
-                "растягивать слова, хихикать без явной причины, сбиваться с мысли на середине фразы, будто "
-                "слегка кружится голова. Это заметное, но лёгкое опьянение, а не потеря контроля — не "
-                "описывай тошноту, потерю сознания или что-то небезопасное, просто более раскованная, "
-                "весёлая и менее собранная речь.\n")
-    return ("Ты немного расслаблена/расслаблен после пива — это влияет на реплики едва заметно: чуть "
-            "больше улыбки и лёгкости в тоне, изредка смешок. Ты полностью держишь себя в руках, никакой "
-            "заторможенности или спутанности речи.\n")
+        return (
+            "Ты сейчас заметно навеселе после выпитого вина — это ДОЛЖНО быть видно в каждой "
+            "реплике, а не изредка. Конкретно: иногда растягивай слова («ты тааакой милый») или "
+            "обрывай фразу на середине и начинай заново; вставляй случайный смешок или хихиканье "
+            "без явной причины; периодически признавайся вслух, что голова слегка кружится или что "
+            "ты не помнишь, о чём только что говорила/говорил; будь заметно более открытой/открытым, "
+            "раскованной/раскованным и смешливой/смешливым, чем обычно. Это лёгкое, весёлое "
+            "опьянение, не потеря контроля — не описывай тошноту или что-то небезопасное.\n"
+        )
+    return (
+        "Ты немного расслаблена/расслаблен после пива — лёгкий, едва уловимый эффект. В паре мест "
+        "по тексту (не в каждой реплике) добавь чуть больше тепла и улыбки в тон, можешь один раз "
+        "хихикнуть без особого повода. В остальном ты полностью собрана/собран, никакой спутанности "
+        "или заторможенности речи.\n"
+    )
 
 
 def build_illness_rule(user):
@@ -2452,6 +2510,9 @@ def stats_line_text(user):
         info = ILLNESSES[illness]
         name = info.get(user.get("lang", "ru"), info["ru"])
         line += "\n" + get_text(user, "illness_status_line", emoji=info["emoji"], name=name)
+    if is_tipsy(user):
+        tipsy_key = "tipsy_status_full" if user.get("tipsy_level") == "full" else "tipsy_status_light"
+        line += "\n" + get_text(user, tipsy_key)
     return line
 
 
@@ -2703,18 +2764,19 @@ def get_full_kb(user):
     # web_app на кнопке ПОСТОЯННОЙ reply-клавиатуры (в отличие от кнопки в инлайн-клавиатуре
     # конкретного сообщения) — см. https://core.telegram.org/bots/webapps, раздел про initData
     # ("It is empty if the Mini App was launched from a keyboard button..."). Именно из-за этого
-    # "Магазин"/"Колесо фортуны" в этой клавиатуре стабильно ловили "Invalid Telegram signature"
-    # у реальных пользователей, сколько код ни проверяй и как клавиатуру ни обновляй — initData
-    # тут в принципе не может прийти, это не баг конкретной реализации. Поэтому тут — обычные
-    # текстовые кнопки; сам переход в Mini App происходит в их хендлерах (shop_reply,
-    # spin_button_handler -> send_spin_menu), которые шлют СВЕЖЕЕ сообщение с инлайн-кнопкой —
-    # у инлайн-кнопок initData приходит нормально.
+    # "Магазин"/"Колесо фортуны"/"Работа" в этой клавиатуре стабильно ловили "Invalid Telegram
+    # signature" у реальных пользователей, сколько код ни проверяй и как клавиатуру ни обновляй —
+    # initData тут в принципе не может прийти, это не баг конкретной реализации. Поэтому тут —
+    # обычные текстовые кнопки; сам переход в Mini App происходит в их хендлерах (shop_reply,
+    # spin_button_handler -> send_spin_menu, work_reply -> send_work_menu), которые шлют СВЕЖЕЕ
+    # сообщение с инлайн-кнопкой — у инлайн-кнопок initData приходит нормально.
     shop_button = KeyboardButton(text=get_text(user, "shop_btn"), style="success")
     spin_button = KeyboardButton(text=get_text(user, "spin_wheel"))
+    work_button = KeyboardButton(text=get_text(user, "work_btn"))
     return ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text=get_text(user, "main_menu")), KeyboardButton(text=get_text(user, "my_profile"))],
-            [spin_button, shop_button],
+            [spin_button, shop_button, work_button],
             [KeyboardButton(text=get_text(user, "our_channel"), style="primary")]
         ],
         resize_keyboard=True
@@ -3109,7 +3171,6 @@ async def revive_new_character(call: types.CallbackQuery):
     user["illness"] = None
     user["illness_since"] = None
     user["overfeed_strikes"] = 0
-    user["working_until"] = None
     user["intim_scene_unlocked"] = False
     user["last_hot_scene"] = None
     save_data(user_data)
@@ -4022,17 +4083,36 @@ def update_overfeed_strikes(user, item):
     """None — обычная покупка; "warning" — персонаж уже почти под завязку, но ещё держится;
     "death" — только для алкоголя, перепоили слишком много раз подряд. Еда сюда с "death" не
     попадает вообще — её накопленные подряд-переедания блокируются заранее (см.
-    overfeed_would_refuse), до списания денег, так что здесь до отказа дело уже не доходит."""
+    overfeed_would_refuse), до списания денег, так что здесь до отказа дело уже не доходит.
+
+    Алкоголь считается ОТДЕЛЬНО от еды и НЕ зависит от сытости вообще (раньше по ошибке висел
+    на том же условии "сытость >= OVERFEED_SATIETY_THRESHOLD", что и еда — а у пива/вина сытость
+    от одной порции мизерная, 5-8, так что персонаж почти никогда не оказывался уже "под завязку"
+    ПЕРЕД выпивкой, и опьянение не могло никого убить вообще, что бы ни пил пользователь).
+    Опасность тут в самих подряд идущих дозах, пока предыдущая ещё не "прошла" — если хмель от
+    прошлой уже выветрился (tipsy_until истёк или его не было), это свежий отсчёт, а не
+    продолжение того же запоя."""
     is_drink = bool(item.get("tipsy_minutes"))
-    counter_key = "overdrink_strikes" if is_drink else "overfeed_strikes"
-    if not item.get("satiety") or user.get("satiety", 0) < OVERFEED_SATIETY_THRESHOLD:
-        user[counter_key] = 0
+    if is_drink:
+        still_tipsy = False
+        until = user.get("tipsy_until")
+        if until:
+            try:
+                still_tipsy = datetime.now() < datetime.fromisoformat(until)
+            except (ValueError, TypeError):
+                still_tipsy = False
+        user["overdrink_strikes"] = user.get("overdrink_strikes", 0) + 1 if still_tipsy else 1
+        strikes = user["overdrink_strikes"]
+        if strikes >= OVERDRINK_DEATH_STRIKES:
+            return "death"
+        if strikes >= OVERFEED_WARN_STRIKES:
+            return "warning"
         return None
-    user[counter_key] = user.get(counter_key, 0) + 1
-    strikes = user[counter_key]
-    if is_drink and strikes >= OVERDRINK_DEATH_STRIKES:
-        return "death"
-    if strikes >= OVERFEED_WARN_STRIKES:
+    if not item.get("satiety") or user.get("satiety", 0) < OVERFEED_SATIETY_THRESHOLD:
+        user["overfeed_strikes"] = 0
+        return None
+    user["overfeed_strikes"] = user.get("overfeed_strikes", 0) + 1
+    if user["overfeed_strikes"] >= OVERFEED_WARN_STRIKES:
         return "warning"
     return None
 
@@ -4445,6 +4525,12 @@ def add_pending_payment(user, provider, invoice_id, payload):
     save_data(user_data)
 
 
+FIRST_SUBSCRIPTION_BONUS_BUCKS = 150  # одноразовая премия за самую первую покупку ЛЮБОЙ
+# подписки (см. ever_subscribed ниже) — по фидбэку заменяет часть ценности прежнего ежедневного
+# баксового стипенда (см. было BUCKS_DAILY_STIPEND) разовым бонусом в момент покупки; вторая
+# половина замены — x2 с заработка на работе, см. work_earnings_multiplier.
+
+
 async def grant_product(user, payload, chat_id):
     """Единая выдача товара: и для Stars, и для внешних платёжек.
     Раньше эта логика жила прямо в payment_success и работала только для Stars."""
@@ -4466,24 +4552,42 @@ async def grant_product(user, payload, chat_id):
         # покупки просто пропадал.
         user["last_daily_reset"] = None
         _reset_daily_quota_if_needed(user)
+        first_time_sub = not user.get("ever_subscribed")
+        user["ever_subscribed"] = True
+        if first_time_sub:
+            user["bucks"] = user.get("bucks", 0) + FIRST_SUBSCRIPTION_BONUS_BUCKS
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "payment_pro_success"))
+        if first_time_sub:
+            await bot.send_message(chat_id, get_text(user, "first_subscription_bonus_alert", bucks=FIRST_SUBSCRIPTION_BONUS_BUCKS))
     elif payload == "subscribe_super":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
         user["subscription"]["level"] = "super_pro"
         user["last_daily_reset"] = None
         _reset_daily_quota_if_needed(user)
+        first_time_sub = not user.get("ever_subscribed")
+        user["ever_subscribed"] = True
+        if first_time_sub:
+            user["bucks"] = user.get("bucks", 0) + FIRST_SUBSCRIPTION_BONUS_BUCKS
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "payment_super_success"))
+        if first_time_sub:
+            await bot.send_message(chat_id, get_text(user, "first_subscription_bonus_alert", bucks=FIRST_SUBSCRIPTION_BONUS_BUCKS))
     elif payload == "subscribe_elite":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
         user["subscription"]["level"] = "elite"
         user["last_daily_reset"] = None
         _reset_daily_quota_if_needed(user)
+        first_time_sub = not user.get("ever_subscribed")
+        user["ever_subscribed"] = True
+        if first_time_sub:
+            user["bucks"] = user.get("bucks", 0) + FIRST_SUBSCRIPTION_BONUS_BUCKS
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "payment_elite_success"))
+        if first_time_sub:
+            await bot.send_message(chat_id, get_text(user, "first_subscription_bonus_alert", bucks=FIRST_SUBSCRIPTION_BONUS_BUCKS))
     elif payload == "upgrade_to_super":
         if has_active_subscription(user) and get_subscription_level(user) == "pro":
             old_expiry = user["subscription"]["expires_at"]
@@ -4976,80 +5080,38 @@ async def feed_cmd(message: types.Message):
                          reply_markup=get_feed_nudge_kb(user))
 
 
-@dp.message(Command("work"))
-async def work_cmd(message: types.Message):
-    """Свободный (без звёзд) способ заработать баксы: персонаж уходит на выбранное время (см.
-    WORK_MODES — короткая смена или долгая, по просьбе пользователя "быстрый доход и долгий, но
-    зато много дохода"), всё это время обычный чат недоступен (см. handle_message), но /hot
-    по-прежнему работает — та же логика, что и у сна (см. intim_cmd)."""
-    user = get_user(message.from_user.id)
-    if not user["verified"] or not user["agreement_accepted"]:
-        await message.answer(get_text(user, "finish_registration_first"))
-        return
-    if not user["personality_ready"]:
+async def send_work_menu(message, user):
+    """Общая точка входа для кнопки "Работа" в клавиатуре и команды /work — та же схема, что и у
+    send_spin_menu/shop_reply: шлём свежее сообщение с инлайн web_app-кнопкой (initData у таких
+    кнопок приходит нормально, в отличие от кнопки постоянной клавиатуры — см. комментарий в
+    get_full_kb). Никакого выбора режима/смены больше нет (см. WORK_HIT_BUCKS/FARM_* выше) — Mini
+    App открывается напрямую, 3 мгновенные игры и ферма всегда доступны сразу. Как и у Магазина/
+    Колеса, тамагочи-механика (сон и т.п.) эту поверхность не ограничивает — гейтится только
+    регистрация/персонаж внутри resolve_webapp_user."""
+    if not user["verified"] or not user["personality_ready"]:
         await message.answer(get_text(user, "need_character_alert"))
         return
-    if user.get("dead"):
-        await message.answer(get_text(user, "character_died"), reply_markup=get_death_kb(user))
-        return
-    if is_asleep(user):
-        await message.answer(get_text(user, "asleep_message", price=PRODUCTS["wake_now"]["stars"]), reply_markup=get_wake_kb(user))
-        return
-    if is_working(user):
-        text = random.choice(get_text(user, "still_working")).format(minutes_left=work_minutes_left(user))
-        await message.answer(text)
-        return
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(
-            text=get_text(user, "work_mode_fast_btn", minutes=WORK_MODES["fast"]["minutes"], bucks=WORK_MODES["fast"]["bucks"]),
-            callback_data="work_start:fast", style="success")],
-        [InlineKeyboardButton(
-            text=get_text(user, "work_mode_slow_btn", minutes=WORK_MODES["slow"]["minutes"], bucks=WORK_MODES["slow"]["bucks"]),
-            callback_data="work_start:slow", style="success")],
-    ])
-    await message.answer(get_text(user, "work_choose_mode"), reply_markup=keyboard)
-
-
-@dp.callback_query(lambda c: c.data.startswith("work_start:"))
-async def work_start_mode(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    mode = call.data.split(":", 1)[1]
-    if mode not in WORK_MODES:
-        await call.answer()
-        return
-    await safe_delete(call.message)
-    # Переоцениваем условия на случай, если что-то изменилось, пока висело меню выбора режима
-    # (например, энергия дошла до нуля и персонаж уснул между /work и нажатием кнопки).
-    if user.get("dead"):
-        await bot.send_message(call.message.chat.id, get_text(user, "character_died"), reply_markup=get_death_kb(user))
-        await call.answer()
-        return
-    if is_asleep(user):
-        await bot.send_message(call.message.chat.id, get_text(user, "asleep_message", price=PRODUCTS["wake_now"]["stars"]), reply_markup=get_wake_kb(user))
-        await call.answer()
-        return
-    if is_working(user):
-        text = random.choice(get_text(user, "still_working")).format(minutes_left=work_minutes_left(user))
-        await bot.send_message(call.message.chat.id, text)
-        await call.answer()
-        return
-    user["working_until"] = (datetime.now() + timedelta(minutes=WORK_MODES[mode]["minutes"])).isoformat()
-    user["working_mode"] = mode
-    user["work_session_hits"] = 0
-    user["work_last_hit_at"] = None
-    save_data(user_data)
-    started_text = get_text(user, "work_started", minutes=WORK_MODES[mode]["minutes"], bucks=WORK_MODES[mode]["bucks"])
     if WEBAPP_URL:
-        # Необязательная мини-игра поверх работы (см. WORK_PAGE_HTML) — кто не откроет, просто
-        # получит базовую ставку по таймеру, как и раньше.
-        play_kb = InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=get_text(user, "work_play_btn"),
+        keyboard = InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text=get_text(user, "work_btn"),
                                   web_app=WebAppInfo(url=f"{WEBAPP_URL}/work"), style="success")]
         ])
-        await bot.send_message(call.message.chat.id, started_text, reply_markup=play_kb)
-    else:
-        await bot.send_message(call.message.chat.id, started_text)
-    await call.answer()
+        await message.answer(get_text(user, "work_title"), reply_markup=keyboard, parse_mode="Markdown")
+        return
+    await message.answer(get_text(user, "work_webapp_required"))
+
+
+@dp.message(Command("work"))
+async def work_cmd(message: types.Message):
+    user = get_user(message.from_user.id)
+    await send_work_menu(message, user)
+
+
+@dp.message(lambda m: is_button(m.text, "work_btn"))
+async def work_reply(message: types.Message):
+    await safe_delete(message)
+    user = get_user(message.from_user.id)
+    await send_work_menu(message, user)
 
 
 @dp.callback_query(lambda c: c.data.startswith("intim_type_"))
@@ -5634,18 +5696,6 @@ async def handle_message(message: types.Message):
     if is_asleep(user):
         await message.answer(get_text(user, "asleep_message", price=PRODUCTS["wake_now"]["stars"]), reply_markup=get_wake_kb(user))
         return
-
-    # 4c. Персонаж на работе (см. /work) — обычный чат недоступен, пока не вернётся. Если время
-    # уже вышло, это же сообщение и завершает работу (начисляет баксы) и обрабатывается дальше
-    # как обычно — не нужно присылать что-то ещё раз, чтобы "заметить" возвращение.
-    if user.get("working_until"):
-        earned = finish_work_if_done(user)
-        if earned is not None:
-            await message.answer(get_text(user, "work_finished", bucks=earned))
-        else:
-            text = random.choice(get_text(user, "still_working")).format(minutes_left=work_minutes_left(user))
-            await message.answer(text)
-            return
 
     # 5. Режим редактирования последнего сообщения
     if user.get("editing_message"):
@@ -10314,42 +10364,40 @@ SPIN_PAGE_HTML = '''<!doctype html>
 
 
 def serialize_work_state(user):
-    """Ð¡Ð½Ð¸Ð¼Ð¾Ðº Ð´Ð»Ñ Ð¼Ð¸Ð½Ð¸-Ð¸Ð³ÑÑ Ð¿Ð¾Ð²ÐµÑÑ ÑÐ°Ð±Ð¾ÑÑ (ÑÐ¼. WORK_PAGE_HTML) â ÐºÑÐ¾ Ð½Ðµ Ð¾ÑÐºÑÐ¾ÐµÑ
-    Ð¼Ð¸Ð½Ð¸-Ð¸Ð³ÑÑ, Ð¿ÑÐ¾ÑÑÐ¾ Ð¿Ð¾Ð»ÑÑÐ¸Ñ Ð±Ð°Ð·Ð¾Ð²ÑÑ ÑÑÐ°Ð²ÐºÑ Ð¿Ð¾ ÑÐ°Ð¹Ð¼ÐµÑÑ ÐºÐ°Ðº ÑÐ°Ð½ÑÑÐµ (ÑÐ¼. finish_work_if_done).
-    earnings_template/timer_template Ð½Ð°ÑÐ¾ÑÐ½Ð¾ Ð½ÐµÐ¾ÑÑÐ¾ÑÐ¼Ð°ÑÐ¸ÑÐ¾Ð²Ð°Ð½Ñ (get_text Ð±ÐµÐ· kwargs Ð¿ÑÐ¾ÑÑÐ¾ Ð²Ð¾Ð·Ð²ÑÐ°ÑÐ°ÐµÑ
-    ÑÑÑÐ¾Ð¹ ÑÐ°Ð±Ð»Ð¾Ð½ Ñ Ð¿Ð»ÐµÐ¹ÑÑÐ¾Ð»Ð´ÐµÑÐ°Ð¼Ð¸) â ÐºÐ»Ð¸ÐµÐ½Ñ ÑÐ°Ð¼ Ð¿Ð¾Ð´ÑÑÐ°Ð²Ð»ÑÐµÑ Ð°ÐºÑÑÐ°Ð»ÑÐ½ÑÐµ
-    ÑÐ¸ÑÐ»Ð° Ð¿Ð¾ÑÐ»Ðµ ÐºÐ°Ð¶Ð´Ð¾Ð³Ð¾ Ð¿Ð¾Ð¿Ð°Ð´Ð°Ð½Ð¸Ñ, Ð±ÐµÐ· Ð½Ð¾Ð²Ð¾Ð³Ð¾ Ð·Ð°Ð¿ÑÐ¾ÑÐ° Ðº ÑÐµÑÐ²ÐµÑÑ."""
-    mode = WORK_MODES.get(user.get("working_mode"), WORK_MODES["slow"])
-    hits = user.get("work_session_hits", 0)
-    base = mode["bucks"]
-    bonus = compute_work_bonus(base, hits)
+    """Снимок для мини-аппа "Работа" (см. WORK_PAGE_HTML). Никакой таймер-сессии больше нет -- 3
+    мгновенные игры просто платят за каждое засчитанное попадание (см. WORK_HIT_BUCKS), ферма
+    живёт отдельным состоянием (см. farm_state). ui-строки с {плейсхолдерами} (farm_growing,
+    farm_watered_label, farm_payout_preview) нарочно не отформатированы -- get_text без kwargs
+    отдаёт сырой шаблон, фронтенд сам подставляет актуальные числа после каждого действия, без
+    нового похода на сервер."""
     return {
-        "working": is_working(user),
-        "minutes_left": work_minutes_left(user),
-        "hits": hits,
-        "target_hits": WORK_EFFORT_TARGET_HITS,
-        "level_up_every": WORK_LEVEL_UP_EVERY,
-        "base_bucks": base,
-        "bonus_bucks": bonus,
-        "total_bucks": base + bonus,
+        "bucks": user.get("bucks", 0),
+        "multiplier": work_earnings_multiplier(user),
+        "hit_bucks": WORK_HIT_BUCKS,
+        "farm": farm_state(user),
         "ui": {
             "title": get_text(user, "work_minigame_title"),
-            "not_working": get_text(user, "work_minigame_not_working"),
-            "timer_template": get_text(user, "work_minigame_timer"),
-            "earnings_template": get_text(user, "work_minigame_earnings"),
             "tab_clicker": get_text(user, "work_tab_clicker"),
             "tab_catch": get_text(user, "work_tab_catch"),
-            "tab_rhythm": get_text(user, "work_tab_rhythm"),
+            "tab_courier": get_text(user, "work_tab_rhythm"),
+            "tab_farm": get_text(user, "work_tab_farm"),
             "clicker_btn": get_text(user, "work_clicker_btn"),
-            "level_up": get_text(user, "work_level_up"),
             "catch_hint": get_text(user, "work_catch_hint"),
-            "rhythm_hint": get_text(user, "work_rhythm_hint"),
-            "rhythm_btn": get_text(user, "work_rhythm_btn"),
-            "rhythm_hit": get_text(user, "work_rhythm_hit"),
-            "rhythm_miss": get_text(user, "work_rhythm_miss"),
+            "courier_hint": get_text(user, "work_rhythm_hint"),
+            "courier_btn": get_text(user, "work_rhythm_btn"),
+            "courier_hit": get_text(user, "work_rhythm_hit"),
+            "courier_miss": get_text(user, "work_rhythm_miss"),
+            "multiplier_badge": get_text(user, "work_multiplier_badge"),
+            "farm_plant_btn": get_text(user, "farm_plant_btn"),
+            "farm_water_btn": get_text(user, "farm_water_btn"),
+            "farm_harvest_btn": get_text(user, "farm_harvest_btn"),
+            "farm_growing": get_text(user, "farm_growing"),
+            "farm_ready": get_text(user, "farm_ready"),
+            "farm_watered_label": get_text(user, "farm_watered_label"),
+            "farm_payout_preview": get_text(user, "farm_payout_preview"),
+            "farm_empty_hint": get_text(user, "farm_empty_hint"),
         },
     }
-
 
 WORK_PAGE_HTML = r'''<!doctype html>
 <html lang="ru">
@@ -10371,56 +10419,60 @@ WORK_PAGE_HTML = r'''<!doctype html>
     color: var(--tg-theme-text-color, #111111);
   }
   body { padding: 0 14px 24px; text-align: center; }
-  #stats { padding: 12px 0; font-size: 15px; font-weight: 700; }
-  #title { font-size: 18px; font-weight: 700; padding-bottom: 4px; }
-  #timer { font-size: 14px; opacity: .75; padding-bottom: 14px; }
-  #tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+
+  #topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0 10px;
+  }
+  #title { font-size: 18px; font-weight: 700; text-align: left; }
+  #balance { font-size: 16px; font-weight: 800; white-space: nowrap; }
+  #multiplier-badge {
+    display: none;
+    margin-left: 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ffd76b, #ff9f4a);
+    color: #2b1800;
+    font-size: 11px;
+    font-weight: 800;
+    vertical-align: middle;
+  }
+
+  #tabs { display: flex; gap: 6px; margin-bottom: 16px; }
   .tab-btn {
     flex: 1;
-    padding: 10px 4px;
+    padding: 9px 2px;
     border-radius: 10px;
     border: none;
     background: var(--tg-theme-secondary-bg-color, #f0f0f0);
     color: var(--tg-theme-text-color, #111111);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
   }
   .tab-btn.active {
     background: var(--tg-theme-button-color, #2481cc);
     color: var(--tg-theme-button-text-color, #ffffff);
   }
-  .game-panel { display: none; }
-  #progress-wrap {
-    height: 10px;
-    border-radius: 6px;
-    background: var(--tg-theme-secondary-bg-color, #eee);
-    overflow: hidden;
-    margin-bottom: 6px;
-  }
-  #progress-bar {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #4ecdc4, #1dd1a1);
-    transition: width .2s ease;
-  }
-  #hits-label { font-size: 12px; opacity: .7; margin-bottom: 18px; }
-  #level-up-toast {
-    position: fixed;
-    left: 50%;
-    top: 40%;
-    transform: translate(-50%, -50%) scale(0.8);
-    background: rgba(0,0,0,.82);
-    color: #fff;
-    padding: 14px 22px;
-    border-radius: 14px;
-    font-size: 18px;
-    font-weight: 700;
-    opacity: 0;
+
+  .game-panel { display: none; position: relative; }
+
+  .gain-popup {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    font-size: 15px;
+    font-weight: 800;
+    color: #1dd1a1;
+    text-shadow: 0 1px 2px rgba(0,0,0,.25);
     pointer-events: none;
-    transition: opacity .2s ease, transform .2s ease;
-    z-index: 10;
+    animation: gain-float .7s ease-out forwards;
+    z-index: 5;
   }
-  #level-up-toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  @keyframes gain-float {
+    from { opacity: 1; transform: translate(-50%, -100%); }
+    to { opacity: 0; transform: translate(-50%, -220%); }
+  }
 
   #clicker-btn {
     width: 160px;
@@ -10432,20 +10484,21 @@ WORK_PAGE_HTML = r'''<!doctype html>
     font-size: 17px;
     font-weight: 800;
     box-shadow: 0 8px 20px rgba(0,0,0,.3);
-    margin: 10px auto 20px;
+    margin: 20px auto 20px;
     display: block;
     transition: transform .08s ease;
   }
   #clicker-btn.pressed { transform: scale(0.92); }
 
-  #catch-hint, #rhythm-hint { font-size: 13px; opacity: .7; margin-bottom: 10px; }
+  #catch-hint, #courier-hint { font-size: 13px; opacity: .7; margin-bottom: 10px; }
   #catch-field {
     position: relative;
-    height: 240px;
+    height: 260px;
     border-radius: 14px;
     background: var(--tg-theme-secondary-bg-color, #f3f3f3);
     overflow: hidden;
     margin-bottom: 10px;
+    touch-action: none;
   }
   .catch-item {
     position: absolute;
@@ -10454,42 +10507,55 @@ WORK_PAGE_HTML = r'''<!doctype html>
     animation-name: catch-fall;
     animation-timing-function: linear;
     animation-fill-mode: forwards;
-    cursor: pointer;
     user-select: none;
+    pointer-events: none;
   }
   .catch-item.caught { transform: scale(1.4); opacity: 0; transition: all .15s ease; }
   @keyframes catch-fall {
     from { top: -34px; }
     to { top: 100%; }
   }
-
-  #rhythm-track {
-    position: relative;
-    height: 18px;
-    border-radius: 9px;
-    background: var(--tg-theme-secondary-bg-color, #eee);
-    margin: 20px 4px 4px;
-  }
-  #rhythm-zone {
+  #catch-basket {
     position: absolute;
-    left: 40%;
-    width: 20%;
-    height: 100%;
-    border-radius: 9px;
-    background: #8bdc8b;
-  }
-  #rhythm-marker {
-    position: absolute;
-    top: -8px;
-    width: 5px;
-    height: 34px;
-    border-radius: 3px;
-    background: #e8383d;
+    bottom: 6px;
+    left: 50%;
+    width: 18%;
+    font-size: 34px;
+    text-align: center;
     transform: translateX(-50%);
-    box-shadow: 0 2px 4px rgba(0,0,0,.3);
+    user-select: none;
+    pointer-events: none;
   }
-  #rhythm-btn {
-    margin-top: 22px;
+
+  #courier-track {
+    position: relative;
+    height: 74px;
+    border-radius: 14px;
+    background: var(--tg-theme-secondary-bg-color, #eee);
+    margin: 16px 0 4px;
+    overflow: hidden;
+  }
+  #courier-door {
+    position: absolute;
+    right: 3%;
+    top: 50%;
+    font-size: 30px;
+    transform: translateY(-50%) scale(1);
+    transition: transform .15s ease, filter .15s ease;
+  }
+  #courier-door.active {
+    transform: translateY(-50%) scale(1.25);
+    filter: drop-shadow(0 0 6px #1dd1a1);
+  }
+  #courier-marker {
+    position: absolute;
+    left: 0%;
+    top: 50%;
+    font-size: 28px;
+    transform: translateY(-50%) scaleX(1);
+  }
+  #courier-btn {
+    margin-top: 16px;
     padding: 14px 32px;
     border-radius: 12px;
     border: none;
@@ -10498,9 +10564,35 @@ WORK_PAGE_HTML = r'''<!doctype html>
     font-size: 16px;
     font-weight: 700;
   }
-  #rhythm-feedback { margin-top: 12px; font-size: 14px; font-weight: 700; min-height: 20px; }
-  #rhythm-feedback.hit { color: #1dd1a1; }
-  #rhythm-feedback.miss { color: #e8383d; }
+  #courier-feedback { margin-top: 12px; font-size: 14px; font-weight: 700; min-height: 20px; }
+  #courier-feedback.hit { color: #1dd1a1; }
+  #courier-feedback.miss { color: #e8383d; }
+
+  #game-farm { padding-top: 8px; }
+  .farm-stage {
+    font-size: 64px;
+    line-height: 1;
+    margin: 10px 0 14px;
+  }
+  .farm-stage.ready { animation: farm-bounce 1s ease-in-out infinite; }
+  @keyframes farm-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .farm-status { font-size: 15px; font-weight: 700; margin-bottom: 10px; min-height: 20px; }
+  .farm-watered, .farm-preview { font-size: 13px; opacity: .75; margin-bottom: 4px; }
+  .farm-hint { font-size: 14px; opacity: .8; padding: 30px 10px 16px; line-height: 1.5; }
+  .farm-actions { margin-top: 16px; }
+  .farm-action-btn {
+    padding: 13px 28px;
+    border-radius: 12px;
+    border: none;
+    background: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, #ffffff);
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .farm-action-btn:disabled { opacity: .4; }
 
   #full-screen-msg {
     display: none;
@@ -10514,16 +10606,18 @@ WORK_PAGE_HTML = r'''<!doctype html>
 </style>
 </head>
 <body>
-  <div id="stats"></div>
-  <div id="title"></div>
-  <div id="timer"></div>
+  <div id="topbar">
+    <div id="title"></div>
+    <div>
+      <span id="balance"></span><span id="multiplier-badge"></span>
+    </div>
+  </div>
   <div id="tabs">
     <button id="tab-clicker" class="tab-btn"></button>
     <button id="tab-catch" class="tab-btn"></button>
-    <button id="tab-rhythm" class="tab-btn"></button>
+    <button id="tab-courier" class="tab-btn"></button>
+    <button id="tab-farm" class="tab-btn"></button>
   </div>
-  <div id="progress-wrap"><div id="progress-bar"></div></div>
-  <div id="hits-label"></div>
 
   <div id="game-clicker" class="game-panel">
     <button id="clicker-btn"></button>
@@ -10531,17 +10625,23 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   <div id="game-catch" class="game-panel">
     <div id="catch-hint"></div>
-    <div id="catch-field"></div>
+    <div id="catch-field">
+      <div id="catch-basket">🧺</div>
+    </div>
   </div>
 
-  <div id="game-rhythm" class="game-panel">
-    <div id="rhythm-hint"></div>
-    <div id="rhythm-track"><div id="rhythm-zone"></div><div id="rhythm-marker"></div></div>
-    <button id="rhythm-btn"></button>
-    <div id="rhythm-feedback"></div>
+  <div id="game-courier" class="game-panel">
+    <div id="courier-hint"></div>
+    <div id="courier-track">
+      <div id="courier-door">🏠</div>
+      <div id="courier-marker">🛵</div>
+    </div>
+    <button id="courier-btn"></button>
+    <div id="courier-feedback"></div>
   </div>
 
-  <div id="level-up-toast"></div>
+  <div id="game-farm" class="game-panel"></div>
+
   <div id="full-screen-msg"></div>
 
 <script>
@@ -10556,11 +10656,19 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   var state = null;
   var activeGame = "clicker";
-  var catchInterval = null;
-  var rhythmRafId = null;
-  var RHYTHM_PERIOD = 1600;
+  var catchSpawnInterval = null;
+  var catchRafId = null;
+  var courierRafId = null;
+  var farmCountdownInterval = null;
   var hitInFlight = false;
-  var countdownInterval = null;
+  var farmActionInFlight = false;
+  var dragBound = false;
+  var COURIER_PERIOD = 2600;
+  var COURIER_DOOR_START = 0.8;
+  var COURIER_DOOR_END = 0.95;
+  var COURIER_MAX_LEFT = 88;
+  var BASKET_WIDTH_PCT = 18;
+  var CATCH_EMOJIS = ["🍎", "💧", "🎁", "🍪", "🥤", "🍕"];
 
   function initData() { return tg ? tg.initData : ""; }
 
@@ -10588,162 +10696,333 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
 
   function showFullScreen(text) {
-    ["stats", "title", "timer", "tabs", "progress-wrap", "hits-label", "game-clicker", "game-catch", "game-rhythm"].forEach(function (id) {
-      document.getElementById(id).style.display = "none";
+    ["topbar", "tabs", "game-clicker", "game-catch", "game-courier", "game-farm"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.style.display = "none";
     });
     var el = document.getElementById("full-screen-msg");
     el.style.display = "block";
     el.textContent = text;
   }
 
+  function setBalance(bucks) {
+    document.getElementById("balance").textContent = "💵 " + bucks;
+  }
+
+  function popupGain(amount, x, y, container) {
+    if (!amount || !container) return;
+    var el = document.createElement("div");
+    el.className = "gain-popup";
+    el.textContent = "+" + amount + "💵";
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+    container.appendChild(el);
+    setTimeout(function () { if (el.parentNode) el.remove(); }, 700);
+  }
+
+  function registerHit(game, x, y, container) {
+    if (hitInFlight) return;
+    hitInFlight = true;
+    api("/api/work/hit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ game: game })
+    }).then(function (res) {
+      hitInFlight = false;
+      if (res.ok && res.state) {
+        state.bucks = res.state.bucks;
+        setBalance(state.bucks);
+        if (res.awarded) popupGain(res.awarded, x, y, container);
+      }
+    }).catch(function () { hitInFlight = false; });
+  }
+
   function stopAllGames() {
-    if (catchInterval) { clearInterval(catchInterval); catchInterval = null; }
-    if (rhythmRafId) { cancelAnimationFrame(rhythmRafId); rhythmRafId = null; }
-    document.getElementById("catch-field").innerHTML = "";
+    if (catchSpawnInterval) { clearInterval(catchSpawnInterval); catchSpawnInterval = null; }
+    if (catchRafId) { cancelAnimationFrame(catchRafId); catchRafId = null; }
+    if (courierRafId) { cancelAnimationFrame(courierRafId); courierRafId = null; }
+    stopFarmCountdown();
+    var field = document.getElementById("catch-field");
+    if (field) {
+      var items = field.querySelectorAll(".catch-item");
+      items.forEach(function (el) { el.remove(); });
+    }
   }
 
-  function rhythmPosition() {
-    var t = (Date.now() % RHYTHM_PERIOD) / RHYTHM_PERIOD;
-    return t < 0.5 ? t * 2 : (1 - t) * 2;
+  // ---------- Office (clicker) ----------
+  function bindClicker() {
+    var btn = document.getElementById("clicker-btn");
+    btn.onclick = function () {
+      btn.classList.add("pressed");
+      setTimeout(function () { btn.classList.remove("pressed"); }, 100);
+      registerHit("clicker", btn.offsetLeft + btn.offsetWidth / 2, btn.offsetTop + 12,
+        document.getElementById("game-clicker"));
+    };
   }
 
-  function tickRhythm() {
-    var pos = rhythmPosition();
-    document.getElementById("rhythm-marker").style.left = (pos * 100) + "%";
-    rhythmRafId = requestAnimationFrame(tickRhythm);
+  // ---------- Order (drag basket) ----------
+  function fieldPctFromClientX(field, clientX) {
+    var rect = field.getBoundingClientRect();
+    return ((clientX - rect.left) / rect.width) * 100;
   }
 
-  function startRhythm() {
-    tickRhythm();
+  function setBasketLeft(pct) {
+    var basket = document.getElementById("catch-basket");
+    var half = BASKET_WIDTH_PCT / 2;
+    pct = Math.max(half, Math.min(100 - half, pct));
+    basket.style.left = pct + "%";
+    return pct;
   }
 
-  var CATCH_EMOJIS = ["🍎", "💧", "🎁", "🍪", "🥤", "🍕"];
+  function bindCatchDrag() {
+    if (dragBound) return;
+    dragBound = true;
+    var field = document.getElementById("catch-field");
+    var dragging = false;
+    field.addEventListener("pointerdown", function (e) {
+      dragging = true;
+      try { field.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      setBasketLeft(fieldPctFromClientX(field, e.clientX));
+    });
+    field.addEventListener("pointermove", function (e) {
+      if (dragging) setBasketLeft(fieldPctFromClientX(field, e.clientX));
+    });
+    field.addEventListener("pointerup", function () { dragging = false; });
+    field.addEventListener("pointercancel", function () { dragging = false; });
+  }
+
   function spawnCatchItem() {
     var field = document.getElementById("catch-field");
     if (!field) return;
     var item = document.createElement("div");
     item.className = "catch-item";
     item.textContent = CATCH_EMOJIS[Math.floor(Math.random() * CATCH_EMOJIS.length)];
-    item.style.left = (8 + Math.random() * 78) + "%";
-    item.style.animationDuration = (1.8 + Math.random() * 1.3) + "s";
-    item.addEventListener("click", function () {
-      if (item.dataset.caught) return;
-      item.dataset.caught = "1";
-      item.classList.add("caught");
-      registerHit();
-      setTimeout(function () { item.remove(); }, 160);
-    });
+    item.style.left = (6 + Math.random() * 82) + "%";
+    item.style.animationDuration = (2.1 + Math.random() * 1.4) + "s";
     item.addEventListener("animationend", function () {
       if (item.parentNode) item.remove();
     });
     field.appendChild(item);
   }
 
-  function startCatch() {
-    catchInterval = setInterval(spawnCatchItem, 650);
+  function catchCollisionTick() {
+    var field = document.getElementById("catch-field");
+    var basket = document.getElementById("catch-basket");
+    if (field && basket) {
+      var basketRect = basket.getBoundingClientRect();
+      var items = field.querySelectorAll(".catch-item:not([data-caught])");
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var r = item.getBoundingClientRect();
+        var itemBottom = r.top + r.height * 0.7;
+        var itemCenterX = r.left + r.width * 0.5;
+        if (itemBottom >= basketRect.top && itemBottom <= basketRect.bottom + 10 &&
+            itemCenterX >= basketRect.left && itemCenterX <= basketRect.right) {
+          item.dataset.caught = "1";
+          item.classList.add("caught");
+          (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 160); })(item);
+          registerHit("catch", basket.offsetLeft + basket.offsetWidth / 2, basket.offsetTop,
+            document.getElementById("catch-field"));
+        }
+      }
+    }
+    catchRafId = requestAnimationFrame(catchCollisionTick);
   }
 
+  function startCatch() {
+    setBasketLeft(50);
+    catchSpawnInterval = setInterval(spawnCatchItem, 600);
+    catchCollisionTick();
+  }
+
+  // ---------- Courier ----------
+  function courierPosition() {
+    return (Date.now() % COURIER_PERIOD) / COURIER_PERIOD;
+  }
+
+  function inDeliveryWindow(pos) {
+    return pos >= COURIER_DOOR_START && pos <= COURIER_DOOR_END;
+  }
+
+  function tickCourier() {
+    var pos = courierPosition();
+    var marker = document.getElementById("courier-marker");
+    var door = document.getElementById("courier-door");
+    if (marker) marker.style.left = (pos * COURIER_MAX_LEFT) + "%";
+    if (door) door.classList.toggle("active", inDeliveryWindow(pos));
+    courierRafId = requestAnimationFrame(tickCourier);
+  }
+
+  function startCourier() {
+    tickCourier();
+  }
+
+  function bindCourierBtn() {
+    document.getElementById("courier-btn").onclick = function () {
+      var pos = courierPosition();
+      var feedback = document.getElementById("courier-feedback");
+      var door = document.getElementById("courier-door");
+      if (inDeliveryWindow(pos)) {
+        feedback.textContent = state.ui.courier_hit;
+        feedback.className = "hit";
+        registerHit("courier", door.offsetLeft + door.offsetWidth / 2, door.offsetTop,
+          document.getElementById("courier-track"));
+      } else {
+        feedback.textContent = state.ui.courier_miss;
+        feedback.className = "miss";
+      }
+    };
+  }
+
+  // ---------- Farm ----------
+  function stopFarmCountdown() {
+    if (farmCountdownInterval) { clearInterval(farmCountdownInterval); farmCountdownInterval = null; }
+  }
+
+  function formatDuration(totalSeconds) {
+    totalSeconds = Math.max(0, Math.round(totalSeconds));
+    var h = Math.floor(totalSeconds / 3600);
+    var m = Math.floor((totalSeconds % 3600) / 60);
+    var s = totalSeconds % 60;
+    if (h > 0) return h + "ч " + m + "м";
+    if (m > 0) return m + "м " + s + "с";
+    return s + "с";
+  }
+
+  function farmAction(action) {
+    if (farmActionInFlight) return;
+    farmActionInFlight = true;
+    api("/api/work/farm/" + action, { method: "POST" }).then(function (res) {
+      farmActionInFlight = false;
+      if (res.ok && res.state) {
+        state = res.state;
+        setBalance(state.bucks);
+        renderFarm();
+      }
+    }).catch(function () { farmActionInFlight = false; });
+  }
+
+  function renderFarm() {
+    stopFarmCountdown();
+    var farm = state.farm;
+    var panel = document.getElementById("game-farm");
+    panel.innerHTML = "";
+
+    if (!farm.planted) {
+      var hint = document.createElement("div");
+      hint.className = "farm-hint";
+      hint.textContent = state.ui.farm_empty_hint;
+      panel.appendChild(hint);
+      var plantBtn = document.createElement("button");
+      plantBtn.className = "farm-action-btn";
+      plantBtn.textContent = state.ui.farm_plant_btn;
+      plantBtn.onclick = function () { farmAction("plant"); };
+      panel.appendChild(plantBtn);
+      return;
+    }
+
+    var stageEmoji = "🌱";
+    if (farm.progress >= 0.66) stageEmoji = "🌽";
+    else if (farm.progress >= 0.33) stageEmoji = "🌿";
+    var stage = document.createElement("div");
+    stage.className = "farm-stage" + (farm.ready ? " ready" : "");
+    stage.textContent = stageEmoji;
+    panel.appendChild(stage);
+
+    var status = document.createElement("div");
+    status.className = "farm-status";
+    panel.appendChild(status);
+
+    var watered = document.createElement("div");
+    watered.className = "farm-watered";
+    watered.textContent = state.ui.farm_watered_label
+      .replace("{done}", farm.watered_slots).replace("{total}", farm.total_slots);
+    panel.appendChild(watered);
+
+    var preview = document.createElement("div");
+    preview.className = "farm-preview";
+    preview.textContent = state.ui.farm_payout_preview.replace("{amount}", farm.payout_preview);
+    panel.appendChild(preview);
+
+    var actionsRow = document.createElement("div");
+    actionsRow.className = "farm-actions";
+    panel.appendChild(actionsRow);
+
+    if (farm.ready) {
+      status.textContent = state.ui.farm_ready;
+      var harvestBtn = document.createElement("button");
+      harvestBtn.className = "farm-action-btn";
+      harvestBtn.textContent = state.ui.farm_harvest_btn;
+      harvestBtn.onclick = function () { farmAction("harvest"); };
+      actionsRow.appendChild(harvestBtn);
+    } else {
+      var tickStart = Date.now();
+      var secondsLeftAtLoad = farm.seconds_left;
+      function localTick() {
+        var elapsed = (Date.now() - tickStart) / 1000;
+        var left = secondsLeftAtLoad - elapsed;
+        if (left <= 0) {
+          stopFarmCountdown();
+          load();
+          return;
+        }
+        status.textContent = state.ui.farm_growing.replace("{time}", formatDuration(left));
+      }
+      localTick();
+      farmCountdownInterval = setInterval(localTick, 1000);
+
+      var waterBtn = document.createElement("button");
+      waterBtn.className = "farm-action-btn";
+      waterBtn.textContent = state.ui.farm_water_btn;
+      waterBtn.disabled = !farm.can_water;
+      waterBtn.onclick = function () { farmAction("water"); };
+      actionsRow.appendChild(waterBtn);
+    }
+  }
+
+  // ---------- Tabs ----------
   function switchGame(name) {
     activeGame = name;
     stopAllGames();
-    ["clicker", "catch", "rhythm"].forEach(function (g) {
+    ["clicker", "catch", "courier", "farm"].forEach(function (g) {
       document.getElementById("game-" + g).style.display = g === name ? "block" : "none";
       document.getElementById("tab-" + g).classList.toggle("active", g === name);
     });
     if (name === "catch") startCatch();
-    if (name === "rhythm") startRhythm();
-  }
-
-  function showLevelUp() {
-    var toast = document.getElementById("level-up-toast");
-    toast.textContent = state.ui.level_up;
-    toast.classList.add("show");
-    setTimeout(function () { toast.classList.remove("show"); }, 1100);
-  }
-
-  function formatEarnings(s) {
-    return s.ui.earnings_template
-      .replace("{base}", s.base_bucks)
-      .replace("{bonus}", s.bonus_bucks)
-      .replace("{total}", s.total_bucks);
-  }
-
-  function updateProgress(newState) {
-    var prevHits = state ? state.hits : 0;
-    state = newState;
-    document.getElementById("progress-bar").style.width = Math.min(100, state.hits / state.target_hits * 100) + "%";
-    document.getElementById("hits-label").textContent = state.hits + " / " + state.target_hits;
-    document.getElementById("stats").textContent = formatEarnings(state);
-    if (Math.floor(state.hits / state.level_up_every) > Math.floor(prevHits / state.level_up_every)) {
-      showLevelUp();
-    }
-  }
-
-  function registerHit() {
-    if (hitInFlight || !state || !state.working) return;
-    hitInFlight = true;
-    api("/api/work/hit", { method: "POST" }).then(function (res) {
-      hitInFlight = false;
-      if (res.state) updateProgress(res.state);
-    }).catch(function () { hitInFlight = false; });
-  }
-
-  function startCountdown(minutesLeft) {
-    var endsAt = Date.now() + minutesLeft * 60000;
-    function tick() {
-      var remaining = Math.max(0, Math.round((endsAt - Date.now()) / 60000));
-      document.getElementById("timer").textContent = state.ui.timer_template.replace("{minutes}", remaining);
-      if (endsAt <= Date.now()) {
-        clearInterval(countdownInterval);
-        stopAllGames();
-      }
-    }
-    tick();
-    countdownInterval = setInterval(tick, 1000);
+    if (name === "courier") startCourier();
+    if (name === "farm") renderFarm();
   }
 
   function render() {
-    if (!state.working) {
-      showFullScreen(state.ui.not_working);
-      return;
-    }
     document.getElementById("title").textContent = state.ui.title;
+    setBalance(state.bucks);
+    var badge = document.getElementById("multiplier-badge");
+    if (state.multiplier > 1) {
+      badge.style.display = "inline-block";
+      badge.textContent = state.ui.multiplier_badge;
+    } else {
+      badge.style.display = "none";
+    }
+
     document.getElementById("tab-clicker").textContent = state.ui.tab_clicker;
     document.getElementById("tab-catch").textContent = state.ui.tab_catch;
-    document.getElementById("tab-rhythm").textContent = state.ui.tab_rhythm;
+    document.getElementById("tab-courier").textContent = state.ui.tab_courier;
+    document.getElementById("tab-farm").textContent = state.ui.tab_farm;
     document.getElementById("clicker-btn").textContent = state.ui.clicker_btn;
     document.getElementById("catch-hint").textContent = state.ui.catch_hint;
-    document.getElementById("rhythm-hint").textContent = state.ui.rhythm_hint;
-    document.getElementById("rhythm-btn").textContent = state.ui.rhythm_btn;
-    document.getElementById("stats").textContent = formatEarnings(state);
+    document.getElementById("courier-hint").textContent = state.ui.courier_hint;
+    document.getElementById("courier-btn").textContent = state.ui.courier_btn;
 
     document.getElementById("tab-clicker").onclick = function () { switchGame("clicker"); };
     document.getElementById("tab-catch").onclick = function () { switchGame("catch"); };
-    document.getElementById("tab-rhythm").onclick = function () { switchGame("rhythm"); };
-    document.getElementById("clicker-btn").onclick = function () {
-      var btn = document.getElementById("clicker-btn");
-      btn.classList.add("pressed");
-      setTimeout(function () { btn.classList.remove("pressed"); }, 100);
-      registerHit();
-    };
-    document.getElementById("rhythm-btn").onclick = function () {
-      var pos = rhythmPosition();
-      var feedback = document.getElementById("rhythm-feedback");
-      if (pos >= 0.4 && pos <= 0.6) {
-        feedback.textContent = state.ui.rhythm_hit;
-        feedback.className = "hit";
-        registerHit();
-      } else {
-        feedback.textContent = state.ui.rhythm_miss;
-        feedback.className = "miss";
-      }
-    };
+    document.getElementById("tab-courier").onclick = function () { switchGame("courier"); };
+    document.getElementById("tab-farm").onclick = function () { switchGame("farm"); };
 
-    document.getElementById("progress-bar").style.width = Math.min(100, state.hits / state.target_hits * 100) + "%";
-    document.getElementById("hits-label").textContent = state.hits + " / " + state.target_hits;
+    bindClicker();
+    bindCatchDrag();
+    bindCourierBtn();
 
     switchGame(activeGame);
-    startCountdown(state.minutes_left);
   }
 
   function load() {
@@ -10753,8 +11032,14 @@ WORK_PAGE_HTML = r'''<!doctype html>
         showFullScreen((res.message || res.error || "Error") + extra);
         return;
       }
+      var first = !state;
       state = res.state;
-      render();
+      if (first) {
+        render();
+      } else {
+        setBalance(state.bucks);
+        if (activeGame === "farm") renderFarm();
+      }
     }).catch(function (e) {
       showFullScreen("Network error: " + (e && (e.name === "AbortError" ? "timeout" : e.message) || "unknown") + "\n\n" + diag());
     });
@@ -10769,8 +11054,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
 })();
 </script>
 </body>
-</html>
-'''
+</html>'''
 
 
 async def spin_page_handler(request):
@@ -10850,32 +11134,48 @@ async def api_work_state_handler(request):
 
 
 async def api_work_hit_handler(request):
-    """Одно засчитанное "попадание" в мини-игре во время работы (см. WORK_PAGE_HTML) — не чаще
-    WORK_MIN_HIT_INTERVAL_SECONDS с прошлого засчитанного попадания (анти-спам: без этого можно
-    было бы долбить эндпоинт в цикле без всякого реального участия и набрать максимум бонуса за
-    доли секунды) и только пока персонаж СЕЙЧАС реально на работе (иначе можно было бы слать хиты
-    когда угодно, хоть после окончания смены)."""
+    """Одно засчитанное попадание в одной из 3 мгновенных игр (см. register_work_hit) — сразу
+    платит баксы, без таймера и без сессии. game передаётся телом запроса ({"game": "clicker"|
+    "catch"|"courier"})."""
     init_data = request.headers.get("X-Telegram-Init-Data", "")
     user_id, user, error = resolve_webapp_user(init_data)
     if error:
         return web.json_response(error, status=401 if error["error"] == "auth" else 200)
-    if not is_working(user):
-        return web.json_response({"ok": False, "error": "not_working", "state": serialize_work_state(user)})
-    now = datetime.now()
-    last_hit_raw = user.get("work_last_hit_at")
-    if last_hit_raw:
-        try:
-            elapsed = (now - datetime.fromisoformat(last_hit_raw)).total_seconds()
-        except (ValueError, TypeError):
-            elapsed = WORK_MIN_HIT_INTERVAL_SECONDS
-        if elapsed < WORK_MIN_HIT_INTERVAL_SECONDS:
-            # Слишком рано после прошлого засчитанного попадания -- тихо игнорируем сам тап (не
-            # засчитываем, не двигаем таймер), но всё равно возвращаем текущее состояние, чтобы
-            # фронтенд не разошёлся с сервером.
-            return web.json_response({"ok": True, "state": serialize_work_state(user)})
-    user["work_last_hit_at"] = now.isoformat()
-    user["work_session_hits"] = user.get("work_session_hits", 0) + 1
-    save_data(user_data)
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    game = body.get("game") if isinstance(body, dict) else None
+    awarded = register_work_hit(user, game)
+    if awarded is None:
+        return web.json_response({"ok": False, "error": "bad_game", "state": serialize_work_state(user)})
+    return web.json_response({"ok": True, "awarded": awarded, "state": serialize_work_state(user)})
+
+
+async def api_work_farm_plant_handler(request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    farm_plant(user)
+    return web.json_response({"ok": True, "state": serialize_work_state(user)})
+
+
+async def api_work_farm_water_handler(request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    farm_water(user)
+    return web.json_response({"ok": True, "state": serialize_work_state(user)})
+
+
+async def api_work_farm_harvest_handler(request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    farm_harvest(user)
     return web.json_response({"ok": True, "state": serialize_work_state(user)})
 
 
@@ -10894,6 +11194,9 @@ async def run_webapp_server():
     app_web.router.add_get("/work", work_page_handler)
     app_web.router.add_get("/api/work/state", api_work_state_handler)
     app_web.router.add_post("/api/work/hit", api_work_hit_handler)
+    app_web.router.add_post("/api/work/farm/plant", api_work_farm_plant_handler)
+    app_web.router.add_post("/api/work/farm/water", api_work_farm_water_handler)
+    app_web.router.add_post("/api/work/farm/harvest", api_work_farm_harvest_handler)
     runner = web.AppRunner(app_web)
     await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", WEBAPP_PORT)
@@ -10960,19 +11263,6 @@ async def check_notifications():
                         except Exception:
                             pass
 
-                # Работа (см. /work) могла закончиться, пока пользователь молчал — раньше об этом
-                # узнавали только реактивно, на следующее сообщение в чат; теперь сообщаем сразу,
-                # как только время вышло (та же логика начисления, что и в handle_message —
-                # finish_work_if_done идемпотентна, реактивная проверка просто не найдёт работу
-                # уже на следующем сообщении). Это не "напоминание вернуться", а подтверждение уже
-                # случившегося начисления — как и дегидратацию, не блокируем mute'ом.
-                if user.get("working_until"):
-                    earned = finish_work_if_done(user)
-                    if earned is not None:
-                        try:
-                            await bot.send_message(int(user_id), get_text(user, "work_finished", bucks=earned))
-                        except Exception:
-                            pass
 
                 # Отключение уведомлений — привилегия SUPER PRO: если подписка упала до PRO или
                 # истекла, напоминания сами возобновятся — отдельно снимать флаг не нужно.
@@ -11103,6 +11393,27 @@ async def check_notifications():
                                                    reply_markup=get_feed_nudge_kb(user))
                         except Exception:
                             pass
+                    continue
+
+                # 6) Ферма созрела (см. FARM_*/farm_state) — в отличие от остальных напоминаний
+                # выше это не интервальный повтор, а разовое событие за цикл: один пуш, как только
+                # урожай впервые становится готов, без повторов, пока не соберут и не посадят
+                # заново (см. farm_harvest, сбрасывает farm_ready_notified).
+                farm = farm_state(user)
+                if farm["planted"] and farm["ready"] and not user.get("farm_ready_notified"):
+                    user["farm_ready_notified"] = True
+                    save_data(user_data)
+                    try:
+                        if WEBAPP_URL:
+                            farm_btn = InlineKeyboardButton(
+                                text=get_text(user, "work_btn"),
+                                web_app=WebAppInfo(url=f"{WEBAPP_URL}/work"), style="success")
+                            kb = InlineKeyboardMarkup(inline_keyboard=[[farm_btn]])
+                            await bot.send_message(int(user_id), get_text(user, "farm_ready_push"), reply_markup=kb)
+                        else:
+                            await bot.send_message(int(user_id), get_text(user, "farm_ready_push"))
+                    except Exception:
+                        pass
             save_data(user_data)
         except Exception as e:
             logging.error(f"Ошибка уведомлений: {e}")
