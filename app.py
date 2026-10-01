@@ -155,6 +155,8 @@ TEXTS = {
         "spin_win_bucks": "💵 **+{value} баксов**",
         "spin_win_energizers": "⚡ **+{value} энергетика**",
         "spin_win_xp": "⭐ **+{value} XP**",
+        "spin_win_food": "🍗 **+{value} сытости**",
+        "spin_win_care_package": "🧺 **Эксклюзив колеса: полное восстановление!**\nЭнергия, сытость и вода — на максимум!",
         "spin_win_pro": "🎁 **PRO подписка на 5 дней!**\n🔥 Стили Страстный и Магнетический, энергия и сытость тратятся медленнее!",
         "spin_win_super": "✨ **SUPER PRO на 3 дня!**\n👑 Все стили, включая 18+, свой уникальный персонаж!",
         "spin_result_header": "🎰 **Результат!**\n\nТы выиграл: {result}\n{mode}",
@@ -256,6 +258,7 @@ TEXTS = {
         "character_died": "💔 Персонаж мёртв — весь диалог и уровень близости заморожены.\n\nМожешь воскресить его дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
         "character_died_overdrink": "💔 Персонаж не пережил такого количества алкоголя — сердце не выдержало.\n\nВся история общения и уровень близости потеряны.\n\nМожешь воскресить персонажа дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
         "character_died_dehydration": "💔 Персонаж слишком долго обходился без воды — организм не выдержал обезвоживания.\n\nВся история общения и уровень близости потеряны.\n\nМожешь воскресить персонажа дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
+        "dehydration_warning": "💧 Персонаж уже давно без воды — если не напоить его в ближайшее время, он может погибнуть от обезвоживания. Загляни в магазин 🛍",
         "overfeed_refuse_alert": "❌ Персонаж наелся и отказывается есть ещё — дай сытости немного снизиться.",
         "webapp_title": "🛍 Магазин",
         "webapp_buy_btn": "Купить",
@@ -281,7 +284,10 @@ TEXTS = {
             "💼 Ещё трудишься — до возвращения около {minutes_left} мин.",
             "💼 Пока ты на работе — осталось где-то {minutes_left} мин., потерпи."
         ],
-        "work_started": "💼 Идёшь работать — вернёшься через {minutes} мин. с баксами на подарок персонажу. Пока ты на работе, чат недоступен.",
+        "work_started": "💼 Идёшь работать — вернёшься через {minutes} мин. и получишь +{bucks}💵. Пока ты на работе, чат недоступен.",
+        "work_choose_mode": "💼 Куда пойти работать?",
+        "work_mode_fast_btn": "⚡ Быстро — {minutes} мин., +{bucks}💵",
+        "work_mode_slow_btn": "🏆 Долгая смена — {minutes} мин., +{bucks}💵",
         "work_finished": "💼 Работа окончена: +{bucks}💵. Можно порадовать персонажа подарком!",
         "custom_gift_btn": "✍️ Свой подарок — {price}💵",
         "custom_gift_prompt": "✍️ Напиши, что хочешь подарить (до {n} символов, цена {price}💵). Каждый подарок можно подарить только один раз.",
@@ -315,6 +321,10 @@ TEXTS = {
         "notifications_muted_alert": "🔕 Уведомления отключены.",
         "notifications_unmuted_alert": "🔔 Уведомления включены.",
         "mute_requires_sub_alert": "🔒 Отключение уведомлений доступно только с подпиской SUPER PRO или ELITE.",
+        "illness_immunity_on_btn": "🛡 Иммунитет к болезням: ВКЛ",
+        "illness_immunity_off_btn": "🛡 Иммунитет к болезням: ВЫКЛ",
+        "illness_immunity_enabled_alert": "🛡 Иммунитет включён — персонаж больше не будет заболевать.",
+        "illness_immunity_disabled_alert": "🛡 Иммунитет выключен — персонаж снова может случайно заболеть.",
         "payment_pro_success": "✅ PRO подписка активирована на месяц!",
         "payment_super_success": "✅ SUPER PRO подписка активирована на месяц!",
         "payment_elite_success": "✅ ELITE подписка активирована на месяц!",
@@ -450,6 +460,8 @@ TEXTS = {
         "spin_win_bucks": "💵 **+{value} bucks**",
         "spin_win_energizers": "⚡ **+{value} energizers**",
         "spin_win_xp": "⭐ **+{value} XP**",
+        "spin_win_food": "🍗 **+{value} satiety**",
+        "spin_win_care_package": "🧺 **Wheel exclusive: full restore!**\nEnergy, satiety and water — all topped up!",
         "spin_win_pro": "🎁 **PRO subscription for 5 days!**\n🔥 Passionate and Magnetic styles, energy and satiety drain slower!",
         "spin_win_super": "✨ **SUPER PRO for 3 days!**\n👑 All styles including 18+, your own unique character!",
         "spin_result_header": "🎰 **Result!**\n\nYou won: {result}\n{mode}",
@@ -551,6 +563,7 @@ TEXTS = {
         "character_died": "💔 Your companion is dead — the whole chat and closeness level are frozen.\n\nYou can revive them with a defibrillator (with the whole history) or start over with a new character.",
         "character_died_overdrink": "💔 Your companion didn't survive that much alcohol — their heart gave out.\n\nAll chat history and closeness level are lost.\n\nYou can revive your companion with a defibrillator (with the whole history) or start over with a new character.",
         "character_died_dehydration": "💔 Your companion went without water for too long — their body couldn't take the dehydration.\n\nAll chat history and closeness level are lost.\n\nYou can revive your companion with a defibrillator (with the whole history) or start over with a new character.",
+        "dehydration_warning": "💧 Your companion has been without water for a while now — if you don't give them a drink soon, they could die of dehydration. Check the shop 🛍",
         "overfeed_refuse_alert": "❌ Your companion is full and refuses to eat more — let their satiety drop a bit first.",
         "webapp_title": "🛍 Shop",
         "webapp_buy_btn": "Buy",
@@ -576,7 +589,10 @@ TEXTS = {
             "💼 Still on the clock — around {minutes_left} min to go.",
             "💼 Still at work — about {minutes_left} min left, hang in there."
         ],
-        "work_started": "💼 Heading to work — you'll be back in {minutes} min. with bucks for a gift for your companion. Chat's unavailable while you're at work.",
+        "work_started": "💼 Heading to work — you'll be back in {minutes} min. and get +{bucks}💵. Chat's unavailable while you're at work.",
+        "work_choose_mode": "💼 Where do you want to work?",
+        "work_mode_fast_btn": "⚡ Quick shift — {minutes} min., +{bucks}💵",
+        "work_mode_slow_btn": "🏆 Long shift — {minutes} min., +{bucks}💵",
         "work_finished": "💼 Work's done: +{bucks}💵. Time to treat your companion to a gift!",
         "custom_gift_btn": "✍️ Custom gift — {price}💵",
         "custom_gift_prompt": "✍️ Write what you want to gift (up to {n} characters, price {price}💵). Each gift can only be given once.",
@@ -610,6 +626,10 @@ TEXTS = {
         "notifications_muted_alert": "🔕 Notifications muted.",
         "notifications_unmuted_alert": "🔔 Notifications unmuted.",
         "mute_requires_sub_alert": "🔒 Muting notifications is available with a SUPER PRO or ELITE subscription only.",
+        "illness_immunity_on_btn": "🛡 Illness immunity: ON",
+        "illness_immunity_off_btn": "🛡 Illness immunity: OFF",
+        "illness_immunity_enabled_alert": "🛡 Immunity enabled — your companion won't get sick anymore.",
+        "illness_immunity_disabled_alert": "🛡 Immunity disabled — your companion can randomly get sick again.",
         "payment_pro_success": "✅ PRO subscription activated for a month!",
         "payment_super_success": "✅ SUPER PRO subscription activated for a month!",
         "payment_elite_success": "✅ ELITE subscription activated for a month!",
@@ -745,6 +765,8 @@ TEXTS = {
         "spin_win_bucks": "💵 **+{value} Bucks**",
         "spin_win_energizers": "⚡ **+{value} Energydrinks**",
         "spin_win_xp": "⭐ **+{value} XP**",
+        "spin_win_food": "🍗 **+{value} Sättigung**",
+        "spin_win_care_package": "🧺 **Rad-Exklusiv: volle Wiederherstellung!**\nEnergie, Sättigung und Wasser — alles auf Maximum!",
         "spin_win_pro": "🎁 **PRO-Abo für 5 Tage!**\n🔥 Stile Leidenschaftlich und Magnetisch, Energie und Sättigung sinken langsamer!",
         "spin_win_super": "✨ **SUPER PRO für 3 Tage!**\n👑 Alle Stile inklusive 18+, dein eigener einzigartiger Charakter!",
         "spin_result_header": "🎰 **Ergebnis!**\n\nDu hast gewonnen: {result}\n{mode}",
@@ -846,6 +868,7 @@ TEXTS = {
         "character_died": "💔 Dein Begleiter ist tot — der ganze Chatverlauf und das Nähe-Level sind eingefroren.\n\nDu kannst ihn/sie mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
         "character_died_overdrink": "💔 Dein Begleiter hat so viel Alkohol nicht überlebt — das Herz hat nicht mitgemacht.\n\nDer gesamte Chatverlauf und das Nähe-Level sind verloren.\n\nDu kannst deinen Begleiter mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
         "character_died_dehydration": "💔 Dein Begleiter war zu lange ohne Wasser — der Körper hat die Dehydrierung nicht überstanden.\n\nDer gesamte Chatverlauf und das Nähe-Level sind verloren.\n\nDu kannst deinen Begleiter mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
+        "dehydration_warning": "💧 Dein Begleiter ist schon lange ohne Wasser — wenn du ihm nicht bald etwas zu trinken gibst, könnte er an Dehydrierung sterben. Schau im Shop vorbei 🛍",
         "overfeed_refuse_alert": "❌ Dein Begleiter ist satt und weigert sich, mehr zu essen — lass die Sättigung erst etwas sinken.",
         "webapp_title": "🛍 Shop",
         "webapp_buy_btn": "Kaufen",
@@ -871,7 +894,10 @@ TEXTS = {
             "💼 Noch im Einsatz — noch ungefähr {minutes_left} Min.",
             "💼 Noch bei der Arbeit — noch etwa {minutes_left} Min., halt durch."
         ],
-        "work_started": "💼 Du gehst zur Arbeit — du bist in {minutes} Min. zurück, mit Bucks für ein Geschenk für deinen Begleiter. Solange kann nicht gechattet werden.",
+        "work_started": "💼 Du gehst zur Arbeit — du bist in {minutes} Min. zurück und bekommst +{bucks}💵. Solange kann nicht gechattet werden.",
+        "work_choose_mode": "💼 Wo möchtest du arbeiten?",
+        "work_mode_fast_btn": "⚡ Kurze Schicht — {minutes} Min., +{bucks}💵",
+        "work_mode_slow_btn": "🏆 Lange Schicht — {minutes} Min., +{bucks}💵",
         "work_finished": "💼 Feierabend: +{bucks}💵. Zeit, deinen Begleiter mit einem Geschenk zu verwöhnen!",
         "custom_gift_btn": "✍️ Eigenes Geschenk — {price}💵",
         "custom_gift_prompt": "✍️ Schreib, was du schenken möchtest (bis zu {n} Zeichen, Preis {price}💵). Jedes Geschenk kann nur einmal verschenkt werden.",
@@ -905,6 +931,10 @@ TEXTS = {
         "notifications_muted_alert": "🔕 Benachrichtigungen stummgeschaltet.",
         "notifications_unmuted_alert": "🔔 Benachrichtigungen aktiviert.",
         "mute_requires_sub_alert": "🔒 Benachrichtigungen stummschalten ist nur mit einem SUPER PRO- oder ELITE-Abo möglich.",
+        "illness_immunity_on_btn": "🛡 Krankheitsimmunität: AN",
+        "illness_immunity_off_btn": "🛡 Krankheitsimmunität: AUS",
+        "illness_immunity_enabled_alert": "🛡 Immunität aktiviert — dein Begleiter wird nicht mehr krank.",
+        "illness_immunity_disabled_alert": "🛡 Immunität deaktiviert — dein Begleiter kann wieder zufällig krank werden.",
         "payment_pro_success": "✅ PRO-Abo für einen Monat aktiviert!",
         "payment_super_success": "✅ SUPER PRO-Abo für einen Monat aktiviert!",
         "payment_elite_success": "✅ ELITE-Abo für einen Monat aktiviert!",
@@ -1879,8 +1909,10 @@ def free_spins_left(user):
 
 def _maybe_get_sick(user):
     """Небольшой случайный шанс заболеть раз в день — только если персонаж уже создан, ещё не
-    болен и не мёртв (иначе бессмысленно). См. ILLNESSES/ILLNESS_DAILY_CHANCE."""
-    if not user.get("personality_ready") or user.get("illness") or user.get("dead"):
+    болен и не мёртв (иначе бессмысленно). См. ILLNESSES/ILLNESS_DAILY_CHANCE.
+    illness_disabled — перк ELITE (см. toggle_illness_immunity): полностью выключает будущие
+    заболевания, но не лечит уже текущую болезнь задним числом."""
+    if not user.get("personality_ready") or user.get("illness") or user.get("dead") or user.get("illness_disabled"):
         return
     if random.random() < ILLNESS_DAILY_CHANCE:
         user["illness"] = "cold"
@@ -2084,6 +2116,9 @@ DEHYDRATION_DEATH_HOURS = 46  # с момента, когда вода впер�
                                # суток) молчания с момента последнего сообщения до смерти — было
                                # 18 (итого ~20ч), но это оказалось мало похоже на "хотя бы день
                                # отдыха от бота", отсюда и запас с явным умножением.
+DEHYDRATION_WARN_HOURS = 30  # один явный пуш-предупреждение (dehydration_warning) до смерти — раньше
+                              # смерть наступала вообще без предупреждения; оставляет ~16 часов на
+                              # то, чтобы среагировать, прежде чем сработает DEHYDRATION_DEATH_HOURS
 ENERGIZER_RESTORE_AMOUNT = 78  # было 98 (65% бака) — точечно снижено до 78 (52% бака), без
                                # сопутствующего удвоения количеств бандлов/стипендов (в отличие
                                # от прошлой попытки уполовинить до 50, которая смотрелась чрезмерно
@@ -2176,11 +2211,17 @@ def is_asleep(user):
 
 
 # "Работа" — свободный (не требующий звёзд) способ заработать баксы: персонаж уходит на
-# фиксированное время, всё это время обычный чат недоступен (см. handle_message), а по
-# возвращении сразу начисляются баксы. /hot нарочно остаётся доступен, той же логикой, что и
-# при сне (см. intim_cmd) — платный раздел тамагочи-механикой не ограничивается.
-WORK_DURATION_MINUTES = 120
-WORK_PAYOUT_BUCKS = 70
+# выбранное пользователем время (см. WORK_MODES), всё это время обычный чат недоступен (см.
+# handle_message), а по возвращении сразу начисляются баксы. /hot нарочно остаётся доступен, той
+# же логикой, что и при сне (см. intim_cmd) — платный раздел тамагочи-механикой не ограничивается.
+WORK_MODES = {
+    # "быстрая смена" — для тех, кто не готов ждать 3 часа ради прибавки: меньше суммарно и
+    # хуже баксов/минуту, зато быстро. "долгая смена" — наоборот, лучше ставка и лучше итог,
+    # вознаграждает именно терпение (по просьбе пользователя: "быстрый доход и долгий но зато
+    # много дохода").
+    "fast": {"minutes": 30, "bucks": 25},
+    "slow": {"minutes": 180, "bucks": 180},
+}
 
 
 def is_working(user):
@@ -2194,20 +2235,25 @@ def is_working(user):
 
 
 def finish_work_if_done(user):
-    """True, если персонаж только что вернулся с работы (баксы уже начислены и сохранены)."""
+    """Если персонаж только что вернулся с работы — начисляет баксы (уже сохранено) и
+    возвращает сумму выплаты; иначе None. Режим берём из working_mode (выставляется при старте
+    работы, см. work_start_mode); если его почему-то нет (например, работа была начата ДО
+    появления режимов) — считаем "slow", чтобы никого не обсчитать при деплое этого изменения."""
     until = user.get("working_until")
     if not until:
-        return False
+        return None
     try:
         done = datetime.now() >= datetime.fromisoformat(until)
     except (ValueError, TypeError):
         done = True
     if not done:
-        return False
+        return None
     user["working_until"] = None
-    user["bucks"] = user.get("bucks", 0) + WORK_PAYOUT_BUCKS
+    mode = WORK_MODES.get(user.get("working_mode"), WORK_MODES["slow"])
+    bucks = mode["bucks"]
+    user["bucks"] = user.get("bucks", 0) + bucks
     save_data(user_data)
-    return True
+    return bucks
 
 
 def work_minutes_left(user):
@@ -2621,13 +2667,18 @@ def get_profile_keyboard(user):
     # (бандлы/подписка/сцены) и переключатель уведомлений; сам магазин живёт в главной
     # reply-клавиатуре (см. get_full_kb), там же, где колесо фортуны.
     mute_key = "notifications_off_btn" if user.get("notifications_muted") else "notifications_on_btn"
-    return InlineKeyboardMarkup(inline_keyboard=[
+    rows = [
         [InlineKeyboardButton(text=get_text(user, "buy_bundles"), callback_data="profile_bundles", style="success")],
         [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")],
         [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
         [InlineKeyboardButton(text=get_text(user, mute_key), callback_data="toggle_notifications", style="primary")],
-        [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")],
-    ])
+    ]
+    # Иммунитет к болезням — перк именно ELITE (самый верхний тариф), не SUPER PRO.
+    if get_subscription_level(user) == "elite":
+        immunity_key = "illness_immunity_on_btn" if user.get("illness_disabled") else "illness_immunity_off_btn"
+        rows.append([InlineKeyboardButton(text=get_text(user, immunity_key), callback_data="toggle_illness_immunity", style="primary")])
+    rows.append([InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
 async def safe_delete(message: types.Message):
@@ -3259,6 +3310,15 @@ async def handle_edited_message(message: types.Message):
         return
     if not any(h.get("role") == "user" for h in user.get("history", [])):
         return
+    # Старый ответ персонажа (на ДОредактированный текст) больше не актуален — раз пользователь
+    # передумал и переписал свою реплику, ответ на неё должен исчезнуть вместе со старым текстом,
+    # а не повиснуть в чате вперемешку с новым (см. last_bot_reply_message_id в generate_and_reply).
+    old_reply_id = user.get("last_bot_reply_message_id")
+    if old_reply_id:
+        try:
+            await bot.delete_message(message.chat.id, old_reply_id)
+        except Exception:
+            pass
     trim_history_to_last_user_message(user)
     user["history"].append({"role": "user", "content": message.text})
     save_data(user_data)
@@ -3379,9 +3439,13 @@ SPIN_PRIZES = [
     {"name": "🔥🔥 2 горячие сцены", "name_en": "🔥🔥 2 hot scenes", "name_de": "🔥🔥 2 heiße Szenen", "value": 2, "type": "intim_scenes", "weight": 3, "wheel_label": "🔥🔥"},
     {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 3, "wheel_label": "2⚡"},
     {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 1, "wheel_label": "4⚡"},
+    {"name": "🍗 30 сытости", "name_en": "🍗 30 satiety", "name_de": "🍗 30 Sättigung", "value": 30, "type": "food", "weight": 10, "wheel_label": "🍗+30"},
     {"name": "🎉 150💵 баксов (ДЖЕКПОТ!)", "name_en": "🎉 150💵 bucks (JACKPOT!)", "name_de": "🎉 150💵 Bucks (JACKPOT!)", "value": 150, "type": "bucks", "weight": 0.3, "wheel_label": "🎉150💵"},
     {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "name_de": "🎁 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.4, "wheel_label": "🎁PRO"},
     {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.15, "wheel_label": "✨SUPER"},
+    # Эксклюзив именно колеса — нигде в магазине такого разового "всё на максимум" нет, по просьбе
+    # пользователя добавить "что-то, что может выпасть только в колесе".
+    {"name": "🧺 Полная забота (эксклюзив колеса!)", "name_en": "🧺 Full care package (wheel exclusive!)", "name_de": "🧺 Rundum-Versorgung (Rad-Exklusiv!)", "value": 0, "type": "care_package", "weight": 0.5, "wheel_label": "🧺MAX"},
 ]
 
 
@@ -3415,6 +3479,16 @@ def apply_spin_prize(user, chosen):
     elif chosen["type"] == "intim_scenes":
         user["intim_scenes"] = user.get("intim_scenes", 0) + chosen["value"]
         result_text = get_text(user, "spin_win_intim", value=chosen["value"])
+    elif chosen["type"] == "food":
+        user["satiety"] = min(SATIETY_MAX, user.get("satiety", 0) + chosen["value"])
+        result_text = get_text(user, "spin_win_food", value=chosen["value"])
+    elif chosen["type"] == "care_package":
+        user["energy"] = ENERGY_MAX
+        user["satiety"] = SATIETY_MAX
+        user["water"] = WATER_MAX
+        user["water_zero_since"] = None
+        user["dehydration_warned"] = False
+        result_text = get_text(user, "spin_win_care_package")
     elif chosen["type"] == "subscription_pro":
         grant_subscription_days(user, "pro", 5)
         user["last_daily_reset"] = None
@@ -3647,6 +3721,7 @@ def apply_shop_item_effects(user, item):
         user["mood"] = MOOD_MAX
         user["water"] = WATER_MAX
         user["water_zero_since"] = None
+        user["dehydration_warned"] = False
     else:
         if "satiety" in item:
             user["satiety"] = min(SATIETY_MAX, user.get("satiety", SATIETY_MAX) + item["satiety"])
@@ -3656,6 +3731,7 @@ def apply_shop_item_effects(user, item):
             user["water"] = min(WATER_MAX, user.get("water", WATER_MAX) + item["water"])
             if user["water"] > 0:
                 user["water_zero_since"] = None
+                user["dehydration_warned"] = False
     if item.get("tipsy_minutes"):
         user["tipsy_until"] = (datetime.now() + timedelta(minutes=item["tipsy_minutes"])).isoformat()
         user["tipsy_level"] = item.get("tipsy_level", "light")
@@ -3908,6 +3984,7 @@ async def kill_character(chat_id, user, cause):
     user["overfeed_strikes"] = 0
     user["overdrink_strikes"] = 0
     user["water_zero_since"] = None
+    user["dehydration_warned"] = False
     save_data(user_data)
     text_key = "character_died_dehydration" if cause == "dehydration" else "character_died_overdrink"
     await bot.send_message(chat_id, get_text(user, text_key), reply_markup=get_death_kb(user))
@@ -4059,6 +4136,18 @@ async def toggle_notifications(call: types.CallbackQuery):
     user["notifications_muted"] = not user.get("notifications_muted", False)
     save_data(user_data)
     key = "notifications_muted_alert" if user["notifications_muted"] else "notifications_unmuted_alert"
+    await call.answer(get_text(user, key), show_alert=True)
+
+
+@dp.callback_query(lambda c: c.data == "toggle_illness_immunity")
+async def toggle_illness_immunity(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    if get_subscription_level(user) != "elite":
+        await call.answer(get_text(user, "mute_requires_sub_alert"), show_alert=True)
+        return
+    user["illness_disabled"] = not user.get("illness_disabled", False)
+    save_data(user_data)
+    key = "illness_immunity_enabled_alert" if user["illness_disabled"] else "illness_immunity_disabled_alert"
     await call.answer(get_text(user, key), show_alert=True)
 
 
@@ -4353,7 +4442,9 @@ async def grant_product(user, payload, chat_id):
     elif payload == "spin_paid_webapp":
         # Прокрут уже анимируется в самом Mini App (см. SPIN_PAGE_HTML) — здесь только
         # начисляем приз и кладём результат туда, где его подберёт опрос
-        # api_spin_paid_result_handler, плюс короткое подтверждение в чат для истории.
+        # api_spin_paid_result_handler. Раньше ещё дублировали результат отдельным сообщением в
+        # чат — убрали по просьбе пользователя: в мини-аппе итак всё видно, а то сообщение к тому
+        # же слалось без parse_mode="Markdown", так что звёздочки **так** оставались буквальными.
         chosen = choose_spin_prize()
         result_text = apply_spin_prize(user, chosen)
         user["webapp_paid_spin_pending"] = {
@@ -4361,8 +4452,6 @@ async def grant_product(user, payload, chat_id):
             "result_text": result_text,
         }
         save_data(user_data)
-        mode_text = get_text(user, "spin_mode_paid")
-        await bot.send_message(chat_id, get_text(user, "spin_result_header", result=result_text, mode=mode_text))
 
 
 async def check_pending_payments():
@@ -4818,9 +4907,10 @@ async def feed_cmd(message: types.Message):
 
 @dp.message(Command("work"))
 async def work_cmd(message: types.Message):
-    """Свободный (без звёзд) способ заработать баксы: персонаж уходит на WORK_DURATION_MINUTES,
-    всё это время обычный чат недоступен (см. handle_message), но /hot по-прежнему работает —
-    та же логика, что и у сна (см. intim_cmd)."""
+    """Свободный (без звёзд) способ заработать баксы: персонаж уходит на выбранное время (см.
+    WORK_MODES — короткая смена или долгая, по просьбе пользователя "быстрый доход и долгий, но
+    зато много дохода"), всё это время обычный чат недоступен (см. handle_message), но /hot
+    по-прежнему работает — та же логика, что и у сна (см. intim_cmd)."""
     user = get_user(message.from_user.id)
     if not user["verified"] or not user["agreement_accepted"]:
         await message.answer(get_text(user, "finish_registration_first"))
@@ -4838,9 +4928,45 @@ async def work_cmd(message: types.Message):
         text = random.choice(get_text(user, "still_working")).format(minutes_left=work_minutes_left(user))
         await message.answer(text)
         return
-    user["working_until"] = (datetime.now() + timedelta(minutes=WORK_DURATION_MINUTES)).isoformat()
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(
+            text=get_text(user, "work_mode_fast_btn", minutes=WORK_MODES["fast"]["minutes"], bucks=WORK_MODES["fast"]["bucks"]),
+            callback_data="work_start:fast", style="success")],
+        [InlineKeyboardButton(
+            text=get_text(user, "work_mode_slow_btn", minutes=WORK_MODES["slow"]["minutes"], bucks=WORK_MODES["slow"]["bucks"]),
+            callback_data="work_start:slow", style="success")],
+    ])
+    await message.answer(get_text(user, "work_choose_mode"), reply_markup=keyboard)
+
+
+@dp.callback_query(lambda c: c.data.startswith("work_start:"))
+async def work_start_mode(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    mode = call.data.split(":", 1)[1]
+    if mode not in WORK_MODES:
+        await call.answer()
+        return
+    await safe_delete(call.message)
+    # Переоцениваем условия на случай, если что-то изменилось, пока висело меню выбора режима
+    # (например, энергия дошла до нуля и персонаж уснул между /work и нажатием кнопки).
+    if user.get("dead"):
+        await bot.send_message(call.message.chat.id, get_text(user, "character_died"), reply_markup=get_death_kb(user))
+        await call.answer()
+        return
+    if is_asleep(user):
+        await bot.send_message(call.message.chat.id, get_text(user, "asleep_message", price=PRODUCTS["wake_now"]["stars"]), reply_markup=get_wake_kb(user))
+        await call.answer()
+        return
+    if is_working(user):
+        text = random.choice(get_text(user, "still_working")).format(minutes_left=work_minutes_left(user))
+        await bot.send_message(call.message.chat.id, text)
+        await call.answer()
+        return
+    user["working_until"] = (datetime.now() + timedelta(minutes=WORK_MODES[mode]["minutes"])).isoformat()
+    user["working_mode"] = mode
     save_data(user_data)
-    await message.answer(get_text(user, "work_started", minutes=WORK_DURATION_MINUTES))
+    await bot.send_message(call.message.chat.id, get_text(user, "work_started", minutes=WORK_MODES[mode]["minutes"], bucks=WORK_MODES[mode]["bucks"]))
+    await call.answer()
 
 
 @dp.callback_query(lambda c: c.data.startswith("intim_type_"))
@@ -5192,7 +5318,12 @@ async def generate_and_reply(message: types.Message, user):
         user["history"] = user["history"][-limit:]
     save_data(user_data)
 
-    await send_long(message, clean_answer, reply_markup=get_full_kb(user))
+    sent = await send_long(message, clean_answer, reply_markup=get_full_kb(user))
+    # Запоминаем id именно последнего отправленного сообщения — нужно, чтобы удалить его, если
+    # пользователь затем отредактирует СВОЮ реплику прямо в Телеграме (см. handle_edited_message).
+    # Если ответ был разбит на несколько сообщений (длинный, см. send_long), удалится только
+    # последний кусок — редкий случай, не усложняем ради него.
+    user["last_bot_reply_message_id"] = sent.message_id if sent else None
 
     if reaction and get_subscription_level(user) in ("super_pro", "elite"):
         try:
@@ -5425,8 +5556,9 @@ async def handle_message(message: types.Message):
     # уже вышло, это же сообщение и завершает работу (начисляет баксы) и обрабатывается дальше
     # как обычно — не нужно присылать что-то ещё раз, чтобы "заметить" возвращение.
     if user.get("working_until"):
-        if finish_work_if_done(user):
-            await message.answer(get_text(user, "work_finished", bucks=WORK_PAYOUT_BUCKS))
+        earned = finish_work_if_done(user)
+        if earned is not None:
+            await message.answer(get_text(user, "work_finished", bucks=earned))
         else:
             text = random.choice(get_text(user, "still_working")).format(minutes_left=work_minutes_left(user))
             await message.answer(text)
@@ -9596,8 +9728,10 @@ async def perform_webapp_spin(user, user_id):
     """Бесплатное вращение — мгновенное, без оплаты. Платное вращение из Mini App идёт другим
     путём (api_spin_paid_invoice_handler + openInvoice + grant_product/spin_paid_webapp), т.к.
     требует реального Stars-платежа, а не просто списания бесплатной попытки. Эффекты и текст
-    результата здесь общие с чатовым /колесо (apply_spin_prize), плюс зеркалится подтверждением
-    в обычный чат, как и покупки в магазине."""
+    результата здесь общие с чатовым /колесо (apply_spin_prize). Раньше ещё дублировали результат
+    отдельным сообщением в обычный чат — убрали: в самом Mini App результат итак виден (см.
+    showSpinOutcome в SPIN_PAGE_HTML), а при нескольких вращениях подряд это превращалось в спам
+    из одинаковых сообщений в чате."""
     if free_spins_left(user) <= 0:
         return {"ok": False, "error": get_text(user, "spin_already")}
     user["free_spins_used"] = user.get("free_spins_used", 0) + 1
@@ -9605,8 +9739,6 @@ async def perform_webapp_spin(user, user_id):
     prize_index = SPIN_PRIZES.index(chosen)
     result_text = apply_spin_prize(user, chosen)
     save_data(user_data)
-    mode_text = get_text(user, "spin_mode_free")
-    await bot.send_message(user_id, get_text(user, "spin_result_header", result=result_text, mode=mode_text))
     return {"ok": True, "prize_index": prize_index, "result_text": result_text}
 
 
@@ -10229,6 +10361,30 @@ async def check_notifications():
                     if hours_dry >= DEHYDRATION_DEATH_HOURS:
                         await kill_character(int(user_id), user, cause="dehydration")
                         continue
+                    elif hours_dry >= DEHYDRATION_WARN_HOURS and not user.get("dehydration_warned"):
+                        # Один явный пуш до смерти — раньше смерть от обезвоживания наступала
+                        # вообще без предупреждения. Та же логика "до смерти, не нагом" — не
+                        # привязываем к notifications_muted, как и саму смерть чуть выше.
+                        user["dehydration_warned"] = True
+                        save_data(user_data)
+                        try:
+                            await bot.send_message(int(user_id), get_text(user, "dehydration_warning"))
+                        except Exception:
+                            pass
+
+                # Работа (см. /work) могла закончиться, пока пользователь молчал — раньше об этом
+                # узнавали только реактивно, на следующее сообщение в чат; теперь сообщаем сразу,
+                # как только время вышло (та же логика начисления, что и в handle_message —
+                # finish_work_if_done идемпотентна, реактивная проверка просто не найдёт работу
+                # уже на следующем сообщении). Это не "напоминание вернуться", а подтверждение уже
+                # случившегося начисления — как и дегидратацию, не блокируем mute'ом.
+                if user.get("working_until"):
+                    earned = finish_work_if_done(user)
+                    if earned is not None:
+                        try:
+                            await bot.send_message(int(user_id), get_text(user, "work_finished", bucks=earned))
+                        except Exception:
+                            pass
 
                 # Отключение уведомлений — привилегия SUPER PRO: если подписка упала до PRO или
                 # истекла, напоминания сами возобновятся — отдельно снимать флаг не нужно.
