@@ -293,10 +293,16 @@ TEXTS = {
         "work_tab_catch": "📦 Заказ",
         "work_tab_rhythm": "🚴 Курьер",
         "work_tab_farm": "🌽 Ферма",
+        "work_tab_bus": "🚌 Автобус",
         "work_clicker_hint": "Жми именно ту клавишу, которая подсвечена — ошибёшься, и тебя засекут.",
         "work_debuff_locked": "🔒 Заблокировано",
         "work_catch_hint": "Веди корзину из стороны в сторону, лови предметы и не лови бомбы 💣! Улитка 🐌 на время замедлит падение.",
-        "work_rhythm_hint": "Жми ▲▼, чтобы перестроиться между полос, и объезжай препятствия — за манёвр платят!",
+        "work_rhythm_hint": "Жми ▲▼, чтобы объезжать препятствия, а ⏫ — чтобы перепрыгнуть те, что на всю дорогу!",
+        "work_courier_arrived": "🏠 Доставлено!",
+        "work_courier_arrived_tip": "🏠 Доставлено! 🎉 + чаевые",
+        "work_bus_hint": "Следи за стрелками ⬅️➡️ и веди автобус к той стороне, куда они указывают — иначе остановку пропустишь!",
+        "work_bus_route_done": "🎉 Маршрут завершён!",
+        "work_bus_route_done_tip": "🎉 Маршрут завершён! 💰 + чаевые",
         "work_multiplier_badge": "×2 — бонус подписки",
         "farm_plant_btn": "🌽 Посадить кукурузу",
         "farm_water_btn": "💧 Полить",
@@ -618,10 +624,16 @@ TEXTS = {
         "work_tab_catch": "📦 Delivery",
         "work_tab_rhythm": "🚴 Courier",
         "work_tab_farm": "🌽 Farm",
+        "work_tab_bus": "🚌 Bus",
         "work_clicker_hint": "Tap the key that's lit up — hit the wrong one and you'll get flagged.",
         "work_debuff_locked": "🔒 Locked",
         "work_catch_hint": "Drag the basket side to side, catch the items, and dodge the bombs 💣! A snail 🐌 briefly slows the fall.",
-        "work_rhythm_hint": "Press ▲▼ to switch lanes and dodge the obstacles — every dodge pays out!",
+        "work_rhythm_hint": "Press ▲▼ to dodge obstacles, and ⏫ to jump the ones blocking the whole road!",
+        "work_courier_arrived": "🏠 Delivered!",
+        "work_courier_arrived_tip": "🏠 Delivered! 🎉 + tip",
+        "work_bus_hint": "Watch the arrows ⬅️➡️ and pull the bus to the side they point to, or you'll miss the stop!",
+        "work_bus_route_done": "🎉 Route complete!",
+        "work_bus_route_done_tip": "🎉 Route complete! 💰 + tip",
         "work_multiplier_badge": "×2 — subscriber bonus",
         "farm_plant_btn": "🌽 Plant corn",
         "farm_water_btn": "💧 Water",
@@ -943,10 +955,16 @@ TEXTS = {
         "work_tab_catch": "📦 Lieferung",
         "work_tab_rhythm": "🚴 Kurier",
         "work_tab_farm": "🌽 Farm",
+        "work_tab_bus": "🚌 Bus",
         "work_clicker_hint": "Tipp die Taste, die leuchtet — triffst du die falsche, fliegst du auf.",
         "work_debuff_locked": "🔒 Gesperrt",
         "work_catch_hint": "Zieh den Korb hin und her, fang die Gegenstände und weich den Bomben 💣 aus! Eine Schnecke 🐌 verlangsamt kurz den Fall.",
-        "work_rhythm_hint": "Drück ▲▼, um die Spur zu wechseln, und weich den Hindernissen aus — jedes Ausweichen zahlt sich aus!",
+        "work_rhythm_hint": "Drück ▲▼, um Hindernissen auszuweichen, und ⏫, um über welche zu springen, die die ganze Straße blockieren!",
+        "work_courier_arrived": "🏠 Geliefert!",
+        "work_courier_arrived_tip": "🏠 Geliefert! 🎉 + Trinkgeld",
+        "work_bus_hint": "Achte auf die Pfeile ⬅️➡️ und lenke den Bus zu der Seite, auf die sie zeigen — sonst verpasst du die Haltestelle!",
+        "work_bus_route_done": "🎉 Route abgeschlossen!",
+        "work_bus_route_done_tip": "🎉 Route abgeschlossen! 💰 + Trinkgeld",
         "work_multiplier_badge": "×2 — Abo-Bonus",
         "farm_plant_btn": "🌽 Mais pflanzen",
         "farm_water_btn": "💧 Gießen",
@@ -2298,10 +2316,10 @@ def is_asleep(user):
 # ощущалось криво ("почему играть, ПОКА работаешь?"), поэтому чат теперь не блокируется вообще:
 # мини-апп "Работа" — отдельная поверхность, как Магазин/Колесо (см. send_work_menu), и так же не
 # ограничена тамагочи-механикой (сном и т.п.) — та же логика, что и у /hot (см. intim_cmd).
-WORK_HIT_BUCKS = {"clicker": 1, "catch": 1, "courier": 1}  # мгновенная выплата за одно
-# засчитанное попадание — ОДИНАКОВАЯ для всех 3 игр, и это не упрощение "на будущее": сервер
-# физически не может проверить, что хит "courier"/"catch" пришёл от реальной визуальной игры
-# (общий анти-спам таймер один на все три, см. register_work_hit) — разная цена по играм просто
+WORK_HIT_BUCKS = {"clicker": 1, "catch": 1, "courier": 1, "bus": 1}  # мгновенная выплата за одно
+# засчитанное попадание — ОДИНАКОВАЯ для всех игр, и это не упрощение "на будущее": сервер
+# физически не может проверить, что хит "courier"/"catch"/"bus" пришёл от реальной визуальной игры
+# (общий анти-спам таймер один на все, см. register_work_hit) — разная цена по играм просто
 # поощряла бы скрипт, бьющий в эндпоинт с game=самая дорогая игра. Была раньше 2/5/6 — вместе со
 # старым WORK_MIN_HIT_INTERVAL_SECONDS=0.1 это давало реальных ~500-1000+💵/мин (по фидбэку —
 # полную цену машины за минуту тапанья), что убивает смысл платных бандлов/подписок: bundle_large
@@ -2340,10 +2358,10 @@ def credit_work_bucks(user, base_amount):
 
 
 def register_work_hit(user, game):
-    """Одно засчитанное попадание в одной из 3 мгновенных игр — сразу начисляет баксы (см.
+    """Одно засчитанное попадание в одной из мгновенных игр — сразу начисляет баксы (см.
     WORK_HIT_BUCKS), без таймера и без сессии. Возвращает фактически начисленную сумму, 0 если
     попадание отклонено анти-спамом (см. WORK_MIN_HIT_INTERVAL_SECONDS), None при неизвестной
-    игре. Один общий таймер последнего попадания на все 3 игры — играть в две сразу руками всё
+    игре. Один общий таймер последнего попадания на все игры — играть в две сразу руками всё
     равно нельзя, упрощение не меняет защиту."""
     if game not in WORK_HIT_BUCKS:
         return None
@@ -10524,10 +10542,16 @@ def serialize_work_state(user):
             "tab_catch": get_text(user, "work_tab_catch"),
             "tab_courier": get_text(user, "work_tab_rhythm"),
             "tab_farm": get_text(user, "work_tab_farm"),
+            "tab_bus": get_text(user, "work_tab_bus"),
             "clicker_hint": get_text(user, "work_clicker_hint"),
             "debuff_locked": get_text(user, "work_debuff_locked"),
             "catch_hint": get_text(user, "work_catch_hint"),
             "courier_hint": get_text(user, "work_rhythm_hint"),
+            "courier_arrived": get_text(user, "work_courier_arrived"),
+            "courier_arrived_tip": get_text(user, "work_courier_arrived_tip"),
+            "bus_hint": get_text(user, "work_bus_hint"),
+            "bus_route_done": get_text(user, "work_bus_route_done"),
+            "bus_route_done_tip": get_text(user, "work_bus_route_done_tip"),
             "multiplier_badge": get_text(user, "work_multiplier_badge"),
             "farm_plant_btn": get_text(user, "farm_plant_btn"),
             "farm_water_btn": get_text(user, "farm_water_btn"),
@@ -10716,14 +10740,29 @@ WORK_PAGE_HTML = r'''<!doctype html>
     30% { filter: drop-shadow(0 0 8px #e8383d) brightness(.7); }
   }
 
+  #courier-progress, #bus-progress {
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(0,0,0,.1);
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  #courier-progress-fill, #bus-progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #1dd1a1, #4ea8ff);
+    transition: width .25s ease;
+  }
   #courier-road {
     position: relative;
     height: 180px;
     border-radius: 14px;
     background: #4a4a4a;
-    margin: 12px 0 10px;
+    margin: 0 0 10px;
     overflow: hidden;
+    transition: transform .3s ease;
   }
+  #courier-road.mirrored { transform: scaleX(-1); }
   .courier-lane {
     position: absolute;
     left: 0;
@@ -10740,13 +10779,17 @@ WORK_PAGE_HTML = r'''<!doctype html>
     top: 30px;
     font-size: 34px;
     transform: translate(-50%, -50%) scaleX(-1);
-    transition: top .18s ease;
+    transition: top .18s ease, transform .15s ease;
     z-index: 3;
   }
   #courier-rider.crash { animation: courier-crash .3s ease; }
   @keyframes courier-crash {
     0%, 100% { filter: none; }
     40% { filter: drop-shadow(0 0 8px #e8383d) brightness(.7); transform: translate(-50%, -50%) scaleX(-1) rotate(-15deg); }
+  }
+  #courier-rider.jumping {
+    transform: translate(-50%, -50%) scaleX(-1) translateY(-26px) scale(1.15);
+    filter: drop-shadow(0 8px 4px rgba(0,0,0,.3));
   }
   .courier-obstacle {
     position: absolute;
@@ -10762,8 +10805,49 @@ WORK_PAGE_HTML = r'''<!doctype html>
     to { left: -8%; }
   }
   .courier-obstacle.hit-flash { filter: drop-shadow(0 0 8px #e8383d); }
-  #courier-controls { display: flex; gap: 14px; justify-content: center; margin-bottom: 10px; }
-  #courier-up, #courier-down {
+  .courier-obstacle[data-full="1"] { filter: drop-shadow(0 0 5px #ffc107); }
+
+  #bus-road {
+    position: relative;
+    height: 140px;
+    border-radius: 14px;
+    background: #4a4a4a;
+    margin: 0 0 10px;
+    overflow: hidden;
+  }
+  .bus-lane {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 70px;
+    border-bottom: 2px dashed rgba(255,255,255,.25);
+  }
+  .bus-lane[data-lane="0"] { top: 0; }
+  .bus-lane[data-lane="1"] { top: 70px; border-bottom: none; }
+  #bus-vehicle {
+    position: absolute;
+    left: 8%;
+    top: 35px;
+    font-size: 36px;
+    transform: translate(-50%, -50%) scaleX(-1);
+    transition: top .18s ease;
+    z-index: 3;
+  }
+  #bus-vehicle.crash { animation: courier-crash .3s ease; }
+  .bus-stop {
+    position: absolute;
+    left: 100%;
+    font-size: 26px;
+    transform: translate(-50%, -50%);
+    animation-name: courier-scroll;
+    animation-timing-function: ease-out;
+    animation-fill-mode: forwards;
+  }
+  .bus-stop.hit-flash { filter: drop-shadow(0 0 8px #e8383d); }
+  .bus-stop.boarded { filter: drop-shadow(0 0 8px #1dd1a1); }
+
+  #courier-controls, #bus-controls { display: flex; gap: 14px; justify-content: center; margin-bottom: 10px; }
+  #courier-up, #courier-down, #courier-jump, #bus-left, #bus-right {
     width: 76px;
     height: 58px;
     border-radius: 12px;
@@ -10773,9 +10857,11 @@ WORK_PAGE_HTML = r'''<!doctype html>
     font-size: 26px;
     font-weight: 700;
   }
+  #courier-jump { background: #ff9f1c; }
   #courier-up:disabled, #courier-down:disabled { opacity: .35; }
-  #catch-feedback, #courier-feedback, #clicker-feedback { margin-top: 12px; font-size: 14px; font-weight: 700; min-height: 20px; }
-  #catch-feedback.locked, #courier-feedback.locked, #clicker-feedback.locked { color: #e8383d; }
+  #catch-feedback, #courier-feedback, #clicker-feedback, #bus-feedback { margin-top: 12px; font-size: 14px; font-weight: 700; min-height: 20px; }
+  #catch-feedback.locked, #courier-feedback.locked, #clicker-feedback.locked, #bus-feedback.locked { color: #e8383d; }
+  #courier-feedback.arrived, #bus-feedback.arrived { color: #1dd1a1; }
 
   #game-farm { padding-top: 8px; }
   .farm-plot {
@@ -10852,6 +10938,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     <button id="tab-clicker" class="tab-btn"></button>
     <button id="tab-catch" class="tab-btn"></button>
     <button id="tab-courier" class="tab-btn"></button>
+    <button id="tab-bus" class="tab-btn"></button>
     <button id="tab-farm" class="tab-btn"></button>
   </div>
 
@@ -10880,6 +10967,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   <div id="game-courier" class="game-panel">
     <div id="courier-hint"></div>
+    <div id="courier-progress"><div id="courier-progress-fill"></div></div>
     <div id="courier-road">
       <div class="courier-lane" data-lane="0"></div>
       <div class="courier-lane" data-lane="1"></div>
@@ -10889,11 +10977,27 @@ WORK_PAGE_HTML = r'''<!doctype html>
     <div id="courier-controls">
       <button id="courier-up">▲</button>
       <button id="courier-down">▼</button>
+      <button id="courier-jump">⏫</button>
     </div>
     <div id="courier-feedback"></div>
   </div>
 
   <div id="game-farm" class="game-panel"></div>
+
+  <div id="game-bus" class="game-panel">
+    <div id="bus-hint"></div>
+    <div id="bus-progress"><div id="bus-progress-fill"></div></div>
+    <div id="bus-road">
+      <div class="bus-lane" data-lane="0"></div>
+      <div class="bus-lane" data-lane="1"></div>
+      <div id="bus-vehicle">🚌</div>
+    </div>
+    <div id="bus-controls">
+      <button id="bus-left">⬅️</button>
+      <button id="bus-right">➡️</button>
+    </div>
+    <div id="bus-feedback"></div>
+  </div>
 
   <div id="full-screen-msg"></div>
 
@@ -10922,8 +11026,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var courierSpawnInterval = null;
   var hackerTarget = 0; // index of the currently lit .hacker-key -- see pickHackerTarget()
   var DEBUFF_MS = 2000; // lockout after any failure (bomb/crash/wrong key) -- see triggerDebuff()
-  var debuffState = { catch: false, courier: false, clicker: false };
-  var debuffTimeoutIds = { catch: null, courier: null, clicker: null };
+  var debuffState = { catch: false, courier: false, clicker: false, bus: false };
+  var debuffTimeoutIds = { catch: null, courier: null, clicker: null, bus: null };
   var farmCountdownInterval = null;
   var hitInFlight = false;
   var farmActionInFlight = false;
@@ -10931,6 +11035,20 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var COURIER_LANE_Y = [30, 90, 150]; // px centers, matches 3x60px lanes in a 180px-tall #courier-road
   var courierLane = 1;
   var COURIER_OBSTACLE_EMOJI = "🚧";
+  var courierJumping = false;
+  var COURIER_JUMP_MS = 500; // immunity window to full-width obstacles -- see courierJump()
+  var courierObstacleGroupSeq = 0; // ties multi-lane (wide/full) obstacle pieces together
+  var COURIER_TRIP_LENGTH = 8; // dodges per delivery run before the progress bar completes
+  var courierProgress = 0;
+  var COURIER_TIP_CHANCE = 0.25; // purely cosmetic flourish on arrival -- payout itself is still
+  // the same per-dodge registerHit("courier", ...) call as always, never a separate lump sum
+  var busSide = 0;
+  var BUS_LANE_Y = [35, 105]; // px centers, matches 2x70px rows in a 140px-tall #bus-road
+  var BUS_SIDE_EMOJI = ["⬅️", "➡️"];
+  var busSpawnInterval = null;
+  var busRafId = null;
+  var BUS_PROGRESS_LENGTH = 8;
+  var busProgress = 0;
   var BASKET_WIDTH_PCT = 26;
   var CATCH_EMOJIS = ["🍎", "💧", "🎁", "🍪", "🥤", "🍕", "🧀", "🥐"];
   var BOMB_EMOJI = "💣";
@@ -10968,7 +11086,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
 
   function showFullScreen(text) {
-    ["topbar", "tabs", "game-clicker", "game-catch", "game-courier", "game-farm"].forEach(function (id) {
+    ["topbar", "tabs", "game-clicker", "game-catch", "game-courier", "game-bus", "game-farm"].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.style.display = "none";
     });
@@ -11014,10 +11132,13 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (catchRafId) { cancelAnimationFrame(catchRafId); catchRafId = null; }
     if (courierRafId) { cancelAnimationFrame(courierRafId); courierRafId = null; }
     if (courierSpawnInterval) { clearInterval(courierSpawnInterval); courierSpawnInterval = null; }
+    if (busRafId) { cancelAnimationFrame(busRafId); busRafId = null; }
+    if (busSpawnInterval) { clearInterval(busSpawnInterval); busSpawnInterval = null; }
     stopFarmCountdown();
     clearDebuff("catch", "catch-feedback", "catch-field");
     clearDebuff("courier", "courier-feedback", "courier-controls");
     clearDebuff("clicker", "clicker-feedback", "hacker-keyboard");
+    clearDebuff("bus", "bus-feedback", "bus-controls");
     var field = document.getElementById("catch-field");
     if (field) {
       var items = field.querySelectorAll(".catch-item");
@@ -11029,6 +11150,11 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (road) {
       var obstacles = road.querySelectorAll(".courier-obstacle");
       obstacles.forEach(function (el) { el.remove(); });
+    }
+    var busRoad = document.getElementById("bus-road");
+    if (busRoad) {
+      var stops = busRoad.querySelectorAll(".bus-stop");
+      stops.forEach(function (el) { el.remove(); });
     }
   }
 
@@ -11211,20 +11337,69 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (downBtn) downBtn.disabled = courierLane === 2;
   }
 
+  function courierJump() {
+    if (courierJumping) return;
+    courierJumping = true;
+    var rider = document.getElementById("courier-rider");
+    if (rider) rider.classList.add("jumping");
+    setTimeout(function () {
+      courierJumping = false;
+      if (rider) rider.classList.remove("jumping");
+    }, COURIER_JUMP_MS);
+  }
+
+  function setCourierProgress(value) {
+    courierProgress = value;
+    var fill = document.getElementById("courier-progress-fill");
+    if (fill) fill.style.width = Math.min(100, (courierProgress / COURIER_TRIP_LENGTH) * 100) + "%";
+  }
+
+  function completeCourierTrip() {
+    var road = document.getElementById("courier-road");
+    var feedback = document.getElementById("courier-feedback");
+    var tip = Math.random() < COURIER_TIP_CHANCE;
+    if (feedback) {
+      var text = tip ? state.ui.courier_arrived_tip : state.ui.courier_arrived;
+      feedback.textContent = text;
+      feedback.className = "arrived";
+      setTimeout(function () {
+        if (feedback.textContent === text) { feedback.textContent = ""; feedback.className = ""; }
+      }, 1500);
+    }
+    if (road) road.classList.toggle("mirrored");
+    setCourierProgress(0);
+  }
+
   function spawnCourierObstacle() {
     var road = document.getElementById("courier-road");
     if (!road) return;
-    var lane = Math.floor(Math.random() * 3);
-    var obstacle = document.createElement("div");
-    obstacle.className = "courier-obstacle";
-    obstacle.textContent = COURIER_OBSTACLE_EMOJI;
-    obstacle.dataset.lane = String(lane);
-    obstacle.style.top = COURIER_LANE_Y[lane] + "px";
-    obstacle.style.animationDuration = (2.3 + Math.random() * 0.6) + "s";
-    obstacle.addEventListener("animationend", function () {
-      if (obstacle.parentNode) obstacle.remove();
+    var roll = Math.random();
+    var lanes;
+    if (roll < 0.65) {
+      lanes = [Math.floor(Math.random() * 3)]; // single lane -- switch out of it
+    } else if (roll < 0.85) {
+      var excluded = Math.floor(Math.random() * 3);
+      lanes = [0, 1, 2].filter(function (l) { return l !== excluded; }); // wide -- only one safe lane
+    } else {
+      lanes = [0, 1, 2]; // full width -- can't be dodged by lane, needs a jump
+    }
+    var groupId = "g" + (courierObstacleGroupSeq++);
+    var isFull = lanes.length === 3;
+    var duration = (2.3 + Math.random() * 0.6) + "s";
+    lanes.forEach(function (lane) {
+      var obstacle = document.createElement("div");
+      obstacle.className = "courier-obstacle";
+      obstacle.textContent = COURIER_OBSTACLE_EMOJI;
+      obstacle.dataset.lane = String(lane);
+      obstacle.dataset.group = groupId;
+      if (isFull) obstacle.dataset.full = "1";
+      obstacle.style.top = COURIER_LANE_Y[lane] + "px";
+      obstacle.style.animationDuration = duration;
+      obstacle.addEventListener("animationend", function () {
+        if (obstacle.parentNode) obstacle.remove();
+      });
+      road.appendChild(obstacle);
     });
-    road.appendChild(obstacle);
   }
 
   function courierCollisionTick() {
@@ -11234,20 +11409,29 @@ WORK_PAGE_HTML = r'''<!doctype html>
       var riderRect = rider.getBoundingClientRect();
       var riderCenterX = riderRect.left + riderRect.width / 2;
       var obstacles = road.querySelectorAll(".courier-obstacle:not([data-resolved])");
+      var resolvedGroups = {};
       for (var i = 0; i < obstacles.length; i++) {
         var obstacle = obstacles[i];
         var r = obstacle.getBoundingClientRect();
         var obstacleCenterX = r.left + r.width / 2;
         if (obstacleCenterX <= riderCenterX) {
+          var groupId = obstacle.dataset.group;
           obstacle.dataset.resolved = "1";
-          var obstacleLane = parseInt(obstacle.dataset.lane, 10);
-          if (obstacleLane === courierLane) {
-            obstacle.classList.add("hit-flash");
+          if (resolvedGroups[groupId]) continue; // rest of this group already scored this tick
+          resolvedGroups[groupId] = true;
+          var isFull = obstacle.dataset.full === "1";
+          var groupEls = road.querySelectorAll('.courier-obstacle[data-group="' + groupId + '"]');
+          var blockedLanes = Array.prototype.map.call(groupEls, function (el) { return parseInt(el.dataset.lane, 10); });
+          var hit = blockedLanes.indexOf(courierLane) !== -1 && !(isFull && courierJumping);
+          if (hit) {
+            groupEls.forEach(function (el) { el.classList.add("hit-flash"); });
             rider.classList.add("crash");
             setTimeout(function () { rider.classList.remove("crash"); }, 300);
             triggerDebuff("courier", "courier-feedback", "courier-controls");
           } else {
             registerHit("courier", riderRect.left + riderRect.width / 2, riderRect.top, road);
+            setCourierProgress(courierProgress + 1);
+            if (courierProgress >= COURIER_TRIP_LENGTH) completeCourierTrip();
           }
         }
       }
@@ -11257,6 +11441,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   function startCourier() {
     setCourierLane(1);
+    setCourierProgress(0);
+    courierJumping = false;
+    var rider = document.getElementById("courier-rider");
+    if (rider) rider.classList.remove("jumping");
+    var road = document.getElementById("courier-road");
+    if (road) road.classList.remove("mirrored");
     courierSpawnInterval = setInterval(spawnCourierObstacle, 900);
     courierCollisionTick();
   }
@@ -11264,6 +11454,97 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function bindCourierControls() {
     document.getElementById("courier-up").onclick = function () { setCourierLane(courierLane - 1); };
     document.getElementById("courier-down").onclick = function () { setCourierLane(courierLane + 1); };
+    document.getElementById("courier-jump").onclick = courierJump;
+  }
+
+  // ---------- Bus (pull to the side the arrow points to) ----------
+  function setBusSide(side) {
+    busSide = Math.max(0, Math.min(1, side));
+    var vehicle = document.getElementById("bus-vehicle");
+    if (vehicle) vehicle.style.top = BUS_LANE_Y[busSide] + "px";
+    var leftBtn = document.getElementById("bus-left");
+    var rightBtn = document.getElementById("bus-right");
+    if (leftBtn) leftBtn.disabled = busSide === 0;
+    if (rightBtn) rightBtn.disabled = busSide === 1;
+  }
+
+  function setBusProgress(value) {
+    busProgress = value;
+    var fill = document.getElementById("bus-progress-fill");
+    if (fill) fill.style.width = Math.min(100, (busProgress / BUS_PROGRESS_LENGTH) * 100) + "%";
+  }
+
+  function completeBusRoute() {
+    var feedback = document.getElementById("bus-feedback");
+    var tip = Math.random() < COURIER_TIP_CHANCE;
+    if (feedback) {
+      var text = tip ? state.ui.bus_route_done_tip : state.ui.bus_route_done;
+      feedback.textContent = text;
+      feedback.className = "arrived";
+      setTimeout(function () {
+        if (feedback.textContent === text) { feedback.textContent = ""; feedback.className = ""; }
+      }, 1500);
+    }
+    setBusProgress(0);
+  }
+
+  function spawnBusStop() {
+    var road = document.getElementById("bus-road");
+    if (!road) return;
+    var side = Math.floor(Math.random() * 2);
+    var stop = document.createElement("div");
+    stop.className = "bus-stop";
+    stop.textContent = BUS_SIDE_EMOJI[side];
+    stop.dataset.side = String(side);
+    stop.style.top = BUS_LANE_Y[side] + "px";
+    stop.style.animationDuration = (2.6 + Math.random() * 0.6) + "s";
+    stop.addEventListener("animationend", function () {
+      if (stop.parentNode) stop.remove();
+    });
+    road.appendChild(stop);
+  }
+
+  function busCollisionTick() {
+    var road = document.getElementById("bus-road");
+    var vehicle = document.getElementById("bus-vehicle");
+    if (road && vehicle && !debuffState.bus) {
+      var vehicleRect = vehicle.getBoundingClientRect();
+      var vehicleCenterX = vehicleRect.left + vehicleRect.width / 2;
+      var stops = road.querySelectorAll(".bus-stop:not([data-resolved])");
+      for (var i = 0; i < stops.length; i++) {
+        var stop = stops[i];
+        var r = stop.getBoundingClientRect();
+        var stopCenterX = r.left + r.width / 2;
+        if (stopCenterX <= vehicleCenterX) {
+          stop.dataset.resolved = "1";
+          var side = parseInt(stop.dataset.side, 10);
+          if (side === busSide) {
+            stop.classList.add("boarded");
+            registerHit("bus", vehicleRect.left + vehicleRect.width / 2, vehicleRect.top, road);
+            setBusProgress(busProgress + 1);
+            if (busProgress >= BUS_PROGRESS_LENGTH) completeBusRoute();
+          } else {
+            stop.classList.add("hit-flash");
+            vehicle.classList.add("crash");
+            setTimeout(function () { vehicle.classList.remove("crash"); }, 300);
+            triggerDebuff("bus", "bus-feedback", "bus-controls");
+          }
+        }
+      }
+    }
+    busRafId = requestAnimationFrame(busCollisionTick);
+  }
+
+  function startBus() {
+    setBusSide(0);
+    setBusProgress(0);
+    busSpawnInterval = setInterval(spawnBusStop, 1000);
+    busCollisionTick();
+  }
+
+  function bindBusControls() {
+    document.getElementById("bus-left").onclick = function () { setBusSide(0); };
+    document.getElementById("bus-right").onclick = function () { setBusSide(1); };
   }
 
   // ---------- Farm ----------
@@ -11386,13 +11667,14 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function switchGame(name) {
     activeGame = name;
     stopAllGames();
-    ["clicker", "catch", "courier", "farm"].forEach(function (g) {
+    ["clicker", "catch", "courier", "bus", "farm"].forEach(function (g) {
       document.getElementById("game-" + g).style.display = g === name ? "block" : "none";
       document.getElementById("tab-" + g).classList.toggle("active", g === name);
     });
     if (name === "clicker") startHacker();
     if (name === "catch") startCatch();
     if (name === "courier") startCourier();
+    if (name === "bus") startBus();
     if (name === "farm") renderFarm();
   }
 
@@ -11410,19 +11692,23 @@ WORK_PAGE_HTML = r'''<!doctype html>
     document.getElementById("tab-clicker").textContent = state.ui.tab_clicker;
     document.getElementById("tab-catch").textContent = state.ui.tab_catch;
     document.getElementById("tab-courier").textContent = state.ui.tab_courier;
+    document.getElementById("tab-bus").textContent = state.ui.tab_bus;
     document.getElementById("tab-farm").textContent = state.ui.tab_farm;
     document.getElementById("clicker-hint").textContent = state.ui.clicker_hint;
     document.getElementById("catch-hint").textContent = state.ui.catch_hint;
     document.getElementById("courier-hint").textContent = state.ui.courier_hint;
+    document.getElementById("bus-hint").textContent = state.ui.bus_hint;
 
     document.getElementById("tab-clicker").onclick = function () { switchGame("clicker"); };
     document.getElementById("tab-catch").onclick = function () { switchGame("catch"); };
     document.getElementById("tab-courier").onclick = function () { switchGame("courier"); };
+    document.getElementById("tab-bus").onclick = function () { switchGame("bus"); };
     document.getElementById("tab-farm").onclick = function () { switchGame("farm"); };
 
     bindHackerKeyboard();
     bindCatchDrag();
     bindCourierControls();
+    bindBusControls();
 
     switchGame(activeGame);
   }
@@ -11536,9 +11822,9 @@ async def api_work_state_handler(request):
 
 
 async def api_work_hit_handler(request):
-    """Одно засчитанное попадание в одной из 3 мгновенных игр (см. register_work_hit) — сразу
+    """Одно засчитанное попадание в одной из мгновенных игр (см. register_work_hit) — сразу
     платит баксы, без таймера и без сессии. game передаётся телом запроса ({"game": "clicker"|
-    "catch"|"courier"})."""
+    "catch"|"courier"|"bus"})."""
     init_data = request.headers.get("X-Telegram-Init-Data", "")
     user_id, user, error = resolve_webapp_user(init_data)
     if error:
