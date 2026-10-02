@@ -87,6 +87,7 @@ TEXTS = {
             "/switch_personality — сменить мир и пол без потери истории (SUPER PRO/ELITE)\n"
             "/switch_style — сменить стиль без потери истории (SUPER PRO/ELITE)"
         ),
+        "help_guide_btn": "📖 Подробный гайд",
         "help_hint": "📖 /help — список всех команд.",
         "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
         "cancel_character_creation_btn": "❌ Отменить",
@@ -288,19 +289,14 @@ TEXTS = {
         "work_title": "💼 **Работа**\n\nЗарабатывай баксы по-настоящему: тапай в мини-играх — деньги сразу на счету, без ожидания. Плюс ферма — посади, поливай, жди урожай.",
         "work_webapp_required": "💼 Работа сейчас доступна только в полной версии приложения — попробуй попозже.",
         "work_minigame_title": "💼 Работа",
-        "work_tab_clicker": "💼 Офис",
+        "work_tab_clicker": "💻 Взлом",
         "work_tab_catch": "📦 Заказ",
         "work_tab_rhythm": "🚴 Курьер",
         "work_tab_farm": "🌽 Ферма",
-        "work_clicker_hint": "Печатай, пока инспектор не смотрит — если заметит, баксов не будет!",
-        "work_clicker_hit": "✅ Напечатал!",
-        "work_clicker_caught": "🚨 Попался! Инспектор заметил.",
-        "work_office_status_safe": "🟢 Можно печатать",
-        "work_office_status_watching": "🔴 Инспектор смотрит!",
-        "work_catch_hint": "Веди корзину из стороны в сторону, лови предметы и не лови бомбы 💣!",
+        "work_clicker_hint": "Жми именно ту клавишу, которая подсвечена — ошибёшься, и тебя засекут.",
+        "work_debuff_locked": "🔒 Заблокировано",
+        "work_catch_hint": "Веди корзину из стороны в сторону, лови предметы и не лови бомбы 💣! Улитка 🐌 на время замедлит падение.",
         "work_rhythm_hint": "Жми ▲▼, чтобы перестроиться между полос, и объезжай препятствия — за манёвр платят!",
-        "work_rhythm_hit": "✅ Объехал!",
-        "work_rhythm_miss": "💥 Врезался!",
         "work_multiplier_badge": "×2 — бонус подписки",
         "farm_plant_btn": "🌽 Посадить кукурузу",
         "farm_water_btn": "💧 Полить",
@@ -326,7 +322,7 @@ TEXTS = {
         "low_energy_nudge": "😴 Собеседник начинает уставать и клонит в сон... Может, взбодришь энергетиком?",
         "not_enough_bucks": "❌ Не хватает баксов: нужно ещё {n}💵.",
         "not_enough_energizers": "❌ Нет энергетиков. Купи бандл, чтобы разбудить персонажа сразу ⚡.",
-        "asleep_message": "😴 Персонаж крепко спит и сейчас не может ответить — сам он не проснётся, разбуди его энергетиком ⚡ или сразу и полностью за {price}⭐.",
+        "asleep_message": "😴 Персонаж крепко спит и сейчас не может ответить — сам он не проснётся, разбуди его энергетиком ⚡ или сразу и полностью за {price}⭐. Пока спит, голод и жажда не растут.",
         "wake_energizer_btn": "⚡ Разбудить энергетиком",
         "no_energizers_shop_btn": "🛍 Нет энергетиков — купить",
         "woken_up": "⚡ Энергетик выпит — персонаж снова бодр и на связи!",
@@ -416,6 +412,7 @@ TEXTS = {
             "/switch_personality — change world and gender without losing history (SUPER PRO/ELITE)\n"
             "/switch_style — change style without losing history (SUPER PRO/ELITE)"
         ),
+        "help_guide_btn": "📖 Full guide",
         "help_hint": "📖 /help — the full list of commands.",
         "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«An elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire.»\n\n✏️ Write the description now — and I'll remember it!",
         "cancel_character_creation_btn": "❌ Cancel",
@@ -617,19 +614,14 @@ TEXTS = {
         "work_title": "💼 **Work**\n\nEarn bucks for real: tap in the mini-games — money lands instantly, no waiting. Plus a farm — plant it, water it, wait for the harvest.",
         "work_webapp_required": "💼 Work is only available in the full app version right now — try again later.",
         "work_minigame_title": "💼 Work",
-        "work_tab_clicker": "💼 Office",
+        "work_tab_clicker": "💻 Hack",
         "work_tab_catch": "📦 Delivery",
         "work_tab_rhythm": "🚴 Courier",
         "work_tab_farm": "🌽 Farm",
-        "work_clicker_hint": "Type while the inspector isn't watching — get caught and you won't get paid!",
-        "work_clicker_hit": "✅ Typed it!",
-        "work_clicker_caught": "🚨 Caught! The inspector saw you.",
-        "work_office_status_safe": "🟢 Safe to type",
-        "work_office_status_watching": "🔴 Inspector's watching!",
-        "work_catch_hint": "Drag the basket side to side, catch the items, and dodge the bombs 💣!",
+        "work_clicker_hint": "Tap the key that's lit up — hit the wrong one and you'll get flagged.",
+        "work_debuff_locked": "🔒 Locked",
+        "work_catch_hint": "Drag the basket side to side, catch the items, and dodge the bombs 💣! A snail 🐌 briefly slows the fall.",
         "work_rhythm_hint": "Press ▲▼ to switch lanes and dodge the obstacles — every dodge pays out!",
-        "work_rhythm_hit": "✅ Dodged it!",
-        "work_rhythm_miss": "💥 Crashed!",
         "work_multiplier_badge": "×2 — subscriber bonus",
         "farm_plant_btn": "🌽 Plant corn",
         "farm_water_btn": "💧 Water",
@@ -655,7 +647,7 @@ TEXTS = {
         "low_energy_nudge": "😴 Your companion is starting to feel drowsy... Maybe perk them up with an energizer?",
         "not_enough_bucks": "❌ Not enough bucks: you need {n}💵 more.",
         "not_enough_energizers": "❌ No energizers left. Buy a bundle to wake your companion up right away ⚡.",
-        "asleep_message": "😴 Your companion is fast asleep and can't reply right now — they won't wake up on their own, so wake them with an energizer ⚡ or instantly and fully for {price}⭐.",
+        "asleep_message": "😴 Your companion is fast asleep and can't reply right now — they won't wake up on their own, so wake them with an energizer ⚡ or instantly and fully for {price}⭐. Hunger and thirst won't build up while they're asleep.",
         "wake_energizer_btn": "⚡ Wake up with an energizer",
         "no_energizers_shop_btn": "🛍 No energizers — buy some",
         "woken_up": "⚡ Energizer used — your companion is wide awake again!",
@@ -745,6 +737,7 @@ TEXTS = {
             "/switch_personality — Welt und Geschlecht ändern, ohne den Verlauf zu verlieren (SUPER PRO/ELITE)\n"
             "/switch_style — Stil ändern, ohne den Verlauf zu verlieren (SUPER PRO/ELITE)"
         ),
+        "help_guide_btn": "📖 Ausführliche Anleitung",
         "help_hint": "📖 /help — die vollständige Befehlsliste.",
         "character_create_prompt": "🎭 **Erstelle deinen eigenen Charakter!**\n\nBeschreibe eine beliebige Figur — aus Anime, Filmen, Spielen oder denk dir selbst eine aus.\nSchreibe Namen, Charakter, Aussehen, Herkunft und beliebige Details.\n\n📝 *Beispiel:*\n«Eine Elfe aus der Welt von The Witcher — weise, ruhig, mit langen silbernen Haaren. Sie liebt Sterne und lange Gespräche am Feuer.»\n\n✏️ Schreibe die Beschreibung jetzt — und ich merke sie mir!",
         "cancel_character_creation_btn": "❌ Abbrechen",
@@ -946,19 +939,14 @@ TEXTS = {
         "work_title": "💼 **Arbeit**\n\nVerdien echte Bucks: Tippe in den Minispielen — das Geld landet sofort, ohne Warten. Plus eine Farm — pflanzen, gießen, auf die Ernte warten.",
         "work_webapp_required": "💼 Arbeit ist gerade nur in der vollständigen App-Version verfügbar — versuch's später noch mal.",
         "work_minigame_title": "💼 Arbeit",
-        "work_tab_clicker": "💼 Büro",
+        "work_tab_clicker": "💻 Hacken",
         "work_tab_catch": "📦 Lieferung",
         "work_tab_rhythm": "🚴 Kurier",
         "work_tab_farm": "🌽 Farm",
-        "work_clicker_hint": "Tipp, solange der Inspektor nicht hinschaut — erwischt er dich, gibt's kein Geld!",
-        "work_clicker_hit": "✅ Getippt!",
-        "work_clicker_caught": "🚨 Erwischt! Der Inspektor hat dich gesehen.",
-        "work_office_status_safe": "🟢 Sicher zu tippen",
-        "work_office_status_watching": "🔴 Der Inspektor schaut!",
-        "work_catch_hint": "Zieh den Korb hin und her, fang die Gegenstände und weich den Bomben 💣 aus!",
+        "work_clicker_hint": "Tipp die Taste, die leuchtet — triffst du die falsche, fliegst du auf.",
+        "work_debuff_locked": "🔒 Gesperrt",
+        "work_catch_hint": "Zieh den Korb hin und her, fang die Gegenstände und weich den Bomben 💣 aus! Eine Schnecke 🐌 verlangsamt kurz den Fall.",
         "work_rhythm_hint": "Drück ▲▼, um die Spur zu wechseln, und weich den Hindernissen aus — jedes Ausweichen zahlt sich aus!",
-        "work_rhythm_hit": "✅ Ausgewichen!",
-        "work_rhythm_miss": "💥 Gecrasht!",
         "work_multiplier_badge": "×2 — Abo-Bonus",
         "farm_plant_btn": "🌽 Mais pflanzen",
         "farm_water_btn": "💧 Gießen",
@@ -984,7 +972,7 @@ TEXTS = {
         "low_energy_nudge": "😴 Dein Begleiter wird langsam müde und schläfrig... Vielleicht mit einem Energydrink aufmuntern?",
         "not_enough_bucks": "❌ Nicht genug Bucks: dir fehlen noch {n}💵.",
         "not_enough_energizers": "❌ Keine Energydrinks mehr. Kaufe ein Bundle, um deinen Begleiter sofort aufzuwecken ⚡.",
-        "asleep_message": "😴 Dein Begleiter schläft tief und fest und kann gerade nicht antworten — von selbst wacht er/sie nicht auf, also weck ihn/sie mit einem Energydrink ⚡ oder sofort und vollständig für {price}⭐.",
+        "asleep_message": "😴 Dein Begleiter schläft tief und fest und kann gerade nicht antworten — von selbst wacht er/sie nicht auf, also weck ihn/sie mit einem Energydrink ⚡ oder sofort und vollständig für {price}⭐. Hunger und Durst steigen nicht, solange er/sie schläft.",
         "wake_energizer_btn": "⚡ Mit Energydrink wecken",
         "no_energizers_shop_btn": "🛍 Keine Energydrinks — kaufen",
         "woken_up": "⚡ Energydrink getrunken — dein Begleiter ist wieder hellwach!",
@@ -2243,7 +2231,7 @@ def apply_passive_satiety_decay(user):
             elapsed_min = max(0.0, (now - datetime.fromisoformat(last)).total_seconds() / 60)
         except (ValueError, TypeError):
             elapsed_min = 0
-        if elapsed_min > 0:
+        if elapsed_min > 0 and not is_asleep(user):
             user["satiety"] = max(0, user.get("satiety", SATIETY_MAX) - elapsed_min * (SATIETY_MAX / SATIETY_INACTIVITY_DECAY_MINUTES))
             prev_water = user.get("water", WATER_MAX)
             user["water"] = max(0, prev_water - elapsed_min * (WATER_MAX / WATER_INACTIVITY_DECAY_MINUTES))
@@ -3291,6 +3279,20 @@ async def revive_new_character(call: types.CallbackQuery):
 
 HELP_LANG_HINT = "🌍 Не тот язык? / Wrong language? / Falsche Sprache? → /language"
 
+HELP_URLS = {
+    "ru": "https://telegra.ph/Kak-polzovatsya-Role-Duel-10-02",
+    "en": "https://telegra.ph/How-to-use-Role-Duel-10-02",
+    "de": "https://telegra.ph/So-funktioniert-Role-Duel-10-02",
+}
+
+
+def get_help_guide_kb(user):
+    lang = user.get("lang", "ru")
+    url = HELP_URLS.get(lang, HELP_URLS["ru"])
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=get_text(user, "help_guide_btn"), url=url, style="primary")],
+    ])
+
 
 @dp.message(Command("help"))
 async def help_cmd(message: types.Message):
@@ -3301,10 +3303,11 @@ async def help_cmd(message: types.Message):
     можно прочитать и найти команду для смены языка. Без parse_mode: команды вроде
     /reset_character содержат "_", а он непарный в тексте — Telegram Markdown не может найти
     закрывающий символ и тихо отклоняет всё сообщение целиком (именно поэтому /help не отвечал
-    вообще ничего)."""
+    вообще ничего). Подробный гайд живёт на Telegraph (см. HELP_URLS), а не здесь целиком --
+    тот же приём, что и для пользовательского соглашения (см. AGREEMENT_URLS)."""
     user = get_user(message.from_user.id)
     text = HELP_LANG_HINT + "\n\n" + get_text(user, "help_title") + "\n\n" + get_text(user, "help_base")
-    await message.answer(text)
+    await message.answer(text, reply_markup=get_help_guide_kb(user))
 
 
 # ============================================================
@@ -10522,14 +10525,9 @@ def serialize_work_state(user):
             "tab_courier": get_text(user, "work_tab_rhythm"),
             "tab_farm": get_text(user, "work_tab_farm"),
             "clicker_hint": get_text(user, "work_clicker_hint"),
-            "clicker_hit": get_text(user, "work_clicker_hit"),
-            "clicker_caught": get_text(user, "work_clicker_caught"),
-            "office_status_safe": get_text(user, "work_office_status_safe"),
-            "office_status_watching": get_text(user, "work_office_status_watching"),
+            "debuff_locked": get_text(user, "work_debuff_locked"),
             "catch_hint": get_text(user, "work_catch_hint"),
             "courier_hint": get_text(user, "work_rhythm_hint"),
-            "courier_hit": get_text(user, "work_rhythm_hit"),
-            "courier_miss": get_text(user, "work_rhythm_miss"),
             "multiplier_badge": get_text(user, "work_multiplier_badge"),
             "farm_plant_btn": get_text(user, "farm_plant_btn"),
             "farm_water_btn": get_text(user, "farm_water_btn"),
@@ -10617,78 +10615,55 @@ WORK_PAGE_HTML = r'''<!doctype html>
     to { opacity: 0; transform: translate(-50%, -220%); }
   }
 
-  #office-scene {
+  #hacker-terminal {
     position: relative;
     height: 200px;
     border-radius: 14px;
-    background: var(--tg-theme-secondary-bg-color, #f3f3f3);
+    background: #0d1117;
     overflow: hidden;
     margin-bottom: 10px;
-    border: 3px solid rgba(29,209,161,.5);
-    transition: border-color .25s ease, background-color .25s ease;
+    border: 3px solid #1dd1a1;
   }
-  #office-scene.alert { border-color: rgba(255,193,7,.85); }
-  #office-scene.watching { border-color: rgba(232,56,61,.9); background-color: rgba(232,56,61,.08); }
-
-  #inspector {
+  #hacker-keyboard {
     position: absolute;
-    top: 8px;
-    right: 10px;
-    font-size: 34px;
-    opacity: 0;
-    transform: translateY(-20px) scale(.7);
-    transition: opacity .25s ease, transform .25s ease;
-  }
-  #office-scene.alert #inspector, #office-scene.watching #inspector {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  #office-scene.watching #inspector { animation: inspector-glare .5s ease infinite alternate; }
-  @keyframes inspector-glare {
-    from { filter: none; }
-    to { filter: drop-shadow(0 0 6px #e8383d); }
-  }
-
-  #office-status {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 3px 9px;
-    border-radius: 999px;
-    background: rgba(29,209,161,.15);
-    color: #1dd1a1;
-  }
-  #office-scene.watching #office-status { background: rgba(232,56,61,.15); color: #e8383d; }
-
-  #office-keyboard {
-    position: absolute;
-    bottom: 14px;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    gap: 10px;
   }
-  .office-key {
-    width: 52px;
-    height: 42px;
-    border-radius: 8px;
-    border: none;
-    border-bottom: 4px solid rgba(0,0,0,.25);
-    background: var(--tg-theme-button-color, #2481cc);
-    color: rgba(255,255,255,.6);
-    font-size: 16px;
-    box-shadow: 0 2px 4px rgba(0,0,0,.2);
-    transition: transform .08s ease, border-bottom-width .08s ease;
+  .hacker-key {
+    width: 56px;
+    height: 46px;
+    border-radius: 6px;
+    border: 1px solid #2a3540;
+    border-bottom: 4px solid #0a0f14;
+    background: #161e27;
+    color: #3a4a57;
+    font-size: 18px;
+    font-family: monospace;
+    box-shadow: 0 2px 4px rgba(0,0,0,.3);
+    transition: transform .08s ease, border-bottom-width .08s ease, background .15s ease, color .15s ease;
   }
-  .office-key.pressed { transform: translateY(2px); border-bottom-width: 2px; }
-  .office-key.caught { animation: key-caught .3s ease; }
+  .hacker-key.pressed { transform: translateY(2px); border-bottom-width: 2px; }
+  .hacker-key.target {
+    background: #0f3d2e;
+    color: #3dffb0;
+    border-color: #1dd1a1;
+    animation: hacker-target-pulse 1s ease infinite;
+  }
+  @keyframes hacker-target-pulse {
+    0%, 100% { box-shadow: 0 0 6px rgba(61,255,176,.4); }
+    50% { box-shadow: 0 0 16px rgba(61,255,176,.9); }
+  }
+  .hacker-key.wrong { animation: key-caught .3s ease; }
   @keyframes key-caught {
     0%, 100% { filter: none; }
-    40% { filter: drop-shadow(0 0 6px #e8383d) brightness(.7); }
+    40% { filter: drop-shadow(0 0 6px #e8383d) brightness(.7); background: #3d1515; }
   }
+
+  .debuffed { opacity: .45; pointer-events: none; filter: grayscale(.5); transition: opacity .2s ease; }
 
   #catch-hint, #courier-hint, #clicker-hint { font-size: 13px; opacity: .7; margin-bottom: 10px; }
   #catch-field {
@@ -10699,7 +10674,9 @@ WORK_PAGE_HTML = r'''<!doctype html>
     overflow: hidden;
     margin-bottom: 10px;
     touch-action: none;
+    transition: box-shadow .2s ease;
   }
+  #catch-field.slow-active { box-shadow: inset 0 0 0 3px #4ea8ff; }
   .catch-item {
     position: absolute;
     top: -34px;
@@ -10710,6 +10687,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     user-select: none;
     pointer-events: none;
   }
+  .catch-item.bomb { font-size: 24px; }
   .catch-item.caught { transform: scale(1.4); opacity: 0; transition: all .15s ease; }
   .catch-item.exploded { animation: catch-explode .3s ease-out forwards; }
   @keyframes catch-explode {
@@ -10784,21 +10762,20 @@ WORK_PAGE_HTML = r'''<!doctype html>
     to { left: -8%; }
   }
   .courier-obstacle.hit-flash { filter: drop-shadow(0 0 8px #e8383d); }
-  #courier-controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 10px; }
+  #courier-controls { display: flex; gap: 14px; justify-content: center; margin-bottom: 10px; }
   #courier-up, #courier-down {
-    width: 56px;
-    height: 44px;
-    border-radius: 10px;
+    width: 76px;
+    height: 58px;
+    border-radius: 12px;
     border: none;
     background: var(--tg-theme-button-color, #2481cc);
     color: var(--tg-theme-button-text-color, #ffffff);
-    font-size: 20px;
+    font-size: 26px;
     font-weight: 700;
   }
   #courier-up:disabled, #courier-down:disabled { opacity: .35; }
-  #courier-feedback, #clicker-feedback { margin-top: 12px; font-size: 14px; font-weight: 700; min-height: 20px; }
-  #courier-feedback.hit, #clicker-feedback.hit { color: #1dd1a1; }
-  #courier-feedback.miss, #clicker-feedback.miss { color: #e8383d; }
+  #catch-feedback, #courier-feedback, #clicker-feedback { margin-top: 12px; font-size: 14px; font-weight: 700; min-height: 20px; }
+  #catch-feedback.locked, #courier-feedback.locked, #clicker-feedback.locked { color: #e8383d; }
 
   #game-farm { padding-top: 8px; }
   .farm-plot {
@@ -10880,16 +10857,14 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   <div id="game-clicker" class="game-panel">
     <div id="clicker-hint"></div>
-    <div id="office-scene">
-      <div id="office-status"></div>
-      <div id="inspector">🕵️</div>
-      <div id="office-keyboard">
-        <button class="office-key">•</button>
-        <button class="office-key">•</button>
-        <button class="office-key">•</button>
-        <button class="office-key">•</button>
-        <button class="office-key">•</button>
-        <button class="office-key">•</button>
+    <div id="hacker-terminal">
+      <div id="hacker-keyboard">
+        <button class="hacker-key" data-key="0">•</button>
+        <button class="hacker-key" data-key="1">•</button>
+        <button class="hacker-key" data-key="2">•</button>
+        <button class="hacker-key" data-key="3">•</button>
+        <button class="hacker-key" data-key="4">•</button>
+        <button class="hacker-key" data-key="5">•</button>
       </div>
     </div>
     <div id="clicker-feedback"></div>
@@ -10900,6 +10875,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     <div id="catch-field">
       <div id="catch-basket">🧺</div>
     </div>
+    <div id="catch-feedback"></div>
   </div>
 
   <div id="game-courier" class="game-panel">
@@ -10944,11 +10920,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var catchRafId = null;
   var courierRafId = null;
   var courierSpawnInterval = null;
-  var officeTimerId = null;
-  var officeState = "safe"; // "safe" | "alert" | "watching" -- see runOfficeState()
-  var OFFICE_SAFE_MIN_MS = 2200, OFFICE_SAFE_MAX_MS = 4200;
-  var OFFICE_ALERT_MS = 700; // telegraph window before "watching" -- gives a fair chance to stop tapping
-  var OFFICE_WATCH_MIN_MS = 1400, OFFICE_WATCH_MAX_MS = 2600;
+  var hackerTarget = 0; // index of the currently lit .hacker-key -- see pickHackerTarget()
+  var DEBUFF_MS = 2000; // lockout after any failure (bomb/crash/wrong key) -- see triggerDebuff()
+  var debuffState = { catch: false, courier: false, clicker: false };
+  var debuffTimeoutIds = { catch: null, courier: null, clicker: null };
   var farmCountdownInterval = null;
   var hitInFlight = false;
   var farmActionInFlight = false;
@@ -10957,9 +10932,15 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var courierLane = 1;
   var COURIER_OBSTACLE_EMOJI = "🚧";
   var BASKET_WIDTH_PCT = 26;
-  var CATCH_EMOJIS = ["🍎", "💧", "🎁", "🍪", "🥤", "🍕"];
+  var CATCH_EMOJIS = ["🍎", "💧", "🎁", "🍪", "🥤", "🍕", "🧀", "🥐"];
   var BOMB_EMOJI = "💣";
   var BOMB_CHANCE = 0.22;
+  var SLOWFALL_EMOJI = "🐌";
+  var SLOWFALL_CHANCE = 0.08; // rolled only when the spawn didn't already roll a bomb
+  var SLOWFALL_DURATION_MS = 5000;
+  var SLOWFALL_MULTIPLIER = 1.6; // how much longer newly-spawned items take to fall while active
+  var slowFallUntil = 0;
+  var CATCH_FALL_MIN_S = 1.5, CATCH_FALL_RANGE_S = 1.0; // was 2.1-3.5s -- faster, harder to react to
 
   function initData() { return tg ? tg.initData : ""; }
 
@@ -11033,13 +11014,17 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (catchRafId) { cancelAnimationFrame(catchRafId); catchRafId = null; }
     if (courierRafId) { cancelAnimationFrame(courierRafId); courierRafId = null; }
     if (courierSpawnInterval) { clearInterval(courierSpawnInterval); courierSpawnInterval = null; }
-    if (officeTimerId) { clearTimeout(officeTimerId); officeTimerId = null; }
     stopFarmCountdown();
+    clearDebuff("catch", "catch-feedback", "catch-field");
+    clearDebuff("courier", "courier-feedback", "courier-controls");
+    clearDebuff("clicker", "clicker-feedback", "hacker-keyboard");
     var field = document.getElementById("catch-field");
     if (field) {
       var items = field.querySelectorAll(".catch-item");
       items.forEach(function (el) { el.remove(); });
+      field.classList.remove("slow-active");
     }
+    slowFallUntil = 0;
     var road = document.getElementById("courier-road");
     if (road) {
       var obstacles = road.querySelectorAll(".courier-obstacle");
@@ -11047,49 +11032,66 @@ WORK_PAGE_HTML = r'''<!doctype html>
     }
   }
 
-  // ---------- Office (inspector red-light/green-light) ----------
-  function randRange(min, max) { return min + Math.random() * (max - min); }
-
-  function setOfficeState(next) {
-    officeState = next;
-    var scene = document.getElementById("office-scene");
-    if (scene) scene.className = next;
-    var status = document.getElementById("office-status");
-    if (status) {
-      status.textContent = next === "watching" ? state.ui.office_status_watching : state.ui.office_status_safe;
+  // ---------- Shared failure debuff (catch/courier/hacker) ----------
+  function triggerDebuff(game, indicatorElId, lockElId) {
+    if (debuffState[game]) return;
+    debuffState[game] = true;
+    var indicator = document.getElementById(indicatorElId);
+    var lockEl = document.getElementById(lockElId);
+    if (lockEl) lockEl.classList.add("debuffed");
+    var remaining = Math.ceil(DEBUFF_MS / 1000);
+    function tick() {
+      if (indicator) { indicator.textContent = state.ui.debuff_locked + " " + remaining + "s"; indicator.className = "locked"; }
+      remaining--;
+      if (remaining >= 0) {
+        debuffTimeoutIds[game] = setTimeout(tick, 1000);
+      } else {
+        debuffState[game] = false;
+        debuffTimeoutIds[game] = null;
+        if (lockEl) lockEl.classList.remove("debuffed");
+        if (indicator) { indicator.textContent = ""; indicator.className = ""; }
+      }
     }
+    tick();
   }
 
-  function runOfficeState(name) {
-    setOfficeState(name);
-    if (name === "safe") {
-      officeTimerId = setTimeout(function () { runOfficeState("alert"); }, randRange(OFFICE_SAFE_MIN_MS, OFFICE_SAFE_MAX_MS));
-    } else if (name === "alert") {
-      officeTimerId = setTimeout(function () { runOfficeState("watching"); }, OFFICE_ALERT_MS);
-    } else {
-      officeTimerId = setTimeout(function () { runOfficeState("safe"); }, randRange(OFFICE_WATCH_MIN_MS, OFFICE_WATCH_MAX_MS));
-    }
+  function clearDebuff(game, indicatorElId, lockElId) {
+    if (debuffTimeoutIds[game]) { clearTimeout(debuffTimeoutIds[game]); debuffTimeoutIds[game] = null; }
+    debuffState[game] = false;
+    var indicator = document.getElementById(indicatorElId);
+    var lockEl = document.getElementById(lockElId);
+    if (lockEl) lockEl.classList.remove("debuffed");
+    if (indicator) { indicator.textContent = ""; indicator.className = ""; }
   }
 
-  function startOffice() {
-    runOfficeState("safe");
+  // ---------- Hacker (press the correct key) ----------
+  function pickHackerTarget() {
+    var keys = document.querySelectorAll(".hacker-key");
+    keys.forEach(function (k) { k.classList.remove("target"); });
+    hackerTarget = Math.floor(Math.random() * keys.length);
+    if (keys[hackerTarget]) keys[hackerTarget].classList.add("target");
   }
 
-  function bindOfficeKeyboard() {
-    var keys = document.querySelectorAll(".office-key");
-    keys.forEach(function (key) {
+  function startHacker() {
+    pickHackerTarget();
+  }
+
+  function bindHackerKeyboard() {
+    var keys = document.querySelectorAll(".hacker-key");
+    keys.forEach(function (key, index) {
       key.onclick = function () {
+        if (debuffState.clicker) return;
         key.classList.add("pressed");
         setTimeout(function () { key.classList.remove("pressed"); }, 100);
-        var feedback = document.getElementById("clicker-feedback");
-        if (officeState === "watching") {
-          key.classList.add("caught");
-          setTimeout(function () { key.classList.remove("caught"); }, 300);
-          if (feedback) { feedback.textContent = state.ui.clicker_caught; feedback.className = "miss"; }
-        } else {
-          if (feedback) { feedback.textContent = state.ui.clicker_hit; feedback.className = "hit"; }
+        if (index === hackerTarget) {
           registerHit("clicker", key.offsetLeft + key.offsetWidth / 2, key.offsetTop,
-            document.getElementById("office-scene"));
+            document.getElementById("hacker-terminal"));
+          pickHackerTarget();
+        } else {
+          key.classList.add("wrong");
+          setTimeout(function () { key.classList.remove("wrong"); }, 300);
+          triggerDebuff("clicker", "clicker-feedback", "hacker-keyboard");
+          pickHackerTarget();
         }
       };
     });
@@ -11130,12 +11132,22 @@ WORK_PAGE_HTML = r'''<!doctype html>
     var field = document.getElementById("catch-field");
     if (!field) return;
     var isBomb = Math.random() < BOMB_CHANCE;
+    var isSlowFall = !isBomb && Math.random() < SLOWFALL_CHANCE;
     var item = document.createElement("div");
     item.className = "catch-item";
-    item.textContent = isBomb ? BOMB_EMOJI : CATCH_EMOJIS[Math.floor(Math.random() * CATCH_EMOJIS.length)];
-    if (isBomb) item.dataset.bomb = "1";
+    if (isBomb) {
+      item.textContent = BOMB_EMOJI;
+      item.classList.add("bomb");
+      item.dataset.bomb = "1";
+    } else if (isSlowFall) {
+      item.textContent = SLOWFALL_EMOJI;
+      item.dataset.slowfall = "1";
+    } else {
+      item.textContent = CATCH_EMOJIS[Math.floor(Math.random() * CATCH_EMOJIS.length)];
+    }
     item.style.left = (6 + Math.random() * 82) + "%";
-    item.style.animationDuration = (2.1 + Math.random() * 1.4) + "s";
+    var baseDuration = CATCH_FALL_MIN_S + Math.random() * CATCH_FALL_RANGE_S;
+    item.style.animationDuration = (Date.now() < slowFallUntil ? baseDuration * SLOWFALL_MULTIPLIER : baseDuration) + "s";
     item.addEventListener("animationend", function () {
       if (item.parentNode) item.remove();
     });
@@ -11145,7 +11157,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function catchCollisionTick() {
     var field = document.getElementById("catch-field");
     var basket = document.getElementById("catch-basket");
-    if (field && basket) {
+    if (field && basket && !debuffState.catch) {
       var basketRect = basket.getBoundingClientRect();
       var items = field.querySelectorAll(".catch-item:not([data-caught])");
       for (var i = 0; i < items.length; i++) {
@@ -11157,16 +11169,24 @@ WORK_PAGE_HTML = r'''<!doctype html>
             itemCenterX >= basketRect.left && itemCenterX <= basketRect.right) {
           item.dataset.caught = "1";
           if (item.dataset.bomb === "1") {
-            // Бомба -- никакого registerHit, только обратная связь: деньги за это НЕ платятся.
+            // Бомба -- никакого registerHit, деньги за это НЕ платятся, плюс штрафная блокировка.
             item.classList.add("exploded");
             basket.classList.add("hit");
             setTimeout(function () { basket.classList.remove("hit"); }, 300);
             (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 300); })(item);
+            triggerDebuff("catch", "catch-feedback", "catch-field");
           } else {
             item.classList.add("caught");
             (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 160); })(item);
             registerHit("catch", basket.offsetLeft + basket.offsetWidth / 2, basket.offsetTop,
               document.getElementById("catch-field"));
+            if (item.dataset.slowfall === "1") {
+              slowFallUntil = Date.now() + SLOWFALL_DURATION_MS;
+              field.classList.add("slow-active");
+              setTimeout(function () {
+                if (Date.now() >= slowFallUntil) field.classList.remove("slow-active");
+              }, SLOWFALL_DURATION_MS);
+            }
           }
         }
       }
@@ -11210,7 +11230,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function courierCollisionTick() {
     var road = document.getElementById("courier-road");
     var rider = document.getElementById("courier-rider");
-    if (road && rider) {
+    if (road && rider && !debuffState.courier) {
       var riderRect = rider.getBoundingClientRect();
       var riderCenterX = riderRect.left + riderRect.width / 2;
       var obstacles = road.querySelectorAll(".courier-obstacle:not([data-resolved])");
@@ -11221,14 +11241,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
         if (obstacleCenterX <= riderCenterX) {
           obstacle.dataset.resolved = "1";
           var obstacleLane = parseInt(obstacle.dataset.lane, 10);
-          var feedback = document.getElementById("courier-feedback");
           if (obstacleLane === courierLane) {
             obstacle.classList.add("hit-flash");
-            if (feedback) { feedback.textContent = state.ui.courier_miss; feedback.className = "miss"; }
             rider.classList.add("crash");
             setTimeout(function () { rider.classList.remove("crash"); }, 300);
+            triggerDebuff("courier", "courier-feedback", "courier-controls");
           } else {
-            if (feedback) { feedback.textContent = state.ui.courier_hit; feedback.className = "hit"; }
             registerHit("courier", riderRect.left + riderRect.width / 2, riderRect.top, road);
           }
         }
@@ -11372,7 +11390,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       document.getElementById("game-" + g).style.display = g === name ? "block" : "none";
       document.getElementById("tab-" + g).classList.toggle("active", g === name);
     });
-    if (name === "clicker") startOffice();
+    if (name === "clicker") startHacker();
     if (name === "catch") startCatch();
     if (name === "courier") startCourier();
     if (name === "farm") renderFarm();
@@ -11402,7 +11420,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     document.getElementById("tab-courier").onclick = function () { switchGame("courier"); };
     document.getElementById("tab-farm").onclick = function () { switchGame("farm"); };
 
-    bindOfficeKeyboard();
+    bindHackerKeyboard();
     bindCatchDrag();
     bindCourierControls();
 
