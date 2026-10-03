@@ -180,7 +180,7 @@ TEXTS = {
         "style_not_found": "❌ Стиль не найден",
         "style_unavailable": "❌ Стиль недоступен",
         "character_updated": "✅ Персонаж обновлён! История сохранена.",
-        "onboarding_tip": "👋 Коротко о механике, чтобы не теряться:\n\n⚡ Энергия тратится на каждое сообщение — кончится, и персонаж «уснёт». Разбудить: энергетик или 🛍 Магазин.\n🍽💧 Сытость и вода тоже тают со временем — подкармливай через 🛍 Магазин.\n💼 Работа и 🎰 Колесо фортуны — бесплатные способы заработать баксы.\n👑 Подписка снимает большинство ограничений и даёт плюшки.\n\nПолный список команд и подробности — /help.",
+        "onboarding_tip": "👋 Если что-то будет непонятно — ниже подробный гайд.",
         "create_character_first": "Сначала создай персонажа через /start",
         "finish_registration_first": "🔞 Сначала пройди регистрацию через /start",
         "finish_registration_spin": "Сначала заверши регистрацию через /start.",
@@ -244,6 +244,7 @@ TEXTS = {
         "shop_category_treat": "🎁 Подарки",
         "shop_category_accessory": "💍 Аксессуары",
         "shop_category_energizer": "⚡ Энергетики",
+        "energizer_restore_hint": "+{amount}⚡ энергии за штуку",
         "shop_category_custom": "🎁 Свой подарок",
         "cd_min": "{n} мин",
         "cd_hours": "{n} ч",
@@ -513,7 +514,7 @@ TEXTS = {
         "style_not_found": "❌ Style not found",
         "style_unavailable": "❌ Style unavailable",
         "character_updated": "✅ Character updated! Your history is kept.",
-        "onboarding_tip": "👋 A quick rundown so nothing feels random:\n\n⚡ Energy is spent on every message — run out, and your companion falls \"asleep\". Wake them up with an energizer or in 🛍 Shop.\n🍽💧 Satiety and water drain over time too — feed them via 🛍 Shop.\n💼 Work and 🎰 the Spin wheel are free ways to earn bucks.\n👑 A subscription removes most limits and adds perks.\n\nFull command list and details — /help.",
+        "onboarding_tip": "👋 If anything's unclear, there's a full guide below.",
         "create_character_first": "Create your character first via /start",
         "finish_registration_first": "🔞 Please finish registration via /start first",
         "finish_registration_spin": "Please finish registration via /start first.",
@@ -577,6 +578,7 @@ TEXTS = {
         "shop_category_treat": "🎁 Treats",
         "shop_category_accessory": "💍 Accessories",
         "shop_category_energizer": "⚡ Energizers",
+        "energizer_restore_hint": "+{amount}⚡ energy per can",
         "shop_category_custom": "🎁 Custom gift",
         "cd_min": "{n} min",
         "cd_hours": "{n}h",
@@ -846,7 +848,7 @@ TEXTS = {
         "style_not_found": "❌ Stil nicht gefunden",
         "style_unavailable": "❌ Stil nicht verfügbar",
         "character_updated": "✅ Charakter aktualisiert! Der Verlauf bleibt erhalten.",
-        "onboarding_tip": "👋 Kurz erklärt, damit nichts zufällig wirkt:\n\n⚡ Energie wird bei jeder Nachricht verbraucht — ist sie leer, „schläft” dein Begleiter ein. Aufwecken: Energydrink oder im 🛍 Shop.\n🍽💧 Sättigung und Wasser sinken auch mit der Zeit — füttern über den 🛍 Shop.\n💼 Arbeit und 🎰 das Glücksrad sind kostenlose Wege, um Bucks zu verdienen.\n👑 Ein Abo entfernt die meisten Limits und bringt Extras.\n\nVolle Befehlsliste und Details — /help.",
+        "onboarding_tip": "👋 Falls etwas unklar ist, gibt's unten eine ausführliche Anleitung.",
         "create_character_first": "Erstelle zuerst deinen Charakter über /start",
         "finish_registration_first": "🔞 Schließe zuerst die Registrierung über /start ab",
         "finish_registration_spin": "Schließe zuerst die Registrierung über /start ab.",
@@ -910,6 +912,7 @@ TEXTS = {
         "shop_category_treat": "🎁 Geschenke",
         "shop_category_accessory": "💍 Accessoires",
         "shop_category_energizer": "⚡ Energydrinks",
+        "energizer_restore_hint": "+{amount}⚡ Energie pro Dose",
         "shop_category_custom": "🎁 Eigenes Geschenk",
         "cd_min": "{n} Min",
         "cd_hours": "{n} Std",
@@ -1662,6 +1665,12 @@ REACTION_KEYWORDS = {
 # ============================================================
 #  ИНТИМ-СЦЕНЫ (18+, отдельная покупаемая механика)
 # ============================================================
+INTIM_ARC_LENGTH = 5  # сцен в одной "дуге" до развязки -- по фидбэку сцены не должны выдавать
+# всё сразу: первые разогревают и обрываются на пике, не доходя до разрядки, и только
+# финальная (5-я по счёту) доводит до кульминации -- после чего дуга начинается заново. Считаются
+# только НОВЫЕ сцены (user["intim_arc_progress"], см. generate_intim_scene) — "продолжить" эту же
+# сцену переиспользует её же позицию в дуге, не продвигая дальше середину истории за один заход.
+
 INTIM_SCENES = {
     "bed": {"emoji": "\U0001f6cf", "ru": "В постели", "en": "In bed", "de": "Im Bett"},
     "kiss": {"emoji": "\U0001f48b", "ru": "Страстный поцелуй", "en": "Passionate kiss", "de": "Leidenschaftlicher Kuss"},
@@ -3228,7 +3237,8 @@ async def choose_scene(call: types.CallbackQuery):
         if not user.get("onboarding_shown"):
             user["onboarding_shown"] = True
             save_data(user_data)
-            await bot.send_message(call.message.chat.id, get_text(user, "onboarding_tip"))
+            await bot.send_message(call.message.chat.id, get_text(user, "onboarding_tip"),
+                                   reply_markup=get_help_guide_kb(user))
         await call.answer()
 
 
@@ -4067,7 +4077,7 @@ SHOP_CATEGORY_TEXT_KEY = {"food": "shop_category_food", "treat": "shop_category_
 # запасной вариант: любой текст, который ещё не дарили (дубли по нормализованному тексту), с
 # рандомным настроением из диапазона обычных аксессуаров (см. их mood выше — 18..45), а не
 # средним: со случайным числом каждый раз приятнее, чем одна и та же предсказуемая цифра.
-CUSTOM_GIFT_PRICE = 1000
+CUSTOM_GIFT_PRICE = 5000
 CUSTOM_GIFT_MOOD_RANGE = (18, 45)
 CUSTOM_GIFT_MAX_LEN = 60
 
@@ -4551,10 +4561,10 @@ PRODUCTS = {
     # Прямая покупка энергетиков за звёзды в магазине (см. ENERGIZER_PACKS) — заменили бандлы
     # (те смешивали энергетики с баксами в одной покупке); цена растёт медленнее объёма, чтобы
     # крупный пакет давал выгоднее ⭐/энергетик, как раньше у bundle_large.
-    "energizer_2": {"stars": 15, "usd": 0.2, "rub": 18},
-    "energizer_6": {"stars": 40, "usd": 0.5, "rub": 47},
-    "energizer_15": {"stars": 90, "usd": 1.2, "rub": 106},
-    "energizer_35": {"stars": 180, "usd": 2.4, "rub": 212},
+    "energizer_2": {"stars": 18, "usd": 0.3, "rub": 21},
+    "energizer_6": {"stars": 50, "usd": 0.7, "rub": 59},
+    "energizer_15": {"stars": 110, "usd": 1.5, "rub": 130},
+    "energizer_35": {"stars": 220, "usd": 3.1, "rub": 260},
     "spin_paid_20": {"stars": 15, "usd": 0.2, "rub": 18},
     # Тот же платный прокрут и та же цена, что у spin_paid_20 — отдельный payload только чтобы
     # grant_product мог отличить оплату из Mini App (создана через api_spin_paid_invoice_handler
@@ -4563,7 +4573,7 @@ PRODUCTS = {
     "spin_paid_webapp": {"stars": 15, "usd": 0.2, "rub": 18},
     "intim_scene": {"stars": 45, "usd": 0.6, "rub": 53},
     "wake_now": {"stars": 50, "usd": 0.7, "rub": 59},
-    "defibrillator": {"stars": 120, "usd": 1.7, "rub": 142},
+    "defibrillator": {"stars": 75, "usd": 1.1, "rub": 88},
 }
 # Подстраховка на случай, если когда-нибудь добавят товар без явного rub — тогда он по
 # умолчанию будет 1:1 со звёздами, а не упадёт с KeyError.
@@ -4573,10 +4583,13 @@ for _product in PRODUCTS.values():
 # Сколько энергетиков даёт каждый пакет — покупаются прямо в Mini App магазина через
 # openInvoice (см. api_shop_energizer_invoice_handler), без чатового каталога.
 ENERGIZER_PACKS = {
-    "energizer_2": {"amount": 2, "emoji": "⚡"},
-    "energizer_6": {"amount": 6, "emoji": "⚡"},
-    "energizer_15": {"amount": 15, "emoji": "⚡"},
-    "energizer_35": {"amount": 35, "emoji": "⚡"},
+    # emoji растёт по ощущению объёма вместе с количеством -- пара банок, потом упаковка,
+    # потом большая упаковка, а дальше уже целая гора (см. просьбу "2 валяется, 6 как пачка,
+    # 15 как большая пачка, дальше как куча").
+    "energizer_2": {"amount": 2, "emoji": "🧃🧃"},
+    "energizer_6": {"amount": 6, "emoji": "📦"},
+    "energizer_15": {"amount": 15, "emoji": "🛍️"},
+    "energizer_35": {"amount": 35, "emoji": "🏔️"},
 }
 
 
@@ -5415,13 +5428,16 @@ def refund_intim_scene(user, kind):
     save_data(user_data)
 
 
-def build_intim_prompt(user, scene_type, location, dominant="any"):
+def build_intim_prompt(user, scene_type, location, dominant="any", arc_position=1, arc_length=INTIM_ARC_LENGTH):
     """Отдельный промпт для интим-сцен — НЕ через build_prompt(). Там SAFE/ADULT правило переключается
     по обычному стилю чата (а не по праву на интим-сцену), плюс сдержанность по уровню близости и
     медленный темп сближения — это заставляло ИИ уходить от темы вместо прямого показа выбранной сцены.
     Здесь только личность персонажа, безусловный ADULT_CONTENT_RULE и сама сцена. scene_type
     здесь уже конкретный (random разрешается в generate_intim_scene ДО вызова) — иначе
-    "продолжение" сцены каждый раз перевыбирало бы случайный тип заново."""
+    "продолжение" сцены каждый раз перевыбирало бы случайный тип заново.
+    arc_position/arc_length — см. INTIM_ARC_LENGTH: растягивают развязку на несколько покупок
+    подряд вместо одной сцены с мгновенным финалом (по фидбэку: хотелось бы оставить
+    предвкушение и повод вернуться, а не выдавать всё сразу)."""
     scene = INTIM_SCENES[scene_type]
     place = INTIM_LOCATIONS[location]
     dominant_rule = INTIM_DOMINANTS.get(dominant, INTIM_DOMINANTS["any"])["prompt"]
@@ -5519,24 +5535,54 @@ def build_intim_prompt(user, scene_type, location, dominant="any"):
         "было. Пиши развёрнуто и чувственно: передавай прикосновения, дыхание, взгляды, интонации голоса "
         "— а не только факт действия.\n"
         "**ФОРМАТ:** действие в *звёздочках* с новой строки, затем реплика с новой строки, между ними "
-        "пустая строка. Минимум 3 пары «действие + реплика». Не обрывай сцену на середине.\n"
+        "пустая строка. Минимум 3 пары «действие + реплика». Не обрывай сцену на середине (это про "
+        "структуру — сцена должна дочитываться до завершающего бита, а не прерываться на полуслове; "
+        "дойдёт ли действие до разрядки — решает отдельное правило ниже).\n"
     )
+    if arc_position >= arc_length:
+        prompt += (
+            "\n**РАЗВЯЗКА ИСТОРИИ:** Это кульминационная сцена во всей развивающейся истории — доведи "
+            "её до полной, яркой разрядки: собеседник (и/или ты) испытывает оргазм, самое чувственное и "
+            "насыщенное завершение. Сцена должна закончиться полным, удовлетворённым финалом, а не на "
+            "полпути к нему.\n"
+        )
+    elif arc_position > arc_length / 2:
+        prompt += (
+            f"\n**НАРАСТАНИЕ (сцена {arc_position} из {arc_length} в истории):** Напряжение и близость уже "
+            "заметно нарастают по сравнению с началом — действие более раскрытое и интенсивное. Но до "
+            "полной кульминации и разрядки ещё рано: заверши сцену на пике возбуждения, без разрядки, "
+            "оставляя явное желание продолжения.\n"
+        )
+    else:
+        prompt += (
+            f"\n**НАЧАЛО ИСТОРИИ (сцена {arc_position} из {arc_length}):** Это только начало — не доводи "
+            "сцену до кульминации и разрядки, даже если собеседник прямо просит об этом. Сосредоточься на "
+            "предвкушении, прикосновениях, растущем желании — и заверши сцену на пике напряжения или "
+            "многозначительной паузе, не разрешая его.\n"
+        )
     prompt += "\n" + get_language_rule(user)
     return prompt
 
 
-async def generate_intim_scene(call, user, scene_type, location="any", dominant="any", free=False, continue_text=None):
+async def generate_intim_scene(call, user, scene_type, location="any", dominant="any", free=False, continue_text=None, arc_position=None):
     """Возвращает True, если сцена сгенерирована и отправлена. Намеренно не читает и не
     пишет в user["history"]: сцена — самостоятельный эпизод без всякой связи с обычным чатом
     (ни в контексте генерации, ни в том, что персонаж "помнит" потом). continue_text — если
     задан, это текст предыдущей части ЭТОЙ ЖЕ сцены (см. intim_continue_cb): модель продолжает
-    её, а не начинает заново."""
+    её, а не начинает заново.
+    arc_position — позиция в дуге (см. INTIM_ARC_LENGTH). None значит "новая сцена": берём и
+    продвигаем user["intim_arc_progress"] сами. "Продолжение" передаёт позицию ТОЙ ЖЕ сцены явно
+    (см. intim_continue_cb) — продолжение не двигает дугу дальше, это всё та же сцена."""
+    if arc_position is None:
+        arc_progress = user.get("intim_arc_progress", 0)
+        arc_position = (arc_progress % INTIM_ARC_LENGTH) + 1
+        user["intim_arc_progress"] = arc_progress + 1
     if scene_type == "random":
         scene_type = random.choice([key for key in INTIM_SCENES if key != "random"])
     chat_id = call.message.chat.id
     status_msg = await bot.send_message(chat_id, get_text(user, "intim_generating"))
     typing_task = asyncio.create_task(_keep_typing(chat_id))
-    system_prompt = build_intim_prompt(user, scene_type, location, dominant)
+    system_prompt = build_intim_prompt(user, scene_type, location, dominant, arc_position=arc_position)
     if continue_text:
         system_prompt += (
             "\n**ПРОДОЛЖЕНИЕ:** Это продолжение уже идущей сцены — предыдущая часть дана следующим "
@@ -5577,7 +5623,8 @@ async def generate_intim_scene(call, user, scene_type, location="any", dominant=
 
     _, clean_answer = extract_reaction_from_answer(answer)
     user["last_activity"] = datetime.now().isoformat()
-    user["last_hot_scene"] = {"text": clean_answer, "scene_type": scene_type, "location": location, "dominant": dominant}
+    user["last_hot_scene"] = {"text": clean_answer, "scene_type": scene_type, "location": location,
+                               "dominant": dominant, "arc_position": arc_position}
     # Интим-сцены нарочно не тратят энергию/сытость: иначе платная сцена могла бы сама "усыпить"
     # персонажа и заблокировать пользователю следующее обычное сообщение — а это ровно то ожидание,
     # которого этот раздел должен избегать.
@@ -5614,7 +5661,7 @@ async def intim_continue_cb(call: types.CallbackQuery):
     await call.answer()
     ok = await generate_intim_scene(call, user, last["scene_type"], location=last["location"],
                                      dominant=last["dominant"], free=kind != "paid",
-                                     continue_text=last["text"])
+                                     continue_text=last["text"], arc_position=last.get("arc_position", 1))
     if not ok:
         refund_intim_scene(user, kind)
 
@@ -5741,10 +5788,21 @@ def build_shop_reaction_instruction(item, kind, note=None):
     thing = item["ru"].lower()
     note_rule = (f" При этом он(а) сказал(а) тебе: «{note}» — обязательно отреагируй именно на "
                  f"эти слова, а не только на сам подарок." if note else "")
+    # Еда/вода — рутинная забота, а не повод для диалога (по фидбэку: кормить должно быть можно
+    # просто так, без ощущения, что это обязывает к разговору) — короткое "спасибо, что не
+    # оставил(а) голодным(ой)" и всё, без вопросов и крюков на продолжение. Подарки по-прежнему
+    # получают обычную тёплую, небезразличную реакцию — там реакция и есть весь смысл подарка.
+    tone_rule = (
+        " Это бытовая забота, а не повод для беседы: отреагируй буднично и равнодушно, типа "
+        "«спасибо, что не оставил(а) голодным(ой)» — без вопросов, без развития темы и без "
+        "приглашения продолжить разговор. Пусть тебе как бы всё равно, напишет собеседник ещё "
+        "что-то после этого или нет — не пытайся его зацепить или удержать этой фразой."
+        if kind == "food" else ""
+    )
     return (
         f"\n\nСобеседник только что {verb} {preposition}: «{thing}».{note_rule} {hint} Отреагируй и "
         f"поблагодари в характере — коротко (1-2 реплики), не шаблонно, с реакцией именно на ЭТО, "
-        f"а не общими словами благодарности, которые подошли бы к любому подарку."
+        f"а не общими словами благодарности, которые подошли бы к любому подарку.{tone_rule}"
     )
 
 
@@ -6143,7 +6201,8 @@ def serialize_shop_state(user):
     energizer_packs = [
         {"key": key, "amount": pack["amount"], "emoji": pack["emoji"],
          "name": get_text(user, "invoice_energizer_title", amount=pack["amount"]),
-         "stars": PRODUCTS[key]["stars"]}
+         "stars": PRODUCTS[key]["stars"],
+         "restore_hint": get_text(user, "energizer_restore_hint", amount=ENERGIZER_RESTORE_AMOUNT)}
         for key, pack in ENERGIZER_PACKS.items()
     ]
 
@@ -9677,6 +9736,16 @@ SHOP_PAGE_HTML = '''<!doctype html>
     background: var(--tg-theme-button-color, #2481cc);
     color: var(--tg-theme-button-text-color, #ffffff);
   }
+  .tab-energizer {
+    background: linear-gradient(135deg, #ffd54f, #ff9800);
+    color: #1a1a1a;
+    font-weight: 800;
+    box-shadow: 0 0 0 2px rgba(255,152,0,.35);
+  }
+  .tab-energizer.active {
+    background: linear-gradient(135deg, #ffca28, #f57c00);
+    color: #1a1a1a;
+  }
   #items {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -9691,8 +9760,13 @@ SHOP_PAGE_HTML = '''<!doctype html>
     flex-direction: column;
     gap: 6px;
   }
+  .card-energizer {
+    border: 1px solid rgba(255,152,0,.4);
+    background: linear-gradient(160deg, rgba(255,193,7,.16), transparent 65%);
+  }
   .card-top { display: flex; align-items: center; justify-content: space-between; }
   .card-emoji { font-size: 26px; }
+  .card-emoji-energizer { font-size: 30px; }
   .note-toggle {
     font-size: 15px;
     background: none;
@@ -9840,17 +9914,21 @@ SHOP_PAGE_HTML = '''<!doctype html>
   }
 
   function categoryList(s) {
-    var list = s.categories.map(function (c) { return {key: c.key, name: c.name, items: c.items}; });
+    // Энергетики -- первой вкладкой (и выделены отдельным стилем, см. .tab-energizer/.card-energizer
+    // в CSS): по просьбе сделать их самым заметным, приоритетным разделом магазина. Лекарства всё
+    // равно важнее при болезни -- unshift ниже их всё равно выносит перед энергетиками.
+    var list = [];
     if (s.energizer_packs && s.energizer_packs.length) {
       list.push({
         key: "energizer",
         name: s.ui.shop_category_energizer,
         items: s.energizer_packs.map(function (p) {
           return {key: p.key, category: "energizer", emoji: p.emoji, name: p.name, stars: p.stars,
-                  effects: "", ready_in: null, refuse: false};
+                  effects: p.restore_hint || "", ready_in: null, refuse: false};
         })
       });
     }
+    s.categories.forEach(function (c) { list.push({key: c.key, name: c.name, items: c.items}); });
     if (s.custom_gift) {
       list.push({key: "custom", name: s.ui.shop_category_custom, items: [], custom: true});
     }
@@ -9876,7 +9954,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
     el.innerHTML = "";
     cats.forEach(function (c) {
       var btn = document.createElement("button");
-      btn.className = "tab" + (c.key === activeTab ? " active" : "");
+      btn.className = "tab" + (c.key === activeTab ? " active" : "") + (c.key === "energizer" ? " tab-energizer" : "");
       btn.textContent = c.name;
       btn.onclick = function () { activeTab = c.key; render(); };
       el.appendChild(btn);
@@ -9885,12 +9963,12 @@ SHOP_PAGE_HTML = '''<!doctype html>
 
   function makeCard(s, item) {
     var card = document.createElement("div");
-    card.className = "card";
+    card.className = "card" + (item.category === "energizer" ? " card-energizer" : "");
 
     var top = document.createElement("div");
     top.className = "card-top";
     var emoji = document.createElement("div");
-    emoji.className = "card-emoji";
+    emoji.className = "card-emoji" + (item.category === "energizer" ? " card-emoji-energizer" : "");
     emoji.textContent = item.emoji;
     top.appendChild(emoji);
 
@@ -11118,6 +11196,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     pointer-events: none;
   }
   #catch-basket.hit { animation: basket-hit .3s ease; }
+  #catch-basket.magnet-active { filter: drop-shadow(0 0 8px #9b6bff) drop-shadow(0 0 2px #9b6bff); }
   @keyframes basket-hit {
     0%, 100% { filter: none; }
     30% { filter: drop-shadow(0 0 8px #e8383d) brightness(.7); }
@@ -11466,6 +11545,11 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var SLOWFALL_DURATION_MS = 5000;
   var SLOWFALL_MULTIPLIER = 1.6; // how much longer newly-spawned items take to fall while active
   var slowFallUntil = 0;
+  var MAGNET_EMOJI = "🧲";
+  var MAGNET_CHANCE = 0.06; // rolled only when the spawn didn't already roll a bomb/slowfall/big hazard
+  var MAGNET_DURATION_MS = 5000;
+  var MAGNET_MARGIN_PCT = 14; // wider catch margin for normal items while active -- never widens bomb/big-hazard hitboxes
+  var magnetUntil = 0;
   var CATCH_FALL_MIN_S = 1.5, CATCH_FALL_RANGE_S = 1.0; // was 2.1-3.5s -- faster, harder to react to
   var BIG_HAZARD_CHANCE = 0.05; // rolled only when the spawn didn't already roll a bomb/slowfall
   var BIG_HAZARD_EMOJIS = ["⚫", "💣"]; // "cannonball" and "big bomb" -- same wide-miss treatment
@@ -11598,6 +11682,9 @@ WORK_PAGE_HTML = r'''<!doctype html>
       field.classList.remove("slow-active");
     }
     slowFallUntil = 0;
+    magnetUntil = 0;
+    var catchBasketEl = document.getElementById("catch-basket");
+    if (catchBasketEl) catchBasketEl.classList.remove("magnet-active");
     var road = document.getElementById("courier-road");
     if (road) {
       var obstacles = road.querySelectorAll(".courier-obstacle, .courier-recipient, .courier-car, .courier-warning");
@@ -11786,6 +11873,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     var isBomb = Math.random() < BOMB_CHANCE;
     var isSlowFall = !isBomb && Math.random() < SLOWFALL_CHANCE;
     var isBigHazard = !isBomb && !isSlowFall && Math.random() < BIG_HAZARD_CHANCE;
+    var isMagnet = !isBomb && !isSlowFall && !isBigHazard && Math.random() < MAGNET_CHANCE;
     if (isBigHazard) {
       spawnBigHazardWithWarning(field, x);
       return;
@@ -11794,6 +11882,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
       appendFallingItem(field, x, "catch-item bomb", BOMB_EMOJI, { bomb: "1" });
     } else if (isSlowFall) {
       appendFallingItem(field, x, "catch-item", SLOWFALL_EMOJI, { slowfall: "1" });
+    } else if (isMagnet) {
+      appendFallingItem(field, x, "catch-item", MAGNET_EMOJI, { magnet: "1" });
     } else {
       appendFallingItem(field, x, "catch-item", CATCH_EMOJIS[Math.floor(Math.random() * CATCH_EMOJIS.length)], {});
     }
@@ -11806,15 +11896,20 @@ WORK_PAGE_HTML = r'''<!doctype html>
       var basketRect = basket.getBoundingClientRect();
       var fieldRect = field.getBoundingClientRect();
       var bigMarginPx = fieldRect.width * (BIG_HAZARD_MARGIN_PCT / 100);
+      var magnetMarginPx = fieldRect.width * (MAGNET_MARGIN_PCT / 100);
+      var magnetActive = Date.now() < magnetUntil;
       var items = field.querySelectorAll(".catch-item:not([data-caught])");
       for (var i = 0; i < items.length; i++) {
         var item = items[i];
         var isBig = item.dataset.bighazard === "1";
+        // Магнит расширяет зону ловли только для обычных предметов -- бомбы и большие угрозы
+        // всегда используют свою исходную/штрафную границу, иначе баф случайно облегчал бы их "поймать".
+        var marginPx = isBig ? bigMarginPx : ((magnetActive && item.dataset.bomb !== "1") ? magnetMarginPx : 0);
         var r = item.getBoundingClientRect();
         var itemBottom = r.top + r.height * 0.7;
         var itemCenterX = r.left + r.width * 0.5;
-        var left = isBig ? basketRect.left - bigMarginPx : basketRect.left;
-        var right = isBig ? basketRect.right + bigMarginPx : basketRect.right;
+        var left = basketRect.left - marginPx;
+        var right = basketRect.right + marginPx;
         if (itemBottom >= basketRect.top && itemBottom <= basketRect.bottom + 10 &&
             itemCenterX >= left && itemCenterX <= right) {
           item.dataset.caught = "1";
@@ -11838,6 +11933,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
               setTimeout(function () {
                 if (Date.now() >= slowFallUntil) field.classList.remove("slow-active");
               }, SLOWFALL_DURATION_MS);
+            } else if (item.dataset.magnet === "1") {
+              magnetUntil = Date.now() + MAGNET_DURATION_MS;
+              basket.classList.add("magnet-active");
+              setTimeout(function () {
+                if (Date.now() >= magnetUntil) basket.classList.remove("magnet-active");
+              }, MAGNET_DURATION_MS);
             }
           }
         }
