@@ -94,6 +94,7 @@ TEXTS = {
         "character_create_too_short": "✏️ Это слишком коротко для описания персонажа (нужно хотя бы {n} символов) — допиши подробнее, или нажми «Отменить» в сообщении выше.",
         "spin_title": "🎰 **Колесо фортуны**",
         "spin_hint": "Крути колесо каждый день и выбивай призы!",
+        "webapp_spin_prizes_title": "🎁 Доступные призы:",
         "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 20–150💵 баксов\n• 🔥 Горячие сцены\n• 2–4⚡ энергетика (редко)\n• 🎁 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)",
         "spin_choose": "Выбери вариант:",
         "spin_nothing": "😢 Ничего... В следующий раз повезёт!",        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+30💵 баксов и +3⚡ энергетика** тебе, ему — **+15💵 баксов и +1⚡ энергетик**!\n\n📊 Приглашено друзей: **{count}**\n💵 Заработано баксов: **{earned_bucks}**\n⚡ Заработано энергетиков: **{earned_energizers}**",
@@ -291,26 +292,24 @@ TEXTS = {
         "work_tab_catch": "📦 Заказ",
         "work_tab_rhythm": "🚴 Курьер",
         "work_tab_farm": "🌽 Ферма",
-        "work_tab_bus": "🚌 Автобус",
-        "work_clicker_hint": "Жми именно ту клавишу, которая подсвечена — ошибёшься, и тебя засекут.",
+        "work_clicker_hint": "Запомни код и введи его цифры по порядку на клавиатуре — ошибёшься, и код сбросится.",
         "work_debuff_locked": "🔒 Заблокировано",
         "work_catch_hint": "Веди корзину из стороны в сторону, лови предметы и не лови бомбы 💣! Улитка 🐌 на время замедлит падение.",
-        "work_rhythm_hint": "Жми ▲▼, чтобы объезжать препятствия, а ⏫ — чтобы перепрыгнуть те, что на всю дорогу!",
+        "work_rhythm_hint": "Жми ▲▼, чтобы объезжать препятствия и забирать пассажиров 🙋 в своей полосе. На светофоре жми кнопку вовремя!",
         "work_courier_arrived": "🏠 Доставлено!",
         "work_courier_arrived_tip": "🏠 Доставлено! 🎉 + чаевые",
-        "work_bus_hint": "Следи за стрелками ⬅️➡️ и веди автобус к той стороне, куда они указывают — иначе остановку пропустишь!",
-        "work_bus_route_done": "🎉 Маршрут завершён!",
-        "work_bus_route_done_tip": "🎉 Маршрут завершён! 💰 + чаевые",
         "work_multiplier_badge": "×{multiplier} — бонус подписки",
-        "farm_plant_btn": "🌽 Посадить кукурузу",
         "farm_water_btn": "💧 Полить",
         "farm_harvest_btn": "🧺 Собрать урожай",
         "farm_growing": "🌱 Растёт… осталось {time}",
         "farm_ready": "🎉 Урожай созрел! Собирай скорей.",
         "farm_watered_label": "💧 Полито: {done}/{total}",
         "farm_payout_preview": "💰 Если собрать сейчас: {amount}💵",
-        "farm_empty_hint": "Грядка пустая — посади кукурузу и загляни попозже!",
-        "farm_ready_push": "🌽 Твоя кукуруза созрела! Заходи в 💼 Работу и собери урожай.",
+        "farm_empty_hint": "➕ Посадить",
+        "farm_choose_crop": "Что посадить?",
+        "farm_crop_stats": "{hours}ч · {base}-{max}💵",
+        "farm_can_hint": "Проведи леечкой по грядкам сверху — польёт все, что открыто для полива",
+        "farm_ready_push": "🧺 Урожай на ферме созрел! Заходи в 💼 Работу и собери его.",
         "custom_gift_btn": "✍️ Свой подарок — {price}💵",
         "custom_gift_prompt": "✍️ Напиши, что хочешь подарить (до {n} символов, цена {price}💵). Каждый подарок можно подарить только один раз.",
         "custom_gift_invalid": "❌ Напиши текст подарка (до {n} символов).",
@@ -428,6 +427,7 @@ TEXTS = {
         "character_create_too_short": "✏️ That's too short for a character description (needs at least {n} characters) — add more detail, or tap \"Cancel\" on the message above.",
         "spin_title": "🎰 **Spin wheel**",
         "spin_hint": "Spin the wheel every day and win prizes!",
+        "webapp_spin_prizes_title": "🎁 Available prizes:",
         "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 20–150💵 bucks\n• 🔥 Hot scenes\n• 2–4⚡ energizers (rare)\n• 🎁 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)",
         "spin_choose": "Choose an option:",
         "spin_nothing": "😢 Nothing... Better luck next time!",        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+30💵 bucks and +3⚡ energizers** for you, and **+15💵 bucks and +1⚡ energizer** for them!\n\n📊 Friends invited: **{count}**\n💵 Bucks earned: **{earned_bucks}**\n⚡ Energizers earned: **{earned_energizers}**",
@@ -625,26 +625,24 @@ TEXTS = {
         "work_tab_catch": "📦 Delivery",
         "work_tab_rhythm": "🚴 Courier",
         "work_tab_farm": "🌽 Farm",
-        "work_tab_bus": "🚌 Bus",
-        "work_clicker_hint": "Tap the key that's lit up — hit the wrong one and you'll get flagged.",
+        "work_clicker_hint": "Memorize the code and tap its digits in order on the keypad — one mistake and the code resets.",
         "work_debuff_locked": "🔒 Locked",
         "work_catch_hint": "Drag the basket side to side, catch the items, and dodge the bombs 💣! A snail 🐌 briefly slows the fall.",
-        "work_rhythm_hint": "Press ▲▼ to dodge obstacles, and ⏫ to jump the ones blocking the whole road!",
+        "work_rhythm_hint": "Press ▲▼ to dodge obstacles and pick up passengers 🙋 in your lane. At the light, press the button at the right moment!",
         "work_courier_arrived": "🏠 Delivered!",
         "work_courier_arrived_tip": "🏠 Delivered! 🎉 + tip",
-        "work_bus_hint": "Watch the arrows ⬅️➡️ and pull the bus to the side they point to, or you'll miss the stop!",
-        "work_bus_route_done": "🎉 Route complete!",
-        "work_bus_route_done_tip": "🎉 Route complete! 💰 + tip",
         "work_multiplier_badge": "×{multiplier} — subscriber bonus",
-        "farm_plant_btn": "🌽 Plant corn",
         "farm_water_btn": "💧 Water",
         "farm_harvest_btn": "🧺 Harvest",
         "farm_growing": "🌱 Growing… {time} left",
         "farm_ready": "🎉 The harvest is ready! Go collect it.",
         "farm_watered_label": "💧 Watered: {done}/{total}",
         "farm_payout_preview": "💰 Harvest now for: {amount}💵",
-        "farm_empty_hint": "The field is empty — plant some corn and check back later!",
-        "farm_ready_push": "🌽 Your corn is ready! Head to 💼 Work and bring in the harvest.",
+        "farm_empty_hint": "➕ Plant",
+        "farm_choose_crop": "What to plant?",
+        "farm_crop_stats": "{hours}h · {base}-{max}💵",
+        "farm_can_hint": "Drag the can across the plots — waters everything that's open for watering",
+        "farm_ready_push": "🧺 A harvest on your farm is ready! Head to 💼 Work and bring it in.",
         "custom_gift_btn": "✍️ Custom gift — {price}💵",
         "custom_gift_prompt": "✍️ Write what you want to gift (up to {n} characters, price {price}💵). Each gift can only be given once.",
         "custom_gift_invalid": "❌ Write the gift's text (up to {n} characters).",
@@ -762,6 +760,7 @@ TEXTS = {
         "character_create_too_short": "✏️ Das ist zu kurz für eine Charakterbeschreibung (mindestens {n} Zeichen nötig) — schreib mehr dazu, oder tippe oben auf „Abbrechen\".",
         "spin_title": "🎰 **Glücksrad**",
         "spin_hint": "Dreh jeden Tag am Rad und gewinne Preise!",
+        "webapp_spin_prizes_title": "🎁 Verfügbare Preise:",
         "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 20–150💵 Bucks\n• 🔥 Heiße Szenen\n• 2–4⚡ Energydrinks (selten)\n• 🎁 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)",
         "spin_choose": "Wähle eine Option:",
         "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+30💵 Bucks und +3⚡ Energydrinks** für dich und **+15💵 Bucks und +1⚡ Energydrink** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💵 Verdiente Bucks: **{earned_bucks}**\n⚡ Verdiente Energydrinks: **{earned_energizers}**",
@@ -959,26 +958,24 @@ TEXTS = {
         "work_tab_catch": "📦 Lieferung",
         "work_tab_rhythm": "🚴 Kurier",
         "work_tab_farm": "🌽 Farm",
-        "work_tab_bus": "🚌 Bus",
-        "work_clicker_hint": "Tipp die Taste, die leuchtet — triffst du die falsche, fliegst du auf.",
+        "work_clicker_hint": "Merk dir den Code und tippe seine Ziffern der Reihe nach auf der Tastatur — ein Fehler setzt den Code zurück.",
         "work_debuff_locked": "🔒 Gesperrt",
         "work_catch_hint": "Zieh den Korb hin und her, fang die Gegenstände und weich den Bomben 💣 aus! Eine Schnecke 🐌 verlangsamt kurz den Fall.",
-        "work_rhythm_hint": "Drück ▲▼, um Hindernissen auszuweichen, und ⏫, um über welche zu springen, die die ganze Straße blockieren!",
+        "work_rhythm_hint": "Drück ▲▼, um Hindernissen auszuweichen und Fahrgäste 🙋 in deiner Spur aufzunehmen. An der Ampel drück die Taste zur richtigen Zeit!",
         "work_courier_arrived": "🏠 Geliefert!",
         "work_courier_arrived_tip": "🏠 Geliefert! 🎉 + Trinkgeld",
-        "work_bus_hint": "Achte auf die Pfeile ⬅️➡️ und lenke den Bus zu der Seite, auf die sie zeigen — sonst verpasst du die Haltestelle!",
-        "work_bus_route_done": "🎉 Route abgeschlossen!",
-        "work_bus_route_done_tip": "🎉 Route abgeschlossen! 💰 + Trinkgeld",
         "work_multiplier_badge": "×{multiplier} — Abo-Bonus",
-        "farm_plant_btn": "🌽 Mais pflanzen",
         "farm_water_btn": "💧 Gießen",
         "farm_harvest_btn": "🧺 Ernten",
         "farm_growing": "🌱 Wächst … noch {time}",
         "farm_ready": "🎉 Die Ernte ist fertig! Hol sie dir.",
         "farm_watered_label": "💧 Gegossen: {done}/{total}",
         "farm_payout_preview": "💰 Jetzt ernten für: {amount}💵",
-        "farm_empty_hint": "Das Feld ist leer — pflanz etwas Mais und schau später wieder vorbei!",
-        "farm_ready_push": "🌽 Dein Mais ist reif! Geh zu 💼 Arbeit und hol die Ernte rein.",
+        "farm_empty_hint": "➕ Pflanzen",
+        "farm_choose_crop": "Was pflanzen?",
+        "farm_crop_stats": "{hours}Std · {base}-{max}💵",
+        "farm_can_hint": "Zieh die Kanne über die Beete — gießt alles, was gerade offen für Wasser ist",
+        "farm_ready_push": "🧺 Eine Ernte auf deiner Farm ist reif! Geh zu 💼 Arbeit und hol sie rein.",
         "custom_gift_btn": "✍️ Eigenes Geschenk — {price}💵",
         "custom_gift_prompt": "✍️ Schreib, was du schenken möchtest (bis zu {n} Zeichen, Preis {price}💵). Jedes Geschenk kann nur einmal verschenkt werden.",
         "custom_gift_invalid": "❌ Schreib den Text des Geschenks (bis zu {n} Zeichen).",
@@ -1751,102 +1748,102 @@ INTIM_LEVEL_REWARD = 8  # на каком уровне близости откр
 # cooldown) не меняется. reaction_hint — ориентир тона для AI-благодарности (generate_shop_reaction),
 # пользователю не показывается.
 FOOD_ITEMS = {
-    "water": {"emoji": "💧", "ru": "Вода", "en": "Water", "de": "Wasser", "price": 10, "water": 40,
+    "water": {"emoji": "💧", "ru": "Вода", "en": "Water", "de": "Wasser", "price": 100, "water": 40,
               "category": "food", "cooldown_minutes": 8,
               "reaction_hint": "Простая, но нужная забота — благодарность лёгкая, с облегчённой улыбкой."},
-    "sparkling_water": {"emoji": "🥤", "ru": "Газировка", "en": "Soda", "de": "Limonade", "price": 18, "water": 65,
+    "sparkling_water": {"emoji": "🥤", "ru": "Газировка", "en": "Soda", "de": "Limonade", "price": 180, "water": 65,
                          "category": "food", "cooldown_minutes": 15,
                          "reaction_hint": "Освежающая мелочь с игривой ноткой — благодарность довольная, чуть бодрее обычного."},
-    "coconut_water": {"emoji": "🥥", "ru": "Кокосовая вода", "en": "Coconut water", "de": "Kokoswasser", "price": 35,
+    "coconut_water": {"emoji": "🥥", "ru": "Кокосовая вода", "en": "Coconut water", "de": "Kokoswasser", "price": 350,
                        "water": 85, "mood": 8, "category": "food", "cooldown_minutes": 40,
                        "reaction_hint": "Необычный, заботливый выбор — благодарность приятно удивлённая, ты оценила, что подошли к делу с фантазией."},
-    "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 15, "satiety": 10,
+    "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 150, "satiety": 10,
               "category": "food", "cooldown_minutes": 10,
               "reaction_hint": "Это мелкая, но милая забота — благодарность лёгкая, тёплая, почти игривая."},
-    "breakfast": {"emoji": "🥐", "ru": "Завтрак", "en": "Breakfast", "de": "Frühstück", "price": 22, "satiety": 18,
+    "breakfast": {"emoji": "🥐", "ru": "Завтрак", "en": "Breakfast", "de": "Frühstück", "price": 220, "satiety": 18,
                   "category": "food", "cooldown_minutes": 20,
                   "reaction_hint": "Утренняя забота — благодарность сонная, но очень нежная, ты тронута, что о тебе подумали с самого утра."},
-    "meal": {"emoji": "🍲", "ru": "Обед", "en": "Meal", "de": "Mahlzeit", "price": 30, "satiety": 25,
+    "meal": {"emoji": "🍲", "ru": "Обед", "en": "Meal", "de": "Mahlzeit", "price": 300, "satiety": 25,
              "category": "food", "cooldown_minutes": 30,
              "reaction_hint": "Это нормальная забота о тебе — благодарность душевная, ты чувствуешь себя сытой и по-настоящему тронута вниманием."},
-    "cafe": {"emoji": "☕", "ru": "Кафе", "en": "Café", "de": "Café", "price": 55, "satiety": 50, "mood": 8,
+    "cafe": {"emoji": "☕", "ru": "Кафе", "en": "Café", "de": "Café", "price": 550, "satiety": 50, "mood": 8,
              "category": "food", "cooldown_minutes": 90,
              "reaction_hint": "Это настоящее свидание за столиком, не просто еда — благодарность тёплая, немного смущённая, приятно проведённое время."},
-    "restaurant": {"emoji": "🍽", "ru": "Ресторан", "en": "Restaurant", "de": "Restaurant", "price": 90, "satiety": 80, "mood": 6,
+    "restaurant": {"emoji": "🍽", "ru": "Ресторан", "en": "Restaurant", "de": "Restaurant", "price": 900, "satiety": 80, "mood": 6,
                    "category": "food", "cooldown_minutes": 180,
                    "reaction_hint": "Настоящий поход в ресторан — не просто еда, а маленькое свидание, благодарность восторженная и чуть взволнованная."},
-    "sushi": {"emoji": "🍣", "ru": "Суши-сет", "en": "Sushi set", "de": "Sushi-Set", "price": 120, "satiety": 70, "mood": 10,
+    "sushi": {"emoji": "🍣", "ru": "Суши-сет", "en": "Sushi set", "de": "Sushi-Set", "price": 1200, "satiety": 70, "mood": 10,
               "category": "food", "cooldown_minutes": 180,
               "reaction_hint": "Необычный, изысканный выбор — благодарность удивлённая и довольная, ты оценила, что подошли к делу с фантазией."},
     # tipsy_minutes/tipsy_level — эффект алкоголя (см. apply_shop_item_effects/build_tipsy_rule):
     # на N минут после покупки добавляет в промпт манеру речи навеселе, не трогая статы напрямую.
     # "light" (пиво) — почти незаметно, "full" (вино) — заметное, но всё ещё лёгкое опьянение.
-    "beer": {"emoji": "🍺", "ru": "Пиво", "en": "Beer", "de": "Bier", "price": 25, "satiety": 5, "mood": 10,
+    "beer": {"emoji": "🍺", "ru": "Пиво", "en": "Beer", "de": "Bier", "price": 250, "mood": 10,
              "category": "food", "cooldown_minutes": 45, "tipsy_minutes": 25, "tipsy_level": "light",
              "reaction_hint": "Лёгкий повод расслабиться вместе — благодарность весёлая, чуть игривая, с смешком."},
     # Раньше в GIFT_ITEMS был ещё и отдельный "wine" (🍷 Вино) без градуса — только сытость/
     # настроение, без tipsy-эффекта. Из-за одинакового названия с этим пунктом путал пользователей
     # (видно и не отличить на глаз, зачем два разных "Вино"), а по смыслу дублировал его без
     # хмельного эффекта — убран, остался только этот, настоящий алкогольный вариант.
-    "fine_wine": {"emoji": "🍷", "ru": "Вино", "en": "Wine", "de": "Wein", "price": 90,
-                  "satiety": 8, "mood": 22, "xp": 15,
+    "fine_wine": {"emoji": "🍷", "ru": "Вино", "en": "Wine", "de": "Wein", "price": 900,
+                  "mood": 22, "xp": 15,
                   "category": "food", "cooldown_minutes": 180, "tipsy_minutes": 50, "tipsy_level": "full",
                   "reaction_hint": "Дорогой, чувственный жест — благодарность игривая и слегка кокетливая, ты быстро хмелеешь и становишься мягче и раскованнее."},
 }
 GIFT_ITEMS = {
-    "sweets": {"emoji": "🍫", "ru": "Шоколадки", "en": "Chocolates", "de": "Pralinen", "price": 20, "satiety": 6, "mood": 25, "xp": 5,
+    "sweets": {"emoji": "🍫", "ru": "Шоколадки", "en": "Chocolates", "de": "Pralinen", "price": 200, "satiety": 6, "mood": 25, "xp": 5,
                "category": "treat", "cooldown_minutes": 180,
                "reaction_hint": "Простой милый подарок — благодарность лёгкая, с улыбкой, без надрыва."},
-    "flowers": {"emoji": "💐", "ru": "Цветы", "en": "Flowers", "de": "Blumen", "price": 30, "mood": 18, "xp": 8,
+    "flowers": {"emoji": "💐", "ru": "Цветы", "en": "Flowers", "de": "Blumen", "price": 300, "mood": 18, "xp": 8,
                 "category": "treat", "cooldown_minutes": 360,
                 "reaction_hint": "Классический трогательный жест — благодарность искренняя и нежная, ты правда растрогана.",
                 "male_variant": {"emoji": "👔", "ru": "Стильный галстук", "en": "Stylish necktie", "de": "Stilvolle Krawatte",
                                   "reaction_hint": "Классический элегантный жест — искренне тронут такой заботой о стиле, благодарность тёплая и немного смущённая."}},
-    "perfume": {"emoji": "🧴", "ru": "Духи", "en": "Perfume", "de": "Parfüm", "price": 45, "mood": 18, "xp": 10,
+    "perfume": {"emoji": "🧴", "ru": "Духи", "en": "Perfume", "de": "Parfüm", "price": 450, "mood": 18, "xp": 10,
                 "category": "accessory", "cooldown_minutes": 1440,
                 "reaction_hint": "Личный, продуманный подарок про заботу о тебе — приятно удивлена, что он угадал(а) со вкусом."},
-    "cosmetics": {"emoji": "💄", "ru": "Косметика", "en": "Cosmetics", "de": "Kosmetik", "price": 60, "mood": 20, "xp": 12,
+    "cosmetics": {"emoji": "💄", "ru": "Косметика", "en": "Cosmetics", "de": "Kosmetik", "price": 600, "mood": 20, "xp": 12,
                   "category": "accessory", "cooldown_minutes": 1440,
                   "reaction_hint": "Подарок про заботу о твоей красоте — благодарность тёплая, немного смущённая, приятно, что заметили детали.",
                   "male_variant": {"emoji": "🪒", "ru": "Набор для бритья", "en": "Shaving set", "de": "Rasierset",
                                     "reaction_hint": "Подарок про заботу о твоём уходе за собой — благодарность тёплая, немного смущённая, приятно, что заметили детали."}},
-    "heels": {"emoji": "👠", "ru": "Каблуки", "en": "Heels", "de": "High Heels", "price": 90, "mood": 25, "xp": 16,
+    "heels": {"emoji": "👠", "ru": "Каблуки", "en": "Heels", "de": "High Heels", "price": 900, "mood": 25, "xp": 16,
               "category": "accessory", "cooldown_minutes": 2880,
               "reaction_hint": "Дерзкий, чуть сексуальный подарок — благодарность кокетливая и уверенная в себе.",
               "male_variant": {"emoji": "⌚", "ru": "Наручные часы", "en": "Wristwatch", "de": "Armbanduhr",
                                 "reaction_hint": "Дорогой, статусный подарок — благодарность сдержанная, но искренне впечатлён вниманием к деталям."}},
-    "dress": {"emoji": "👗", "ru": "Платье", "en": "Dress", "de": "Kleid", "price": 120, "mood": 30, "xp": 20,
+    "dress": {"emoji": "👗", "ru": "Платье", "en": "Dress", "de": "Kleid", "price": 1200, "mood": 30, "xp": 20,
               "category": "accessory", "cooldown_minutes": 2880,
               "reaction_hint": "Особенный подарок, который хочется сразу примерить — благодарность взволнованная, с предвкушением похвастаться.",
               "male_variant": {"emoji": "🧥", "ru": "Стильный костюм", "en": "Stylish suit", "de": "Eleganter Anzug",
                                 "reaction_hint": "Особенный подарок, который хочется сразу примерить — благодарность довольная, с предвкушением показаться в нём."}},
-    "jewelry": {"emoji": "💎", "ru": "Украшение", "en": "Jewelry", "de": "Schmuck", "price": 160, "mood": 38, "xp": 28,
+    "jewelry": {"emoji": "💎", "ru": "Украшение", "en": "Jewelry", "de": "Schmuck", "price": 1600, "mood": 38, "xp": 28,
                 "category": "accessory", "cooldown_minutes": 2880,
                 "reaction_hint": "Дорогой, значимый подарок — благодарность глубокая, ты растрогана и немного смущена такой щедростью."},
-    "phone": {"emoji": "📱", "ru": "Телефон", "en": "Phone", "de": "Handy", "price": 250, "mood": 45, "xp": 40,
+    "phone": {"emoji": "📱", "ru": "Телефон", "en": "Phone", "de": "Handy", "price": 2500, "mood": 45, "xp": 40,
               "category": "accessory", "cooldown_minutes": 4320,
               "reaction_hint": "Очень дорогой подарок — искренний шок и восторг, ты не ожидала такой щедрости и говоришь об этом прямо."},
-    "ring": {"emoji": "💍", "ru": "Бриллиантовое кольцо", "en": "Diamond ring", "de": "Diamantring", "price": 650, "mood": 54, "xp": 65,
+    "ring": {"emoji": "💍", "ru": "Бриллиантовое кольцо", "en": "Diamond ring", "de": "Diamantring", "price": 6500, "mood": 54, "xp": 65,
              "category": "accessory", "cooldown_minutes": 5760,
              "reaction_hint": "Самый романтичный и серьёзный подарок после машины — искренний шок и восторг, ты не до конца веришь, что это происходит.",
              "male_variant": {"emoji": "⛓️", "ru": "Цепочка", "en": "Gold chain", "de": "Goldkette",
                                "reaction_hint": "Статусный, серьёзный подарок — искренне впечатлён такой щедростью, благодарность гордая и немного смущённая."}},
-    "date": {"emoji": "🌹", "ru": "Романтический вечер", "en": "Romantic evening", "de": "Romantischer Abend", "price": 300, "xp": 60,
+    "date": {"emoji": "🌹", "ru": "Романтический вечер", "en": "Romantic evening", "de": "Romantischer Abend", "price": 3000, "xp": 60,
              "category": "treat", "full_restore": True, "cooldown_minutes": 1440,
              "reaction_hint": "Самый интимный из подарков — не вещь, а вечер вдвоём — благодарность взволнованная, с предвкушением встречи, самая тёплая из всех."},
-    "car": {"emoji": "🚗", "ru": "Машина", "en": "Car", "de": "Auto", "price": 1000, "mood": 60, "xp": 80,
+    "car": {"emoji": "🚗", "ru": "Машина", "en": "Car", "de": "Auto", "price": 10000, "mood": 60, "xp": 80,
             "category": "accessory", "cooldown_minutes": 8640,
             "reaction_hint": "Самый дорогой и статусный подарок из всех — искренний шок и восторг, ты не веришь своим глазам от такой щедрости."},
     # Билеты — крупные "события", а не вещи: заметно поднимают настроение и XP (близость), но
     # НЕ энергию — energy принципиально не должна восполняться ничем, кроме энергетика/платного
     # "разбудить сейчас" (см. апрельский разбор экономики), иначе это дыра в монетизации.
-    "sea_trip": {"emoji": "🏖", "ru": "Билет на море", "en": "Beach trip ticket", "de": "Ticket ans Meer", "price": 320, "xp": 70,
+    "sea_trip": {"emoji": "🏖", "ru": "Билет на море", "en": "Beach trip ticket", "de": "Ticket ans Meer", "price": 3200, "xp": 70,
                  "category": "treat", "full_restore": True, "cooldown_minutes": 2880,
                  "reaction_hint": "Настоящее совместное путешествие — благодарность искренне взволнованная, ты давно не отдыхала так по-настоящему."},
-    "concert": {"emoji": "🎸", "ru": "Билет на рок-концерт", "en": "Rock concert ticket", "de": "Rockkonzert-Ticket", "price": 260, "mood": 48, "xp": 45,
+    "concert": {"emoji": "🎸", "ru": "Билет на рок-концерт", "en": "Rock concert ticket", "de": "Rockkonzert-Ticket", "price": 2600, "mood": 48, "xp": 45,
                 "category": "treat", "cooldown_minutes": 1440,
                 "reaction_hint": "Энергичный, живой вечер вместе — благодарность заряженная адреналином, ты в восторге от атмосферы."},
-    "theater": {"emoji": "🎭", "ru": "Билет в театр", "en": "Theater ticket", "de": "Theater-Ticket", "price": 290, "mood": 52, "xp": 55,
+    "theater": {"emoji": "🎭", "ru": "Билет в театр", "en": "Theater ticket", "de": "Theater-Ticket", "price": 2900, "mood": 52, "xp": 55,
                 "category": "treat", "cooldown_minutes": 1440,
                 "reaction_hint": "Изысканный, немного торжественный вечер — благодарность тёплая и чуть возвышенная, ты тронута таким жестом."},
 }
@@ -1870,10 +1867,10 @@ ILLNESS_ESCALATE_HOURS = 48  # столько часов невылеченна�
 # по ошибке купить не то и остаться ни с чем (см. buy_medicine).
 MEDICINE_ITEMS = {
     "light_medicine": {"emoji": "💊", "ru": "Лёгкое лекарство", "en": "Mild medicine", "de": "Leichtes Medikament",
-                        "price": 40, "mood": 8, "cures": {"cold"},
+                        "price": 400, "mood": 8, "cures": {"cold"},
                         "reaction_hint": "Забота во время болезни — благодарность тёплая, голос слабый, но искренний."},
     "strong_medicine": {"emoji": "💉", "ru": "Сильное лекарство", "en": "Strong medicine", "de": "Starkes Medikament",
-                         "price": 90, "mood": 15, "cures": {"cold", "bronchitis"},
+                         "price": 900, "mood": 15, "cures": {"cold", "bronchitis"},
                          "reaction_hint": "Серьёзная забота во время тяжёлой болезни — искреннее облегчение и глубокая благодарность."},
 }
 
@@ -2334,9 +2331,9 @@ def is_asleep(user):
 # ощущалось криво ("почему играть, ПОКА работаешь?"), поэтому чат теперь не блокируется вообще:
 # мини-апп "Работа" — отдельная поверхность, как Магазин/Колесо (см. send_work_menu), и так же не
 # ограничена тамагочи-механикой (сном и т.п.) — та же логика, что и у /hot (см. intim_cmd).
-WORK_HIT_BUCKS = {"clicker": 1, "catch": 1, "courier": 1, "bus": 1}  # мгновенная выплата за одно
+WORK_HIT_BUCKS = {"clicker": 1, "catch": 1, "courier": 1}  # мгновенная выплата за одно
 # засчитанное попадание — ОДИНАКОВАЯ для всех игр, и это не упрощение "на будущее": сервер
-# физически не может проверить, что хит "courier"/"catch"/"bus" пришёл от реальной визуальной игры
+# физически не может проверить, что хит "courier"/"catch"/"clicker" пришёл от реальной визуальной игры
 # (общий анти-спам таймер один на все, см. register_work_hit) — разная цена по играм просто
 # поощряла бы скрипт, бьющий в эндпоинт с game=самая дорогая игра. Была раньше 2/5/6 — вместе со
 # старым WORK_MIN_HIT_INTERVAL_SECONDS=0.1 это давало реальных ~500-1000+💵/мин (по фидбэку —
@@ -2346,16 +2343,30 @@ WORK_MIN_HIT_INTERVAL_SECONDS = 0.5  # было 0.1 — тот самый лиш
                                       # был ~600 попаданий/мин вместо разумных ~120; при 1💵/попадание
                                       # это теперь жёсткий потолок 120💵/мин ДАЖЕ при скрипте/макросе,
                                       # а не только при игре руками
+WORK_FAILURE_PENALTY_BUCKS = 5  # штраф за провал в catch/courier/clicker (бомба, столкновение,
+# неверный код, не успел/рано на светофоре) — флэт для всех независимо от подписки, в отличие от
+# заработка (см. work_earnings_multiplier): штраф не должен превращаться в доход при тиере x1.5+.
+# Ферма сюда не попадает вообще — там риска потерять деньги нет (см. register_work_failure).
 
-FARM_GROW_HOURS = 4  # сколько реальных часов растёт урожай — настоящее долгое ожидание, которого
-                      # 3 мгновенные игры нарочно лишены (по просьбе пользователя: "не ждать а
-                      # тапать" — для них; ждать нужно именно и только на ферме)
+CROPS = {
+    "wheat": {
+        "emoji": "🌾", "ru": "Пшеница", "en": "Wheat", "de": "Weizen",
+        "grow_hours": 2, "base_payout": 180, "water_bonus": 25,
+    },
+    "corn": {
+        "emoji": "🌽", "ru": "Кукуруза", "en": "Corn", "de": "Mais",
+        "grow_hours": 4, "base_payout": 400, "water_bonus": 50,
+    },
+    "pumpkin": {
+        "emoji": "🎃", "ru": "Тыква", "en": "Pumpkin", "de": "Kürbis",
+        "grow_hours": 8, "base_payout": 900, "water_bonus": 110,
+    },
+}  # разные культуры -- разное время роста и стоимость сбора (быстрее/дешевле <-> дольше/дороже,
+# пшеница/кукуруза/тыква в порядке возрастания и времени, и выгоды за час ожидания)
+FARM_SLOTS = 3  # теперь три одновременные грядки вместо одной (см. user["farm_plots"])
 FARM_WATER_SLOTS = 4  # сколько раз за время роста можно полить ради бонуса к урожаю — слот
-                       # открывается каждые FARM_GROW_HOURS/FARM_WATER_SLOTS часов
-FARM_BASE_PAYOUT = 400  # баксов за урожай вообще без полива — всё равно заметно больше, чем можно
-                         # натапать в мгновенных играх за те же часы, вознаграждает само терпение
-FARM_WATER_BONUS = 50  # + баксов за каждый использованный слот полива (максимум
-                        # FARM_WATER_SLOTS*FARM_WATER_BONUS = 200 сверху, итого до 600 с поливом)
+                       # открывается каждые grow_hours/FARM_WATER_SLOTS часов; число слотов общее
+                       # для любой культуры, а бонус за слот свой у каждой (см. CROPS water_bonus)
 
 
 WORK_MULTIPLIER = {"pro": 1.5, "super_pro": 2.0, "elite": 2.8}  # та же тиерная форма, что у
@@ -2403,63 +2414,107 @@ def register_work_hit(user, game):
     return amount
 
 
-def farm_state(user):
-    """Чистый снимок грядки — ничего не меняет и не сохраняет, в отличие от farm_plant/water/
-    harvest ниже. "Слот полива" открывается, когда прошло достаточно времени с посадки — поливать
-    заранее/впрок нельзя, но пропущенный слот не сгорает: можно полить "задним числом", пока не
-    наступил слот следующий (см. can_water)."""
-    planted_raw = user.get("farm_planted_at")
-    if not planted_raw:
-        return {"planted": False}
-    try:
-        planted_at = datetime.fromisoformat(planted_raw)
-    except (ValueError, TypeError):
-        return {"planted": False}
-    elapsed_minutes = max(0.0, (datetime.now() - planted_at).total_seconds() / 60)
-    grow_minutes = FARM_GROW_HOURS * 60
-    slot_minutes = grow_minutes / FARM_WATER_SLOTS
-    slots_opened = min(FARM_WATER_SLOTS, int(elapsed_minutes // slot_minutes) + 1)
-    watered = min(user.get("farm_watered_slots", 0), FARM_WATER_SLOTS)
-    ready = elapsed_minutes >= grow_minutes
-    return {
-        "planted": True,
-        "ready": ready,
-        "progress": min(1.0, elapsed_minutes / grow_minutes),
-        "seconds_left": max(0, round((grow_minutes - elapsed_minutes) * 60)),
-        "watered_slots": watered,
-        "total_slots": FARM_WATER_SLOTS,
-        "can_water": (not ready) and watered < slots_opened,
-        "payout_preview": FARM_BASE_PAYOUT + watered * FARM_WATER_BONUS,
-    }
-
-
-def farm_plant(user):
-    if user.get("farm_planted_at"):
-        return False
-    user["farm_planted_at"] = datetime.now().isoformat()
-    user["farm_watered_slots"] = 0
-    user["farm_ready_notified"] = False
-    save_data(user_data)
-    return True
-
-
-def farm_water(user):
-    snap = farm_state(user)
-    if not snap["planted"] or not snap["can_water"]:
-        return False
-    user["farm_watered_slots"] = snap["watered_slots"] + 1
-    save_data(user_data)
-    return True
-
-
-def farm_harvest(user):
-    snap = farm_state(user)
-    if not snap["planted"] or not snap["ready"]:
+def register_work_failure(user, game):
+    """Денежный штраф за провал в одной из мгновенных игр (см. WORK_FAILURE_PENALTY_BUCKS) —
+    без анти-спам таймера (в отличие от register_work_hit): провалы видны на экране и сами себя
+    ограничивают по частоте, отдельный спам-вектор тут бессмысленен. Баланс никогда не уходит в
+    минус. Возвращает фактически списанную сумму, None при неизвестной игре."""
+    if game not in WORK_HIT_BUCKS:
         return None
-    payout = credit_work_bucks(user, snap["payout_preview"])
-    user["farm_planted_at"] = None
-    user["farm_watered_slots"] = 0
-    user["farm_ready_notified"] = False
+    penalty = min(WORK_FAILURE_PENALTY_BUCKS, user.get("bucks", 0))
+    user["bucks"] = user.get("bucks", 0) - penalty
+    save_data(user_data)
+    return penalty
+
+
+def farm_plots_raw(user):
+    """Список из FARM_SLOTS элементов (None -- слот пуст, иначе dict с crop/planted_at/
+    watered_slots/ready_notified) — создаёт и чинит длину списка в самом user, если его не было
+    или он короче/длиннее текущего FARM_SLOTS (например, после уменьшения константы)."""
+    plots = user.get("farm_plots")
+    if not isinstance(plots, list):
+        plots = [None] * FARM_SLOTS
+    if len(plots) < FARM_SLOTS:
+        plots = plots + [None] * (FARM_SLOTS - len(plots))
+    elif len(plots) > FARM_SLOTS:
+        plots = plots[:FARM_SLOTS]
+    user["farm_plots"] = plots
+    return plots
+
+
+def farm_state(user):
+    """Чистые снимки всех FARM_SLOTS грядок — ничего не меняет и не сохраняет, в отличие от
+    farm_plant/water/harvest ниже. Возвращает список длины FARM_SLOTS, каждый элемент либо None
+    (слот пуст), либо снимок с тем же набором полей, что раньше был у единственной грядки.
+    "Слот полива" открывается, когда прошло достаточно времени с посадки — поливать заранее/впрок
+    нельзя, но пропущенный слот не сгорает: можно полить "задним числом", пока не наступил
+    следующий (см. can_water)."""
+    plots = farm_plots_raw(user)
+    result = []
+    for plot in plots:
+        crop = CROPS.get((plot or {}).get("crop")) if plot else None
+        planted_raw = plot.get("planted_at") if plot else None
+        if not plot or not crop or not planted_raw:
+            result.append(None)
+            continue
+        try:
+            planted_at = datetime.fromisoformat(planted_raw)
+        except (ValueError, TypeError):
+            result.append(None)
+            continue
+        elapsed_minutes = max(0.0, (datetime.now() - planted_at).total_seconds() / 60)
+        grow_minutes = crop["grow_hours"] * 60
+        slot_minutes = grow_minutes / FARM_WATER_SLOTS
+        slots_opened = min(FARM_WATER_SLOTS, int(elapsed_minutes // slot_minutes) + 1)
+        watered = min(plot.get("watered_slots", 0), FARM_WATER_SLOTS)
+        ready = elapsed_minutes >= grow_minutes
+        result.append({
+            "crop": plot["crop"],
+            "emoji": crop["emoji"],
+            "ready": ready,
+            "progress": min(1.0, elapsed_minutes / grow_minutes),
+            "seconds_left": max(0, round((grow_minutes - elapsed_minutes) * 60)),
+            "watered_slots": watered,
+            "total_slots": FARM_WATER_SLOTS,
+            "can_water": (not ready) and watered < slots_opened,
+            "payout_preview": crop["base_payout"] + watered * crop["water_bonus"],
+        })
+    return result
+
+
+def farm_plant(user, slot, crop_key):
+    if crop_key not in CROPS or not isinstance(slot, int) or slot < 0 or slot >= FARM_SLOTS:
+        return False
+    plots = farm_plots_raw(user)
+    if plots[slot]:
+        return False
+    plots[slot] = {
+        "crop": crop_key, "planted_at": datetime.now().isoformat(),
+        "watered_slots": 0, "ready_notified": False,
+    }
+    save_data(user_data)
+    return True
+
+
+def farm_water(user, slot):
+    if not isinstance(slot, int) or slot < 0 or slot >= FARM_SLOTS:
+        return False
+    snaps = farm_state(user)
+    if not snaps[slot] or not snaps[slot]["can_water"]:
+        return False
+    user["farm_plots"][slot]["watered_slots"] = snaps[slot]["watered_slots"] + 1
+    save_data(user_data)
+    return True
+
+
+def farm_harvest(user, slot):
+    if not isinstance(slot, int) or slot < 0 or slot >= FARM_SLOTS:
+        return None
+    snaps = farm_state(user)
+    if not snaps[slot] or not snaps[slot]["ready"]:
+        return None
+    payout = credit_work_bucks(user, snaps[slot]["payout_preview"])
+    user["farm_plots"][slot] = None
     save_data(user_data)
     return payout
 
@@ -3739,7 +3794,7 @@ SPIN_PRIZES = [
     {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.15, "wheel_label": "✨SUPER"},
     # Эксклюзив именно колеса — нигде в магазине такого разового "всё на максимум" нет, по просьбе
     # пользователя добавить "что-то, что может выпасть только в колесе".
-    {"name": "🧺 Полная забота (эксклюзив колеса!)", "name_en": "🧺 Full care package (wheel exclusive!)", "name_de": "🧺 Rundum-Versorgung (Rad-Exklusiv!)", "value": 0, "type": "care_package", "weight": 0.5, "wheel_label": "🧺MAX"},
+    {"name": "🧖 Полная забота (эксклюзив колеса!)", "name_en": "🧖 Full care package (wheel exclusive!)", "name_de": "🧖 Rundum-Versorgung (Rad-Exklusiv!)", "value": 0, "type": "care_package", "weight": 0.5, "wheel_label": "🧖MAX"},
 ]
 
 
@@ -4012,7 +4067,7 @@ SHOP_CATEGORY_TEXT_KEY = {"food": "shop_category_food", "treat": "shop_category_
 # запасной вариант: любой текст, который ещё не дарили (дубли по нормализованному тексту), с
 # рандомным настроением из диапазона обычных аксессуаров (см. их mood выше — 18..45), а не
 # средним: со случайным числом каждый раз приятнее, чем одна и та же предсказуемая цифра.
-CUSTOM_GIFT_PRICE = 100
+CUSTOM_GIFT_PRICE = 1000
 CUSTOM_GIFT_MOOD_RANGE = (18, 45)
 CUSTOM_GIFT_MAX_LEN = 60
 
@@ -10228,6 +10283,7 @@ def serialize_spin_state(user):
             "open_chat_hint": get_text(user, "webapp_open_chat_hint"),
             "reminder_on_label": get_text(user, "webapp_spin_reminder_on_btn"),
             "reminder_off_label": get_text(user, "webapp_spin_reminder_off_btn"),
+            "prizes_title": get_text(user, "webapp_spin_prizes_title"),
         },
     }
 
@@ -10421,6 +10477,21 @@ SPIN_PAGE_HTML = '''<!doctype html>
     color: var(--tg-theme-hint-color, #888);
     padding: 14px 14px 0;
   }
+  #prize-list {
+    text-align: left;
+    font-size: 12px;
+    color: var(--tg-theme-hint-color, #888);
+    padding: 16px 20px 10px;
+    border-top: 1px solid rgba(127,127,127,.2);
+    margin-top: 10px;
+  }
+  #prize-list-title {
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  #prize-list-items {
+    line-height: 1.6;
+  }
   #full-screen-msg {
     display: none;
     padding: 60px 24px;
@@ -10446,6 +10517,10 @@ SPIN_PAGE_HTML = '''<!doctype html>
   <div id="result-banner"></div>
   <div id="actions"></div>
   <div id="footer-hint"></div>
+  <div id="prize-list">
+    <div id="prize-list-title"></div>
+    <div id="prize-list-items"></div>
+  </div>
   <div id="full-screen-msg"></div>
 
 <script>
@@ -10496,7 +10571,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
   }
 
   function showFullScreen(text) {
-    ["stats", "title", "spin-hint", "wheel-wrap", "result-banner", "actions", "footer-hint"].forEach(function (id) {
+    ["stats", "title", "spin-hint", "wheel-wrap", "result-banner", "actions", "footer-hint", "prize-list"].forEach(function (id) {
       document.getElementById(id).style.display = "none";
     });
     var el = document.getElementById("full-screen-msg");
@@ -10617,6 +10692,21 @@ SPIN_PAGE_HTML = '''<!doctype html>
     }).catch(function () {});
   }
 
+  var prizeListBuilt = false;
+
+  function renderPrizeList(s) {
+    if (prizeListBuilt) return;
+    prizeListBuilt = true;
+    document.getElementById("prize-list-title").textContent = s.ui.prizes_title;
+    var el = document.getElementById("prize-list-items");
+    el.innerHTML = "";
+    s.prizes.forEach(function (p) {
+      var row = document.createElement("div");
+      row.textContent = p.name;
+      el.appendChild(row);
+    });
+  }
+
   function render() {
     if (!state) return;
     try {
@@ -10624,6 +10714,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
       buildWheel(state.prizes);
       buildPegs();
       renderActions(state);
+      renderPrizeList(state);
       document.getElementById("footer-hint").textContent = state.ui.open_chat_hint;
     } catch (e) {
       showFullScreen("Render error: " + (e && e.message || e));
@@ -10769,36 +10860,45 @@ SPIN_PAGE_HTML = '''<!doctype html>
 
 def serialize_work_state(user):
     """Снимок для мини-аппа "Работа" (см. WORK_PAGE_HTML). Никакой таймер-сессии больше нет -- 3
-    мгновенные игры просто платят за каждое засчитанное попадание (см. WORK_HIT_BUCKS), ферма
-    живёт отдельным состоянием (см. farm_state). ui-строки с {плейсхолдерами} (farm_growing,
-    farm_watered_label, farm_payout_preview) нарочно не отформатированы -- get_text без kwargs
-    отдаёт сырой шаблон, фронтенд сам подставляет актуальные числа после каждого действия, без
-    нового похода на сервер."""
+    мгновенные игры просто платят за каждое засчитанное попадание (см. WORK_HIT_BUCKS) и штрафуют
+    за провал (см. WORK_FAILURE_PENALTY_BUCKS), ферма живёт отдельным состоянием -- теперь списком
+    из FARM_SLOTS грядок, см. farm_state. ui-строки с {плейсхолдерами} (farm_growing,
+    farm_watered_label, farm_payout_preview, farm_crop_stats) нарочно не отформатированы --
+    get_text без kwargs отдаёт сырой шаблон, фронтенд сам подставляет актуальные числа после
+    каждого действия, без нового похода на сервер."""
+    lang = user.get("lang", "ru")
     _multiplier = work_earnings_multiplier(user)
     _multiplier_display = str(int(_multiplier)) if _multiplier == int(_multiplier) else str(_multiplier)
     return {
         "bucks": user.get("bucks", 0),
         "multiplier": _multiplier,
         "hit_bucks": WORK_HIT_BUCKS,
+        "failure_penalty": WORK_FAILURE_PENALTY_BUCKS,
         "farm": farm_state(user),
+        "farm_crops": [
+            {
+                "key": key,
+                "emoji": crop["emoji"],
+                "name": crop.get(lang, crop["ru"]),
+                "grow_hours": crop["grow_hours"],
+                "base_payout": crop["base_payout"],
+                "max_payout": crop["base_payout"] + crop["water_bonus"] * FARM_WATER_SLOTS,
+            }
+            for key, crop in CROPS.items()
+        ],
         "ui": {
             "title": get_text(user, "work_minigame_title"),
             "tab_clicker": get_text(user, "work_tab_clicker"),
             "tab_catch": get_text(user, "work_tab_catch"),
             "tab_courier": get_text(user, "work_tab_rhythm"),
             "tab_farm": get_text(user, "work_tab_farm"),
-            "tab_bus": get_text(user, "work_tab_bus"),
             "clicker_hint": get_text(user, "work_clicker_hint"),
             "debuff_locked": get_text(user, "work_debuff_locked"),
             "catch_hint": get_text(user, "work_catch_hint"),
             "courier_hint": get_text(user, "work_rhythm_hint"),
             "courier_arrived": get_text(user, "work_courier_arrived"),
             "courier_arrived_tip": get_text(user, "work_courier_arrived_tip"),
-            "bus_hint": get_text(user, "work_bus_hint"),
-            "bus_route_done": get_text(user, "work_bus_route_done"),
-            "bus_route_done_tip": get_text(user, "work_bus_route_done_tip"),
             "multiplier_badge": get_text(user, "work_multiplier_badge", multiplier=_multiplier_display),
-            "farm_plant_btn": get_text(user, "farm_plant_btn"),
             "farm_water_btn": get_text(user, "farm_water_btn"),
             "farm_harvest_btn": get_text(user, "farm_harvest_btn"),
             "farm_growing": get_text(user, "farm_growing"),
@@ -10806,6 +10906,9 @@ def serialize_work_state(user):
             "farm_watered_label": get_text(user, "farm_watered_label"),
             "farm_payout_preview": get_text(user, "farm_payout_preview"),
             "farm_empty_hint": get_text(user, "farm_empty_hint"),
+            "farm_choose_crop": get_text(user, "farm_choose_crop"),
+            "farm_crop_stats": get_text(user, "farm_crop_stats"),
+            "farm_can_hint": get_text(user, "farm_can_hint"),
         },
     }
 
@@ -10879,6 +10982,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     animation: gain-float .7s ease-out forwards;
     z-index: 5;
   }
+  .gain-popup.loss-popup { color: #e8383d; }
   @keyframes gain-float {
     from { opacity: 1; transform: translate(-50%, -100%); }
     to { opacity: 0; transform: translate(-50%, -220%); }
@@ -10886,21 +10990,40 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   #hacker-terminal {
     position: relative;
-    height: 200px;
+    min-height: 210px;
     border-radius: 14px;
     background: #0d1117;
     overflow: hidden;
     margin-bottom: 10px;
     border: 3px solid #1dd1a1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 16px 8px;
   }
+  #hacker-code { display: flex; gap: 8px; }
+  .hacker-code-digit {
+    width: 30px;
+    height: 38px;
+    border-radius: 6px;
+    border: 1px solid #2a3540;
+    background: #161e27;
+    color: #3dffb0;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hacker-code-digit.done { opacity: .35; }
+  .hacker-code-digit.active { animation: hacker-target-pulse 1s ease infinite; border-color: #1dd1a1; }
   #hacker-keyboard {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
   }
   .hacker-key {
     width: 56px;
@@ -10909,18 +11032,18 @@ WORK_PAGE_HTML = r'''<!doctype html>
     border: 1px solid #2a3540;
     border-bottom: 4px solid #0a0f14;
     background: #161e27;
-    color: #3a4a57;
+    color: #8fa3b0;
     font-size: 18px;
+    font-weight: 700;
     font-family: monospace;
     box-shadow: 0 2px 4px rgba(0,0,0,.3);
     transition: transform .08s ease, border-bottom-width .08s ease, background .15s ease, color .15s ease;
   }
   .hacker-key.pressed { transform: translateY(2px); border-bottom-width: 2px; }
-  .hacker-key.target {
-    background: #0f3d2e;
-    color: #3dffb0;
-    border-color: #1dd1a1;
-    animation: hacker-target-pulse 1s ease infinite;
+  .hacker-key.correct { animation: key-correct .3s ease; }
+  @keyframes key-correct {
+    0%, 100% { filter: none; }
+    40% { background: #0f3d2e; color: #3dffb0; filter: drop-shadow(0 0 6px #1dd1a1); }
   }
   @keyframes hacker-target-pulse {
     0%, 100% { box-shadow: 0 0 6px rgba(61,255,176,.4); }
@@ -10968,6 +11091,21 @@ WORK_PAGE_HTML = r'''<!doctype html>
     from { top: -34px; }
     to { top: 100%; }
   }
+  .catch-item.big-hazard { font-size: 52px; }
+  .catch-warning {
+    position: absolute;
+    top: 0;
+    width: 60px;
+    height: 100%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    font-size: 24px;
+    padding-top: 6px;
+    animation: courier-warning-blink .35s ease infinite;
+    pointer-events: none;
+  }
   #catch-basket {
     position: absolute;
     bottom: 6px;
@@ -10985,14 +11123,14 @@ WORK_PAGE_HTML = r'''<!doctype html>
     30% { filter: drop-shadow(0 0 8px #e8383d) brightness(.7); }
   }
 
-  #courier-progress, #bus-progress {
+  #courier-progress {
     height: 8px;
     border-radius: 4px;
     background: rgba(0,0,0,.1);
     overflow: hidden;
     margin-bottom: 8px;
   }
-  #courier-progress-fill, #bus-progress-fill {
+  #courier-progress-fill {
     height: 100%;
     width: 0%;
     background: linear-gradient(90deg, #1dd1a1, #4ea8ff);
@@ -11005,9 +11143,16 @@ WORK_PAGE_HTML = r'''<!doctype html>
     background: #4a4a4a;
     margin: 0 0 10px;
     overflow: hidden;
-    transition: transform .3s ease;
   }
-  #courier-road.mirrored { transform: scaleX(-1); }
+  #courier-light {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    font-size: 20px;
+    z-index: 4;
+    display: none;
+  }
+  #courier-light.blink { animation: courier-warning-blink .4s ease infinite; }
   .courier-lane {
     position: absolute;
     left: 0;
@@ -11027,16 +11172,19 @@ WORK_PAGE_HTML = r'''<!doctype html>
     transition: top .18s ease, transform .15s ease;
     z-index: 3;
   }
+  #courier-rider.facing-left { transform: translate(-50%, -50%) scaleX(1); }
   #courier-rider.crash { animation: courier-crash .3s ease; }
   @keyframes courier-crash {
     0%, 100% { filter: none; }
-    40% { filter: drop-shadow(0 0 8px #e8383d) brightness(.7); transform: translate(-50%, -50%) scaleX(-1) rotate(-15deg); }
+    40% { filter: drop-shadow(0 0 8px #e8383d) brightness(.7); }
   }
-  #courier-rider.jumping {
-    transform: translate(-50%, -50%) scaleX(-1) translateY(-26px) scale(1.15);
-    filter: drop-shadow(0 8px 4px rgba(0,0,0,.3));
+  #courier-rider.stopped { filter: grayscale(.4) brightness(.85); }
+  #courier-rider.arriving { animation: courier-arrive .9s ease; }
+  @keyframes courier-arrive {
+    0%, 100% { filter: none; }
+    50% { filter: drop-shadow(0 0 10px #1dd1a1) brightness(1.3); }
   }
-  .courier-obstacle {
+  .courier-obstacle, .courier-recipient, .courier-car {
     position: absolute;
     left: 100%;
     font-size: 30px;
@@ -11049,107 +11197,122 @@ WORK_PAGE_HTML = r'''<!doctype html>
     from { left: 104%; }
     to { left: -8%; }
   }
-  .courier-obstacle.hit-flash { filter: drop-shadow(0 0 8px #e8383d); }
-  .courier-obstacle[data-full="1"] { filter: drop-shadow(0 0 5px #ffc107); }
-
-  #bus-road {
-    position: relative;
-    height: 140px;
-    border-radius: 14px;
-    background: #4a4a4a;
-    margin: 0 0 10px;
-    overflow: hidden;
-  }
-  .bus-lane {
+  .courier-obstacle.hit-flash, .courier-car.hit-flash { filter: drop-shadow(0 0 8px #e8383d); }
+  .courier-recipient.delivered { filter: drop-shadow(0 0 8px #1dd1a1); }
+  .courier-car { font-size: 32px; }
+  .courier-warning {
     position: absolute;
-    left: 0;
-    right: 0;
-    height: 70px;
-    border-bottom: 2px dashed rgba(255,255,255,.25);
-  }
-  .bus-lane[data-lane="0"] { top: 0; }
-  .bus-lane[data-lane="1"] { top: 70px; border-bottom: none; }
-  #bus-vehicle {
-    position: absolute;
-    left: 8%;
-    top: 35px;
-    font-size: 36px;
-    transform: translate(-50%, -50%) scaleX(-1);
-    transition: top .18s ease;
-    z-index: 3;
-  }
-  #bus-vehicle.crash { animation: courier-crash .3s ease; }
-  .bus-stop {
-    position: absolute;
-    left: 100%;
-    font-size: 26px;
+    left: 96%;
+    font-size: 22px;
     transform: translate(-50%, -50%);
-    animation-name: courier-scroll;
-    animation-timing-function: ease-out;
-    animation-fill-mode: forwards;
+    animation: courier-warning-blink .4s ease infinite;
   }
-  .bus-stop.hit-flash { filter: drop-shadow(0 0 8px #e8383d); }
-  .bus-stop.boarded { filter: drop-shadow(0 0 8px #1dd1a1); }
+  @keyframes courier-warning-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .25; }
+  }
 
-  #courier-controls, #bus-controls { display: flex; gap: 14px; justify-content: center; margin-bottom: 10px; }
-  #courier-up, #courier-down, #courier-jump, #bus-left, #bus-right {
+  #courier-controls { display: flex; gap: 14px; justify-content: center; align-items: center; margin-bottom: 10px; }
+  #courier-updown { display: flex; flex-direction: column; gap: 10px; }
+  #courier-up, #courier-down, #courier-light-btn {
     width: 76px;
     height: 58px;
     border-radius: 12px;
     border: none;
     background: var(--tg-theme-button-color, #2481cc);
     color: var(--tg-theme-button-text-color, #ffffff);
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
   }
-  #courier-jump { background: #ff9f1c; }
+  #courier-light-btn { display: none; background: #e8383d; }
+  #courier-light-btn.go { background: #1dd1a1; }
   #courier-up:disabled, #courier-down:disabled { opacity: .35; }
-  #catch-feedback, #courier-feedback, #clicker-feedback, #bus-feedback { margin-top: 12px; font-size: 14px; font-weight: 700; min-height: 20px; }
-  #catch-feedback.locked, #courier-feedback.locked, #clicker-feedback.locked, #bus-feedback.locked { color: #e8383d; }
-  #courier-feedback.arrived, #bus-feedback.arrived { color: #1dd1a1; }
+  #catch-feedback, #courier-feedback, #clicker-feedback { margin-top: 12px; font-size: 14px; font-weight: 700; min-height: 20px; }
+  #catch-feedback.locked, #courier-feedback.locked, #clicker-feedback.locked { color: #e8383d; }
+  #courier-feedback.arrived { color: #1dd1a1; }
 
   #game-farm { padding-top: 8px; }
+  #farm-can {
+    font-size: 38px;
+    text-align: center;
+    cursor: grab;
+    user-select: none;
+    margin-bottom: 4px;
+    touch-action: none;
+  }
+  #farm-can.disabled { opacity: .3; pointer-events: none; }
+  #farm-can-hint { font-size: 11px; opacity: .65; text-align: center; margin-bottom: 8px; }
+  #farm-plots { display: flex; gap: 8px; margin-bottom: 10px; }
   .farm-plot {
     position: relative;
-    height: 170px;
-    border-radius: 16px;
+    flex: 1;
+    min-width: 0;
+    height: 190px;
+    border-radius: 14px;
     overflow: hidden;
-    margin-bottom: 14px;
-    background: linear-gradient(180deg, #d7f0d0 0%, #d7f0d0 58%, #8a5a34 58%, #6b4423 100%);
+    background: linear-gradient(180deg, #d7f0d0 0%, #d7f0d0 42%, #8a5a34 42%, #6b4423 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 4px 10px;
   }
   .farm-plant {
-    position: absolute;
-    bottom: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 54px;
+    font-size: 34px;
     line-height: 1;
+    margin-bottom: 4px;
   }
   .farm-plant.ready { animation: farm-bounce 1s ease-in-out infinite; }
   @keyframes farm-bounce {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(-10px); }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
   }
-  .farm-water-drop {
+  .farm-watered-pips { position: absolute; top: 6px; left: 0; right: 0; display: flex; justify-content: center; gap: 3px; }
+  .farm-watered-pip { width: 6px; height: 6px; border-radius: 50%; background: rgba(0,0,0,.2); }
+  .farm-watered-pip.filled { background: #4ea8ff; }
+  .farm-water-splash {
     position: absolute;
-    top: 12px;
+    top: 6px;
     left: 50%;
+    font-size: 20px;
     transform: translateX(-50%);
-    font-size: 36px;
+    animation: farm-splash .5s ease-out forwards;
+    pointer-events: none;
+  }
+  @keyframes farm-splash {
+    0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(18px); }
+  }
+  .farm-plot-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    flex: 1;
+    font-size: 14px;
+    font-weight: 700;
+    opacity: .55;
     cursor: pointer;
-    user-select: none;
   }
-  .farm-water-drop.disabled { opacity: .3; pointer-events: none; }
-  .farm-water-drop.watering { animation: farm-water-fall .4s ease-in forwards; pointer-events: none; }
-  @keyframes farm-water-fall {
-    0% { top: 12px; opacity: 1; }
-    85% { top: 95px; opacity: 1; }
-    100% { top: 100px; opacity: 0; }
-  }
-  .farm-status { font-size: 15px; font-weight: 700; margin-bottom: 10px; min-height: 20px; }
-  .farm-watered, .farm-preview { font-size: 13px; opacity: .75; margin-bottom: 4px; }
+  .farm-status { font-size: 12px; font-weight: 700; min-height: 16px; text-align: center; padding: 0 2px; }
+  .farm-preview { font-size: 10.5px; opacity: .75; text-align: center; padding: 0 2px; }
   .farm-hint { font-size: 14px; opacity: .8; padding: 30px 10px 16px; line-height: 1.5; }
-  .farm-actions { margin-top: 16px; }
+  #farm-crop-picker { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; width: 100%; }
+  .farm-crop-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: none;
+    background: var(--tg-theme-secondary-bg-color, #f0f0f0);
+    color: var(--tg-theme-text-color, #111111);
+    font-size: 13px;
+    text-align: left;
+  }
+  .farm-crop-option .farm-crop-name { font-weight: 700; }
+  .farm-crop-option .farm-crop-stats { font-size: 11px; opacity: .7; }
+  .farm-actions { margin-top: 10px; }
   .farm-action-btn {
     padding: 13px 28px;
     border-radius: 12px;
@@ -11183,21 +11346,14 @@ WORK_PAGE_HTML = r'''<!doctype html>
     <button id="tab-clicker" class="tab-btn"></button>
     <button id="tab-catch" class="tab-btn"></button>
     <button id="tab-courier" class="tab-btn"></button>
-    <button id="tab-bus" class="tab-btn"></button>
     <button id="tab-farm" class="tab-btn"></button>
   </div>
 
   <div id="game-clicker" class="game-panel">
     <div id="clicker-hint"></div>
     <div id="hacker-terminal">
-      <div id="hacker-keyboard">
-        <button class="hacker-key" data-key="0">•</button>
-        <button class="hacker-key" data-key="1">•</button>
-        <button class="hacker-key" data-key="2">•</button>
-        <button class="hacker-key" data-key="3">•</button>
-        <button class="hacker-key" data-key="4">•</button>
-        <button class="hacker-key" data-key="5">•</button>
-      </div>
+      <div id="hacker-code"></div>
+      <div id="hacker-keyboard"></div>
     </div>
     <div id="clicker-feedback"></div>
   </div>
@@ -11218,31 +11374,19 @@ WORK_PAGE_HTML = r'''<!doctype html>
       <div class="courier-lane" data-lane="1"></div>
       <div class="courier-lane" data-lane="2"></div>
       <div id="courier-rider">🛵</div>
+      <div id="courier-light">🟢</div>
     </div>
     <div id="courier-controls">
-      <button id="courier-up">▲</button>
-      <button id="courier-down">▼</button>
-      <button id="courier-jump">⏫</button>
+      <button id="courier-light-btn"></button>
+      <div id="courier-updown">
+        <button id="courier-up">▲</button>
+        <button id="courier-down">▼</button>
+      </div>
     </div>
     <div id="courier-feedback"></div>
   </div>
 
   <div id="game-farm" class="game-panel"></div>
-
-  <div id="game-bus" class="game-panel">
-    <div id="bus-hint"></div>
-    <div id="bus-progress"><div id="bus-progress-fill"></div></div>
-    <div id="bus-road">
-      <div class="bus-lane" data-lane="0"></div>
-      <div class="bus-lane" data-lane="1"></div>
-      <div id="bus-vehicle">🚌</div>
-    </div>
-    <div id="bus-controls">
-      <button id="bus-left">⬅️</button>
-      <button id="bus-right">➡️</button>
-    </div>
-    <div id="bus-feedback"></div>
-  </div>
 
   <div id="full-screen-msg"></div>
 
@@ -11269,41 +11413,70 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var catchRafId = null;
   var courierRafId = null;
   var courierSpawnInterval = null;
-  var hackerTarget = 0; // index of the currently lit .hacker-key -- see pickHackerTarget()
-  var DEBUFF_MS = 2000; // lockout after any failure (bomb/crash/wrong key) -- see triggerDebuff()
-  var debuffState = { catch: false, courier: false, clicker: false, bus: false };
-  var debuffTimeoutIds = { catch: null, courier: null, clicker: null, bus: null };
+  var courierCarInterval = null;
+  var DEBUFF_MS = 2000; // lockout after any failure (bomb/crash/wrong digit/traffic light) -- see triggerDebuff()
+  var debuffState = { catch: false, courier: false, clicker: false };
+  var debuffTimeoutIds = { catch: null, courier: null, clicker: null };
   var farmCountdownInterval = null;
   var hitInFlight = false;
-  var farmActionInFlight = false;
+  var penaltyInFlight = false;
+  var farmInFlight = {}; // per-slot in-flight guard for plant/water/harvest, see farmAction()
   var dragBound = false;
+
+  // ---- Hacker (enter the code in order) ----
+  var HACKER_CODE_LENGTH = 4;
+  var HACKER_DIGITS = 10; // keypad shows digits 0-9, shuffled every new code
+  var hackerCode = [];
+  var hackerCodeIndex = 0;
+
+  // ---- Courier ----
   var COURIER_LANE_Y = [30, 90, 150]; // px centers, matches 3x60px lanes in a 180px-tall #courier-road
   var courierLane = 1;
-  var COURIER_OBSTACLE_EMOJI = "🚧";
-  var courierJumping = false;
-  var COURIER_JUMP_MS = 500; // immunity window to full-width obstacles -- see courierJump()
-  var courierObstacleGroupSeq = 0; // ties multi-lane (wide/full) obstacle pieces together
-  var COURIER_TRIP_LENGTH = 8; // dodges per delivery run before the progress bar completes
-  var courierProgress = 0;
+  var COURIER_OBSTACLE_EMOJIS = ["🚧", "🪨", "🛢", "🌳"]; // cosmetic variety only, same hitbox/behavior
+  var COURIER_RECIPIENT_EMOJI = "🙋";
+  var COURIER_RECIPIENT_CHANCE = 0.4; // rolled every spawn tick while the leg still needs deliveries
+  var courierRecipientsTotal = 0;
+  var courierRecipientsDelivered = 0;
+  var courierArrivalTimeoutId = null; // pending "pick up next package" pause between legs
+  var courierFacingLeft = false; // cosmetic only, toggled each completed leg -- obstacles/recipients
+  // always spawn and get collision-checked in the exact same coordinate frame on both legs, which is
+  // what actually fixes the old "hitbox is off after mirroring" bug (that used to scaleX(-1) the
+  // whole #courier-road, entangling the rider's own flip with getBoundingClientRect on every child)
   var COURIER_TIP_CHANCE = 0.25; // purely cosmetic flourish on arrival -- payout itself is still
-  // the same per-dodge registerHit("courier", ...) call as always, never a separate lump sum
-  var busSide = 0;
-  var BUS_LANE_Y = [35, 105]; // px centers, matches 2x70px rows in a 140px-tall #bus-road
-  var BUS_SIDE_EMOJI = ["⬅️", "➡️"];
-  var busSpawnInterval = null;
-  var busRafId = null;
-  var BUS_PROGRESS_LENGTH = 8;
-  var busProgress = 0;
+  // the same per-delivery registerHit("courier", ...) call as always, never a separate lump sum
+  var COURIER_CAR_EMOJI = "🚗";
+  var COURIER_CAR_CHANCE = 0.5; // rolled on its own rarer interval, see courierCarInterval
+  var COURIER_CAR_WARN_MS = 1100;
+  var courierWarningTimeoutIds = []; // pending warning->spawn timers for oncoming cars, see stopAllGames
+  var courierLight = "idle"; // idle -> warning -> stop -> holding -> go -> idle, see setCourierLightPhase()
+  var courierLightTimeoutId = null;
+  var courierStopped = false;
+  var COURIER_LIGHT_MIN_GAP_MS = 7000, COURIER_LIGHT_GAP_RANGE_MS = 6000; // idle gap between light cycles
+  var COURIER_LIGHT_WARN_MS = 900; // yellow heads-up before it actually turns red
+  var COURIER_LIGHT_STOP_MS = 1400; // window to press the button after it turns red
+  var COURIER_LIGHT_HOLD_MIN_MS = 1000, COURIER_LIGHT_HOLD_RANGE_MS = 1500; // red-held before green
+  var COURIER_LIGHT_GO_MS = 1500; // window to press again once green -- being slow to go is NOT penalized
+
   var BASKET_WIDTH_PCT = 26;
   var CATCH_EMOJIS = ["🍎", "💧", "🎁", "🍪", "🥤", "🍕", "🧀", "🥐"];
   var BOMB_EMOJI = "💣";
-  var BOMB_CHANCE = 0.22;
+  var BOMB_CHANCE = 0.32; // was 0.22 -- more bombs, harder to just drag across blindly
   var SLOWFALL_EMOJI = "🐌";
   var SLOWFALL_CHANCE = 0.08; // rolled only when the spawn didn't already roll a bomb
   var SLOWFALL_DURATION_MS = 5000;
   var SLOWFALL_MULTIPLIER = 1.6; // how much longer newly-spawned items take to fall while active
   var slowFallUntil = 0;
   var CATCH_FALL_MIN_S = 1.5, CATCH_FALL_RANGE_S = 1.0; // was 2.1-3.5s -- faster, harder to react to
+  var BIG_HAZARD_CHANCE = 0.05; // rolled only when the spawn didn't already roll a bomb/slowfall
+  var BIG_HAZARD_EMOJIS = ["⚫", "💣"]; // "cannonball" and "big bomb" -- same wide-miss treatment
+  var BIG_HAZARD_WARN_MS = 900;
+  var BIG_HAZARD_MARGIN_PCT = 16; // how far past the basket's own edges still counts as a hit
+  var bigHazardTimeoutIds = []; // pending warning->spawn timers, cleared on tab switch -- see stopAllGames
+
+  // ---- Farm (watering can drag) ----
+  var farmCanDragging = false;
+  var farmWateredThisDrag = {};
+  var farmPickingSlot = -1; // -1 = no crop picker shown; otherwise the empty slot being planted
 
   function initData() { return tg ? tg.initData : ""; }
 
@@ -11331,7 +11504,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
 
   function showFullScreen(text) {
-    ["topbar", "tabs", "game-clicker", "game-catch", "game-courier", "game-bus", "game-farm"].forEach(function (id) {
+    ["topbar", "tabs", "game-clicker", "game-catch", "game-courier", "game-farm"].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.style.display = "none";
     });
@@ -11355,6 +11528,17 @@ WORK_PAGE_HTML = r'''<!doctype html>
     setTimeout(function () { if (el.parentNode) el.remove(); }, 700);
   }
 
+  function popupLoss(amount, x, y, container) {
+    if (!amount || !container) return;
+    var el = document.createElement("div");
+    el.className = "gain-popup loss-popup";
+    el.textContent = "-" + amount + "💵";
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+    container.appendChild(el);
+    setTimeout(function () { if (el.parentNode) el.remove(); }, 700);
+  }
+
   function registerHit(game, x, y, container) {
     if (hitInFlight) return;
     hitInFlight = true;
@@ -11372,41 +11556,67 @@ WORK_PAGE_HTML = r'''<!doctype html>
     }).catch(function () { hitInFlight = false; });
   }
 
+  // Штраф за провал -- отдельная от registerHit ветка (своя in-flight защита, чтобы быстрый
+  // повторный провал не потерялся), но та же форма вызова. Фармы здесь нет: там риска нет вообще.
+  function registerPenalty(game, x, y, container) {
+    if (penaltyInFlight) return;
+    penaltyInFlight = true;
+    api("/api/work/penalty", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ game: game })
+    }).then(function (res) {
+      penaltyInFlight = false;
+      if (res.ok && res.state) {
+        state.bucks = res.state.bucks;
+        setBalance(state.bucks);
+        if (res.penalty) popupLoss(res.penalty, x, y, container);
+      }
+    }).catch(function () { penaltyInFlight = false; });
+  }
+
   function stopAllGames() {
     if (catchSpawnInterval) { clearInterval(catchSpawnInterval); catchSpawnInterval = null; }
     if (catchRafId) { cancelAnimationFrame(catchRafId); catchRafId = null; }
     if (courierRafId) { cancelAnimationFrame(courierRafId); courierRafId = null; }
     if (courierSpawnInterval) { clearInterval(courierSpawnInterval); courierSpawnInterval = null; }
-    if (busRafId) { cancelAnimationFrame(busRafId); busRafId = null; }
-    if (busSpawnInterval) { clearInterval(busSpawnInterval); busSpawnInterval = null; }
+    if (courierCarInterval) { clearInterval(courierCarInterval); courierCarInterval = null; }
+    if (courierLightTimeoutId) { clearTimeout(courierLightTimeoutId); courierLightTimeoutId = null; }
+    if (courierArrivalTimeoutId) { clearTimeout(courierArrivalTimeoutId); courierArrivalTimeoutId = null; }
+    courierWarningTimeoutIds.forEach(function (id) { clearTimeout(id); });
+    courierWarningTimeoutIds = [];
+    bigHazardTimeoutIds.forEach(function (id) { clearTimeout(id); });
+    bigHazardTimeoutIds = [];
     stopFarmCountdown();
     clearDebuff("catch", "catch-feedback", "catch-field");
     clearDebuff("courier", "courier-feedback", "courier-controls");
     clearDebuff("clicker", "clicker-feedback", "hacker-keyboard");
-    clearDebuff("bus", "bus-feedback", "bus-controls");
     var field = document.getElementById("catch-field");
     if (field) {
-      var items = field.querySelectorAll(".catch-item");
+      var items = field.querySelectorAll(".catch-item, .catch-warning");
       items.forEach(function (el) { el.remove(); });
       field.classList.remove("slow-active");
     }
     slowFallUntil = 0;
     var road = document.getElementById("courier-road");
     if (road) {
-      var obstacles = road.querySelectorAll(".courier-obstacle");
+      var obstacles = road.querySelectorAll(".courier-obstacle, .courier-recipient, .courier-car, .courier-warning");
       obstacles.forEach(function (el) { el.remove(); });
     }
-    var busRoad = document.getElementById("bus-road");
-    if (busRoad) {
-      var stops = busRoad.querySelectorAll(".bus-stop");
-      stops.forEach(function (el) { el.remove(); });
-    }
+    var rider = document.getElementById("courier-rider");
+    if (rider) rider.classList.remove("stopped", "crash", "arriving");
+    courierStopped = false;
+    setCourierLightPhase("idle");
+    farmCanDragging = false;
   }
 
   // ---------- Shared failure debuff (catch/courier/hacker) ----------
-  function triggerDebuff(game, indicatorElId, lockElId) {
+  // popupX/popupY/popupContainer, when given, also deduct and show a money penalty for the
+  // failure (see registerPenalty) -- the farm never calls this at all, so it never loses money.
+  function triggerDebuff(game, indicatorElId, lockElId, popupX, popupY, popupContainer) {
     if (debuffState[game]) return;
     debuffState[game] = true;
+    if (popupContainer) registerPenalty(game, popupX, popupY, popupContainer);
     var indicator = document.getElementById(indicatorElId);
     var lockEl = document.getElementById(lockElId);
     if (lockEl) lockEl.classList.add("debuffed");
@@ -11435,37 +11645,73 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (indicator) { indicator.textContent = ""; indicator.className = ""; }
   }
 
-  // ---------- Hacker (press the correct key) ----------
-  function pickHackerTarget() {
-    var keys = document.querySelectorAll(".hacker-key");
-    keys.forEach(function (k) { k.classList.remove("target"); });
-    hackerTarget = Math.floor(Math.random() * keys.length);
-    if (keys[hackerTarget]) keys[hackerTarget].classList.add("target");
+  // ---------- Hacker (enter the code, in order, on a shuffled keypad) ----------
+  function shuffledDigits() {
+    var digits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    for (var i = digits.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = digits[i]; digits[i] = digits[j]; digits[j] = tmp;
+    }
+    return digits;
+  }
+
+  function renderHackerCode() {
+    var el = document.getElementById("hacker-code");
+    el.innerHTML = "";
+    hackerCode.forEach(function (digit, i) {
+      var chip = document.createElement("div");
+      chip.className = "hacker-code-digit" + (i < hackerCodeIndex ? " done" : (i === hackerCodeIndex ? " active" : ""));
+      chip.textContent = String(digit);
+      el.appendChild(chip);
+    });
+  }
+
+  function newHackerCode() {
+    hackerCode = shuffledDigits().slice(0, HACKER_CODE_LENGTH);
+    hackerCodeIndex = 0;
+    renderHackerCode();
+  }
+
+  function buildHackerKeyboard() {
+    var el = document.getElementById("hacker-keyboard");
+    el.innerHTML = "";
+    shuffledDigits().slice(0, HACKER_DIGITS).forEach(function (digit) {
+      var btn = document.createElement("button");
+      btn.className = "hacker-key";
+      btn.dataset.digit = String(digit);
+      btn.textContent = String(digit);
+      btn.onclick = function () { pressHackerKey(digit, btn); };
+      el.appendChild(btn);
+    });
+  }
+
+  function pressHackerKey(digit, keyEl) {
+    if (debuffState.clicker) return;
+    keyEl.classList.add("pressed");
+    setTimeout(function () { keyEl.classList.remove("pressed"); }, 100);
+    if (digit === hackerCode[hackerCodeIndex]) {
+      keyEl.classList.add("correct");
+      setTimeout(function () { keyEl.classList.remove("correct"); }, 300);
+      registerHit("clicker", keyEl.offsetLeft + keyEl.offsetWidth / 2, keyEl.offsetTop,
+        document.getElementById("hacker-terminal"));
+      hackerCodeIndex++;
+      renderHackerCode();
+      if (hackerCodeIndex >= hackerCode.length) {
+        setTimeout(function () { newHackerCode(); buildHackerKeyboard(); }, 250);
+      }
+    } else {
+      keyEl.classList.add("wrong");
+      setTimeout(function () { keyEl.classList.remove("wrong"); }, 300);
+      triggerDebuff("clicker", "clicker-feedback", "hacker-keyboard",
+        keyEl.offsetLeft + keyEl.offsetWidth / 2, keyEl.offsetTop, document.getElementById("hacker-terminal"));
+      newHackerCode();
+      buildHackerKeyboard();
+    }
   }
 
   function startHacker() {
-    pickHackerTarget();
-  }
-
-  function bindHackerKeyboard() {
-    var keys = document.querySelectorAll(".hacker-key");
-    keys.forEach(function (key, index) {
-      key.onclick = function () {
-        if (debuffState.clicker) return;
-        key.classList.add("pressed");
-        setTimeout(function () { key.classList.remove("pressed"); }, 100);
-        if (index === hackerTarget) {
-          registerHit("clicker", key.offsetLeft + key.offsetWidth / 2, key.offsetTop,
-            document.getElementById("hacker-terminal"));
-          pickHackerTarget();
-        } else {
-          key.classList.add("wrong");
-          setTimeout(function () { key.classList.remove("wrong"); }, 300);
-          triggerDebuff("clicker", "clicker-feedback", "hacker-keyboard");
-          pickHackerTarget();
-        }
-      };
-    });
+    newHackerCode();
+    buildHackerKeyboard();
   }
 
   // ---------- Order (drag basket) ----------
@@ -11499,24 +11745,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
     field.addEventListener("pointercancel", function () { dragging = false; });
   }
 
-  function spawnCatchItem() {
-    var field = document.getElementById("catch-field");
-    if (!field) return;
-    var isBomb = Math.random() < BOMB_CHANCE;
-    var isSlowFall = !isBomb && Math.random() < SLOWFALL_CHANCE;
+  function appendFallingItem(field, x, className, text, dataset) {
     var item = document.createElement("div");
-    item.className = "catch-item";
-    if (isBomb) {
-      item.textContent = BOMB_EMOJI;
-      item.classList.add("bomb");
-      item.dataset.bomb = "1";
-    } else if (isSlowFall) {
-      item.textContent = SLOWFALL_EMOJI;
-      item.dataset.slowfall = "1";
-    } else {
-      item.textContent = CATCH_EMOJIS[Math.floor(Math.random() * CATCH_EMOJIS.length)];
-    }
-    item.style.left = (6 + Math.random() * 82) + "%";
+    item.className = className;
+    item.textContent = text;
+    Object.keys(dataset || {}).forEach(function (k) { item.dataset[k] = dataset[k]; });
+    item.style.left = x + "%";
     var baseDuration = CATCH_FALL_MIN_S + Math.random() * CATCH_FALL_RANGE_S;
     item.style.animationDuration = (Date.now() < slowFallUntil ? baseDuration * SLOWFALL_MULTIPLIER : baseDuration) + "s";
     item.addEventListener("animationend", function () {
@@ -11525,27 +11759,74 @@ WORK_PAGE_HTML = r'''<!doctype html>
     field.appendChild(item);
   }
 
+  // "Пушечное ядро"/большая бомба -- редкие и опасные: сперва мигающее предупреждение ❗ на том
+  // X, куда они упадут, и только через BIG_HAZARD_WARN_MS сам снаряд. Задевать их нужно обходить
+  // с большим запасом (см. BIG_HAZARD_MARGIN_PCT в catchCollisionTick), не просто не ловить.
+  function spawnBigHazardWithWarning(field, x) {
+    var warn = document.createElement("div");
+    warn.className = "catch-warning";
+    warn.textContent = "❗";
+    warn.style.left = x + "%";
+    field.appendChild(warn);
+    var tid = setTimeout(function () {
+      bigHazardTimeoutIds = bigHazardTimeoutIds.filter(function (id) { return id !== tid; });
+      if (warn.parentNode) warn.remove();
+      var liveField = document.getElementById("catch-field");
+      if (!liveField || liveField.style.display === "none") return;
+      appendFallingItem(liveField, x, "catch-item big-hazard",
+        BIG_HAZARD_EMOJIS[Math.floor(Math.random() * BIG_HAZARD_EMOJIS.length)], { bighazard: "1" });
+    }, BIG_HAZARD_WARN_MS);
+    bigHazardTimeoutIds.push(tid);
+  }
+
+  function spawnCatchItem() {
+    var field = document.getElementById("catch-field");
+    if (!field) return;
+    var x = 6 + Math.random() * 82;
+    var isBomb = Math.random() < BOMB_CHANCE;
+    var isSlowFall = !isBomb && Math.random() < SLOWFALL_CHANCE;
+    var isBigHazard = !isBomb && !isSlowFall && Math.random() < BIG_HAZARD_CHANCE;
+    if (isBigHazard) {
+      spawnBigHazardWithWarning(field, x);
+      return;
+    }
+    if (isBomb) {
+      appendFallingItem(field, x, "catch-item bomb", BOMB_EMOJI, { bomb: "1" });
+    } else if (isSlowFall) {
+      appendFallingItem(field, x, "catch-item", SLOWFALL_EMOJI, { slowfall: "1" });
+    } else {
+      appendFallingItem(field, x, "catch-item", CATCH_EMOJIS[Math.floor(Math.random() * CATCH_EMOJIS.length)], {});
+    }
+  }
+
   function catchCollisionTick() {
     var field = document.getElementById("catch-field");
     var basket = document.getElementById("catch-basket");
     if (field && basket && !debuffState.catch) {
       var basketRect = basket.getBoundingClientRect();
+      var fieldRect = field.getBoundingClientRect();
+      var bigMarginPx = fieldRect.width * (BIG_HAZARD_MARGIN_PCT / 100);
       var items = field.querySelectorAll(".catch-item:not([data-caught])");
       for (var i = 0; i < items.length; i++) {
         var item = items[i];
+        var isBig = item.dataset.bighazard === "1";
         var r = item.getBoundingClientRect();
         var itemBottom = r.top + r.height * 0.7;
         var itemCenterX = r.left + r.width * 0.5;
+        var left = isBig ? basketRect.left - bigMarginPx : basketRect.left;
+        var right = isBig ? basketRect.right + bigMarginPx : basketRect.right;
         if (itemBottom >= basketRect.top && itemBottom <= basketRect.bottom + 10 &&
-            itemCenterX >= basketRect.left && itemCenterX <= basketRect.right) {
+            itemCenterX >= left && itemCenterX <= right) {
           item.dataset.caught = "1";
-          if (item.dataset.bomb === "1") {
-            // Бомба -- никакого registerHit, деньги за это НЕ платятся, плюс штрафная блокировка.
+          if (item.dataset.bomb === "1" || isBig) {
+            // Бомба и большие угрозы -- никакого registerHit, деньги за это НЕ платятся, плюс
+            // штрафная блокировка (см. registerPenalty через triggerDebuff).
             item.classList.add("exploded");
             basket.classList.add("hit");
             setTimeout(function () { basket.classList.remove("hit"); }, 300);
             (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 300); })(item);
-            triggerDebuff("catch", "catch-feedback", "catch-field");
+            triggerDebuff("catch", "catch-feedback", "catch-field",
+              basket.offsetLeft + basket.offsetWidth / 2, basket.offsetTop, document.getElementById("catch-field"));
           } else {
             item.classList.add("caught");
             (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 160); })(item);
@@ -11582,25 +11863,22 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (downBtn) downBtn.disabled = courierLane === 2;
   }
 
-  function courierJump() {
-    if (courierJumping) return;
-    courierJumping = true;
-    var rider = document.getElementById("courier-rider");
-    if (rider) rider.classList.add("jumping");
-    setTimeout(function () {
-      courierJumping = false;
-      if (rider) rider.classList.remove("jumping");
-    }, COURIER_JUMP_MS);
-  }
-
-  function setCourierProgress(value) {
-    courierProgress = value;
+  function setCourierProgress() {
     var fill = document.getElementById("courier-progress-fill");
-    if (fill) fill.style.width = Math.min(100, (courierProgress / COURIER_TRIP_LENGTH) * 100) + "%";
+    var pct = courierRecipientsTotal > 0 ? (courierRecipientsDelivered / courierRecipientsTotal) * 100 : 0;
+    if (fill) fill.style.width = Math.min(100, pct) + "%";
   }
 
-  function completeCourierTrip() {
-    var road = document.getElementById("courier-road");
+  function startCourierLeg() {
+    courierRecipientsTotal = 4 + Math.floor(Math.random() * 4); // 4..7 people per leg
+    courierRecipientsDelivered = 0;
+    setCourierProgress();
+  }
+
+  // Доставили нужное число людей -- короткая анимация "забрал новую посылку" и едем в другую
+  // сторону (courierFacingLeft чисто косметический, см. комментарий у объявления переменной).
+  function completeCourierLeg() {
+    var rider = document.getElementById("courier-rider");
     var feedback = document.getElementById("courier-feedback");
     var tip = Math.random() < COURIER_TIP_CHANCE;
     if (feedback) {
@@ -11611,40 +11889,65 @@ WORK_PAGE_HTML = r'''<!doctype html>
         if (feedback.textContent === text) { feedback.textContent = ""; feedback.className = ""; }
       }, 1500);
     }
-    if (road) road.classList.toggle("mirrored");
-    setCourierProgress(0);
+    if (rider) rider.classList.add("arriving");
+    if (courierSpawnInterval) { clearInterval(courierSpawnInterval); courierSpawnInterval = null; }
+    courierArrivalTimeoutId = setTimeout(function () {
+      courierArrivalTimeoutId = null;
+      if (rider) rider.classList.remove("arriving");
+      courierFacingLeft = !courierFacingLeft;
+      if (rider) rider.classList.toggle("facing-left", courierFacingLeft);
+      startCourierLeg();
+      courierSpawnInterval = setInterval(spawnCourierTraffic, 900);
+    }, 900);
   }
 
-  function spawnCourierObstacle() {
+  function spawnCourierTraffic() {
     var road = document.getElementById("courier-road");
     if (!road) return;
-    var roll = Math.random();
-    var lanes;
-    if (roll < 0.65) {
-      lanes = [Math.floor(Math.random() * 3)]; // single lane -- switch out of it
-    } else if (roll < 0.85) {
-      var excluded = Math.floor(Math.random() * 3);
-      lanes = [0, 1, 2].filter(function (l) { return l !== excluded; }); // wide -- only one safe lane
+    var lane = Math.floor(Math.random() * 3);
+    var spawnRecipient = courierRecipientsDelivered < courierRecipientsTotal
+      && Math.random() < COURIER_RECIPIENT_CHANCE;
+    var el = document.createElement("div");
+    el.dataset.lane = String(lane);
+    el.style.top = COURIER_LANE_Y[lane] + "px";
+    el.style.animationDuration = (2.3 + Math.random() * 0.6) + "s";
+    el.addEventListener("animationend", function () { if (el.parentNode) el.remove(); });
+    if (spawnRecipient) {
+      el.className = "courier-recipient";
+      el.textContent = COURIER_RECIPIENT_EMOJI;
     } else {
-      lanes = [0, 1, 2]; // full width -- can't be dodged by lane, needs a jump
+      el.className = "courier-obstacle";
+      el.textContent = COURIER_OBSTACLE_EMOJIS[Math.floor(Math.random() * COURIER_OBSTACLE_EMOJIS.length)];
     }
-    var groupId = "g" + (courierObstacleGroupSeq++);
-    var isFull = lanes.length === 3;
-    var duration = (2.3 + Math.random() * 0.6) + "s";
-    lanes.forEach(function (lane) {
-      var obstacle = document.createElement("div");
-      obstacle.className = "courier-obstacle";
-      obstacle.textContent = COURIER_OBSTACLE_EMOJI;
-      obstacle.dataset.lane = String(lane);
-      obstacle.dataset.group = groupId;
-      if (isFull) obstacle.dataset.full = "1";
-      obstacle.style.top = COURIER_LANE_Y[lane] + "px";
-      obstacle.style.animationDuration = duration;
-      obstacle.addEventListener("animationend", function () {
-        if (obstacle.parentNode) obstacle.remove();
-      });
-      road.appendChild(obstacle);
-    });
+    road.appendChild(el);
+  }
+
+  // Редкая встречная машина на огромной скорости -- сперва мигающее "❗" в целевой полосе, и только
+  // через COURIER_CAR_WARN_MS сама машина с намного более быстрой анимацией, чем обычные препятствия.
+  function spawnCourierCarMaybe() {
+    if (Math.random() >= COURIER_CAR_CHANCE) return; // доп. редкость сверху и так нечастого интервала
+    var road = document.getElementById("courier-road");
+    if (!road) return;
+    var lane = Math.floor(Math.random() * 3);
+    var warn = document.createElement("div");
+    warn.className = "courier-warning";
+    warn.textContent = "❗";
+    warn.style.top = COURIER_LANE_Y[lane] + "px";
+    road.appendChild(warn);
+    var id = setTimeout(function () {
+      if (warn.parentNode) warn.remove();
+      var liveRoad = document.getElementById("courier-road");
+      if (!liveRoad) return;
+      var car = document.createElement("div");
+      car.className = "courier-car";
+      car.textContent = COURIER_CAR_EMOJI;
+      car.dataset.lane = String(lane);
+      car.style.top = COURIER_LANE_Y[lane] + "px";
+      car.style.animationDuration = "0.8s";
+      car.addEventListener("animationend", function () { if (car.parentNode) car.remove(); });
+      liveRoad.appendChild(car);
+    }, COURIER_CAR_WARN_MS);
+    courierWarningTimeoutIds.push(id);
   }
 
   function courierCollisionTick() {
@@ -11653,143 +11956,140 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (road && rider && !debuffState.courier) {
       var riderRect = rider.getBoundingClientRect();
       var riderCenterX = riderRect.left + riderRect.width / 2;
-      var obstacles = road.querySelectorAll(".courier-obstacle:not([data-resolved])");
-      var resolvedGroups = {};
-      for (var i = 0; i < obstacles.length; i++) {
-        var obstacle = obstacles[i];
-        var r = obstacle.getBoundingClientRect();
-        var obstacleCenterX = r.left + r.width / 2;
-        if (obstacleCenterX <= riderCenterX) {
-          var groupId = obstacle.dataset.group;
-          obstacle.dataset.resolved = "1";
-          if (resolvedGroups[groupId]) continue; // rest of this group already scored this tick
-          resolvedGroups[groupId] = true;
-          var isFull = obstacle.dataset.full === "1";
-          var groupEls = road.querySelectorAll('.courier-obstacle[data-group="' + groupId + '"]');
-          var blockedLanes = Array.prototype.map.call(groupEls, function (el) { return parseInt(el.dataset.lane, 10); });
-          var hit = blockedLanes.indexOf(courierLane) !== -1 && !(isFull && courierJumping);
-          if (hit) {
-            groupEls.forEach(function (el) { el.classList.add("hit-flash"); });
-            rider.classList.add("crash");
-            setTimeout(function () { rider.classList.remove("crash"); }, 300);
-            triggerDebuff("courier", "courier-feedback", "courier-controls");
-          } else {
-            registerHit("courier", riderRect.left + riderRect.width / 2, riderRect.top, road);
-            setCourierProgress(courierProgress + 1);
-            if (courierProgress >= COURIER_TRIP_LENGTH) completeCourierTrip();
+      var els = road.querySelectorAll(
+        ".courier-obstacle:not([data-resolved]), .courier-recipient:not([data-resolved]), .courier-car:not([data-resolved])");
+      for (var i = 0; i < els.length; i++) {
+        var el = els[i];
+        var r = el.getBoundingClientRect();
+        var elCenterX = r.left + r.width / 2;
+        if (elCenterX > riderCenterX) continue;
+        el.dataset.resolved = "1";
+        var inLane = parseInt(el.dataset.lane, 10) === courierLane;
+        if (el.classList.contains("courier-recipient")) {
+          if (inLane) {
+            el.classList.add("delivered");
+            courierRecipientsDelivered++;
+            registerHit("courier", rider.offsetLeft, rider.offsetTop, road);
+            setCourierProgress();
+            if (courierRecipientsDelivered >= courierRecipientsTotal) completeCourierLeg();
           }
+          // не в своей полосе -- доставка просто пропущена, упущенная награда без штрафа
+        } else if (inLane) {
+          el.classList.add("hit-flash");
+          rider.classList.add("crash");
+          setTimeout(function () { rider.classList.remove("crash"); }, 300);
+          triggerDebuff("courier", "courier-feedback", "courier-controls", rider.offsetLeft, rider.offsetTop, road);
         }
       }
     }
     courierRafId = requestAnimationFrame(courierCollisionTick);
   }
 
+  // ---- Светофор: жми кнопку, когда загорится красный (останавливаемся), и снова -- когда
+  // загорится зелёный (едем дальше). Слой поверх обычной игры, обгон препятствий не замирает.
+  function setCourierLightPhase(phase) {
+    courierLight = phase;
+    var light = document.getElementById("courier-light");
+    var btn = document.getElementById("courier-light-btn");
+    if (!light || !btn) return;
+    if (phase === "idle") {
+      light.style.display = "none";
+      light.classList.remove("blink");
+      btn.style.display = "none";
+      btn.classList.remove("go");
+    } else if (phase === "warning") {
+      light.style.display = "block";
+      light.textContent = "🟡";
+      light.classList.add("blink");
+      btn.style.display = "block";
+      btn.classList.remove("go");
+      btn.textContent = "🛑";
+    } else if (phase === "stop") {
+      light.textContent = "🔴";
+      light.classList.remove("blink");
+    } else if (phase === "holding") {
+      btn.classList.add("go");
+      btn.textContent = "🟢";
+    } else if (phase === "go") {
+      light.textContent = "🟢";
+    }
+  }
+
+  function scheduleCourierLight() {
+    if (courierLightTimeoutId) clearTimeout(courierLightTimeoutId);
+    var gap = COURIER_LIGHT_MIN_GAP_MS + Math.random() * COURIER_LIGHT_GAP_RANGE_MS;
+    courierLightTimeoutId = setTimeout(function () {
+      setCourierLightPhase("warning");
+      courierLightTimeoutId = setTimeout(function () {
+        setCourierLightPhase("stop");
+        courierLightTimeoutId = setTimeout(courierLightRanRed, COURIER_LIGHT_STOP_MS);
+      }, COURIER_LIGHT_WARN_MS);
+    }, gap);
+  }
+
+  function courierLightRanRed() {
+    var rider = document.getElementById("courier-rider");
+    var road = document.getElementById("courier-road");
+    if (rider && road) {
+      triggerDebuff("courier", "courier-feedback", "courier-controls", rider.offsetLeft, rider.offsetTop, road);
+    }
+    resetCourierLight();
+  }
+
+  function resetCourierLight() {
+    courierLightTimeoutId = null;
+    var rider = document.getElementById("courier-rider");
+    if (rider) rider.classList.remove("stopped");
+    courierStopped = false;
+    setCourierLightPhase("idle");
+    scheduleCourierLight();
+  }
+
+  function pressCourierLight() {
+    var rider = document.getElementById("courier-rider");
+    var road = document.getElementById("courier-road");
+    if (courierLight === "stop") {
+      if (courierLightTimeoutId) { clearTimeout(courierLightTimeoutId); courierLightTimeoutId = null; }
+      if (rider) rider.classList.add("stopped");
+      courierStopped = true;
+      setCourierLightPhase("holding");
+      var hold = COURIER_LIGHT_HOLD_MIN_MS + Math.random() * COURIER_LIGHT_HOLD_RANGE_MS;
+      courierLightTimeoutId = setTimeout(function () {
+        setCourierLightPhase("go");
+        courierLightTimeoutId = setTimeout(resetCourierLight, COURIER_LIGHT_GO_MS);
+      }, hold);
+    } else if (courierLight === "holding") {
+      // стартанул раньше, чем реально загорелся зелёный -- штраф
+      if (courierLightTimeoutId) { clearTimeout(courierLightTimeoutId); courierLightTimeoutId = null; }
+      if (rider && road) {
+        triggerDebuff("courier", "courier-feedback", "courier-controls", rider.offsetLeft, rider.offsetTop, road);
+      }
+      resetCourierLight();
+    } else if (courierLight === "go") {
+      if (courierLightTimeoutId) { clearTimeout(courierLightTimeoutId); courierLightTimeoutId = null; }
+      resetCourierLight();
+    }
+  }
+
   function startCourier() {
     setCourierLane(1);
-    setCourierProgress(0);
-    courierJumping = false;
+    startCourierLeg();
     var rider = document.getElementById("courier-rider");
-    if (rider) rider.classList.remove("jumping");
-    var road = document.getElementById("courier-road");
-    if (road) road.classList.remove("mirrored");
-    courierSpawnInterval = setInterval(spawnCourierObstacle, 900);
+    if (rider) {
+      rider.classList.remove("stopped", "crash", "arriving");
+      rider.classList.toggle("facing-left", courierFacingLeft);
+    }
+    setCourierLightPhase("idle");
+    scheduleCourierLight();
+    courierSpawnInterval = setInterval(spawnCourierTraffic, 900);
+    courierCarInterval = setInterval(spawnCourierCarMaybe, 4000);
     courierCollisionTick();
   }
 
   function bindCourierControls() {
     document.getElementById("courier-up").onclick = function () { setCourierLane(courierLane - 1); };
     document.getElementById("courier-down").onclick = function () { setCourierLane(courierLane + 1); };
-    document.getElementById("courier-jump").onclick = courierJump;
-  }
-
-  // ---------- Bus (pull to the side the arrow points to) ----------
-  function setBusSide(side) {
-    busSide = Math.max(0, Math.min(1, side));
-    var vehicle = document.getElementById("bus-vehicle");
-    if (vehicle) vehicle.style.top = BUS_LANE_Y[busSide] + "px";
-    var leftBtn = document.getElementById("bus-left");
-    var rightBtn = document.getElementById("bus-right");
-    if (leftBtn) leftBtn.disabled = busSide === 0;
-    if (rightBtn) rightBtn.disabled = busSide === 1;
-  }
-
-  function setBusProgress(value) {
-    busProgress = value;
-    var fill = document.getElementById("bus-progress-fill");
-    if (fill) fill.style.width = Math.min(100, (busProgress / BUS_PROGRESS_LENGTH) * 100) + "%";
-  }
-
-  function completeBusRoute() {
-    var feedback = document.getElementById("bus-feedback");
-    var tip = Math.random() < COURIER_TIP_CHANCE;
-    if (feedback) {
-      var text = tip ? state.ui.bus_route_done_tip : state.ui.bus_route_done;
-      feedback.textContent = text;
-      feedback.className = "arrived";
-      setTimeout(function () {
-        if (feedback.textContent === text) { feedback.textContent = ""; feedback.className = ""; }
-      }, 1500);
-    }
-    setBusProgress(0);
-  }
-
-  function spawnBusStop() {
-    var road = document.getElementById("bus-road");
-    if (!road) return;
-    var side = Math.floor(Math.random() * 2);
-    var stop = document.createElement("div");
-    stop.className = "bus-stop";
-    stop.textContent = BUS_SIDE_EMOJI[side];
-    stop.dataset.side = String(side);
-    stop.style.top = BUS_LANE_Y[side] + "px";
-    stop.style.animationDuration = (2.6 + Math.random() * 0.6) + "s";
-    stop.addEventListener("animationend", function () {
-      if (stop.parentNode) stop.remove();
-    });
-    road.appendChild(stop);
-  }
-
-  function busCollisionTick() {
-    var road = document.getElementById("bus-road");
-    var vehicle = document.getElementById("bus-vehicle");
-    if (road && vehicle && !debuffState.bus) {
-      var vehicleRect = vehicle.getBoundingClientRect();
-      var vehicleCenterX = vehicleRect.left + vehicleRect.width / 2;
-      var stops = road.querySelectorAll(".bus-stop:not([data-resolved])");
-      for (var i = 0; i < stops.length; i++) {
-        var stop = stops[i];
-        var r = stop.getBoundingClientRect();
-        var stopCenterX = r.left + r.width / 2;
-        if (stopCenterX <= vehicleCenterX) {
-          stop.dataset.resolved = "1";
-          var side = parseInt(stop.dataset.side, 10);
-          if (side === busSide) {
-            stop.classList.add("boarded");
-            registerHit("bus", vehicleRect.left + vehicleRect.width / 2, vehicleRect.top, road);
-            setBusProgress(busProgress + 1);
-            if (busProgress >= BUS_PROGRESS_LENGTH) completeBusRoute();
-          } else {
-            stop.classList.add("hit-flash");
-            vehicle.classList.add("crash");
-            setTimeout(function () { vehicle.classList.remove("crash"); }, 300);
-            triggerDebuff("bus", "bus-feedback", "bus-controls");
-          }
-        }
-      }
-    }
-    busRafId = requestAnimationFrame(busCollisionTick);
-  }
-
-  function startBus() {
-    setBusSide(0);
-    setBusProgress(0);
-    busSpawnInterval = setInterval(spawnBusStop, 1000);
-    busCollisionTick();
-  }
-
-  function bindBusControls() {
-    document.getElementById("bus-left").onclick = function () { setBusSide(0); };
-    document.getElementById("bus-right").onclick = function () { setBusSide(1); };
+    document.getElementById("courier-light-btn").onclick = pressCourierLight;
   }
 
   // ---------- Farm ----------
@@ -11807,101 +12107,196 @@ WORK_PAGE_HTML = r'''<!doctype html>
     return s + "с";
   }
 
-  function farmAction(action) {
-    if (farmActionInFlight) return;
-    farmActionInFlight = true;
-    api("/api/work/farm/" + action, { method: "POST" }).then(function (res) {
-      farmActionInFlight = false;
+  // На слот, а не один общий флаг -- иначе полив одной грядки леечкой блокировал бы полив
+  // соседней в том же движении (каждый слот независим, гонки между ними не страшны: сервер
+  // синхронно обрабатывает один запрос за раз на одном event loop, так что два параллельных
+  // запроса на РАЗНЫЕ слоты не могут друг другу что-то перезаписать).
+  function farmAction(action, slot, extra) {
+    if (farmInFlight[slot]) return;
+    farmInFlight[slot] = true;
+    var payload = extra ? Object.assign({ slot: slot }, extra) : { slot: slot };
+    api("/api/work/farm/" + action, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }).then(function (res) {
+      farmInFlight[slot] = false;
       if (res.ok && res.state) {
         state = res.state;
         setBalance(state.bucks);
         renderFarm();
       }
-    }).catch(function () { farmActionInFlight = false; });
+    }).catch(function () { farmInFlight[slot] = false; });
+  }
+
+  // Полив леечкой -- таскаем #farm-can через document (не только через сам элемент, чтобы жест
+  // не срывался, когда farmAction посреди драга пересобирает DOM грядок через renderFarm).
+  function bindFarmCan() {
+    document.addEventListener("pointermove", function (ev) {
+      if (!farmCanDragging) return;
+      checkFarmCanHit(ev.clientX, ev.clientY);
+    });
+    document.addEventListener("pointerup", function () { farmCanDragging = false; });
+    document.addEventListener("pointercancel", function () { farmCanDragging = false; });
+  }
+
+  function showFarmSplash(plot) {
+    var splash = document.createElement("div");
+    splash.className = "farm-water-splash";
+    splash.textContent = "💧";
+    plot.appendChild(splash);
+    setTimeout(function () { if (splash.parentNode) splash.remove(); }, 500);
+  }
+
+  function checkFarmCanHit(x, y) {
+    var plots = document.querySelectorAll(".farm-plot");
+    for (var i = 0; i < plots.length; i++) {
+      var plot = plots[i];
+      var slot = parseInt(plot.dataset.slot, 10);
+      if (farmWateredThisDrag[slot] || farmInFlight[slot]) continue;
+      var r = plot.getBoundingClientRect();
+      if (x < r.left || x > r.right || y < r.top || y > r.bottom) continue;
+      var snap = state.farm[slot];
+      if (!snap || !snap.can_water) continue;
+      farmWateredThisDrag[slot] = true;
+      showFarmSplash(plot);
+      farmAction("water", slot);
+    }
   }
 
   function renderFarm() {
     stopFarmCountdown();
-    var farm = state.farm;
     var panel = document.getElementById("game-farm");
     panel.innerHTML = "";
 
-    if (!farm.planted) {
-      var hint = document.createElement("div");
-      hint.className = "farm-hint";
-      hint.textContent = state.ui.farm_empty_hint;
-      panel.appendChild(hint);
-      var plantBtn = document.createElement("button");
-      plantBtn.className = "farm-action-btn";
-      plantBtn.textContent = state.ui.farm_plant_btn;
-      plantBtn.onclick = function () { farmAction("plant"); };
-      panel.appendChild(plantBtn);
-      return;
+    var can = document.createElement("div");
+    can.id = "farm-can";
+    can.textContent = "💧";
+    can.onpointerdown = function (ev) {
+      if (can.classList.contains("disabled")) return;
+      farmCanDragging = true;
+      farmWateredThisDrag = {};
+      ev.preventDefault();
+      checkFarmCanHit(ev.clientX, ev.clientY);
+    };
+    panel.appendChild(can);
+
+    var canHint = document.createElement("div");
+    canHint.id = "farm-can-hint";
+    canHint.textContent = state.ui.farm_can_hint;
+    panel.appendChild(canHint);
+
+    var plotsRow = document.createElement("div");
+    plotsRow.id = "farm-plots";
+    panel.appendChild(plotsRow);
+
+    var anyWaterable = false;
+    var countdownTargets = [];
+
+    state.farm.forEach(function (snap, slot) {
+      var plot = document.createElement("div");
+      plot.className = "farm-plot";
+      plot.dataset.slot = String(slot);
+      plotsRow.appendChild(plot);
+
+      if (!snap) {
+        var empty = document.createElement("div");
+        empty.className = "farm-plot-empty";
+        empty.textContent = state.ui.farm_empty_hint;
+        empty.onclick = function () {
+          farmPickingSlot = (farmPickingSlot === slot) ? -1 : slot;
+          renderFarm();
+        };
+        plot.appendChild(empty);
+        return;
+      }
+
+      if (snap.can_water) anyWaterable = true;
+
+      var pips = document.createElement("div");
+      pips.className = "farm-watered-pips";
+      for (var p = 0; p < snap.total_slots; p++) {
+        var pip = document.createElement("span");
+        pip.className = "farm-watered-pip" + (p < snap.watered_slots ? " filled" : "");
+        pips.appendChild(pip);
+      }
+      plot.appendChild(pips);
+
+      var plant = document.createElement("div");
+      plant.className = "farm-plant" + (snap.ready ? " ready" : "");
+      plant.textContent = snap.ready ? snap.emoji : (snap.progress >= 0.33 ? "🌿" : "🌱");
+      plot.appendChild(plant);
+
+      var status = document.createElement("div");
+      status.className = "farm-status";
+      plot.appendChild(status);
+
+      var preview = document.createElement("div");
+      preview.className = "farm-preview";
+      preview.textContent = state.ui.farm_payout_preview.replace("{amount}", snap.payout_preview);
+      plot.appendChild(preview);
+
+      var actionsRow = document.createElement("div");
+      actionsRow.className = "farm-actions";
+      plot.appendChild(actionsRow);
+
+      if (snap.ready) {
+        status.textContent = state.ui.farm_ready;
+        var harvestBtn = document.createElement("button");
+        harvestBtn.className = "farm-action-btn";
+        harvestBtn.textContent = state.ui.farm_harvest_btn;
+        harvestBtn.onclick = function () { farmAction("harvest", slot); };
+        actionsRow.appendChild(harvestBtn);
+      } else {
+        countdownTargets.push({ statusEl: status, secondsLeftAtLoad: snap.seconds_left, tickStart: Date.now() });
+      }
+    });
+
+    if (farmPickingSlot >= 0 && farmPickingSlot < state.farm.length && !state.farm[farmPickingSlot]) {
+      var picker = document.createElement("div");
+      picker.id = "farm-crop-picker";
+      var pickerTitle = document.createElement("div");
+      pickerTitle.className = "farm-status";
+      pickerTitle.textContent = state.ui.farm_choose_crop;
+      picker.appendChild(pickerTitle);
+      state.farm_crops.forEach(function (crop) {
+        var opt = document.createElement("button");
+        opt.className = "farm-crop-option";
+        var nameEl = document.createElement("span");
+        nameEl.className = "farm-crop-name";
+        nameEl.textContent = crop.emoji + " " + crop.name;
+        var statsEl = document.createElement("span");
+        statsEl.className = "farm-crop-stats";
+        statsEl.textContent = state.ui.farm_crop_stats
+          .replace("{hours}", crop.grow_hours).replace("{base}", crop.base_payout).replace("{max}", crop.max_payout);
+        opt.appendChild(nameEl);
+        opt.appendChild(statsEl);
+        opt.onclick = function () {
+          var slot = farmPickingSlot;
+          farmPickingSlot = -1;
+          farmAction("plant", slot, { crop: crop.key });
+        };
+        picker.appendChild(opt);
+      });
+      panel.appendChild(picker);
     }
 
-    var stageEmoji = "🌱";
-    if (farm.progress >= 0.66) stageEmoji = "🌽";
-    else if (farm.progress >= 0.33) stageEmoji = "🌿";
+    can.classList.toggle("disabled", !anyWaterable);
 
-    var plot = document.createElement("div");
-    plot.className = "farm-plot";
-    panel.appendChild(plot);
-
-    var plant = document.createElement("div");
-    plant.className = "farm-plant" + (farm.ready ? " ready" : "");
-    plant.textContent = stageEmoji;
-    plot.appendChild(plant);
-
-    if (!farm.ready) {
-      var drop = document.createElement("div");
-      drop.className = "farm-water-drop" + (farm.can_water ? "" : " disabled");
-      drop.textContent = "💧";
-      drop.onclick = function () {
-        if (!farm.can_water || farmActionInFlight) return;
-        drop.classList.add("watering");
-        farmAction("water");
-      };
-      plot.appendChild(drop);
-    }
-
-    var status = document.createElement("div");
-    status.className = "farm-status";
-    panel.appendChild(status);
-
-    var watered = document.createElement("div");
-    watered.className = "farm-watered";
-    watered.textContent = state.ui.farm_watered_label
-      .replace("{done}", farm.watered_slots).replace("{total}", farm.total_slots);
-    panel.appendChild(watered);
-
-    var preview = document.createElement("div");
-    preview.className = "farm-preview";
-    preview.textContent = state.ui.farm_payout_preview.replace("{amount}", farm.payout_preview);
-    panel.appendChild(preview);
-
-    var actionsRow = document.createElement("div");
-    actionsRow.className = "farm-actions";
-    panel.appendChild(actionsRow);
-
-    if (farm.ready) {
-      status.textContent = state.ui.farm_ready;
-      var harvestBtn = document.createElement("button");
-      harvestBtn.className = "farm-action-btn";
-      harvestBtn.textContent = state.ui.farm_harvest_btn;
-      harvestBtn.onclick = function () { farmAction("harvest"); };
-      actionsRow.appendChild(harvestBtn);
-    } else {
-      var tickStart = Date.now();
-      var secondsLeftAtLoad = farm.seconds_left;
+    if (countdownTargets.length) {
       function localTick() {
-        var elapsed = (Date.now() - tickStart) / 1000;
-        var left = secondsLeftAtLoad - elapsed;
-        if (left <= 0) {
+        var now = Date.now();
+        var anyDone = false;
+        countdownTargets.forEach(function (t) {
+          var elapsed = (now - t.tickStart) / 1000;
+          var left = t.secondsLeftAtLoad - elapsed;
+          if (left <= 0) { anyDone = true; return; }
+          t.statusEl.textContent = state.ui.farm_growing.replace("{time}", formatDuration(left));
+        });
+        if (anyDone) {
           stopFarmCountdown();
           load();
-          return;
         }
-        status.textContent = state.ui.farm_growing.replace("{time}", formatDuration(left));
       }
       localTick();
       farmCountdownInterval = setInterval(localTick, 1000);
@@ -11912,14 +12307,13 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function switchGame(name) {
     activeGame = name;
     stopAllGames();
-    ["clicker", "catch", "courier", "bus", "farm"].forEach(function (g) {
+    ["clicker", "catch", "courier", "farm"].forEach(function (g) {
       document.getElementById("game-" + g).style.display = g === name ? "block" : "none";
       document.getElementById("tab-" + g).classList.toggle("active", g === name);
     });
     if (name === "clicker") startHacker();
     if (name === "catch") startCatch();
     if (name === "courier") startCourier();
-    if (name === "bus") startBus();
     if (name === "farm") renderFarm();
   }
 
@@ -11937,23 +12331,19 @@ WORK_PAGE_HTML = r'''<!doctype html>
     document.getElementById("tab-clicker").textContent = state.ui.tab_clicker;
     document.getElementById("tab-catch").textContent = state.ui.tab_catch;
     document.getElementById("tab-courier").textContent = state.ui.tab_courier;
-    document.getElementById("tab-bus").textContent = state.ui.tab_bus;
     document.getElementById("tab-farm").textContent = state.ui.tab_farm;
     document.getElementById("clicker-hint").textContent = state.ui.clicker_hint;
     document.getElementById("catch-hint").textContent = state.ui.catch_hint;
     document.getElementById("courier-hint").textContent = state.ui.courier_hint;
-    document.getElementById("bus-hint").textContent = state.ui.bus_hint;
 
     document.getElementById("tab-clicker").onclick = function () { switchGame("clicker"); };
     document.getElementById("tab-catch").onclick = function () { switchGame("catch"); };
     document.getElementById("tab-courier").onclick = function () { switchGame("courier"); };
-    document.getElementById("tab-bus").onclick = function () { switchGame("bus"); };
     document.getElementById("tab-farm").onclick = function () { switchGame("farm"); };
 
-    bindHackerKeyboard();
     bindCatchDrag();
     bindCourierControls();
-    bindBusControls();
+    bindFarmCan();
 
     switchGame(activeGame);
   }
@@ -12086,7 +12476,7 @@ async def api_work_state_handler(request):
 async def api_work_hit_handler(request):
     """Одно засчитанное попадание в одной из мгновенных игр (см. register_work_hit) — сразу
     платит баксы, без таймера и без сессии. game передаётся телом запроса ({"game": "clicker"|
-    "catch"|"courier"|"bus"})."""
+    "catch"|"courier"})."""
     init_data = request.headers.get("X-Telegram-Init-Data", "")
     user_id, user, error = resolve_webapp_user(init_data)
     if error:
@@ -12102,12 +12492,43 @@ async def api_work_hit_handler(request):
     return web.json_response({"ok": True, "awarded": awarded, "state": serialize_work_state(user)})
 
 
+async def api_work_penalty_handler(request):
+    """Денежный штраф за провал в catch/courier/clicker (см. register_work_failure) — без
+    таймера, может сработать сразу после обычного хита. game передаётся телом запроса, тем же
+    набором значений, что и у /api/work/hit."""
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    game = body.get("game") if isinstance(body, dict) else None
+    penalty = register_work_failure(user, game)
+    if penalty is None:
+        return web.json_response({"ok": False, "error": "bad_game", "state": serialize_work_state(user)})
+    return web.json_response({"ok": True, "penalty": penalty, "state": serialize_work_state(user)})
+
+
+def _body_slot(body):
+    try:
+        return int(body.get("slot")) if isinstance(body, dict) else -1
+    except (TypeError, ValueError):
+        return -1
+
+
 async def api_work_farm_plant_handler(request):
     init_data = request.headers.get("X-Telegram-Init-Data", "")
     user_id, user, error = resolve_webapp_user(init_data)
     if error:
         return web.json_response(error, status=401 if error["error"] == "auth" else 200)
-    farm_plant(user)
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    crop = body.get("crop") if isinstance(body, dict) else None
+    farm_plant(user, _body_slot(body), crop)
     return web.json_response({"ok": True, "state": serialize_work_state(user)})
 
 
@@ -12116,7 +12537,11 @@ async def api_work_farm_water_handler(request):
     user_id, user, error = resolve_webapp_user(init_data)
     if error:
         return web.json_response(error, status=401 if error["error"] == "auth" else 200)
-    farm_water(user)
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    farm_water(user, _body_slot(body))
     return web.json_response({"ok": True, "state": serialize_work_state(user)})
 
 
@@ -12125,7 +12550,11 @@ async def api_work_farm_harvest_handler(request):
     user_id, user, error = resolve_webapp_user(init_data)
     if error:
         return web.json_response(error, status=401 if error["error"] == "auth" else 200)
-    farm_harvest(user)
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    farm_harvest(user, _body_slot(body))
     return web.json_response({"ok": True, "state": serialize_work_state(user)})
 
 
@@ -12147,6 +12576,7 @@ async def run_webapp_server():
     app_web.router.add_get("/work", work_page_handler)
     app_web.router.add_get("/api/work/state", api_work_state_handler)
     app_web.router.add_post("/api/work/hit", api_work_hit_handler)
+    app_web.router.add_post("/api/work/penalty", api_work_penalty_handler)
     app_web.router.add_post("/api/work/farm/plant", api_work_farm_plant_handler)
     app_web.router.add_post("/api/work/farm/water", api_work_farm_water_handler)
     app_web.router.add_post("/api/work/farm/harvest", api_work_farm_harvest_handler)
@@ -12349,13 +12779,20 @@ async def check_notifications():
                             pass
                     continue
 
-                # 6) Ферма созрела (см. FARM_*/farm_state) — в отличие от остальных напоминаний
-                # выше это не интервальный повтор, а разовое событие за цикл: один пуш, как только
-                # урожай впервые становится готов, без повторов, пока не соберут и не посадят
-                # заново (см. farm_harvest, сбрасывает farm_ready_notified).
-                farm = farm_state(user)
-                if farm["planted"] and farm["ready"] and not user.get("farm_ready_notified"):
-                    user["farm_ready_notified"] = True
+                # 6) Ферма созрела (см. CROPS/farm_state) — в отличие от остальных напоминаний
+                # выше это не интервальный повтор, а разовое событие за цикл: один пуш на любую
+                # грядку, как только урожай на ней впервые становится готов, без повторов для той
+                # же грядки, пока не соберут и не посадят заново (см. farm_harvest, сбрасывает
+                # ready_notified вместе со всем слотом). Три грядки независимы, но пуш общий —
+                # не спамить отдельным сообщением на каждую, если созрели сразу несколько.
+                farm_snaps = farm_state(user)
+                plots = user.get("farm_plots") or []
+                any_newly_ready = False
+                for i, snap in enumerate(farm_snaps):
+                    if snap and snap["ready"] and i < len(plots) and plots[i] and not plots[i].get("ready_notified"):
+                        plots[i]["ready_notified"] = True
+                        any_newly_ready = True
+                if any_newly_ready:
                     save_data(user_data)
                     try:
                         if WEBAPP_URL:
