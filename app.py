@@ -34,7 +34,6 @@ TEXTS = {
         "change_character": "🔄 Сменить персонажа",
         "invite_friend": "👥 Пригласить друга",
         "create_character": "🎭 Создать своего персонажа",
-        "buy_bundles": "🎁 Купить бандл",
         "subscribe": "👑 Оформить подписку",
         "back": "🔙 Главное меню",
         "back_to_profile": "🔙 Назад",
@@ -94,6 +93,7 @@ TEXTS = {
         "character_creation_cancelled": "❌ Создание персонажа отменено — можешь просто продолжить общение как обычно.",
         "character_create_too_short": "✏️ Это слишком коротко для описания персонажа (нужно хотя бы {n} символов) — допиши подробнее, или нажми «Отменить» в сообщении выше.",
         "spin_title": "🎰 **Колесо фортуны**",
+        "spin_hint": "Крути колесо каждый день и выбивай призы!",
         "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 20–150💵 баксов\n• 🔥 Горячие сцены\n• 2–4⚡ энергетика (редко)\n• 🎁 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)",
         "spin_choose": "Выбери вариант:",
         "spin_nothing": "😢 Ничего... В следующий раз повезёт!",        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+30💵 баксов и +3⚡ энергетика** тебе, ему — **+15💵 баксов и +1⚡ энергетик**!\n\n📊 Приглашено друзей: **{count}**\n💵 Заработано баксов: **{earned_bucks}**\n⚡ Заработано энергетиков: **{earned_energizers}**",
@@ -212,14 +212,11 @@ TEXTS = {
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
         "subs_title": "👑 Подписки Role Duel",
-        "subs_body": "🔥 PRO (220⭐/мес)\n👉 База для тех, кто только начинает — очень сбалансированный набор.\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-35%)\n• +2⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (500⭐/мес)\n👉 Для тех, кто хочет побольше разных фишек и возможностей.\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-40%)\n• +3⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (1000⭐/мес)\n👉 Для тех, кто ООЧЕНЬ много общается.\n• Всё, что есть в SUPER PRO\n• Память: 150 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-50%)\n• +4⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (350⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n🎁 При первой покупке любой подписки — бонус 150💵 баксов!\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_body": "🔥 PRO (220⭐/мес)\n👉 База для тех, кто только начинает — очень сбалансированный набор.\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-35%)\n• +2⚡ энергетика каждый день\n• 💼 Заработок на работе x1.5\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (500⭐/мес)\n👉 Для тех, кто хочет побольше разных фишек и возможностей.\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-40%)\n• +3⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (1000⭐/мес)\n👉 Для тех, кто ООЧЕНЬ много общается.\n• Всё, что есть в SUPER PRO\n• Память: 150 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-50%)\n• +4⚡ энергетика каждый день\n• 💼 Заработок на работе x2.8\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (350⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n🎁 При первой покупке любой подписки — бонус 300💵 баксов!\n\n⚠️ Подписки НЕ продлеваются автоматически.",
         "subs_btn_pro": "🔥 PRO — 220 ⭐/мес",
         "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐/мес",
         "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐/мес",
         "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (350⭐)",
-        "bundles_title": "🎁 **Купить бандл**\n\nБандл — это энергетики ⚡ (энергия персонажа) и баксы 💵 (на еду и подарки в магазине). Что даёт каждый:",
-        "bundle_btn": "{emoji} {name} — {price} ⭐",
-        "bundle_breakdown_line": "{emoji} {name} — {energizers}⚡ энергетиков + {bucks}💵 баксов",
         "invoice_pro_title": "PRO подписка на месяц",
         "invoice_pro_desc": "Память 60 сообщений, стили Страстный и Магнетический.",
         "invoice_pro_label": "PRO месяц",
@@ -232,10 +229,6 @@ TEXTS = {
         "invoice_upgrade_title": "Апгрейд до SUPER PRO",
         "invoice_upgrade_desc": "Повысьте PRO до SUPER PRO на оставшийся срок. 350⭐.",
         "invoice_upgrade_label": "Апгрейд",
-        "invoice_bundle_title": "{name}: {energizers}⚡ + {bucks}💵",
-        "invoice_bundle_desc": "{energizers} энергетиков и {bucks} баксов за {price}⭐",
-        "invoice_bundle_label": "Бандл",
-        "payment_bundle_success": "✅ Получено: {energizers}⚡ энергетиков и {bucks}💵 баксов!",
         "shop_btn": "🛍 Магазин",
         "shop_title": "🛍 **Магазин**\n\nТвои баксы: {bucks}💵\n\n🍽 Еда восстанавливает сытость, 🎁 подарки поднимают настроение и дают немного опыта. Выбирай:",
         "item_bought": "✅ Куплено! {effects}.",
@@ -249,6 +242,8 @@ TEXTS = {
         "shop_category_food": "🍽 Еда",
         "shop_category_treat": "🎁 Подарки",
         "shop_category_accessory": "💍 Аксессуары",
+        "shop_category_energizer": "⚡ Энергетики",
+        "shop_category_custom": "🎁 Свой подарок",
         "cd_min": "{n} мин",
         "cd_hours": "{n} ч",
         "cd_days": "{n} дн",
@@ -269,9 +264,12 @@ TEXTS = {
         "overfeed_refuse_alert": "❌ Персонаж наелся и отказывается есть ещё — дай сытости немного снизиться.",
         "webapp_title": "🛍 Магазин",
         "webapp_buy_btn": "Купить",
+        "webapp_buy_stars_btn": "⭐ Купить",
         "webapp_note_placeholder": "Записка (необязательно)",
         "webapp_refuse_badge": "Не хочет",
         "webapp_bought_toast": "✅ Куплено! Ответ персонажа — в чате.",
+        "webapp_shop_invoice_error": "Не удалось создать счёт. Попробуй ещё раз.",
+        "webapp_custom_gift_placeholder": "Что подаришь?",
         "webapp_open_chat_hint": "Ответ персонажа появится в чате с ботом",
         "webapp_character_not_ready": "Сначала создай персонажа в чате с ботом.",
         "webapp_loading": "Загрузка…",
@@ -303,7 +301,7 @@ TEXTS = {
         "work_bus_hint": "Следи за стрелками ⬅️➡️ и веди автобус к той стороне, куда они указывают — иначе остановку пропустишь!",
         "work_bus_route_done": "🎉 Маршрут завершён!",
         "work_bus_route_done_tip": "🎉 Маршрут завершён! 💰 + чаевые",
-        "work_multiplier_badge": "×2 — бонус подписки",
+        "work_multiplier_badge": "×{multiplier} — бонус подписки",
         "farm_plant_btn": "🌽 Посадить кукурузу",
         "farm_water_btn": "💧 Полить",
         "farm_harvest_btn": "🧺 Собрать урожай",
@@ -323,13 +321,15 @@ TEXTS = {
         "feed_menu_title": "🍽 Чем покормишь? (у тебя {bucks}💵)",
         "sleep_daily_reminder": "💤 Персонаж всё ещё спит и скучает по тебе... Загляни, когда будет минутка!",
         "spin_daily_reminder": "🎡 Не забудь: сегодня у тебя есть бесплатный прокрут колеса фортуны!",
+        "webapp_spin_reminder_on_btn": "🔔 Напоминание: ВКЛ",
+        "webapp_spin_reminder_off_btn": "🔕 Напоминание: ВЫКЛ",
         "thirsty_reminder": "💧 Твой персонаж хочет пить... Загляни, когда будет минутка!",
         "hungry_reminder": "🍽 Твой персонаж проголодался... Не забудь покормить!",
         "low_energy_nudge": "😴 Собеседник начинает уставать и клонит в сон... Может, взбодришь энергетиком?",
         "not_enough_bucks": "❌ Не хватает баксов: нужно ещё {n}💵.",
-        "not_enough_energizers": "❌ Нет энергетиков. Купи бандл, чтобы разбудить персонажа сразу ⚡.",
+        "not_enough_energizers": "❌ Нет энергетиков. Купи их в магазине, чтобы разбудить персонажа сразу ⚡.",
         "asleep_message": "😴 Персонаж крепко спит и сейчас не может ответить — сам он не проснётся, разбуди его энергетиком ⚡ или сразу и полностью за {price}⭐. Пока спит, голод и жажда не растут.",
-        "wake_energizer_btn": "⚡ Разбудить энергетиком",
+        "wake_energizer_btn": "⚡ Разбудить энергетиком ({count})",
         "no_energizers_shop_btn": "🛍 Нет энергетиков — купить",
         "woken_up": "⚡ Энергетик выпит — персонаж снова бодр и на связи!",
         "stats_line": "Энергия: {energy}/150   Сытость: {satiety}/100   Вода: {water}/100\nНастроение: {mood_emoji} ({mood_value})\nЭнергетиков: {energizers}   Баксов: {bucks} — потратить можно в Магазине\n🔥 Сцен: {scenes}",
@@ -340,6 +340,9 @@ TEXTS = {
         "invoice_wake_title": "Разбудить персонажа",
         "invoice_wake_desc": "Мгновенно поднимает энергию персонажа до максимума.",
         "invoice_wake_label": "Разбудить",
+        "invoice_energizer_title": "{amount}⚡ энергетиков",
+        "invoice_energizer_desc": "Пополняет запас энергетиков на {amount}.",
+        "invoice_energizer_label": "Энергетики",
         "notifications_on_btn": "🔔 Уведомления: ВКЛ",
         "notifications_off_btn": "🔕 Уведомления: ВЫКЛ",
         "notifications_muted_alert": "🔕 Уведомления отключены.",
@@ -365,7 +368,6 @@ TEXTS = {
         "change_character": "🔄 Change character",
         "invite_friend": "👥 Invite friend",
         "create_character": "🎭 Create your own character",
-        "buy_bundles": "🎁 Buy a bundle",
         "subscribe": "👑 Subscribe",
         "back": "🔙 Main menu",
         "back_to_profile": "🔙 Back",
@@ -425,6 +427,7 @@ TEXTS = {
         "character_creation_cancelled": "❌ Character creation cancelled — feel free to just keep chatting as usual.",
         "character_create_too_short": "✏️ That's too short for a character description (needs at least {n} characters) — add more detail, or tap \"Cancel\" on the message above.",
         "spin_title": "🎰 **Spin wheel**",
+        "spin_hint": "Spin the wheel every day and win prizes!",
         "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 20–150💵 bucks\n• 🔥 Hot scenes\n• 2–4⚡ energizers (rare)\n• 🎁 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)",
         "spin_choose": "Choose an option:",
         "spin_nothing": "😢 Nothing... Better luck next time!",        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+30💵 bucks and +3⚡ energizers** for you, and **+15💵 bucks and +1⚡ energizer** for them!\n\n📊 Friends invited: **{count}**\n💵 Bucks earned: **{earned_bucks}**\n⚡ Energizers earned: **{earned_energizers}**",
@@ -543,14 +546,11 @@ TEXTS = {
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
         "subs_title": "👑 Role Duel Subscriptions",
-        "subs_body": "🔥 PRO (220⭐ per month)\n👉 The balanced starting point for those just getting to know their companion.\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-35%)\n• +2⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (500⭐ per month)\n👉 For those who want a lot more features and options.\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-40%)\n• +3⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (1000⭐ per month)\n👉 For those who chat A LOT.\n• Everything in SUPER PRO\n• Memory: 150 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-50%)\n• +4⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (350⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n🎁 Get a 150💵 bucks bonus on your first subscription purchase!\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_body": "🔥 PRO (220⭐ per month)\n👉 The balanced starting point for those just getting to know their companion.\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-35%)\n• +2⚡ energizers every day\n• 💼 1.5x earnings from work\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (500⭐ per month)\n👉 For those who want a lot more features and options.\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-40%)\n• +3⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (1000⭐ per month)\n👉 For those who chat A LOT.\n• Everything in SUPER PRO\n• Memory: 150 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-50%)\n• +4⚡ energizers every day\n• 💼 2.8x earnings from work\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (350⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n🎁 Get a 300💵 bucks bonus on your first subscription purchase!\n\n⚠️ Subscriptions do NOT renew automatically.",
         "subs_btn_pro": "🔥 PRO — 220 ⭐ per month",
         "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐ per month",
         "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐ per month",
         "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (350⭐)",
-        "bundles_title": "🎁 **Buy a bundle**\n\nA bundle gives you energizers ⚡ (your companion's energy) and bucks 💵 (for food and gifts in the shop). What each one gives:",
-        "bundle_btn": "{emoji} {name} — {price} ⭐",
-        "bundle_breakdown_line": "{emoji} {name} — {energizers}⚡ energizers + {bucks}💵 bucks",
         "invoice_pro_title": "PRO subscription for a month",
         "invoice_pro_desc": "60-message memory, Passionate and Magnetic styles.",
         "invoice_pro_label": "PRO month",
@@ -563,10 +563,6 @@ TEXTS = {
         "invoice_upgrade_title": "Upgrade to SUPER PRO",
         "invoice_upgrade_desc": "Upgrade PRO to SUPER PRO for the remaining time. 350⭐.",
         "invoice_upgrade_label": "Upgrade",
-        "invoice_bundle_title": "{name}: {energizers}⚡ + {bucks}💵",
-        "invoice_bundle_desc": "{energizers} energizers and {bucks} bucks for {price}⭐",
-        "invoice_bundle_label": "Bundle",
-        "payment_bundle_success": "✅ Received: {energizers}⚡ energizers and {bucks}💵 bucks!",
         "shop_btn": "🛍 Shop",
         "shop_title": "🛍 **Shop**\n\nYour bucks: {bucks}💵\n\n🍽 Food restores satiety, 🎁 gifts boost mood and give a bit of XP. Take your pick:",
         "item_bought": "✅ Purchased! {effects}.",
@@ -580,6 +576,8 @@ TEXTS = {
         "shop_category_food": "🍽 Food",
         "shop_category_treat": "🎁 Treats",
         "shop_category_accessory": "💍 Accessories",
+        "shop_category_energizer": "⚡ Energizers",
+        "shop_category_custom": "🎁 Custom gift",
         "cd_min": "{n} min",
         "cd_hours": "{n}h",
         "cd_days": "{n}d",
@@ -600,9 +598,12 @@ TEXTS = {
         "overfeed_refuse_alert": "❌ Your companion is full and refuses to eat more — let their satiety drop a bit first.",
         "webapp_title": "🛍 Shop",
         "webapp_buy_btn": "Buy",
+        "webapp_buy_stars_btn": "⭐ Buy",
         "webapp_note_placeholder": "Note (optional)",
         "webapp_refuse_badge": "Doesn't want it",
         "webapp_bought_toast": "✅ Purchased! Your companion's reaction is in the chat.",
+        "webapp_shop_invoice_error": "Could not create the invoice. Please try again.",
+        "webapp_custom_gift_placeholder": "What will you gift?",
         "webapp_open_chat_hint": "Your companion's reaction will appear in the chat with the bot",
         "webapp_character_not_ready": "Create a character in the chat with the bot first.",
         "webapp_loading": "Loading…",
@@ -634,7 +635,7 @@ TEXTS = {
         "work_bus_hint": "Watch the arrows ⬅️➡️ and pull the bus to the side they point to, or you'll miss the stop!",
         "work_bus_route_done": "🎉 Route complete!",
         "work_bus_route_done_tip": "🎉 Route complete! 💰 + tip",
-        "work_multiplier_badge": "×2 — subscriber bonus",
+        "work_multiplier_badge": "×{multiplier} — subscriber bonus",
         "farm_plant_btn": "🌽 Plant corn",
         "farm_water_btn": "💧 Water",
         "farm_harvest_btn": "🧺 Harvest",
@@ -654,13 +655,15 @@ TEXTS = {
         "feed_menu_title": "🍽 What will you feed them? (you have {bucks}💵)",
         "sleep_daily_reminder": "💤 Your companion is still asleep and missing you... Stop by whenever you get a minute!",
         "spin_daily_reminder": "🎡 Don't forget: you've got a free spin of the wheel today!",
+        "webapp_spin_reminder_on_btn": "🔔 Reminder: ON",
+        "webapp_spin_reminder_off_btn": "🔕 Reminder: OFF",
         "thirsty_reminder": "💧 Your companion is thirsty... Stop by whenever you get a minute!",
         "hungry_reminder": "🍽 Your companion is hungry... Don't forget to feed them!",
         "low_energy_nudge": "😴 Your companion is starting to feel drowsy... Maybe perk them up with an energizer?",
         "not_enough_bucks": "❌ Not enough bucks: you need {n}💵 more.",
-        "not_enough_energizers": "❌ No energizers left. Buy a bundle to wake your companion up right away ⚡.",
+        "not_enough_energizers": "❌ No energizers left. Buy some in the shop to wake your companion up right away ⚡.",
         "asleep_message": "😴 Your companion is fast asleep and can't reply right now — they won't wake up on their own, so wake them with an energizer ⚡ or instantly and fully for {price}⭐. Hunger and thirst won't build up while they're asleep.",
-        "wake_energizer_btn": "⚡ Wake up with an energizer",
+        "wake_energizer_btn": "⚡ Wake up with an energizer ({count})",
         "no_energizers_shop_btn": "🛍 No energizers — buy some",
         "woken_up": "⚡ Energizer used — your companion is wide awake again!",
         "stats_line": "Energy: {energy}/150   Satiety: {satiety}/100   Water: {water}/100\nMood: {mood_emoji} ({mood_value})\nEnergizers: {energizers}   Bucks: {bucks} — spend them in the Shop\n🔥 Scenes: {scenes}",
@@ -671,6 +674,9 @@ TEXTS = {
         "invoice_wake_title": "Wake up your companion",
         "invoice_wake_desc": "Instantly refills your companion's energy to full.",
         "invoice_wake_label": "Wake up",
+        "invoice_energizer_title": "{amount}⚡ energizers",
+        "invoice_energizer_desc": "Adds {amount} to your energizer stock.",
+        "invoice_energizer_label": "Energizers",
         "notifications_on_btn": "🔔 Notifications: ON",
         "notifications_off_btn": "🔕 Notifications: OFF",
         "notifications_muted_alert": "🔕 Notifications muted.",
@@ -696,7 +702,6 @@ TEXTS = {
         "change_character": "🔄 Charakter wechseln",
         "invite_friend": "👥 Freund einladen",
         "create_character": "🎭 Eigenen Charakter erstellen",
-        "buy_bundles": "🎁 Bundle kaufen",
         "subscribe": "👑 Abo abschließen",
         "back": "🔙 Hauptmenü",
         "back_to_profile": "🔙 Zurück",
@@ -756,6 +761,7 @@ TEXTS = {
         "character_creation_cancelled": "❌ Charaktererstellung abgebrochen — du kannst einfach normal weiterchatten.",
         "character_create_too_short": "✏️ Das ist zu kurz für eine Charakterbeschreibung (mindestens {n} Zeichen nötig) — schreib mehr dazu, oder tippe oben auf „Abbrechen\".",
         "spin_title": "🎰 **Glücksrad**",
+        "spin_hint": "Dreh jeden Tag am Rad und gewinne Preise!",
         "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 20–150💵 Bucks\n• 🔥 Heiße Szenen\n• 2–4⚡ Energydrinks (selten)\n• 🎁 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)",
         "spin_choose": "Wähle eine Option:",
         "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+30💵 Bucks und +3⚡ Energydrinks** für dich und **+15💵 Bucks und +1⚡ Energydrink** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💵 Verdiente Bucks: **{earned_bucks}**\n⚡ Verdiente Energydrinks: **{earned_energizers}**",
@@ -874,14 +880,11 @@ TEXTS = {
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
         "subs_title": "👑 Role Duel Abos",
-        "subs_body": "🔥 PRO (220⭐ pro Monat)\n👉 Der ausgewogene Einstieg für alle, die ihren Begleiter gerade erst kennenlernen.\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-35%)\n• +2⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (500⭐ pro Monat)\n👉 Für alle, die viele zusätzliche Features und Möglichkeiten wollen.\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-40%)\n• +3⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (1000⭐ pro Monat)\n👉 Für alle, die SEHR viel chatten.\n• Alles aus SUPER PRO\n• Gedächtnis: 150 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-50%)\n• +4⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (350⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n🎁 Bei der ersten Abo-Buchung gibt's einen Bonus von 150💵 Bucks!\n\n⚠️ Abos verlängern sich NICHT automatisch.",
+        "subs_body": "🔥 PRO (220⭐ pro Monat)\n👉 Der ausgewogene Einstieg für alle, die ihren Begleiter gerade erst kennenlernen.\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-35%)\n• +2⚡ Energydrinks jeden Tag\n• 💼 1.5x Verdienst bei der Arbeit\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (500⭐ pro Monat)\n👉 Für alle, die viele zusätzliche Features und Möglichkeiten wollen.\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-40%)\n• +3⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (1000⭐ pro Monat)\n👉 Für alle, die SEHR viel chatten.\n• Alles aus SUPER PRO\n• Gedächtnis: 150 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-50%)\n• +4⚡ Energydrinks jeden Tag\n• 💼 2.8x Verdienst bei der Arbeit\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (350⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n🎁 Bei der ersten Abo-Buchung gibt's einen Bonus von 300💵 Bucks!\n\n⚠️ Abos verlängern sich NICHT automatisch.",
         "subs_btn_pro": "🔥 PRO — 220 ⭐ pro Monat",
         "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐ pro Monat",
         "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐ pro Monat",
         "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO (350⭐)",
-        "bundles_title": "🎁 **Bundle kaufen**\n\nEin Bundle enthält Energydrinks ⚡ (Energie deines Begleiters) und Bucks 💵 (für Essen und Geschenke im Shop). Das bekommst du:",
-        "bundle_btn": "{emoji} {name} — {price} ⭐",
-        "bundle_breakdown_line": "{emoji} {name} — {energizers}⚡ Energydrinks + {bucks}💵 Bucks",
         "invoice_pro_title": "PRO-Abo für einen Monat",
         "invoice_pro_desc": "Gedächtnis 60 Nachrichten, Stile Leidenschaftlich und Magnetisch.",
         "invoice_pro_label": "PRO Monat",
@@ -894,10 +897,6 @@ TEXTS = {
         "invoice_upgrade_title": "Upgrade auf SUPER PRO",
         "invoice_upgrade_desc": "Hebt PRO für die Restlaufzeit auf SUPER PRO an. 350⭐.",
         "invoice_upgrade_label": "Upgrade",
-        "invoice_bundle_title": "{name}: {energizers}⚡ + {bucks}💵",
-        "invoice_bundle_desc": "{energizers} Energydrinks und {bucks} Bucks für {price}⭐",
-        "invoice_bundle_label": "Bundle",
-        "payment_bundle_success": "✅ Erhalten: {energizers}⚡ Energydrinks und {bucks}💵 Bucks!",
         "shop_btn": "🛍 Shop",
         "shop_title": "🛍 **Shop**\n\nDeine Bucks: {bucks}💵\n\n🍽 Essen füllt die Sättigung auf, 🎁 Geschenke heben die Stimmung und geben etwas XP. Wähle:",
         "item_bought": "✅ Gekauft! {effects}.",
@@ -911,6 +910,8 @@ TEXTS = {
         "shop_category_food": "🍽 Essen",
         "shop_category_treat": "🎁 Geschenke",
         "shop_category_accessory": "💍 Accessoires",
+        "shop_category_energizer": "⚡ Energydrinks",
+        "shop_category_custom": "🎁 Eigenes Geschenk",
         "cd_min": "{n} Min",
         "cd_hours": "{n} Std",
         "cd_days": "{n} Tg",
@@ -931,9 +932,12 @@ TEXTS = {
         "overfeed_refuse_alert": "❌ Dein Begleiter ist satt und weigert sich, mehr zu essen — lass die Sättigung erst etwas sinken.",
         "webapp_title": "🛍 Shop",
         "webapp_buy_btn": "Kaufen",
+        "webapp_buy_stars_btn": "⭐ Kaufen",
         "webapp_note_placeholder": "Notiz (optional)",
         "webapp_refuse_badge": "Will nicht",
         "webapp_bought_toast": "✅ Gekauft! Die Reaktion deines Begleiters steht im Chat.",
+        "webapp_shop_invoice_error": "Rechnung konnte nicht erstellt werden. Bitte versuche es erneut.",
+        "webapp_custom_gift_placeholder": "Was schenkst du?",
         "webapp_open_chat_hint": "Die Reaktion deines Begleiters erscheint im Chat mit dem Bot",
         "webapp_character_not_ready": "Erstelle zuerst einen Charakter im Chat mit dem Bot.",
         "webapp_loading": "Lädt…",
@@ -965,7 +969,7 @@ TEXTS = {
         "work_bus_hint": "Achte auf die Pfeile ⬅️➡️ und lenke den Bus zu der Seite, auf die sie zeigen — sonst verpasst du die Haltestelle!",
         "work_bus_route_done": "🎉 Route abgeschlossen!",
         "work_bus_route_done_tip": "🎉 Route abgeschlossen! 💰 + Trinkgeld",
-        "work_multiplier_badge": "×2 — Abo-Bonus",
+        "work_multiplier_badge": "×{multiplier} — Abo-Bonus",
         "farm_plant_btn": "🌽 Mais pflanzen",
         "farm_water_btn": "💧 Gießen",
         "farm_harvest_btn": "🧺 Ernten",
@@ -985,13 +989,15 @@ TEXTS = {
         "feed_menu_title": "🍽 Womit fütterst du? (du hast {bucks}💵)",
         "sleep_daily_reminder": "💤 Dein Begleiter schläft immer noch und vermisst dich... Schau vorbei, wenn du eine Minute hast!",
         "spin_daily_reminder": "🎡 Nicht vergessen: Heute hast du eine kostenlose Drehung am Glücksrad!",
+        "webapp_spin_reminder_on_btn": "🔔 Erinnerung: AN",
+        "webapp_spin_reminder_off_btn": "🔕 Erinnerung: AUS",
         "thirsty_reminder": "💧 Dein Begleiter hat Durst... Schau vorbei, wenn du eine Minute hast!",
         "hungry_reminder": "🍽 Dein Begleiter hat Hunger... Vergiss nicht, ihn zu füttern!",
         "low_energy_nudge": "😴 Dein Begleiter wird langsam müde und schläfrig... Vielleicht mit einem Energydrink aufmuntern?",
         "not_enough_bucks": "❌ Nicht genug Bucks: dir fehlen noch {n}💵.",
-        "not_enough_energizers": "❌ Keine Energydrinks mehr. Kaufe ein Bundle, um deinen Begleiter sofort aufzuwecken ⚡.",
+        "not_enough_energizers": "❌ Keine Energydrinks mehr. Kaufe welche im Shop, um deinen Begleiter sofort aufzuwecken ⚡.",
         "asleep_message": "😴 Dein Begleiter schläft tief und fest und kann gerade nicht antworten — von selbst wacht er/sie nicht auf, also weck ihn/sie mit einem Energydrink ⚡ oder sofort und vollständig für {price}⭐. Hunger und Durst steigen nicht, solange er/sie schläft.",
-        "wake_energizer_btn": "⚡ Mit Energydrink wecken",
+        "wake_energizer_btn": "⚡ Mit Energydrink wecken ({count})",
         "no_energizers_shop_btn": "🛍 Keine Energydrinks — kaufen",
         "woken_up": "⚡ Energydrink getrunken — dein Begleiter ist wieder hellwach!",
         "stats_line": "Energie: {energy}/150   Sättigung: {satiety}/100   Wasser: {water}/100\nStimmung: {mood_emoji} ({mood_value})\nEnergydrinks: {energizers}   Bucks: {bucks} — ausgeben im Shop\n🔥 Szenen: {scenes}",
@@ -1002,6 +1008,9 @@ TEXTS = {
         "invoice_wake_title": "Begleiter wecken",
         "invoice_wake_desc": "Füllt die Energie deines Begleiters sofort komplett auf.",
         "invoice_wake_label": "Wecken",
+        "invoice_energizer_title": "{amount}⚡ Energydrinks",
+        "invoice_energizer_desc": "Füllt deinen Energydrink-Vorrat um {amount} auf.",
+        "invoice_energizer_label": "Energydrinks",
         "notifications_on_btn": "🔔 Benachrichtigungen: AN",
         "notifications_off_btn": "🔕 Benachrichtigungen: AUS",
         "notifications_muted_alert": "🔕 Benachrichtigungen stummgeschaltet.",
@@ -1340,6 +1349,7 @@ def get_user(user_id):
             "last_mood_tick": None,
             "sleep_until": None,
             "notifications_muted": False,
+            "spin_reminder_enabled": True,
             "last_feed_nudge": None,
             "last_energy_nudge": None,
             "last_activity": datetime.now().isoformat(),
@@ -1391,6 +1401,7 @@ def get_user(user_id):
             "last_mood_tick": None,
             "sleep_until": None,
             "notifications_muted": False,
+            "spin_reminder_enabled": True,
             "last_feed_nudge": None,
             "last_energy_nudge": None,
             "last_activity": None,
@@ -1788,7 +1799,9 @@ GIFT_ITEMS = {
                "reaction_hint": "Простой милый подарок — благодарность лёгкая, с улыбкой, без надрыва."},
     "flowers": {"emoji": "💐", "ru": "Цветы", "en": "Flowers", "de": "Blumen", "price": 30, "mood": 18, "xp": 8,
                 "category": "treat", "cooldown_minutes": 360,
-                "reaction_hint": "Классический трогательный жест — благодарность искренняя и нежная, ты правда растрогана."},
+                "reaction_hint": "Классический трогательный жест — благодарность искренняя и нежная, ты правда растрогана.",
+                "male_variant": {"emoji": "👔", "ru": "Стильный галстук", "en": "Stylish necktie", "de": "Stilvolle Krawatte",
+                                  "reaction_hint": "Классический элегантный жест — искренне тронут такой заботой о стиле, благодарность тёплая и немного смущённая."}},
     "perfume": {"emoji": "🧴", "ru": "Духи", "en": "Perfume", "de": "Parfüm", "price": 45, "mood": 18, "xp": 10,
                 "category": "accessory", "cooldown_minutes": 1440,
                 "reaction_hint": "Личный, продуманный подарок про заботу о тебе — приятно удивлена, что он угадал(а) со вкусом."},
@@ -1813,6 +1826,11 @@ GIFT_ITEMS = {
     "phone": {"emoji": "📱", "ru": "Телефон", "en": "Phone", "de": "Handy", "price": 250, "mood": 45, "xp": 40,
               "category": "accessory", "cooldown_minutes": 4320,
               "reaction_hint": "Очень дорогой подарок — искренний шок и восторг, ты не ожидала такой щедрости и говоришь об этом прямо."},
+    "ring": {"emoji": "💍", "ru": "Бриллиантовое кольцо", "en": "Diamond ring", "de": "Diamantring", "price": 650, "mood": 54, "xp": 65,
+             "category": "accessory", "cooldown_minutes": 5760,
+             "reaction_hint": "Самый романтичный и серьёзный подарок после машины — искренний шок и восторг, ты не до конца веришь, что это происходит.",
+             "male_variant": {"emoji": "⛓️", "ru": "Цепочка", "en": "Gold chain", "de": "Goldkette",
+                               "reaction_hint": "Статусный, серьёзный подарок — искренне впечатлён такой щедростью, благодарность гордая и немного смущённая."}},
     "date": {"emoji": "🌹", "ru": "Романтический вечер", "en": "Romantic evening", "de": "Romantischer Abend", "price": 300, "xp": 60,
              "category": "treat", "full_restore": True, "cooldown_minutes": 1440,
              "reaction_hint": "Самый интимный из подарков — не вещь, а вечер вдвоём — благодарность взволнованная, с предвкушением встречи, самая тёплая из всех."},
@@ -2322,8 +2340,8 @@ WORK_HIT_BUCKS = {"clicker": 1, "catch": 1, "courier": 1, "bus": 1}  # мгно�
 # (общий анти-спам таймер один на все, см. register_work_hit) — разная цена по играм просто
 # поощряла бы скрипт, бьющий в эндпоинт с game=самая дорогая игра. Была раньше 2/5/6 — вместе со
 # старым WORK_MIN_HIT_INTERVAL_SECONDS=0.1 это давало реальных ~500-1000+💵/мин (по фидбэку —
-# полную цену машины за минуту тапанья), что убивает смысл платных бандлов/подписок: bundle_large
-# (200⭐ ≈ 236₽) даёт всего 500💵 РЕАЛЬНЫХ денег — бесплатный гринд не должен легко обгонять это.
+# полную цену машины за минуту тапанья), что убивает смысл платных покупок за звёзды — бесплатный
+# гринд не должен легко обгонять то, что реально продаётся за деньги.
 WORK_MIN_HIT_INTERVAL_SECONDS = 0.5  # было 0.1 — тот самый лишний ноль, из-за которого потолок
                                       # был ~600 попаданий/мин вместо разумных ~120; при 1💵/попадание
                                       # это теперь жёсткий потолок 120💵/мин ДАЖЕ при скрипте/макросе,
@@ -2340,12 +2358,17 @@ FARM_WATER_BONUS = 50  # + баксов за каждый использован
                         # FARM_WATER_SLOTS*FARM_WATER_BONUS = 200 сверху, итого до 600 с поливом)
 
 
+WORK_MULTIPLIER = {"pro": 1.5, "super_pro": 2.0, "elite": 2.8}  # та же тиерная форма, что у
+# XP_MULTIPLIER — раньше был общий x2 для любого уровня подписки, по фидбэку разнесли по тиерам.
+
+
 def work_earnings_multiplier(user):
-    """x2 к ЛЮБОМУ заработку на работе (мгновенные игры и сбор урожая) для действующих
-    подписчиков любого уровня — заменяет прежний ежедневный баксовый стипенд (было
-    BUCKS_DAILY_STIPEND, убран по фидбэку "из подписок убери каждый день бабки, сделай просто x2
-    деньги с работы")."""
-    return 2.0 if has_active_subscription(user) else 1.0
+    """Множитель к ЛЮБОМУ заработку на работе (мгновенные игры и сбор урожая), тиерован по
+    уровню подписки (см. WORK_MULTIPLIER) — заменяет прежний общий x2 для любого подписчика,
+    который сам в своё время заменил ежедневный баксовый стипенд (было BUCKS_DAILY_STIPEND)."""
+    if not has_active_subscription(user):
+        return 1.0
+    return WORK_MULTIPLIER.get(get_subscription_level(user), 1.0)
 
 
 def credit_work_bucks(user, base_amount):
@@ -2857,11 +2880,10 @@ def get_main_menu_keyboard(user):
 
 def get_profile_keyboard(user):
     # Магазин еды/подарков сюда больше не выводим — профиль теперь только про покупки баксов
-    # (бандлы/подписка/сцены) и переключатель уведомлений; сам магазин живёт в главной
-    # reply-клавиатуре (см. get_full_kb), там же, где колесо фортуны.
+    # (подписка/сцены) и переключатель уведомлений; сам магазин (включая энергетики) живёт в
+    # главной reply-клавиатуре (см. get_full_kb), там же, где колесо фортуны.
     mute_key = "notifications_off_btn" if user.get("notifications_muted") else "notifications_on_btn"
     rows = [
-        [InlineKeyboardButton(text=get_text(user, "buy_bundles"), callback_data="profile_bundles", style="success")],
         [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")],
         [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
         [InlineKeyboardButton(text=get_text(user, mute_key), callback_data="toggle_notifications", style="primary")],
@@ -3520,6 +3542,16 @@ async def shop_reply(message: types.Message):
                           reply_markup=get_shop_kb(user), parse_mode="Markdown")
 
 
+@dp.callback_query(lambda c: c.data == "open_shop")
+async def open_shop_cb(call: types.CallbackQuery):
+    """Запасной путь в магазин для инлайн-кнопок без WEBAPP_URL (см. get_energy_nudge_kb) —
+    тот же старый инлайн-каталог, что и в shop_reply, когда Mini App не настроен."""
+    await call.answer()
+    user = get_user(call.from_user.id)
+    await call.message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)),
+                              reply_markup=get_shop_kb(user), parse_mode="Markdown")
+
+
 # ============================================================
 #  РЕДАКТИРОВАНИЕ ПОСЛЕДНЕГО СООБЩЕНИЯ (было объявлено, но не реализовано)
 # ============================================================
@@ -3842,32 +3874,6 @@ async def profile_subs(call: types.CallbackQuery):
     await call.message.answer(text, reply_markup=keyboard)
 
 
-@dp.callback_query(lambda c: c.data == "profile_bundles")
-async def profile_bundles(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    if not user["personality_ready"]:
-        await call.answer(get_text(user, "need_character_alert"), show_alert=True)
-        return
-    # Кнопки теперь просто "название — цена" без сырых "5⚡+60💵" в них — сама расшифровка,
-    # что именно даёт каждый бандл, вынесена в текст сообщения над кнопками.
-    breakdown = "\n".join(
-        get_text(user, "bundle_breakdown_line", emoji=item["emoji"],
-                  name=item.get(user.get("lang", "ru"), item["ru"]),
-                  energizers=item["energizers"], bucks=item["bucks"])
-        for item in BUNDLES.values()
-    )
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=bundle_option_label(key, user),
-                              callback_data=f"buy:{key}", style="success")]
-        for key in BUNDLES
-    ] + [
-        [InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")]
-    ])
-    await call.message.answer(get_text(user, "bundles_title") + "\n" + breakdown,
-                              reply_markup=keyboard, parse_mode="Markdown")
-    await call.answer()
-
-
 def spend_bucks(user, price):
     if user.get("bucks", 0) < price:
         return False
@@ -4009,6 +4015,32 @@ SHOP_CATEGORY_TEXT_KEY = {"food": "shop_category_food", "treat": "shop_category_
 CUSTOM_GIFT_PRICE = 100
 CUSTOM_GIFT_MOOD_RANGE = (18, 45)
 CUSTOM_GIFT_MAX_LEN = 60
+
+
+def apply_custom_gift(user, gift_text):
+    """Общая проверка+списание для чатового ввода (writing_custom_gift) и для Shop Mini App
+    (см. api_custom_gift_handler) — применяет эффекты и возвращает (ok, error_text, custom_item).
+    error_text уже локализован через get_text, custom_item отдаётся только при ok=True."""
+    gift_text = (gift_text or "").strip()
+    if not gift_text or len(gift_text) > CUSTOM_GIFT_MAX_LEN:
+        return False, get_text(user, "custom_gift_invalid", n=CUSTOM_GIFT_MAX_LEN), None
+    normalized = gift_text.lower()
+    if normalized in user.get("custom_gifts_given", []):
+        return False, get_text(user, "custom_gift_duplicate"), None
+    if not spend_bucks(user, CUSTOM_GIFT_PRICE):
+        return False, get_text(user, "not_enough_bucks", n=CUSTOM_GIFT_PRICE - user.get("bucks", 0)), None
+    mood = random.randint(*CUSTOM_GIFT_MOOD_RANGE)
+    xp = round(mood * 0.6)
+    custom_item = {
+        "ru": gift_text, "en": gift_text, "de": gift_text, "emoji": "🎁", "mood": mood, "xp": xp,
+        "reaction_hint": ("Это подарок, который собеседник придумал сам, специально для тебя — не "
+                          "что-то из готового списка. Благодарность самая искренняя и трогательная "
+                          "из всех: чувствуется, что он(а) думал(а) именно о тебе."),
+    }
+    apply_shop_item_effects(user, custom_item)
+    user.setdefault("custom_gifts_given", []).append(normalized)
+    save_data(user_data)
+    return True, None, custom_item
 
 # Личная подпись к обычному (каталожному) подарку/еде — в отличие от custom-подарка это не
 # отдельный предмет со своей ценой, а просто пара слов от пользователя поверх штатной покупки,
@@ -4461,9 +4493,13 @@ PRODUCTS = {
     "subscribe_super": {"stars": 500, "usd": 7.1, "rub": 600},
     "subscribe_elite": {"stars": 1000, "usd": 14.2, "rub": 1200},
     "upgrade_to_super": {"stars": 350, "usd": 5.0, "rub": 420},
-    "bundle_small": {"stars": 30, "usd": 0.4, "rub": 35},
-    "bundle_medium": {"stars": 80, "usd": 1.1, "rub": 94},
-    "bundle_large": {"stars": 200, "usd": 2.8, "rub": 236},
+    # Прямая покупка энергетиков за звёзды в магазине (см. ENERGIZER_PACKS) — заменили бандлы
+    # (те смешивали энергетики с баксами в одной покупке); цена растёт медленнее объёма, чтобы
+    # крупный пакет давал выгоднее ⭐/энергетик, как раньше у bundle_large.
+    "energizer_2": {"stars": 15, "usd": 0.2, "rub": 18},
+    "energizer_6": {"stars": 40, "usd": 0.5, "rub": 47},
+    "energizer_15": {"stars": 90, "usd": 1.2, "rub": 106},
+    "energizer_35": {"stars": 180, "usd": 2.4, "rub": 212},
     "spin_paid_20": {"stars": 15, "usd": 0.2, "rub": 18},
     # Тот же платный прокрут и та же цена, что у spin_paid_20 — отдельный payload только чтобы
     # grant_product мог отличить оплату из Mini App (создана через api_spin_paid_invoice_handler
@@ -4479,27 +4515,14 @@ PRODUCTS = {
 for _product in PRODUCTS.values():
     _product.setdefault("rub", _product["stars"])
 
-# Что именно выдаёт каждый бандл — энергетики (⚡ энергия) и баксы (💵 еда/подарки в магазине);
-# сообщений в игре больше нет вообще, чат ограничивает только энергия/сон.
-BUNDLES = {
-    "bundle_small": {"energizers": 5, "bucks": 60, "emoji": "🎒",
-                      "ru": "Стартовый набор", "en": "Starter Pack", "de": "Starter-Paket"},
-    "bundle_medium": {"energizers": 14, "bucks": 180, "emoji": "⚖️",
-                       "ru": "Средний набор", "en": "Medium Pack", "de": "Mittleres Paket"},
-    "bundle_large": {"energizers": 40, "bucks": 500, "emoji": "👑",
-                      # Было 50 — по фидбэку всё ещё многовато, срезали до 40 (200⭐/40=5.0⭐ за
-                      # энергетик). История: 36 изначально (хуже PRO) -> пробовали 72 психтрюком
-                      # (уполовинить ENERGIZER_RESTORE_AMOUNT, отклонено) -> 50 (чуть лучше PRO) -> 40.
-                      "ru": "VIP набор", "en": "VIP Pack", "de": "VIP-Paket"},
+# Сколько энергетиков даёт каждый пакет — покупаются прямо в Mini App магазина через
+# openInvoice (см. api_shop_energizer_invoice_handler), без чатового каталога.
+ENERGIZER_PACKS = {
+    "energizer_2": {"amount": 2, "emoji": "⚡"},
+    "energizer_6": {"amount": 6, "emoji": "⚡"},
+    "energizer_15": {"amount": 15, "emoji": "⚡"},
+    "energizer_35": {"amount": 35, "emoji": "⚡"},
 }
-
-
-def bundle_option_label(key, user):
-    item = BUNDLES[key]
-    lang = user.get("lang", "ru")
-    name = item.get(lang, item["ru"])
-    return get_text(user, "bundle_btn", emoji=item["emoji"], name=name,
-                     energizers=item["energizers"], bucks=item["bucks"], price=PRODUCTS[key]["stars"])
 
 
 def is_method_enabled(method):
@@ -4555,13 +4578,11 @@ def product_invoice_texts(user, payload):
     if payload == "defibrillator":
         return (get_text(user, "invoice_defib_title"), get_text(user, "invoice_defib_desc"),
                 get_text(user, "invoice_defib_label"))
-    if payload in BUNDLES:
-        bundle = BUNDLES[payload]
-        price = PRODUCTS[payload]["stars"]
-        name = bundle.get(user.get("lang", "ru"), bundle["ru"])
-        return (get_text(user, "invoice_bundle_title", name=name, **bundle),
-                get_text(user, "invoice_bundle_desc", price=price, **bundle),
-                get_text(user, "invoice_bundle_label"))
+    if payload in ENERGIZER_PACKS:
+        amount = ENERGIZER_PACKS[payload]["amount"]
+        return (get_text(user, "invoice_energizer_title", amount=amount),
+                get_text(user, "invoice_energizer_desc", amount=amount),
+                get_text(user, "invoice_energizer_label"))
     return (get_text(user, "spin_wheel"), get_text(user, "spin_invoice_desc"),
             get_text(user, "spin_invoice_label"))
 
@@ -4655,10 +4676,11 @@ def add_pending_payment(user, provider, invoice_id, payload):
     save_data(user_data)
 
 
-FIRST_SUBSCRIPTION_BONUS_BUCKS = 150  # одноразовая премия за самую первую покупку ЛЮБОЙ
-# подписки (см. ever_subscribed ниже) — по фидбэку заменяет часть ценности прежнего ежедневного
-# баксового стипенда (см. было BUCKS_DAILY_STIPEND) разовым бонусом в момент покупки; вторая
-# половина замены — x2 с заработка на работе, см. work_earnings_multiplier.
+FIRST_SUBSCRIPTION_BONUS_BUCKS = 300  # было 150 — увеличено по просьбе, разовая премия за самую
+# первую покупку ЛЮБОЙ подписки (см. ever_subscribed ниже) — по фидбэку заменяет часть ценности
+# прежнего ежедневного баксового стипенда (было BUCKS_DAILY_STIPEND) разовым бонусом в момент
+# покупки; вторая половина замены — тиерный множитель с заработка на работе, см.
+# work_earnings_multiplier/WORK_MULTIPLIER.
 
 
 async def grant_product(user, payload, chat_id):
@@ -4666,12 +4688,12 @@ async def grant_product(user, payload, chat_id):
     Раньше эта логика жила прямо в payment_success и работала только для Stars."""
     user["has_purchased"] = True
 
-    if payload in BUNDLES:
-        bundle = BUNDLES[payload]
-        user["energizers"] = user.get("energizers", 0) + bundle["energizers"]
-        user["bucks"] = user.get("bucks", 0) + bundle["bucks"]
+    if payload in ENERGIZER_PACKS:
+        # Покупается только из Shop Mini App через openInvoice (см. api_shop_energizer_invoice_handler) —
+        # как и spin_paid_webapp, не дублируем отдельным сообщением в чат: обновлённый баланс
+        # и так виден прямо в магазине после обновления состояния.
+        user["energizers"] = user.get("energizers", 0) + ENERGIZER_PACKS[payload]["amount"]
         save_data(user_data)
-        await bot.send_message(chat_id, get_text(user, "payment_bundle_success", **bundle))
     elif payload == "subscribe_pro":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
@@ -5147,7 +5169,7 @@ def get_wake_kb(user):
     if elite_free_wake_available(user):
         rows.append([InlineKeyboardButton(text=get_text(user, "elite_free_wake_btn"), callback_data="elite_free_wake", style="success")])
     if user.get("energizers", 0) > 0:
-        rows.append([InlineKeyboardButton(text=get_text(user, "wake_energizer_btn"), callback_data="wake_up", style="success")])
+        rows.append([InlineKeyboardButton(text=get_text(user, "wake_energizer_btn", count=user.get("energizers", 0)), callback_data="wake_up", style="success")])
     rows.append([InlineKeyboardButton(text=get_text(user, "wake_now_btn", price=PRODUCTS["wake_now"]["stars"]),
                                       callback_data="buy:wake_now", style="success")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
@@ -5159,9 +5181,12 @@ def get_energy_nudge_kb(user):
     отвечает. Если есть энергетик — предлагаем взбодриться им; если их нет — ведём в магазин
     их купить, а не сразу к оплате звёздами за то, что ещё не наступило."""
     if user.get("energizers", 0) > 0:
-        rows = [[InlineKeyboardButton(text=get_text(user, "wake_energizer_btn"), callback_data="wake_up", style="success")]]
+        rows = [[InlineKeyboardButton(text=get_text(user, "wake_energizer_btn", count=user.get("energizers", 0)), callback_data="wake_up", style="success")]]
+    elif WEBAPP_URL:
+        rows = [[InlineKeyboardButton(text=get_text(user, "no_energizers_shop_btn"),
+                                      web_app=WebAppInfo(url=f"{WEBAPP_URL}/shop"), style="success")]]
     else:
-        rows = [[InlineKeyboardButton(text=get_text(user, "no_energizers_shop_btn"), callback_data="profile_bundles", style="success")]]
+        rows = [[InlineKeyboardButton(text=get_text(user, "no_energizers_shop_btn"), callback_data="open_shop", style="success")]]
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -5747,29 +5772,11 @@ async def handle_message(message: types.Message):
         # без возможности выйти. Один заход = одна попытка; хочешь ещё раз — жми кнопку в магазине.
         user["writing_custom_gift"] = False
         save_data(user_data)
-        gift_text = message.text.strip()
-        if not gift_text or len(gift_text) > CUSTOM_GIFT_MAX_LEN:
-            await message.answer(get_text(user, "custom_gift_invalid", n=CUSTOM_GIFT_MAX_LEN))
+        ok, error_text, custom_item = apply_custom_gift(user, message.text)
+        if not ok:
+            await message.answer(error_text)
             return
-        normalized = gift_text.lower()
-        if normalized in user.get("custom_gifts_given", []):
-            await message.answer(get_text(user, "custom_gift_duplicate"))
-            return
-        if not spend_bucks(user, CUSTOM_GIFT_PRICE):
-            await message.answer(get_text(user, "not_enough_bucks", n=CUSTOM_GIFT_PRICE - user.get("bucks", 0)))
-            return
-        mood = random.randint(*CUSTOM_GIFT_MOOD_RANGE)
-        xp = round(mood * 0.6)
-        custom_item = {
-            "ru": gift_text, "en": gift_text, "de": gift_text, "emoji": "🎁", "mood": mood, "xp": xp,
-            "reaction_hint": ("Это подарок, который собеседник придумал сам, специально для тебя — не "
-                              "что-то из готового списка. Благодарность самая искренняя и трогательная "
-                              "из всех: чувствуется, что он(а) думал(а) именно о тебе."),
-        }
-        apply_shop_item_effects(user, custom_item)
-        user.setdefault("custom_gifts_given", []).append(normalized)
-        save_data(user_data)
-        await grant_gift_xp(message.chat.id, user, xp)
+        await grant_gift_xp(message.chat.id, user, custom_item["xp"])
         await message.answer(get_text(user, "item_bought", effects=format_item_effects(custom_item, user)))
         if not is_asleep(user):
             await generate_shop_reaction(message.chat.id, user, custom_item, "gift")
@@ -6075,6 +6082,24 @@ def serialize_shop_state(user):
         info = ILLNESSES[user["illness"]]
         illness_label = f"{info['emoji']} {info.get(lang, info['ru'])}"
 
+    # Энергетики и свой подарок — отдельные разделы магазина, не входят в categories: покупаются
+    # не за баксы (энергетики — за звёзды через openInvoice) или не из фиксированного каталога
+    # (свой подарок — произвольный текст), так что не вписываются в общую карточку category/key.
+    energizer_packs = [
+        {"key": key, "amount": pack["amount"], "emoji": pack["emoji"],
+         "name": get_text(user, "invoice_energizer_title", amount=pack["amount"]),
+         "stars": PRODUCTS[key]["stars"]}
+        for key, pack in ENERGIZER_PACKS.items()
+    ]
+
+    ui = {k: get_text(user, k) for k in (
+        "webapp_title", "webapp_buy_btn", "webapp_buy_stars_btn", "webapp_note_placeholder",
+        "webapp_refuse_badge", "webapp_bought_toast", "webapp_open_chat_hint", "webapp_loading",
+        "shop_category_medicine", "shop_category_energizer", "shop_category_custom",
+        "webapp_shop_invoice_error", "webapp_custom_gift_placeholder",
+    )}
+    ui["custom_gift_btn"] = get_text(user, "custom_gift_btn", price=CUSTOM_GIFT_PRICE)
+
     return {
         "lang": lang,
         "bucks": user.get("bucks", 0),
@@ -6090,11 +6115,10 @@ def serialize_shop_state(user):
         "asleep": is_asleep(user),
         "categories": categories,
         "medicine": medicine,
+        "energizer_packs": energizer_packs,
+        "custom_gift": {"price": CUSTOM_GIFT_PRICE, "max_len": CUSTOM_GIFT_MAX_LEN},
         "note_max_len": ITEM_NOTE_MAX_LEN,
-        "ui": {k: get_text(user, k) for k in (
-            "webapp_title", "webapp_buy_btn", "webapp_note_placeholder", "webapp_refuse_badge",
-            "webapp_bought_toast", "webapp_open_chat_hint", "webapp_loading", "shop_category_medicine",
-        )},
+        "ui": ui,
     }
 
 
@@ -9762,6 +9786,19 @@ SHOP_PAGE_HTML = '''<!doctype html>
 
   function categoryList(s) {
     var list = s.categories.map(function (c) { return {key: c.key, name: c.name, items: c.items}; });
+    if (s.energizer_packs && s.energizer_packs.length) {
+      list.push({
+        key: "energizer",
+        name: s.ui.shop_category_energizer,
+        items: s.energizer_packs.map(function (p) {
+          return {key: p.key, category: "energizer", emoji: p.emoji, name: p.name, stars: p.stars,
+                  effects: "", ready_in: null, refuse: false};
+        })
+      });
+    }
+    if (s.custom_gift) {
+      list.push({key: "custom", name: s.ui.shop_category_custom, items: [], custom: true});
+    }
     if (s.medicine && s.medicine.length) {
       list.unshift({
         key: "medicine",
@@ -9803,7 +9840,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
     top.appendChild(emoji);
 
     var noteBox = null;
-    if (item.category !== "medicine") {
+    if (item.category !== "medicine" && item.category !== "energizer") {
       var toggle = document.createElement("button");
       toggle.className = "note-toggle";
       toggle.textContent = "✍️";
@@ -9846,6 +9883,18 @@ SHOP_PAGE_HTML = '''<!doctype html>
       rbadge.className = "badge";
       rbadge.textContent = "🙅 " + s.ui.webapp_refuse_badge;
       footer.appendChild(rbadge);
+    } else if (item.category === "energizer") {
+      var starsPrice = document.createElement("span");
+      starsPrice.className = "price";
+      starsPrice.textContent = item.stars + "⭐";
+      footer.appendChild(starsPrice);
+
+      var starsBtn = document.createElement("button");
+      starsBtn.className = "buy-btn";
+      starsBtn.textContent = s.ui.webapp_buy_stars_btn;
+      if (busyKeys[itemKey]) starsBtn.disabled = true;
+      starsBtn.onclick = function () { buyEnergizer(item.key); };
+      footer.appendChild(starsBtn);
     } else {
       var price = document.createElement("span");
       price.className = "price";
@@ -9863,12 +9912,47 @@ SHOP_PAGE_HTML = '''<!doctype html>
     return card;
   }
 
+  function makeCustomGiftCard(s) {
+    var card = document.createElement("div");
+    card.className = "card";
+
+    var top = document.createElement("div");
+    top.className = "card-top";
+    var emoji = document.createElement("div");
+    emoji.className = "card-emoji";
+    emoji.textContent = "🎁";
+    top.appendChild(emoji);
+    card.appendChild(top);
+
+    var input = document.createElement("input");
+    input.className = "card-note shown";
+    input.type = "text";
+    input.placeholder = s.ui.webapp_custom_gift_placeholder;
+    input.maxLength = s.custom_gift.max_len;
+    card.appendChild(input);
+
+    var footer = document.createElement("div");
+    footer.className = "card-footer";
+    var submitBtn = document.createElement("button");
+    submitBtn.className = "buy-btn";
+    submitBtn.textContent = s.ui.custom_gift_btn;
+    if (busyKeys["custom:gift"]) submitBtn.disabled = true;
+    submitBtn.onclick = function () { submitCustomGift(input.value); };
+    footer.appendChild(submitBtn);
+    card.appendChild(footer);
+    return card;
+  }
+
   function renderItems(s) {
     var cats = categoryList(s);
     var current = cats.filter(function (c) { return c.key === activeTab; })[0];
     var el = document.getElementById("items");
     el.innerHTML = "";
     if (!current) return;
+    if (current.custom) {
+      el.appendChild(makeCustomGiftCard(s));
+      return;
+    }
     current.items.forEach(function (item) { el.appendChild(makeCard(s, item)); });
   }
 
@@ -9905,6 +9989,76 @@ SHOP_PAGE_HTML = '''<!doctype html>
       render();
     }).catch(function () {
       delete busyKeys[itemKey];
+      render();
+    });
+  }
+
+  function refreshState() {
+    api("/api/state").then(function (res) {
+      if (res.ok && res.state) { state = res.state; render(); }
+    }).catch(function () {});
+  }
+
+  // Энергетики продаются за звёзды, не баксы — отдельная ветка от buy(): берём ссылку на счёт у
+  // бота и открываем её openInvoice() (та же схема, что у платного прокрута в SPIN_PAGE_HTML).
+  // Начисление идёт через successful_payment на сервере асинхронно, поэтому после "paid" просто
+  // переcчитываем состояние с небольшой задержкой — тут нет анимации, которую нужно синхронизировать.
+  function buyEnergizer(key) {
+    var itemKey = "energizer:" + key;
+    if (busyKeys[itemKey]) return;
+    if (!tg || !tg.openInvoice) {
+      safe(function () { tg.showAlert(state.ui.webapp_shop_invoice_error); });
+      return;
+    }
+    busyKeys[itemKey] = true;
+    render();
+    api("/api/shop/energizer/invoice", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({pack: key})
+    }).then(function (res) {
+      if (!res.ok) {
+        delete busyKeys[itemKey];
+        safe(function () { tg.showAlert(res.error || state.ui.webapp_shop_invoice_error); });
+        render();
+        return;
+      }
+      tg.openInvoice(res.invoice_url, function (result) {
+        delete busyKeys[itemKey];
+        if (result.status === "paid") {
+          safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
+          setTimeout(refreshState, 1200);
+        } else {
+          render();
+        }
+      });
+    }).catch(function () {
+      delete busyKeys[itemKey];
+      render();
+    });
+  }
+
+  function submitCustomGift(text) {
+    if (busyKeys["custom:gift"]) return;
+    busyKeys["custom:gift"] = true;
+    render();
+    api("/api/shop/custom", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({text: text})
+    }).then(function (res) {
+      delete busyKeys["custom:gift"];
+      if (res.state) state = res.state;
+      if (res.ok) {
+        safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
+        safe(function () { tg.showPopup({message: state.ui.webapp_bought_toast}); });
+      } else {
+        safe(function () { tg.HapticFeedback.notificationOccurred("error"); });
+        safe(function () { tg.showAlert(res.error || res.message || "Error"); });
+      }
+      render();
+    }).catch(function () {
+      delete busyKeys["custom:gift"];
       render();
     });
   }
@@ -9980,6 +10134,62 @@ async def api_buy_handler(request):
     return web.json_response(result)
 
 
+async def api_shop_energizer_invoice_handler(request):
+    """Просит у Bot API ссылку на Stars-счёт за один из пакетов ENERGIZER_PACKS — открывается на
+    фронтенде через openInvoice(), та же схема, что и api_spin_paid_invoice_handler. Сама выдача
+    энергетиков — не здесь, а в grant_product по приходу successful_payment (см. payload в
+    ENERGIZER_PACKS)."""
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    try:
+        body = await request.json()
+    except (json.JSONDecodeError, ValueError):
+        body = {}
+    payload = body.get("pack") if isinstance(body, dict) else None
+    if payload not in ENERGIZER_PACKS:
+        return web.json_response({"ok": False, "error": "Bad request"}, status=400)
+    title, description, label = product_invoice_texts(user, payload)
+    try:
+        invoice_url = await bot.create_invoice_link(
+            title=title,
+            description=description,
+            payload=payload,
+            provider_token="",
+            currency="XTR",
+            prices=[LabeledPrice(label=label, amount=PRODUCTS[payload]["stars"])],
+        )
+    except Exception as e:
+        logging.error(f"create_invoice_link ({payload}) для {user_id}: {e}")
+        return web.json_response({"ok": False, "error": get_text(user, "webapp_shop_invoice_error")})
+    return web.json_response({"ok": True, "invoice_url": invoice_url})
+
+
+async def api_custom_gift_handler(request):
+    """Тот же свой-подарок, что в чате (writing_custom_gift), только текст приходит из поля
+    ввода в Shop Mini App, а не следующим сообщением в чат — общая проверка/списание/эффект в
+    apply_custom_gift. Благодарность ИИ всё равно уходит в чат (см. execute_item_purchase —
+    тот же принцип, реакция персонажа не показывается прямо в магазине ни для одной покупки)."""
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    try:
+        body = await request.json()
+    except (json.JSONDecodeError, ValueError):
+        body = {}
+    text = body.get("text") if isinstance(body, dict) else None
+    ok, error_text, custom_item = apply_custom_gift(user, text)
+    if not ok:
+        return web.json_response({"ok": False, "error": error_text, "state": serialize_shop_state(user)})
+    await grant_gift_xp(user_id, user, custom_item["xp"])
+    await bot.send_message(user_id, get_text(user, "item_bought", effects=format_item_effects(custom_item, user)))
+    if not is_asleep(user):
+        await generate_shop_reaction(user_id, user, custom_item, "gift")
+    return web.json_response({"ok": True, "state": serialize_shop_state(user)})
+
+
 async def root_health_handler(request):
     """Корень домена — не часть самого магазина, но некоторые хостинги (в т.ч. reverse-proxy
     перед контейнером) проверяют живость сервиса именно запросом на "/" перед тем, как вообще
@@ -10001,12 +10211,14 @@ def serialize_spin_state(user):
         "free_left": free_spins_left(user),
         "free_total": free_spins_allowed(user),
         "bucks": user.get("bucks", 0),
+        "reminder_enabled": user.get("spin_reminder_enabled", True),
         "prizes": [
             {"index": i, "wheel_label": p["wheel_label"], "name": prize_name(p, user)}
             for i, p in enumerate(SPIN_PRIZES)
         ],
         "ui": {
             "spin_title": get_text(user, "spin_title"),
+            "spin_hint": get_text(user, "spin_hint"),
             "free_label": get_text(user, "free", left=free_spins_left(user), total=free_spins_allowed(user)),
             "tomorrow_label": get_text(user, "tomorrow"),
             "paid_label": get_text(user, "spin_paid"),
@@ -10014,6 +10226,8 @@ def serialize_spin_state(user):
             "paid_pending_label": get_text(user, "webapp_spin_paid_pending"),
             "invoice_error": get_text(user, "webapp_spin_invoice_error"),
             "open_chat_hint": get_text(user, "webapp_open_chat_hint"),
+            "reminder_on_label": get_text(user, "webapp_spin_reminder_on_btn"),
+            "reminder_off_label": get_text(user, "webapp_spin_reminder_off_btn"),
         },
     }
 
@@ -10067,6 +10281,11 @@ SPIN_PAGE_HTML = '''<!doctype html>
     font-size: 18px;
     font-weight: 700;
     padding: 0 14px 6px;
+  }
+  #spin-hint {
+    font-size: 12px;
+    color: var(--tg-theme-hint-color, #888);
+    padding: 0 20px 6px;
   }
   #wheel-wrap {
     position: relative;
@@ -10216,6 +10435,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
 <body>
   <div id="stats"></div>
   <div id="title"></div>
+  <div id="spin-hint"></div>
   <div id="wheel-wrap">
     <div id="pointer"></div>
     <div id="wheel-rim">
@@ -10276,7 +10496,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
   }
 
   function showFullScreen(text) {
-    ["stats", "title", "wheel-wrap", "result-banner", "actions", "footer-hint"].forEach(function (id) {
+    ["stats", "title", "spin-hint", "wheel-wrap", "result-banner", "actions", "footer-hint"].forEach(function (id) {
       document.getElementById(id).style.display = "none";
     });
     var el = document.getElementById("full-screen-msg");
@@ -10348,6 +10568,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
   function renderStats(s) {
     document.getElementById("stats").textContent = "💵 " + s.bucks;
     document.getElementById("title").textContent = s.ui.spin_title.replace(/\*/g, "");
+    document.getElementById("spin-hint").textContent = s.ui.spin_hint;
   }
 
   function renderActions(s) {
@@ -10372,6 +10593,28 @@ SPIN_PAGE_HTML = '''<!doctype html>
     paidBtn.disabled = spinning;
     paidBtn.onclick = spinPaid;
     el.appendChild(paidBtn);
+
+    var reminderBtn = document.createElement("button");
+    reminderBtn.className = "action-btn secondary";
+    reminderBtn.textContent = s.reminder_enabled ? s.ui.reminder_on_label : s.ui.reminder_off_label;
+    reminderBtn.onclick = toggleReminder;
+    el.appendChild(reminderBtn);
+  }
+
+  // Тумблер напоминания — отдельный от уже существующего notifications_muted (тот доступен
+  // только SUPER PRO/ELITE и гасит все уведомления сразу), просто переключает одно поле на
+  // сервере и перерисовывает кнопку с новым состоянием.
+  function toggleReminder() {
+    if (!state) return;
+    var next = !state.reminder_enabled;
+    api("/api/spin/reminder", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({enabled: next})
+    }).then(function (res) {
+      if (res.state) state = res.state;
+      render();
+    }).catch(function () {});
   }
 
   function render() {
@@ -10531,9 +10774,11 @@ def serialize_work_state(user):
     farm_watered_label, farm_payout_preview) нарочно не отформатированы -- get_text без kwargs
     отдаёт сырой шаблон, фронтенд сам подставляет актуальные числа после каждого действия, без
     нового похода на сервер."""
+    _multiplier = work_earnings_multiplier(user)
+    _multiplier_display = str(int(_multiplier)) if _multiplier == int(_multiplier) else str(_multiplier)
     return {
         "bucks": user.get("bucks", 0),
-        "multiplier": work_earnings_multiplier(user),
+        "multiplier": _multiplier,
         "hit_bucks": WORK_HIT_BUCKS,
         "farm": farm_state(user),
         "ui": {
@@ -10552,7 +10797,7 @@ def serialize_work_state(user):
             "bus_hint": get_text(user, "work_bus_hint"),
             "bus_route_done": get_text(user, "work_bus_route_done"),
             "bus_route_done_tip": get_text(user, "work_bus_route_done_tip"),
-            "multiplier_badge": get_text(user, "work_multiplier_badge"),
+            "multiplier_badge": get_text(user, "work_multiplier_badge", multiplier=_multiplier_display),
             "farm_plant_btn": get_text(user, "farm_plant_btn"),
             "farm_water_btn": get_text(user, "farm_water_btn"),
             "farm_harvest_btn": get_text(user, "farm_harvest_btn"),
@@ -11767,6 +12012,23 @@ async def api_spin_free_handler(request):
     return web.json_response(result)
 
 
+async def api_spin_reminder_handler(request):
+    """Тумблер "напоминать о прокруте" прямо в Mini App колеса (см. spin_reminder_enabled) —
+    отдельно от notifications_muted: тот гасит ВСЕ уведомления и доступен только SUPER PRO/ELITE,
+    этот — персонально про ежедневный спин-реминдер, доступен всем."""
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    try:
+        body = await request.json()
+    except (json.JSONDecodeError, ValueError):
+        body = {}
+    user["spin_reminder_enabled"] = bool(body.get("enabled")) if isinstance(body, dict) else True
+    save_data(user_data)
+    return web.json_response({"ok": True, "state": serialize_spin_state(user)})
+
+
 async def api_spin_paid_invoice_handler(request):
     """Просит у Bot API ссылку на Stars-счёт для платного прокрута — открывается на фронтенде
     через Telegram.WebApp.openInvoice() прямо поверх колеса, без выхода в чат. Сам платёж всё
@@ -11874,11 +12136,14 @@ async def run_webapp_server():
     app_web.router.add_get("/shop", shop_page_handler)
     app_web.router.add_get("/api/state", api_state_handler)
     app_web.router.add_post("/api/buy", api_buy_handler)
+    app_web.router.add_post("/api/shop/energizer/invoice", api_shop_energizer_invoice_handler)
+    app_web.router.add_post("/api/shop/custom", api_custom_gift_handler)
     app_web.router.add_get("/spin", spin_page_handler)
     app_web.router.add_get("/api/spin/state", api_spin_state_handler)
     app_web.router.add_post("/api/spin/free", api_spin_free_handler)
     app_web.router.add_post("/api/spin/paid/invoice", api_spin_paid_invoice_handler)
     app_web.router.add_get("/api/spin/paid/result", api_spin_paid_result_handler)
+    app_web.router.add_post("/api/spin/reminder", api_spin_reminder_handler)
     app_web.router.add_get("/work", work_page_handler)
     app_web.router.add_get("/api/work/state", api_work_state_handler)
     app_web.router.add_post("/api/work/hit", api_work_hit_handler)
@@ -12010,9 +12275,10 @@ async def check_notifications():
                             pass
                     continue
 
-                # 3) Доступен бесплатный прокрут колеса — не чаще раза в сутки и только пока
-                # он реально не использован.
-                if free_spins_left(user) > 0:
+                # 3) Доступен бесплатный прокрут колеса — не чаще раза в сутки, только пока он
+                # реально не использован, и только если напоминание не отключено тумблером в
+                # Mini App колеса (см. serialize_spin_state/api_spin_reminder_handler).
+                if free_spins_left(user) > 0 and user.get("spin_reminder_enabled", True):
                     last_spin_reminder = user.get("last_spin_reminder")
                     due = True
                     if last_spin_reminder:
