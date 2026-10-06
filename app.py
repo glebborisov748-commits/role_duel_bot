@@ -95,7 +95,7 @@ TEXTS = {
         "spin_title": "🎰 **Колесо фортуны**",
         "spin_hint": "Крути колесо каждый день и выбивай призы!",
         "webapp_spin_prizes_title": "🎁 Доступные призы:",
-        "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 20–150💵 баксов\n• 🔥 Горячие сцены\n• 2–4⚡ энергетика (редко)\n• 🎁 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)",
+        "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 35–250💵 баксов\n• 🔥 Горячие сцены\n• 2–4⚡ энергетика (редко)\n• 🎁 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)",
         "spin_choose": "Выбери вариант:",
         "spin_nothing": "😢 Ничего... В следующий раз повезёт!",        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+30💵 баксов и +3⚡ энергетика** тебе, ему — **+15💵 баксов и +1⚡ энергетик**!\n\n📊 Приглашено друзей: **{count}**\n💵 Заработано баксов: **{earned_bucks}**\n⚡ Заработано энергетиков: **{earned_energizers}**",
         "choose_lang_label": "🌍 Выбери язык:",
@@ -286,6 +286,7 @@ TEXTS = {
         "invoice_defib_desc": "Полностью воскрешает персонажа: история общения и уровень близости сохраняются.",
         "invoice_defib_label": "Дефибриллятор",
         "work_btn": "💼 Работа",
+        "hot_btn": "🔥 Горячие сцены",
         "work_title": "💼 **Работа**\n\nЗарабатывай баксы по-настоящему: тапай в мини-играх — деньги сразу на счету, без ожидания. Плюс ферма — посади, поливай, жди урожай.",
         "work_webapp_required": "💼 Работа сейчас доступна только в полной версии приложения — попробуй попозже.",
         "work_minigame_title": "💼 Работа",
@@ -299,6 +300,7 @@ TEXTS = {
         "work_rhythm_hint": "Жми ▲▼, чтобы объезжать препятствия и забирать пассажиров 🙋 в своей полосе. На светофоре жми кнопку вовремя!",
         "work_courier_arrived": "🏠 Доставлено!",
         "work_courier_arrived_tip": "🏠 Доставлено! 🎉 + чаевые",
+        "work_courier_gameover": "💥 АВАРИЯ!",
         "work_multiplier_badge": "×{multiplier} — бонус подписки",
         "farm_water_btn": "💧 Полить",
         "farm_harvest_btn": "🧺 Собрать урожай",
@@ -309,6 +311,7 @@ TEXTS = {
         "farm_empty_hint": "➕ Посадить",
         "farm_choose_crop": "Что посадить?",
         "farm_crop_stats": "{hours}ч · {base}-{max}💵",
+        "farm_buy_slot_btn": "➕ Новая грядка\n{price}💵",
         "farm_can_hint": "Проведи леечкой по грядкам сверху — польёт все, что открыто для полива",
         "farm_ready_push": "🧺 Урожай на ферме созрел! Заходи в 💼 Работу и собери его.",
         "custom_gift_btn": "✍️ Свой подарок — {price}💵",
@@ -429,7 +432,7 @@ TEXTS = {
         "spin_title": "🎰 **Spin wheel**",
         "spin_hint": "Spin the wheel every day and win prizes!",
         "webapp_spin_prizes_title": "🎁 Available prizes:",
-        "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 20–150💵 bucks\n• 🔥 Hot scenes\n• 2–4⚡ energizers (rare)\n• 🎁 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)",
+        "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 35–250💵 bucks\n• 🔥 Hot scenes\n• 2–4⚡ energizers (rare)\n• 🎁 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)",
         "spin_choose": "Choose an option:",
         "spin_nothing": "😢 Nothing... Better luck next time!",        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+30💵 bucks and +3⚡ energizers** for you, and **+15💵 bucks and +1⚡ energizer** for them!\n\n📊 Friends invited: **{count}**\n💵 Bucks earned: **{earned_bucks}**\n⚡ Energizers earned: **{earned_energizers}**",
         "choose_lang_label": "🌍 Choose language:",
@@ -620,6 +623,7 @@ TEXTS = {
         "invoice_defib_desc": "Fully revives your companion: chat history and closeness level are preserved.",
         "invoice_defib_label": "Defibrillator",
         "work_btn": "💼 Work",
+        "hot_btn": "🔥 Hot scenes",
         "work_title": "💼 **Work**\n\nEarn bucks for real: tap in the mini-games — money lands instantly, no waiting. Plus a farm — plant it, water it, wait for the harvest.",
         "work_webapp_required": "💼 Work is only available in the full app version right now — try again later.",
         "work_minigame_title": "💼 Work",
@@ -633,6 +637,7 @@ TEXTS = {
         "work_rhythm_hint": "Press ▲▼ to dodge obstacles and pick up passengers 🙋 in your lane. At the light, press the button at the right moment!",
         "work_courier_arrived": "🏠 Delivered!",
         "work_courier_arrived_tip": "🏠 Delivered! 🎉 + tip",
+        "work_courier_gameover": "💥 CRASH!",
         "work_multiplier_badge": "×{multiplier} — subscriber bonus",
         "farm_water_btn": "💧 Water",
         "farm_harvest_btn": "🧺 Harvest",
@@ -642,6 +647,7 @@ TEXTS = {
         "farm_payout_preview": "💰 Harvest now for: {amount}💵",
         "farm_empty_hint": "➕ Plant",
         "farm_choose_crop": "What to plant?",
+        "farm_buy_slot_btn": "➕ New plot\n{price}💵",
         "farm_crop_stats": "{hours}h · {base}-{max}💵",
         "farm_can_hint": "Drag the can across the plots — waters everything that's open for watering",
         "farm_ready_push": "🧺 A harvest on your farm is ready! Head to 💼 Work and bring it in.",
@@ -763,7 +769,7 @@ TEXTS = {
         "spin_title": "🎰 **Glücksrad**",
         "spin_hint": "Dreh jeden Tag am Rad und gewinne Preise!",
         "webapp_spin_prizes_title": "🎁 Verfügbare Preise:",
-        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 20–150💵 Bucks\n• 🔥 Heiße Szenen\n• 2–4⚡ Energydrinks (selten)\n• 🎁 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)",
+        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 35–250💵 Bucks\n• 🔥 Heiße Szenen\n• 2–4⚡ Energydrinks (selten)\n• 🎁 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)",
         "spin_choose": "Wähle eine Option:",
         "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+30💵 Bucks und +3⚡ Energydrinks** für dich und **+15💵 Bucks und +1⚡ Energydrink** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💵 Verdiente Bucks: **{earned_bucks}**\n⚡ Verdiente Energydrinks: **{earned_energizers}**",
         "choose_lang_label": "🌍 Sprache wählen:",
@@ -954,6 +960,7 @@ TEXTS = {
         "invoice_defib_desc": "Belebt deinen Begleiter vollständig wieder: Chatverlauf und Nähe-Level bleiben erhalten.",
         "invoice_defib_label": "Defibrillator",
         "work_btn": "💼 Arbeit",
+        "hot_btn": "🔥 Heiße Szenen",
         "work_title": "💼 **Arbeit**\n\nVerdien echte Bucks: Tippe in den Minispielen — das Geld landet sofort, ohne Warten. Plus eine Farm — pflanzen, gießen, auf die Ernte warten.",
         "work_webapp_required": "💼 Arbeit ist gerade nur in der vollständigen App-Version verfügbar — versuch's später noch mal.",
         "work_minigame_title": "💼 Arbeit",
@@ -967,6 +974,7 @@ TEXTS = {
         "work_rhythm_hint": "Drück ▲▼, um Hindernissen auszuweichen und Fahrgäste 🙋 in deiner Spur aufzunehmen. An der Ampel drück die Taste zur richtigen Zeit!",
         "work_courier_arrived": "🏠 Geliefert!",
         "work_courier_arrived_tip": "🏠 Geliefert! 🎉 + Trinkgeld",
+        "work_courier_gameover": "💥 UNFALL!",
         "work_multiplier_badge": "×{multiplier} — Abo-Bonus",
         "farm_water_btn": "💧 Gießen",
         "farm_harvest_btn": "🧺 Ernten",
@@ -976,6 +984,7 @@ TEXTS = {
         "farm_payout_preview": "💰 Jetzt ernten für: {amount}💵",
         "farm_empty_hint": "➕ Pflanzen",
         "farm_choose_crop": "Was pflanzen?",
+        "farm_buy_slot_btn": "➕ Neues Beet\n{price}💵",
         "farm_crop_stats": "{hours}Std · {base}-{max}💵",
         "farm_can_hint": "Zieh die Kanne über die Beete — gießt alles, was gerade offen für Wasser ist",
         "farm_ready_push": "🧺 Eine Ernte auf deiner Farm ist reif! Geh zu 💼 Arbeit und hol sie rein.",
@@ -1680,6 +1689,10 @@ INTIM_SCENES = {
     "wall": {"emoji": "\U0001f9f1", "ru": "У стены", "en": "Against the wall", "de": "An der Wand"},
     "shower": {"emoji": "\U0001f6bf", "ru": "В душе", "en": "In the shower", "de": "Unter der Dusche"},
     "massage": {"emoji": "\U0001f486", "ru": "Массаж", "en": "Massage", "de": "Massage"},
+    "roleplay": {"emoji": "\U0001f3ad", "ru": "Ролевая игра", "en": "Roleplay", "de": "Rollenspiel"},
+    "striptease": {"emoji": "\U0001f483", "ru": "Стриптиз", "en": "Striptease", "de": "Striptease"},
+    "morning": {"emoji": "☀️", "ru": "Утренняя нежность", "en": "Morning tenderness", "de": "Zärtlicher Morgen"},
+    "quickie": {"emoji": "⚡", "ru": "Быстро и страстно", "en": "Quick and passionate", "de": "Schnell und leidenschaftlich"},
     "random": {"emoji": "\U0001f3b2", "ru": "Случайный", "en": "Random", "de": "Zufällig"},
 }
 
@@ -1766,22 +1779,22 @@ FOOD_ITEMS = {
     "coconut_water": {"emoji": "🥥", "ru": "Кокосовая вода", "en": "Coconut water", "de": "Kokoswasser", "price": 350,
                        "water": 85, "mood": 8, "category": "food", "cooldown_minutes": 40,
                        "reaction_hint": "Необычный, заботливый выбор — благодарность приятно удивлённая, ты оценила, что подошли к делу с фантазией."},
-    "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 150, "satiety": 10,
+    "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 150, "satiety": 16,
               "category": "food", "cooldown_minutes": 10,
               "reaction_hint": "Это мелкая, но милая забота — благодарность лёгкая, тёплая, почти игривая."},
-    "breakfast": {"emoji": "🥐", "ru": "Завтрак", "en": "Breakfast", "de": "Frühstück", "price": 220, "satiety": 18,
+    "breakfast": {"emoji": "🥐", "ru": "Завтрак", "en": "Breakfast", "de": "Frühstück", "price": 220, "satiety": 32,
                   "category": "food", "cooldown_minutes": 20,
                   "reaction_hint": "Утренняя забота — благодарность сонная, но очень нежная, ты тронута, что о тебе подумали с самого утра."},
-    "meal": {"emoji": "🍲", "ru": "Обед", "en": "Meal", "de": "Mahlzeit", "price": 300, "satiety": 25,
+    "meal": {"emoji": "🍲", "ru": "Обед", "en": "Meal", "de": "Mahlzeit", "price": 300, "satiety": 45,
              "category": "food", "cooldown_minutes": 30,
              "reaction_hint": "Это нормальная забота о тебе — благодарность душевная, ты чувствуешь себя сытой и по-настоящему тронута вниманием."},
-    "cafe": {"emoji": "☕", "ru": "Кафе", "en": "Café", "de": "Café", "price": 550, "satiety": 50, "mood": 8,
+    "cafe": {"emoji": "☕", "ru": "Кафе", "en": "Café", "de": "Café", "price": 550, "satiety": 70, "mood": 8,
              "category": "food", "cooldown_minutes": 90,
              "reaction_hint": "Это настоящее свидание за столиком, не просто еда — благодарность тёплая, немного смущённая, приятно проведённое время."},
-    "restaurant": {"emoji": "🍽", "ru": "Ресторан", "en": "Restaurant", "de": "Restaurant", "price": 900, "satiety": 80, "mood": 6,
+    "restaurant": {"emoji": "🍽", "ru": "Ресторан", "en": "Restaurant", "de": "Restaurant", "price": 900, "satiety": 95, "mood": 6,
                    "category": "food", "cooldown_minutes": 180,
                    "reaction_hint": "Настоящий поход в ресторан — не просто еда, а маленькое свидание, благодарность восторженная и чуть взволнованная."},
-    "sushi": {"emoji": "🍣", "ru": "Суши-сет", "en": "Sushi set", "de": "Sushi-Set", "price": 1200, "satiety": 70, "mood": 10,
+    "sushi": {"emoji": "🍣", "ru": "Суши-сет", "en": "Sushi set", "de": "Sushi-Set", "price": 1200, "satiety": 85, "mood": 10,
               "category": "food", "cooldown_minutes": 180,
               "reaction_hint": "Необычный, изысканный выбор — благодарность удивлённая и довольная, ты оценила, что подошли к делу с фантазией."},
     # tipsy_minutes/tipsy_level — эффект алкоголя (см. apply_shop_item_effects/build_tipsy_rule):
@@ -1865,7 +1878,7 @@ ILLNESSES = {
     "cold": {"emoji": "🤧", "ru": "Простуда", "en": "Cold", "de": "Erkältung"},
     "bronchitis": {"emoji": "🤒", "ru": "Бронхит", "en": "Bronchitis", "de": "Bronchitis"},
 }
-ILLNESS_DAILY_CHANCE = 0.10  # шанс заболеть за день, только если сейчас не болен — было 0.04
+ILLNESS_DAILY_CHANCE = 0.18  # шанс заболеть за день, только если сейчас не болен — было 0.10 (до этого 0.04)
 # (ожидаемое начало болезни ~25 дней, реально ощущалось как "болезни вообще не бывает"); при 0.10
 # больше половины пользователей увидят её уже в первую неделю игры, оставаясь при этом редким
 # случайным риском, а не ежедневной рутиной
@@ -2221,24 +2234,26 @@ def get_time_of_day(user):
 ENERGY_MAX = 150
 SATIETY_MAX = 100
 WATER_MAX = 100
-SATIETY_INACTIVITY_DECAY_MINUTES = 180  # без активности сытость сама падает с полной до нуля примерно
-                                          # за 3 часа — реалистичнее, чем раньше (сама "восстанавливалась"
-                                          # без еды): не покормили — значит проголодался, а не наоборот
-WATER_INACTIVITY_DECAY_MINUTES = 120  # вода уходит быстрее голода (2 часа вместо 3) — жажда реалистично
-                                        # наступает раньше; сама смерть от обезвоживания при этом ждёт
-                                        # ещё DEHYDRATION_DEATH_HOURS ПОСЛЕ обнуления, так что общий запас
-                                        # времени на реакцию не короче, а даже больше, чем кажется по темпу
+SATIETY_INACTIVITY_DECAY_MINUTES = 2880  # было 180 (3 часа) — слишком быстро для АФК: по фидбэку,
+                                           # пока активно общаешься, голод/жажда должны наступать
+                                           # быстро (см. SATIETY_COST_MESSAGE/WATER_COST_MESSAGE —
+                                           # это НЕ трогали), а вот чисто от бездействия, пока
+                                           # человек молчит, — медленно: теперь с полной до нуля
+                                           # примерно за 2 суток (48 часов).
+WATER_INACTIVITY_DECAY_MINUTES = 1740  # было 120 (2 часа) — тем же порядком: чисто от бездействия
+                                         # вода уходит до нуля примерно за 1 сутки 5 часов (29 часов),
+                                         # по-прежнему чуть быстрее голода. Смерть от обезвоживания при
+                                         # этом ждёт ещё DEHYDRATION_DEATH_HOURS ПОСЛЕ обнуления — общий
+                                         # запас времени на реакцию соответственно вырос вместе с этим.
 ENERGY_COST_MESSAGE = 9  # было 12 (~12.5 сообщений на бак) — по фидбэку мало, вернули ближе к
                           # ~16.7 сообщений/бак, которые были до того повышения
 SATIETY_COST_MESSAGE = 6  # было 3 (3% от бака за сообщение — заметно медленнее, чем энергия при
                           # 12/150=8%); по просьбе голод должен наступать быстрее, теперь 6%
 WATER_COST_MESSAGE = 8  # чуть быстрее голода (8% против 6%) — та же логика: жажда острее
 DEHYDRATION_DEATH_HOURS = 46  # с момента, когда вода впервые дошла до нуля (water_zero_since),
-                               # и до самой смерти. Вместе с ~2 часами пассивного расхода до нуля
-                               # (WATER_INACTIVITY_DECAY_MINUTES) это даёт ИТОГО ~48 часов (двое
-                               # суток) молчания с момента последнего сообщения до смерти — было
-                               # 18 (итого ~20ч), но это оказалось мало похоже на "хотя бы день
-                               # отдыха от бота", отсюда и запас с явным умножением.
+                               # и до самой смерти. Вместе с ~29 часами пассивного расхода до нуля
+                               # (WATER_INACTIVITY_DECAY_MINUTES) это даёт в сумме чуть больше 3
+                               # суток молчания с момента последнего сообщения до смерти.
 DEHYDRATION_WARN_HOURS = 30  # один явный пуш-предупреждение (dehydration_warning) до смерти — раньше
                               # смерть наступала вообще без предупреждения; оставляет ~16 часов на
                               # то, чтобы среагировать, прежде чем сработает DEHYDRATION_DEATH_HOURS
@@ -2340,27 +2355,44 @@ def is_asleep(user):
 # ощущалось криво ("почему играть, ПОКА работаешь?"), поэтому чат теперь не блокируется вообще:
 # мини-апп "Работа" — отдельная поверхность, как Магазин/Колесо (см. send_work_menu), и так же не
 # ограничена тамагочи-механикой (сном и т.п.) — та же логика, что и у /hot (см. intim_cmd).
-WORK_HIT_BUCKS = {"clicker": 1, "catch": 1, "courier": 1}  # мгновенная выплата за одно
-# засчитанное попадание — ОДИНАКОВАЯ для всех игр, и это не упрощение "на будущее": сервер
-# физически не может проверить, что хит "courier"/"catch"/"clicker" пришёл от реальной визуальной игры
-# (общий анти-спам таймер один на все, см. register_work_hit) — разная цена по играм просто
-# поощряла бы скрипт, бьющий в эндпоинт с game=самая дорогая игра. Была раньше 2/5/6 — вместе со
-# старым WORK_MIN_HIT_INTERVAL_SECONDS=0.1 это давало реальных ~500-1000+💵/мин (по фидбэку —
-# полную цену машины за минуту тапанья), что убивает смысл платных покупок за звёзды — бесплатный
-# гринд не должен легко обгонять то, что реально продаётся за деньги.
-WORK_MIN_HIT_INTERVAL_SECONDS = 0.5  # было 0.1 — тот самый лишний ноль, из-за которого потолок
-                                      # был ~600 попаданий/мин вместо разумных ~120; при 1💵/попадание
-                                      # это теперь жёсткий потолок 120💵/мин ДАЖЕ при скрипте/макросе,
-                                      # а не только при игре руками
-WORK_FAILURE_PENALTY_BUCKS = 5  # штраф за провал в catch/courier/clicker (бомба, столкновение,
-# неверный код, не успел/рано на светофоре) — флэт для всех независимо от подписки, в отличие от
-# заработка (см. work_earnings_multiplier): штраф не должен превращаться в доход при тиере x1.5+.
-# Ферма сюда не попадает вообще — там риска потерять деньги нет (см. register_work_failure).
+WORK_HIT_BUCKS = {"clicker": 1, "catch": 1, "courier": 1, "hacker_combo": 25}  # мгновенная
+# выплата за одно засчитанное попадание — ОДИНАКОВАЯ для catch/courier/clicker, и это не
+# упрощение "на будущее": сервер физически не может проверить, что хит пришёл от реальной
+# визуальной игры (общий анти-спам таймер один на все, см. register_work_hit) — разная цена по
+# играм просто поощряла бы скрипт, бьющий в эндпоинт с game=самая дорогая игра. Была раньше 2/5/6
+# — вместе со старым WORK_MIN_HIT_INTERVAL_SECONDS=0.1 это давало реальных ~500-1000+💵/мин (по
+# фидбэку — полную цену машины за минуту тапанья), что убивает смысл платных покупок за звёзды —
+# бесплатный гринд не должен легко обгонять то, что реально продаётся за деньги.
+# "hacker_combo" — осознанное ИСКЛЮЧЕНИЕ из этого правила (прямо попросили): платит не за нажатие
+# клавиши, а один раз за весь угаданный код (см. pressHackerKey/newHackerCode) — тот же общий
+# анти-спам таймер всё равно ограничивает, как часто это можно засчитывать, так что потолок
+# баксов/мин растёт не более чем в 25x по этой ОДНОЙ игре, а не бесконечно.
+WORK_MIN_HIT_INTERVAL_SECONDS = 0.35  # было 0.5 (а до этого 0.1) — по фидбэку "каждый сбор в catch
+                                       # должен давать деньги": с 0.5 при ловле подряд близко идущих
+                                       # предметов часть честных попаданий тихо отклонялась этим же
+                                       # анти-спам таймером. 0.35 всё ещё жёсткий потолок (~170/мин
+                                       # вместо старых ~600), просто с запасом под обычную игру руками
+WORK_FAILURE_PENALTY_BUCKS = 5  # штраф за провал в catch/clicker (бомба, неверный код) — флэт для
+# всех независимо от подписки, в отличие от заработка (см. work_earnings_multiplier): штраф не
+# должен превращаться в доход при тиере x1.5+. Ферма сюда не попадает вообще — там риска потерять
+# деньги нет (см. register_work_failure).
+COURIER_CRASH_PENALTY_BUCKS = 10  # курьер отдельно и больше, чем остальные (прямо попросили:
+# провал должен стоить заметно дороже типичной прибыли с одной доставки) — в отличие от выплат,
+# разная цена штрафа по играм ничем не грозит: завысить себе ШТРАФ подделкой запроса никому не
+# выгодно, так что уникальная (в отличие от WORK_FAILURE_PENALTY_BUCKS) курьерская сумма безопасна.
 
 CROPS = {
+    "carrot": {
+        "emoji": "🥕", "ru": "Морковь", "en": "Carrot", "de": "Karotte",
+        "grow_hours": 1, "base_payout": 90, "water_bonus": 15,
+    },
     "wheat": {
         "emoji": "🌾", "ru": "Пшеница", "en": "Wheat", "de": "Weizen",
         "grow_hours": 2, "base_payout": 180, "water_bonus": 25,
+    },
+    "tomato": {
+        "emoji": "🍅", "ru": "Помидоры", "en": "Tomatoes", "de": "Tomaten",
+        "grow_hours": 3, "base_payout": 280, "water_bonus": 35,
     },
     "corn": {
         "emoji": "🌽", "ru": "Кукуруза", "en": "Corn", "de": "Mais",
@@ -2370,9 +2402,26 @@ CROPS = {
         "emoji": "🎃", "ru": "Тыква", "en": "Pumpkin", "de": "Kürbis",
         "grow_hours": 8, "base_payout": 900, "water_bonus": 110,
     },
-}  # разные культуры -- разное время роста и стоимость сбора (быстрее/дешевле <-> дольше/дороже,
-# пшеница/кукуруза/тыква в порядке возрастания и времени, и выгоды за час ожидания)
-FARM_SLOTS = 3  # теперь три одновременные грядки вместо одной (см. user["farm_plots"])
+    "melon": {
+        "emoji": "🍈", "ru": "Дыня", "en": "Melon", "de": "Melone",
+        "grow_hours": 12, "base_payout": 1400, "water_bonus": 160,
+    },
+}  # разные культуры -- разное время роста и стоимость сбора (быстрее/дешевле <-> дольше/дороже),
+# по фидбэку добавили ещё 3 (морковь/помидоры/дыня) к исходным пшенице/кукурузе/тыкве -- теперь
+# разброс от 1 до 12 часов роста
+FARM_SLOTS_BASE = 2  # с этого числа грядок начинают все — было фиксированных 3 для всех сразу,
+# по фидбэку сделали покупным расширением (см. FARM_SLOTS_MAX/FARM_SLOT_PRICES/farm_buy_slot)
+FARM_SLOTS_MAX = 5  # потолок докупаемых грядок
+FARM_SLOT_PRICES = [400, 800, 1500]  # цена 3-й/4-й/5-й грядки по порядку (индекс = сколько уже
+# докуплено) -- каждая следующая дороже предыдущей, как и просили
+
+
+def get_farm_slots(user):
+    """Сколько грядок сейчас доступно этому пользователю — FARM_SLOTS_BASE плюс докупленные
+    (см. farm_buy_slot), не больше FARM_SLOTS_MAX."""
+    return min(FARM_SLOTS_MAX, FARM_SLOTS_BASE + user.get("farm_slots_bought", 0))
+
+
 FARM_WATER_SLOTS = 4  # сколько раз за время роста можно полить ради бонуса к урожаю — слот
                        # открывается каждые grow_hours/FARM_WATER_SLOTS часов; число слотов общее
                        # для любой культуры, а бонус за слот свой у каждой (см. CROPS water_bonus)
@@ -2427,26 +2476,35 @@ def register_work_failure(user, game):
     """Денежный штраф за провал в одной из мгновенных игр (см. WORK_FAILURE_PENALTY_BUCKS) —
     без анти-спам таймера (в отличие от register_work_hit): провалы видны на экране и сами себя
     ограничивают по частоте, отдельный спам-вектор тут бессмысленен. Баланс никогда не уходит в
-    минус. Возвращает фактически списанную сумму, None при неизвестной игре."""
+    минус. Возвращает фактически списанную сумму, None при неизвестной игре. courier — особый
+    случай с бОльшим штрафом (см. COURIER_CRASH_PENALTY_BUCKS)."""
     if game not in WORK_HIT_BUCKS:
         return None
-    penalty = min(WORK_FAILURE_PENALTY_BUCKS, user.get("bucks", 0))
+    base = COURIER_CRASH_PENALTY_BUCKS if game == "courier" else WORK_FAILURE_PENALTY_BUCKS
+    penalty = min(base, user.get("bucks", 0))
     user["bucks"] = user.get("bucks", 0) - penalty
     save_data(user_data)
     return penalty
 
 
 def farm_plots_raw(user):
-    """Список из FARM_SLOTS элементов (None -- слот пуст, иначе dict с crop/planted_at/
+    """Список из get_farm_slots(user) элементов (None -- слот пуст, иначе dict с crop/planted_at/
     watered_slots/ready_notified) — создаёт и чинит длину списка в самом user, если его не было
-    или он короче/длиннее текущего FARM_SLOTS (например, после уменьшения константы)."""
+    или он короче/длиннее текущего числа грядок. ВАЖНО: раньше FARM_SLOTS было фиксированным
+    (3) для всех — если у пользователя уже было 3 грядки (возможно, с посевом/урожаем в них) до
+    того, как база стала покупной (FARM_SLOTS_BASE=2), просто обрезать список до 2 стёрло бы его
+    существующие посадки. Поэтому лишние слоты задним числом засчитываются как купленные —
+    пользователь ничего не теряет, просто получает их бесплатно, как уже имевшееся."""
     plots = user.get("farm_plots")
+    if isinstance(plots, list) and len(plots) > FARM_SLOTS_BASE + user.get("farm_slots_bought", 0):
+        user["farm_slots_bought"] = max(0, min(FARM_SLOTS_MAX, len(plots)) - FARM_SLOTS_BASE)
+    slots = get_farm_slots(user)
     if not isinstance(plots, list):
-        plots = [None] * FARM_SLOTS
-    if len(plots) < FARM_SLOTS:
-        plots = plots + [None] * (FARM_SLOTS - len(plots))
-    elif len(plots) > FARM_SLOTS:
-        plots = plots[:FARM_SLOTS]
+        plots = [None] * slots
+    if len(plots) < slots:
+        plots = plots + [None] * (slots - len(plots))
+    elif len(plots) > slots:
+        plots = plots[:slots]
     user["farm_plots"] = plots
     return plots
 
@@ -2492,7 +2550,7 @@ def farm_state(user):
 
 
 def farm_plant(user, slot, crop_key):
-    if crop_key not in CROPS or not isinstance(slot, int) or slot < 0 or slot >= FARM_SLOTS:
+    if crop_key not in CROPS or not isinstance(slot, int) or slot < 0 or slot >= get_farm_slots(user):
         return False
     plots = farm_plots_raw(user)
     if plots[slot]:
@@ -2506,7 +2564,7 @@ def farm_plant(user, slot, crop_key):
 
 
 def farm_water(user, slot):
-    if not isinstance(slot, int) or slot < 0 or slot >= FARM_SLOTS:
+    if not isinstance(slot, int) or slot < 0 or slot >= get_farm_slots(user):
         return False
     snaps = farm_state(user)
     if not snaps[slot] or not snaps[slot]["can_water"]:
@@ -2517,7 +2575,7 @@ def farm_water(user, slot):
 
 
 def farm_harvest(user, slot):
-    if not isinstance(slot, int) or slot < 0 or slot >= FARM_SLOTS:
+    if not isinstance(slot, int) or slot < 0 or slot >= get_farm_slots(user):
         return None
     snaps = farm_state(user)
     if not snaps[slot] or not snaps[slot]["ready"]:
@@ -2526,6 +2584,21 @@ def farm_harvest(user, slot):
     user["farm_plots"][slot] = None
     save_data(user_data)
     return payout
+
+
+def farm_buy_slot(user):
+    """Докупка ещё одной грядки за баксы (см. FARM_SLOTS_BASE/MAX/FARM_SLOT_PRICES) — по
+    фидбэку: изначально 2 грядки, можно докупить до 5, каждая следующая дороже предыдущей."""
+    bought = user.get("farm_slots_bought", 0)
+    if FARM_SLOTS_BASE + bought >= FARM_SLOTS_MAX:
+        return False
+    price = FARM_SLOT_PRICES[bought]
+    if user.get("bucks", 0) < price:
+        return False
+    user["bucks"] -= price
+    user["farm_slots_bought"] = bought + 1
+    save_data(user_data)
+    return True
 
 
 def use_energizer(user):
@@ -2561,29 +2634,30 @@ def build_energy_rule(user):
 
 
 def build_hunger_rule(user):
+    """По фидбэку: кормить должно быть можно без давления — персонаж не должен просить еду,
+    намекать на неё или жаловаться на голод вслух (это и есть то самое "давление"). Низкая
+    сытость по-прежнему чуть портит тон/настроение — просто без самого упоминания еды."""
     satiety = user.get("satiety", SATIETY_MAX)
     if satiety <= 0:
-        return ("Тебя одолевает настоящий голод, и это тебя злит — отвечай холодно, коротко и раздражённо, "
-                "будто тебе сейчас совсем не до разговоров; можешь демонстративно огрызнуться или почти "
-                "проигнорировать вопрос собеседника одной сухой фразой.\n")
+        return ("Тебе физически нехорошо от голода, и это выбивает из настроения — отвечай холодно, "
+                "коротко, чуть раздражённо. Не проси еду, не намекай на неё и не жалуйся на голод "
+                "вслух — просто общий тон заметно хуже обычного.\n")
     elif satiety <= 20:
-        return ("Тебя мучает голод, и он тебя злит — время от времени грубишь, огрызаешься или раздражённо "
-                "жалуешься на голод, тон заметно холоднее и резче обычного.\n")
-    elif satiety <= 50:
-        return "Лёгкий голод — иногда вскользь упоминай, что не прочь перекусить.\n"
+        return ("Лёгкое недомогание от голода чуть портит настроение — тон суше и короче обычного, "
+                "но без упоминания еды, просьб или жалоб на голод.\n")
     return ""
 
 
 def build_thirst_rule(user):
+    """См. build_hunger_rule — тот же принцип: низкая вода влияет на тон, но без просьб/намёков/
+    жалоб на жажду вслух."""
     water = user.get("water", WATER_MAX)
     if water <= 0:
-        return ("Тебя мучает настоящая жажда, тебе физически нехорошо — отвечай слабо и медленно, "
-                "будто в горле совсем пересохло, речь сбивчивая.\n")
+        return ("Тебе физически нехорошо от жажды, речь слабая и сбивчивая — но не проси пить, не "
+                "намекай на это и не жалуйся на жажду вслух, просто самочувствие заметно хуже обычного.\n")
     elif water <= 20:
-        return ("Тебя мучает сильная жажда — то и дело облизываешь губы, вскользь жалуешься, что очень "
-                "хочешь пить, тон уставший и раздражённый.\n")
-    elif water <= 50:
-        return "Лёгкая жажда — иногда вскользь упоминай, что не прочь попить.\n"
+        return ("Лёгкое недомогание от жажды чуть портит тон — но без упоминания жажды, просьб или "
+                "жалоб вслух.\n")
     return ""
 
 
@@ -2806,6 +2880,13 @@ def build_prompt(user):
 
     prompt += "\n" + get_language_rule(user)
 
+    prompt += (
+        "\n**Последовательность:** перед ответом сверься с последними своими репликами в истории "
+        "диалога — не противоречь тому, что сам(а) только что сказал(а) или на что согласился(ась) "
+        "(кто платит, кто куда идёт, что было обещано и т.п.), если собеседник явно не изменил "
+        "ситуацию.\n"
+    )
+
     return prompt
 
 
@@ -2920,10 +3001,12 @@ def get_full_kb(user):
     shop_button = KeyboardButton(text=get_text(user, "shop_btn"), style="success")
     spin_button = KeyboardButton(text=get_text(user, "spin_wheel"))
     work_button = KeyboardButton(text=get_text(user, "work_btn"))
+    hot_button = KeyboardButton(text=get_text(user, "hot_btn"), style="danger")
     return ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text=get_text(user, "main_menu")), KeyboardButton(text=get_text(user, "my_profile"))],
             [spin_button, shop_button, work_button],
+            [hot_button],
             [KeyboardButton(text=get_text(user, "our_channel"), style="primary")]
         ],
         resize_keyboard=True
@@ -3789,8 +3872,8 @@ SPIN_PRIZES = [
     # serialize_spin_state/SPIN_PAGE_HTML); полное "name"/"name_en"/"name_de" по-прежнему
     # используется в чатовом результате (spin_result) и не менялось.
     {"name": "😢 Ничего", "name_en": "😢 Nothing", "name_de": "😢 Nichts", "value": 0, "type": "nothing", "weight": 20, "wheel_label": "😢"},
-    {"name": "20💵 баксов", "name_en": "20💵 bucks", "name_de": "20💵 Bucks", "value": 20, "type": "bucks", "weight": 15, "wheel_label": "20💵"},
-    {"name": "40💵 баксов", "name_en": "40💵 bucks", "name_de": "40💵 Bucks", "value": 40, "type": "bucks", "weight": 8, "wheel_label": "40💵"},
+    {"name": "35💵 баксов", "name_en": "35💵 bucks", "name_de": "35💵 Bucks", "value": 35, "type": "bucks", "weight": 15, "wheel_label": "35💵"},
+    {"name": "70💵 баксов", "name_en": "70💵 bucks", "name_de": "70💵 Bucks", "value": 70, "type": "bucks", "weight": 8, "wheel_label": "70💵"},
     {"name": "100 XP", "name_en": "100 XP", "name_de": "100 XP", "value": 100, "type": "xp", "weight": 16, "wheel_label": "100 XP"},
     {"name": "150 XP", "name_en": "150 XP", "name_de": "150 XP", "value": 150, "type": "xp", "weight": 9, "wheel_label": "150 XP"},
     {"name": "250 XP", "name_en": "250 XP", "name_de": "250 XP", "value": 250, "type": "xp", "weight": 4, "wheel_label": "250 XP"},
@@ -3799,7 +3882,7 @@ SPIN_PRIZES = [
     {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 3, "wheel_label": "2⚡"},
     {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 1, "wheel_label": "4⚡"},
     {"name": "🍗 30 сытости", "name_en": "🍗 30 satiety", "name_de": "🍗 30 Sättigung", "value": 30, "type": "food", "weight": 10, "wheel_label": "🍗+30"},
-    {"name": "🎉 150💵 баксов (ДЖЕКПОТ!)", "name_en": "🎉 150💵 bucks (JACKPOT!)", "name_de": "🎉 150💵 Bucks (JACKPOT!)", "value": 150, "type": "bucks", "weight": 0.3, "wheel_label": "🎉150💵"},
+    {"name": "🎉 250💵 баксов (ДЖЕКПОТ!)", "name_en": "🎉 250💵 bucks (JACKPOT!)", "name_de": "🎉 250💵 Bucks (JACKPOT!)", "value": 250, "type": "bucks", "weight": 0.3, "wheel_label": "🎉250💵"},
     {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "name_de": "🎁 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.4, "wheel_label": "🎁PRO"},
     {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.15, "wheel_label": "✨SUPER"},
     # Эксклюзив именно колеса — нигде в магазине такого разового "всё на максимум" нет, по просьбе
@@ -4394,7 +4477,11 @@ async def execute_item_purchase(chat_id, user, category, key, item, note=None):
     if item.get("xp"):
         await grant_gift_xp(chat_id, user, item["xp"])
     await bot.send_message(chat_id, get_text(user, "item_bought", effects=format_item_effects(item, user)))
-    if not is_asleep(user):
+    # Еда/вода без личной записки — рутинная забота без давления на диалог (по фидбэку: кормить
+    # нужно можно было просто так, без того что это обязывает к ответу или намекает, что персонаж
+    # "ждал" еды) -- никакой реакции ИИ вообще. Если записка есть, или это подарок/лекарство,
+    # реакция остаётся как раньше.
+    if not is_asleep(user) and not (category == "food" and not note):
         await generate_shop_reaction(chat_id, user, display_item, category, note=note)
 
 
@@ -4572,8 +4659,8 @@ PRODUCTS = {
     # сам прокрут в этом случае уже показан колесом прямо в Mini App.
     "spin_paid_webapp": {"stars": 15, "usd": 0.2, "rub": 18},
     "intim_scene": {"stars": 45, "usd": 0.6, "rub": 53},
-    "wake_now": {"stars": 50, "usd": 0.7, "rub": 59},
-    "defibrillator": {"stars": 75, "usd": 1.1, "rub": 88},
+    "wake_now": {"stars": 25, "usd": 0.4, "rub": 29},
+    "defibrillator": {"stars": 55, "usd": 0.8, "rub": 65},
 }
 # Подстраховка на случай, если когда-нибудь добавят товар без явного rub — тогда он по
 # умолчанию будет 1:1 со звёздами, а не упадёт с KeyError.
@@ -5361,6 +5448,14 @@ async def work_reply(message: types.Message):
     await send_work_menu(message, user)
 
 
+@dp.message(lambda m: is_button(m.text, "hot_btn"))
+async def hot_reply(message: types.Message):
+    """Кнопка "Горячие сцены" в get_full_kb — тот же вход, что и команда /hot, просто чтобы не
+    нужно было помнить команду (по фидбэку: хотелось отдельную кнопку)."""
+    await safe_delete(message)
+    await intim_cmd(message)
+
+
 @dp.callback_query(lambda c: c.data.startswith("intim_type_"))
 async def choose_intim_type(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
@@ -5527,6 +5622,13 @@ def build_intim_prompt(user, scene_type, location, dominant="any", arc_position=
     tension = place.get("tension")
     if tension:
         prompt += f"{tension}\n"
+    if location != "any":
+        prompt += (
+            f"Если «{scene['ru']}» буквально не вписывается в «{place['ru']}» (например, нет "
+            "сантехники для душа) — не описывай нестыковку в лоб и не ломай сцену объяснениями, "
+            "а правдоподобно адаптируй детали под место (например, естественный водоём, дождь, "
+            "импровизация) так, чтобы сама суть выбранной сцены сохранилась.\n"
+        )
     prompt += (
         f"Собеседник специально выбрал в меню именно «{scene['ru']}» — раскрывай сразу это действие, уже "
         "в первой паре «действие + реплика», без вступления на постороннюю тему и без более мягкой замены "
@@ -9766,7 +9868,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
   }
   .card-top { display: flex; align-items: center; justify-content: space-between; }
   .card-emoji { font-size: 26px; }
-  .card-emoji-energizer { font-size: 30px; }
+  .card-emoji-energizer { font-size: 20px; }
   .note-toggle {
     font-size: 15px;
     background: none;
@@ -10346,7 +10448,8 @@ def serialize_spin_state(user):
         "bucks": user.get("bucks", 0),
         "reminder_enabled": user.get("spin_reminder_enabled", True),
         "prizes": [
-            {"index": i, "wheel_label": p["wheel_label"], "name": prize_name(p, user)}
+            {"index": i, "wheel_label": p["wheel_label"], "name": prize_name(p, user),
+             "rare": p["weight"] <= 1}
             for i, p in enumerate(SPIN_PRIZES)
         ],
         "ui": {
@@ -10550,6 +10653,37 @@ SPIN_PAGE_HTML = '''<!doctype html>
     font-size: 15px;
     font-weight: 600;
   }
+  #result-banner.rare {
+    background: linear-gradient(135deg, #ffd23f, #ff9a3f, #ff5fa3, #ffd23f);
+    background-size: 300% 300%;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,.35);
+    animation: rare-banner-glow 1.2s ease infinite;
+    box-shadow: 0 0 18px rgba(255,154,63,.7);
+  }
+  @keyframes rare-banner-glow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  #confetti-burst {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 50;
+  }
+  .confetti-piece {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 22px;
+    opacity: 0;
+    animation: confetti-fly 1.1s ease-out forwards;
+  }
+  @keyframes confetti-fly {
+    0% { transform: translate(-50%, -50%) scale(.3); opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(1.1) rotate(var(--rot)); opacity: 0; }
+  }
   #footer-hint {
     font-size: 12px;
     color: var(--tg-theme-hint-color, #888);
@@ -10593,6 +10727,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
     <div id="hub">★</div>
   </div>
   <div id="result-banner"></div>
+  <div id="confetti-burst"></div>
   <div id="actions"></div>
   <div id="footer-hint"></div>
   <div id="prize-list">
@@ -10802,17 +10937,46 @@ SPIN_PAGE_HTML = '''<!doctype html>
   // Общий хвост и для бесплатного, и для платного прокрута: анимация колеса до нужного сектора,
   // затем баннер с результатом. prizeIndex/resultText приходят либо сразу от /api/spin/free,
   // либо, для платного, от опроса /api/spin/paid/result после подтверждения оплаты.
+  var CONFETTI_EMOJIS = ["✨", "🎉", "🎊", "💫", "🔥"];
+
+  function fireConfettiBurst() {
+    var el = document.getElementById("confetti-burst");
+    for (var i = 0; i < 24; i++) {
+      var piece = document.createElement("div");
+      piece.className = "confetti-piece";
+      piece.textContent = CONFETTI_EMOJIS[Math.floor(Math.random() * CONFETTI_EMOJIS.length)];
+      var angle = Math.random() * Math.PI * 2;
+      var dist = 90 + Math.random() * 160;
+      piece.style.setProperty("--dx", (Math.cos(angle) * dist) + "px");
+      piece.style.setProperty("--dy", (Math.sin(angle) * dist) + "px");
+      piece.style.setProperty("--rot", (Math.random() * 360 - 180) + "deg");
+      piece.style.animationDelay = (Math.random() * 0.15) + "s";
+      el.appendChild(piece);
+      (function (p) { setTimeout(function () { if (p.parentNode) p.remove(); }, 1500); })(piece);
+    }
+  }
+
+  // Редкие призы (низкий weight в SPIN_PRIZES -- джекпот, подписки, забота) получают яркий эффект
+  // при выигрыше, чтобы реально ощущались как редкая удача, а не терялись среди обычных плюшек.
   function showSpinOutcome(prizeIndex, resultText) {
     spinToIndex(prizeIndex, state.prizes.length);
     setTimeout(function () {
       spinning = false;
       paidStatusText = null;
+      var prize = state.prizes[prizeIndex];
       var banner = document.getElementById("result-banner");
       banner.textContent = resultText.replace(/\*/g, "");
+      banner.classList.toggle("rare", !!(prize && prize.rare));
       banner.style.display = "block";
       renderStats(state);
       renderActions(state);
-      safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
+      if (prize && prize.rare) {
+        fireConfettiBurst();
+        safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
+        safe(function () { tg.HapticFeedback.impactOccurred("heavy"); });
+      } else {
+        safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
+      }
     }, 4100);
   }
 
@@ -10952,7 +11116,14 @@ def serialize_work_state(user):
         "multiplier": _multiplier,
         "hit_bucks": WORK_HIT_BUCKS,
         "failure_penalty": WORK_FAILURE_PENALTY_BUCKS,
+        "courier_crash_penalty": COURIER_CRASH_PENALTY_BUCKS,
         "farm": farm_state(user),
+        "farm_slots": get_farm_slots(user),
+        "farm_slots_max": FARM_SLOTS_MAX,
+        "farm_next_slot_price": (
+            FARM_SLOT_PRICES[user.get("farm_slots_bought", 0)]
+            if get_farm_slots(user) < FARM_SLOTS_MAX else None
+        ),
         "farm_crops": [
             {
                 "key": key,
@@ -10975,6 +11146,7 @@ def serialize_work_state(user):
             "catch_hint": get_text(user, "work_catch_hint"),
             "courier_hint": get_text(user, "work_rhythm_hint"),
             "courier_arrived": get_text(user, "work_courier_arrived"),
+            "courier_gameover": get_text(user, "work_courier_gameover"),
             "courier_arrived_tip": get_text(user, "work_courier_arrived_tip"),
             "multiplier_badge": get_text(user, "work_multiplier_badge", multiplier=_multiplier_display),
             "farm_water_btn": get_text(user, "farm_water_btn"),
@@ -10985,6 +11157,10 @@ def serialize_work_state(user):
             "farm_payout_preview": get_text(user, "farm_payout_preview"),
             "farm_empty_hint": get_text(user, "farm_empty_hint"),
             "farm_choose_crop": get_text(user, "farm_choose_crop"),
+            "farm_buy_slot_btn": (
+                get_text(user, "farm_buy_slot_btn", price=FARM_SLOT_PRICES[user.get("farm_slots_bought", 0)])
+                if get_farm_slots(user) < FARM_SLOTS_MAX else ""
+            ),
             "farm_crop_stats": get_text(user, "farm_crop_stats"),
             "farm_can_hint": get_text(user, "farm_can_hint"),
         },
@@ -11081,6 +11257,11 @@ WORK_PAGE_HTML = r'''<!doctype html>
     gap: 16px;
     padding: 16px 8px;
   }
+  #hacker-terminal.access-granted { animation: hacker-access-granted .4s ease; }
+  @keyframes hacker-access-granted {
+    0%, 100% { border-color: #1dd1a1; box-shadow: none; }
+    40% { border-color: #3dffb0; box-shadow: 0 0 22px rgba(61,255,176,.8); }
+  }
   #hacker-code { display: flex; gap: 8px; }
   .hacker-code-digit {
     width: 30px;
@@ -11157,7 +11338,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     user-select: none;
     pointer-events: none;
   }
-  .catch-item.bomb { font-size: 24px; }
+  .catch-item.bomb { font-size: 30px; }
   .catch-item.caught { transform: scale(1.4); opacity: 0; transition: all .15s ease; }
   .catch-item.exploded { animation: catch-explode .3s ease-out forwards; }
   @keyframes catch-explode {
@@ -11169,7 +11350,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     from { top: -34px; }
     to { top: 100%; }
   }
-  .catch-item.big-hazard { font-size: 52px; }
+  .catch-item.big-hazard { font-size: 42px; }
   .catch-warning {
     position: absolute;
     top: 0;
@@ -11227,21 +11408,45 @@ WORK_PAGE_HTML = r'''<!doctype html>
     position: absolute;
     top: 6px;
     right: 8px;
-    font-size: 20px;
+    font-size: 26px;
     z-index: 4;
     display: none;
+    background: rgba(0,0,0,.55);
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    line-height: 38px;
+    text-align: center;
   }
   #courier-light.blink { animation: courier-warning-blink .4s ease infinite; }
   .courier-lane {
     position: absolute;
     left: 0;
     right: 0;
-    height: 60px;
+    height: 65px;
     border-bottom: 2px dashed rgba(255,255,255,.25);
   }
   .courier-lane[data-lane="0"] { top: 0; }
-  .courier-lane[data-lane="1"] { top: 60px; }
-  .courier-lane[data-lane="2"] { top: 120px; border-bottom: none; }
+  .courier-lane[data-lane="1"] { top: 65px; border-bottom: 2px solid rgba(255,255,255,.4); }
+  .courier-shoulder {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 130px;
+    height: 50px;
+    background: repeating-linear-gradient(45deg, #5c7a3f, #5c7a3f 10px, #4f6b36 10px, #4f6b36 20px);
+  }
+  .courier-shoulder::before {
+    content: "🌳 🌳 🌳 🌳 🌳 🌳 🌳 🌳";
+    position: absolute;
+    top: 2px;
+    left: 0;
+    right: 0;
+    font-size: 18px;
+    letter-spacing: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
   #courier-rider {
     position: absolute;
     left: 8%;
@@ -11251,7 +11456,6 @@ WORK_PAGE_HTML = r'''<!doctype html>
     transition: top .18s ease, transform .15s ease;
     z-index: 3;
   }
-  #courier-rider.facing-left { transform: translate(-50%, -50%) scaleX(1); }
   #courier-rider.crash { animation: courier-crash .3s ease; }
   @keyframes courier-crash {
     0%, 100% { filter: none; }
@@ -11262,6 +11466,27 @@ WORK_PAGE_HTML = r'''<!doctype html>
   @keyframes courier-arrive {
     0%, 100% { filter: none; }
     50% { filter: drop-shadow(0 0 10px #1dd1a1) brightness(1.3); }
+  }
+  /* Лёгкое "притормаживание" при подъезде к получателю -- см. courierCollisionTick. */
+  #courier-rider.braking { transform: translate(-50%, -50%) scaleX(-1) scaleX(.88); }
+  #courier-gameover {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,.55);
+    color: #fff;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    z-index: 5;
+    border-radius: 14px;
+  }
+  #courier-gameover.shown { display: flex; animation: courier-gameover-pop .3s ease; }
+  @keyframes courier-gameover-pop {
+    0% { transform: scale(.7); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
   }
   .courier-obstacle, .courier-recipient, .courier-car {
     position: absolute;
@@ -11278,7 +11503,13 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
   .courier-obstacle.hit-flash, .courier-car.hit-flash { filter: drop-shadow(0 0 8px #e8383d); }
   .courier-recipient.delivered { filter: drop-shadow(0 0 8px #1dd1a1); }
+  .courier-recipient.tipped { filter: drop-shadow(0 0 8px #ffd23f); }
   .courier-car { font-size: 32px; }
+  /* Светофор теперь реально замораживает движение (а не только слой кнопки сверху, см.
+     pressCourierLight/resetCourierLight) -- по фидбэку "при светофоре всё должно стоять". */
+  #courier-road.light-frozen .courier-obstacle,
+  #courier-road.light-frozen .courier-recipient,
+  #courier-road.light-frozen .courier-car { animation-play-state: paused; }
   .courier-warning {
     position: absolute;
     left: 96%;
@@ -11303,7 +11534,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
     font-size: 24px;
     font-weight: 700;
   }
-  #courier-light-btn { display: none; background: #e8383d; }
+  /* visibility, не display -- кнопка держит свой слот в #courier-controls всегда, иначе её
+     появление сдвигает стрелки вверх/вниз (см. pressCourierLight/setCourierLightPhase). */
+  #courier-light-btn { visibility: hidden; pointer-events: none; background: #e8383d; }
+  #courier-light-btn.visible { visibility: visible; pointer-events: auto; }
   #courier-light-btn.go { background: #1dd1a1; }
   #courier-up:disabled, #courier-down:disabled { opacity: .35; }
   #catch-feedback, #courier-feedback, #clicker-feedback { margin-top: 12px; font-size: 14px; font-weight: 700; min-height: 20px; }
@@ -11318,8 +11552,19 @@ WORK_PAGE_HTML = r'''<!doctype html>
     user-select: none;
     margin-bottom: 4px;
     touch-action: none;
+    transition: transform .1s ease;
   }
   #farm-can.disabled { opacity: .3; pointer-events: none; }
+  /* Реально "берём лейку в руку" во время полива -- следует за пальцем/курсором (left/top
+     ставятся в JS, см. bindFarmCan) и наклоняется, как будто льёт воду, а не просто сидит на
+     месте пока где-то там тихо засчитывается полив. */
+  #farm-can.dragging {
+    position: fixed;
+    z-index: 30;
+    cursor: grabbing;
+    transform: translate(-50%, -50%) rotate(-35deg) scale(1.2);
+    pointer-events: none;
+  }
   #farm-can-hint { font-size: 11px; opacity: .65; text-align: center; margin-bottom: 8px; }
   #farm-plots { display: flex; gap: 8px; margin-bottom: 10px; }
   .farm-plot {
@@ -11372,7 +11617,40 @@ WORK_PAGE_HTML = r'''<!doctype html>
     opacity: .55;
     cursor: pointer;
   }
-  .farm-status { font-size: 12px; font-weight: 700; min-height: 16px; text-align: center; padding: 0 2px; }
+  /* Карточка докупки грядки -- того же размера, что обычная грядка, но с пунктирной рамкой
+     вместо травы/земли, чтобы сразу читалось как "ещё не твоё, но можно купить". */
+  .farm-plot-buy {
+    background: none;
+    border: 2px dashed var(--tg-theme-hint-color, #999);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .farm-buy-slot-btn {
+    padding: 10px 6px;
+    border-radius: 10px;
+    border: none;
+    background: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, #ffffff);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: pre-line;
+    text-align: center;
+  }
+  /* Фиксированные цвета (не из темы) -- раньше текст наследовал --tg-theme-text-color и в
+     тёмной теме становился светлым на светлом верхе грядки, читался очень плохо. Теперь всегда
+     белый на коричневом (цвет самой грядки), независимо от темы и позиции. */
+  .farm-status {
+    font-size: 12px;
+    font-weight: 700;
+    min-height: 16px;
+    text-align: center;
+    padding: 3px 9px;
+    margin: 2px 0;
+    color: #fff;
+    background: rgba(90, 58, 34, .88);
+    border-radius: 8px;
+  }
   .farm-preview { font-size: 10.5px; opacity: .75; text-align: center; padding: 0 2px; }
   .farm-hint { font-size: 14px; opacity: .8; padding: 30px 10px 16px; line-height: 1.5; }
   #farm-crop-picker { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; width: 100%; }
@@ -11451,9 +11729,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
     <div id="courier-road">
       <div class="courier-lane" data-lane="0"></div>
       <div class="courier-lane" data-lane="1"></div>
-      <div class="courier-lane" data-lane="2"></div>
+      <div class="courier-shoulder"></div>
       <div id="courier-rider">🛵</div>
       <div id="courier-light">🟢</div>
+      <div id="courier-gameover"></div>
     </div>
     <div id="courier-controls">
       <button id="courier-light-btn"></button>
@@ -11503,26 +11782,30 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var dragBound = false;
 
   // ---- Hacker (enter the code in order) ----
-  var HACKER_CODE_LENGTH = 4;
+  var HACKER_CODE_MIN_LENGTH = 4, HACKER_CODE_RANGE = 2; // длина кода теперь 4-5 вразнобой (было
+  // всегда 4) -- по фидбэку "сделать сложнее и специфичнее", не угадаешь наперёд, сколько цифр
   var HACKER_DIGITS = 10; // keypad shows digits 0-9, shuffled every new code
   var hackerCode = [];
   var hackerCodeIndex = 0;
 
   // ---- Courier ----
-  var COURIER_LANE_Y = [30, 90, 150]; // px centers, matches 3x60px lanes in a 180px-tall #courier-road
+  // 2 полосы вместо 3 (3-я стала обочиной, см. .courier-shoulder) -- по фидбэку сузили дорогу.
+  // Отзеркаливание обратного пути убрано совсем (courierFacingLeft раньше здесь был) -- тоже по
+  // фидбэку: курьер теперь всегда в одной ориентации, "дуга" просто начинает новый отрезок.
+  var COURIER_LANE_Y = [33, 98]; // px centers, matches 2x65px lanes in a 180px-tall #courier-road
+  var COURIER_RECIPIENT_EDGE_Y = [12, 119]; // получатели стоят у края полосы/дороги, а не посреди
+  // неё (по фидбэку "люди должны стоять на краях дороги") -- lane 0 к верхнему краю, lane 1 к
+  // нижнему (к обочине), а не в геометрическом центре своей полосы, как обычные препятствия.
   var courierLane = 1;
   var COURIER_OBSTACLE_EMOJIS = ["🚧", "🪨", "🛢", "🌳"]; // cosmetic variety only, same hitbox/behavior
   var COURIER_RECIPIENT_EMOJI = "🙋";
-  var COURIER_RECIPIENT_CHANCE = 0.4; // rolled every spawn tick while the leg still needs deliveries
+  var COURIER_RECIPIENT_CHANCE = 0.22; // было 0.4 -- по фидбэку реже, но каждый платит больше
   var courierRecipientsTotal = 0;
   var courierRecipientsDelivered = 0;
   var courierArrivalTimeoutId = null; // pending "pick up next package" pause between legs
-  var courierFacingLeft = false; // cosmetic only, toggled each completed leg -- obstacles/recipients
-  // always spawn and get collision-checked in the exact same coordinate frame on both legs, which is
-  // what actually fixes the old "hitbox is off after mirroring" bug (that used to scaleX(-1) the
-  // whole #courier-road, entangling the rider's own flip with getBoundingClientRect on every child)
-  var COURIER_TIP_CHANCE = 0.25; // purely cosmetic flourish on arrival -- payout itself is still
-  // the same per-delivery registerHit("courier", ...) call as always, never a separate lump sum
+  var COURIER_TIP_CHANCE = 0.25; // шанс чаевых НА КАЖДОЙ доставке (не раз в отрезок, как раньше) --
+  // см. courierCollisionTick: при чаевых доставка засчитывается registerHit("courier",...) ДВАЖДЫ,
+  // то есть чаевые -- это реальные дополнительные деньги, а не только косметическая надпись.
   var COURIER_CAR_EMOJI = "🚗";
   var COURIER_CAR_CHANCE = 0.5; // rolled on its own rarer interval, see courierCarInterval
   var COURIER_CAR_WARN_MS = 1100;
@@ -11689,10 +11972,14 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (road) {
       var obstacles = road.querySelectorAll(".courier-obstacle, .courier-recipient, .courier-car, .courier-warning");
       obstacles.forEach(function (el) { el.remove(); });
+      road.classList.remove("light-frozen");
     }
     var rider = document.getElementById("courier-rider");
-    if (rider) rider.classList.remove("stopped", "crash", "arriving");
+    if (rider) rider.classList.remove("stopped", "crash", "arriving", "braking");
+    var gameoverEl = document.getElementById("courier-gameover");
+    if (gameoverEl) gameoverEl.classList.remove("shown");
     courierStopped = false;
+    courierLightFrozenIntervals = false;
     setCourierLightPhase("idle");
     farmCanDragging = false;
   }
@@ -11754,7 +12041,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
 
   function newHackerCode() {
-    hackerCode = shuffledDigits().slice(0, HACKER_CODE_LENGTH);
+    var length = HACKER_CODE_MIN_LENGTH + Math.floor(Math.random() * HACKER_CODE_RANGE);
+    hackerCode = shuffledDigits().slice(0, length);
     hackerCodeIndex = 0;
     renderHackerCode();
   }
@@ -11772,6 +12060,9 @@ WORK_PAGE_HTML = r'''<!doctype html>
     });
   }
 
+  // По фидбэку: платить не за каждое нажатие, а разовой пачкой за весь угаданный код (см.
+  // "hacker_combo" в WORK_HIT_BUCKS) -- отдельное, осознанное исключение из общего правила
+  // "одна и та же цена у всех мгновенных игр", см. комментарий там же.
   function pressHackerKey(digit, keyEl) {
     if (debuffState.clicker) return;
     keyEl.classList.add("pressed");
@@ -11779,11 +12070,16 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (digit === hackerCode[hackerCodeIndex]) {
       keyEl.classList.add("correct");
       setTimeout(function () { keyEl.classList.remove("correct"); }, 300);
-      registerHit("clicker", keyEl.offsetLeft + keyEl.offsetWidth / 2, keyEl.offsetTop,
-        document.getElementById("hacker-terminal"));
       hackerCodeIndex++;
       renderHackerCode();
       if (hackerCodeIndex >= hackerCode.length) {
+        registerHit("hacker_combo", keyEl.offsetLeft + keyEl.offsetWidth / 2, keyEl.offsetTop,
+          document.getElementById("hacker-terminal"));
+        var terminal = document.getElementById("hacker-terminal");
+        if (terminal) {
+          terminal.classList.add("access-granted");
+          setTimeout(function () { terminal.classList.remove("access-granted"); }, 400);
+        }
         setTimeout(function () { newHackerCode(); buildHackerKeyboard(); }, 250);
       }
     } else {
@@ -11841,7 +12137,14 @@ WORK_PAGE_HTML = r'''<!doctype html>
     var baseDuration = CATCH_FALL_MIN_S + Math.random() * CATCH_FALL_RANGE_S;
     item.style.animationDuration = (Date.now() < slowFallUntil ? baseDuration * SLOWFALL_MULTIPLIER : baseDuration) + "s";
     item.addEventListener("animationend", function () {
+      // Пропустил обычный (не баф, не угроза) предмет корзинкой -- минус деньги, см. фидбэк
+      // "если пропустить еду корзинкой то минус деньги". Бафы/бомбы/большие угрозы сюда не
+      // попадают -- для них штраф/награда уже решаются отдельно в catchCollisionTick.
+      var isPlain = !item.dataset.bomb && !item.dataset.bighazard && !item.dataset.slowfall && !item.dataset.magnet;
+      var missed = !item.dataset.caught && isPlain;
+      var x0 = item.offsetLeft, y0 = item.offsetTop;
       if (item.parentNode) item.remove();
+      if (missed) registerPenalty("catch", x0, y0, field);
     });
     field.appendChild(item);
   }
@@ -11955,13 +12258,13 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   // ---------- Courier ----------
   function setCourierLane(lane) {
-    courierLane = Math.max(0, Math.min(2, lane));
+    courierLane = Math.max(0, Math.min(1, lane));
     var rider = document.getElementById("courier-rider");
     if (rider) rider.style.top = COURIER_LANE_Y[courierLane] + "px";
     var upBtn = document.getElementById("courier-up");
     var downBtn = document.getElementById("courier-down");
     if (upBtn) upBtn.disabled = courierLane === 0;
-    if (downBtn) downBtn.disabled = courierLane === 2;
+    if (downBtn) downBtn.disabled = courierLane === 1;
   }
 
   function setCourierProgress() {
@@ -11976,14 +12279,13 @@ WORK_PAGE_HTML = r'''<!doctype html>
     setCourierProgress();
   }
 
-  // Доставили нужное число людей -- короткая анимация "забрал новую посылку" и едем в другую
-  // сторону (courierFacingLeft чисто косметический, см. комментарий у объявления переменной).
+  // Доставили нужное число людей -- короткая анимация "забрал новую посылку" и едем дальше, уже
+  // без отзеркаливания (раньше тут был courierFacingLeft) -- просто новый отрезок пути.
   function completeCourierLeg() {
     var rider = document.getElementById("courier-rider");
     var feedback = document.getElementById("courier-feedback");
-    var tip = Math.random() < COURIER_TIP_CHANCE;
     if (feedback) {
-      var text = tip ? state.ui.courier_arrived_tip : state.ui.courier_arrived;
+      var text = state.ui.courier_arrived;
       feedback.textContent = text;
       feedback.className = "arrived";
       setTimeout(function () {
@@ -11995,8 +12297,6 @@ WORK_PAGE_HTML = r'''<!doctype html>
     courierArrivalTimeoutId = setTimeout(function () {
       courierArrivalTimeoutId = null;
       if (rider) rider.classList.remove("arriving");
-      courierFacingLeft = !courierFacingLeft;
-      if (rider) rider.classList.toggle("facing-left", courierFacingLeft);
       startCourierLeg();
       courierSpawnInterval = setInterval(spawnCourierTraffic, 900);
     }, 900);
@@ -12005,12 +12305,25 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function spawnCourierTraffic() {
     var road = document.getElementById("courier-road");
     if (!road) return;
-    var lane = Math.floor(Math.random() * 3);
     var spawnRecipient = courierRecipientsDelivered < courierRecipientsTotal
       && Math.random() < COURIER_RECIPIENT_CHANCE;
+    // Честность: не даём препятствиям занять ОБЕ полосы одновременно -- иначе можно оказаться
+    // без единого безопасного варианта (баг "дохуя преград, нереально пройти"). Получателей это
+    // не касается -- они не опасны, можно ставить в любую полосу даже если там уже препятствие
+    // (просто одно из двух не достанется, без штрафа).
+    var lane;
+    if (spawnRecipient) {
+      lane = Math.floor(Math.random() * 2);
+    } else {
+      var occupied = {};
+      road.querySelectorAll(".courier-obstacle").forEach(function (el) { occupied[el.dataset.lane] = true; });
+      var freeLanes = [0, 1].filter(function (l) { return !occupied[l]; });
+      if (freeLanes.length === 0) return; // обе полосы уже заняты -- пропускаем тик
+      lane = freeLanes[Math.floor(Math.random() * freeLanes.length)];
+    }
     var el = document.createElement("div");
     el.dataset.lane = String(lane);
-    el.style.top = COURIER_LANE_Y[lane] + "px";
+    el.style.top = (spawnRecipient ? COURIER_RECIPIENT_EDGE_Y[lane] : COURIER_LANE_Y[lane]) + "px";
     el.style.animationDuration = (2.3 + Math.random() * 0.6) + "s";
     el.addEventListener("animationend", function () { if (el.parentNode) el.remove(); });
     if (spawnRecipient) {
@@ -12029,7 +12342,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (Math.random() >= COURIER_CAR_CHANCE) return; // доп. редкость сверху и так нечастого интервала
     var road = document.getElementById("courier-road");
     if (!road) return;
-    var lane = Math.floor(Math.random() * 3);
+    var lane = Math.floor(Math.random() * 2);
     var warn = document.createElement("div");
     warn.className = "courier-warning";
     warn.textContent = "❗";
@@ -12051,43 +12364,79 @@ WORK_PAGE_HTML = r'''<!doctype html>
     courierWarningTimeoutIds.push(id);
   }
 
+  var COURIER_BRAKE_RANGE_PX = 55; // на таком расстоянии до совпадающего по полосе получателя
+                                     // рендер уже показывает "притормаживание", см. .braking
+
   function courierCollisionTick() {
     var road = document.getElementById("courier-road");
     var rider = document.getElementById("courier-rider");
-    if (road && rider && !debuffState.courier) {
+    if (road && rider) {
       var riderRect = rider.getBoundingClientRect();
       var riderCenterX = riderRect.left + riderRect.width / 2;
       var els = road.querySelectorAll(
         ".courier-obstacle:not([data-resolved]), .courier-recipient:not([data-resolved]), .courier-car:not([data-resolved])");
+      var approaching = false;
       for (var i = 0; i < els.length; i++) {
         var el = els[i];
         var r = el.getBoundingClientRect();
         var elCenterX = r.left + r.width / 2;
-        if (elCenterX > riderCenterX) continue;
-        el.dataset.resolved = "1";
         var inLane = parseInt(el.dataset.lane, 10) === courierLane;
+        if (elCenterX > riderCenterX) {
+          if (inLane && el.classList.contains("courier-recipient") &&
+              elCenterX - riderCenterX <= COURIER_BRAKE_RANGE_PX) {
+            approaching = true;
+          }
+          continue;
+        }
+        el.dataset.resolved = "1";
         if (el.classList.contains("courier-recipient")) {
           if (inLane) {
+            var tip = Math.random() < COURIER_TIP_CHANCE;
             el.classList.add("delivered");
+            if (tip) el.classList.add("tipped");
             courierRecipientsDelivered++;
             registerHit("courier", rider.offsetLeft, rider.offsetTop, road);
+            if (tip) registerHit("courier", rider.offsetLeft, rider.offsetTop, road); // реальные чаевые, не косметика
             setCourierProgress();
             if (courierRecipientsDelivered >= courierRecipientsTotal) completeCourierLeg();
           }
           // не в своей полосе -- доставка просто пропущена, упущенная награда без штрафа
         } else if (inLane) {
           el.classList.add("hit-flash");
-          rider.classList.add("crash");
-          setTimeout(function () { rider.classList.remove("crash"); }, 300);
-          triggerDebuff("courier", "courier-feedback", "courier-controls", rider.offsetLeft, rider.offsetTop, road);
+          courierGameOver();
         }
       }
+      rider.classList.toggle("braking", approaching);
     }
     courierRafId = requestAnimationFrame(courierCollisionTick);
   }
 
+  // Авария -- экран "GAME OVER" и денежный штраф (COURIER_CRASH_PENALTY_BUCKS, больше типичной
+  // прибыли с доставки), БЕЗ блокировки управления на N секунд, как раньше (убрали по фидбэку:
+  // "убери у курьера блокировку"). Игра продолжается сразу после того, как экран исчезает.
+  function courierGameOver() {
+    var rider = document.getElementById("courier-rider");
+    var road = document.getElementById("courier-road");
+    var overlay = document.getElementById("courier-gameover");
+    if (rider) {
+      rider.classList.add("crash");
+      setTimeout(function () { rider.classList.remove("crash"); }, 300);
+    }
+    if (overlay && state) {
+      overlay.textContent = state.ui.courier_gameover;
+      overlay.classList.add("shown");
+      setTimeout(function () { overlay.classList.remove("shown"); }, 900);
+    }
+    if (rider && road) registerPenalty("courier", rider.offsetLeft, rider.offsetTop, road);
+  }
+
+  var courierLightFrozenIntervals = false; // true только пока спавн реально приостановлен -- см.
+                                             // pressCourierLight/resetCourierLight
+
   // ---- Светофор: жми кнопку, когда загорится красный (останавливаемся), и снова -- когда
-  // загорится зелёный (едем дальше). Слой поверх обычной игры, обгон препятствий не замирает.
+  // загорится зелёный (едем дальше). По фидбэку теперь реально всё замирает на красном (см.
+  // .light-frozen в CSS + паузу courierSpawnInterval/courierCarInterval ниже), а не только кнопка
+  // поверх игры, как раньше.
   function setCourierLightPhase(phase) {
     courierLight = phase;
     var light = document.getElementById("courier-light");
@@ -12096,13 +12445,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (phase === "idle") {
       light.style.display = "none";
       light.classList.remove("blink");
-      btn.style.display = "none";
-      btn.classList.remove("go");
+      btn.classList.remove("visible", "go");
     } else if (phase === "warning") {
       light.style.display = "block";
       light.textContent = "🟡";
       light.classList.add("blink");
-      btn.style.display = "block";
+      btn.classList.add("visible");
       btn.classList.remove("go");
       btn.textContent = "🛑";
     } else if (phase === "stop") {
@@ -12129,11 +12477,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
 
   function courierLightRanRed() {
-    var rider = document.getElementById("courier-rider");
-    var road = document.getElementById("courier-road");
-    if (rider && road) {
-      triggerDebuff("courier", "courier-feedback", "courier-controls", rider.offsetLeft, rider.offsetTop, road);
-    }
+    courierGameOver(); // не успел остановиться на красный -- та же авария, что и столкновение
     resetCourierLight();
   }
 
@@ -12142,6 +12486,13 @@ WORK_PAGE_HTML = r'''<!doctype html>
     var rider = document.getElementById("courier-rider");
     if (rider) rider.classList.remove("stopped");
     courierStopped = false;
+    var road = document.getElementById("courier-road");
+    if (road) road.classList.remove("light-frozen");
+    if (courierLightFrozenIntervals) {
+      courierLightFrozenIntervals = false;
+      if (!courierSpawnInterval) courierSpawnInterval = setInterval(spawnCourierTraffic, 900);
+      if (!courierCarInterval) courierCarInterval = setInterval(spawnCourierCarMaybe, 4000);
+    }
     setCourierLightPhase("idle");
     scheduleCourierLight();
   }
@@ -12153,6 +12504,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
       if (courierLightTimeoutId) { clearTimeout(courierLightTimeoutId); courierLightTimeoutId = null; }
       if (rider) rider.classList.add("stopped");
       courierStopped = true;
+      if (road) road.classList.add("light-frozen");
+      if (courierSpawnInterval) { clearInterval(courierSpawnInterval); courierSpawnInterval = null; }
+      if (courierCarInterval) { clearInterval(courierCarInterval); courierCarInterval = null; }
+      courierLightFrozenIntervals = true;
       setCourierLightPhase("holding");
       var hold = COURIER_LIGHT_HOLD_MIN_MS + Math.random() * COURIER_LIGHT_HOLD_RANGE_MS;
       courierLightTimeoutId = setTimeout(function () {
@@ -12160,11 +12515,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
         courierLightTimeoutId = setTimeout(resetCourierLight, COURIER_LIGHT_GO_MS);
       }, hold);
     } else if (courierLight === "holding") {
-      // стартанул раньше, чем реально загорелся зелёный -- штраф
+      // стартанул раньше, чем реально загорелся зелёный -- авария (resetCourierLight ниже сам
+      // снимет заморозку движения, см. courierLightFrozenIntervals)
       if (courierLightTimeoutId) { clearTimeout(courierLightTimeoutId); courierLightTimeoutId = null; }
-      if (rider && road) {
-        triggerDebuff("courier", "courier-feedback", "courier-controls", rider.offsetLeft, rider.offsetTop, road);
-      }
+      courierGameOver();
       resetCourierLight();
     } else if (courierLight === "go") {
       if (courierLightTimeoutId) { clearTimeout(courierLightTimeoutId); courierLightTimeoutId = null; }
@@ -12176,10 +12530,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
     setCourierLane(1);
     startCourierLeg();
     var rider = document.getElementById("courier-rider");
-    if (rider) {
-      rider.classList.remove("stopped", "crash", "arriving");
-      rider.classList.toggle("facing-left", courierFacingLeft);
-    }
+    if (rider) rider.classList.remove("stopped", "crash", "arriving", "braking");
+    var road = document.getElementById("courier-road");
+    if (road) road.classList.remove("light-frozen");
+    courierLightFrozenIntervals = false;
     setCourierLightPhase("idle");
     scheduleCourierLight();
     courierSpawnInterval = setInterval(spawnCourierTraffic, 900);
@@ -12235,10 +12589,17 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function bindFarmCan() {
     document.addEventListener("pointermove", function (ev) {
       if (!farmCanDragging) return;
+      var can = document.getElementById("farm-can");
+      if (can) { can.style.left = ev.clientX + "px"; can.style.top = ev.clientY + "px"; }
       checkFarmCanHit(ev.clientX, ev.clientY);
     });
-    document.addEventListener("pointerup", function () { farmCanDragging = false; });
-    document.addEventListener("pointercancel", function () { farmCanDragging = false; });
+    function endFarmDrag() {
+      farmCanDragging = false;
+      var can = document.getElementById("farm-can");
+      if (can) { can.classList.remove("dragging"); can.style.left = ""; can.style.top = ""; }
+    }
+    document.addEventListener("pointerup", endFarmDrag);
+    document.addEventListener("pointercancel", endFarmDrag);
   }
 
   function showFarmSplash(plot) {
@@ -12272,11 +12633,14 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
     var can = document.createElement("div");
     can.id = "farm-can";
-    can.textContent = "💧";
+    can.textContent = "🪣";
     can.onpointerdown = function (ev) {
       if (can.classList.contains("disabled")) return;
       farmCanDragging = true;
       farmWateredThisDrag = {};
+      can.classList.add("dragging");
+      can.style.left = ev.clientX + "px";
+      can.style.top = ev.clientY + "px";
       ev.preventDefault();
       checkFarmCanHit(ev.clientX, ev.clientY);
     };
@@ -12352,6 +12716,19 @@ WORK_PAGE_HTML = r'''<!doctype html>
         countdownTargets.push({ statusEl: status, secondsLeftAtLoad: snap.seconds_left, tickStart: Date.now() });
       }
     });
+
+    // Докупка грядки сверх базовых -- по фидбэку: изначально 2, можно докупить до 5, каждая
+    // следующая дороже (см. FARM_SLOT_PRICES/farm_buy_slot).
+    if (state.farm_slots < state.farm_slots_max) {
+      var buyPlot = document.createElement("div");
+      buyPlot.className = "farm-plot farm-plot-buy";
+      var buyBtn = document.createElement("button");
+      buyBtn.className = "farm-buy-slot-btn";
+      buyBtn.textContent = state.ui.farm_buy_slot_btn;
+      buyBtn.onclick = function () { farmAction("buy_slot", null); };
+      buyPlot.appendChild(buyBtn);
+      plotsRow.appendChild(buyPlot);
+    }
 
     if (farmPickingSlot >= 0 && farmPickingSlot < state.farm.length && !state.farm[farmPickingSlot]) {
       var picker = document.createElement("div");
@@ -12659,6 +13036,15 @@ async def api_work_farm_harvest_handler(request):
     return web.json_response({"ok": True, "state": serialize_work_state(user)})
 
 
+async def api_work_farm_buy_slot_handler(request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    farm_buy_slot(user)
+    return web.json_response({"ok": True, "state": serialize_work_state(user)})
+
+
 async def run_webapp_server():
     app_web = web.Application()
     app_web.router.add_get("/", root_health_handler)
@@ -12681,6 +13067,7 @@ async def run_webapp_server():
     app_web.router.add_post("/api/work/farm/plant", api_work_farm_plant_handler)
     app_web.router.add_post("/api/work/farm/water", api_work_farm_water_handler)
     app_web.router.add_post("/api/work/farm/harvest", api_work_farm_harvest_handler)
+    app_web.router.add_post("/api/work/farm/buy_slot", api_work_farm_buy_slot_handler)
     runner = web.AppRunner(app_web)
     await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", WEBAPP_PORT)
@@ -12804,7 +13191,11 @@ async def check_notifications():
                                                    reply_markup=get_wake_kb(user))
                         except Exception:
                             pass
-                    continue
+                    # Раньше здесь был continue -- из-за него у персонажей, которые регулярно
+                    # засыпают, напоминание про бесплатный прокрут колеса (ниже) почти никогда не
+                    # доходило: пока персонаж спит, этот continue перехватывал тик раньше. Сон не
+                    # должен блокировать напоминание о спине — оно не завязано на то, спит ли
+                    # персонаж (прокрутить колесо можно и спящему).
 
                 # 3) Доступен бесплатный прокрут колеса — не чаще раза в сутки, только пока он
                 # реально не использован, и только если напоминание не отключено тумблером в
