@@ -58,7 +58,6 @@ TEXTS = {
         "age_ok": "✅ Возраст подтверждён.",
         "age_no": "🚫 Доступ запрещён. Бот только для 18+.",
         "agreement_intro": "📜 Прежде чем продолжить, ознакомься с пользовательским соглашением и прими его:",
-        "agreement_decide": "📜 Теперь прими решение:",
         "agreement_too_fast": "⏳ Не так быстро — сначала открой и хотя бы пробегись по соглашению, потом возвращайся принимать решение.",
         "agreement_ok": "✅ Соглашение принято!",
         "agreement_no": "❌ Без принятия соглашения бот не работает.",
@@ -232,6 +231,7 @@ TEXTS = {
         "invoice_upgrade_desc": "Повысьте PRO до SUPER PRO на оставшийся срок. 350⭐.",
         "invoice_upgrade_label": "Апгрейд",
         "shop_btn": "🛍 Магазин",
+        "open_btn": "Открыть",
         "shop_title": "🛍 **Магазин**\n\nТвои баксы: {bucks}💵\n\n🍽 Еда восстанавливает сытость, 🎁 подарки поднимают настроение и дают немного опыта. Выбирай:",
         "item_bought": "✅ Куплено! {effects}.",
         "effect_satiety": "Сытость +{n}",
@@ -255,6 +255,7 @@ TEXTS = {
         "shop_note_title": "✍️ Выбери, что подаришь со своими словами (у тебя {bucks}💵)",
         "shop_category_medicine": "💊 Лекарства",
         "illness_status_line": "{emoji} Болеет: {name} — лекарство есть в 🛍 Магазине",
+        "illness_escalate_timer": "⏳ Без лечения перейдёт в бронхит через {hours}ч",
         "tipsy_status_light": "🥂 Слегка навеселе — чувствуется лёгкое опьянение.",
         "tipsy_status_full": "🍾 Хорошенько выпил(а) — реально пьян(а), это чувствуется во всём.",
         "intim_blocked_illness": "🤒 Персонаж слишком плохо себя чувствует для этого сейчас — сначала вылечи его в 🛍 Магазине.",
@@ -264,6 +265,7 @@ TEXTS = {
         "character_died_overdrink": "💔 Персонаж не пережил такого количества алкоголя — сердце не выдержало.\n\nВся история общения и уровень близости потеряны.\n\nМожешь воскресить персонажа дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
         "character_died_dehydration": "💔 Персонаж слишком долго обходился без воды — организм не выдержал обезвоживания.\n\nВся история общения и уровень близости потеряны.\n\nМожешь воскресить персонажа дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
         "dehydration_warning": "💧 Персонаж уже давно без воды — если не напоить его в ближайшее время, он может погибнуть от обезвоживания. Загляни в магазин 🛍",
+        "dehydration_urgent_warning": "⚠️ СРОЧНО: меньше 2 часов до смерти от обезвоживания! Напои персонажа прямо сейчас — потом будет поздно.",
         "overfeed_refuse_alert": "❌ Персонаж наелся и отказывается есть ещё — дай сытости немного снизиться.",
         "webapp_title": "🛍 Магазин",
         "webapp_buy_btn": "Купить",
@@ -314,7 +316,9 @@ TEXTS = {
         "farm_crop_stats": "{hours}ч · {base}-{max}💵",
         "farm_buy_slot_btn": "➕ Новая грядка\n{price}💵",
         "farm_can_hint": "Проведи леечкой по грядкам сверху — польёт все, что открыто для полива",
-        "farm_ready_push": "🧺 Урожай на ферме созрел! Заходи в 💼 Работу и собери его.",
+        "farm_ready_push": "🧺 Урожай на ферме созрел!",
+        "farm_harvested_push_result": "🧺 Собрано: +{amount}💵",
+        "farm_nothing_to_harvest": "Там уже пусто — урожай кто-то успел собрать раньше.",
         "custom_gift_btn": "✍️ Свой подарок — {price}💵",
         "custom_gift_prompt": "✍️ Напиши, что хочешь подарить (до {n} символов, цена {price}💵). Каждый подарок можно подарить только один раз.",
         "custom_gift_invalid": "❌ Напиши текст подарка (до {n} символов).",
@@ -324,7 +328,12 @@ TEXTS = {
         "hungry_nudge": "🍽 У собеседника заурчал живот... Может, покормишь?",
         "feed_menu_title": "🍽 Чем покормишь? (у тебя {bucks}💵)",
         "sleep_daily_reminder": "💤 Персонаж всё ещё спит и скучает по тебе... Загляни, когда будет минутка!",
-        "spin_daily_reminder": "🎡 Не забудь: сегодня у тебя есть бесплатный прокрут колеса фортуны!",
+        "spin_daily_reminder": [
+            "🎰 Напоминание: у тебя доступен бесплатный прокрут колеса фортуны!",
+            "🎰 Эй, колесо фортуны сегодня ещё не крутили — заходи, вдруг повезёт!",
+            "Бесплатный прокрут ждёт тебя — не забудь заглянуть на колесо фортуны сегодня.",
+            "🎰 Сегодняшний бесплатный прокрут ещё не использован. Шанс на джекпот никуда не делся!",
+        ],
         "webapp_spin_reminder_on_btn": "🔔 Напоминание: ВКЛ",
         "webapp_spin_reminder_off_btn": "🔕 Напоминание: ВЫКЛ",
         "thirsty_reminder": "💧 Твой персонаж хочет пить... Загляни, когда будет минутка!",
@@ -396,7 +405,6 @@ TEXTS = {
         "age_ok": "✅ Age confirmed.",
         "age_no": "🚫 Access denied. 18+ only.",
         "agreement_intro": "📜 Before continuing, please read and accept the terms of service:",
-        "agreement_decide": "📜 Now make your decision:",
         "agreement_too_fast": "⏳ Not so fast — open and at least skim the agreement first, then come back to decide.",
         "agreement_ok": "✅ Terms accepted!",
         "agreement_no": "❌ The bot won't work without accepting the terms.",
@@ -570,6 +578,7 @@ TEXTS = {
         "invoice_upgrade_desc": "Upgrade PRO to SUPER PRO for the remaining time. 350⭐.",
         "invoice_upgrade_label": "Upgrade",
         "shop_btn": "🛍 Shop",
+        "open_btn": "Open",
         "shop_title": "🛍 **Shop**\n\nYour bucks: {bucks}💵\n\n🍽 Food restores satiety, 🎁 gifts boost mood and give a bit of XP. Take your pick:",
         "item_bought": "✅ Purchased! {effects}.",
         "effect_satiety": "Satiety +{n}",
@@ -593,6 +602,7 @@ TEXTS = {
         "shop_note_title": "✍️ Choose what to gift with your own words (you have {bucks}💵)",
         "shop_category_medicine": "💊 Medicine",
         "illness_status_line": "{emoji} Sick: {name} — medicine is in the 🛍 Shop",
+        "illness_escalate_timer": "⏳ Will turn into bronchitis in {hours}h if untreated",
         "tipsy_status_light": "🥂 A little tipsy — feeling it slightly.",
         "tipsy_status_full": "🍾 Properly drunk — it shows in everything right now.",
         "intim_blocked_illness": "🤒 Your companion feels too unwell for that right now — cure them in the 🛍 Shop first.",
@@ -602,6 +612,7 @@ TEXTS = {
         "character_died_overdrink": "💔 Your companion didn't survive that much alcohol — their heart gave out.\n\nAll chat history and closeness level are lost.\n\nYou can revive your companion with a defibrillator (with the whole history) or start over with a new character.",
         "character_died_dehydration": "💔 Your companion went without water for too long — their body couldn't take the dehydration.\n\nAll chat history and closeness level are lost.\n\nYou can revive your companion with a defibrillator (with the whole history) or start over with a new character.",
         "dehydration_warning": "💧 Your companion has been without water for a while now — if you don't give them a drink soon, they could die of dehydration. Check the shop 🛍",
+        "dehydration_urgent_warning": "⚠️ URGENT: less than 2 hours until death from dehydration! Give them water right now — it'll be too late soon.",
         "overfeed_refuse_alert": "❌ Your companion is full and refuses to eat more — let their satiety drop a bit first.",
         "webapp_title": "🛍 Shop",
         "webapp_buy_btn": "Buy",
@@ -652,7 +663,9 @@ TEXTS = {
         "farm_buy_slot_btn": "➕ New plot\n{price}💵",
         "farm_crop_stats": "{hours}h · {base}-{max}💵",
         "farm_can_hint": "Drag the can across the plots — waters everything that's open for watering",
-        "farm_ready_push": "🧺 A harvest on your farm is ready! Head to 💼 Work and bring it in.",
+        "farm_ready_push": "🧺 A harvest on your farm is ready!",
+        "farm_harvested_push_result": "🧺 Collected: +{amount}💵",
+        "farm_nothing_to_harvest": "It's already empty — looks like someone collected it earlier.",
         "custom_gift_btn": "✍️ Custom gift — {price}💵",
         "custom_gift_prompt": "✍️ Write what you want to gift (up to {n} characters, price {price}💵). Each gift can only be given once.",
         "custom_gift_invalid": "❌ Write the gift's text (up to {n} characters).",
@@ -662,7 +675,12 @@ TEXTS = {
         "hungry_nudge": "🍽 Your companion's stomach just growled... Maybe feed them?",
         "feed_menu_title": "🍽 What will you feed them? (you have {bucks}💵)",
         "sleep_daily_reminder": "💤 Your companion is still asleep and missing you... Stop by whenever you get a minute!",
-        "spin_daily_reminder": "🎡 Don't forget: you've got a free spin of the wheel today!",
+        "spin_daily_reminder": [
+            "🎰 Reminder: you've got a free spin of the wheel available!",
+            "🎰 Hey, you haven't spun the wheel today — come try your luck!",
+            "Your free spin is waiting — don't forget to check the wheel today.",
+            "🎰 Today's free spin hasn't been used yet. The jackpot's still up for grabs!",
+        ],
         "webapp_spin_reminder_on_btn": "🔔 Reminder: ON",
         "webapp_spin_reminder_off_btn": "🔕 Reminder: OFF",
         "thirsty_reminder": "💧 Your companion is thirsty... Stop by whenever you get a minute!",
@@ -734,7 +752,6 @@ TEXTS = {
         "age_ok": "✅ Alter bestätigt.",
         "age_no": "🚫 Zugriff verweigert. Nur ab 18 Jahren.",
         "agreement_intro": "📜 Bevor es weitergeht, lies bitte die Nutzungsvereinbarung und akzeptiere sie:",
-        "agreement_decide": "📜 Triff jetzt deine Entscheidung:",
         "agreement_too_fast": "⏳ Nicht so schnell — öffne zuerst die Vereinbarung und überflieg sie wenigstens, dann triff deine Entscheidung.",
         "agreement_ok": "✅ Vereinbarung akzeptiert!",
         "agreement_no": "❌ Ohne akzeptierte Vereinbarung funktioniert der Bot nicht.",
@@ -908,6 +925,7 @@ TEXTS = {
         "invoice_upgrade_desc": "Hebt PRO für die Restlaufzeit auf SUPER PRO an. 350⭐.",
         "invoice_upgrade_label": "Upgrade",
         "shop_btn": "🛍 Shop",
+        "open_btn": "Öffnen",
         "shop_title": "🛍 **Shop**\n\nDeine Bucks: {bucks}💵\n\n🍽 Essen füllt die Sättigung auf, 🎁 Geschenke heben die Stimmung und geben etwas XP. Wähle:",
         "item_bought": "✅ Gekauft! {effects}.",
         "effect_satiety": "Sättigung +{n}",
@@ -931,6 +949,7 @@ TEXTS = {
         "shop_note_title": "✍️ Wähle, was du mit eigenen Worten schenkst (du hast {bucks}💵)",
         "shop_category_medicine": "💊 Medikamente",
         "illness_status_line": "{emoji} Krank: {name} — Medikamente gibt es im 🛍 Shop",
+        "illness_escalate_timer": "⏳ Wird ohne Behandlung in {hours}Std. zu Bronchitis",
         "tipsy_status_light": "🥂 Leicht angeheitert — man merkt es ein bisschen.",
         "tipsy_status_full": "🍾 Ordentlich betrunken — das merkt man gerade an allem.",
         "intim_blocked_illness": "🤒 Dein Begleiter fühlt sich dafür gerade zu schlecht — heile ihn/sie zuerst im 🛍 Shop.",
@@ -940,6 +959,7 @@ TEXTS = {
         "character_died_overdrink": "💔 Dein Begleiter hat so viel Alkohol nicht überlebt — das Herz hat nicht mitgemacht.\n\nDer gesamte Chatverlauf und das Nähe-Level sind verloren.\n\nDu kannst deinen Begleiter mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
         "character_died_dehydration": "💔 Dein Begleiter war zu lange ohne Wasser — der Körper hat die Dehydrierung nicht überstanden.\n\nDer gesamte Chatverlauf und das Nähe-Level sind verloren.\n\nDu kannst deinen Begleiter mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
         "dehydration_warning": "💧 Dein Begleiter ist schon lange ohne Wasser — wenn du ihm nicht bald etwas zu trinken gibst, könnte er an Dehydrierung sterben. Schau im Shop vorbei 🛍",
+        "dehydration_urgent_warning": "⚠️ DRINGEND: weniger als 2 Stunden bis zum Tod durch Dehydrierung! Gib ihm jetzt sofort Wasser — gleich ist es zu spät.",
         "overfeed_refuse_alert": "❌ Dein Begleiter ist satt und weigert sich, mehr zu essen — lass die Sättigung erst etwas sinken.",
         "webapp_title": "🛍 Shop",
         "webapp_buy_btn": "Kaufen",
@@ -990,7 +1010,9 @@ TEXTS = {
         "farm_buy_slot_btn": "➕ Neues Beet\n{price}💵",
         "farm_crop_stats": "{hours}Std · {base}-{max}💵",
         "farm_can_hint": "Zieh die Kanne über die Beete — gießt alles, was gerade offen für Wasser ist",
-        "farm_ready_push": "🧺 Eine Ernte auf deiner Farm ist reif! Geh zu 💼 Arbeit und hol sie rein.",
+        "farm_ready_push": "🧺 Eine Ernte auf deiner Farm ist reif!",
+        "farm_harvested_push_result": "🧺 Eingesammelt: +{amount}💵",
+        "farm_nothing_to_harvest": "Da ist schon leer — jemand hat die Ernte wohl früher eingesammelt.",
         "custom_gift_btn": "✍️ Eigenes Geschenk — {price}💵",
         "custom_gift_prompt": "✍️ Schreib, was du schenken möchtest (bis zu {n} Zeichen, Preis {price}💵). Jedes Geschenk kann nur einmal verschenkt werden.",
         "custom_gift_invalid": "❌ Schreib den Text des Geschenks (bis zu {n} Zeichen).",
@@ -1000,7 +1022,12 @@ TEXTS = {
         "hungry_nudge": "🍽 Der Magen deines Begleiters knurrt gerade... Vielleicht Zeit zu füttern?",
         "feed_menu_title": "🍽 Womit fütterst du? (du hast {bucks}💵)",
         "sleep_daily_reminder": "💤 Dein Begleiter schläft immer noch und vermisst dich... Schau vorbei, wenn du eine Minute hast!",
-        "spin_daily_reminder": "🎡 Nicht vergessen: Heute hast du eine kostenlose Drehung am Glücksrad!",
+        "spin_daily_reminder": [
+            "🎰 Erinnerung: Du hast eine kostenlose Drehung am Glücksrad!",
+            "🎰 Hey, du hast das Glücksrad heute noch nicht gedreht — probier dein Glück!",
+            "Deine kostenlose Drehung wartet — schau heute noch beim Glücksrad vorbei.",
+            "🎰 Die heutige Gratisdrehung ist noch offen. Der Jackpot wartet noch!",
+        ],
         "webapp_spin_reminder_on_btn": "🔔 Erinnerung: AN",
         "webapp_spin_reminder_off_btn": "🔕 Erinnerung: AUS",
         "thirsty_reminder": "💧 Dein Begleiter hat Durst... Schau vorbei, wenn du eine Minute hast!",
@@ -1908,10 +1935,10 @@ ILLNESS_ESCALATE_HOURS = 48  # столько часов невылеченна�
 # по ошибке купить не то и остаться ни с чем (см. buy_medicine).
 MEDICINE_ITEMS = {
     "light_medicine": {"emoji": "💊", "ru": "Лёгкое лекарство", "en": "Mild medicine", "de": "Leichtes Medikament",
-                        "price": 400, "mood": 8, "cures": {"cold"},
+                        "price": 650, "mood": 8, "cures": {"cold"},  # было 400 — слишком дёшево
                         "reaction_hint": "Забота во время болезни — благодарность тёплая, голос слабый, но искренний."},
     "strong_medicine": {"emoji": "💉", "ru": "Сильное лекарство", "en": "Strong medicine", "de": "Starkes Medikament",
-                         "price": 900, "mood": 15, "cures": {"cold", "bronchitis"},
+                         "price": 1600, "mood": 15, "cures": {"cold", "bronchitis"},  # было 900
                          "reaction_hint": "Серьёзная забота во время тяжёлой болезни — искреннее облегчение и глубокая благодарность."},
 }
 
@@ -2285,6 +2312,9 @@ DEHYDRATION_DEATH_HOURS = 46  # с момента, когда вода впер�
 DEHYDRATION_WARN_HOURS = 30  # один явный пуш-предупреждение (dehydration_warning) до смерти — раньше
                               # смерть наступала вообще без предупреждения; оставляет ~16 часов на
                               # то, чтобы среагировать, прежде чем сработает DEHYDRATION_DEATH_HOURS
+DEHYDRATION_URGENT_HOURS = DEHYDRATION_DEATH_HOURS - 2  # второй, более тревожный пуш, когда до
+                                                          # смерти реально остаётся меньше 2 часов
+                                                          # (по фидбэку — предупреждать раньше/заметнее)
 ENERGIZER_RESTORE_AMOUNT = 78  # было 98 (65% бака) — точечно снижено до 78 (52% бака), без
                                # сопутствующего удвоения количеств бандлов/стипендов (в отличие
                                # от прошлой попытки уполовинить до 50, которая смотрелась чрезмерно
@@ -2354,8 +2384,14 @@ def get_level_decay_multiplier(user):
     return 1.0 + (level - 1) * INTIMACY_LEVEL_DECAY_STEP
 
 
+ILLNESS_STAT_COST_MULTIPLIER = {"cold": 1.2, "bronchitis": 1.6}  # по фидбэку — болезнь должна
+# реально ограничивать общение, а не быть просто косметикой в речи персонажа (см.
+# build_illness_rule): пока не вылечился, сообщения сильнее выматывают персонажа.
+
+
 def apply_activity_stat_cost(user, energy_cost, satiety_cost, water_cost):
     mult = STAT_DECAY_MULTIPLIER.get(get_subscription_level(user), 1.0) * get_level_decay_multiplier(user)
+    mult *= ILLNESS_STAT_COST_MULTIPLIER.get(user.get("illness"), 1.0)
     prev_energy = user.get("energy", ENERGY_MAX)
     user["energy"] = max(0, prev_energy - energy_cost * mult)
     user["satiety"] = max(0, user.get("satiety", SATIETY_MAX) - satiety_cost * mult)
@@ -2768,6 +2804,15 @@ def stats_line_text(user):
         info = ILLNESSES[illness]
         name = info.get(user.get("lang", "ru"), info["ru"])
         line += "\n" + get_text(user, "illness_status_line", emoji=info["emoji"], name=name)
+        if illness == "cold":
+            since = user.get("illness_since")
+            if since:
+                try:
+                    elapsed = (datetime.now() - datetime.fromisoformat(since)).total_seconds() / 3600
+                    hours_left = max(0, round(ILLNESS_ESCALATE_HOURS - elapsed))
+                    line += "\n" + get_text(user, "illness_escalate_timer", hours=hours_left)
+                except (ValueError, TypeError):
+                    pass
     if is_tipsy(user):
         tipsy_key = "tipsy_status_full" if user.get("tipsy_level") == "full" else "tipsy_status_light"
         line += "\n" + get_text(user, tipsy_key)
@@ -2967,20 +3012,8 @@ AGREEMENT_URLS = {
 }
 
 
-def get_agreement_open_kb(user):
-    """Шаг 1: единственная кнопка — открыть соглашение. Нарочно callback_data, а не url: у Bot
-    API нет способа узнать, нажал ли пользователь url-кнопку (это и была дыра — можно было
-    жать "Принимаю", вообще не открыв документ). Кнопки Принимаю/Не принимаю появляются только
-    ПОСЛЕ этого нажатия (см. agreement_open_link), плюс там же проверяется минимальное время
-    до принятия (см. AGREEMENT_MIN_READ_SECONDS) — то немногое, что вообще можно проверить без
-    настоящего отслеживания чтения."""
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "open_agreement"), callback_data="agreement_open_link", style="primary")],
-    ])
-
-
 def get_agreement_kb(user):
-    """Шаг 2: решение. Ссылка остаётся доступной, чтобы можно было перечитать перед ответом."""
+    """Ссылка на соглашение + решение — одним экраном (см. proceed_flow)."""
     lang = user.get("lang", "ru")
     url = AGREEMENT_URLS.get(lang, AGREEMENT_URLS["ru"])
     return InlineKeyboardMarkup(inline_keyboard=[
@@ -3126,7 +3159,15 @@ async def proceed_flow(user_id: int, chat_id: int):
         return
 
     if not user["agreement_accepted"]:
-        await bot.send_message(chat_id, get_text(user, "agreement_intro"), reply_markup=get_agreement_open_kb(user))
+        # Раньше тут было два шага (сначала отдельная кнопка "Открыть соглашение", и только
+        # после неё — "Принимаю/Не принимаю") специально для защиты от мгновенного "дабл-тапа"
+        # мимо текста. По фидбэку первый шаг убрали как лишний — показываем решение сразу, но
+        # agreement_opened_at всё равно проставляем здесь же, так что AGREEMENT_MIN_READ_SECONDS
+        # (см. agreement_accept) по-прежнему отсекает мгновенное нажатие "Принимаю".
+        if not user.get("agreement_opened_at"):
+            user["agreement_opened_at"] = datetime.now().isoformat()
+            save_data(user_data)
+        await bot.send_message(chat_id, get_text(user, "agreement_intro"), reply_markup=get_agreement_kb(user))
         return
 
     if not user.get("world"):
@@ -3223,20 +3264,10 @@ async def age_no(call: types.CallbackQuery):
     await call.answer()
 
 
-AGREEMENT_MIN_READ_SECONDS = 3  # минимальное время между нажатием "Открыть соглашение" и
-# "Принимаю" — не доказывает, что реально прочитали, но отсекает мгновенный "дабл-тап" мимо
-# текста; большего без настоящего отслеживания чтения технически не добиться (url-кнопки не
-# присылают боту никакого события при нажатии, см. get_agreement_open_kb)
-
-
-@dp.callback_query(lambda c: c.data == "agreement_open_link")
-async def agreement_open_link(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    user["agreement_opened_at"] = datetime.now().isoformat()
-    save_data(user_data)
-    await safe_delete(call.message)
-    await bot.send_message(call.message.chat.id, get_text(user, "agreement_decide"), reply_markup=get_agreement_kb(user))
-    await call.answer()
+AGREEMENT_MIN_READ_SECONDS = 3  # минимальное время между показом экрана соглашения и "Принимаю"
+# (см. agreement_opened_at в proceed_flow) — не доказывает, что реально прочитали, но отсекает
+# мгновенный "дабл-тап" мимо текста; большего без настоящего отслеживания чтения технически не
+# добиться (url-кнопки не присылают боту никакого события при нажатии).
 
 
 @dp.callback_query(lambda c: c.data == "agreement_accept")
@@ -3981,6 +4012,7 @@ def apply_spin_prize(user, chosen):
         user["water"] = WATER_MAX
         user["water_zero_since"] = None
         user["dehydration_warned"] = False
+        user["dehydration_urgent_warned"] = False
         result_text = get_text(user, "spin_win_care_package")
     elif chosen["type"] == "subscription_pro":
         grant_subscription_days(user, "pro", 5)
@@ -4196,6 +4228,7 @@ def apply_shop_item_effects(user, item):
         user["water"] = WATER_MAX
         user["water_zero_since"] = None
         user["dehydration_warned"] = False
+        user["dehydration_urgent_warned"] = False
     else:
         if "satiety" in item:
             user["satiety"] = min(SATIETY_MAX, user.get("satiety", SATIETY_MAX) + item["satiety"])
@@ -4206,6 +4239,7 @@ def apply_shop_item_effects(user, item):
             if user["water"] > 0:
                 user["water_zero_since"] = None
                 user["dehydration_warned"] = False
+                user["dehydration_urgent_warned"] = False
     if item.get("tipsy_minutes"):
         user["tipsy_until"] = (datetime.now() + timedelta(minutes=item["tipsy_minutes"])).isoformat()
         user["tipsy_level"] = item.get("tipsy_level", "light")
@@ -4353,8 +4387,10 @@ def get_feed_nudge_kb(user):
     длинного списка: полный перечень FOOD_ITEMS прямо во всплывающей подсказке ощущается
     захламлённым (по фидбэку), тогда как внутри самого Mini App тот же список выглядит опрятно."""
     if WEBAPP_URL:
+        # Открыть без полного "🛍 Магазин" — на клавиатуре уже есть такая же кнопка, дублировать
+        # подпись в самой подсказке незачем (по фидбэку).
         return InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text=get_text(user, "shop_btn"),
+            [InlineKeyboardButton(text=get_text(user, "open_btn"),
                                   web_app=WebAppInfo(url=f"{WEBAPP_URL}/shop"), style="success")]
         ])
     rows = []
@@ -4504,6 +4540,7 @@ async def kill_character(chat_id, user, cause):
     user["overdrink_strikes"] = 0
     user["water_zero_since"] = None
     user["dehydration_warned"] = False
+    user["dehydration_urgent_warned"] = False
     save_data(user_data)
     text_key = "character_died_dehydration" if cause == "dehydration" else "character_died_overdrink"
     await bot.send_message(chat_id, get_text(user, text_key), reply_markup=get_death_kb(user))
@@ -5438,6 +5475,24 @@ async def elite_free_wake_cb(call: types.CallbackQuery):
     user["sleep_until"] = None
     save_data(user_data)
     await call.message.answer(get_text(user, "elite_free_wake_success"))
+    await call.answer()
+
+
+@dp.callback_query(lambda c: c.data == "farm_harvest_all")
+async def farm_harvest_all_cb(call: types.CallbackQuery):
+    """Кнопка "Собрать урожай" прямо из пуша о созревшем урожае — не требует открывать Mini App
+    (по фидбэку: напоминание вело только в /work, самого сбора там одной кнопкой не было)."""
+    user = get_user(call.from_user.id)
+    total = 0
+    for slot in range(get_farm_slots(user)):
+        payout = farm_harvest(user, slot)
+        if payout:
+            total += payout
+    if total > 0:
+        await call.message.answer(get_text(user, "farm_harvested_push_result", amount=total))
+    else:
+        await call.answer(get_text(user, "farm_nothing_to_harvest"), show_alert=True)
+        return
     await call.answer()
 
 
@@ -13340,6 +13395,16 @@ async def check_notifications():
                     if hours_dry >= DEHYDRATION_DEATH_HOURS:
                         await kill_character(int(user_id), user, cause="dehydration")
                         continue
+                    elif hours_dry >= DEHYDRATION_URGENT_HOURS and not user.get("dehydration_urgent_warned"):
+                        # Второй, более тревожный пуш — когда до смерти реально остаётся меньше
+                        # 2 часов (по фидбэку: предупреждать раньше/заметнее). Тоже не привязан к
+                        # notifications_muted — та же логика, что и у смерти/первого предупреждения.
+                        user["dehydration_urgent_warned"] = True
+                        save_data(user_data)
+                        try:
+                            await bot.send_message(int(user_id), get_text(user, "dehydration_urgent_warning"))
+                        except Exception:
+                            pass
                     elif hours_dry >= DEHYDRATION_WARN_HOURS and not user.get("dehydration_warned"):
                         # Один явный пуш до смерти — раньше смерть от обезвоживания наступала
                         # вообще без предупреждения. Та же логика "до смерти, не нагом" — не
@@ -13429,16 +13494,20 @@ async def check_notifications():
                         user["last_spin_reminder"] = today
                         save_data(user_data)
                         try:
+                            # Открыть без полного "🎰 Колесо фортуны" — такая кнопка уже есть на
+                            # клавиатуре, дублировать подпись в самом напоминании незачем. Текст
+                            # напоминания — случайный вариант из списка, а не одна и та же фраза
+                            # каждый день (по фидбэку).
                             if WEBAPP_URL:
                                 spin_reminder_btn = InlineKeyboardButton(
-                                    text=get_text(user, "spin_wheel"),
+                                    text=get_text(user, "open_btn"),
                                     web_app=WebAppInfo(url=f"{WEBAPP_URL}/spin"), style="success")
                             else:
                                 spin_reminder_btn = InlineKeyboardButton(
-                                    text=get_text(user, "spin_wheel"),
+                                    text=get_text(user, "open_btn"),
                                     callback_data="spin_free", style="success")
                             kb = InlineKeyboardMarkup(inline_keyboard=[[spin_reminder_btn]])
-                            await bot.send_message(int(user_id), get_text(user, "spin_daily_reminder"), reply_markup=kb)
+                            await bot.send_message(int(user_id), random.choice(get_text(user, "spin_daily_reminder")), reply_markup=kb)
                         except Exception:
                             pass
                     continue
@@ -13504,14 +13573,11 @@ async def check_notifications():
                 if any_newly_ready:
                     save_data(user_data)
                     try:
-                        if WEBAPP_URL:
-                            farm_btn = InlineKeyboardButton(
-                                text=get_text(user, "work_btn"),
-                                web_app=WebAppInfo(url=f"{WEBAPP_URL}/work"), style="success")
-                            kb = InlineKeyboardMarkup(inline_keyboard=[[farm_btn]])
-                            await bot.send_message(int(user_id), get_text(user, "farm_ready_push"), reply_markup=kb)
-                        else:
-                            await bot.send_message(int(user_id), get_text(user, "farm_ready_push"))
+                        harvest_btn = InlineKeyboardButton(
+                            text=get_text(user, "farm_harvest_btn"),
+                            callback_data="farm_harvest_all", style="success")
+                        await bot.send_message(int(user_id), get_text(user, "farm_ready_push"),
+                                               reply_markup=InlineKeyboardMarkup(inline_keyboard=[[harvest_btn]]))
                     except Exception:
                         pass
             save_data(user_data)
