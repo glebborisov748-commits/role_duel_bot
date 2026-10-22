@@ -95,7 +95,7 @@ TEXTS = {
         "spin_title": "🎰 **Колесо фортуны**",
         "spin_hint": "Крути колесо каждый день и выбивай призы!",
         "webapp_spin_prizes_title": "🎁 Доступные призы:",
-        "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 35–250💵 баксов\n• 🔥 Горячие сцены\n• 2–4⚡ энергетика (редко)\n• 🔥 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)",
+        "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 35–70💵 баксов\n• 🔥 Горячие сцены\n• 2–4⚡ энергетика (редко)\n• 🎟 Доп. прокрут\n• ⚡x5 буст заработка на час (редко)\n• 🔥 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)\n• 💰 10 000💵 ДЖЕКПОТ (крайне редко)",
         "spin_choose": "Выбери вариант:",
         "spin_nothing": "😢 Ничего... В следующий раз повезёт!",        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+30💵 баксов и +3⚡ энергетика** тебе, ему — **+15💵 баксов и +1⚡ энергетик**!\n\n📊 Приглашено друзей: **{count}**\n💵 Заработано баксов: **{earned_bucks}**\n⚡ Заработано энергетиков: **{earned_energizers}**",
         "choose_lang_label": "🌍 Выбери язык:",
@@ -164,6 +164,8 @@ TEXTS = {
         "spin_win_care_package": "🧺 **Эксклюзив колеса: полное восстановление!**\nЭнергия, сытость и вода — на максимум!",
         "spin_win_pro": "🎁 **PRO подписка на 5 дней!**\n🔥 Стили Страстный и Магнетический, энергия и сытость тратятся медленнее!",
         "spin_win_super": "✨ **SUPER PRO на 3 дня!**\n👑 Все стили, включая 18+, свой уникальный персонаж!",
+        "spin_win_work_boost": "⚡ **Буст заработка x{mult} на {minutes} минут!**\nВся работа платит в {mult} раз больше, пока буст активен.",
+        "spin_win_extra_spin": "🎟 **+{value} дополнительный прокрут!**\nОн не сгорает с дневным лимитом — используй, когда захочешь.",
         "spin_result_header": "🎰 **Результат!**\n\nТы выиграл: {result}\n{mode}",
         "spin_mode_free": "🎁 Бесплатное вращение",
         "spin_mode_paid": "💎 Платное вращение",
@@ -191,7 +193,7 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Твоя подписка закончилась, выбери бесплатный стиль:",
         "quarrel": "💢 Ссора! Уровень близости снижен.",
         "generation_error": "⚠️ Ошибка генерации ответа: {error}",
-        "intim_buy_btn": "🔥 Купить горячую сцену (45⭐)",
+        "intim_buy_btn": "🔥 Купить горячую сцену (30⭐)",
         "intim_menu_title": "🔥 **Горячая сцена**\n\nДоступно сцен: {n}\nВыбери, что будет происходить:",
         "intim_choose_location": "📍 Выбери место:",
         "intim_choose_dominant": "🎭 Кто проявляет инициативу?",
@@ -358,7 +360,7 @@ TEXTS = {
         "payment_pro_success": "✅ PRO подписка активирована на месяц!",
         "payment_super_success": "✅ SUPER PRO подписка активирована на месяц!",
         "payment_elite_success": "✅ ELITE подписка активирована на месяц!",
-        "first_subscription_bonus_alert": "🎁 Это твоя первая подписка — держи бонус +{bucks}💵!",
+        "first_subscription_bonus_alert": "🎁 Это твоя первая подписка — держи бонус: +{bucks}💵, +{energizers}⚡ и +{scenes} горячая сцена!",
         "payment_upgrade_success": "✅ Апгрейд до SUPER PRO выполнен до {date}!",
     },
     "en": {
@@ -431,7 +433,7 @@ TEXTS = {
         "spin_title": "🎰 **Spin wheel**",
         "spin_hint": "Spin the wheel every day and win prizes!",
         "webapp_spin_prizes_title": "🎁 Available prizes:",
-        "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 35–250💵 bucks\n• 🔥 Hot scenes\n• 2–4⚡ energizers (rare)\n• 🔥 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)",
+        "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 35–70💵 bucks\n• 🔥 Hot scenes\n• 2–4⚡ energizers (rare)\n• 🎟 Extra spin\n• ⚡x5 earnings boost for an hour (rare)\n• 🔥 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)\n• 💰 10,000💵 JACKPOT (extremely rare)",
         "spin_choose": "Choose an option:",
         "spin_nothing": "😢 Nothing... Better luck next time!",        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+30💵 bucks and +3⚡ energizers** for you, and **+15💵 bucks and +1⚡ energizer** for them!\n\n📊 Friends invited: **{count}**\n💵 Bucks earned: **{earned_bucks}**\n⚡ Energizers earned: **{earned_energizers}**",
         "choose_lang_label": "🌍 Choose language:",
@@ -500,6 +502,8 @@ TEXTS = {
         "spin_win_care_package": "🧺 **Wheel exclusive: full restore!**\nEnergy, satiety and water — all topped up!",
         "spin_win_pro": "🎁 **PRO subscription for 5 days!**\n🔥 Passionate and Magnetic styles, energy and satiety drain slower!",
         "spin_win_super": "✨ **SUPER PRO for 3 days!**\n👑 All styles including 18+, your own unique character!",
+        "spin_win_work_boost": "⚡ **x{mult} earnings boost for {minutes} minutes!**\nAll work pays {mult}x more while the boost is active.",
+        "spin_win_extra_spin": "🎟 **+{value} extra spin!**\nIt doesn't expire with the daily limit — use it whenever you like.",
         "spin_result_header": "🎰 **Result!**\n\nYou won: {result}\n{mode}",
         "spin_mode_free": "🎁 Free spin",
         "spin_mode_paid": "💎 Paid spin",
@@ -527,7 +531,7 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Your subscription has ended, pick a free style:",
         "quarrel": "💢 A quarrel! Your closeness level dropped.",
         "generation_error": "⚠️ Failed to generate a reply: {error}",
-        "intim_buy_btn": "🔥 Buy a hot scene (45⭐)",
+        "intim_buy_btn": "🔥 Buy a hot scene (30⭐)",
         "intim_menu_title": "🔥 **Hot scene**\n\nScenes available: {n}\nChoose what happens:",
         "intim_choose_location": "📍 Choose a place:",
         "intim_choose_dominant": "🎭 Who takes the lead?",
@@ -694,7 +698,7 @@ TEXTS = {
         "payment_pro_success": "✅ PRO subscription activated for a month!",
         "payment_super_success": "✅ SUPER PRO subscription activated for a month!",
         "payment_elite_success": "✅ ELITE subscription activated for a month!",
-        "first_subscription_bonus_alert": "🎁 This is your first subscription — here's a +{bucks}💵 bonus!",
+        "first_subscription_bonus_alert": "🎁 This is your first subscription — here's your bonus: +{bucks}💵, +{energizers}⚡ and +{scenes} hot scene!",
         "payment_upgrade_success": "✅ Upgrade to SUPER PRO done until {date}!",
     },
     "de": {
@@ -767,7 +771,7 @@ TEXTS = {
         "spin_title": "🎰 **Glücksrad**",
         "spin_hint": "Dreh jeden Tag am Rad und gewinne Preise!",
         "webapp_spin_prizes_title": "🎁 Verfügbare Preise:",
-        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 35–250💵 Bucks\n• 🔥 Heiße Szenen\n• 2–4⚡ Energydrinks (selten)\n• 🔥 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)",
+        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 35–70💵 Bucks\n• 🔥 Heiße Szenen\n• 2–4⚡ Energydrinks (selten)\n• 🎟 Extra-Dreh\n• ⚡x5 Verdienst-Boost für eine Stunde (selten)\n• 🔥 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)\n• 💰 10.000💵 JACKPOT (extrem selten)",
         "spin_choose": "Wähle eine Option:",
         "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+30💵 Bucks und +3⚡ Energydrinks** für dich und **+15💵 Bucks und +1⚡ Energydrink** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💵 Verdiente Bucks: **{earned_bucks}**\n⚡ Verdiente Energydrinks: **{earned_energizers}**",
         "choose_lang_label": "🌍 Sprache wählen:",
@@ -836,6 +840,8 @@ TEXTS = {
         "spin_win_care_package": "🧺 **Rad-Exklusiv: volle Wiederherstellung!**\nEnergie, Sättigung und Wasser — alles auf Maximum!",
         "spin_win_pro": "🎁 **PRO-Abo für 5 Tage!**\n🔥 Stile Leidenschaftlich und Magnetisch, Energie und Sättigung sinken langsamer!",
         "spin_win_super": "✨ **SUPER PRO für 3 Tage!**\n👑 Alle Stile inklusive 18+, dein eigener einzigartiger Charakter!",
+        "spin_win_work_boost": "⚡ **x{mult} Verdienst-Boost für {minutes} Minuten!**\nJede Arbeit zahlt {mult}x mehr, solange der Boost aktiv ist.",
+        "spin_win_extra_spin": "🎟 **+{value} Extra-Dreh!**\nVerfällt nicht mit dem Tageslimit — nutze ihn, wann du willst.",
         "spin_result_header": "🎰 **Ergebnis!**\n\nDu hast gewonnen: {result}\n{mode}",
         "spin_mode_free": "🎁 Gratisdrehung",
         "spin_mode_paid": "💎 Bezahlte Drehung",
@@ -863,7 +869,7 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Dein Abo ist abgelaufen, wähle einen kostenlosen Stil:",
         "quarrel": "💢 Streit! Dein Nähe-Level ist gesunken.",
         "generation_error": "⚠️ Antwort konnte nicht erzeugt werden: {error}",
-        "intim_buy_btn": "🔥 Heiße Szene kaufen (45⭐)",
+        "intim_buy_btn": "🔥 Heiße Szene kaufen (30⭐)",
         "intim_menu_title": "🔥 **Heiße Szene**\n\nVerfügbare Szenen: {n}\nWähle, was passiert:",
         "intim_choose_location": "📍 Wähle einen Ort:",
         "intim_choose_dominant": "🎭 Wer übernimmt die Führung?",
@@ -1030,7 +1036,7 @@ TEXTS = {
         "payment_pro_success": "✅ PRO-Abo für einen Monat aktiviert!",
         "payment_super_success": "✅ SUPER PRO-Abo für einen Monat aktiviert!",
         "payment_elite_success": "✅ ELITE-Abo für einen Monat aktiviert!",
-        "first_subscription_bonus_alert": "🎁 Das ist dein erstes Abo — hier ist ein Bonus von +{bucks}💵!",
+        "first_subscription_bonus_alert": "🎁 Das ist dein erstes Abo — hier ist dein Bonus: +{bucks}💵, +{energizers}⚡ und +{scenes} heiße Szene!",
         "payment_upgrade_success": "✅ Upgrade auf SUPER PRO bis {date} erledigt!",
     }
 }
@@ -2054,7 +2060,16 @@ def free_spins_allowed(user):
 
 def free_spins_left(user):
     _reset_daily_quota_if_needed(user)
-    return max(0, free_spins_allowed(user) - user.get("free_spins_used", 0))
+    return max(0, free_spins_allowed(user) - user.get("free_spins_used", 0)) + user.get("bonus_spins", 0)
+
+
+def consume_free_spin(user):
+    """Списывает одно бесплатное вращение — сначала бонусные (см. приз "extra_spin" в
+    SPIN_PRIZES), они не привязаны к дневной квоте и не сбрасываются вместе с ней."""
+    if user.get("bonus_spins", 0) > 0:
+        user["bonus_spins"] -= 1
+    else:
+        user["free_spins_used"] = user.get("free_spins_used", 0) + 1
 
 
 def _maybe_get_sick(user):
@@ -2444,13 +2459,23 @@ WORK_MULTIPLIER = {"pro": 1.5, "super_pro": 2.0, "elite": 2.8}  # та же ти
 # XP_MULTIPLIER — раньше был общий x2 для любого уровня подписки, по фидбэку разнесли по тиерам.
 
 
+SPIN_WORK_BOOST_MULTIPLIER = 5  # приз "x5 буст заработка" с колеса, см. SPIN_PRIZES type=work_boost
+SPIN_WORK_BOOST_MINUTES = 60
+
+
 def work_earnings_multiplier(user):
     """Множитель к ЛЮБОМУ заработку на работе (мгновенные игры и сбор урожая), тиерован по
     уровню подписки (см. WORK_MULTIPLIER) — заменяет прежний общий x2 для любого подписчика,
-    который сам в своё время заменил ежедневный баксовый стипенд (было BUCKS_DAILY_STIPEND)."""
-    if not has_active_subscription(user):
-        return 1.0
-    return WORK_MULTIPLIER.get(get_subscription_level(user), 1.0)
+    который сам в своё время заменил ежедневный баксовый стипенд (было BUCKS_DAILY_STIPEND).
+    Временный буст с колеса фортуны (work_boost_until) умножает ЭТОТ результат, а не заменяет —
+    подписчик с бустом получает оба множителя сразу."""
+    multiplier = 1.0
+    if has_active_subscription(user):
+        multiplier = WORK_MULTIPLIER.get(get_subscription_level(user), 1.0)
+    boost_until = user.get("work_boost_until")
+    if boost_until and datetime.now().isoformat() < boost_until:
+        multiplier *= SPIN_WORK_BOOST_MULTIPLIER
+    return multiplier
 
 
 def credit_work_bucks(user, base_amount):
@@ -2770,6 +2795,13 @@ ADULT_CONTENT_RULE = (
     "по обоюдному согласию; ты никогда не описываешь сцены с несовершеннолетними, насилием, принуждением "
     "или животными — на такие просьбы ты отказываешь прямо и переводишь тему. Ты считываешь настрой "
     "собеседника: если он сбавляет темп или меняет тему, ты следуешь за ним и не давишь.\n"
+    "**ЯВНАЯ ЛЕКСИКА И ПРЯМЫЕ ОПИСАНИЯ:** когда разговор и близость РЕАЛЬНО дошли непосредственно до "
+    "секса (не романтика и не намёки, а сам физический акт уже начался) — можно и нужно называть вещи "
+    "прямо (член, сиськи, киска и т.п.), без эвфемизмов и иносказаний, и подробно, физически описывать "
+    "сами действия и ощущения (движения, прикосновения, реакции тела), а не просто называть факт "
+    "происходящего одной фразой. До этого момента — пока сцена ещё не дошла до самого акта — говори "
+    "мягче, через намёки и нарастающее напряжение, не форсируя переход и не вываливая анатомическую "
+    "лексику на пустом месте.\n"
 )
 
 
@@ -2898,6 +2930,11 @@ def build_prompt(user):
         "диалога — не противоречь тому, что сам(а) только что сказал(а) или на что согласился(ась) "
         "(кто платит, кто куда идёт, что было обещано и т.п.), если собеседник явно не изменил "
         "ситуацию.\n"
+        "**ГДЕ ВЫ НА САМОМ ДЕЛЕ:** по умолчанию вы переписываетесь (телефон/экран), и это можно "
+        "упоминать, пока собеседник явно не сказал иначе. Но если он прямо говорит, что вы физически "
+        "рядом, встретились, стоите друг перед другом и т.п. — поверь ему и дальше веди сцену именно "
+        "как встречу вживую: не возвращайся к фразам про экран, телефон, набор сообщений, если он уже "
+        "обозначил, что вы в одном месте.\n"
     )
 
     return prompt
@@ -3844,7 +3881,7 @@ async def spin_free(call: types.CallbackQuery):
     if free_spins_left(user) <= 0:
         await call.answer(get_text(user, "spin_already"), show_alert=True)
         return
-    user["free_spins_used"] = user.get("free_spins_used", 0) + 1
+    consume_free_spin(user)
     save_data(user_data)
     await safe_delete(call.message)
     await spin_result(call.message.chat.id, user, free=True)
@@ -3894,7 +3931,9 @@ SPIN_PRIZES = [
     {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 3, "wheel_label": "2⚡"},
     {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 1, "wheel_label": "4⚡"},
     {"name": "🍗 30 сытости", "name_en": "🍗 30 satiety", "name_de": "🍗 30 Sättigung", "value": 30, "type": "food", "weight": 10, "wheel_label": "🍗+30"},
-    {"name": "💰🎉 250💵 баксов (ДЖЕКПОТ!)", "name_en": "💰🎉 250💵 bucks (JACKPOT!)", "name_de": "💰🎉 250💵 Bucks (JACKPOT!)", "value": 250, "type": "bucks", "weight": 0.3, "wheel_label": "💰250"},
+    {"name": "🎟 +1 доп. прокрут", "name_en": "🎟 +1 extra spin", "name_de": "🎟 +1 Extra-Dreh", "value": 1, "type": "extra_spin", "weight": 2, "wheel_label": "🎟+1"},
+    {"name": "⚡x5 буст заработка на час", "name_en": "⚡x5 earnings boost for an hour", "name_de": "⚡x5 Verdienst-Boost für eine Stunde", "value": 0, "type": "work_boost", "weight": 0.6, "wheel_label": "⚡x5"},
+    {"name": "💰🎉 10 000💵 баксов (ДЖЕКПОТ!)", "name_en": "💰🎉 10,000💵 bucks (JACKPOT!)", "name_de": "💰🎉 10.000💵 Bucks (JACKPOT!)", "value": 10000, "type": "bucks", "weight": 0.1, "wheel_label": "💰10K"},
     {"name": "🔥 PRO на 5 дней", "name_en": "🔥 PRO for 5 days", "name_de": "🔥 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.4, "wheel_label": "🔥PRO"},
     {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.15, "wheel_label": "✨SUPER"},
     # Эксклюзив именно колеса — нигде в магазине такого разового "всё на максимум" нет, по просьбе
@@ -3953,6 +3992,13 @@ def apply_spin_prize(user, chosen):
         user["last_daily_reset"] = None
         _reset_daily_quota_if_needed(user)
         result_text = get_text(user, "spin_win_super")
+    elif chosen["type"] == "work_boost":
+        user["work_boost_until"] = (datetime.now() + timedelta(minutes=SPIN_WORK_BOOST_MINUTES)).isoformat()
+        result_text = get_text(user, "spin_win_work_boost", minutes=SPIN_WORK_BOOST_MINUTES,
+                                mult=SPIN_WORK_BOOST_MULTIPLIER)
+    elif chosen["type"] == "extra_spin":
+        user["bonus_spins"] = user.get("bonus_spins", 0) + chosen["value"]
+        result_text = get_text(user, "spin_win_extra_spin", value=chosen["value"])
     else:
         result_text = get_text(user, "spin_nothing")
     return result_text
@@ -4670,7 +4716,7 @@ PRODUCTS = {
     # + openInvoice) от чатовой и не запускать поверх неё чатовую фейковую анимацию прокрутки:
     # сам прокрут в этом случае уже показан колесом прямо в Mini App.
     "spin_paid_webapp": {"stars": 15, "usd": 0.2, "rub": 18},
-    "intim_scene": {"stars": 45, "usd": 0.6, "rub": 53},
+    "intim_scene": {"stars": 30, "usd": 0.4, "rub": 35},  # было 45⭐ — снизили по просьбе
     "wake_now": {"stars": 25, "usd": 0.4, "rub": 29},
     "defibrillator": {"stars": 55, "usd": 0.8, "rub": 65},
 }
@@ -4848,6 +4894,19 @@ FIRST_SUBSCRIPTION_BONUS_BUCKS = 300  # было 150 — увеличено по
 # прежнего ежедневного баксового стипенда (было BUCKS_DAILY_STIPEND) разовым бонусом в момент
 # покупки; вторая половина замены — тиерный множитель с заработка на работе, см.
 # work_earnings_multiplier/WORK_MULTIPLIER.
+FIRST_SUBSCRIPTION_BONUS_ENERGIZERS = 3  # по фидбэку "хотелось бы интереснее, чем просто баксы" —
+# добавили энергетики (мгновенно применимая плюшка) и бесплатную горячую сцену ниже, а не только
+# циферки баланса.
+FIRST_SUBSCRIPTION_BONUS_SCENES = 1
+
+
+def grant_first_subscription_bonus(user):
+    """Разовый бонус за самую первую покупку ЛЮБОЙ подписки — баксы + энергетики + горячая
+    сцена, не только баксы (см. ever_subscribed в вызывающем коде). Общая функция вместо
+    копирования одного и того же блока в subscribe_pro/subscribe_super/subscribe_elite."""
+    user["bucks"] = user.get("bucks", 0) + FIRST_SUBSCRIPTION_BONUS_BUCKS
+    user["energizers"] = user.get("energizers", 0) + FIRST_SUBSCRIPTION_BONUS_ENERGIZERS
+    user["intim_scenes"] = user.get("intim_scenes", 0) + FIRST_SUBSCRIPTION_BONUS_SCENES
 
 
 async def grant_product(user, payload, chat_id):
@@ -4874,11 +4933,11 @@ async def grant_product(user, payload, chat_id):
         first_time_sub = not user.get("ever_subscribed")
         user["ever_subscribed"] = True
         if first_time_sub:
-            user["bucks"] = user.get("bucks", 0) + FIRST_SUBSCRIPTION_BONUS_BUCKS
+            grant_first_subscription_bonus(user)
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "payment_pro_success"))
         if first_time_sub:
-            await bot.send_message(chat_id, get_text(user, "first_subscription_bonus_alert", bucks=FIRST_SUBSCRIPTION_BONUS_BUCKS))
+            await bot.send_message(chat_id, get_text(user, "first_subscription_bonus_alert", bucks=FIRST_SUBSCRIPTION_BONUS_BUCKS, energizers=FIRST_SUBSCRIPTION_BONUS_ENERGIZERS, scenes=FIRST_SUBSCRIPTION_BONUS_SCENES))
     elif payload == "subscribe_super":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
@@ -4888,11 +4947,11 @@ async def grant_product(user, payload, chat_id):
         first_time_sub = not user.get("ever_subscribed")
         user["ever_subscribed"] = True
         if first_time_sub:
-            user["bucks"] = user.get("bucks", 0) + FIRST_SUBSCRIPTION_BONUS_BUCKS
+            grant_first_subscription_bonus(user)
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "payment_super_success"))
         if first_time_sub:
-            await bot.send_message(chat_id, get_text(user, "first_subscription_bonus_alert", bucks=FIRST_SUBSCRIPTION_BONUS_BUCKS))
+            await bot.send_message(chat_id, get_text(user, "first_subscription_bonus_alert", bucks=FIRST_SUBSCRIPTION_BONUS_BUCKS, energizers=FIRST_SUBSCRIPTION_BONUS_ENERGIZERS, scenes=FIRST_SUBSCRIPTION_BONUS_SCENES))
     elif payload == "subscribe_elite":
         user["subscription"]["active"] = True
         user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
@@ -4902,11 +4961,11 @@ async def grant_product(user, payload, chat_id):
         first_time_sub = not user.get("ever_subscribed")
         user["ever_subscribed"] = True
         if first_time_sub:
-            user["bucks"] = user.get("bucks", 0) + FIRST_SUBSCRIPTION_BONUS_BUCKS
+            grant_first_subscription_bonus(user)
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "payment_elite_success"))
         if first_time_sub:
-            await bot.send_message(chat_id, get_text(user, "first_subscription_bonus_alert", bucks=FIRST_SUBSCRIPTION_BONUS_BUCKS))
+            await bot.send_message(chat_id, get_text(user, "first_subscription_bonus_alert", bucks=FIRST_SUBSCRIPTION_BONUS_BUCKS, energizers=FIRST_SUBSCRIPTION_BONUS_ENERGIZERS, scenes=FIRST_SUBSCRIPTION_BONUS_SCENES))
     elif payload == "upgrade_to_super":
         if has_active_subscription(user) and get_subscription_level(user) == "pro":
             old_expiry = user["subscription"]["expires_at"]
@@ -10486,7 +10545,7 @@ async def perform_webapp_spin(user, user_id):
     из одинаковых сообщений в чате."""
     if free_spins_left(user) <= 0:
         return {"ok": False, "error": get_text(user, "spin_already")}
-    user["free_spins_used"] = user.get("free_spins_used", 0) + 1
+    consume_free_spin(user)
     chosen = choose_spin_prize()
     prize_index = SPIN_PRIZES.index(chosen)
     result_text = apply_spin_prize(user, chosen)
