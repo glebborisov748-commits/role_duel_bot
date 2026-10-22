@@ -87,7 +87,7 @@ TEXTS = {
             "/switch_style — сменить стиль без потери истории (SUPER PRO/ELITE)"
         ),
         "help_guide_btn": "📖 Подробный гайд",
-        "help_hint": "📖 /help — список всех команд.",
+        "help_hint": "❓ Если непонятно, как пользоваться — жми /help.",
         "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
         "cancel_character_creation_btn": "❌ Отменить",
         "character_creation_cancelled": "❌ Создание персонажа отменено — можешь просто продолжить общение как обычно.",
@@ -95,7 +95,7 @@ TEXTS = {
         "spin_title": "🎰 **Колесо фортуны**",
         "spin_hint": "Крути колесо каждый день и выбивай призы!",
         "webapp_spin_prizes_title": "🎁 Доступные призы:",
-        "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 35–250💵 баксов\n• 🔥 Горячие сцены\n• 2–4⚡ энергетика (редко)\n• 🎁 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)",
+        "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 35–250💵 баксов\n• 🔥 Горячие сцены\n• 2–4⚡ энергетика (редко)\n• 🔥 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)",
         "spin_choose": "Выбери вариант:",
         "spin_nothing": "😢 Ничего... В следующий раз повезёт!",        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+30💵 баксов и +3⚡ энергетика** тебе, ему — **+15💵 баксов и +1⚡ энергетик**!\n\n📊 Приглашено друзей: **{count}**\n💵 Заработано баксов: **{earned_bucks}**\n⚡ Заработано энергетиков: **{earned_energizers}**",
         "choose_lang_label": "🌍 Выбери язык:",
@@ -200,9 +200,8 @@ TEXTS = {
         "intim_free_level": "🎁 Бесплатная сцена за 8 уровень близости!",
         "intim_free_sub": "🎁 Бесплатная сцена по подписке.",
         "intim_left": "🔥 Осталось горячих сцен: {n}",
-        "intim_left_cta": "Хочешь ещё — просто жми /hot 😉",
+        "intim_left_cta": "Чтобы создать новую сцену — жми /hot 😉",
         "intim_continue_btn": "🔁 Продолжить эту сцену",
-        "hot_hint": "🔥 Кстати: команда /hot откроет горячую сцену с персонажем.",
         "intim_need_character": "Сначала создай персонажа через /start",
         "invoice_intim_title": "Горячая сцена",
         "invoice_intim_desc": "Одна горячая сцена с твоим персонажем.",
@@ -294,7 +293,7 @@ TEXTS = {
         "work_tab_catch": "📦 Заказ",
         "work_tab_rhythm": "🚴 Курьер",
         "work_tab_farm": "🌽 Ферма",
-        "work_clicker_hint": "Запомни код и введи его цифры по порядку на клавиатуре — ошибёшься, и код сбросится.",
+        "work_clicker_hint": "Запомни код и введи его цифры по порядку, затем соедини провода по цвету — ошибёшься, и этот шаг начнётся заново.",
         "work_debuff_locked": "🔒 Заблокировано",
         "work_catch_hint": "Веди корзину из стороны в сторону, лови предметы и не лови бомбы 💣! Улитка 🐌 на время замедлит падение.",
         "work_rhythm_hint": "Жми ▲▼, чтобы объезжать препятствия и забирать пассажиров 🙋 в своей полосе. На светофоре жми кнопку вовремя!",
@@ -424,7 +423,7 @@ TEXTS = {
             "/switch_style — change style without losing history (SUPER PRO/ELITE)"
         ),
         "help_guide_btn": "📖 Full guide",
-        "help_hint": "📖 /help — the full list of commands.",
+        "help_hint": "❓ If anything's unclear, tap /help.",
         "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«An elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire.»\n\n✏️ Write the description now — and I'll remember it!",
         "cancel_character_creation_btn": "❌ Cancel",
         "character_creation_cancelled": "❌ Character creation cancelled — feel free to just keep chatting as usual.",
@@ -432,7 +431,7 @@ TEXTS = {
         "spin_title": "🎰 **Spin wheel**",
         "spin_hint": "Spin the wheel every day and win prizes!",
         "webapp_spin_prizes_title": "🎁 Available prizes:",
-        "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 35–250💵 bucks\n• 🔥 Hot scenes\n• 2–4⚡ energizers (rare)\n• 🎁 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)",
+        "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 35–250💵 bucks\n• 🔥 Hot scenes\n• 2–4⚡ energizers (rare)\n• 🔥 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)",
         "spin_choose": "Choose an option:",
         "spin_nothing": "😢 Nothing... Better luck next time!",        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+30💵 bucks and +3⚡ energizers** for you, and **+15💵 bucks and +1⚡ energizer** for them!\n\n📊 Friends invited: **{count}**\n💵 Bucks earned: **{earned_bucks}**\n⚡ Energizers earned: **{earned_energizers}**",
         "choose_lang_label": "🌍 Choose language:",
@@ -537,9 +536,8 @@ TEXTS = {
         "intim_free_level": "🎁 A free scene for reaching closeness level 8!",
         "intim_free_sub": "🎁 A free scene from your subscription.",
         "intim_left": "🔥 Hot scenes left: {n}",
-        "intim_left_cta": "Want more? Just tap /hot 😉",
+        "intim_left_cta": "To create a new scene — tap /hot 😉",
         "intim_continue_btn": "🔁 Continue this scene",
-        "hot_hint": "🔥 By the way: the /hot command unlocks a hot scene with your character.",
         "intim_need_character": "Create your character first via /start",
         "invoice_intim_title": "Hot scene",
         "invoice_intim_desc": "One hot scene with your character.",
@@ -631,7 +629,7 @@ TEXTS = {
         "work_tab_catch": "📦 Delivery",
         "work_tab_rhythm": "🚴 Courier",
         "work_tab_farm": "🌽 Farm",
-        "work_clicker_hint": "Memorize the code and tap its digits in order on the keypad — one mistake and the code resets.",
+        "work_clicker_hint": "Memorize the code, enter its digits in order, then connect the wires by color — one mistake and that step restarts.",
         "work_debuff_locked": "🔒 Locked",
         "work_catch_hint": "Drag the basket side to side, catch the items, and dodge the bombs 💣! A snail 🐌 briefly slows the fall.",
         "work_rhythm_hint": "Press ▲▼ to dodge obstacles and pick up passengers 🙋 in your lane. At the light, press the button at the right moment!",
@@ -761,7 +759,7 @@ TEXTS = {
             "/switch_style — Stil ändern, ohne den Verlauf zu verlieren (SUPER PRO/ELITE)"
         ),
         "help_guide_btn": "📖 Ausführliche Anleitung",
-        "help_hint": "📖 /help — die vollständige Befehlsliste.",
+        "help_hint": "❓ Falls etwas unklar ist, tippe /help.",
         "character_create_prompt": "🎭 **Erstelle deinen eigenen Charakter!**\n\nBeschreibe eine beliebige Figur — aus Anime, Filmen, Spielen oder denk dir selbst eine aus.\nSchreibe Namen, Charakter, Aussehen, Herkunft und beliebige Details.\n\n📝 *Beispiel:*\n«Eine Elfe aus der Welt von The Witcher — weise, ruhig, mit langen silbernen Haaren. Sie liebt Sterne und lange Gespräche am Feuer.»\n\n✏️ Schreibe die Beschreibung jetzt — und ich merke sie mir!",
         "cancel_character_creation_btn": "❌ Abbrechen",
         "character_creation_cancelled": "❌ Charaktererstellung abgebrochen — du kannst einfach normal weiterchatten.",
@@ -769,7 +767,7 @@ TEXTS = {
         "spin_title": "🎰 **Glücksrad**",
         "spin_hint": "Dreh jeden Tag am Rad und gewinne Preise!",
         "webapp_spin_prizes_title": "🎁 Verfügbare Preise:",
-        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 35–250💵 Bucks\n• 🔥 Heiße Szenen\n• 2–4⚡ Energydrinks (selten)\n• 🎁 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)",
+        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 35–250💵 Bucks\n• 🔥 Heiße Szenen\n• 2–4⚡ Energydrinks (selten)\n• 🔥 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)",
         "spin_choose": "Wähle eine Option:",
         "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+30💵 Bucks und +3⚡ Energydrinks** für dich und **+15💵 Bucks und +1⚡ Energydrink** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💵 Verdiente Bucks: **{earned_bucks}**\n⚡ Verdiente Energydrinks: **{earned_energizers}**",
         "choose_lang_label": "🌍 Sprache wählen:",
@@ -874,9 +872,8 @@ TEXTS = {
         "intim_free_level": "🎁 Eine Gratis-Szene für Nähe-Level 8!",
         "intim_free_sub": "🎁 Eine Gratis-Szene aus deinem Abo.",
         "intim_left": "🔥 Verbleibende heiße Szenen: {n}",
-        "intim_left_cta": "Noch mehr? Einfach /hot antippen 😉",
+        "intim_left_cta": "Um eine neue Szene zu erstellen — tippe /hot 😉",
         "intim_continue_btn": "🔁 Diese Szene fortsetzen",
-        "hot_hint": "🔥 Übrigens: der Befehl /hot schaltet eine heiße Szene mit deinem Charakter frei.",
         "intim_need_character": "Erstelle zuerst deinen Charakter über /start",
         "invoice_intim_title": "Heiße Szene",
         "invoice_intim_desc": "Eine heiße Szene mit deinem Charakter.",
@@ -968,7 +965,7 @@ TEXTS = {
         "work_tab_catch": "📦 Lieferung",
         "work_tab_rhythm": "🚴 Kurier",
         "work_tab_farm": "🌽 Farm",
-        "work_clicker_hint": "Merk dir den Code und tippe seine Ziffern der Reihe nach auf der Tastatur — ein Fehler setzt den Code zurück.",
+        "work_clicker_hint": "Merk dir den Code, tippe seine Ziffern der Reihe nach und verbinde dann die Kabel nach Farbe — ein Fehler setzt diesen Schritt zurück.",
         "work_debuff_locked": "🔒 Gesperrt",
         "work_catch_hint": "Zieh den Korb hin und her, fang die Gegenstände und weich den Bomben 💣 aus! Eine Schnecke 🐌 verlangsamt kurz den Fall.",
         "work_rhythm_hint": "Drück ▲▼, um Hindernissen auszuweichen und Fahrgäste 🙋 in deiner Spur aufzunehmen. An der Ampel drück die Taste zur richtigen Zeit!",
@@ -1720,6 +1717,22 @@ INTIM_LOCATIONS = {
                            "охрана — «подожди, кажется, кто-то в коридоре», «тише, нас могут "
                            "услышать» — это только добавляет напряжения, не останавливая сцену.")},
 }
+
+# Какие места физически не подходят под сцену (душ в лесу/в машине и т.п. — нелогично и не должно
+# быть выбираемо вообще, а не "творчески адаптировано" текстом сцены, как было раньше). "any"
+# ("не важно") никогда не блокируется — там место не названо явно, ИИ сам выбирает подходящее.
+INTIM_INCOMPATIBLE_LOCATIONS = {
+    "shower": {"car", "forest", "beach", "elevator", "entryway", "fitting_room", "office"},
+    "bed": {"car", "elevator", "forest", "fitting_room", "office", "beach"},
+    "massage": {"car", "elevator", "entryway", "fitting_room"},
+    "morning": {"car", "elevator", "fitting_room", "office"},
+}
+
+
+def intim_compatible_locations(scene_type):
+    """Список ключей INTIM_LOCATIONS, подходящих под scene_type (включая 'any')."""
+    blocked = INTIM_INCOMPATIBLE_LOCATIONS.get(scene_type, set())
+    return [key for key in INTIM_LOCATIONS if key == "any" or key not in blocked]
 
 # Кто ведёт сцену — это про темп, инициативу и то, ЧЬИ действия описываются как активные, а не про
 # модель согласия: ADULT_CONTENT_RULE (обоюдное согласие, без принуждения) действует одинаково при
@@ -3541,7 +3554,6 @@ async def send_main_menu(chat_id, user):
         f"{get_text(user, 'menu_current_partner', gender=gender_name, world=world_name)}\n"
         f"{get_text(user, 'menu_style_line', style=style_label)}\n"
         f"{xp_badge}\n\n"
-        f"{get_text(user, 'hot_hint')}\n"
         f"{get_text(user, 'help_hint')}\n\n"
         f"{get_text(user, 'menu_write_prompt')}"
     )
@@ -3882,8 +3894,8 @@ SPIN_PRIZES = [
     {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 3, "wheel_label": "2⚡"},
     {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 1, "wheel_label": "4⚡"},
     {"name": "🍗 30 сытости", "name_en": "🍗 30 satiety", "name_de": "🍗 30 Sättigung", "value": 30, "type": "food", "weight": 10, "wheel_label": "🍗+30"},
-    {"name": "🎉 250💵 баксов (ДЖЕКПОТ!)", "name_en": "🎉 250💵 bucks (JACKPOT!)", "name_de": "🎉 250💵 Bucks (JACKPOT!)", "value": 250, "type": "bucks", "weight": 0.3, "wheel_label": "🎉250💵"},
-    {"name": "🎁 PRO на 5 дней", "name_en": "🎁 PRO for 5 days", "name_de": "🎁 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.4, "wheel_label": "🎁PRO"},
+    {"name": "💰🎉 250💵 баксов (ДЖЕКПОТ!)", "name_en": "💰🎉 250💵 bucks (JACKPOT!)", "name_de": "💰🎉 250💵 Bucks (JACKPOT!)", "value": 250, "type": "bucks", "weight": 0.3, "wheel_label": "💰250"},
+    {"name": "🔥 PRO на 5 дней", "name_en": "🔥 PRO for 5 days", "name_de": "🔥 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.4, "wheel_label": "🔥PRO"},
     {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.15, "wheel_label": "✨SUPER"},
     # Эксклюзив именно колеса — нигде в магазине такого разового "всё на максимум" нет, по просьбе
     # пользователя добавить "что-то, что может выпасть только в колесе".
@@ -5296,7 +5308,7 @@ def get_intim_types_kb(user):
 def get_intim_locations_kb(user, scene_type):
     buttons = [InlineKeyboardButton(text=intim_option_label(INTIM_LOCATIONS, key, user),
                                     callback_data=f"intim_loc_{scene_type}:{key}")
-               for key in INTIM_LOCATIONS]
+               for key in intim_compatible_locations(scene_type)]
     rows = [buttons[i:i + 2] for i in range(0, len(buttons), 2)]
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -5473,7 +5485,7 @@ async def choose_intim_type(call: types.CallbackQuery):
 async def choose_intim_location(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     scene_type, _, location = call.data[len("intim_loc_"):].partition(":")
-    if scene_type not in INTIM_SCENES or location not in INTIM_LOCATIONS:
+    if scene_type not in INTIM_SCENES or location not in intim_compatible_locations(scene_type):
         await call.answer()
         return
     await safe_delete(call.message)
@@ -5622,13 +5634,6 @@ def build_intim_prompt(user, scene_type, location, dominant="any", arc_position=
     tension = place.get("tension")
     if tension:
         prompt += f"{tension}\n"
-    if location != "any":
-        prompt += (
-            f"Если «{scene['ru']}» буквально не вписывается в «{place['ru']}» (например, нет "
-            "сантехники для душа) — не описывай нестыковку в лоб и не ломай сцену объяснениями, "
-            "а правдоподобно адаптируй детали под место (например, естественный водоём, дождь, "
-            "импровизация) так, чтобы сама суть выбранной сцены сохранилась.\n"
-        )
     prompt += (
         f"Собеседник специально выбрал в меню именно «{scene['ru']}» — раскрывай сразу это действие, уже "
         "в первой паре «действие + реплика», без вступления на постороннюю тему и без более мягкой замены "
@@ -5680,7 +5685,9 @@ async def generate_intim_scene(call, user, scene_type, location="any", dominant=
         arc_position = (arc_progress % INTIM_ARC_LENGTH) + 1
         user["intim_arc_progress"] = arc_progress + 1
     if scene_type == "random":
-        scene_type = random.choice([key for key in INTIM_SCENES if key != "random"])
+        pool = [key for key in INTIM_SCENES
+                if key != "random" and location in intim_compatible_locations(key)]
+        scene_type = random.choice(pool)
     chat_id = call.message.chat.id
     status_msg = await bot.send_message(chat_id, get_text(user, "intim_generating"))
     typing_task = asyncio.create_task(_keep_typing(chat_id))
@@ -11314,6 +11321,21 @@ WORK_PAGE_HTML = r'''<!doctype html>
     40% { filter: drop-shadow(0 0 6px #e8383d) brightness(.7); background: #3d1515; }
   }
 
+  #hacker-wires { display: none; width: 100%; justify-content: space-between; gap: 24px; }
+  #hacker-wires.active { display: flex; }
+  .hacker-wire-col { display: flex; flex-direction: column; gap: 10px; }
+  .hacker-wire {
+    width: 48px;
+    height: 34px;
+    border-radius: 6px;
+    border: 2px solid rgba(255,255,255,.25);
+    cursor: pointer;
+    transition: transform .1s ease, box-shadow .15s ease, opacity .2s ease;
+  }
+  .hacker-wire.selected { transform: scale(1.12); box-shadow: 0 0 10px #fff; }
+  .hacker-wire.connected { opacity: .3; pointer-events: none; }
+  .hacker-wire.wire-wrong { animation: key-caught .3s ease; }
+
   .debuffed { opacity: .45; pointer-events: none; filter: grayscale(.5); transition: opacity .2s ease; }
 
   #catch-hint, #courier-hint, #clicker-hint { font-size: 13px; opacity: .7; margin-bottom: 10px; }
@@ -11398,62 +11420,53 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
   #courier-road {
     position: relative;
-    height: 180px;
+    height: 270px;
     border-radius: 14px;
     background: #4a4a4a;
     margin: 0 0 10px;
     overflow: hidden;
   }
-  #courier-light {
-    position: absolute;
-    top: 6px;
-    right: 8px;
-    font-size: 26px;
-    z-index: 4;
-    display: none;
-    background: rgba(0,0,0,.55);
-    border-radius: 50%;
-    width: 38px;
-    height: 38px;
-    line-height: 38px;
-    text-align: center;
-  }
-  #courier-light.blink { animation: courier-warning-blink .4s ease infinite; }
-  .courier-lane {
+  /* 3 реальные полосы движения (вернули по фидбэку) + деревянные обочины СВЕРХУ И СНИЗУ дороги,
+     где именно и стоят получатели -- они больше не на самой проезжей части, см.
+     COURIER_RECIPIENT_EDGE_Y/spawnCourierTraffic. */
+  .courier-tree-zone {
     position: absolute;
     left: 0;
     right: 0;
-    height: 65px;
-    border-bottom: 2px dashed rgba(255,255,255,.25);
-  }
-  .courier-lane[data-lane="0"] { top: 0; }
-  .courier-lane[data-lane="1"] { top: 65px; border-bottom: 2px solid rgba(255,255,255,.4); }
-  .courier-shoulder {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 130px;
-    height: 50px;
+    height: 30px;
     background: repeating-linear-gradient(45deg, #5c7a3f, #5c7a3f 10px, #4f6b36 10px, #4f6b36 20px);
+    z-index: 1;
   }
-  .courier-shoulder::before {
+  .courier-tree-zone::before {
     content: "🌳 🌳 🌳 🌳 🌳 🌳 🌳 🌳";
     position: absolute;
-    top: 2px;
+    top: -2px;
     left: 0;
     right: 0;
-    font-size: 18px;
+    font-size: 16px;
     letter-spacing: 10px;
     white-space: nowrap;
     overflow: hidden;
   }
+  #courier-tree-top { top: 0; }
+  #courier-tree-bottom { top: 240px; }
+  .courier-lane {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 70px;
+    border-bottom: 2px dashed rgba(255,255,255,.25);
+  }
+  .courier-lane[data-lane="0"] { top: 30px; }
+  .courier-lane[data-lane="1"] { top: 100px; }
+  .courier-lane[data-lane="2"] { top: 170px; border-bottom: 2px solid rgba(255,255,255,.4); }
   #courier-rider {
     position: absolute;
     left: 8%;
-    top: 30px;
+    top: 65px;
     font-size: 34px;
     transform: translate(-50%, -50%) scaleX(-1);
-    transition: top .18s ease, transform .15s ease;
+    transition: top .18s ease, transform .25s ease;
     z-index: 3;
   }
   #courier-rider.crash { animation: courier-crash .3s ease; }
@@ -11467,8 +11480,59 @@ WORK_PAGE_HTML = r'''<!doctype html>
     0%, 100% { filter: none; }
     50% { filter: drop-shadow(0 0 10px #1dd1a1) brightness(1.3); }
   }
-  /* Лёгкое "притормаживание" при подъезде к получателю -- см. courierCollisionTick. */
-  #courier-rider.braking { transform: translate(-50%, -50%) scaleX(-1) scaleX(.88); }
+  /* Торможение у получателя -- сделали заметно сильнее и дольше (по фидбэку "торможение слишком
+     слабое"): сильнее сжатие + лёгкий наклон + притемнение, вместо почти незаметного scaleX(.88). */
+  #courier-rider.braking {
+    transform: translate(-50%, -50%) scaleX(-1) scale(.68) rotate(-8deg);
+    filter: brightness(.75) drop-shadow(0 0 4px #000);
+  }
+  .courier-handoff {
+    position: absolute;
+    font-size: 26px;
+    transform: translate(-50%, -50%);
+    animation: courier-handoff-fly .7s ease forwards;
+    z-index: 4;
+    pointer-events: none;
+  }
+  @keyframes courier-handoff-fly {
+    0% { transform: translate(-50%, -50%) scale(.6); opacity: 0; }
+    30% { transform: translate(-50%, -80%) scale(1.3); opacity: 1; }
+    100% { transform: translate(-50%, -160%) scale(.8); opacity: 0; }
+  }
+  /* Стоп-линия на дороге -- физически едет вместе с остальным движением (та же courier-scroll
+     анимация), со светофором над ней. Останавливаться нужно именно когда она реально у руля, а
+     не "в любой момент", см. courierCollisionTick/pressCourierStopline. */
+  .courier-stopline {
+    position: absolute;
+    top: 30px;
+    bottom: 30px;
+    left: 104%;
+    width: 6px;
+    z-index: 2;
+    animation-name: courier-scroll;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+  }
+  .courier-stopline-bar {
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+    background: repeating-linear-gradient(0deg, #fff, #fff 10px, transparent 10px, transparent 20px);
+    opacity: .85;
+  }
+  .courier-stopline-light {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 22px;
+    background: rgba(0,0,0,.55);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+  }
+  .courier-stopline.too-early .courier-stopline-light { animation: courier-warning-blink .3s ease 2; }
   #courier-gameover {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -11509,7 +11573,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
      pressCourierLight/resetCourierLight) -- по фидбэку "при светофоре всё должно стоять". */
   #courier-road.light-frozen .courier-obstacle,
   #courier-road.light-frozen .courier-recipient,
-  #courier-road.light-frozen .courier-car { animation-play-state: paused; }
+  #courier-road.light-frozen .courier-car,
+  #courier-road.light-frozen .courier-stopline { animation-play-state: paused; }
   .courier-warning {
     position: absolute;
     left: 96%;
@@ -11524,7 +11589,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   #courier-controls { display: flex; gap: 14px; justify-content: center; align-items: center; margin-bottom: 10px; }
   #courier-updown { display: flex; flex-direction: column; gap: 10px; }
-  #courier-up, #courier-down, #courier-light-btn {
+  #courier-up, #courier-down, #courier-stop-btn {
     width: 76px;
     height: 58px;
     border-radius: 12px;
@@ -11534,11 +11599,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     font-size: 24px;
     font-weight: 700;
   }
-  /* visibility, не display -- кнопка держит свой слот в #courier-controls всегда, иначе её
-     появление сдвигает стрелки вверх/вниз (см. pressCourierLight/setCourierLightPhase). */
-  #courier-light-btn { visibility: hidden; pointer-events: none; background: #e8383d; }
-  #courier-light-btn.visible { visibility: visible; pointer-events: auto; }
-  #courier-light-btn.go { background: #1dd1a1; }
+  #courier-stop-btn { background: #e8383d; }
   #courier-up:disabled, #courier-down:disabled { opacity: .35; }
   #catch-feedback, #courier-feedback, #clicker-feedback { margin-top: 12px; font-size: 14px; font-weight: 700; min-height: 20px; }
   #catch-feedback.locked, #courier-feedback.locked, #clicker-feedback.locked { color: #e8383d; }
@@ -11711,6 +11772,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     <div id="hacker-terminal">
       <div id="hacker-code"></div>
       <div id="hacker-keyboard"></div>
+      <div id="hacker-wires"><div class="hacker-wire-col" id="hacker-wires-left"></div><div class="hacker-wire-col" id="hacker-wires-right"></div></div>
     </div>
     <div id="clicker-feedback"></div>
   </div>
@@ -11727,15 +11789,16 @@ WORK_PAGE_HTML = r'''<!doctype html>
     <div id="courier-hint"></div>
     <div id="courier-progress"><div id="courier-progress-fill"></div></div>
     <div id="courier-road">
+      <div class="courier-tree-zone" id="courier-tree-top"></div>
       <div class="courier-lane" data-lane="0"></div>
       <div class="courier-lane" data-lane="1"></div>
-      <div class="courier-shoulder"></div>
+      <div class="courier-lane" data-lane="2"></div>
+      <div class="courier-tree-zone" id="courier-tree-bottom"></div>
       <div id="courier-rider">🛵</div>
-      <div id="courier-light">🟢</div>
       <div id="courier-gameover"></div>
     </div>
     <div id="courier-controls">
-      <button id="courier-light-btn"></button>
+      <button id="courier-stop-btn">🛑</button>
       <div id="courier-updown">
         <button id="courier-up">▲</button>
         <button id="courier-down">▼</button>
@@ -11787,15 +11850,109 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var HACKER_DIGITS = 10; // keypad shows digits 0-9, shuffled every new code
   var hackerCode = [];
   var hackerCodeIndex = 0;
+  // Вторая фаза взлома после кода -- соединить провода по цвету (просили добавить помимо
+  // комбинации цифр). Оплата теперь идёт один раз за весь взлом (код + провода), а не за код.
+  var HACKER_WIRE_COLORS = ["#e8383d", "#f6b93b", "#3dffb0", "#1e90ff", "#be2edd"];
+  var HACKER_WIRE_COUNT = 4;
+  var hackerWires = []; // цвета в этом раунде
+  var hackerWireRightOrder = []; // перемешанный порядок цветов справа
+  var hackerWireSelected = null; // индекс выбранного провода слева
+  var hackerWireConnected = 0;
+
+  function startHackerWires() {
+    hackerWires = HACKER_WIRE_COLORS.slice(0, HACKER_WIRE_COUNT);
+    hackerWireRightOrder = shuffleArray(hackerWires.slice());
+    hackerWireSelected = null;
+    hackerWireConnected = 0;
+    renderHackerWires();
+    document.getElementById("hacker-wires").classList.add("active");
+    document.getElementById("hacker-keyboard").style.display = "none";
+  }
+
+  function shuffleArray(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+    return arr;
+  }
+
+  function renderHackerWires() {
+    var left = document.getElementById("hacker-wires-left");
+    var right = document.getElementById("hacker-wires-right");
+    left.innerHTML = "";
+    right.innerHTML = "";
+    hackerWires.forEach(function (color, i) {
+      var b = document.createElement("div");
+      b.className = "hacker-wire" + (i === hackerWireSelected ? " selected" : "");
+      b.style.background = color;
+      b.onclick = function () { pressHackerWireLeft(i); };
+      left.appendChild(b);
+    });
+    hackerWireRightOrder.forEach(function (color, i) {
+      var b = document.createElement("div");
+      b.className = "hacker-wire";
+      b.style.background = color;
+      b.onclick = function () { pressHackerWireRight(i); };
+      right.appendChild(b);
+    });
+  }
+
+  function pressHackerWireLeft(i) {
+    if (debuffState.clicker) return;
+    var el = document.getElementById("hacker-wires-left").children[i];
+    if (!el || el.classList.contains("connected")) return;
+    hackerWireSelected = i;
+    renderHackerWires();
+  }
+
+  function pressHackerWireRight(i) {
+    if (debuffState.clicker || hackerWireSelected === null) return;
+    var rightEl = document.getElementById("hacker-wires-right").children[i];
+    var leftEl = document.getElementById("hacker-wires-left").children[hackerWireSelected];
+    if (!rightEl || rightEl.classList.contains("connected")) return;
+    if (hackerWires[hackerWireSelected] === hackerWireRightOrder[i]) {
+      leftEl.classList.add("connected");
+      rightEl.classList.add("connected");
+      hackerWireSelected = null;
+      hackerWireConnected++;
+      if (hackerWireConnected >= hackerWires.length) {
+        finishHackerCombo();
+      } else {
+        renderHackerWires();
+      }
+    } else {
+      rightEl.classList.add("wire-wrong");
+      setTimeout(function () { rightEl.classList.remove("wire-wrong"); }, 300);
+      triggerDebuff("clicker", "clicker-feedback", "hacker-wires",
+        rightEl.offsetLeft + rightEl.offsetWidth / 2, rightEl.offsetTop, document.getElementById("hacker-terminal"));
+      hackerWireSelected = null;
+      startHackerWires();
+    }
+  }
+
+  function finishHackerCombo() {
+    var terminal = document.getElementById("hacker-terminal");
+    registerHit("hacker_combo", terminal ? terminal.offsetWidth / 2 : 0, 0, terminal);
+    if (terminal) {
+      terminal.classList.add("access-granted");
+      setTimeout(function () { terminal.classList.remove("access-granted"); }, 400);
+    }
+    setTimeout(function () {
+      document.getElementById("hacker-wires").classList.remove("active");
+      document.getElementById("hacker-keyboard").style.display = "grid";
+      newHackerCode();
+      buildHackerKeyboard();
+    }, 400);
+  }
 
   // ---- Courier ----
-  // 2 полосы вместо 3 (3-я стала обочиной, см. .courier-shoulder) -- по фидбэку сузили дорогу.
-  // Отзеркаливание обратного пути убрано совсем (courierFacingLeft раньше здесь был) -- тоже по
-  // фидбэку: курьер теперь всегда в одной ориентации, "дуга" просто начинает новый отрезок.
-  var COURIER_LANE_Y = [33, 98]; // px centers, matches 2x65px lanes in a 180px-tall #courier-road
-  var COURIER_RECIPIENT_EDGE_Y = [12, 119]; // получатели стоят у края полосы/дороги, а не посреди
-  // неё (по фидбэку "люди должны стоять на краях дороги") -- lane 0 к верхнему краю, lane 1 к
-  // нижнему (к обочине), а не в геометрическом центре своей полосы, как обычные препятствия.
+  // Вернули 3 полосы движения (по фидбэку "верни обратно три полосы"). Получатели теперь стоят
+  // НЕ на самой дороге, а в деревянных обочинах сверху и снизу (см. .courier-tree-zone в CSS) --
+  // отзеркаливание обратного пути (courierFacingLeft) по-прежнему убрано, "дуга" просто начинает
+  // новый отрезок в той же ориентации.
+  var COURIER_LANE_Y = [65, 135, 205]; // px centers, matches 3x70px lanes in a 270px-tall #courier-road
+  var COURIER_TREE_TOP_Y = 15, COURIER_TREE_BOTTOM_Y = 255; // центры деревянных обочин сверху/снизу
   var courierLane = 1;
   var COURIER_OBSTACLE_EMOJIS = ["🚧", "🪨", "🛢", "🌳"]; // cosmetic variety only, same hitbox/behavior
   var COURIER_RECIPIENT_EMOJI = "🙋";
@@ -11810,14 +11967,17 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var COURIER_CAR_CHANCE = 0.5; // rolled on its own rarer interval, see courierCarInterval
   var COURIER_CAR_WARN_MS = 1100;
   var courierWarningTimeoutIds = []; // pending warning->spawn timers for oncoming cars, see stopAllGames
-  var courierLight = "idle"; // idle -> warning -> stop -> holding -> go -> idle, see setCourierLightPhase()
-  var courierLightTimeoutId = null;
-  var courierStopped = false;
-  var COURIER_LIGHT_MIN_GAP_MS = 7000, COURIER_LIGHT_GAP_RANGE_MS = 6000; // idle gap between light cycles
-  var COURIER_LIGHT_WARN_MS = 900; // yellow heads-up before it actually turns red
-  var COURIER_LIGHT_STOP_MS = 1400; // window to press the button after it turns red
-  var COURIER_LIGHT_HOLD_MIN_MS = 1000, COURIER_LIGHT_HOLD_RANGE_MS = 1500; // red-held before green
-  var COURIER_LIGHT_GO_MS = 1500; // window to press again once green -- being slow to go is NOT penalized
+  // Светофор переделан в физическую стоп-линию, которая едет по дороге как и всё остальное (по
+  // фидбэку "должен быть именно как стоп-линия на пути, а не нажми в любой момент"). Цвет считается
+  // от РАССТОЯНИЯ линии до руля (см. courierCollisionTick), а не от отдельного таймера -- значит
+  // "красный" это буквально "линия физически рядом с рулём", жми СЕЙЧАС, а не когда угодно.
+  var COURIER_STOPLINE_MIN_GAP_MS = 7000, COURIER_STOPLINE_GAP_RANGE_MS = 6000;
+  var COURIER_STOPLINE_TRAVEL_S = 3.4; // едет медленнее обычных препятствий -- больше времени на реакцию
+  var COURIER_STOPLINE_WARN_PX = 150; // дальше этого -- зелёный
+  var COURIER_STOPLINE_STOP_PX = 70; // ближе этого -- красный, нужно остановиться СЕЙЧАС
+  var COURIER_STOPLINE_HOLD_MIN_MS = 1000, COURIER_STOPLINE_HOLD_RANGE_MS = 1500; // стоим на красном
+  var courierStoplineTimeoutId = null;
+  var courierStoplineFrozen = false; // true только пока стоим на красной линии
 
   var BASKET_WIDTH_PCT = 26;
   var CATCH_EMOJIS = ["🍎", "💧", "🎁", "🍪", "🥤", "🍕", "🧀", "🥐"];
@@ -11837,7 +11997,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var BIG_HAZARD_CHANCE = 0.05; // rolled only when the spawn didn't already roll a bomb/slowfall
   var BIG_HAZARD_EMOJIS = ["⚫", "💣"]; // "cannonball" and "big bomb" -- same wide-miss treatment
   var BIG_HAZARD_WARN_MS = 900;
-  var BIG_HAZARD_MARGIN_PCT = 16; // how far past the basket's own edges still counts as a hit
+  var BIG_HAZARD_MARGIN_PCT = 3; // how far past the basket's own edges still counts as a hit --
+  // was 16, which widened the danger zone to ~58% of the field (basket's own ~26% + 16% each
+  // side), so big hazards blew up even with the basket parked at the far edge of the map; 3%
+  // keeps a small forgiving buffer without turning most of the field into a blast radius.
   var bigHazardTimeoutIds = []; // pending warning->spawn timers, cleared on tab switch -- see stopAllGames
 
   // ---- Farm (watering can drag) ----
@@ -11948,7 +12111,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (courierRafId) { cancelAnimationFrame(courierRafId); courierRafId = null; }
     if (courierSpawnInterval) { clearInterval(courierSpawnInterval); courierSpawnInterval = null; }
     if (courierCarInterval) { clearInterval(courierCarInterval); courierCarInterval = null; }
-    if (courierLightTimeoutId) { clearTimeout(courierLightTimeoutId); courierLightTimeoutId = null; }
+    if (courierStoplineTimeoutId) { clearTimeout(courierStoplineTimeoutId); courierStoplineTimeoutId = null; }
     if (courierArrivalTimeoutId) { clearTimeout(courierArrivalTimeoutId); courierArrivalTimeoutId = null; }
     courierWarningTimeoutIds.forEach(function (id) { clearTimeout(id); });
     courierWarningTimeoutIds = [];
@@ -11970,7 +12133,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (catchBasketEl) catchBasketEl.classList.remove("magnet-active");
     var road = document.getElementById("courier-road");
     if (road) {
-      var obstacles = road.querySelectorAll(".courier-obstacle, .courier-recipient, .courier-car, .courier-warning");
+      var obstacles = road.querySelectorAll(".courier-obstacle, .courier-recipient, .courier-car, .courier-warning, .courier-stopline, .courier-handoff");
       obstacles.forEach(function (el) { el.remove(); });
       road.classList.remove("light-frozen");
     }
@@ -11978,9 +12141,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (rider) rider.classList.remove("stopped", "crash", "arriving", "braking");
     var gameoverEl = document.getElementById("courier-gameover");
     if (gameoverEl) gameoverEl.classList.remove("shown");
-    courierStopped = false;
-    courierLightFrozenIntervals = false;
-    setCourierLightPhase("idle");
+    courierStoplineFrozen = false;
     farmCanDragging = false;
   }
 
@@ -12073,14 +12234,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
       hackerCodeIndex++;
       renderHackerCode();
       if (hackerCodeIndex >= hackerCode.length) {
-        registerHit("hacker_combo", keyEl.offsetLeft + keyEl.offsetWidth / 2, keyEl.offsetTop,
-          document.getElementById("hacker-terminal"));
-        var terminal = document.getElementById("hacker-terminal");
-        if (terminal) {
-          terminal.classList.add("access-granted");
-          setTimeout(function () { terminal.classList.remove("access-granted"); }, 400);
-        }
-        setTimeout(function () { newHackerCode(); buildHackerKeyboard(); }, 250);
+        // Код угадан -- не платим ещё, сначала вторая фаза (соединить провода), см. startHackerWires().
+        setTimeout(function () { startHackerWires(); }, 250);
       }
     } else {
       keyEl.classList.add("wrong");
@@ -12093,6 +12248,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
 
   function startHacker() {
+    var wires = document.getElementById("hacker-wires");
+    if (wires) wires.classList.remove("active");
+    var kb = document.getElementById("hacker-keyboard");
+    if (kb) kb.style.display = "grid";
     newHackerCode();
     buildHackerKeyboard();
   }
@@ -12258,13 +12417,13 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   // ---------- Courier ----------
   function setCourierLane(lane) {
-    courierLane = Math.max(0, Math.min(1, lane));
+    courierLane = Math.max(0, Math.min(2, lane));
     var rider = document.getElementById("courier-rider");
     if (rider) rider.style.top = COURIER_LANE_Y[courierLane] + "px";
     var upBtn = document.getElementById("courier-up");
     var downBtn = document.getElementById("courier-down");
     if (upBtn) upBtn.disabled = courierLane === 0;
-    if (downBtn) downBtn.disabled = courierLane === 1;
+    if (downBtn) downBtn.disabled = courierLane === 2;
   }
 
   function setCourierProgress() {
@@ -12313,17 +12472,19 @@ WORK_PAGE_HTML = r'''<!doctype html>
     // (просто одно из двух не достанется, без штрафа).
     var lane;
     if (spawnRecipient) {
-      lane = Math.floor(Math.random() * 2);
+      lane = Math.floor(Math.random() * 3);
     } else {
       var occupied = {};
       road.querySelectorAll(".courier-obstacle").forEach(function (el) { occupied[el.dataset.lane] = true; });
-      var freeLanes = [0, 1].filter(function (l) { return !occupied[l]; });
-      if (freeLanes.length === 0) return; // обе полосы уже заняты -- пропускаем тик
+      var freeLanes = [0, 1, 2].filter(function (l) { return !occupied[l]; });
+      if (freeLanes.length === 0) return; // все полосы заняты -- пропускаем тик
       lane = freeLanes[Math.floor(Math.random() * freeLanes.length)];
     }
     var el = document.createElement("div");
     el.dataset.lane = String(lane);
-    el.style.top = (spawnRecipient ? COURIER_RECIPIENT_EDGE_Y[lane] : COURIER_LANE_Y[lane]) + "px";
+    var edgeY = lane === 0 ? COURIER_TREE_TOP_Y : (lane === 2 ? COURIER_TREE_BOTTOM_Y :
+      (Math.random() < 0.5 ? COURIER_TREE_TOP_Y : COURIER_TREE_BOTTOM_Y));
+    el.style.top = (spawnRecipient ? edgeY : COURIER_LANE_Y[lane]) + "px";
     el.style.animationDuration = (2.3 + Math.random() * 0.6) + "s";
     el.addEventListener("animationend", function () { if (el.parentNode) el.remove(); });
     if (spawnRecipient) {
@@ -12342,7 +12503,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (Math.random() >= COURIER_CAR_CHANCE) return; // доп. редкость сверху и так нечастого интервала
     var road = document.getElementById("courier-road");
     if (!road) return;
-    var lane = Math.floor(Math.random() * 2);
+    var lane = Math.floor(Math.random() * 3);
     var warn = document.createElement("div");
     warn.className = "courier-warning";
     warn.textContent = "❗";
@@ -12397,6 +12558,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
             courierRecipientsDelivered++;
             registerHit("courier", rider.offsetLeft, rider.offsetTop, road);
             if (tip) registerHit("courier", rider.offsetLeft, rider.offsetTop, road); // реальные чаевые, не косметика
+            spawnCourierHandoff(rider, road);
             setCourierProgress();
             if (courierRecipientsDelivered >= courierRecipientsTotal) completeCourierLeg();
           }
@@ -12407,6 +12569,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
         }
       }
       rider.classList.toggle("braking", approaching);
+      courierStoplineTick(riderCenterX);
     }
     courierRafId = requestAnimationFrame(courierCollisionTick);
   }
@@ -12430,100 +12593,96 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (rider && road) registerPenalty("courier", rider.offsetLeft, rider.offsetTop, road);
   }
 
-  var courierLightFrozenIntervals = false; // true только пока спавн реально приостановлен -- см.
-                                             // pressCourierLight/resetCourierLight
+  // Короткая анимация "вручения" посылки -- всплывающая 📦 над получателем при доставке (по
+  // фидбэку "нужна анимация вручения заказа", раньше была только подсветка получателя).
+  function spawnCourierHandoff(rider, road) {
+    var el = document.createElement("div");
+    el.className = "courier-handoff";
+    el.textContent = "📦";
+    el.style.left = rider.offsetLeft + "px";
+    el.style.top = rider.offsetTop + "px";
+    road.appendChild(el);
+    setTimeout(function () { if (el.parentNode) el.remove(); }, 700);
+  }
 
-  // ---- Светофор: жми кнопку, когда загорится красный (останавливаемся), и снова -- когда
-  // загорится зелёный (едем дальше). По фидбэку теперь реально всё замирает на красном (см.
-  // .light-frozen в CSS + паузу courierSpawnInterval/courierCarInterval ниже), а не только кнопка
-  // поверх игры, как раньше.
-  function setCourierLightPhase(phase) {
-    courierLight = phase;
-    var light = document.getElementById("courier-light");
-    var btn = document.getElementById("courier-light-btn");
-    if (!light || !btn) return;
-    if (phase === "idle") {
-      light.style.display = "none";
-      light.classList.remove("blink");
-      btn.classList.remove("visible", "go");
-    } else if (phase === "warning") {
-      light.style.display = "block";
-      light.textContent = "🟡";
-      light.classList.add("blink");
-      btn.classList.add("visible");
-      btn.classList.remove("go");
-      btn.textContent = "🛑";
-    } else if (phase === "stop") {
-      light.textContent = "🔴";
-      light.classList.remove("blink");
-    } else if (phase === "holding") {
-      btn.classList.add("go");
-      btn.textContent = "🟢";
-    } else if (phase === "go") {
-      light.textContent = "🟢";
+  // ---- Стоп-линия (вместо старого "светофора-кнопки, жми когда угодно") ----
+  function scheduleCourierStopline() {
+    if (courierStoplineTimeoutId) clearTimeout(courierStoplineTimeoutId);
+    var gap = COURIER_STOPLINE_MIN_GAP_MS + Math.random() * COURIER_STOPLINE_GAP_RANGE_MS;
+    courierStoplineTimeoutId = setTimeout(spawnCourierStopline, gap);
+  }
+
+  function spawnCourierStopline() {
+    courierStoplineTimeoutId = null;
+    var road = document.getElementById("courier-road");
+    if (!road) return;
+    var el = document.createElement("div");
+    el.className = "courier-stopline";
+    el.dataset.phase = "green";
+    el.innerHTML = '<div class="courier-stopline-bar"></div><div class="courier-stopline-light">🟢</div>';
+    el.style.animationDuration = COURIER_STOPLINE_TRAVEL_S + "s";
+    el.addEventListener("animationend", function () {
+      if (el.parentNode) el.remove();
+      scheduleCourierStopline();
+    });
+    road.appendChild(el);
+  }
+
+  function updateStoplineIcon(el, phase) {
+    var icon = el.querySelector(".courier-stopline-light");
+    if (!icon) return;
+    icon.textContent = phase === "red" ? "🔴" : (phase === "yellow" ? "🟡" : "🟢");
+  }
+
+  // Цвет линии считается от РЕАЛЬНОГО расстояния до руля (не от отдельного таймера) -- физически
+  // "красный" означает "линия вплотную перед рулём, стой СЕЙЧАС" (по фидбэку "должна быть именно
+  // как стоп-линия на пути, а не нажми в любой момент").
+  function courierStoplineTick(riderCenterX) {
+    var el = document.querySelector(".courier-stopline:not([data-missed])");
+    if (!el || el.dataset.frozen === "1") return;
+    var r = el.getBoundingClientRect();
+    var elCenterX = r.left + r.width / 2;
+    var dist = elCenterX - riderCenterX;
+    var phase = dist > COURIER_STOPLINE_WARN_PX ? "green" : (dist > COURIER_STOPLINE_STOP_PX ? "yellow" : "red");
+    if (phase !== el.dataset.phase) {
+      el.dataset.phase = phase;
+      updateStoplineIcon(el, phase);
+    }
+    if (dist < -30 && !el.dataset.stopped) {
+      // проехал стоп-линию на красный, не остановившись -- авария, та же, что и столкновение
+      el.dataset.missed = "1";
+      courierGameOver();
     }
   }
 
-  function scheduleCourierLight() {
-    if (courierLightTimeoutId) clearTimeout(courierLightTimeoutId);
-    var gap = COURIER_LIGHT_MIN_GAP_MS + Math.random() * COURIER_LIGHT_GAP_RANGE_MS;
-    courierLightTimeoutId = setTimeout(function () {
-      setCourierLightPhase("warning");
-      courierLightTimeoutId = setTimeout(function () {
-        setCourierLightPhase("stop");
-        courierLightTimeoutId = setTimeout(courierLightRanRed, COURIER_LIGHT_STOP_MS);
-      }, COURIER_LIGHT_WARN_MS);
-    }, gap);
-  }
-
-  function courierLightRanRed() {
-    courierGameOver(); // не успел остановиться на красный -- та же авария, что и столкновение
-    resetCourierLight();
-  }
-
-  function resetCourierLight() {
-    courierLightTimeoutId = null;
+  function pressCourierStopline() {
+    var el = document.querySelector(".courier-stopline:not([data-missed]):not([data-stopped])");
+    if (!el || courierStoplineFrozen) return;
+    if (el.dataset.phase !== "red") {
+      el.classList.add("too-early");
+      setTimeout(function () { el.classList.remove("too-early"); }, 300);
+      return; // логично: нельзя "остановиться" там, где линии ещё физически нет рядом
+    }
+    el.dataset.stopped = "1";
+    el.dataset.frozen = "1";
     var rider = document.getElementById("courier-rider");
-    if (rider) rider.classList.remove("stopped");
-    courierStopped = false;
     var road = document.getElementById("courier-road");
-    if (road) road.classList.remove("light-frozen");
-    if (courierLightFrozenIntervals) {
-      courierLightFrozenIntervals = false;
+    if (rider) rider.classList.add("stopped");
+    if (road) road.classList.add("light-frozen");
+    if (courierSpawnInterval) { clearInterval(courierSpawnInterval); courierSpawnInterval = null; }
+    if (courierCarInterval) { clearInterval(courierCarInterval); courierCarInterval = null; }
+    courierStoplineFrozen = true;
+    var hold = COURIER_STOPLINE_HOLD_MIN_MS + Math.random() * COURIER_STOPLINE_HOLD_RANGE_MS;
+    setTimeout(function () {
+      el.dataset.frozen = "0";
+      el.dataset.phase = "green";
+      updateStoplineIcon(el, "green");
+      if (rider) rider.classList.remove("stopped");
+      if (road) road.classList.remove("light-frozen");
       if (!courierSpawnInterval) courierSpawnInterval = setInterval(spawnCourierTraffic, 900);
       if (!courierCarInterval) courierCarInterval = setInterval(spawnCourierCarMaybe, 4000);
-    }
-    setCourierLightPhase("idle");
-    scheduleCourierLight();
-  }
-
-  function pressCourierLight() {
-    var rider = document.getElementById("courier-rider");
-    var road = document.getElementById("courier-road");
-    if (courierLight === "stop") {
-      if (courierLightTimeoutId) { clearTimeout(courierLightTimeoutId); courierLightTimeoutId = null; }
-      if (rider) rider.classList.add("stopped");
-      courierStopped = true;
-      if (road) road.classList.add("light-frozen");
-      if (courierSpawnInterval) { clearInterval(courierSpawnInterval); courierSpawnInterval = null; }
-      if (courierCarInterval) { clearInterval(courierCarInterval); courierCarInterval = null; }
-      courierLightFrozenIntervals = true;
-      setCourierLightPhase("holding");
-      var hold = COURIER_LIGHT_HOLD_MIN_MS + Math.random() * COURIER_LIGHT_HOLD_RANGE_MS;
-      courierLightTimeoutId = setTimeout(function () {
-        setCourierLightPhase("go");
-        courierLightTimeoutId = setTimeout(resetCourierLight, COURIER_LIGHT_GO_MS);
-      }, hold);
-    } else if (courierLight === "holding") {
-      // стартанул раньше, чем реально загорелся зелёный -- авария (resetCourierLight ниже сам
-      // снимет заморозку движения, см. courierLightFrozenIntervals)
-      if (courierLightTimeoutId) { clearTimeout(courierLightTimeoutId); courierLightTimeoutId = null; }
-      courierGameOver();
-      resetCourierLight();
-    } else if (courierLight === "go") {
-      if (courierLightTimeoutId) { clearTimeout(courierLightTimeoutId); courierLightTimeoutId = null; }
-      resetCourierLight();
-    }
+      courierStoplineFrozen = false;
+    }, hold);
   }
 
   function startCourier() {
@@ -12533,9 +12692,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (rider) rider.classList.remove("stopped", "crash", "arriving", "braking");
     var road = document.getElementById("courier-road");
     if (road) road.classList.remove("light-frozen");
-    courierLightFrozenIntervals = false;
-    setCourierLightPhase("idle");
-    scheduleCourierLight();
+    courierStoplineFrozen = false;
+    scheduleCourierStopline();
     courierSpawnInterval = setInterval(spawnCourierTraffic, 900);
     courierCarInterval = setInterval(spawnCourierCarMaybe, 4000);
     courierCollisionTick();
@@ -12544,7 +12702,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function bindCourierControls() {
     document.getElementById("courier-up").onclick = function () { setCourierLane(courierLane - 1); };
     document.getElementById("courier-down").onclick = function () { setCourierLane(courierLane + 1); };
-    document.getElementById("courier-light-btn").onclick = pressCourierLight;
+    document.getElementById("courier-stop-btn").onclick = pressCourierStopline;
   }
 
   // ---------- Farm ----------
