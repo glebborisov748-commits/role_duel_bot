@@ -84,6 +84,7 @@ TEXTS = {
         "help_base": (
             "/start — регистрация / открыть главное меню\n"
             "/language — сменить язык\n"
+            "/support — связаться с поддержкой\n"
             "/hot — горячая сцена с персонажем\n"
             "/feed — покормить персонажа\n"
             "/work — пойти на работу за баксы для персонажа\n"
@@ -93,6 +94,11 @@ TEXTS = {
             "/switch_style — сменить стиль без потери истории (SUPER PRO/ELITE)"
         ),
         "help_guide_btn": "📖 Подробный гайд",
+        "support_prompt": "✉️ Напиши одним сообщением, что случилось (оплата, баг, вопрос) — я передам поддержке, ответ придёт сюда.",
+        "support_cancel_btn": "Отмена",
+        "support_sent": "✅ Передал. Ответ придёт сюда, обычно в течение дня.",
+        "support_failed": "❌ Не получилось передать сообщение. Попробуй позже.",
+        "support_reply": "💬 Поддержка:\n\n{text}",
         "help_hint": "❓ Если непонятно, как пользоваться — жми /help.",
         "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
         "cancel_character_creation_btn": "❌ Отменить",
@@ -439,6 +445,7 @@ TEXTS = {
         "help_base": (
             "/start — sign up / open the main menu\n"
             "/language — change language\n"
+            "/support — contact support\n"
             "/hot — a hot scene with your character\n"
             "/feed — feed your character\n"
             "/work — go to work for bucks for your character\n"
@@ -448,6 +455,11 @@ TEXTS = {
             "/switch_style — change style without losing history (SUPER PRO/ELITE)"
         ),
         "help_guide_btn": "📖 Full guide",
+        "support_prompt": "✉️ Describe in one message what happened (payment, bug, question) — I'll pass it to support and the reply will arrive here.",
+        "support_cancel_btn": "Cancel",
+        "support_sent": "✅ Sent. The reply will arrive here, usually within a day.",
+        "support_failed": "❌ Couldn't pass the message on. Please try later.",
+        "support_reply": "💬 Support:\n\n{text}",
         "help_hint": "❓ If anything's unclear, tap /help.",
         "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«An elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire.»\n\n✏️ Write the description now — and I'll remember it!",
         "cancel_character_creation_btn": "❌ Cancel",
@@ -794,6 +806,7 @@ TEXTS = {
         "help_base": (
             "/start — registrieren / Hauptmenü öffnen\n"
             "/language — Sprache ändern\n"
+            "/support — Support kontaktieren\n"
             "/hot — heiße Szene mit deinem Charakter\n"
             "/feed — deinen Charakter füttern\n"
             "/work — für Bucks für deinen Charakter arbeiten gehen\n"
@@ -803,6 +816,11 @@ TEXTS = {
             "/switch_style — Stil ändern, ohne den Verlauf zu verlieren (SUPER PRO/ELITE)"
         ),
         "help_guide_btn": "📖 Ausführliche Anleitung",
+        "support_prompt": "✉️ Schreib in einer Nachricht, was passiert ist (Zahlung, Fehler, Frage) — ich leite es an den Support weiter, die Antwort kommt hierher.",
+        "support_cancel_btn": "Abbrechen",
+        "support_sent": "✅ Weitergeleitet. Die Antwort kommt hierher, meist innerhalb eines Tages.",
+        "support_failed": "❌ Die Nachricht konnte nicht weitergeleitet werden. Bitte später versuchen.",
+        "support_reply": "💬 Support:\n\n{text}",
         "help_hint": "❓ Falls etwas unklar ist, tippe /help.",
         "character_create_prompt": "🎭 **Erstelle deinen eigenen Charakter!**\n\nBeschreibe eine beliebige Figur — aus Anime, Filmen, Spielen oder denk dir selbst eine aus.\nSchreibe Namen, Charakter, Aussehen, Herkunft und beliebige Details.\n\n📝 *Beispiel:*\n«Eine Elfe aus der Welt von The Witcher — weise, ruhig, mit langen silbernen Haaren. Sie liebt Sterne und lange Gespräche am Feuer.»\n\n✏️ Schreibe die Beschreibung jetzt — und ich merke sie mir!",
         "cancel_character_creation_btn": "❌ Abbrechen",
@@ -6245,6 +6263,72 @@ async def generate_shop_reaction(chat_id, user, item, kind, note=None):
 
 
 # ============================================================
+#  ПОДДЕРЖКА: /support -> сообщение уходит админам, ответ админа (reply) возвращается пользователю
+# ============================================================
+SUPPORT_ADMIN_IDS = [int(x) for x in os.getenv("SUPPORT_ADMIN_IDS", "").replace(" ", "").split(",") if x] or ADMIN_IDS
+SUPPORT_THREADS_LIMIT = 500
+
+
+def _support_threads():
+    return user_data.setdefault("__settings__", {}).setdefault("support_threads", {})
+
+
+@dp.message(Command("support"))
+async def support_cmd(message: types.Message):
+    user = get_user(message.from_user.id)
+    user["support_mode"] = True
+    save_data(user_data)
+    kb = InlineKeyboardMarkup(inline_keyboard=[[
+        InlineKeyboardButton(text=get_text(user, "support_cancel_btn"), callback_data="support_cancel")]])
+    await message.answer(get_text(user, "support_prompt"), reply_markup=kb)
+
+
+@dp.callback_query(lambda c: c.data == "support_cancel")
+async def support_cancel_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    user["support_mode"] = False
+    save_data(user_data)
+    await safe_delete(call.message)
+    await call.answer()
+
+
+async def forward_to_support(message: types.Message, user):
+    """Следующее сообщение пользователя после /support -- одно обращение (флаг гасим сразу, чтобы
+    обычный чат не залип в режиме поддержки)."""
+    user["support_mode"] = False
+    uname = f"@{message.from_user.username}" if message.from_user.username else "без username"
+    header = (f"📩 Обращение #{message.from_user.id} ({uname}, {message.from_user.full_name})\n"
+              f"Подписка: {get_subscription_level(user) or 'нет'}\n\n{message.text}\n\n"
+              f"↩️ Ответь reply на это сообщение — ответ уйдёт пользователю.")
+    delivered = 0
+    threads = _support_threads()
+    for admin_id in SUPPORT_ADMIN_IDS:
+        try:
+            sent = await bot.send_message(admin_id, header)
+            threads[f"{admin_id}:{sent.message_id}"] = message.from_user.id
+            delivered += 1
+        except Exception as e:
+            logging.warning(f"support: не доставлено админу {admin_id}: {e}")
+    while len(threads) > SUPPORT_THREADS_LIMIT:
+        threads.pop(next(iter(threads)))
+    save_data(user_data)
+    await message.answer(get_text(user, "support_sent" if delivered else "support_failed"))
+
+
+@dp.message(lambda m: m.reply_to_message is not None and m.text is not None
+            and m.from_user.id in SUPPORT_ADMIN_IDS
+            and f"{m.from_user.id}:{m.reply_to_message.message_id}" in _support_threads())
+async def support_admin_reply(message: types.Message):
+    target_id = _support_threads()[f"{message.from_user.id}:{message.reply_to_message.message_id}"]
+    target = get_user(target_id)
+    try:
+        await bot.send_message(target_id, get_text(target, "support_reply", text=message.text))
+        await message.answer("✅ Отправлено")
+    except Exception as e:
+        await message.answer(f"❌ Не удалось отправить: {e}")
+
+
+# ============================================================
 #  ОСНОВНОЙ ОБРАБОТЧИК СООБЩЕНИЙ
 # ============================================================
 @dp.message()
@@ -6252,6 +6336,10 @@ async def handle_message(message: types.Message):
     user = get_user(message.from_user.id)
 
     if not message.text:
+        return
+
+    if user.get("support_mode"):
+        await forward_to_support(message, user)
         return
 
     # 1. Создание собственного персонажа (SUPER PRO)
@@ -10734,7 +10822,7 @@ SELLER_INN = os.getenv("SELLER_INN", "")
 CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "")
 CONTACT_PHONE = os.getenv("CONTACT_PHONE", "")
 CONTACT_ADDRESS = os.getenv("CONTACT_ADDRESS", "")  # юридический или фактический адрес
-SUPPORT_TELEGRAM = os.getenv("SUPPORT_TELEGRAM", "@role_duel_bot")
+SUPPORT_TELEGRAM = os.getenv("SUPPORT_TELEGRAM", "")  # необязательно: например @username отдельного аккаунта поддержки
 SITE_NAME = "Role Duel"
 
 SITE_CSS = """
@@ -10771,7 +10859,8 @@ def _seller_lines():
         lines.append(f"Email: {CONTACT_EMAIL}")
     if CONTACT_PHONE:
         lines.append(f"Телефон: {CONTACT_PHONE}")
-    lines.append(f"Поддержка в Telegram: {SUPPORT_TELEGRAM}")
+    if SUPPORT_TELEGRAM:
+        lines.append(f"Поддержка в Telegram: {SUPPORT_TELEGRAM}")
     return lines
 
 
@@ -10881,7 +10970,7 @@ def site_privacy_html():
 
 
 def site_refund_html():
-    email = html_lib.escape(CONTACT_EMAIL or SUPPORT_TELEGRAM)
+    email = html_lib.escape(CONTACT_EMAIL or SUPPORT_TELEGRAM or "команду /support в боте")
     return f"""
 <h1>Условия оказания услуг, возврата и отмены платежа</h1>
 <h2>Доставка</h2>
@@ -14274,6 +14363,7 @@ async def main():
     await bot.set_my_commands([
         BotCommand(command="start", description="Регистрация / главное меню"),
         BotCommand(command="help", description="Список команд"),
+        BotCommand(command="support", description="Связаться с поддержкой"),
         BotCommand(command="language", description="Сменить язык"),
         BotCommand(command="hot", description="Горячая сцена с персонажем"),
         BotCommand(command="reset_character", description="Сбросить кастомного персонажа"),
