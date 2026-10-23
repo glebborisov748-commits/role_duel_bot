@@ -52,6 +52,12 @@ TEXTS = {
         "free": "🎁 Бесплатно ({left}/{total})",
         "tomorrow": "⏳ Завтра",
         "spin_paid": "💎 Крутить за 15⭐",
+        "spin_luck_btn": "🍀 Удача на 24ч — {price}⭐",
+        "spin_luck_active": "🍀 Удача активна: ещё {time}",
+        "spin_luck_elite": "🍀 Удача ELITE активна всегда",
+        "invoice_luck_title": "Удача колеса",
+        "invoice_luck_desc": "24 часа повышенных шансов на редкие призы колеса фортуны.",
+        "invoice_luck_label": "Удача на 24ч",
         "spin_more": "💎 Крутить ещё за 15⭐",
         "welcome": "👋 Добро пожаловать!",
         "age_confirm": "🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
@@ -94,7 +100,7 @@ TEXTS = {
         "spin_title": "🎰 **Колесо фортуны**",
         "spin_hint": "Крути колесо каждый день и выбивай призы!",
         "webapp_spin_prizes_title": "🎁 Доступные призы:",
-        "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 550–1200💵 баксов\n• 🔥 Горячие сцены\n• 2–4⚡ энергетика (редко)\n• 🎟 Доп. прокрут\n• ⚡x5 буст заработка на час (редко)\n• 🔥 PRO на 5 дней (редко)\n• ✨ SUPER PRO на 3 дня (очень редко)\n• 💰 10 000💵 ДЖЕКПОТ (крайне редко)",
+        "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 550–1200💵 баксов\n• 🎟 Доп. прокрут\n• 🍱 100 еды + 100 воды\n• 🔥 Горячие сцены\n• ⚡x5 буст заработка на час (редко)\n• 2–4⚡ энергетика (редко)\n• 💰 10 000💵 ДЖЕКПОТ, 🔥 PRO, ✨ SUPER PRO (крайне редко)\n🍀 Удача (24ч за ⭐, у ELITE всегда) повышает шансы на редкое",
         "spin_choose": "Выбери вариант:",
         "spin_nothing": "😢 Ничего... В следующий раз повезёт!",        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+{inviter_bucks}💵, +{inviter_energizers}⚡ и 🔥 горячая сцена** тебе, ему — **+{invitee_bucks}💵, 🔥 горячая сцена и 🎟 доп. прокрут**!\n\n📊 Приглашено друзей: **{count}**\n💵 Заработано баксов: **{earned_bucks}**\n⚡ Заработано энергетиков: **{earned_energizers}**",
         "choose_lang_label": "🌍 Выбери язык:",
@@ -159,7 +165,6 @@ TEXTS = {
         "spin_win_bucks": "💵 **+{value} баксов**",
         "spin_win_energizers": "⚡ **+{value} энергетика**",
         "spin_win_xp": "⭐ **+{value} XP**",
-        "spin_win_food": "🍗 **+{value} сытости**",
         "spin_win_care_package": "🍱 **+100 еды и +100 воды!**\nСытость и вода — на максимум.",
         "spin_win_pro": "🎁 **PRO подписка на 5 дней!**\n🔥 Стили Страстный и Магнетический, энергия и сытость тратятся медленнее!",
         "spin_win_super": "✨ **SUPER PRO на 3 дня!**\n👑 Все стили, включая 18+, свой уникальный персонаж!",
@@ -298,7 +303,7 @@ TEXTS = {
         "work_tab_rhythm": "🚴 Курьер",
         "work_tab_farm": "🌽 Ферма",
         "work_clicker_hint": "Введи код по порядку, затем протяни каждый провод к гнезду того же цвета. Ошибка — игра окончена.",
-        "work_catch_hint": "Веди корзину из стороны в сторону, лови предметы и не лови бомбы 💣! Улитка 🐌 на время замедлит падение.",
+        "work_catch_hint": "Веди корзину из стороны в сторону, лови предметы и не лови бомбы 💣! Улитка 🐌 замедлит падение, магнит 🧲 притянет, 💰 удвоит деньги на несколько секунд, щит 🛡️ спасёт от одной бомбы.",
         "work_rhythm_hint": "▲▼ — смена полосы. Люди 🙋 ждут на обочине: проезжай мимо них по крайней полосе. На красной стоп-линии жми 🛑, когда она у самого колеса.",
         "work_courier_arrived": "🏠 Доставлено!",
         "work_courier_arrived_tip": "🏠 Доставлено! 🎉 + чаевые",
@@ -398,6 +403,12 @@ TEXTS = {
         "free": "🎁 Free ({left}/{total})",
         "tomorrow": "⏳ Tomorrow",
         "spin_paid": "💎 Spin for 15⭐",
+        "spin_luck_btn": "🍀 Luck for 24h — {price}⭐",
+        "spin_luck_active": "🍀 Luck active: {time} left",
+        "spin_luck_elite": "🍀 ELITE luck is always on",
+        "invoice_luck_title": "Wheel luck",
+        "invoice_luck_desc": "24 hours of boosted odds for rare wheel prizes.",
+        "invoice_luck_label": "Luck for 24h",
         "spin_more": "💎 Spin again for 15⭐",
         "welcome": "👋 Welcome!",
         "age_confirm": "🔞 **WARNING!**\nThis bot is for 18+ only.\nConfirm your age:",
@@ -440,7 +451,7 @@ TEXTS = {
         "spin_title": "🎰 **Spin wheel**",
         "spin_hint": "Spin the wheel every day and win prizes!",
         "webapp_spin_prizes_title": "🎁 Available prizes:",
-        "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 550–1200💵 bucks\n• 🔥 Hot scenes\n• 2–4⚡ energizers (rare)\n• 🎟 Extra spin\n• ⚡x5 earnings boost for an hour (rare)\n• 🔥 PRO for 5 days (rare)\n• ✨ SUPER PRO for 3 days (very rare)\n• 💰 10,000💵 JACKPOT (extremely rare)",
+        "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 550–1200💵 bucks\n• 🎟 Extra spin\n• 🍱 100 food + 100 water\n• 🔥 Hot scenes\n• ⚡x5 earnings boost for an hour (rare)\n• 2–4⚡ energizers (rare)\n• 💰 10,000💵 JACKPOT, 🔥 PRO, ✨ SUPER PRO (extremely rare)\n🍀 Luck (24h for ⭐, always on for ELITE) boosts the odds of rare prizes",
         "spin_choose": "Choose an option:",
         "spin_nothing": "😢 Nothing... Better luck next time!",        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+{inviter_bucks}💵, +{inviter_energizers}⚡ and a 🔥 hot scene** for you, and **+{invitee_bucks}💵, a 🔥 hot scene and a 🎟 extra spin** for them!\n\n📊 Friends invited: **{count}**\n💵 Bucks earned: **{earned_bucks}**\n⚡ Energizers earned: **{earned_energizers}**",
         "choose_lang_label": "🌍 Choose language:",
@@ -505,7 +516,6 @@ TEXTS = {
         "spin_win_bucks": "💵 **+{value} bucks**",
         "spin_win_energizers": "⚡ **+{value} energizers**",
         "spin_win_xp": "⭐ **+{value} XP**",
-        "spin_win_food": "🍗 **+{value} satiety**",
         "spin_win_care_package": "🍱 **+100 food and +100 water!**\nSatiety and water — topped up.",
         "spin_win_pro": "🎁 **PRO subscription for 5 days!**\n🔥 Passionate and Magnetic styles, energy and satiety drain slower!",
         "spin_win_super": "✨ **SUPER PRO for 3 days!**\n👑 All styles including 18+, your own unique character!",
@@ -644,7 +654,7 @@ TEXTS = {
         "work_tab_rhythm": "🚴 Courier",
         "work_tab_farm": "🌽 Farm",
         "work_clicker_hint": "Enter the code in order, then drag each wire to the socket of the same color. One mistake — game over.",
-        "work_catch_hint": "Drag the basket side to side, catch the items, and dodge the bombs 💣! A snail 🐌 briefly slows the fall.",
+        "work_catch_hint": "Drag the basket side to side, catch the items, and dodge the bombs 💣! A snail 🐌 slows the fall, a magnet 🧲 pulls items in, 💰 doubles your money for a few seconds, a shield 🛡️ saves you from one bomb.",
         "work_rhythm_hint": "▲▼ — change lanes. People 🙋 wait on the roadside: pass them in the outer lane. At a red stop line, tap 🛑 right as it reaches your wheel.",
         "work_courier_arrived": "🏠 Delivered!",
         "work_courier_arrived_tip": "🏠 Delivered! 🎉 + tip",
@@ -744,6 +754,12 @@ TEXTS = {
         "free": "🎁 Gratis ({left}/{total})",
         "tomorrow": "⏳ Morgen",
         "spin_paid": "💎 Für 15⭐ drehen",
+        "spin_luck_btn": "🍀 Glück für 24 Std. — {price}⭐",
+        "spin_luck_active": "🍀 Glück aktiv: noch {time}",
+        "spin_luck_elite": "🍀 ELITE-Glück ist immer aktiv",
+        "invoice_luck_title": "Rad-Glück",
+        "invoice_luck_desc": "24 Stunden bessere Chancen auf seltene Radpreise.",
+        "invoice_luck_label": "Glück für 24 Std.",
         "spin_more": "💎 Nochmal für 15⭐ drehen",
         "welcome": "👋 Willkommen!",
         "age_confirm": "🔞 **ACHTUNG!**\nDieser Bot ist nur für Personen ab 18 Jahren.\nBestätige dein Alter:",
@@ -786,7 +802,7 @@ TEXTS = {
         "spin_title": "🎰 **Glücksrad**",
         "spin_hint": "Dreh jeden Tag am Rad und gewinne Preise!",
         "webapp_spin_prizes_title": "🎁 Verfügbare Preise:",
-        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 550–1200💵 Bucks\n• 🔥 Heiße Szenen\n• 2–4⚡ Energydrinks (selten)\n• 🎟 Extra-Dreh\n• ⚡x5 Verdienst-Boost für eine Stunde (selten)\n• 🔥 PRO für 5 Tage (selten)\n• ✨ SUPER PRO für 3 Tage (sehr selten)\n• 💰 10.000💵 JACKPOT (extrem selten)",
+        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 550–1200💵 Bucks\n• 🎟 Extra-Dreh\n• 🍱 100 Essen + 100 Wasser\n• 🔥 Heiße Szenen\n• ⚡x5 Verdienst-Boost für eine Stunde (selten)\n• 2–4⚡ Energydrinks (selten)\n• 💰 10.000💵 JACKPOT, 🔥 PRO, ✨ SUPER PRO (extrem selten)\n🍀 Glück (24 Std. für ⭐, bei ELITE immer) erhöht die Chancen auf Seltenes",
         "spin_choose": "Wähle eine Option:",
         "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+{inviter_bucks}💵, +{inviter_energizers}⚡ und eine 🔥 heiße Szene** für dich und **+{invitee_bucks}💵, eine 🔥 heiße Szene und ein 🎟 Extra-Dreh** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💵 Verdiente Bucks: **{earned_bucks}**\n⚡ Verdiente Energydrinks: **{earned_energizers}**",
         "choose_lang_label": "🌍 Sprache wählen:",
@@ -851,7 +867,6 @@ TEXTS = {
         "spin_win_bucks": "💵 **+{value} Bucks**",
         "spin_win_energizers": "⚡ **+{value} Energydrinks**",
         "spin_win_xp": "⭐ **+{value} XP**",
-        "spin_win_food": "🍗 **+{value} Sättigung**",
         "spin_win_care_package": "🍱 **+100 Essen und +100 Wasser!**\nSättigung und Wasser — aufgefüllt.",
         "spin_win_pro": "🎁 **PRO-Abo für 5 Tage!**\n🔥 Stile Leidenschaftlich und Magnetisch, Energie und Sättigung sinken langsamer!",
         "spin_win_super": "✨ **SUPER PRO für 3 Tage!**\n👑 Alle Stile inklusive 18+, dein eigener einzigartiger Charakter!",
@@ -990,7 +1005,7 @@ TEXTS = {
         "work_tab_rhythm": "🚴 Kurier",
         "work_tab_farm": "🌽 Farm",
         "work_clicker_hint": "Gib den Code der Reihe nach ein und zieh dann jedes Kabel zur Buchse in derselben Farbe. Ein Fehler — Spiel vorbei.",
-        "work_catch_hint": "Zieh den Korb hin und her, fang die Gegenstände und weich den Bomben 💣 aus! Eine Schnecke 🐌 verlangsamt kurz den Fall.",
+        "work_catch_hint": "Zieh den Korb hin und her, fang die Gegenstände und weich den Bomben 💣 aus! Eine Schnecke 🐌 verlangsamt den Fall, ein Magnet 🧲 zieht an, 💰 verdoppelt kurz dein Geld, ein Schild 🛡️ rettet dich vor einer Bombe.",
         "work_rhythm_hint": "▲▼ — Spur wechseln. Leute 🙋 warten am Straßenrand: fahr auf der äußeren Spur an ihnen vorbei. An einer roten Haltelinie tippe 🛑, wenn sie dein Rad erreicht.",
         "work_courier_arrived": "🏠 Geliefert!",
         "work_courier_arrived_tip": "🏠 Geliefert! 🎉 + Trinkgeld",
@@ -1385,7 +1400,7 @@ def get_user(user_id):
             "last_mood_tick": None,
             "sleep_until": None,
             "notifications_muted": False,
-            "spin_reminder_enabled": True,
+            "spin_reminder_enabled": False,  # по фидбэку выключено по умолчанию, включает сам игрок в колесе
             "last_feed_nudge": None,
             "last_energy_nudge": None,
             "last_activity": datetime.now().isoformat(),
@@ -1437,7 +1452,7 @@ def get_user(user_id):
             "last_mood_tick": None,
             "sleep_until": None,
             "notifications_muted": False,
-            "spin_reminder_enabled": True,
+            "spin_reminder_enabled": False,  # по фидбэку выключено по умолчанию, включает сам игрок в колесе
             "last_feed_nudge": None,
             "last_energy_nudge": None,
             "last_activity": None,
@@ -1491,6 +1506,13 @@ def get_user(user_id):
                 progress_fraction = (old_xp - LEGACY_V2_LEVEL_XP_THRESHOLD[old_level]) / cost_v2 if cost_v2 else 0
                 user["xp"] = int(LEVEL_XP_THRESHOLD[old_level] + progress_fraction * LEVEL_XP_COST[old_level])
             user["xp_migrated_v3"] = True
+
+        # МИГРАЦИЯ: напоминание о колесе теперь выключено по умолчанию (раньше было включено у всех).
+        # Выбор игрока от значения по умолчанию не отличить, поэтому один раз выключаем всем —
+        # включить обратно можно кнопкой в самом колесе.
+        if not user.get("spin_reminder_migrated"):
+            user["spin_reminder_enabled"] = False
+            user["spin_reminder_migrated"] = True
 
         apply_passive_satiety_decay(user)
         apply_mood_inactivity_decay(user)
@@ -2416,7 +2438,7 @@ def is_asleep(user):
 # ощущалось криво ("почему играть, ПОКА работаешь?"), поэтому чат теперь не блокируется вообще:
 # мини-апп "Работа" — отдельная поверхность, как Магазин/Колесо (см. send_work_menu), и так же не
 # ограничена тамагочи-механикой (сном и т.п.) — та же логика, что и у /hot (см. intim_cmd).
-WORK_HIT_BUCKS = {"clicker": 1, "catch": 1, "courier": 1, "hacker_combo": 25}  # мгновенная
+WORK_HIT_BUCKS = {"clicker": 3, "catch": 3, "courier": 20, "hacker_combo": 150}  # мгновенная
 # выплата за одно засчитанное попадание — ОДИНАКОВАЯ для catch/courier/clicker, и это не
 # упрощение "на будущее": сервер физически не может проверить, что хит пришёл от реальной
 # визуальной игры (общий анти-спам таймер один на все, см. register_work_hit) — разная цена по
@@ -2428,16 +2450,24 @@ WORK_HIT_BUCKS = {"clicker": 1, "catch": 1, "courier": 1, "hacker_combo": 25}  #
 # клавиши, а один раз за весь угаданный код (см. pressHackerKey/newHackerCode) — тот же общий
 # анти-спам таймер всё равно ограничивает, как часто это можно засчитывать, так что потолок
 # баксов/мин растёт не более чем в 25x по этой ОДНОЙ игре, а не бесконечно.
+# ОБНОВЛЕНИЕ (по фидбэку "за доставку и взлом должно быть больше"): catch/clicker 3, доставка
+# курьера 20 (с чаевыми x2), взлом 150. Раз у дорогих ключей теперь разные цены, у них же своё
+# минимальное время между засчитываниями (WORK_MIN_HIT_INTERVAL_BY_GAME) — честная игра в этих
+# играх и так не бывает чаще, а скрипту потолок баксов/мин не вырастает выше, чем у старого
+# hacker_combo=25 при 0.35с (там теоретически было ~4300/мин).
 WORK_MIN_HIT_INTERVAL_SECONDS = 0.35  # было 0.5 (а до этого 0.1) — по фидбэку "каждый сбор в catch
                                        # должен давать деньги": с 0.5 при ловле подряд близко идущих
                                        # предметов часть честных попаданий тихо отклонялась этим же
                                        # анти-спам таймером. 0.35 всё ещё жёсткий потолок (~170/мин
                                        # вместо старых ~600), просто с запасом под обычную игру руками
-WORK_FAILURE_PENALTY_BUCKS = 5  # штраф за провал в catch/clicker (бомба, неверный код) — флэт для
+WORK_MIN_HIT_INTERVAL_BY_GAME = {"courier": 1.5, "hacker_combo": 4.0}  # см. комментарий у WORK_HIT_BUCKS
+WORK_PENALTY_BUCKS = {"clicker": 60, "catch": 40, "courier": 100}  # было 5/5/10 — по фидбэку проигрыш
+# должен стоить заметнее (вместе с ростом заработка выше)
+WORK_FAILURE_PENALTY_BUCKS = 40  # штраф за провал в catch/clicker (бомба, неверный код) — флэт для
 # всех независимо от подписки, в отличие от заработка (см. work_earnings_multiplier): штраф не
 # должен превращаться в доход при тиере x1.5+. Ферма сюда не попадает вообще — там риска потерять
 # деньги нет (см. register_work_failure).
-COURIER_CRASH_PENALTY_BUCKS = 10  # курьер отдельно и больше, чем остальные (прямо попросили:
+COURIER_CRASH_PENALTY_BUCKS = 100  # курьер отдельно и больше, чем остальные (прямо попросили:
 # провал должен стоить заметно дороже типичной прибыли с одной доставки) — в отличие от выплат,
 # разная цена штрафа по играм ничем не грозит: завысить себе ШТРАФ подделкой запроса никому не
 # выгодно, так что уникальная (в отличие от WORK_FAILURE_PENALTY_BUCKS) курьерская сумма безопасна.
@@ -2520,7 +2550,16 @@ def credit_work_bucks(user, base_amount):
     return amount
 
 
-def register_work_hit(user, game):
+WORK_DOUBLE_SECONDS = 12      # длительность бонуса "x2 деньги" из заказа (см. api_work_powerup_handler)
+WORK_DOUBLE_COOLDOWN_SECONDS = 25  # не чаще, чем раз в столько: сервер не может проверить, что бонус реально поймали
+
+
+def work_double_active(user):
+    until = user.get("work_double_until")
+    return bool(until) and datetime.now().isoformat() < until
+
+
+def register_work_hit(user, game, tip=False):
     """Одно засчитанное попадание в одной из мгновенных игр — сразу начисляет баксы (см.
     WORK_HIT_BUCKS), без таймера и без сессии. Возвращает фактически начисленную сумму, 0 если
     попадание отклонено анти-спамом (см. WORK_MIN_HIT_INTERVAL_SECONDS), None при неизвестной
@@ -2537,8 +2576,24 @@ def register_work_hit(user, game):
             elapsed = WORK_MIN_HIT_INTERVAL_SECONDS
         if elapsed < WORK_MIN_HIT_INTERVAL_SECONDS:
             return 0
+    per_game = user.get("work_last_hit_by_game") or {}
+    game_last = per_game.get(game)
+    min_gap = WORK_MIN_HIT_INTERVAL_BY_GAME.get(game)
+    if min_gap and game_last:
+        try:
+            if (now - datetime.fromisoformat(game_last)).total_seconds() < min_gap:
+                return 0
+        except (ValueError, TypeError):
+            pass
     user["work_last_hit_at"] = now.isoformat()
-    amount = credit_work_bucks(user, WORK_HIT_BUCKS[game])
+    per_game[game] = now.isoformat()
+    user["work_last_hit_by_game"] = per_game
+    base = WORK_HIT_BUCKS[game]
+    if tip and game == "courier":
+        base *= 2  # чаевые -- тот же один хит x2, а не второй запрос (см. COURIER_TIP_CHANCE)
+    if work_double_active(user):
+        base *= 2
+    amount = credit_work_bucks(user, base)
     save_data(user_data)
     return amount
 
@@ -2551,7 +2606,7 @@ def register_work_failure(user, game):
     случай с бОльшим штрафом (см. COURIER_CRASH_PENALTY_BUCKS)."""
     if game not in WORK_HIT_BUCKS:
         return None
-    base = COURIER_CRASH_PENALTY_BUCKS if game == "courier" else WORK_FAILURE_PENALTY_BUCKS
+    base = WORK_PENALTY_BUCKS.get(game, WORK_FAILURE_PENALTY_BUCKS)
     penalty = min(base, user.get("bucks", 0))
     user["bucks"] = user.get("bucks", 0) - penalty
     save_data(user_data)
@@ -3950,27 +4005,27 @@ async def spin_back(call: types.CallbackQuery):
 
 SPIN_PRIZES = [
     # wheel_label — короткая, язык-независимая подпись сектора для колеса в Mini App (см.
-    # serialize_spin_state/SPIN_PAGE_HTML); полное "name"/"name_en"/"name_de" по-прежнему
-    # используется в чатовом результате (spin_result) и не менялось.
-    {"name": "😢 Ничего", "name_en": "😢 Nothing", "name_de": "😢 Nichts", "value": 0, "type": "nothing", "weight": 20, "wheel_label": "😢"},
-    {"name": "550💵 баксов", "name_en": "550💵 bucks", "name_de": "550💵 Bucks", "value": 550, "type": "bucks", "weight": 15, "wheel_label": "550💵"},
-    {"name": "1200💵 баксов", "name_en": "1200💵 bucks", "name_de": "1200💵 Bucks", "value": 1200, "type": "bucks", "weight": 8, "wheel_label": "1200💵"},
-    {"name": "100 XP", "name_en": "100 XP", "name_de": "100 XP", "value": 100, "type": "xp", "weight": 16, "wheel_label": "100 XP"},
-    {"name": "150 XP", "name_en": "150 XP", "name_de": "150 XP", "value": 150, "type": "xp", "weight": 9, "wheel_label": "150 XP"},
-    {"name": "250 XP", "name_en": "250 XP", "name_de": "250 XP", "value": 250, "type": "xp", "weight": 4, "wheel_label": "250 XP"},
-    {"name": "🔥 1 горячая сцена", "name_en": "🔥 1 hot scene", "name_de": "🔥 1 heiße Szene", "value": 1, "type": "intim_scenes", "weight": 8, "wheel_label": "🔥"},
-    {"name": "🔥🔥 2 горячие сцены", "name_en": "🔥🔥 2 hot scenes", "name_de": "🔥🔥 2 heiße Szenen", "value": 2, "type": "intim_scenes", "weight": 3, "wheel_label": "🔥🔥"},
-    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 3, "wheel_label": "2⚡"},
-    {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 1, "wheel_label": "4⚡"},
-    {"name": "🍗 30 сытости", "name_en": "🍗 30 satiety", "name_de": "🍗 30 Sättigung", "value": 30, "type": "food", "weight": 10, "wheel_label": "🍗+30"},
-    {"name": "🎟 +1 доп. прокрут", "name_en": "🎟 +1 extra spin", "name_de": "🎟 +1 Extra-Dreh", "value": 1, "type": "extra_spin", "weight": 2, "wheel_label": "🎟+1"},
-    {"name": "⚡x5 буст заработка на час", "name_en": "⚡x5 earnings boost for an hour", "name_de": "⚡x5 Verdienst-Boost für eine Stunde", "value": 0, "type": "work_boost", "weight": 0.6, "wheel_label": "⚡x5"},
-    {"name": "💰🎉 10 000💵 баксов (ДЖЕКПОТ!)", "name_en": "💰🎉 10,000💵 bucks (JACKPOT!)", "name_de": "💰🎉 10.000💵 Bucks (JACKPOT!)", "value": 10000, "type": "bucks", "weight": 0.1, "wheel_label": "💰10K"},
-    {"name": "🔥 PRO на 5 дней", "name_en": "🔥 PRO for 5 days", "name_de": "🔥 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.4, "wheel_label": "🔥PRO"},
-    {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.15, "wheel_label": "✨SUPER"},
-    # Эксклюзив именно колеса — нигде в магазине такого разового "всё на максимум" нет, по просьбе
-    # пользователя добавить "что-то, что может выпасть только в колесе".
-    {"name": "🍱 100 еды + 100 воды", "name_en": "🍱 100 food + 100 water", "name_de": "🍱 100 Essen + 100 Wasser", "value": 0, "type": "care_package", "weight": 0.5, "wheel_label": "🍱+100"},
+    # serialize_spin_state/SPIN_PAGE_HTML). weight задаёт шанс; порядок по убыванию шанса (по
+    # фидбэку): ничего > XP > баксы > доп. прокрут > 100 еды и воды > сцены > буст x5 > энергетики >
+    # джекпот и подписки. Порядок самого списка — порядок секторов на колесе: редкое нарочно
+    # разнесено по кругу. fx/fx_power — эффект при выигрыше (см. showSpinOutcome в SPIN_PAGE_HTML):
+    # чем реже приз, тем эффектнее (spark/coins/hearts/bolts -> silver фейерверк -> gold -> rainbow).
+    {"name": "😢 Ничего", "name_en": "😢 Nothing", "name_de": "😢 Nichts", "value": 0, "type": "nothing", "weight": 10, "wheel_label": "😢", "fx": "none", "fx_power": 1},
+    {"name": "100 XP", "name_en": "100 XP", "name_de": "100 XP", "value": 100, "type": "xp", "weight": 5, "wheel_label": "100 XP", "fx": "spark", "fx_power": 1},
+    {"name": "550💵 баксов", "name_en": "550💵 bucks", "name_de": "550💵 Bucks", "value": 550, "type": "bucks", "weight": 5, "wheel_label": "550💵", "fx": "coins", "fx_power": 1},
+    {"name": "🎟 +1 доп. прокрут", "name_en": "🎟 +1 extra spin", "name_de": "🎟 +1 Extra-Dreh", "value": 1, "type": "extra_spin", "weight": 6, "wheel_label": "🎟+1", "fx": "spark", "fx_power": 2},
+    {"name": "150 XP", "name_en": "150 XP", "name_de": "150 XP", "value": 150, "type": "xp", "weight": 3, "wheel_label": "150 XP", "fx": "spark", "fx_power": 1},
+    {"name": "🍱 100 еды + 100 воды", "name_en": "🍱 100 food + 100 water", "name_de": "🍱 100 Essen + 100 Wasser", "value": 0, "type": "care_package", "weight": 5, "wheel_label": "🍱+100", "fx": "spark", "fx_power": 2},
+    {"name": "1200💵 баксов", "name_en": "1200💵 bucks", "name_de": "1200💵 Bucks", "value": 1200, "type": "bucks", "weight": 2.5, "wheel_label": "1200💵", "fx": "coins", "fx_power": 2},
+    {"name": "🔥 1 горячая сцена", "name_en": "🔥 1 hot scene", "name_de": "🔥 1 heiße Szene", "value": 1, "type": "intim_scenes", "weight": 3, "wheel_label": "🔥", "fx": "hearts", "fx_power": 1},
+    {"name": "250 XP", "name_en": "250 XP", "name_de": "250 XP", "value": 250, "type": "xp", "weight": 1.5, "wheel_label": "250 XP", "fx": "spark", "fx_power": 2},
+    {"name": "⚡x5 буст заработка на час", "name_en": "⚡x5 earnings boost for an hour", "name_de": "⚡x5 Verdienst-Boost für eine Stunde", "value": 0, "type": "work_boost", "weight": 3.5, "wheel_label": "⚡x5", "fx": "silver", "fx_power": 3},
+    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 2, "wheel_label": "2⚡", "fx": "bolts", "fx_power": 1},
+    {"name": "💰🎉 10 000💵 баксов (ДЖЕКПОТ!)", "name_en": "💰🎉 10,000💵 bucks (JACKPOT!)", "name_de": "💰🎉 10.000💵 Bucks (JACKPOT!)", "value": 10000, "type": "bucks", "weight": 0.1, "wheel_label": "💰10K", "fx": "gold", "fx_power": 3},
+    {"name": "🔥🔥 2 горячие сцены", "name_en": "🔥🔥 2 hot scenes", "name_de": "🔥🔥 2 heiße Szenen", "value": 2, "type": "intim_scenes", "weight": 1.5, "wheel_label": "🔥🔥", "fx": "hearts", "fx_power": 2},
+    {"name": "🔥 PRO на 5 дней", "name_en": "🔥 PRO for 5 days", "name_de": "🔥 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.2, "wheel_label": "🔥PRO", "fx": "rainbow", "fx_power": 3},
+    {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 0.5, "wheel_label": "4⚡", "fx": "bolts", "fx_power": 2},
+    {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.1, "wheel_label": "✨SUPER", "fx": "rainbow", "fx_power": 3},
 ]
 
 
@@ -3979,14 +4034,45 @@ def prize_name(prize, user):
     return prize.get(f"name_{lang}", prize["name"]) if lang != "ru" else prize["name"]
 
 
-def choose_spin_prize():
-    """Тот же взвешенный выбор, что раньше был инлайном внутри spin_result — вынесен отдельно,
-    чтобы колесо в Mini App (см. perform_webapp_spin) использовало ТОЧНО те же шансы, не
-    дублируя и не рискуя разойтись с чатовой версией."""
-    weighted = []
+SPIN_LUCK_HOURS = 24
+SPIN_LUCK_WEIGHT_MULT = {  # множители шансов при активной "Удаче" (см. spin_luck_active)
+    "nothing": 0.3, "energizers": 2.0, "work_boost": 2.0, "intim_scenes": 1.6,
+    "subscription_pro": 4.0, "subscription_super": 4.0, "care_package": 1.3,
+}
+SPIN_LUCK_JACKPOT_MULT = 4.0
+
+
+def spin_luck_seconds_left(user):
+    """None -- удача вечная (ELITE), 0 -- нет, иначе сколько секунд осталось от купленной."""
+    if has_active_subscription(user) and get_subscription_level(user) == "elite":
+        return None
+    until = user.get("spin_luck_until")
+    if not until:
+        return 0
+    try:
+        return max(0, int((datetime.fromisoformat(until) - datetime.now()).total_seconds()))
+    except (ValueError, TypeError):
+        return 0
+
+
+def spin_luck_active(user):
+    left = spin_luck_seconds_left(user)
+    return left is None or left > 0
+
+
+def choose_spin_prize(user=None):
+    """Взвешенный выбор приза — общий для чата и Mini App. Для "Удачи" (покупная на 24ч или вечная
+    у ELITE) вес "ничего" режется, а редкие призы растут — сумма пересчитывается сама."""
+    luck = bool(user) and spin_luck_active(user)
+    weights = []
     for p in SPIN_PRIZES:
-        weighted.extend([p] * int(p["weight"] * 10))
-    return random.choice(weighted)
+        w = p["weight"]
+        if luck:
+            w *= SPIN_LUCK_WEIGHT_MULT.get(p["type"], 1.0)
+            if p["type"] == "bucks" and p["value"] >= 10000:
+                w *= SPIN_LUCK_JACKPOT_MULT
+        weights.append(w)
+    return random.choices(SPIN_PRIZES, weights=weights, k=1)[0]
 
 
 def apply_spin_prize(user, chosen):
@@ -4004,9 +4090,6 @@ def apply_spin_prize(user, chosen):
     elif chosen["type"] == "intim_scenes":
         user["intim_scenes"] = user.get("intim_scenes", 0) + chosen["value"]
         result_text = get_text(user, "spin_win_intim", value=chosen["value"])
-    elif chosen["type"] == "food":
-        user["satiety"] = min(SATIETY_MAX, user.get("satiety", 0) + chosen["value"])
-        result_text = get_text(user, "spin_win_food", value=chosen["value"])
     elif chosen["type"] == "care_package":
         user["satiety"] = SATIETY_MAX
         user["water"] = WATER_MAX
@@ -4037,7 +4120,7 @@ def apply_spin_prize(user, chosen):
 
 
 async def spin_result(chat_id, user, free=False):
-    chosen = choose_spin_prize()
+    chosen = choose_spin_prize(user)
 
     msg = await bot.send_message(chat_id, get_text(user, "spin_rolling"))
     for _ in range(3):
@@ -4755,6 +4838,9 @@ PRODUCTS = {
     # + openInvoice) от чатовой и не запускать поверх неё чатовую фейковую анимацию прокрутки:
     # сам прокрут в этом случае уже показан колесом прямо в Mini App.
     "spin_paid_webapp": {"stars": 15, "usd": 0.2, "rub": 18},
+    # "Удача" на 24 часа — повышает шансы на редкие призы колеса (см. choose_spin_prize); у ELITE
+    # включена навсегда, покупать не нужно.
+    "spin_luck": {"stars": 25, "usd": 0.35, "rub": 29},
     "intim_scene": {"stars": 30, "usd": 0.4, "rub": 35},  # было 45⭐ — снизили по просьбе
     "wake_now": {"stars": 25, "usd": 0.4, "rub": 29},
     "defibrillator": {"stars": 55, "usd": 0.8, "rub": 65},
@@ -4821,6 +4907,9 @@ def product_invoice_texts(user, payload):
     if payload == "upgrade_to_super":
         return (get_text(user, "invoice_upgrade_title"), get_text(user, "invoice_upgrade_desc"),
                 get_text(user, "invoice_upgrade_label"))
+    if payload == "spin_luck":
+        return (get_text(user, "invoice_luck_title"), get_text(user, "invoice_luck_desc"),
+                get_text(user, "invoice_luck_label"))
     if payload == "intim_scene":
         return (get_text(user, "invoice_intim_title"), get_text(user, "invoice_intim_desc"),
                 get_text(user, "invoice_intim_label"))
@@ -5037,6 +5126,16 @@ async def grant_product(user, payload, chat_id):
         user["dead"] = False
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "defibrillator_success"))
+    elif payload == "spin_luck":
+        base = datetime.now()
+        try:
+            current = datetime.fromisoformat(user.get("spin_luck_until") or "")
+            if current > base:
+                base = current
+        except (ValueError, TypeError):
+            pass
+        user["spin_luck_until"] = (base + timedelta(hours=SPIN_LUCK_HOURS)).isoformat()
+        save_data(user_data)
     elif payload == "spin_paid_20":
         await spin_result(chat_id, user, free=False)
     elif payload == "spin_paid_webapp":
@@ -5045,7 +5144,7 @@ async def grant_product(user, payload, chat_id):
         # api_spin_paid_result_handler. Раньше ещё дублировали результат отдельным сообщением в
         # чат — убрали по просьбе пользователя: в мини-аппе итак всё видно, а то сообщение к тому
         # же слалось без parse_mode="Markdown", так что звёздочки **так** оставались буквальными.
-        chosen = choose_spin_prize()
+        chosen = choose_spin_prize(user)
         result_text = apply_spin_prize(user, chosen)
         user["webapp_paid_spin_pending"] = {
             "prize_index": SPIN_PRIZES.index(chosen),
@@ -10598,10 +10697,11 @@ def serialize_spin_state(user):
         "free_left": free_spins_left(user),
         "free_total": free_spins_allowed(user),
         "bucks": user.get("bucks", 0),
-        "reminder_enabled": user.get("spin_reminder_enabled", True),
+        "reminder_enabled": user.get("spin_reminder_enabled", False),
+        "luck": {"left": spin_luck_seconds_left(user), "elite": has_active_subscription(user) and get_subscription_level(user) == "elite"},
         "prizes": [
             {"index": i, "wheel_label": p["wheel_label"], "name": prize_name(p, user),
-             "rare": p["weight"] <= 1}
+             "fx": p.get("fx", "none"), "fx_power": p.get("fx_power", 1)}
             for i, p in enumerate(SPIN_PRIZES)
         ],
         "ui": {
@@ -10610,6 +10710,9 @@ def serialize_spin_state(user):
             "free_label": get_text(user, "free", left=free_spins_left(user), total=free_spins_allowed(user)),
             "tomorrow_label": get_text(user, "tomorrow"),
             "paid_label": get_text(user, "spin_paid"),
+            "luck_btn": get_text(user, "spin_luck_btn", price=PRODUCTS["spin_luck"]["stars"]),
+            "luck_active": get_text(user, "spin_luck_active", time="{time}"),
+            "luck_elite": get_text(user, "spin_luck_elite"),
             "spin_btn": get_text(user, "webapp_spin_btn"),
             "paid_pending_label": get_text(user, "webapp_spin_paid_pending"),
             "invoice_error": get_text(user, "webapp_spin_invoice_error"),
@@ -10632,7 +10735,7 @@ async def perform_webapp_spin(user, user_id):
     if free_spins_left(user) <= 0:
         return {"ok": False, "error": get_text(user, "spin_already")}
     consume_free_spin(user)
-    chosen = choose_spin_prize()
+    chosen = choose_spin_prize(user)
     prize_index = SPIN_PRIZES.index(chosen)
     result_text = apply_spin_prize(user, chosen)
     save_data(user_data)
@@ -10805,17 +10908,57 @@ SPIN_PAGE_HTML = '''<!doctype html>
     font-size: 15px;
     font-weight: 600;
   }
-  #result-banner.rare {
-    background: linear-gradient(135deg, #ffd23f, #ff9a3f, #ff5fa3, #ffd23f);
+  #result-banner.fx-spark { box-shadow: 0 0 10px rgba(255,210,63,.6); }
+  #result-banner.fx-coins { box-shadow: 0 0 14px rgba(240,193,75,.8); }
+  #result-banner.fx-hearts { box-shadow: 0 0 14px rgba(255,95,163,.7); }
+  #result-banner.fx-bolts { box-shadow: 0 0 14px rgba(255,235,59,.8); }
+  #result-banner.fx-silver {
+    background: linear-gradient(120deg, #cfd8dc, #ffffff, #90a4ae, #eceff1, #b0bec5);
     background-size: 300% 300%;
-    color: #fff;
-    text-shadow: 0 1px 3px rgba(0,0,0,.35);
-    animation: rare-banner-glow 1.2s ease infinite;
-    box-shadow: 0 0 18px rgba(255,154,63,.7);
+    color: #263238;
+    animation: fx-shimmer 1.4s ease infinite;
+    box-shadow: 0 0 22px rgba(207,216,220,.95);
   }
-  @keyframes rare-banner-glow {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+  #result-banner.fx-gold {
+    background: linear-gradient(120deg, #b8860b, #ffd700, #fff3b0, #daa520, #ffd700);
+    background-size: 300% 300%;
+    color: #4a3200;
+    text-shadow: 0 1px 2px rgba(255,255,255,.6);
+    animation: fx-shimmer 1s ease infinite;
+    box-shadow: 0 0 30px rgba(255,215,0,.95);
+  }
+  #result-banner.fx-rainbow {
+    background: linear-gradient(120deg, #ff3b3b, #ff9a3f, #ffe83f, #3fe86a, #3fa9ff, #a23fff, #ff3b3b);
+    background-size: 400% 400%;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0,0,0,.5);
+    animation: fx-shimmer 1.2s linear infinite;
+    box-shadow: 0 0 28px rgba(255,255,255,.8);
+  }
+  @keyframes fx-shimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+  #fx-flash {
+    position: fixed; inset: 0; pointer-events: none; opacity: 0; z-index: 49;
+  }
+  #fx-flash.gold { background: radial-gradient(circle, rgba(255,215,0,.55), rgba(255,215,0,0) 70%); animation: fx-flash 1.6s ease-out; }
+  #fx-flash.rainbow {
+    background: linear-gradient(120deg, rgba(255,59,59,.45), rgba(255,232,63,.45), rgba(63,232,106,.45), rgba(63,169,255,.45), rgba(162,63,255,.45));
+    background-size: 300% 300%;
+    animation: fx-flash 2s ease-out, fx-shimmer 1s linear infinite;
+  }
+  @keyframes fx-flash { 0% { opacity: 0; } 15% { opacity: 1; } 100% { opacity: 0; } }
+  .confetti-piece.rain { top: -8%; animation: confetti-rain 1.9s linear forwards; }
+  .confetti-piece.rise { top: 62%; animation: confetti-rise 1.6s ease-out forwards; }
+  .confetti-piece.silver { filter: grayscale(1) brightness(1.7) drop-shadow(0 0 5px #fff); }
+  @keyframes confetti-rain {
+    0% { transform: translate(-50%, 0) rotate(0deg); opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--dx)), 115vh) rotate(var(--rot)); opacity: .9; }
+  }
+  @keyframes confetti-rise {
+    0% { transform: translate(-50%, 0) scale(.5); opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--dx)), -55vh) scale(1.3); opacity: 0; }
   }
   #confetti-burst {
     position: fixed;
@@ -10880,6 +11023,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
   </div>
   <div id="result-banner"></div>
   <div id="confetti-burst"></div>
+  <div id="fx-flash"></div>
   <div id="actions"></div>
   <div id="footer-hint"></div>
   <div id="prize-list">
@@ -11011,6 +11155,38 @@ SPIN_PAGE_HTML = '''<!doctype html>
     document.getElementById("spin-hint").textContent = s.ui.spin_hint;
   }
 
+  function formatLuck(seconds) {
+    var h = Math.floor(seconds / 3600), m = Math.floor((seconds % 3600) / 60);
+    return h > 0 ? h + "h " + m + "m" : m + "m";
+  }
+
+  function buyLuck() {
+    if (spinning || !state) return;
+    if (!tg || !tg.openInvoice) {
+      safe(function () { tg.showAlert(state.ui.invoice_error); });
+      return;
+    }
+    api("/api/spin/luck/invoice", {method: "POST"}).then(function (res) {
+      if (!res.ok) {
+        safe(function () { tg.showAlert(res.error || state.ui.invoice_error); });
+        return;
+      }
+      tg.openInvoice(res.invoice_url, function (result) {
+        if (result.status === "paid" || result.status === "pending") pollLuck(15);
+      });
+    }).catch(function () {});
+  }
+
+  function pollLuck(attemptsLeft) {
+    api("/api/spin/state").then(function (res) {
+      if (res.ok && res.state) {
+        state = res.state;
+        if (state.luck && (state.luck.elite || state.luck.left > 0)) { renderActions(state); return; }
+      }
+      if (attemptsLeft > 1) setTimeout(function () { pollLuck(attemptsLeft - 1); }, 800);
+    }).catch(function () {});
+  }
+
   function renderActions(s) {
     var el = document.getElementById("actions");
     el.innerHTML = "";
@@ -11033,6 +11209,22 @@ SPIN_PAGE_HTML = '''<!doctype html>
     paidBtn.disabled = spinning;
     paidBtn.onclick = spinPaid;
     el.appendChild(paidBtn);
+
+    var luckBtn = document.createElement("button");
+    luckBtn.className = "action-btn secondary";
+    var luck = s.luck || {};
+    if (luck.elite) {
+      luckBtn.textContent = s.ui.luck_elite;
+      luckBtn.disabled = true;
+    } else if (luck.left > 0) {
+      luckBtn.textContent = s.ui.luck_active.replace("{time}", formatLuck(luck.left));
+      luckBtn.disabled = true;
+    } else {
+      luckBtn.textContent = s.ui.luck_btn;
+      luckBtn.disabled = spinning;
+      luckBtn.onclick = buyLuck;
+    }
+    el.appendChild(luckBtn);
 
     var reminderBtn = document.createElement("button");
     reminderBtn.className = "action-btn secondary";
@@ -11089,46 +11281,104 @@ SPIN_PAGE_HTML = '''<!doctype html>
   // Общий хвост и для бесплатного, и для платного прокрута: анимация колеса до нужного сектора,
   // затем баннер с результатом. prizeIndex/resultText приходят либо сразу от /api/spin/free,
   // либо, для платного, от опроса /api/spin/paid/result после подтверждения оплаты.
-  var CONFETTI_EMOJIS = ["✨", "🎉", "🎊", "💫", "🔥"];
-
-  function fireConfettiBurst() {
+  // Эффекты по редкости приза (prize.fx/fx_power из SPIN_PRIZES): простые для частых призов, потом
+  // серебряный фейерверк (буст x5), золотой дождь (джекпот) и радуга (подписки).
+  function particles(chars, count, mode, power, extraClass) {
     var el = document.getElementById("confetti-burst");
-    for (var i = 0; i < 24; i++) {
+    for (var i = 0; i < count; i++) {
       var piece = document.createElement("div");
-      piece.className = "confetti-piece";
-      piece.textContent = CONFETTI_EMOJIS[Math.floor(Math.random() * CONFETTI_EMOJIS.length)];
+      piece.className = "confetti-piece" + (mode === "rain" ? " rain" : mode === "rise" ? " rise" : "") + (extraClass ? " " + extraClass : "");
+      piece.textContent = chars[Math.floor(Math.random() * chars.length)];
       var angle = Math.random() * Math.PI * 2;
-      var dist = 90 + Math.random() * 160;
-      piece.style.setProperty("--dx", (Math.cos(angle) * dist) + "px");
-      piece.style.setProperty("--dy", (Math.sin(angle) * dist) + "px");
+      var dist = (70 + Math.random() * 90) * (0.8 + power * 0.35);
+      if (mode === "burst") {
+        piece.style.setProperty("--dx", (Math.cos(angle) * dist) + "px");
+        piece.style.setProperty("--dy", (Math.sin(angle) * dist) + "px");
+      } else {
+        piece.style.left = (Math.random() * 100) + "%";
+        piece.style.setProperty("--dx", ((Math.random() - 0.5) * 80) + "px");
+      }
       piece.style.setProperty("--rot", (Math.random() * 360 - 180) + "deg");
-      piece.style.animationDelay = (Math.random() * 0.15) + "s";
+      piece.style.animationDelay = (Math.random() * (mode === "rain" ? 1.1 : 0.25)) + "s";
       el.appendChild(piece);
-      (function (p) { setTimeout(function () { if (p.parentNode) p.remove(); }, 1500); })(piece);
+      (function (p) { setTimeout(function () { if (p.parentNode) p.remove(); }, 3200); })(piece);
     }
   }
 
-  // Редкие призы (низкий weight в SPIN_PRIZES -- джекпот, подписки, забота) получают яркий эффект
-  // при выигрыше, чтобы реально ощущались как редкая удача, а не терялись среди обычных плюшек.
+  function fireworkAt(x, y, chars, count) {
+    var el = document.getElementById("confetti-burst");
+    for (var i = 0; i < count; i++) {
+      var piece = document.createElement("div");
+      piece.className = "confetti-piece silver";
+      piece.textContent = chars[Math.floor(Math.random() * chars.length)];
+      piece.style.left = x + "%";
+      piece.style.top = y + "%";
+      var angle = (Math.PI * 2 * i) / count;
+      var dist = 70 + Math.random() * 50;
+      piece.style.setProperty("--dx", (Math.cos(angle) * dist) + "px");
+      piece.style.setProperty("--dy", (Math.sin(angle) * dist) + "px");
+      piece.style.setProperty("--rot", (Math.random() * 360) + "deg");
+      el.appendChild(piece);
+      (function (p) { setTimeout(function () { if (p.parentNode) p.remove(); }, 1600); })(piece);
+    }
+  }
+
+  function flash(kind) {
+    var f = document.getElementById("fx-flash");
+    f.className = "";
+    void f.offsetWidth;
+    f.className = kind;
+    setTimeout(function () { f.className = ""; }, 2200);
+  }
+
+  function playFx(kind, power) {
+    power = power || 1;
+    if (kind === "spark") {
+      particles(["✨", "💫"], 8 * power, "burst", power);
+    } else if (kind === "coins") {
+      particles(["🪙", "💵"], 10 * power, "burst", power);
+    } else if (kind === "hearts") {
+      particles(["❤️", "🔥", "💋"], 8 + 5 * power, "rise", power);
+    } else if (kind === "bolts") {
+      particles(["⚡"], 8 + 6 * power, "burst", power);
+    } else if (kind === "silver") {
+      for (var k = 0; k < 6; k++) {
+        (function (k) {
+          setTimeout(function () {
+            fireworkAt(15 + Math.random() * 70, 18 + Math.random() * 40, ["✨", "⭐", "💫", "🌟"], 14);
+            safe(function () { tg.HapticFeedback.impactOccurred("light"); });
+          }, k * 260);
+        })(k);
+      }
+      particles(["🎆", "✨"], 10, "burst", 2, "silver");
+    } else if (kind === "gold") {
+      flash("gold");
+      particles(["🪙", "💰", "✨", "🌟"], 46, "rain", 3);
+      particles(["🪙", "💰"], 18, "burst", 3);
+    } else if (kind === "rainbow") {
+      flash("rainbow");
+      particles(["🌈", "✨", "💖", "🦄", "⭐", "🎉"], 40, "burst", 3);
+      particles(["🌈", "✨", "🎊"], 30, "rain", 3);
+    }
+  }
+
   function showSpinOutcome(prizeIndex, resultText) {
     spinToIndex(prizeIndex, state.prizes.length);
     setTimeout(function () {
       spinning = false;
       paidStatusText = null;
       var prize = state.prizes[prizeIndex];
+      var kind = prize && prize.fx && prize.fx !== "none" ? prize.fx : "";
       var banner = document.getElementById("result-banner");
       banner.textContent = resultText.replace(/\*/g, "");
-      banner.classList.toggle("rare", !!(prize && prize.rare));
+      banner.className = kind ? "fx-" + kind : "";
       banner.style.display = "block";
       renderStats(state);
       renderActions(state);
-      if (prize && prize.rare) {
-        fireConfettiBurst();
-        safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
-        safe(function () { tg.HapticFeedback.impactOccurred("heavy"); });
-      } else {
-        safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
-      }
+      if (kind) playFx(kind, prize.fx_power);
+      var heavy = kind === "silver" || kind === "gold" || kind === "rainbow";
+      safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
+      if (heavy) safe(function () { tg.HapticFeedback.impactOccurred("heavy"); });
     }, 4100);
   }
 
@@ -11556,6 +11806,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
   #catch-basket.hit { animation: basket-hit .3s ease; }
   #catch-basket.magnet-active { filter: drop-shadow(0 0 8px #9b6bff) drop-shadow(0 0 2px #9b6bff); }
+  #catch-basket.double-active { filter: drop-shadow(0 0 10px #ffd23f) drop-shadow(0 0 3px #ffb300); }
+  #catch-basket.double-active::after { content: "x2💰"; position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 13px; font-weight: 800; color: #b8860b; white-space: nowrap; }
+  #catch-basket.shield-active { filter: drop-shadow(0 0 10px #4ea8ff) drop-shadow(0 0 3px #4ea8ff); }
+  #catch-basket.shield-active::before { content: "🛡️"; position: absolute; top: -20px; right: -6px; font-size: 18px; }
+  #catch-basket.shield-pop { animation: shield-pop .4s ease; }
+  @keyframes shield-pop { 0% { filter: drop-shadow(0 0 4px #4ea8ff); } 40% { filter: drop-shadow(0 0 22px #bfe1ff) brightness(1.4); } 100% { filter: none; } }
   @keyframes basket-hit {
     0%, 100% { filter: none; }
     30% { filter: drop-shadow(0 0 8px #e8383d) brightness(.7); }
@@ -12206,6 +12462,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var MAGNET_DURATION_MS = 5000;
   var MAGNET_MARGIN_PCT = 14; // wider catch margin for normal items while active -- never widens bomb/big-hazard hitboxes
   var magnetUntil = 0;
+  var DOUBLE_EMOJI = "💰";
+  var DOUBLE_CHANCE = 0.05; // x2 деньги на несколько секунд -- сервер сам удваивает выплату (см. api_work_powerup_handler)
+  var doubleUntil = 0;
+  var SHIELD_EMOJI = "🛡️";
+  var SHIELD_CHANCE = 0.05; // щит гасит ОДНУ следующую бомбу/большую угрозу вместо проигрыша
+  var shieldCharges = 0;
   var CATCH_FALL_MIN_S = 1.5, CATCH_FALL_RANGE_S = 1.0; // was 2.1-3.5s -- faster, harder to react to
   var BIG_HAZARD_CHANCE = 0.05; // rolled only when the spawn didn't already roll a bomb/slowfall
   var BIG_HAZARD_EMOJIS = ["⚫", "💣"]; // "cannonball" and "big bomb" -- same wide-miss treatment
@@ -12280,13 +12542,13 @@ WORK_PAGE_HTML = r'''<!doctype html>
     setTimeout(function () { if (el.parentNode) el.remove(); }, 700);
   }
 
-  function registerHit(game, x, y, container) {
+  function registerHit(game, x, y, container, tip) {
     if (hitInFlight) return;
     hitInFlight = true;
     api("/api/work/hit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ game: game })
+      body: JSON.stringify({ game: game, tip: !!tip })
     }).then(function (res) {
       hitInFlight = false;
       if (res.ok && res.state) {
@@ -12343,8 +12605,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
     }
     slowFallUntil = 0;
     magnetUntil = 0;
+    doubleUntil = 0;
+    shieldCharges = 0;
     var catchBasketEl = document.getElementById("catch-basket");
-    if (catchBasketEl) catchBasketEl.classList.remove("magnet-active");
+    if (catchBasketEl) catchBasketEl.classList.remove("magnet-active", "double-active", "shield-active", "shield-pop");
     var road = document.getElementById("courier-road");
     if (road) {
       var obstacles = road.querySelectorAll(".courier-obstacle, .courier-recipient, .courier-car, .courier-warning, .courier-stopline, .courier-handoff");
@@ -12506,7 +12770,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       // Пропустил обычный (не баф, не угроза) предмет корзинкой -- минус деньги, см. фидбэк
       // "если пропустить еду корзинкой то минус деньги". Бафы/бомбы/большие угрозы сюда не
       // попадают -- для них штраф/награда уже решаются отдельно в catchCollisionTick.
-      var isPlain = !item.dataset.bomb && !item.dataset.bighazard && !item.dataset.slowfall && !item.dataset.magnet;
+      var isPlain = !item.dataset.bomb && !item.dataset.bighazard && !item.dataset.slowfall && !item.dataset.magnet && !item.dataset.double && !item.dataset.shield;
       var missed = !item.dataset.caught && isPlain;
       var x0 = item.offsetLeft, y0 = item.offsetTop;
       if (item.parentNode) item.remove();
@@ -12543,6 +12807,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
     var isSlowFall = !isBomb && Math.random() < SLOWFALL_CHANCE;
     var isBigHazard = !isBomb && !isSlowFall && Math.random() < BIG_HAZARD_CHANCE;
     var isMagnet = !isBomb && !isSlowFall && !isBigHazard && Math.random() < MAGNET_CHANCE;
+    var isDouble = !isBomb && !isSlowFall && !isBigHazard && !isMagnet && Math.random() < DOUBLE_CHANCE;
+    var isShield = !isBomb && !isSlowFall && !isBigHazard && !isMagnet && !isDouble && Math.random() < SHIELD_CHANCE;
     if (isBigHazard) {
       spawnBigHazardWithWarning(field, x);
       return;
@@ -12553,6 +12819,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
       appendFallingItem(field, x, "catch-item", SLOWFALL_EMOJI, { slowfall: "1" });
     } else if (isMagnet) {
       appendFallingItem(field, x, "catch-item", MAGNET_EMOJI, { magnet: "1" });
+    } else if (isDouble) {
+      appendFallingItem(field, x, "catch-item", DOUBLE_EMOJI, { double: "1" });
+    } else if (isShield) {
+      appendFallingItem(field, x, "catch-item", SHIELD_EMOJI, { shield: "1" });
     } else {
       appendFallingItem(field, x, "catch-item", CATCH_EMOJIS[Math.floor(Math.random() * CATCH_EMOJIS.length)], {});
     }
@@ -12586,9 +12856,17 @@ WORK_PAGE_HTML = r'''<!doctype html>
             // Бомба и большие угрозы -- никакого registerHit, деньги за это НЕ платятся, плюс
             // штрафная блокировка (см. registerPenalty через triggerDebuff).
             item.classList.add("exploded");
+            (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 300); })(item);
+            if (shieldCharges > 0) {
+              // щит поглотил взрыв -- игра продолжается
+              shieldCharges = 0;
+              basket.classList.remove("shield-active");
+              basket.classList.add("shield-pop");
+              setTimeout(function () { basket.classList.remove("shield-pop"); }, 400);
+              continue;
+            }
             basket.classList.add("hit");
             setTimeout(function () { basket.classList.remove("hit"); }, 300);
-            (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 300); })(item);
             triggerDebuff("catch", "catch-feedback", "catch-field",
               basket.offsetLeft + basket.offsetWidth / 2, basket.offsetTop, document.getElementById("catch-field"));
             break; // игра окончена -- остальные (уже удалённые) предметы этого кадра не считаем
@@ -12609,12 +12887,32 @@ WORK_PAGE_HTML = r'''<!doctype html>
               setTimeout(function () {
                 if (Date.now() >= magnetUntil) basket.classList.remove("magnet-active");
               }, MAGNET_DURATION_MS);
+            } else if (item.dataset.double === "1") {
+              activateDouble(basket);
+            } else if (item.dataset.shield === "1") {
+              shieldCharges = 1;
+              basket.classList.add("shield-active");
             }
           }
         }
       }
     }
     catchRafId = debuffState.catch ? null : requestAnimationFrame(catchCollisionTick);
+  }
+
+  function activateDouble(basket) {
+    api("/api/work/powerup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ kind: "double" })
+    }).then(function (res) {
+      if (!res.ok || !res.granted) return;
+      doubleUntil = Date.now() + res.seconds * 1000;
+      basket.classList.add("double-active");
+      setTimeout(function () {
+        if (Date.now() >= doubleUntil) basket.classList.remove("double-active");
+      }, res.seconds * 1000 + 50);
+    }).catch(function () {});
   }
 
   function startCatch() {
@@ -12765,8 +13063,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
             el.classList.add("delivered");
             if (tip) el.classList.add("tipped");
             courierRecipientsDelivered++;
-            registerHit("courier", rider.offsetLeft, rider.offsetTop, road);
-            if (tip) registerHit("courier", rider.offsetLeft, rider.offsetTop, road); // реальные чаевые, не косметика
+            registerHit("courier", rider.offsetLeft, rider.offsetTop, road, tip); // чаевые -- тот же один запрос, сервер платит x2
             spawnCourierHandoff(rider, road);
             setCourierProgress();
             if (courierRecipientsDelivered >= courierRecipientsTotal) completeCourierLeg();
@@ -13220,7 +13517,7 @@ async def api_spin_reminder_handler(request):
         body = await request.json()
     except (json.JSONDecodeError, ValueError):
         body = {}
-    user["spin_reminder_enabled"] = bool(body.get("enabled")) if isinstance(body, dict) else True
+    user["spin_reminder_enabled"] = bool(body.get("enabled")) if isinstance(body, dict) else False
     save_data(user_data)
     return web.json_response({"ok": True, "state": serialize_spin_state(user)})
 
@@ -13246,6 +13543,27 @@ async def api_spin_paid_invoice_handler(request):
         )
     except Exception as e:
         logging.error(f"create_invoice_link (spin_paid_webapp) для {user_id}: {e}")
+        return web.json_response({"ok": False, "error": get_text(user, "webapp_spin_invoice_error")})
+    return web.json_response({"ok": True, "invoice_url": invoice_url})
+
+
+async def api_spin_luck_invoice_handler(request):
+    """Ссылка на Stars-счёт за "Удачу" на 24 часа (см. choose_spin_prize) — та же схема, что у
+    api_spin_paid_invoice_handler. У ELITE удача и так вечная, счёт не нужен."""
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    if spin_luck_seconds_left(user) is None:
+        return web.json_response({"ok": False, "error": get_text(user, "spin_luck_elite")})
+    title, description, label = product_invoice_texts(user, "spin_luck")
+    try:
+        invoice_url = await bot.create_invoice_link(
+            title=title, description=description, payload="spin_luck", provider_token="",
+            currency="XTR", prices=[LabeledPrice(label=label, amount=PRODUCTS["spin_luck"]["stars"])],
+        )
+    except Exception as e:
+        logging.error(f"create_invoice_link (spin_luck) для {user_id}: {e}")
         return web.json_response({"ok": False, "error": get_text(user, "webapp_spin_invoice_error")})
     return web.json_response({"ok": True, "invoice_url": invoice_url})
 
@@ -13292,10 +13610,31 @@ async def api_work_hit_handler(request):
     except Exception:
         body = {}
     game = body.get("game") if isinstance(body, dict) else None
-    awarded = register_work_hit(user, game)
+    tip = bool(body.get("tip")) if isinstance(body, dict) else False
+    awarded = register_work_hit(user, game, tip=tip)
     if awarded is None:
         return web.json_response({"ok": False, "error": "bad_game", "state": serialize_work_state(user)})
     return web.json_response({"ok": True, "awarded": awarded, "state": serialize_work_state(user)})
+
+
+async def api_work_powerup_handler(request):
+    """Бонус из заказа "x2 деньги" (подобранная 💰): включает удвоение выплат за хиты на
+    WORK_DOUBLE_SECONDS. Сервер не видит, поймал ли игрок бонус на самом деле, поэтому просто не
+    выдаёт его чаще, чем раз в WORK_DOUBLE_COOLDOWN_SECONDS."""
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    now = datetime.now()
+    ready_raw = user.get("work_double_next_at")
+    granted = False
+    if not ready_raw or now.isoformat() >= ready_raw:
+        user["work_double_until"] = (now + timedelta(seconds=WORK_DOUBLE_SECONDS)).isoformat()
+        user["work_double_next_at"] = (now + timedelta(seconds=WORK_DOUBLE_COOLDOWN_SECONDS)).isoformat()
+        save_data(user_data)
+        granted = True
+    return web.json_response({"ok": True, "granted": granted, "seconds": WORK_DOUBLE_SECONDS,
+                              "state": serialize_work_state(user)})
 
 
 async def api_work_penalty_handler(request):
@@ -13386,12 +13725,14 @@ async def run_webapp_server():
     app_web.router.add_get("/api/spin/state", api_spin_state_handler)
     app_web.router.add_post("/api/spin/free", api_spin_free_handler)
     app_web.router.add_post("/api/spin/paid/invoice", api_spin_paid_invoice_handler)
+    app_web.router.add_post("/api/spin/luck/invoice", api_spin_luck_invoice_handler)
     app_web.router.add_get("/api/spin/paid/result", api_spin_paid_result_handler)
     app_web.router.add_post("/api/spin/reminder", api_spin_reminder_handler)
     app_web.router.add_get("/work", work_page_handler)
     app_web.router.add_get("/api/work/state", api_work_state_handler)
     app_web.router.add_post("/api/work/hit", api_work_hit_handler)
     app_web.router.add_post("/api/work/penalty", api_work_penalty_handler)
+    app_web.router.add_post("/api/work/powerup", api_work_powerup_handler)
     app_web.router.add_post("/api/work/farm/plant", api_work_farm_plant_handler)
     app_web.router.add_post("/api/work/farm/water", api_work_farm_water_handler)
     app_web.router.add_post("/api/work/farm/harvest", api_work_farm_harvest_handler)
@@ -13538,7 +13879,7 @@ async def check_notifications():
                 # 3) Доступен бесплатный прокрут колеса — не чаще раза в сутки, только пока он
                 # реально не использован, и только если напоминание не отключено тумблером в
                 # Mini App колеса (см. serialize_spin_state/api_spin_reminder_handler).
-                if free_spins_left(user) > 0 and user.get("spin_reminder_enabled", True):
+                if free_spins_left(user) > 0 and user.get("spin_reminder_enabled", False):
                     last_spin_reminder = user.get("last_spin_reminder")
                     due = True
                     if last_spin_reminder:
