@@ -4837,8 +4837,8 @@ PRODUCTS = {
     # крупный пакет давал выгоднее ⭐/энергетик, как раньше у bundle_large.
     "energizer_2": {"stars": 18, "usd": 0.3, "rub": 21},
     "energizer_6": {"stars": 50, "usd": 0.7, "rub": 59},
-    "energizer_15": {"stars": 110, "usd": 1.5, "rub": 130},
-    "energizer_35": {"stars": 220, "usd": 3.1, "rub": 260},
+    "energizer_15": {"stars": 120, "usd": 1.7, "rub": 140},
+    "energizer_35": {"stars": 260, "usd": 3.6, "rub": 310},  # было 220⭐/260₽: у ELITE-игрока энергетик из этого пакета обходился в ~6,6₽ при цене 7,4₽ за штуку
     "spin_paid_20": {"stars": 15, "usd": 0.2, "rub": 18},
     # Тот же платный прокрут и та же цена, что у spin_paid_20 — отдельный payload только чтобы
     # grant_product мог отличить оплату из Mini App (создана через api_spin_paid_invoice_handler
