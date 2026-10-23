@@ -208,6 +208,7 @@ TEXTS = {
         "intim_free_sub": "🎁 Бесплатная сцена по подписке.",
         "intim_left": "🔥 Осталось горячих сцен: {n}",
         "intim_left_cta": "Чтобы создать новую сцену — жми /hot 😉",
+        "intim_scene_footer": "🎬 Сцена: {scene}\n📍 Место: {place}",
         "intim_continue_btn": "🔁 Продолжить эту сцену",
         "intim_need_character": "Сначала создай персонажа через /start",
         "invoice_intim_title": "Горячая сцена",
@@ -262,6 +263,8 @@ TEXTS = {
         "shop_category_medicine": "💊 Лекарства",
         "illness_status_line": "{emoji} Болеет: {name} — лекарство есть в 🛍 Магазине",
         "illness_escalate_timer": "⏳ Без лечения перейдёт в бронхит через {hours}ч",
+        "illness_push_cold": "🤒 Персонаж заболел: {emoji} {name}. Лекарство — в 🛍 Магазине. Пока он болеет, сообщения выматывают сильнее, а горячие сцены недоступны. Без лечения через {hours}ч станет бронхитом.",
+        "illness_push_bronchitis": "😷 Стало хуже: {emoji} {name}. Нужно сильное лекарство из 🛍 Магазина — сообщения выматывают ещё сильнее, горячие сцены недоступны.",
         "tipsy_status_light": "🥂 Слегка навеселе — чувствуется лёгкое опьянение.",
         "tipsy_status_full": "🍾 Хорошенько выпил(а) — реально пьян(а), это чувствуется во всём.",
         "intim_blocked_illness": "🤒 Персонаж слишком плохо себя чувствует для этого сейчас — сначала вылечи его в 🛍 Магазине.",
@@ -560,6 +563,7 @@ TEXTS = {
         "intim_free_sub": "🎁 A free scene from your subscription.",
         "intim_left": "🔥 Hot scenes left: {n}",
         "intim_left_cta": "To create a new scene — tap /hot 😉",
+        "intim_scene_footer": "🎬 Scene: {scene}\n📍 Place: {place}",
         "intim_continue_btn": "🔁 Continue this scene",
         "intim_need_character": "Create your character first via /start",
         "invoice_intim_title": "Hot scene",
@@ -614,6 +618,8 @@ TEXTS = {
         "shop_category_medicine": "💊 Medicine",
         "illness_status_line": "{emoji} Sick: {name} — medicine is in the 🛍 Shop",
         "illness_escalate_timer": "⏳ Will turn into bronchitis in {hours}h if untreated",
+        "illness_push_cold": "🤒 Your companion got sick: {emoji} {name}. Medicine is in the 🛍 Shop. While sick, messages drain more energy and hot scenes are unavailable. Untreated, it turns into bronchitis in {hours}h.",
+        "illness_push_bronchitis": "😷 It got worse: {emoji} {name}. You need strong medicine from the 🛍 Shop — messages drain even more and hot scenes are unavailable.",
         "tipsy_status_light": "🥂 A little tipsy — feeling it slightly.",
         "tipsy_status_full": "🍾 Properly drunk — it shows in everything right now.",
         "intim_blocked_illness": "🤒 Your companion feels too unwell for that right now — cure them in the 🛍 Shop first.",
@@ -912,6 +918,7 @@ TEXTS = {
         "intim_free_sub": "🎁 Eine Gratis-Szene aus deinem Abo.",
         "intim_left": "🔥 Verbleibende heiße Szenen: {n}",
         "intim_left_cta": "Um eine neue Szene zu erstellen — tippe /hot 😉",
+        "intim_scene_footer": "🎬 Szene: {scene}\n📍 Ort: {place}",
         "intim_continue_btn": "🔁 Diese Szene fortsetzen",
         "intim_need_character": "Erstelle zuerst deinen Charakter über /start",
         "invoice_intim_title": "Heiße Szene",
@@ -966,6 +973,8 @@ TEXTS = {
         "shop_category_medicine": "💊 Medikamente",
         "illness_status_line": "{emoji} Krank: {name} — Medikamente gibt es im 🛍 Shop",
         "illness_escalate_timer": "⏳ Wird ohne Behandlung in {hours}Std. zu Bronchitis",
+        "illness_push_cold": "🤒 Dein Begleiter ist krank: {emoji} {name}. Medikamente gibt es im 🛍 Shop. Solange er krank ist, kosten Nachrichten mehr Energie und heiße Szenen sind gesperrt. Unbehandelt wird es in {hours}Std. zu Bronchitis.",
+        "illness_push_bronchitis": "😷 Es wurde schlimmer: {emoji} {name}. Du brauchst starkes Medikament aus dem 🛍 Shop — Nachrichten kosten noch mehr Energie, heiße Szenen sind gesperrt.",
         "tipsy_status_light": "🥂 Leicht angeheitert — man merkt es ein bisschen.",
         "tipsy_status_full": "🍾 Ordentlich betrunken — das merkt man gerade an allem.",
         "intim_blocked_illness": "🤒 Dein Begleiter fühlt sich dafür gerade zu schlecht — heile ihn/sie zuerst im 🛍 Shop.",
@@ -1774,21 +1783,28 @@ INTIM_LOCATIONS = {
                            "услышать» — это только добавляет напряжения, не останавливая сцену.")},
 }
 
-# Какие места физически не подходят под сцену (душ в лесу/в машине и т.п. — нелогично и не должно
-# быть выбираемо вообще, а не "творчески адаптировано" текстом сцены, как было раньше). "any"
-# ("не важно") никогда не блокируется — там место не названо явно, ИИ сам выбирает подходящее.
-INTIM_INCOMPATIBLE_LOCATIONS = {
-    "shower": {"car", "forest", "beach", "elevator", "entryway", "fitting_room", "office"},
-    "bed": {"car", "elevator", "forest", "fitting_room", "office", "beach"},
-    "massage": {"car", "elevator", "entryway", "fitting_room"},
-    "morning": {"car", "elevator", "fitting_room", "office"},
+# Где сцена физически возможна — СПИСОК РАЗРЕШЁННЫХ мест (раньше был список запрещённых, и в нём
+# вечно чего-то не хватало: массаж в лесу, кровать в подъезде). Сцены, которых тут нет (kiss,
+# oral, quickie), подходят куда угодно. "any" ("не важно") всегда доступно и превращается в
+# случайное подходящее конкретное место ещё до генерации (см. generate_intim_scene), так что
+# сцена всегда идёт в реальном, названном месте.
+INTIM_SCENE_LOCATIONS = {
+    "bed": {"home"},
+    "shower": {"home"},
+    "morning": {"home"},
+    "massage": {"home", "beach"},
+    "bdsm": {"home", "office"},
+    "striptease": {"home", "office"},
+    "roleplay": {"home", "office", "fitting_room", "car"},
+    "wall": {"home", "elevator", "entryway", "fitting_room", "office"},
+    "undress": {"home", "car", "beach", "forest", "fitting_room", "office"},
 }
 
 
 def intim_compatible_locations(scene_type):
     """Список ключей INTIM_LOCATIONS, подходящих под scene_type (включая 'any')."""
-    blocked = INTIM_INCOMPATIBLE_LOCATIONS.get(scene_type, set())
-    return [key for key in INTIM_LOCATIONS if key == "any" or key not in blocked]
+    allowed = INTIM_SCENE_LOCATIONS.get(scene_type)
+    return [key for key in INTIM_LOCATIONS if key == "any" or allowed is None or key in allowed]
 
 # Кто ведёт сцену — это про темп, инициативу и то, ЧЬИ действия описываются как активные, а не про
 # модель согласия: ADULT_CONTENT_RULE (обоюдное согласие, без принуждения) действует одинаково при
@@ -1839,44 +1855,44 @@ INTIM_LEVEL_REWARD = 8  # на каком уровне близости откр
 # cooldown) не меняется. reaction_hint — ориентир тона для AI-благодарности (generate_shop_reaction),
 # пользователю не показывается.
 FOOD_ITEMS = {
-    "water": {"emoji": "💧", "ru": "Вода", "en": "Water", "de": "Wasser", "price": 100, "water": 40,
+    "water": {"emoji": "💧", "ru": "Вода", "en": "Water", "de": "Wasser", "price": 250, "water": 40,
               "category": "food", "cooldown_minutes": 8,
               "reaction_hint": "Простая, но нужная забота — благодарность лёгкая, с облегчённой улыбкой."},
-    "sparkling_water": {"emoji": "🥤", "ru": "Газировка", "en": "Soda", "de": "Limonade", "price": 180, "water": 65,
+    "sparkling_water": {"emoji": "🥤", "ru": "Газировка", "en": "Soda", "de": "Limonade", "price": 450, "water": 65,
                          "category": "food", "cooldown_minutes": 15,
                          "reaction_hint": "Освежающая мелочь с игривой ноткой — благодарность довольная, чуть бодрее обычного."},
-    "coconut_water": {"emoji": "🥥", "ru": "Кокосовая вода", "en": "Coconut water", "de": "Kokoswasser", "price": 350,
+    "coconut_water": {"emoji": "🥥", "ru": "Кокосовая вода", "en": "Coconut water", "de": "Kokoswasser", "price": 900,
                        "water": 85, "mood": 8, "category": "food", "cooldown_minutes": 40,
                        "reaction_hint": "Необычный, заботливый выбор — благодарность приятно удивлённая, ты оценила, что подошли к делу с фантазией."},
-    "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 150, "satiety": 16,
+    "snack": {"emoji": "🍪", "ru": "Снек", "en": "Snack", "de": "Snack", "price": 400, "satiety": 16,
               "category": "food", "cooldown_minutes": 10,
               "reaction_hint": "Это мелкая, но милая забота — благодарность лёгкая, тёплая, почти игривая."},
-    "breakfast": {"emoji": "🥐", "ru": "Завтрак", "en": "Breakfast", "de": "Frühstück", "price": 220, "satiety": 32,
+    "breakfast": {"emoji": "🥐", "ru": "Завтрак", "en": "Breakfast", "de": "Frühstück", "price": 550, "satiety": 32,
                   "category": "food", "cooldown_minutes": 20,
                   "reaction_hint": "Утренняя забота — благодарность сонная, но очень нежная, ты тронута, что о тебе подумали с самого утра."},
-    "meal": {"emoji": "🍲", "ru": "Обед", "en": "Meal", "de": "Mahlzeit", "price": 300, "satiety": 45,
+    "meal": {"emoji": "🍲", "ru": "Обед", "en": "Meal", "de": "Mahlzeit", "price": 750, "satiety": 45,
              "category": "food", "cooldown_minutes": 30,
              "reaction_hint": "Это нормальная забота о тебе — благодарность душевная, ты чувствуешь себя сытой и по-настоящему тронута вниманием."},
-    "cafe": {"emoji": "☕", "ru": "Кафе", "en": "Café", "de": "Café", "price": 550, "satiety": 70, "mood": 8,
+    "cafe": {"emoji": "☕", "ru": "Кафе", "en": "Café", "de": "Café", "price": 1400, "satiety": 70, "mood": 8,
              "category": "food", "cooldown_minutes": 90,
              "reaction_hint": "Это настоящее свидание за столиком, не просто еда — благодарность тёплая, немного смущённая, приятно проведённое время."},
-    "restaurant": {"emoji": "🍽", "ru": "Ресторан", "en": "Restaurant", "de": "Restaurant", "price": 900, "satiety": 95, "mood": 6,
+    "restaurant": {"emoji": "🍽", "ru": "Ресторан", "en": "Restaurant", "de": "Restaurant", "price": 2250, "satiety": 95, "mood": 6,
                    "category": "food", "cooldown_minutes": 180,
                    "reaction_hint": "Настоящий поход в ресторан — не просто еда, а маленькое свидание, благодарность восторженная и чуть взволнованная."},
-    "sushi": {"emoji": "🍣", "ru": "Суши-сет", "en": "Sushi set", "de": "Sushi-Set", "price": 1200, "satiety": 85, "mood": 10,
+    "sushi": {"emoji": "🍣", "ru": "Суши-сет", "en": "Sushi set", "de": "Sushi-Set", "price": 3000, "satiety": 85, "mood": 10,
               "category": "food", "cooldown_minutes": 180,
               "reaction_hint": "Необычный, изысканный выбор — благодарность удивлённая и довольная, ты оценила, что подошли к делу с фантазией."},
     # tipsy_minutes/tipsy_level — эффект алкоголя (см. apply_shop_item_effects/build_tipsy_rule):
     # на N минут после покупки добавляет в промпт манеру речи навеселе, не трогая статы напрямую.
     # "light" (пиво) — почти незаметно, "full" (вино) — заметное, но всё ещё лёгкое опьянение.
-    "beer": {"emoji": "🍺", "ru": "Пиво", "en": "Beer", "de": "Bier", "price": 250, "mood": 10,
+    "beer": {"emoji": "🍺", "ru": "Пиво", "en": "Beer", "de": "Bier", "price": 600, "mood": 10,
              "category": "food", "cooldown_minutes": 45, "tipsy_minutes": 25, "tipsy_level": "light",
              "reaction_hint": "Лёгкий повод расслабиться вместе — благодарность весёлая, чуть игривая, с смешком."},
     # Раньше в GIFT_ITEMS был ещё и отдельный "wine" (🍷 Вино) без градуса — только сытость/
     # настроение, без tipsy-эффекта. Из-за одинакового названия с этим пунктом путал пользователей
     # (видно и не отличить на глаз, зачем два разных "Вино"), а по смыслу дублировал его без
     # хмельного эффекта — убран, остался только этот, настоящий алкогольный вариант.
-    "fine_wine": {"emoji": "🍷", "ru": "Вино", "en": "Wine", "de": "Wein", "price": 900,
+    "fine_wine": {"emoji": "🍷", "ru": "Вино", "en": "Wine", "de": "Wein", "price": 2250,
                   "mood": 22, "xp": 15,
                   "category": "food", "cooldown_minutes": 180, "tipsy_minutes": 50, "tipsy_level": "full",
                   "reaction_hint": "Дорогой, чувственный жест — благодарность игривая и слегка кокетливая, ты быстро хмелеешь и становишься мягче и раскованнее."},
@@ -1951,17 +1967,17 @@ ILLNESS_DAILY_CHANCE = 0.18  # шанс заболеть за день, толь
 # (ожидаемое начало болезни ~25 дней, реально ощущалось как "болезни вообще не бывает"); при 0.10
 # больше половины пользователей увидят её уже в первую неделю игры, оставаясь при этом редким
 # случайным риском, а не ежедневной рутиной
-ILLNESS_ESCALATE_HOURS = 48  # столько часов невылеченная простуда терпит, потом становится бронхитом
+ILLNESS_ESCALATE_HOURS = 24  # столько часов невылеченная простуда терпит, потом становится бронхитом
 
 # Лекарства — отдельная категория магазина, видна только когда персонаж реально болен (см.
 # get_shop_kb). "cures" — какие болезни снимает; сильное лечит и то, и другое, чтобы нельзя было
 # по ошибке купить не то и остаться ни с чем (см. buy_medicine).
 MEDICINE_ITEMS = {
     "light_medicine": {"emoji": "💊", "ru": "Лёгкое лекарство", "en": "Mild medicine", "de": "Leichtes Medikament",
-                        "price": 650, "mood": 8, "cures": {"cold"},  # было 400 — слишком дёшево
+                        "price": 1600, "mood": 8, "cures": {"cold"},  # было 400/650 — слишком дёшево
                         "reaction_hint": "Забота во время болезни — благодарность тёплая, голос слабый, но искренний."},
     "strong_medicine": {"emoji": "💉", "ru": "Сильное лекарство", "en": "Strong medicine", "de": "Starkes Medikament",
-                         "price": 1600, "mood": 15, "cures": {"cold", "bronchitis"},  # было 900
+                         "price": 4000, "mood": 15, "cures": {"cold", "bronchitis"},  # было 900/1600
                          "reaction_hint": "Серьёзная забота во время тяжёлой болезни — искреннее облегчение и глубокая благодарность."},
 }
 
@@ -4014,24 +4030,24 @@ SPIN_PRIZES = [
     # wheel_label — короткая, язык-независимая подпись сектора для колеса в Mini App (см.
     # serialize_spin_state/SPIN_PAGE_HTML). weight задаёт шанс; порядок по убыванию шанса (по
     # фидбэку): ничего > XP > баксы > доп. прокрут > 100 еды и воды > сцены > буст x5 > энергетики >
-    # джекпот и подписки. Порядок самого списка — порядок секторов на колесе: редкое нарочно
-    # разнесено по кругу. fx/fx_power — эффект при выигрыше (см. showSpinOutcome в SPIN_PAGE_HTML):
+    # джекпот и подписки. Порядок списка — порядок секторов и списка призов:
+    # по группам (ничего, баксы, XP, сцены, энергетики, остальное, редкое), шансы от порядка не зависят. fx/fx_power — эффект при выигрыше (см. showSpinOutcome в SPIN_PAGE_HTML):
     # чем реже приз, тем эффектнее (spark/coins/hearts/bolts -> silver фейерверк -> gold -> rainbow).
     {"name": "😢 Ничего", "name_en": "😢 Nothing", "name_de": "😢 Nichts", "value": 0, "type": "nothing", "weight": 10, "wheel_label": "😢", "fx": "none", "fx_power": 1},
-    {"name": "100 XP", "name_en": "100 XP", "name_de": "100 XP", "value": 100, "type": "xp", "weight": 5, "wheel_label": "100 XP", "fx": "spark", "fx_power": 1},
     {"name": "550💵 баксов", "name_en": "550💵 bucks", "name_de": "550💵 Bucks", "value": 550, "type": "bucks", "weight": 5, "wheel_label": "550💵", "fx": "coins", "fx_power": 1},
-    {"name": "🎟 +1 доп. прокрут", "name_en": "🎟 +1 extra spin", "name_de": "🎟 +1 Extra-Dreh", "value": 1, "type": "extra_spin", "weight": 6, "wheel_label": "🎟+1", "fx": "spark", "fx_power": 2},
-    {"name": "150 XP", "name_en": "150 XP", "name_de": "150 XP", "value": 150, "type": "xp", "weight": 3, "wheel_label": "150 XP", "fx": "spark", "fx_power": 1},
-    {"name": "🍱 100 еды + 100 воды", "name_en": "🍱 100 food + 100 water", "name_de": "🍱 100 Essen + 100 Wasser", "value": 0, "type": "care_package", "weight": 5, "wheel_label": "🍱+100", "fx": "spark", "fx_power": 2},
     {"name": "1200💵 баксов", "name_en": "1200💵 bucks", "name_de": "1200💵 Bucks", "value": 1200, "type": "bucks", "weight": 2.5, "wheel_label": "1200💵", "fx": "coins", "fx_power": 2},
-    {"name": "🔥 1 горячая сцена", "name_en": "🔥 1 hot scene", "name_de": "🔥 1 heiße Szene", "value": 1, "type": "intim_scenes", "weight": 3, "wheel_label": "🔥", "fx": "hearts", "fx_power": 1},
+    {"name": "100 XP", "name_en": "100 XP", "name_de": "100 XP", "value": 100, "type": "xp", "weight": 5, "wheel_label": "100 XP", "fx": "spark", "fx_power": 1},
+    {"name": "150 XP", "name_en": "150 XP", "name_de": "150 XP", "value": 150, "type": "xp", "weight": 3, "wheel_label": "150 XP", "fx": "spark", "fx_power": 1},
     {"name": "250 XP", "name_en": "250 XP", "name_de": "250 XP", "value": 250, "type": "xp", "weight": 1.5, "wheel_label": "250 XP", "fx": "spark", "fx_power": 2},
-    {"name": "⚡x5 буст заработка на час", "name_en": "⚡x5 earnings boost for an hour", "name_de": "⚡x5 Verdienst-Boost für eine Stunde", "value": 0, "type": "work_boost", "weight": 3.5, "wheel_label": "⚡x5", "fx": "silver", "fx_power": 3},
-    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 2, "wheel_label": "2⚡", "fx": "bolts", "fx_power": 1},
-    {"name": "💰🎉 10 000💵 баксов (ДЖЕКПОТ!)", "name_en": "💰🎉 10,000💵 bucks (JACKPOT!)", "name_de": "💰🎉 10.000💵 Bucks (JACKPOT!)", "value": 10000, "type": "bucks", "weight": 0.1, "wheel_label": "💰10K", "fx": "gold", "fx_power": 3},
+    {"name": "🔥 1 горячая сцена", "name_en": "🔥 1 hot scene", "name_de": "🔥 1 heiße Szene", "value": 1, "type": "intim_scenes", "weight": 3, "wheel_label": "🔥", "fx": "hearts", "fx_power": 1},
     {"name": "🔥🔥 2 горячие сцены", "name_en": "🔥🔥 2 hot scenes", "name_de": "🔥🔥 2 heiße Szenen", "value": 2, "type": "intim_scenes", "weight": 1.5, "wheel_label": "🔥🔥", "fx": "hearts", "fx_power": 2},
-    {"name": "🔥 PRO на 5 дней", "name_en": "🔥 PRO for 5 days", "name_de": "🔥 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.2, "wheel_label": "🔥PRO", "fx": "rainbow", "fx_power": 3},
+    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 2, "wheel_label": "2⚡", "fx": "bolts", "fx_power": 1},
     {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 0.5, "wheel_label": "4⚡", "fx": "bolts", "fx_power": 2},
+    {"name": "🎟 +1 доп. прокрут", "name_en": "🎟 +1 extra spin", "name_de": "🎟 +1 Extra-Dreh", "value": 1, "type": "extra_spin", "weight": 6, "wheel_label": "🎟+1", "fx": "spark", "fx_power": 2},
+    {"name": "🍱 100 еды + 100 воды", "name_en": "🍱 100 food + 100 water", "name_de": "🍱 100 Essen + 100 Wasser", "value": 0, "type": "care_package", "weight": 5, "wheel_label": "🍱+100", "fx": "spark", "fx_power": 2},
+    {"name": "⚡x5 буст заработка на час", "name_en": "⚡x5 earnings boost for an hour", "name_de": "⚡x5 Verdienst-Boost für eine Stunde", "value": 0, "type": "work_boost", "weight": 3.5, "wheel_label": "⚡x5", "fx": "silver", "fx_power": 3},
+    {"name": "💰🎉 10 000💵 баксов (ДЖЕКПОТ!)", "name_en": "💰🎉 10,000💵 bucks (JACKPOT!)", "name_de": "💰🎉 10.000💵 Bucks (JACKPOT!)", "value": 10000, "type": "bucks", "weight": 0.1, "wheel_label": "💰10K", "fx": "gold", "fx_power": 3},
+    {"name": "🔥 PRO на 5 дней", "name_en": "🔥 PRO for 5 days", "name_de": "🔥 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.2, "wheel_label": "🔥PRO", "fx": "rainbow", "fx_power": 3},
     {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.1, "wheel_label": "✨SUPER", "fx": "rainbow", "fx_power": 3},
 ]
 
@@ -4043,7 +4059,7 @@ def prize_name(prize, user):
 
 SPIN_LUCK_HOURS = 24
 SPIN_LUCK_WEIGHT_MULT = {  # множители шансов при активной "Удаче" (см. spin_luck_active)
-    "nothing": 0.3, "energizers": 2.0, "work_boost": 2.0, "intim_scenes": 1.6,
+    "nothing": 0.3, "work_boost": 2.0, "intim_scenes": 1.6,
     "subscription_pro": 4.0, "subscription_super": 4.0, "care_package": 1.3,
 }
 SPIN_LUCK_JACKPOT_MULT = 4.0
@@ -5922,6 +5938,15 @@ def build_intim_prompt(user, scene_type, location, dominant="any", arc_position=
     return prompt
 
 
+def trim_to_last_sentence(text):
+    """Если ответ оборвался по лимиту токенов — отрезаем недописанный хвост по последнему
+    законченному предложению/действию, чтобы сцена не заканчивалась на полуслове."""
+    cut = max(text.rfind(ch) for ch in ".!?…*»\"")
+    if cut < len(text) * 0.5:
+        return text
+    return text[:cut + 1]
+
+
 async def generate_intim_scene(call, user, scene_type, location="any", dominant="any", free=False, continue_text=None, arc_position=None):
     """Возвращает True, если сцена сгенерирована и отправлена. Намеренно не читает и не
     пишет в user["history"]: сцена — самостоятельный эпизод без всякой связи с обычным чатом
@@ -5939,6 +5964,10 @@ async def generate_intim_scene(call, user, scene_type, location="any", dominant=
         pool = [key for key in INTIM_SCENES
                 if key != "random" and location in intim_compatible_locations(key)]
         scene_type = random.choice(pool)
+    if location == "any":
+        # "не важно" -- сами выбираем реальное подходящее место, чтобы и текст, и подпись в конце
+        # сцены ("где") были конкретными, а не на усмотрение модели.
+        location = random.choice([k for k in intim_compatible_locations(scene_type) if k != "any"])
     chat_id = call.message.chat.id
     status_msg = await bot.send_message(chat_id, get_text(user, "intim_generating"))
     typing_task = asyncio.create_task(_keep_typing(chat_id))
@@ -5971,9 +6000,11 @@ async def generate_intim_scene(call, user, scene_type, location="any", dominant=
             # причина не в промпте (в нём нет ни слова на английском рядом со сценой), это
             # похоже на артефакт сэмплирования самой модели.
             temperature=0.85,
-            max_tokens=1200,
+            max_tokens=2400,  # было 1200: у reasoning-моделей скрытые "мысли" входят в этот лимит, и
+                              # видимый текст сцены обрывался на полуслове
         )
         answer = response.choices[0].message.content
+        truncated = response.choices[0].finish_reason == "length"
     except Exception as e:
         await bot.send_message(chat_id, get_text(user, "generation_error", error=e))
         return False
@@ -5982,6 +6013,8 @@ async def generate_intim_scene(call, user, scene_type, location="any", dominant=
         await safe_delete(status_msg)
 
     _, clean_answer = extract_reaction_from_answer(answer)
+    if truncated:
+        clean_answer = trim_to_last_sentence(clean_answer)
     user["last_activity"] = datetime.now().isoformat()
     user["last_hot_scene"] = {"text": clean_answer, "scene_type": scene_type, "location": location,
                                "dominant": dominant, "arc_position": arc_position}
@@ -5990,7 +6023,10 @@ async def generate_intim_scene(call, user, scene_type, location="any", dominant=
     # которого этот раздел должен избегать.
     save_data(user_data)
 
-    await send_long_to_chat(chat_id, clean_answer, reply_markup=get_full_kb(user))
+    footer = get_text(user, "intim_scene_footer",
+                      scene=intim_option_label(INTIM_SCENES, scene_type, user),
+                      place=intim_option_label(INTIM_LOCATIONS, location, user))
+    await send_long_to_chat(chat_id, clean_answer + "\n\n" + footer, reply_markup=get_full_kb(user))
 
     remaining = intim_scenes_available(user)
     left_text = get_text(user, "intim_left", n=remaining)
@@ -13982,6 +14018,11 @@ async def check_notifications():
                 if user.get("dead"):
                     continue
 
+                # Дневной сброс (в т.ч. шанс заболеть и перерастание простуды в бронхит) раньше шёл
+                # только когда сам пользователь писал боту — пропавший так и не узнавал о болезни.
+                # Теперь тот же сброс тикает и в фоне, а о болезни приходит уведомление ниже.
+                _reset_daily_quota_if_needed(user)
+
                 # Обезвоживание должно тикать и потенциально убивать ФОНОВО, а не только у тех,
                 # кто сам сейчас пишет боту: иначе у молча пропавшего пользователя сохранённое
                 # значение воды никогда не дошло бы до нуля (пассивный расход иначе считается
@@ -14020,6 +14061,23 @@ async def check_notifications():
                         except Exception:
                             pass
 
+
+                # Уведомление о болезни (и о том, что простуда перешла в бронхит). Не привязано к
+                # notifications_muted: это важное событие, как и предупреждения о смерти выше.
+                illness_now = user.get("illness")
+                if illness_now and user.get("illness_notified") != illness_now:
+                    user["illness_notified"] = illness_now
+                    save_data(user_data)
+                    info = ILLNESSES[illness_now]
+                    try:
+                        key = "illness_push_cold" if illness_now == "cold" else "illness_push_bronchitis"
+                        await bot.send_message(int(user_id), get_text(
+                            user, key, emoji=info["emoji"], name=info.get(user.get("lang", "ru"), info["ru"]),
+                            hours=ILLNESS_ESCALATE_HOURS))
+                    except Exception:
+                        pass
+                elif not illness_now and user.get("illness_notified"):
+                    user["illness_notified"] = None
 
                 # Отключение уведомлений — привилегия SUPER PRO: если подписка упала до PRO или
                 # истекла, напоминания сами возобновятся — отдельно снимать флаг не нужно.
