@@ -1,4 +1,5 @@
 import asyncio
+import html as html_lib
 import hashlib
 import hmac
 import math
@@ -10682,16 +10683,205 @@ async def api_custom_gift_handler(request):
     return web.json_response({"ok": True, "state": serialize_shop_state(user)})
 
 
-async def root_health_handler(request):
-    """Корень домена — не часть самого магазина, но некоторые хостинги (в т.ч. reverse-proxy
-    перед контейнером) проверяют живость сервиса именно запросом на "/" перед тем, как вообще
-    начать пускать трафик на остальные пути; без этого маршрута такая проверка ловила бы 404 от
-    aiohttp и могла бы блокировать доступ даже к /shop. Заодно отдаёт человеку, который открыл
-    голый домен в браузере, что-то осмысленное вместо пустого 404."""
-    return web.Response(
-        text='<!doctype html><meta http-equiv="refresh" content="0; url=/shop">OK',
-        content_type="text/html",
+# ============================================================
+#  ПУБЛИЧНЫЙ САЙТ (описание услуги, цены, оферта, политика, контакты)
+# ============================================================
+# Нужен платёжным сервисам (Lava, ЮКасса и т.п.) для модерации проекта: они требуют на сайте
+# актуальные контакты, описание услуги и цен, условия оказания/возврата, оферту и политику
+# обработки персональных данных. Реквизиты продавца берутся из переменных окружения — их нужно
+# задать на хостинге (иначе соответствующие строки просто не показываются, а при старте в логе
+# будет предупреждение). Тексты — шаблон, а не юридическая консультация: перед подачей в платёжку
+# их стоит проверить и при необходимости поправить под свою ситуацию.
+SELLER_NAME = os.getenv("SELLER_NAME", "")          # ФИО самозанятого / название ИП или ООО
+SELLER_STATUS = os.getenv("SELLER_STATUS", "")      # например: Самозанятый / ИП / ООО
+SELLER_INN = os.getenv("SELLER_INN", "")
+CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "")
+CONTACT_PHONE = os.getenv("CONTACT_PHONE", "")
+CONTACT_ADDRESS = os.getenv("CONTACT_ADDRESS", "")  # юридический или фактический адрес
+SUPPORT_TELEGRAM = os.getenv("SUPPORT_TELEGRAM", "@role_duel_bot")
+SITE_NAME = "Role Duel"
+
+SITE_CSS = """
+:root { --bg:#fff; --fg:#1a1a1a; --muted:#666; --card:#f4f5f7; --accent:#2481cc; }
+@media (prefers-color-scheme: dark) { :root { --bg:#14161a; --fg:#eceff1; --muted:#9aa4ad; --card:#1e2228; --accent:#4ea8ff; } }
+* { box-sizing: border-box; }
+body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--fg); line-height:1.6; }
+header, main, footer { max-width: 860px; margin: 0 auto; padding: 16px 18px; }
+header { display:flex; flex-wrap:wrap; gap:14px; align-items:center; justify-content:space-between; }
+header a.brand { font-weight:800; font-size:20px; color:var(--fg); text-decoration:none; }
+nav a { margin-right:14px; color:var(--accent); text-decoration:none; font-size:15px; }
+h1 { font-size:28px; margin:8px 0 12px; } h2 { font-size:20px; margin:26px 0 8px; }
+p, li { font-size:16px; } .muted { color:var(--muted); font-size:14px; }
+.grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:12px; }
+.card { background:var(--card); border-radius:14px; padding:14px 16px; }
+.card b { display:block; font-size:17px; } .price { color:var(--accent); font-weight:700; margin-top:6px; }
+.btn { display:inline-block; background:var(--accent); color:#fff; padding:12px 22px; border-radius:12px; text-decoration:none; font-weight:700; }
+footer { border-top:1px solid rgba(127,127,127,.25); margin-top:30px; }
+"""
+
+SITE_NAV = [("/", "Главная"), ("/offer", "Оферта"), ("/privacy", "Конфиденциальность"),
+            ("/refund", "Возврат"), ("/contacts", "Контакты")]
+
+
+def _seller_lines():
+    lines = []
+    if SELLER_NAME:
+        lines.append(f"{SELLER_STATUS + ': ' if SELLER_STATUS else ''}{SELLER_NAME}")
+    if SELLER_INN:
+        lines.append(f"ИНН: {SELLER_INN}")
+    if CONTACT_ADDRESS:
+        lines.append(f"Адрес: {CONTACT_ADDRESS}")
+    if CONTACT_EMAIL:
+        lines.append(f"Email: {CONTACT_EMAIL}")
+    if CONTACT_PHONE:
+        lines.append(f"Телефон: {CONTACT_PHONE}")
+    lines.append(f"Поддержка в Telegram: {SUPPORT_TELEGRAM}")
+    return lines
+
+
+def render_site_page(title, body_html):
+    nav = "".join(f'<a href="{href}">{label}</a>' for href, label in SITE_NAV)
+    footer = "<br>".join(html_lib.escape(line) for line in _seller_lines())
+    return (
+        '<!doctype html><html lang="ru"><head><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width, initial-scale=1">'
+        f"<title>{html_lib.escape(title)} — {SITE_NAME}</title><style>{SITE_CSS}</style></head><body>"
+        f'<header><a class="brand" href="/">{SITE_NAME}</a><nav>{nav}</nav></header>'
+        f"<main>{body_html}</main><footer class=\"muted\">{footer}</footer></body></html>"
     )
+
+
+def _price_rub(key):
+    return f"{PRODUCTS[key]['rub']} ₽"
+
+
+def site_pricing_html():
+    items = [
+        ("PRO — 30 дней", "Память диалога 40 сообщений, дополнительные стили, +2 энергетика в день, бонус к опыту и заработку, 2 бесплатных прокрутки колеса в день.", "subscribe_pro"),
+        ("SUPER PRO — 30 дней", "Память 60 сообщений, все стили, свой персонаж, +3 энергетика в день, 3 бесплатные сцены и прокрутки в день.", "subscribe_super"),
+        ("ELITE — 30 дней", "Память 80 сообщений, максимум бонусов, +4 энергетика в день, 5 бесплатных сцен и прокруток в день, постоянная «Удача» колеса.", "subscribe_elite"),
+        ("Энергетик ×2", "Игровой предмет: восстанавливает энергию персонажа.", "energizer_2"),
+        ("Энергетики ×6", "Игровые предметы: восстанавливают энергию персонажа.", "energizer_6"),
+        ("Энергетики ×15", "Игровые предметы: восстанавливают энергию персонажа.", "energizer_15"),
+        ("Энергетики ×35", "Игровые предметы: восстанавливают энергию персонажа.", "energizer_35"),
+        ("Дополнительная сцена", "Одна дополнительная сцена в режиме «Горячие сцены» (18+).", "intim_scene"),
+        ("Прокрут колеса", "Один платный прокрут колеса фортуны.", "spin_paid_20"),
+        ("Удача колеса — 24 часа", "Повышенные шансы на редкие призы колеса.", "spin_luck"),
+        ("Мгновенное пробуждение", "Мгновенно будит персонажа без энергетика.", "wake_now"),
+        ("Дефибриллятор", "Возвращает персонажа, если он «погиб», без потери истории.", "defibrillator"),
+    ]
+    cards = "".join(
+        f'<div class="card"><b>{html_lib.escape(name)}</b><span class="muted">{html_lib.escape(desc)}</span>'
+        f'<div class="price">{_price_rub(key)}</div></div>'
+        for name, desc, key in items)
+    return f'<div class="grid">{cards}</div>'
+
+
+def site_home_html():
+    return (
+        f"<h1>{SITE_NAME} — ИИ-собеседник в Telegram</h1>"
+        "<p>Role Duel — это Telegram-бот: виртуальный собеседник на базе искусственного интеллекта. "
+        "Вы выбираете мир, пол и характер персонажа и общаетесь с ним в формате ролевого диалога. "
+        "В боте есть мини-игры для заработка внутриигровой валюты, магазин внутриигровых предметов "
+        "и колесо фортуны.</p>"
+        '<p><a class="btn" href="https://t.me/role_duel_bot">Открыть бота в Telegram</a></p>'
+        "<h2>Возрастные ограничения</h2>"
+        "<p>Сервис предназначен для совершеннолетних (18+). Часть режимов общения содержит материалы "
+        "для взрослых в текстовом виде и доступна только после подтверждения возраста. Изображений и "
+        "видео бот не создаёт. Любые сцены с несовершеннолетними, насилием и принуждением "
+        "запрещены и блокируются.</p>"
+        "<h2>Что можно оплатить</h2>"
+        "<p>Оплачиваются цифровые услуги и внутриигровые предметы. Доставка — мгновенная, прямо в "
+        "боте после подтверждения оплаты.</p>"
+        f"{site_pricing_html()}"
+        '<p class="muted">Подписки не продлеваются автоматически. Условия — в '
+        '<a href="/offer">оферте</a>, порядок возврата — <a href="/refund">здесь</a>.</p>'
+    )
+
+
+def site_offer_html():
+    seller = "<br>".join(html_lib.escape(l) for l in _seller_lines())
+    return f"""
+<h1>Публичная оферта</h1>
+<p class="muted">Редакция действует с момента публикации на сайте.</p>
+<h2>1. Общие положения</h2>
+<p>Настоящий документ — предложение (оферта) заключить договор на оказание цифровых услуг через Telegram-бота «{SITE_NAME}» (далее — Сервис). Оплата и использование Сервиса означают полное принятие условий оферты.</p>
+<p><b>Исполнитель:</b><br>{seller}</p>
+<h2>2. Предмет договора</h2>
+<p>Исполнитель предоставляет Пользователю доступ к функциям Сервиса: диалог с виртуальным ИИ-персонажем, мини-игры, колесо фортуны, внутриигровые предметы и подписки (PRO, SUPER PRO, ELITE) на срок 30 дней. Перечень и стоимость указаны на <a href="/">главной странице</a> и в боте.</p>
+<h2>3. Возраст и допустимое использование</h2>
+<p>Сервис предназначен для лиц, достигших 18 лет. Пользователь подтверждает совершеннолетие при регистрации. Запрещено использовать Сервис для сцен с несовершеннолетними, насилия, принуждения, а также для противоправных целей. Исполнитель вправе ограничить доступ при нарушении правил.</p>
+<h2>4. Оплата и предоставление услуги</h2>
+<p>Оплата производится способами, доступными в боте. Услуга считается оказанной с момента зачисления подписки или предмета на аккаунт Пользователя — как правило, сразу после подтверждения платежа. Подписки не продлеваются автоматически.</p>
+<h2>5. Характер сервиса и ответственность</h2>
+<p>Ответы персонажа генерируются искусственным интеллектом и носят развлекательный характер; они не являются советом, в том числе медицинским, юридическим или финансовым. Внутриигровая валюта и предметы не имеют денежного эквивалента и не подлежат обмену на деньги. Исполнитель не гарантирует бесперебойную работу Сервиса и вправе изменять его функции.</p>
+<h2>6. Интеллектуальная собственность</h2>
+<p>Все права на программное обеспечение, оформление и тексты Сервиса принадлежат Исполнителю. Пользователь получает неисключительное право использовать Сервис в личных целях в пределах оплаченного доступа.</p>
+<h2>7. Возврат</h2>
+<p>Порядок возврата описан на странице <a href="/refund">«Возврат»</a>.</p>
+<h2>8. Персональные данные</h2>
+<p>Обработка данных осуществляется согласно <a href="/privacy">Политике конфиденциальности</a>.</p>
+<h2>9. Контакты</h2>
+<p>По всем вопросам — см. страницу <a href="/contacts">«Контакты»</a>.</p>
+"""
+
+
+def site_privacy_html():
+    return f"""
+<h1>Политика обработки персональных данных</h1>
+<h2>1. Какие данные мы обрабатываем</h2>
+<p>Идентификатор и имя пользователя Telegram, выбранный язык, настройки персонажа, история диалога (в пределах памяти подписки), игровой прогресс и баланс, данные о покупках (товар, сумма, время). Платёжные реквизиты (номер карты) мы не получаем и не храним — они обрабатываются платёжным сервисом.</p>
+<h2>2. Цели обработки</h2>
+<p>Предоставление функций Сервиса, учёт покупок и начисление оплаченных товаров, поддержка пользователей, защита от злоупотреблений.</p>
+<h2>3. Передача третьим лицам</h2>
+<p>Текст ваших сообщений передаётся стороннему сервису искусственного интеллекта для генерации ответа персонажа. Данные об оплате передаются платёжным сервисам в объёме, необходимом для проведения платежа. Мы не продаём персональные данные и не используем их для рекламы третьих лиц.</p>
+<h2>4. Хранение и защита</h2>
+<p>Данные хранятся на серверах хостинг-провайдера и доступны только Исполнителю. Мы применяем разумные меры защиты, но не можем гарантировать абсолютную безопасность передачи данных через интернет.</p>
+<h2>5. Права пользователя</h2>
+<p>Вы можете запросить сведения о хранимых данных, их исправление или удаление, написав по контактам со страницы <a href="/contacts">«Контакты»</a>. Историю диалога можно сбросить командами бота.</p>
+<h2>6. Изменения</h2>
+<p>Политика может обновляться; актуальная версия всегда размещена на этой странице.</p>
+"""
+
+
+def site_refund_html():
+    email = html_lib.escape(CONTACT_EMAIL or SUPPORT_TELEGRAM)
+    return f"""
+<h1>Условия оказания услуг, возврата и отмены платежа</h1>
+<h2>Доставка</h2>
+<p>Все товары — цифровые. Физической доставки нет. Подписка, энергетики, сцены и другие предметы зачисляются на ваш аккаунт в боте автоматически, как правило сразу после подтверждения платежа (иногда до нескольких минут).</p>
+<h2>Возврат</h2>
+<p>Если оплата прошла, но товар не был зачислен, или произошёл технический сбой по вине Сервиса, мы либо зачислим товар вручную, либо вернём деньги. Обратитесь в течение 14 дней с момента платежа: {email}. Укажите свой Telegram-имя/ID, дату, сумму и способ оплаты.</p>
+<p>Уже использованные цифровые товары (потраченные энергетики, прокрутки, сцены, начавшаяся подписка) возврату не подлежат, если услуга была оказана надлежащим образом.</p>
+<h2>Отмена</h2>
+<p>Подписки не продлеваются автоматически, поэтому отменять их не нужно: по окончании 30 дней доступ просто завершится. Срок рассмотрения обращения — до 10 рабочих дней; возврат осуществляется тем же способом, которым была оплата.</p>
+"""
+
+
+def site_contacts_html():
+    lines = "".join(f"<p>{html_lib.escape(l)}</p>" for l in _seller_lines())
+    return f"<h1>Контакты</h1>{lines}<p class=\"muted\">Служба поддержки отвечает в течение нескольких рабочих дней.</p>"
+
+
+async def site_page_handler(request):
+    pages = {
+        "/": ("Главная", site_home_html),
+        "/offer": ("Публичная оферта", site_offer_html),
+        "/privacy": ("Конфиденциальность", site_privacy_html),
+        "/refund": ("Возврат и доставка", site_refund_html),
+        "/contacts": ("Контакты", site_contacts_html),
+    }
+    title, builder = pages.get(request.path, pages["/"])
+    return web.Response(text=render_site_page(title, builder()), content_type="text/html")
+
+
+def warn_missing_site_details():
+    missing = [name for name, value in (("SELLER_NAME", SELLER_NAME), ("SELLER_INN", SELLER_INN),
+               ("CONTACT_EMAIL", CONTACT_EMAIL), ("CONTACT_PHONE", CONTACT_PHONE),
+               ("CONTACT_ADDRESS", CONTACT_ADDRESS)) if not value]
+    if missing:
+        logging.warning("Публичный сайт: не заданы реквизиты продавца (%s) — платёжные сервисы "
+                        "требуют актуальные контакты на сайте", ", ".join(missing))
 
 
 def serialize_spin_state(user):
@@ -13729,7 +13919,9 @@ async def api_work_farm_buy_slot_handler(request):
 
 async def run_webapp_server():
     app_web = web.Application()
-    app_web.router.add_get("/", root_health_handler)
+    for _p in ("/", "/offer", "/privacy", "/refund", "/contacts"):
+        app_web.router.add_get(_p, site_page_handler)
+    warn_missing_site_details()
     app_web.router.add_get("/tg-sdk.js", telegram_sdk_handler)
     app_web.router.add_get("/shop", shop_page_handler)
     app_web.router.add_get("/api/state", api_state_handler)
