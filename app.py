@@ -218,7 +218,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
         "subs_title": "👑 Подписки Role Duel",
-        "subs_body": "🔥 PRO (220⭐/мес)\n👉 База для тех, кто только начинает — очень сбалансированный набор.\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-35%)\n• +2⚡ энергетика каждый день\n• 💼 Заработок на работе x1.5\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (500⭐/мес)\n👉 Для тех, кто хочет побольше разных фишек и возможностей.\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-40%)\n• +3⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (1000⭐/мес)\n👉 Для тех, кто ООЧЕНЬ много общается.\n• Всё, что есть в SUPER PRO\n• Память: 150 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-50%)\n• +4⚡ энергетика каждый день\n• 💼 Заработок на работе x2.8\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (350⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n🎁 При первой покупке любой подписки — бонус 300💵 баксов!\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_body": "🔥 PRO (220⭐/мес)\n👉 База для тех, кто только начинает — очень сбалансированный набор.\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-15%)\n• +2⚡ энергетика каждый день\n• 💼 Заработок на работе x1.5\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (500⭐/мес)\n👉 Для тех, кто хочет побольше разных фишек и возможностей.\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-25%)\n• +3⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (1000⭐/мес)\n👉 Для тех, кто ООЧЕНЬ много общается.\n• Всё, что есть в SUPER PRO\n• Память: 150 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-40%)\n• +4⚡ энергетика каждый день\n• 💼 Заработок на работе x2.8\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (350⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n🎁 При первой покупке любой подписки — бонус: 300💵 баксов, 3⚡ энергетика и 1 горячая сцена!\n\n⚠️ Подписки НЕ продлеваются автоматически.",
         "subs_btn_pro": "🔥 PRO — 220 ⭐/мес",
         "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐/мес",
         "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐/мес",
@@ -307,6 +307,7 @@ TEXTS = {
         "work_rhythm_hint": "▲▼ — смена полосы. Люди 🙋 ждут на обочине: проезжай мимо них по крайней полосе. На красной стоп-линии жми 🛑, когда она у самого колеса.",
         "work_courier_arrived": "🏠 Доставлено!",
         "work_courier_arrived_tip": "🏠 Доставлено! 🎉 + чаевые",
+        "work_hack_success": "✅ Взлом удался! +{amount}💵",
         "work_gameover_title": "Игра окончена",
         "work_gameover_lost": "Потеряно: {amount}💵",
         "work_retry_btn": "🔄 Повторить",
@@ -569,7 +570,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
         "subs_title": "👑 Role Duel Subscriptions",
-        "subs_body": "🔥 PRO (220⭐ per month)\n👉 The balanced starting point for those just getting to know their companion.\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-35%)\n• +2⚡ energizers every day\n• 💼 1.5x earnings from work\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (500⭐ per month)\n👉 For those who want a lot more features and options.\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-40%)\n• +3⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (1000⭐ per month)\n👉 For those who chat A LOT.\n• Everything in SUPER PRO\n• Memory: 150 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-50%)\n• +4⚡ energizers every day\n• 💼 2.8x earnings from work\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (350⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n🎁 Get a 300💵 bucks bonus on your first subscription purchase!\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_body": "🔥 PRO (220⭐ per month)\n👉 The balanced starting point for those just getting to know their companion.\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-15%)\n• +2⚡ energizers every day\n• 💼 1.5x earnings from work\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (500⭐ per month)\n👉 For those who want a lot more features and options.\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-25%)\n• +3⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (1000⭐ per month)\n👉 For those who chat A LOT.\n• Everything in SUPER PRO\n• Memory: 150 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-40%)\n• +4⚡ energizers every day\n• 💼 2.8x earnings from work\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (350⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n🎁 Get a bonus on your first subscription purchase: 300💵 bucks, 3⚡ energizers and 1 hot scene!\n\n⚠️ Subscriptions do NOT renew automatically.",
         "subs_btn_pro": "🔥 PRO — 220 ⭐ per month",
         "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐ per month",
         "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐ per month",
@@ -658,6 +659,7 @@ TEXTS = {
         "work_rhythm_hint": "▲▼ — change lanes. People 🙋 wait on the roadside: pass them in the outer lane. At a red stop line, tap 🛑 right as it reaches your wheel.",
         "work_courier_arrived": "🏠 Delivered!",
         "work_courier_arrived_tip": "🏠 Delivered! 🎉 + tip",
+        "work_hack_success": "✅ Hack successful! +{amount}💵",
         "work_gameover_title": "Game over",
         "work_gameover_lost": "Lost: {amount}💵",
         "work_retry_btn": "🔄 Retry",
@@ -920,7 +922,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
         "subs_title": "👑 Role Duel Abos",
-        "subs_body": "🔥 PRO (220⭐ pro Monat)\n👉 Der ausgewogene Einstieg für alle, die ihren Begleiter gerade erst kennenlernen.\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-35%)\n• +2⚡ Energydrinks jeden Tag\n• 💼 1.5x Verdienst bei der Arbeit\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (500⭐ pro Monat)\n👉 Für alle, die viele zusätzliche Features und Möglichkeiten wollen.\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-40%)\n• +3⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (1000⭐ pro Monat)\n👉 Für alle, die SEHR viel chatten.\n• Alles aus SUPER PRO\n• Gedächtnis: 150 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-50%)\n• +4⚡ Energydrinks jeden Tag\n• 💼 2.8x Verdienst bei der Arbeit\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (350⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n🎁 Bei der ersten Abo-Buchung gibt's einen Bonus von 300💵 Bucks!\n\n⚠️ Abos verlängern sich NICHT automatisch.",
+        "subs_body": "🔥 PRO (220⭐ pro Monat)\n👉 Der ausgewogene Einstieg für alle, die ihren Begleiter gerade erst kennenlernen.\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-15%)\n• +2⚡ Energydrinks jeden Tag\n• 💼 1.5x Verdienst bei der Arbeit\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (500⭐ pro Monat)\n👉 Für alle, die viele zusätzliche Features und Möglichkeiten wollen.\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-25%)\n• +3⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (1000⭐ pro Monat)\n👉 Für alle, die SEHR viel chatten.\n• Alles aus SUPER PRO\n• Gedächtnis: 150 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-40%)\n• +4⚡ Energydrinks jeden Tag\n• 💼 2.8x Verdienst bei der Arbeit\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (350⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n🎁 Bei der ersten Abo-Buchung gibt's einen Bonus: 300💵 Bucks, 3⚡ Energydrinks und 1 heiße Szene!\n\n⚠️ Abos verlängern sich NICHT automatisch.",
         "subs_btn_pro": "🔥 PRO — 220 ⭐ pro Monat",
         "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐ pro Monat",
         "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐ pro Monat",
@@ -1009,6 +1011,7 @@ TEXTS = {
         "work_rhythm_hint": "▲▼ — Spur wechseln. Leute 🙋 warten am Straßenrand: fahr auf der äußeren Spur an ihnen vorbei. An einer roten Haltelinie tippe 🛑, wenn sie dein Rad erreicht.",
         "work_courier_arrived": "🏠 Geliefert!",
         "work_courier_arrived_tip": "🏠 Geliefert! 🎉 + Trinkgeld",
+        "work_hack_success": "✅ Hack gelungen! +{amount}💵",
         "work_gameover_title": "Spiel vorbei",
         "work_gameover_lost": "Verloren: {amount}💵",
         "work_retry_btn": "🔄 Nochmal",
@@ -2338,7 +2341,7 @@ ENERGIZER_RESTORE_AMOUNT = 78  # было 98 (65% бака) — точечно �
                                # сопутствующего удвоения количеств бандлов/стипендов (в отличие
                                # от прошлой попытки уполовинить до 50, которая смотрелась чрезмерно
                                # в связке с удвоенными "72 энергетика за 200" и была отклонена).
-STAT_DECAY_MULTIPLIER = {"pro": 0.65, "super_pro": 0.6, "elite": 0.5}  # подписчики устают/голодают
+STAT_DECAY_MULTIPLIER = {"pro": 0.85, "super_pro": 0.75, "elite": 0.6}  # скидка на траты 15%/25%/40% (было 35/40/50% — по фидбэку маржа была слабой)  # подписчики устают/голодают
 # медленнее. Было 0.6/0.3/0.15 — при реальной стоимости токенов (провод.ai) и курсе Lava 1⭐=1₽
 # это давало SUPER PRO и ELITE отрицательную маржу (-560₽ и -4868₽/мес на активного подписчика
 # при 100% использовании дневного лимита энергетиков), т.к. скидка на трату энергии напрямую
@@ -11544,6 +11547,7 @@ def serialize_work_state(user):
             "tab_courier": get_text(user, "work_tab_rhythm"),
             "tab_farm": get_text(user, "work_tab_farm"),
             "clicker_hint": get_text(user, "work_clicker_hint"),
+            "hack_success": get_text(user, "work_hack_success"),
             "gameover_title": get_text(user, "work_gameover_title"),
             "gameover_lost": get_text(user, "work_gameover_lost", amount="{amount}"),
             "retry_btn": get_text(user, "work_retry_btn"),
@@ -12021,7 +12025,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   #courier-stop-btn { background: #e8383d; }
   #courier-up:disabled, #courier-down:disabled { opacity: .35; }
   #catch-feedback, #courier-feedback, #clicker-feedback { margin-top: 12px; font-size: 14px; font-weight: 700; min-height: 20px; }
-  #courier-feedback.arrived { color: #1dd1a1; }
+  #courier-feedback.arrived, #clicker-feedback.success { color: #1dd1a1; font-size: 16px; }
 
   #game-farm { padding-top: 8px; }
   #farm-can-hint { font-size: 12px; opacity: .7; text-align: center; margin-bottom: 8px; }
@@ -12402,7 +12406,14 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   function finishHackerCombo() {
     var terminal = document.getElementById("hacker-terminal");
-    registerHit("hacker_combo", terminal ? terminal.offsetWidth / 2 : 0, 0, terminal);
+    registerHit("hacker_combo", terminal ? terminal.offsetWidth / 2 : 0, 0, terminal, false, function (awarded) {
+      var fb = document.getElementById("clicker-feedback");
+      if (!fb || !awarded) return;
+      var text = state.ui.hack_success.replace("{amount}", String(awarded));
+      fb.textContent = text;
+      fb.className = "success";
+      setTimeout(function () { if (fb.textContent === text) { fb.textContent = ""; fb.className = ""; } }, 3000);
+    });
     if (terminal) {
       terminal.classList.add("access-granted");
       setTimeout(function () { terminal.classList.remove("access-granted"); }, 400);
@@ -12542,7 +12553,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     setTimeout(function () { if (el.parentNode) el.remove(); }, 700);
   }
 
-  function registerHit(game, x, y, container, tip) {
+  function registerHit(game, x, y, container, tip, onAwarded) {
     if (hitInFlight) return;
     hitInFlight = true;
     api("/api/work/hit", {
@@ -12555,6 +12566,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
         state.bucks = res.state.bucks;
         setBalance(state.bucks);
         if (res.awarded) popupGain(res.awarded, x, y, container);
+        if (onAwarded) onAwarded(res.awarded || 0);
       }
     }).catch(function () { hitInFlight = false; });
   }
