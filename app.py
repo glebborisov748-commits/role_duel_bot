@@ -143,10 +143,10 @@ TEXTS = {
         "xp_bonus_pro": "Бонус XP: x1.8",
         "xp_bonus_super": "Бонус XP: x2.5",
         "xp_bonus_elite": "Бонус XP: x3.5",
-        "profile_sub_pro": "🔥 PRO активна (память 60 сообщений)",
-        "profile_sub_super": "✨ SUPER PRO активна (память 100 сообщений)",
-        "profile_sub_elite": "💎 ELITE активна (память 150 сообщений)",
-        "profile_sub_inactive": "❌ неактивна (память 30 сообщений)",
+        "profile_sub_pro": "🔥 PRO активна (память 40 сообщений)",
+        "profile_sub_super": "✨ SUPER PRO активна (память 60 сообщений)",
+        "profile_sub_elite": "💎 ELITE активна (память 80 сообщений)",
+        "profile_sub_inactive": "❌ неактивна (память 20 сообщений)",
         "profile_sub_label": "Подписка: {status}",
         "profile_expiry": "Окончание подписки: {date}",
         "profile_expiry_inactive": "Окончание подписки: неактивна",        "profile_styles_header": "Доступные стили:",
@@ -218,19 +218,19 @@ TEXTS = {
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
         "subs_title": "👑 Подписки Role Duel",
-        "subs_body": "🔥 PRO (220⭐/мес)\n👉 База для тех, кто только начинает — очень сбалансированный набор.\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 60 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-15%)\n• +2⚡ энергетика каждый день\n• 💼 Заработок на работе x1.5\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (500⭐/мес)\n👉 Для тех, кто хочет побольше разных фишек и возможностей.\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 100 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-25%)\n• +3⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (1000⭐/мес)\n👉 Для тех, кто ООЧЕНЬ много общается.\n• Всё, что есть в SUPER PRO\n• Память: 150 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-40%)\n• +4⚡ энергетика каждый день\n• 💼 Заработок на работе x2.8\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (350⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n🎁 При первой покупке любой подписки — бонус: 300💵 баксов, 3⚡ энергетика и 1 горячая сцена!\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_body": "🔥 PRO (220⭐/мес)\n👉 База для тех, кто только начинает — очень сбалансированный набор.\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 40 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-15%)\n• +2⚡ энергетика каждый день\n• 💼 Заработок на работе x1.5\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (500⭐/мес)\n👉 Для тех, кто хочет побольше разных фишек и возможностей.\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 60 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-25%)\n• +3⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (1000⭐/мес)\n👉 Для тех, кто ООЧЕНЬ много общается.\n• Всё, что есть в SUPER PRO\n• Память: 80 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-40%)\n• +4⚡ энергетика каждый день\n• 💼 Заработок на работе x2.8\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (350⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n🎁 При первой покупке любой подписки — бонус: 300💵 баксов, 3⚡ энергетика и 1 горячая сцена!\n\n⚠️ Подписки НЕ продлеваются автоматически.",
         "subs_btn_pro": "🔥 PRO — 220 ⭐/мес",
         "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐/мес",
         "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐/мес",
         "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (350⭐)",
         "invoice_pro_title": "PRO подписка на месяц",
-        "invoice_pro_desc": "Память 60 сообщений, стили Страстный и Магнетический.",
+        "invoice_pro_desc": "Память 40 сообщений, стили Страстный и Магнетический.",
         "invoice_pro_label": "PRO месяц",
         "invoice_super_title": "SUPER PRO подписка на месяц",
-        "invoice_super_desc": "Память 100 сообщений, все стили, включая 18+.",
+        "invoice_super_desc": "Память 60 сообщений, все стили, включая 18+.",
         "invoice_super_label": "SUPER PRO месяц",
         "invoice_elite_title": "ELITE подписка на месяц",
-        "invoice_elite_desc": "Память 150 сообщений, все стили включая 18+, XP x3.5, минимальный расход энергии/сытости.",
+        "invoice_elite_desc": "Память 80 сообщений, все стили включая 18+, XP x3.5, минимальный расход энергии/сытости.",
         "invoice_elite_label": "ELITE месяц",
         "invoice_upgrade_title": "Апгрейд до SUPER PRO",
         "invoice_upgrade_desc": "Повысьте PRO до SUPER PRO на оставшийся срок. 350⭐.",
@@ -495,10 +495,10 @@ TEXTS = {
         "xp_bonus_pro": "XP bonus: x1.8",
         "xp_bonus_super": "XP bonus: x2.5",
         "xp_bonus_elite": "XP bonus: x3.5",
-        "profile_sub_pro": "🔥 PRO active (60-message memory)",
-        "profile_sub_super": "✨ SUPER PRO active (100-message memory)",
-        "profile_sub_elite": "💎 ELITE active (150-message memory)",
-        "profile_sub_inactive": "❌ inactive (30-message memory)",
+        "profile_sub_pro": "🔥 PRO active (40-message memory)",
+        "profile_sub_super": "✨ SUPER PRO active (60-message memory)",
+        "profile_sub_elite": "💎 ELITE active (80-message memory)",
+        "profile_sub_inactive": "❌ inactive (20-message memory)",
         "profile_sub_label": "Subscription: {status}",
         "profile_expiry": "Subscription ends: {date}",
         "profile_expiry_inactive": "Subscription ends: inactive",        "profile_styles_header": "Available styles:",
@@ -570,19 +570,19 @@ TEXTS = {
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
         "subs_title": "👑 Role Duel Subscriptions",
-        "subs_body": "🔥 PRO (220⭐ per month)\n👉 The balanced starting point for those just getting to know their companion.\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 60 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-15%)\n• +2⚡ energizers every day\n• 💼 1.5x earnings from work\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (500⭐ per month)\n👉 For those who want a lot more features and options.\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 100 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-25%)\n• +3⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (1000⭐ per month)\n👉 For those who chat A LOT.\n• Everything in SUPER PRO\n• Memory: 150 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-40%)\n• +4⚡ energizers every day\n• 💼 2.8x earnings from work\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (350⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n🎁 Get a bonus on your first subscription purchase: 300💵 bucks, 3⚡ energizers and 1 hot scene!\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_body": "🔥 PRO (220⭐ per month)\n👉 The balanced starting point for those just getting to know their companion.\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 40 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-15%)\n• +2⚡ energizers every day\n• 💼 1.5x earnings from work\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (500⭐ per month)\n👉 For those who want a lot more features and options.\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 60 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-25%)\n• +3⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (1000⭐ per month)\n👉 For those who chat A LOT.\n• Everything in SUPER PRO\n• Memory: 80 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-40%)\n• +4⚡ energizers every day\n• 💼 2.8x earnings from work\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (350⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n🎁 Get a bonus on your first subscription purchase: 300💵 bucks, 3⚡ energizers and 1 hot scene!\n\n⚠️ Subscriptions do NOT renew automatically.",
         "subs_btn_pro": "🔥 PRO — 220 ⭐ per month",
         "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐ per month",
         "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐ per month",
         "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (350⭐)",
         "invoice_pro_title": "PRO subscription for a month",
-        "invoice_pro_desc": "60-message memory, Passionate and Magnetic styles.",
+        "invoice_pro_desc": "40-message memory, Passionate and Magnetic styles.",
         "invoice_pro_label": "PRO month",
         "invoice_super_title": "SUPER PRO subscription for a month",
-        "invoice_super_desc": "100-message memory, all styles including 18+.",
+        "invoice_super_desc": "60-message memory, all styles including 18+.",
         "invoice_super_label": "SUPER PRO month",
         "invoice_elite_title": "ELITE subscription for a month",
-        "invoice_elite_desc": "150-message memory, all styles including 18+, XP x3.5, minimal energy/satiety drain.",
+        "invoice_elite_desc": "80-message memory, all styles including 18+, XP x3.5, minimal energy/satiety drain.",
         "invoice_elite_label": "ELITE month",
         "invoice_upgrade_title": "Upgrade to SUPER PRO",
         "invoice_upgrade_desc": "Upgrade PRO to SUPER PRO for the remaining time. 350⭐.",
@@ -847,10 +847,10 @@ TEXTS = {
         "xp_bonus_pro": "XP-Bonus: x1.8",
         "xp_bonus_super": "XP-Bonus: x2.5",
         "xp_bonus_elite": "XP-Bonus: x3.5",
-        "profile_sub_pro": "🔥 PRO aktiv (Gedächtnis 60 Nachrichten)",
-        "profile_sub_super": "✨ SUPER PRO aktiv (Gedächtnis 100 Nachrichten)",
-        "profile_sub_elite": "💎 ELITE aktiv (Gedächtnis 150 Nachrichten)",
-        "profile_sub_inactive": "❌ inaktiv (Gedächtnis 30 Nachrichten)",
+        "profile_sub_pro": "🔥 PRO aktiv (Gedächtnis 40 Nachrichten)",
+        "profile_sub_super": "✨ SUPER PRO aktiv (Gedächtnis 60 Nachrichten)",
+        "profile_sub_elite": "💎 ELITE aktiv (Gedächtnis 80 Nachrichten)",
+        "profile_sub_inactive": "❌ inaktiv (Gedächtnis 20 Nachrichten)",
         "profile_sub_label": "Abo: {status}",
         "profile_expiry": "Abo endet am: {date}",
         "profile_expiry_inactive": "Abo endet am: inaktiv",        "profile_styles_header": "Verfügbare Stile:",
@@ -922,19 +922,19 @@ TEXTS = {
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
         "subs_title": "👑 Role Duel Abos",
-        "subs_body": "🔥 PRO (220⭐ pro Monat)\n👉 Der ausgewogene Einstieg für alle, die ihren Begleiter gerade erst kennenlernen.\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-15%)\n• +2⚡ Energydrinks jeden Tag\n• 💼 1.5x Verdienst bei der Arbeit\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (500⭐ pro Monat)\n👉 Für alle, die viele zusätzliche Features und Möglichkeiten wollen.\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 100 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-25%)\n• +3⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (1000⭐ pro Monat)\n👉 Für alle, die SEHR viel chatten.\n• Alles aus SUPER PRO\n• Gedächtnis: 150 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-40%)\n• +4⚡ Energydrinks jeden Tag\n• 💼 2.8x Verdienst bei der Arbeit\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (350⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n🎁 Bei der ersten Abo-Buchung gibt's einen Bonus: 300💵 Bucks, 3⚡ Energydrinks und 1 heiße Szene!\n\n⚠️ Abos verlängern sich NICHT automatisch.",
+        "subs_body": "🔥 PRO (220⭐ pro Monat)\n👉 Der ausgewogene Einstieg für alle, die ihren Begleiter gerade erst kennenlernen.\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 40 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-15%)\n• +2⚡ Energydrinks jeden Tag\n• 💼 1.5x Verdienst bei der Arbeit\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (500⭐ pro Monat)\n👉 Für alle, die viele zusätzliche Features und Möglichkeiten wollen.\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-25%)\n• +3⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (1000⭐ pro Monat)\n👉 Für alle, die SEHR viel chatten.\n• Alles aus SUPER PRO\n• Gedächtnis: 80 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-40%)\n• +4⚡ Energydrinks jeden Tag\n• 💼 2.8x Verdienst bei der Arbeit\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (350⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n🎁 Bei der ersten Abo-Buchung gibt's einen Bonus: 300💵 Bucks, 3⚡ Energydrinks und 1 heiße Szene!\n\n⚠️ Abos verlängern sich NICHT automatisch.",
         "subs_btn_pro": "🔥 PRO — 220 ⭐ pro Monat",
         "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐ pro Monat",
         "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐ pro Monat",
         "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO (350⭐)",
         "invoice_pro_title": "PRO-Abo für einen Monat",
-        "invoice_pro_desc": "Gedächtnis 60 Nachrichten, Stile Leidenschaftlich und Magnetisch.",
+        "invoice_pro_desc": "Gedächtnis 40 Nachrichten, Stile Leidenschaftlich und Magnetisch.",
         "invoice_pro_label": "PRO Monat",
         "invoice_super_title": "SUPER PRO-Abo für einen Monat",
-        "invoice_super_desc": "Gedächtnis 100 Nachrichten, alle Stile inklusive 18+.",
+        "invoice_super_desc": "Gedächtnis 60 Nachrichten, alle Stile inklusive 18+.",
         "invoice_super_label": "SUPER PRO Monat",
         "invoice_elite_title": "ELITE-Abo für einen Monat",
-        "invoice_elite_desc": "Gedächtnis 150 Nachrichten, alle Stile inklusive 18+, XP x3.5, minimaler Energie-/Sättigungsverbrauch.",
+        "invoice_elite_desc": "Gedächtnis 80 Nachrichten, alle Stile inklusive 18+, XP x3.5, minimaler Energie-/Sättigungsverbrauch.",
         "invoice_elite_label": "ELITE Monat",
         "invoice_upgrade_title": "Upgrade auf SUPER PRO",
         "invoice_upgrade_desc": "Hebt PRO für die Restlaufzeit auf SUPER PRO an. 350⭐.",
@@ -2078,15 +2078,18 @@ def ensure_valid_style(user):
 
 
 def get_history_limit(user):
+    # Сколько последних сообщений хранится И уходит в модель на каждом запросе. Урезано с
+    # 30/60/100/150 до 20/40/60/80: вся история отправляется в каждый запрос, и это главная
+    # статья расхода на токены (у ELITE память 150 делала сообщение втрое дороже, чем у PRO).
     level = get_subscription_level(user)
     if level == "elite":
-        return 150
+        return 80
     elif level == "super_pro":
-        return 100
-    elif level == "pro":
         return 60
+    elif level == "pro":
+        return 40
     else:
-        return 30
+        return 20
 
 
 FREE_DAILY_BUCKS = 15  # бесплатный источник баксов и без подписки — иначе валюту неоткуда взять бесплатно
