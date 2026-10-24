@@ -6481,23 +6481,23 @@ GAME_TEXTS = {
     "ru": {
         "btn": "🎲 Игры вместе",
         "menu": "🎲 Игры вместе — проведи время с персонажем.\n💵 У тебя: {bucks}",
-        "cities_btn": "🏙 Города — вход {price}💵",
+        "cities_btn": "🏙 Города — бесплатно",
         "bj_btn": "🃏 Блэкджек — ставка от 100💵",
         "movie_btn": "🎬 Кино — {price}💵",
         "busy": "Сначала закончи текущую игру.",
         "asleep": "Персонаж спит — сначала разбуди его.",
         "sick": "Персонаж болеет и сейчас не в настроении играть — сначала вылечи его.",
         "need_char": "Сначала создай персонажа через /start.",
-        "cities_start": "🏙 Играем в города! Вход {price}💵. Время партии — 10 минут, не больше 15 ходов. Назови любой город, дальше — на последнюю букву (ь, ъ, ы, й пропускаем). Победишь — получишь {prize}💵.",
+        "cities_start": "🏙 Играем в города! Бесплатно. Время партии — 10 минут, не больше 15 ходов. Назови любой город, дальше — на последнюю букву (ь, ъ, ы, й пропускаем). Победишь — получишь {prize}💵.",
         "cities_surrender": "🏳️ Сдаюсь",
         "cities_your_letter": "тебе на «{letter}»",
         "cities_unknown": "Не знаю такого города 🤔 Попробуй другой. Нужна буква «{letter}».",
         "cities_wrong_letter": "Город должен начинаться на «{letter}».",
         "cities_used": "Этот город уже был, назови другой.",
         "cities_win": "🏆 Ты выиграл(а)! Приз: +{prize}💵 и +{xp} XP.",
-        "cities_lose": "😌 Эту партию выиграл(а) я. Вход {price}💵 остаётся у меня — попробуем ещё?",
+        "cities_lose": "😌 Эту партию выиграл(а) я — попробуем ещё?",
         "daily_limit": "На сегодня лимит игр с репликами персонажа исчерпан — возвращайся завтра.",
-        "cities_timeup": "⏱ Время партии вышло — ничья, вход {price}💵 возвращён.",
+        "cities_timeup": "⏱ Время партии вышло — ничья.",
         "cities_stuck": "У меня закончились города на «{letter}» — ты победил(а)!",
         "bj_menu": "🃏 Блэкджек. Выбери ставку:\n💵 У тебя: {bucks}",
         "bj_state": "🃏 Твои карты: {player} = {pv}\nУ меня: {dealer}\nСтавка: {bet}💵",
@@ -6514,23 +6514,23 @@ GAME_TEXTS = {
     "en": {
         "btn": "🎲 Games together",
         "menu": "🎲 Games together — spend time with your companion.\n💵 You have: {bucks}",
-        "cities_btn": "🏙 Cities — entry {price}💵",
+        "cities_btn": "🏙 Cities — free",
         "bj_btn": "🃏 Blackjack — bets from 100💵",
         "movie_btn": "🎬 Movie — {price}💵",
         "busy": "Finish the current game first.",
         "asleep": "Your companion is asleep — wake them first.",
         "sick": "Your companion is sick and not in the mood — cure them first.",
         "need_char": "Create a character with /start first.",
-        "cities_start": "🏙 Let's play cities! Entry {price}💵. The round lasts up to 10 minutes / 15 moves. Name any city, then one starting with the last letter (skipping ь, ъ, ы, й). Win and get {prize}💵.",
+        "cities_start": "🏙 Let's play cities! Free. The round lasts up to 10 minutes / 15 moves. Name any city, then one starting with the last letter (skipping ь, ъ, ы, й). Win and get {prize}💵.",
         "cities_surrender": "🏳️ I give up",
         "cities_your_letter": "your letter: «{letter}»",
         "cities_unknown": "I don't know that city 🤔 Try another. Letter needed: «{letter}».",
         "cities_wrong_letter": "The city must start with «{letter}».",
         "cities_used": "That city was already used, name another.",
         "cities_win": "🏆 You won! Prize: +{prize}💵 and +{xp} XP.",
-        "cities_lose": "😌 I won this round. Your {price}💵 entry stays with me — another go?",
+        "cities_lose": "😌 I won this round — another go?",
         "daily_limit": "Today's limit of games with character lines is used up — come back tomorrow.",
-        "cities_timeup": "⏱ Time is up — a draw, your {price}💵 entry is returned.",
+        "cities_timeup": "⏱ Time is up — a draw.",
         "cities_stuck": "I'm out of cities for «{letter}» — you win!",
         "bj_menu": "🃏 Blackjack. Choose your bet:\n💵 You have: {bucks}",
         "bj_state": "🃏 Your cards: {player} = {pv}\nMine: {dealer}\nBet: {bet}💵",
@@ -6553,8 +6553,8 @@ def gt(user, key, **kw):
     return value.format(**kw) if kw and isinstance(value, str) else value
 
 
-CITIES_ENTRY = 300
-CITIES_PRIZE = 700
+CITIES_ENTRY = 0   # бесплатно: токены уже оплачены энергией персонажа и дневным лимитом реплик
+CITIES_PRIZE = 200
 CITIES_XP = 20
 MOVIE_PRICE = 1500
 MOVIE_XP = 40
