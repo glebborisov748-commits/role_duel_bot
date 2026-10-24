@@ -6482,19 +6482,24 @@ GAME_TEXTS = {
         "btn": "🎲 Игры вместе",
         "menu": "🎲 Игры вместе — проведи время с персонажем.\n💵 У тебя: {bucks}",
         "cities_btn": "🏙 Города — бесплатно",
+        "tod_btn": "🎭 Правда или действие — бесплатно",
+        "tod_start": "🎭 Правда или действие! {rounds} раундов. Выбирай — и отвечай мне сообщением. Награда в конце — XP.",
+        "tod_truth": "💬 Правда", "tod_dare": "🔥 Действие", "tod_swap": "🔄 Теперь ты", "tod_end": "🏁 Закончить",
+        "tod_answer_hint": "✍️ Ответь мне сообщением.",
+        "tod_finished": "🎭 Игра закончилась. +{xp} XP за откровенный вечер.",
         "bj_btn": "🃏 Блэкджек — ставка от 100💵",
         "movie_btn": "🎬 Кино — {price}💵",
         "busy": "Сначала закончи текущую игру.",
         "asleep": "Персонаж спит — сначала разбуди его.",
         "sick": "Персонаж болеет и сейчас не в настроении играть — сначала вылечи его.",
         "need_char": "Сначала создай персонажа через /start.",
-        "cities_start": "🏙 Играем в города! Бесплатно. Время партии — 10 минут, не больше 15 ходов. Назови любой город, дальше — на последнюю букву (ь, ъ, ы, й пропускаем). Победишь — получишь {prize}💵.",
+        "cities_start": "🏙 Играем в города! Бесплатно. Время партии — 10 минут, не больше 15 ходов. Назови любой город, дальше — на последнюю букву (ь, ъ, ы, й пропускаем). Победишь — получишь XP.",
         "cities_surrender": "🏳️ Сдаюсь",
         "cities_your_letter": "тебе на «{letter}»",
         "cities_unknown": "Не знаю такого города 🤔 Попробуй другой. Нужна буква «{letter}».",
         "cities_wrong_letter": "Город должен начинаться на «{letter}».",
         "cities_used": "Этот город уже был, назови другой.",
-        "cities_win": "🏆 Ты выиграл(а)! Приз: +{prize}💵 и +{xp} XP.",
+        "cities_win": "🏆 Ты выиграл(а)! +{xp} XP.",
         "cities_lose": "😌 Эту партию выиграл(а) я — попробуем ещё?",
         "daily_limit": "На сегодня лимит игр с репликами персонажа исчерпан — возвращайся завтра.",
         "cities_timeup": "⏱ Время партии вышло — ничья.",
@@ -6515,19 +6520,24 @@ GAME_TEXTS = {
         "btn": "🎲 Games together",
         "menu": "🎲 Games together — spend time with your companion.\n💵 You have: {bucks}",
         "cities_btn": "🏙 Cities — free",
+        "tod_btn": "🎭 Truth or dare — free",
+        "tod_start": "🎭 Truth or dare! {rounds} rounds. Pick one — and answer me with a message. XP reward at the end.",
+        "tod_truth": "💬 Truth", "tod_dare": "🔥 Dare", "tod_swap": "🔄 Your turn", "tod_end": "🏁 Finish",
+        "tod_answer_hint": "✍️ Answer me with a message.",
+        "tod_finished": "🎭 Game over. +{xp} XP for an honest evening.",
         "bj_btn": "🃏 Blackjack — bets from 100💵",
         "movie_btn": "🎬 Movie — {price}💵",
         "busy": "Finish the current game first.",
         "asleep": "Your companion is asleep — wake them first.",
         "sick": "Your companion is sick and not in the mood — cure them first.",
         "need_char": "Create a character with /start first.",
-        "cities_start": "🏙 Let's play cities! Free. The round lasts up to 10 minutes / 15 moves. Name any city, then one starting with the last letter (skipping ь, ъ, ы, й). Win and get {prize}💵.",
+        "cities_start": "🏙 Let's play cities! Free. The round lasts up to 10 minutes / 15 moves. Name any city, then one starting with the last letter (skipping ь, ъ, ы, й). Win and get XP.",
         "cities_surrender": "🏳️ I give up",
         "cities_your_letter": "your letter: «{letter}»",
         "cities_unknown": "I don't know that city 🤔 Try another. Letter needed: «{letter}».",
         "cities_wrong_letter": "The city must start with «{letter}».",
         "cities_used": "That city was already used, name another.",
-        "cities_win": "🏆 You won! Prize: +{prize}💵 and +{xp} XP.",
+        "cities_win": "🏆 You won! +{xp} XP.",
         "cities_lose": "😌 I won this round — another go?",
         "daily_limit": "Today's limit of games with character lines is used up — come back tomorrow.",
         "cities_timeup": "⏱ Time is up — a draw.",
@@ -6554,8 +6564,8 @@ def gt(user, key, **kw):
 
 
 CITIES_ENTRY = 0   # бесплатно: токены уже оплачены энергией персонажа и дневным лимитом реплик
-CITIES_PRIZE = 200
-CITIES_XP = 20
+CITIES_PRIZE = 0     # без денег: награда -- только XP (по фидбэку)
+CITIES_XP = 30
 MOVIE_PRICE = 1500
 MOVIE_XP = 40
 MOVIE_BEATS = 4
@@ -6610,6 +6620,7 @@ async def game_ai_line(chat_id, user, instruction, tail=None, max_tokens=350):
 def games_menu_kb(user):
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=gt(user, "cities_btn", price=CITIES_ENTRY), callback_data="game_cities")],
+        [InlineKeyboardButton(text=gt(user, "tod_btn"), callback_data="game_tod")],
         [InlineKeyboardButton(text=gt(user, "bj_btn"), callback_data="game_bj")],
         [InlineKeyboardButton(text=gt(user, "movie_btn", price=MOVIE_PRICE), callback_data="game_movie")],
         [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")],
@@ -6777,6 +6788,95 @@ async def cities_user_move(message: types.Message, user):
     # Название и нужная буква добавляем сами, а не надеемся на ИИ: игроку нужно точно знать мой город.
     await message.answer((line + "\n\n" if line else "") + f"🏙 {mine} — {gt(user, 'cities_your_letter', letter=next_letter.upper())}",
                          reply_markup=cities_kb(user))
+
+
+# ---------- Правда или действие ----------
+TOD_ROUNDS = 6
+TOD_XP = 30
+
+
+def tod_kb(user, with_swap=True):
+    rows = [[InlineKeyboardButton(text=gt(user, "tod_truth"), callback_data="tod_pick_truth"),
+             InlineKeyboardButton(text=gt(user, "tod_dare"), callback_data="tod_pick_dare")]]
+    if with_swap:
+        rows.append([InlineKeyboardButton(text=gt(user, "tod_swap"), callback_data="tod_swap")])
+    rows.append([InlineKeyboardButton(text=gt(user, "tod_end"), callback_data="tod_end")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+def tod_end_kb(user):
+    return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=gt(user, "tod_end"), callback_data="tod_end")]])
+
+
+@dp.callback_query(lambda c: c.data == "game_tod")
+async def tod_start_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    error = games_gate_error(user)
+    if error:
+        await call.answer(error, show_alert=True)
+        return
+    user["game"] = {"type": "tod", "round": 0, "pending": None}
+    game_touch(user["game"])
+    save_data(user_data)
+    await safe_delete(call.message)
+    await call.answer()
+    await bot.send_message(call.message.chat.id, gt(user, "tod_start", rounds=TOD_ROUNDS), reply_markup=tod_kb(user))
+
+
+async def tod_finish(chat_id, user):
+    user["game"] = None
+    save_data(user_data)
+    await bot.send_message(chat_id, gt(user, "tod_finished", xp=TOD_XP), reply_markup=games_menu_kb(user))
+    await grant_gift_xp(chat_id, user, TOD_XP)
+
+
+@dp.callback_query(lambda c: c.data in ("tod_pick_truth", "tod_pick_dare", "tod_swap", "tod_end"))
+async def tod_action_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    game = user.get("game")
+    if not game or game.get("type") != "tod":
+        await call.answer()
+        return
+    chat_id = call.message.chat.id
+    await safe_delete(call.message)
+    await call.answer()
+    if call.data == "tod_end":
+        await tod_finish(chat_id, user)
+        return
+    game_touch(game)
+    if call.data == "tod_swap":
+        line = await game_ai_line(chat_id, user, "Игра «правда или действие», теперь твоя очередь: выбери правду, озвучь вопрос, который тебе "
+                                                 "задал собеседник (придумай сама, личный, но не пошлый), и честно ответь на него в образе.")
+        await bot.send_message(chat_id, line or "…", reply_markup=tod_kb(user))
+        return
+    kind = "правду" if call.data == "tod_pick_truth" else "действие"
+    if kind == "правду":
+        task = ("Задай ему один личный, тёплый, чуть смущающий вопрос (правда); не пошлый, не про деньги и не про здоровье.")
+    else:
+        task = ("Придумай одно безобидное весёлое задание, которое можно выполнить прямо в чате (описать, написать, придумать, "
+                "изобразить словами); без нарушений правил и без пошлости.")
+    line = await game_ai_line(chat_id, user, f"Игра «правда или действие». Собеседник выбрал {kind}. {task} Только один вопрос или задание.")
+    game["pending"] = kind
+    save_data(user_data)
+    await bot.send_message(chat_id, (line or "…") + "\n\n" + gt(user, "tod_answer_hint"), reply_markup=tod_end_kb(user))
+
+
+async def tod_user_answer(message: types.Message, user):
+    game = user["game"]
+    chat_id = message.chat.id
+    answer = message.text.strip()[:400]
+    game["pending"] = None
+    game["round"] += 1
+    game_touch(game)
+    save_data(user_data)
+    line = await game_ai_line(chat_id, user, f"Игра «правда или действие». Собеседник ответил/выполнил: «{answer}». Отреагируй в образе "
+                                              "(смех, удивление, смущение, поддержка), без осуждения.")
+    if game["round"] >= TOD_ROUNDS:
+        if line:
+            await bot.send_message(chat_id, line)
+        await tod_finish(chat_id, user)
+        return
+    await bot.send_message(chat_id, line or "…", reply_markup=tod_kb(user))
 
 
 # ---------- Блэкджек ----------
@@ -7084,6 +7184,9 @@ async def handle_message(message: types.Message):
 
     if (user.get("game") or {}).get("type") == "cities" and not game_is_stale(user["game"]):
         await cities_user_move(message, user)
+        return
+    if (user.get("game") or {}).get("type") == "tod" and user["game"].get("pending") and not game_is_stale(user["game"]):
+        await tod_user_answer(message, user)
         return
 
     # 1. Создание собственного персонажа (SUPER PRO)
