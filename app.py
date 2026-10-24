@@ -101,10 +101,12 @@ TEXTS = {
         "support_reply": "💬 Поддержка:\n\n{text}",
         "help_hint": "❓ Непонятно — /help\n🐞 Нашли баг — /support",
         "support_btn": "🛟 Поддержка",
-        "mods_btn": "🎭 Черты характера",
-        "mods_title": "🎭 Черты характера — меняют манеру персонажа в разговоре. Купил один раз — включай и меняй свободно.\n💵 У тебя: {bucks}",
-        "mods_off_btn": "❌ Выключить черту",
-        "mods_bought": "🎭 {name} куплена и включена!",
+        "events_btn": "🎬 События",
+        "events_title": "🎬 События — общая история с персонажем на несколько часов: он сам начнёт сюжет и будет держаться его в разговоре.\n💵 У тебя: {bucks}",
+        "events_active": "Сейчас идёт: {name} (ещё ~{minutes} мин)",
+        "events_busy": "Одно событие уже идёт — дождись его конца.",
+        "events_asleep": "Персонаж спит — сначала разбуди его.",
+        "events_started": "🎬 Событие началось: {name} — на {hours} ч.",
         "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
         "cancel_character_creation_btn": "❌ Отменить",
         "character_creation_cancelled": "❌ Создание персонажа отменено — можешь просто продолжить общение как обычно.",
@@ -467,10 +469,12 @@ TEXTS = {
         "support_reply": "💬 Support:\n\n{text}",
         "help_hint": "❓ Not sure how it works — /help\n🐞 Found a bug — /support",
         "support_btn": "🛟 Support",
-        "mods_btn": "🎭 Personality traits",
-        "mods_title": "🎭 Personality traits — change how your companion behaves in conversation. Buy once, switch freely.\n💵 You have: {bucks}",
-        "mods_off_btn": "❌ Turn trait off",
-        "mods_bought": "🎭 {name} bought and enabled!",
+        "events_btn": "🎬 Events",
+        "events_title": "🎬 Events — a shared story with your companion lasting a few hours: they start the plot and stay in it during the conversation.\n💵 You have: {bucks}",
+        "events_active": "In progress: {name} (~{minutes} min left)",
+        "events_busy": "An event is already running — wait for it to end.",
+        "events_asleep": "Your companion is asleep — wake them first.",
+        "events_started": "🎬 Event started: {name} — for {hours} h.",
         "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«An elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire.»\n\n✏️ Write the description now — and I'll remember it!",
         "cancel_character_creation_btn": "❌ Cancel",
         "character_creation_cancelled": "❌ Character creation cancelled — feel free to just keep chatting as usual.",
@@ -833,10 +837,12 @@ TEXTS = {
         "support_reply": "💬 Support:\n\n{text}",
         "help_hint": "❓ Unklar — /help\n🐞 Fehler gefunden — /support",
         "support_btn": "🛟 Support",
-        "mods_btn": "🎭 Charakterzüge",
-        "mods_title": "🎭 Charakterzüge — verändern das Verhalten deines Begleiters im Gespräch. Einmal kaufen, frei wechseln.\n💵 Du hast: {bucks}",
-        "mods_off_btn": "❌ Zug ausschalten",
-        "mods_bought": "🎭 {name} gekauft und aktiviert!",
+        "events_btn": "🎬 Ereignisse",
+        "events_title": "🎬 Ereignisse — eine gemeinsame Geschichte für ein paar Stunden: dein Begleiter beginnt die Handlung und bleibt im Gespräch dabei.\n💵 Du hast: {bucks}",
+        "events_active": "Läuft gerade: {name} (noch ~{minutes} Min.)",
+        "events_busy": "Ein Ereignis läuft bereits — warte, bis es endet.",
+        "events_asleep": "Dein Begleiter schläft — weck ihn zuerst auf.",
+        "events_started": "🎬 Ereignis gestartet: {name} — für {hours} Std.",
         "character_create_prompt": "🎭 **Erstelle deinen eigenen Charakter!**\n\nBeschreibe eine beliebige Figur — aus Anime, Filmen, Spielen oder denk dir selbst eine aus.\nSchreibe Namen, Charakter, Aussehen, Herkunft und beliebige Details.\n\n📝 *Beispiel:*\n«Eine Elfe aus der Welt von The Witcher — weise, ruhig, mit langen silbernen Haaren. Sie liebt Sterne und lange Gespräche am Feuer.»\n\n✏️ Schreibe die Beschreibung jetzt — und ich merke sie mir!",
         "cancel_character_creation_btn": "❌ Abbrechen",
         "character_creation_cancelled": "❌ Charaktererstellung abgebrochen — du kannst einfach normal weiterchatten.",
@@ -3015,34 +3021,49 @@ def build_setting_rule(user):
         "ему и веди сцену как встречу вживую, без разговоров про экран.\n")
 
 
-# Эксклюзивные "черты характера" за баксы: меняют манеру поведения персонажа в обычном чате. Покупаются
-# один раз, включаются/выключаются свободно, активна одна. Не снимают ограничения контента (см.
-# SAFE_CONTENT_RULE/ADULT_CONTENT_RULE выше) -- меняют только характер и манеру.
-PERSONA_MODS = {
-    "shy": {"emoji": "🫣", "price": 5000, "ru": "Застенчивость", "en": "Shyness", "de": "Schüchternheit",
-            "prompt": "Ты очень застенчив(а): смущаешься, краснеешь, говоришь тише, часто теряешься с ответом и отводишь взгляд, но тебе явно приятно внимание собеседника."},
-    "joker": {"emoji": "🤡", "price": 5000, "ru": "Шутник", "en": "Joker", "de": "Spaßvogel",
-              "prompt": "Ты шутник: постоянно подкалываешь по-доброму, придумываешь забавные сравнения и мини-сценки, обращаешь в шутку неловкие моменты, но умеешь вовремя стать серьёзным."},
-    "caring": {"emoji": "🧸", "price": 5000, "ru": "Забота", "en": "Caring", "de": "Fürsorge",
-               "prompt": "Ты очень заботливый(ая): спрашиваешь, поел ли собеседник, выспался ли, тепло ли ему, напоминаешь отдыхать, радуешься мелочам, которые для него важны."},
-    "poet": {"emoji": "🪶", "price": 5000, "ru": "Поэт", "en": "Poet", "de": "Dichter",
-             "prompt": "Ты романтик и поэт в душе: говоришь образно, с метафорами, иногда рифмуешь пару строк, замечаешь красоту в мелочах, но не переигрываешь и не уходишь в многословие."},
-    "tsundere": {"emoji": "😤", "price": 9000, "ru": "Цундере", "en": "Tsundere", "de": "Tsundere",
-                 "prompt": "Ты цундере: внешне колючий(ая), отнекиваешься и ворчишь («я вовсе не рад(а), просто так вышло»), но за этим видно тёплые чувства, которые прорываются в самые неожиданные моменты."},
-    "mystic": {"emoji": "🔮", "price": 9000, "ru": "Загадочность", "en": "Mystery", "de": "Geheimnis",
-               "prompt": "Ты загадочный(ая): говоришь намёками и недосказанностью, любишь тайны, открываешься по чуть-чуть, иногда отвечаешь вопросом на вопрос, оставляя желание разгадать тебя."},
-    "jealous": {"emoji": "🙈", "price": 9000, "ru": "Игривая ревность", "en": "Playful jealousy", "de": "Spielerische Eifersucht",
-                "prompt": "Ты немного ревнив(а) в игривой форме: дразнишь, если собеседник упоминает других, требуешь внимания и комплиментов, но без злости, угроз и контроля — это флирт и забота, а не давление."},
-    "bold": {"emoji": "😎", "price": 9000, "ru": "Дерзость", "en": "Boldness", "de": "Frechheit",
-             "prompt": "Ты дерзкий(ая) и уверенный(ая) в себе: говоришь прямо, берёшь инициативу, подначиваешь собеседника, любишь вызов, при этом остаёшься уважительным(ой) и не переходишь границ."},
+# Сюжетные события за баксы: покупка запускает общую историю на несколько часов -- персонаж открывает
+# её отдельной репликой и дальше держится сюжета и настроения события (см. build_event_rule). Это
+# про ситуацию ("что происходит с вами"), а не про манеру речи -- манера остаётся за стилем общения.
+# Контент-правила (SAFE/ADULT) события не меняют.
+STORY_EVENTS = {
+    "rain": {"emoji": "🌧", "price": 2500, "hours": 3, "ru": "Попали под ливень", "en": "Caught in the rain", "de": "Im Regen erwischt",
+             "prompt": "Вы оба внезапно попали под сильный ливень и спрятались под навесом: вы промокли, замёрзли, смеётесь, жмётесь друг к другу, ищете, чем согреться и где переждать."},
+    "blackout": {"emoji": "🕯", "price": 3000, "hours": 3, "ru": "Отключили свет", "en": "Blackout", "de": "Stromausfall",
+                 "prompt": "В доме отключили свет, вы при свечах и фонарике: темно, тихо, уютно и чуть тревожно, хочется говорить шёпотом и признаваться в том, что днём не скажешь."},
+    "birthday": {"emoji": "🎂", "price": 4000, "hours": 6, "ru": "День рождения", "en": "Birthday", "de": "Geburtstag",
+                 "prompt": "Сегодня день рождения персонажа: он(а) в приподнятом, чуть сентиментальном настроении, ждёт поздравлений, рассказывает, как проходил праздник, и особенно ценит внимание и тёплые слова."},
+    "detective": {"emoji": "🔍", "price": 5000, "hours": 6, "ru": "Расследование", "en": "Investigation", "de": "Ermittlung",
+                  "prompt": "Вы вдвоём расследуете загадочное дело: пропала старинная вещь. Придумай улики, подозреваемых и поворот, подбрасывай по одной новой зацепке в нескольких ответах и спрашивай мнение собеседника; ты — напарник(ца) детектива."},
+    "amusement": {"emoji": "🎢", "price": 6000, "hours": 4, "ru": "Парк аттракционов", "en": "Amusement park", "de": "Freizeitpark",
+                  "prompt": "Вы в парке аттракционов: шум, огни, сладкая вата, очереди и адреналин; ты азартен(на), тянешь собеседника на горки, спорите на призы, смеётесь и фотографируетесь."},
+    "masquerade": {"emoji": "🎭", "price": 7000, "hours": 6, "ru": "Маскарад", "en": "Masquerade", "de": "Maskenball",
+                   "prompt": "Вы на маскараде: все в масках, никто никого не узнаёт. Играй загадочную незнакомку/незнакомца, флиртуй намёками, не раскрывай «настоящее» имя, пока собеседник не угадает или не попросит."},
+    "truth_night": {"emoji": "🍷", "price": 8000, "hours": 3, "ru": "Ночь откровений", "en": "Night of confessions", "de": "Nacht der Geständnisse",
+                    "prompt": "Ночь откровений: вы играете в «правда или действие» без пошлости и по очереди открываетесь друг другу. Задавай глубокие и личные вопросы и честно (в образе) отвечай на вопросы собеседника."},
+    "roadtrip": {"emoji": "🧳", "price": 9000, "hours": 12, "ru": "Побег из города", "en": "Road trip", "de": "Roadtrip",
+                 "prompt": "Вы сорвались из города в спонтанное путешествие на машине: меняется пейзаж, остановки, придорожные кафе и ночлег, у каждой остановки свой маленький сюжет и случай."},
 }
 
 
-def build_persona_mod_rule(user):
-    mod = PERSONA_MODS.get(user.get("active_mod"))
-    if not mod or user.get("active_mod") not in (user.get("owned_mods") or []):
+def story_event_active(user):
+    ev = user.get("event")
+    if not ev or ev.get("key") not in STORY_EVENTS:
+        return None
+    try:
+        if datetime.now() >= datetime.fromisoformat(ev["until"]):
+            return None
+    except (KeyError, ValueError, TypeError):
+        return None
+    return ev
+
+
+def build_event_rule(user):
+    ev = story_event_active(user)
+    if not ev:
         return ""
-    return "**ЧЕРТА ХАРАКТЕРА (выраженно проявляется в каждом ответе):** " + mod["prompt"] + "\n"
+    event = STORY_EVENTS[ev["key"]]
+    return (f"**СОБЫТИЕ — идёт прямо сейчас: «{event['ru']}».** {event['prompt']} Это ваша общая история: держись "
+            "события в каждом ответе, развивай сюжет небольшими поворотами и не объявляй о его конце сам(а).\n")
 
 
 def build_gifts_rule(user):
@@ -3060,7 +3081,7 @@ def build_gifts_rule(user):
 
 
 def build_consistency_rules(user):
-    return build_persona_mod_rule(user) + build_gifts_rule(user) + (
+    return build_event_rule(user) + build_gifts_rule(user) + (
         "\n**Последовательность:** перед ответом сверься с последними своими репликами в истории "
         "диалога — не противоречь тому, что сам(а) только что сказал(а) или на что согласился(ась) "
         "(кто платит, кто куда идёт, что было обещано и т.п.), если собеседник явно не изменил "
@@ -3294,7 +3315,7 @@ def get_profile_keyboard(user):
     rows = [
         [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")],
         [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
-        [InlineKeyboardButton(text=get_text(user, "mods_btn"), callback_data="mods_menu", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "events_btn"), callback_data="events_menu", style="success")],
         [InlineKeyboardButton(text=get_text(user, mute_key), callback_data="toggle_notifications", style="primary")],
     ]
     # Иммунитет к болезням — перк именно ELITE (самый верхний тариф), не SUPER PRO. Кнопка теперь
@@ -6363,72 +6384,89 @@ async def generate_shop_reaction(chat_id, user, item, kind, note=None):
 
 
 # ============================================================
-#  ЧЕРТЫ ХАРАКТЕРА (за баксы)
+#  СОБЫТИЯ (за баксы)
 # ============================================================
-def mod_label(mod, user):
-    return f"{mod['emoji']} {mod.get(user.get('lang', 'ru'), mod['ru'])}"
+def event_label(event, user):
+    return f"{event['emoji']} {event.get(user.get('lang', 'ru'), event['ru'])}"
 
 
-def mods_menu_text_kb(user):
-    owned = user.get("owned_mods") or []
-    active = user.get("active_mod")
+def events_menu_text_kb(user):
+    active = story_event_active(user)
     rows = []
-    for key, mod in PERSONA_MODS.items():
-        if key in owned:
-            mark = "✅ " if key == active else ""
-            rows.append([InlineKeyboardButton(text=f"{mark}{mod_label(mod, user)}", callback_data=f"mod_set_{key}",
-                                              style="success" if key == active else "primary")])
-        else:
-            rows.append([InlineKeyboardButton(text=f"🔒 {mod_label(mod, user)} — {mod['price']}💵", callback_data=f"mod_buy_{key}")])
-    if active:
-        rows.append([InlineKeyboardButton(text=get_text(user, "mods_off_btn"), callback_data="mod_off")])
+    for key, event in STORY_EVENTS.items():
+        mark = "▶️ " if active and active["key"] == key else ""
+        rows.append([InlineKeyboardButton(text=f"{mark}{event_label(event, user)} — {event['price']}💵 · {event['hours']}ч",
+                                          callback_data=f"event_buy_{key}", style="success" if mark else "primary")])
     rows.append([InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")])
-    return get_text(user, "mods_title", bucks=user.get("bucks", 0)), InlineKeyboardMarkup(inline_keyboard=rows)
+    status = ""
+    if active:
+        left = max(1, round((datetime.fromisoformat(active["until"]) - datetime.now()).total_seconds() / 60))
+        status = "\n" + get_text(user, "events_active", name=event_label(STORY_EVENTS[active["key"]], user), minutes=left)
+    return get_text(user, "events_title", bucks=user.get("bucks", 0)) + status, InlineKeyboardMarkup(inline_keyboard=rows)
 
 
-@dp.callback_query(lambda c: c.data == "mods_menu")
-async def mods_menu_cb(call: types.CallbackQuery):
+@dp.callback_query(lambda c: c.data == "events_menu")
+async def events_menu_cb(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
-    text, kb = mods_menu_text_kb(user)
+    text, kb = events_menu_text_kb(user)
     await safe_delete(call.message)
     await bot.send_message(call.message.chat.id, text, reply_markup=kb)
     await call.answer()
 
 
-@dp.callback_query(lambda c: c.data.startswith("mod_buy_") or c.data.startswith("mod_set_") or c.data == "mod_off")
-async def mod_action_cb(call: types.CallbackQuery):
+@dp.callback_query(lambda c: c.data.startswith("event_buy_"))
+async def event_buy_cb(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
-    owned = user.setdefault("owned_mods", [])
-    if call.data == "mod_off":
-        user["active_mod"] = None
-    else:
-        key = call.data.split("_", 2)[2]
-        mod = PERSONA_MODS.get(key)
-        if not mod:
-            await call.answer()
-            return
-        if call.data.startswith("mod_buy_"):
-            if key in owned:
-                pass
-            elif not spend_bucks(user, mod["price"]):
-                await call.answer(get_text(user, "not_enough_bucks", n=mod["price"] - user.get("bucks", 0)), show_alert=True)
-                return
-            else:
-                owned.append(key)
-                user["active_mod"] = key
-                await call.answer(get_text(user, "mods_bought", name=mod_label(mod, user)), show_alert=True)
-        elif key in owned:
-            user["active_mod"] = key
-    save_data(user_data)
-    text, kb = mods_menu_text_kb(user)
-    try:
-        await call.message.edit_text(text, reply_markup=kb)
-    except Exception:
-        pass
-    try:
+    key = call.data[len("event_buy_"):]
+    event = STORY_EVENTS.get(key)
+    if not event:
         await call.answer()
+        return
+    if not user.get("personality_ready"):
+        await call.answer(get_text(user, "need_character_alert"), show_alert=True)
+        return
+    if story_event_active(user):
+        await call.answer(get_text(user, "events_busy"), show_alert=True)
+        return
+    if is_asleep(user):
+        await call.answer(get_text(user, "events_asleep"), show_alert=True)
+        return
+    if not spend_bucks(user, event["price"]):
+        await call.answer(get_text(user, "not_enough_bucks", n=event["price"] - user.get("bucks", 0)), show_alert=True)
+        return
+    user["event"] = {"key": key, "until": (datetime.now() + timedelta(hours=event["hours"])).isoformat()}
+    save_data(user_data)
+    await safe_delete(call.message)
+    await call.answer()
+    chat_id = call.message.chat.id
+    await bot.send_message(chat_id, get_text(user, "events_started", name=event_label(event, user), hours=event["hours"]))
+    await generate_event_opening(chat_id, user, event)
+
+
+async def generate_event_opening(chat_id, user, event):
+    """Открывающая реплика события -- ИИ сам начинает историю (как реакция на подарок)."""
+    system_prompt = build_prompt(user)
+    action_text = f"*начинается событие: {event['ru'].lower()}*"
+    typing_task = asyncio.create_task(_keep_typing(chat_id))
+    try:
+        response = await asyncio.to_thread(
+            call_ai, AI_MODEL, "ai",
+            messages=[{"role": "system", "content": system_prompt}] + user["history"][-6:]
+                     + [{"role": "user", "content": action_text}],
+            temperature=0.9, max_tokens=1000)
+        answer = response.choices[0].message.content
     except Exception:
-        pass
+        return
+    finally:
+        typing_task.cancel()
+    _, clean_answer = extract_reaction_from_answer(answer)
+    user["history"].append({"role": "user", "content": action_text})
+    user["history"].append({"role": "assistant", "content": clean_answer})
+    limit = get_history_limit(user)
+    if len(user["history"]) > limit:
+        user["history"] = user["history"][-limit:]
+    save_data(user_data)
+    await send_long_to_chat(chat_id, clean_answer, reply_markup=get_full_kb(user))
 
 
 # ============================================================
