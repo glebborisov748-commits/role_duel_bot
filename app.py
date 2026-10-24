@@ -99,7 +99,8 @@ TEXTS = {
         "support_sent": "✅ Передал. Ответ придёт сюда, обычно в течение дня.",
         "support_failed": "❌ Не получилось передать сообщение. Попробуй позже.",
         "support_reply": "💬 Поддержка:\n\n{text}",
-        "help_hint": "❓ Если непонятно, как пользоваться — жми /help.",
+        "help_hint": "💬 Есть вопрос или нашли баг — жми /support.",
+        "support_btn": "🛟 Поддержка",
         "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
         "cancel_character_creation_btn": "❌ Отменить",
         "character_creation_cancelled": "❌ Создание персонажа отменено — можешь просто продолжить общение как обычно.",
@@ -460,7 +461,8 @@ TEXTS = {
         "support_sent": "✅ Sent. The reply will arrive here, usually within a day.",
         "support_failed": "❌ Couldn't pass the message on. Please try later.",
         "support_reply": "💬 Support:\n\n{text}",
-        "help_hint": "❓ If anything's unclear, tap /help.",
+        "help_hint": "💬 Have a question or found a bug — tap /support.",
+        "support_btn": "🛟 Support",
         "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«An elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire.»\n\n✏️ Write the description now — and I'll remember it!",
         "cancel_character_creation_btn": "❌ Cancel",
         "character_creation_cancelled": "❌ Character creation cancelled — feel free to just keep chatting as usual.",
@@ -821,7 +823,8 @@ TEXTS = {
         "support_sent": "✅ Weitergeleitet. Die Antwort kommt hierher, meist innerhalb eines Tages.",
         "support_failed": "❌ Die Nachricht konnte nicht weitergeleitet werden. Bitte später versuchen.",
         "support_reply": "💬 Support:\n\n{text}",
-        "help_hint": "❓ Falls etwas unklar ist, tippe /help.",
+        "help_hint": "💬 Frage oder Fehler gefunden — tippe /support.",
+        "support_btn": "🛟 Support",
         "character_create_prompt": "🎭 **Erstelle deinen eigenen Charakter!**\n\nBeschreibe eine beliebige Figur — aus Anime, Filmen, Spielen oder denk dir selbst eine aus.\nSchreibe Namen, Charakter, Aussehen, Herkunft und beliebige Details.\n\n📝 *Beispiel:*\n«Eine Elfe aus der Welt von The Witcher — weise, ruhig, mit langen silbernen Haaren. Sie liebt Sterne und lange Gespräche am Feuer.»\n\n✏️ Schreibe die Beschreibung jetzt — und ich merke sie mir!",
         "cancel_character_creation_btn": "❌ Abbrechen",
         "character_creation_cancelled": "❌ Charaktererstellung abgebrochen — du kannst einfach normal weiterchatten.",
@@ -3183,7 +3186,8 @@ def get_full_kb(user):
             [KeyboardButton(text=get_text(user, "main_menu")), KeyboardButton(text=get_text(user, "my_profile"))],
             [spin_button, shop_button, work_button],
             [hot_button],
-            [KeyboardButton(text=get_text(user, "our_channel"), style="primary")]
+            [KeyboardButton(text=get_text(user, "our_channel"), style="primary"),
+             KeyboardButton(text=get_text(user, "support_btn"))]
         ],
         resize_keyboard=True
     )
@@ -3833,6 +3837,13 @@ async def profile_reply(message: types.Message):
         await ask_create_personality(message)
         return
     await show_profile(message, user)
+
+
+@dp.message(lambda m: is_button(m.text, "support_btn"))
+async def support_reply(message: types.Message):
+    """Кнопка "Поддержка" на клавиатуре -- тот же вход, что и команда /support."""
+    await safe_delete(message)
+    await support_cmd(message)
 
 
 @dp.message(lambda m: is_button(m.text, "our_channel"))
