@@ -13436,10 +13436,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
   .farm-plot {
     position: relative;
     min-width: 0;
-    height: 215px;
+    height: 175px;
     border-radius: 14px;
     overflow: hidden;
-    background: linear-gradient(180deg, #d7f0d0 0%, #bfe3b4 100%);
+    background: linear-gradient(180deg, #d7f0d0 0%, #d7f0d0 42%, #8a5a34 42%, #6b4423 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -13453,10 +13453,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
   .courier-obstacle .sprite { width: 1.3em; height: 1.3em; }
   .courier-handoff .sprite { width: 1.3em; height: 1.3em; }
   .farm-water-drop .sprite { width: 1.3em; height: 1.3em; }
-  .farm-scene { position: relative; width: 100%; height: 100px; margin-bottom: 4px; flex-shrink: 0; }
+  .farm-scene { position: relative; width: 100%; flex-shrink: 0; }
+  .farm-scene.has-bed { height: 100px; margin-bottom: 4px; }
+  .farm-plot.has-bed { height: 215px; }
   .farm-bed { position: absolute; left: 4%; right: 4%; bottom: 0; z-index: 0; }
   .farm-bed .sprite { width: 100%; height: auto; }
-  .farm-scene .farm-plant { position: absolute; left: 0; right: 0; bottom: 26px; margin: 0; display: flex; justify-content: center; }
+  .farm-scene.has-bed .farm-plant { position: absolute; left: 0; right: 0; bottom: 26px; margin: 0; display: flex; justify-content: center; }
   .farm-plant .sprite { width: 66px; height: 66px; }
   .farm-plant {
     position: relative;
@@ -13852,10 +13854,9 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var COURIER_TREE_TOP_Y = 15, COURIER_TREE_BOTTOM_Y = 255; // центры деревянных обочин сверху/снизу
   var courierLane = 1;
   // Картинки из /assets (см. bot assets/*.png): пока не загрузились или файла нет -- остаётся эмодзи.
-  var SPRITE_KEYS = ["catch_bomb", "catch_bighazard", "catch_slow", "catch_double", "catch_shield", "catch_magnet", "catch_bills", "catch_coins",
-    "courier_rider", "courier_parcel", "courier_obstacle", "person_wave", "person_coffee", "person_arms", "person_point",
-    "crop_carrot", "crop_wheat", "crop_tomato", "crop_corn", "crop_pumpkin", "crop_melon", "crop_seedling", "crop_young",
-    "farm_bed_dry", "farm_bed_wet", "farm_drop"];
+  // Ловля и ферма пока на эмодзи (неоновый стиль листа не подошёл) -- файлы остаются в assets/, чтобы вернуть
+  // или заменить: достаточно добавить ключи (catch_*, crop_*, farm_*) обратно в этот список.
+  var SPRITE_KEYS = ["courier_rider", "courier_parcel", "courier_obstacle", "person_wave", "person_coffee", "person_arms", "person_point"];
   var PERSON_KEYS = ["person_wave", "person_coffee", "person_arms", "person_point"];
   var SPRITES = {};
   function setSprite(el, key, fallbackText) {
@@ -14778,7 +14779,9 @@ WORK_PAGE_HTML = r'''<!doctype html>
       plot.appendChild(pips);
 
       var scene = document.createElement("div");
-      scene.className = "farm-scene";
+      var hasBed = !!SPRITES.farm_bed_dry;
+      scene.className = "farm-scene" + (hasBed ? " has-bed" : "");
+      if (hasBed) plot.classList.add("has-bed");
       var bed = document.createElement("div");
       bed.className = "farm-bed";
       setSprite(bed, snap.can_water ? "farm_bed_dry" : "farm_bed_wet", "");
