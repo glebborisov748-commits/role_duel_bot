@@ -13854,10 +13854,9 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var COURIER_TREE_TOP_Y = 15, COURIER_TREE_BOTTOM_Y = 255; // центры деревянных обочин сверху/снизу
   var courierLane = 1;
   // Картинки из /assets (см. bot assets/*.png): пока не загрузились или файла нет -- остаётся эмодзи.
-  // Ферма и курьер-скутер -- картинки; ловля, получатели, препятствия и посылка пока на эмодзи (стиль листа
-  // не подошёл). Остальные файлы лежат в assets/ -- вернуть можно, добавив ключи (catch_*, person_*, courier_*) сюда.
-  var SPRITE_KEYS = ["courier_rider", "crop_carrot", "crop_wheat", "crop_tomato", "crop_corn", "crop_pumpkin", "crop_melon",
-    "crop_seedling", "crop_young", "farm_bed_dry", "farm_bed_wet", "farm_drop"];
+  // «Работа» полностью на эмодзи (картинки не подошли по стилю). Файлы лежат в assets/ -- чтобы вернуть,
+  // добавь ключи (courier_*, person_*, catch_*, crop_*, farm_*) в этот список.
+  var SPRITE_KEYS = [];
   var PERSON_KEYS = ["person_wave", "person_coffee", "person_arms", "person_point"];
   var SPRITES = {};
   function setSprite(el, key, fallbackText) {
