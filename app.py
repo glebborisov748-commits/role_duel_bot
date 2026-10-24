@@ -2189,6 +2189,15 @@ def free_spins_left(user):
     return max(0, free_spins_allowed(user) - user.get("free_spins_used", 0)) + user.get("bonus_spins", 0)
 
 
+def spin_free_label(user):
+    """Подпись кнопки бесплатного прокрута: дневные попытки отдельно, бонусные (приз «доп. прокрут»,
+    реферал) отдельно -- иначе выигранный доп. прокрут просто растворялся в счётчике "2/1"."""
+    daily_left = max(0, free_spins_allowed(user) - user.get("free_spins_used", 0))
+    bonus = user.get("bonus_spins", 0)
+    label = get_text(user, "free", left=daily_left, total=free_spins_allowed(user)) if daily_left > 0 else get_text(user, "free", left=bonus, total=bonus)
+    return label + (f" + 🎟{bonus}" if bonus and daily_left > 0 else "")
+
+
 def consume_free_spin(user):
     """Списывает одно бесплатное вращение — сначала бонусные (см. приз "extra_spin" в
     SPIN_PRIZES), они не привязаны к дневной квоте и не сбрасываются вместе с ней."""
@@ -12030,7 +12039,7 @@ def serialize_spin_state(user):
         "ui": {
             "spin_title": get_text(user, "spin_title"),
             "spin_hint": get_text(user, "spin_hint"),
-            "free_label": get_text(user, "free", left=free_spins_left(user), total=free_spins_allowed(user)),
+            "free_label": spin_free_label(user),
             "tomorrow_label": get_text(user, "tomorrow"),
             "paid_label": get_text(user, "spin_paid"),
             "luck_btn": get_text(user, "spin_luck_btn", price=PRODUCTS["spin_luck"]["stars"]),
