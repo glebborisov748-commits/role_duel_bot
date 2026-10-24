@@ -6515,17 +6515,22 @@ GAME_TEXTS = {
         "menu": "🎲 Игры вместе — проведи время с персонажем.\n💵 У тебя: {bucks}",
         "cities_btn": "🏙 Города",
         "tod_btn": "🎭 Правда или действие",
-        "tod_start": "🎭 Правда или действие! {rounds} раундов. Выбирай — и отвечай мне сообщением. Награда в конце — XP.",
-        "tod_truth": "💬 Правда", "tod_dare": "🔥 Действие", "tod_swap": "🔄 Теперь ты", "tod_end": "🏁 Закончить",
-        "tod_answer_hint": "✍️ Ответь мне сообщением.",
+        "tod_start": "🎭 Правда или действие! {rounds} раунда. В каждом раунде сначала ходишь ты (выбираешь и отвечаешь мне), потом я (выбираю и отвечаю тебе). Награда в конце — XP.",
+        "tod_truth": "💬 Правда", "tod_dare": "🔥 Действие", "tod_end": "🏁 Закончить",
+        "tod_pick_prompt": "🎭 Раунд {n}/{total}. Твой ход — выбирай:",
+        "tod_answer_hint": "✍️ Твой ход: ответь мне сообщением.",
+        "tod_kind_truth": "правду", "tod_kind_dare": "действие", "tod_what_truth": "вопрос", "tod_what_dare": "задание",
+        "tod_ai_turn": "🔄 Теперь моя очередь! Я выбираю {kind}. Придумай мне {what} и напиши сообщением.",
+        "tod_use_buttons": "Сейчас выбирай кнопкой: правда или действие 👆",
+        "tod_wait": "Секунду, я отвечаю…",
         "tod_finished": "🎭 Игра закончилась. +{xp} XP за откровенный вечер.",
         "bj_btn": "🃏 Блэкджек",
         "movie_btn": "🎬 Кино",
         "shop_games_btn": "🛍 Билеты — в магазине",
-        "shop_cat_games": "🎡 Развлечения",
+        "shop_cat_games": "🎮 Развлечения",
         "ticket_effects": "Билет на развлечение. У тебя: {have} 🎟 (на {uses})",
         "ticket_bought": "🎟 Билет куплен: {name}. Теперь он есть в «Играх вместе» (/games).",
-        "no_ticket": "Нужен билет: «{name}». Купи его в магазине (🎡 Развлечения).",
+        "no_ticket": "Нужен билет: «{name}». Купи его в магазине (🎮 Развлечения).",
         "busy": "Сначала закончи текущую игру.",
         "asleep": "Персонаж спит — сначала разбуди его.",
         "sick": "Персонаж болеет и сейчас не в настроении играть — сначала вылечи его.",
@@ -6542,9 +6547,9 @@ GAME_TEXTS = {
         "cities_timeup": "⏱ Время партии вышло — ничья.",
         "cities_stuck": "У меня закончились города на «{letter}» — ты победил(а)!",
         "bj_menu": "🃏 Блэкджек. Выбери ставку:\n💵 У тебя: {bucks} · 🎟 раундов: {tickets}",
-        "bj_state": "🃏 Твои карты: {player} = {pv}\nУ меня: {dealer}\nСтавка: {bet}💵",
+        "bj_state": "🃏 БЛЭКДЖЕК · ставка {bet}💵\n\n🧑 Ты: {player}  →  {pv}\n🤖 Я (крупье): {dealer}  →  {dv}+?\n\nБерёшь ещё карту или хватит?",
         "bj_hit": "➕ Ещё", "bj_stand": "✋ Хватит",
-        "bj_end": "{player} = {pv}\nУ меня: {dealer} = {dv}\n\n{result}",
+        "bj_end": "🃏 Итог раунда\n\n🧑 Ты: {player}  →  {pv}\n🤖 Я (крупье): {dealer}  →  {dv}\n\n{result}",
         "bj_win": "🎉 Ты выиграл(а): +{amount}💵", "bj_blackjack": "🃏 Блэкджек! +{amount}💵",
         "bj_lose": "💸 Проигрыш: −{amount}💵", "bj_push": "🤝 Ничья, ставка возвращена.",
         "movie_pick": "🎬 Что смотрим вместе? 🎟 Билетов: {tickets}.\n💵 У тебя: {bucks}",
@@ -6558,17 +6563,22 @@ GAME_TEXTS = {
         "menu": "🎲 Games together — spend time with your companion.\n💵 You have: {bucks}",
         "cities_btn": "🏙 Cities",
         "tod_btn": "🎭 Truth or dare",
-        "tod_start": "🎭 Truth or dare! {rounds} rounds. Pick one — and answer me with a message. XP reward at the end.",
-        "tod_truth": "💬 Truth", "tod_dare": "🔥 Dare", "tod_swap": "🔄 Your turn", "tod_end": "🏁 Finish",
-        "tod_answer_hint": "✍️ Answer me with a message.",
+        "tod_start": "🎭 Truth or dare! {rounds} rounds. Each round you go first (pick and answer me), then it is my turn (I pick and you ask me). XP reward at the end.",
+        "tod_truth": "💬 Truth", "tod_dare": "🔥 Dare", "tod_end": "🏁 Finish",
+        "tod_pick_prompt": "🎭 Round {n}/{total}. Your turn — pick:",
+        "tod_answer_hint": "✍️ Your turn: answer me with a message.",
+        "tod_kind_truth": "truth", "tod_kind_dare": "dare", "tod_what_truth": "question", "tod_what_dare": "challenge",
+        "tod_ai_turn": "🔄 My turn now! I pick {kind}. Come up with a {what} for me and write it.",
+        "tod_use_buttons": "Pick with the buttons now: truth or dare 👆",
+        "tod_wait": "One sec, I am answering…",
         "tod_finished": "🎭 Game over. +{xp} XP for an honest evening.",
         "bj_btn": "🃏 Blackjack",
         "movie_btn": "🎬 Movie",
         "shop_games_btn": "🛍 Tickets — in the shop",
-        "shop_cat_games": "🎡 Entertainment",
+        "shop_cat_games": "🎮 Entertainment",
         "ticket_effects": "An entertainment ticket. You have: {have} 🎟 (for {uses})",
         "ticket_bought": "🎟 Ticket bought: {name}. It is now in «Games together» (/games).",
-        "no_ticket": "You need a ticket: «{name}». Buy it in the shop (🎡 Entertainment).",
+        "no_ticket": "You need a ticket: «{name}». Buy it in the shop (🎮 Entertainment).",
         "busy": "Finish the current game first.",
         "asleep": "Your companion is asleep — wake them first.",
         "sick": "Your companion is sick and not in the mood — cure them first.",
@@ -6585,9 +6595,9 @@ GAME_TEXTS = {
         "cities_timeup": "⏱ Time is up — a draw.",
         "cities_stuck": "I'm out of cities for «{letter}» — you win!",
         "bj_menu": "🃏 Blackjack. Choose your bet:\n💵 You have: {bucks} · 🎟 rounds: {tickets}",
-        "bj_state": "🃏 Your cards: {player} = {pv}\nMine: {dealer}\nBet: {bet}💵",
+        "bj_state": "🃏 BLACKJACK · bet {bet}💵\n\n🧑 You: {player}  →  {pv}\n🤖 Me (dealer): {dealer}  →  {dv}+?\n\nHit or stand?",
         "bj_hit": "➕ Hit", "bj_stand": "✋ Stand",
-        "bj_end": "{player} = {pv}\nMine: {dealer} = {dv}\n\n{result}",
+        "bj_end": "🃏 Round result\n\n🧑 You: {player}  →  {pv}\n🤖 Me (dealer): {dealer}  →  {dv}\n\n{result}",
         "bj_win": "🎉 You won: +{amount}💵", "bj_blackjack": "🃏 Blackjack! +{amount}💵",
         "bj_lose": "💸 You lost: −{amount}💵", "bj_push": "🤝 Push, bet returned.",
         "movie_pick": "🎬 What do we watch together? 🎟 Tickets: {tickets}.\n💵 You have: {bucks}",
@@ -6889,21 +6899,27 @@ async def cities_user_move(message: types.Message, user):
 
 
 # ---------- Правда или действие ----------
-TOD_ROUNDS = 6
+TOD_ROUNDS = 4
 TOD_XP = 30
 
 
-def tod_kb(user, with_swap=True):
-    rows = [[InlineKeyboardButton(text=gt(user, "tod_truth"), callback_data="tod_pick_truth"),
-             InlineKeyboardButton(text=gt(user, "tod_dare"), callback_data="tod_pick_dare")]]
-    if with_swap:
-        rows.append([InlineKeyboardButton(text=gt(user, "tod_swap"), callback_data="tod_swap")])
-    rows.append([InlineKeyboardButton(text=gt(user, "tod_end"), callback_data="tod_end")])
-    return InlineKeyboardMarkup(inline_keyboard=rows)
+def tod_kb(user):
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=gt(user, "tod_truth"), callback_data="tod_pick_truth"),
+         InlineKeyboardButton(text=gt(user, "tod_dare"), callback_data="tod_pick_dare")],
+        [InlineKeyboardButton(text=gt(user, "tod_end"), callback_data="tod_end")]])
 
 
 def tod_end_kb(user):
     return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=gt(user, "tod_end"), callback_data="tod_end")]])
+
+
+async def tod_send_pick(chat_id, user):
+    game = user["game"]
+    game["phase"] = "pick"
+    game_touch(game)
+    save_data(user_data)
+    await bot.send_message(chat_id, gt(user, "tod_pick_prompt", n=game["round"] + 1, total=TOD_ROUNDS), reply_markup=tod_kb(user))
 
 
 @dp.callback_query(lambda c: c.data == "game_tod")
@@ -6918,12 +6934,13 @@ async def tod_start_cb(call: types.CallbackQuery):
         await call.answer(error, show_alert=True)
         return
     use_game_ticket(user, "tod")
-    user["game"] = {"type": "tod", "round": 0, "pending": None}
+    user["game"] = {"type": "tod", "round": 0, "phase": "pick", "busy": False}
     game_touch(user["game"])
     save_data(user_data)
     await safe_delete(call.message)
     await call.answer()
-    await bot.send_message(call.message.chat.id, gt(user, "tod_start", rounds=TOD_ROUNDS), reply_markup=tod_kb(user))
+    await bot.send_message(call.message.chat.id, gt(user, "tod_start", rounds=TOD_ROUNDS))
+    await tod_send_pick(call.message.chat.id, user)
 
 
 async def tod_finish(chat_id, user):
@@ -6933,7 +6950,7 @@ async def tod_finish(chat_id, user):
     await grant_gift_xp(chat_id, user, TOD_XP)
 
 
-@dp.callback_query(lambda c: c.data in ("tod_pick_truth", "tod_pick_dare", "tod_swap", "tod_end"))
+@dp.callback_query(lambda c: c.data in ("tod_pick_truth", "tod_pick_dare", "tod_end"))
 async def tod_action_cb(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     game = user.get("game")
@@ -6941,45 +6958,87 @@ async def tod_action_cb(call: types.CallbackQuery):
         await call.answer()
         return
     chat_id = call.message.chat.id
+    if call.data == "tod_end":
+        await safe_delete(call.message)
+        await call.answer()
+        await tod_finish(chat_id, user)
+        return
+    # выбор принимается ровно один раз за ход: повторные нажатия и кнопки из старых сообщений игнорируем
+    if game.get("phase") != "pick" or game.get("busy"):
+        await call.answer(gt(user, "tod_wait"))
+        return
+    game["busy"] = True
+    game["phase"] = "answer"
+    game["kind"] = "truth" if call.data == "tod_pick_truth" else "dare"
+    game_touch(game)
+    save_data(user_data)
     await safe_delete(call.message)
     await call.answer()
-    if call.data == "tod_end":
-        await tod_finish(chat_id, user)
-        return
-    game_touch(game)
-    if call.data == "tod_swap":
-        line = await game_ai_line(chat_id, user, "Игра «правда или действие», теперь твоя очередь: выбери правду, озвучь вопрос, который тебе "
-                                                 "задал собеседник (придумай сама, личный, но не пошлый), и честно ответь на него в образе.")
-        await bot.send_message(chat_id, line or "…", reply_markup=tod_kb(user))
-        return
-    kind = "правду" if call.data == "tod_pick_truth" else "действие"
-    if kind == "правду":
-        task = ("Задай ему один личный, тёплый, чуть смущающий вопрос (правда); не пошлый, не про деньги и не про здоровье.")
-    else:
-        task = ("Придумай одно безобидное весёлое задание, которое можно выполнить прямо в чате (описать, написать, придумать, "
-                "изобразить словами); без нарушений правил и без пошлости.")
-    line = await game_ai_line(chat_id, user, f"Игра «правда или действие». Собеседник выбрал {kind}. {task} Только один вопрос или задание.")
-    game["pending"] = kind
-    save_data(user_data)
-    await bot.send_message(chat_id, (line or "…") + "\n\n" + gt(user, "tod_answer_hint"), reply_markup=tod_end_kb(user))
+    try:
+        if game["kind"] == "truth":
+            task = "Задай ему один личный, тёплый, чуть смущающий вопрос (правда); не пошлый, не про деньги и не про здоровье."
+            word = "правду"
+        else:
+            task = ("Придумай одно безобидное весёлое задание, которое можно выполнить прямо в чате (описать, написать, придумать, "
+                    "изобразить словами); без нарушений правил и без пошлости.")
+            word = "действие"
+        line = await game_ai_line(chat_id, user, f"Игра «правда или действие». Собеседник выбрал {word}. {task} Только один вопрос или задание.")
+        await bot.send_message(chat_id, (line or "…") + "\n\n" + gt(user, "tod_answer_hint"), reply_markup=tod_end_kb(user))
+    finally:
+        game["busy"] = False
+        save_data(user_data)
 
 
-async def tod_user_answer(message: types.Message, user):
+async def tod_user_text(message: types.Message, user):
+    """Любое текстовое сообщение во время игры -- по фазе: ответ мне, вопрос мне, либо подсказка нажать кнопку."""
     game = user["game"]
     chat_id = message.chat.id
-    answer = message.text.strip()[:400]
-    game["pending"] = None
-    game["round"] += 1
-    game_touch(game)
-    save_data(user_data)
-    line = await game_ai_line(chat_id, user, f"Игра «правда или действие». Собеседник ответил/выполнил: «{answer}». Отреагируй в образе "
-                                              "(смех, удивление, смущение, поддержка), без осуждения.")
-    if game["round"] >= TOD_ROUNDS:
-        if line:
-            await bot.send_message(chat_id, line)
-        await tod_finish(chat_id, user)
+    if game.get("busy"):
+        await message.answer(gt(user, "tod_wait"))
         return
-    await bot.send_message(chat_id, line or "…", reply_markup=tod_kb(user))
+    phase = game.get("phase")
+    if phase == "pick":
+        await message.answer(gt(user, "tod_use_buttons"), reply_markup=tod_kb(user))
+        return
+    text = message.text.strip()[:400]
+    game["busy"] = True
+    game_touch(game)
+    try:
+        if phase == "answer":
+            game["phase"] = "ai_turn"
+            save_data(user_data)
+            line = await game_ai_line(chat_id, user, f"Игра «правда или действие». Собеседник ответил/выполнил: «{text}». Отреагируй в образе "
+                                                      "(смех, удивление, смущение, поддержка), без осуждения.")
+            if line:
+                await bot.send_message(chat_id, line)
+            game["ai_kind"] = random.choice(["truth", "dare"])
+            game["phase"] = "ask"
+            game_touch(game)
+            save_data(user_data)
+            await bot.send_message(chat_id, gt(user, "tod_ai_turn", kind=gt(user, f"tod_kind_{game['ai_kind']}"),
+                                               what=gt(user, f"tod_what_{game['ai_kind']}")), reply_markup=tod_end_kb(user))
+        elif phase == "ask":
+            game["phase"] = "ai_answer"
+            save_data(user_data)
+            if game.get("ai_kind") == "truth":
+                instr = (f"Игра «правда или действие». Ты выбрала правду, собеседник спросил: «{text}». Ответь честно и по-настоящему в образе, "
+                         "от первого лица; если вопрос слишком грубый — мягко уйди от ответа с шуткой.")
+            else:
+                instr = (f"Игра «правда или действие». Ты выбрала действие, собеседник придумал: «{text}». Выполни это словами в образе "
+                         "(опиши, что делаешь); если задание слишком грубое или нарушает правила — отшутись и предложи смягчить.")
+            line = await game_ai_line(chat_id, user, instr)
+            if line:
+                await bot.send_message(chat_id, line)
+            game["round"] += 1
+            if game["round"] >= TOD_ROUNDS:
+                game["busy"] = False
+                await tod_finish(chat_id, user)
+                return
+            await tod_send_pick(chat_id, user)
+    finally:
+        if user.get("game") is game:
+            game["busy"] = False
+            save_data(user_data)
 
 
 # ---------- Блэкджек ----------
@@ -7005,8 +7064,8 @@ def bj_value(hand):
 
 def bj_show(hand, hide_second=False):
     if hide_second:
-        return f"{hand[0][0]}{hand[0][1]} 🂠"
-    return " ".join(f"{r}{s}" for r, s in hand)
+        return f"[{hand[0][0]}{hand[0][1]}] [🂠]"
+    return " ".join(f"[{r}{s}]" for r, s in hand)
 
 
 def bj_draw(game):
@@ -7069,7 +7128,7 @@ async def bj_bet_cb(call: types.CallbackQuery):
         await bj_finish(call.message.chat.id, user)
         return
     await bot.send_message(call.message.chat.id, gt(user, "bj_state", player=bj_show(game["player"]), pv=bj_value(game["player"]),
-                                                  dealer=bj_show(game["dealer"], hide_second=True), bet=bet), reply_markup=bj_kb(user))
+                                                  dealer=bj_show(game["dealer"], hide_second=True), dv=bj_value(game["dealer"][:1]), bet=bet), reply_markup=bj_kb(user))
 
 
 async def bj_finish(chat_id, user):
@@ -7119,7 +7178,7 @@ async def bj_action_cb(call: types.CallbackQuery):
         if bj_value(game["player"]) < 21:
             save_data(user_data)
             await bot.send_message(chat_id, gt(user, "bj_state", player=bj_show(game["player"]), pv=bj_value(game["player"]),
-                                               dealer=bj_show(game["dealer"], hide_second=True), bet=game["bet"]), reply_markup=bj_kb(user))
+                                               dealer=bj_show(game["dealer"], hide_second=True), dv=bj_value(game["dealer"][:1]), bet=game["bet"]), reply_markup=bj_kb(user))
             return
     await bj_finish(chat_id, user)
 
@@ -7303,8 +7362,8 @@ async def handle_message(message: types.Message):
     if (user.get("game") or {}).get("type") == "cities" and not game_is_stale(user["game"]):
         await cities_user_move(message, user)
         return
-    if (user.get("game") or {}).get("type") == "tod" and user["game"].get("pending") and not game_is_stale(user["game"]):
-        await tod_user_answer(message, user)
+    if (user.get("game") or {}).get("type") == "tod" and not game_is_stale(user["game"]):
+        await tod_user_text(message, user)
         return
 
     # 1. Создание собственного персонажа (SUPER PRO)
@@ -11226,7 +11285,8 @@ SHOP_PAGE_HTML = '''<!doctype html>
     border: 1px solid rgba(139,92,246,.5);
     background: linear-gradient(160deg, rgba(59,130,246,.18), rgba(139,92,246,.1) 60%, transparent);
   }
-  .card-img { width: 84px; height: 84px; object-fit: contain; display: block; filter: drop-shadow(0 2px 6px rgba(124,58,237,.5)); }
+  @keyframes floaty { 0%,100% { transform: translateY(0) rotate(-1.5deg); } 50% { transform: translateY(-5px) rotate(1.5deg); } }
+  .card-img { animation: floaty 3.2s ease-in-out infinite; width: 84px; height: 84px; object-fit: contain; display: block; filter: drop-shadow(0 2px 6px rgba(124,58,237,.5)); }
   .card-top { display: flex; align-items: center; justify-content: space-between; }
   .card-emoji { font-size: 26px; }
   .card-emoji-energizer { font-size: 20px; }
