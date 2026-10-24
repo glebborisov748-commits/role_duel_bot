@@ -2031,6 +2031,13 @@ MEDICINE_ITEMS = {
                          "reaction_hint": "Серьёзная забота во время тяжёлой болезни — искреннее облегчение и глубокая благодарность."},
 }
 
+# Цены магазина x1.5 (заработки в играх/колесе подняты, баксы иначе копились бы без дела).
+# Один множитель вместо правки каждой цифры; округляем до 25.
+SHOP_PRICE_MULT = 1.5
+for _catalog in (FOOD_ITEMS, GIFT_ITEMS, MEDICINE_ITEMS):
+    for _item in _catalog.values():
+        _item["price"] = int(round(_item["price"] * SHOP_PRICE_MULT / 25.0)) * 25
+
 
 def intim_option_label(mapping, key, user):
     option = mapping[key]
@@ -4493,7 +4500,7 @@ SHOP_CATEGORY_TEXT_KEY = {"food": "shop_category_food", "treat": "shop_category_
 # запасной вариант: любой текст, который ещё не дарили (дубли по нормализованному тексту), с
 # рандомным настроением из диапазона обычных аксессуаров (см. их mood выше — 18..45), а не
 # средним: со случайным числом каждый раз приятнее, чем одна и та же предсказуемая цифра.
-CUSTOM_GIFT_PRICE = 5000
+CUSTOM_GIFT_PRICE = 7500
 CUSTOM_GIFT_MOOD_RANGE = (18, 45)
 CUSTOM_GIFT_MAX_LEN = 60
 
@@ -4565,6 +4572,10 @@ def get_shop_kb(user):
                 text=get_text(user, "custom_gift_btn", price=CUSTOM_GIFT_PRICE),
                 callback_data="shop_custom_gift_start", style="success")])
 
+    rows.append([InlineKeyboardButton(text=gt(user, "shop_cat_games"), callback_data="shop_noop")])
+    for key, t in GAME_TICKETS.items():
+        rows.append([InlineKeyboardButton(text=f"{t['emoji']} {game_ticket_name(user, key)} — {t['price']}💵",
+                                          callback_data=f"shop_game_{key}", style="success")])
     rows.append([InlineKeyboardButton(text=get_text(user, "shop_note_menu_btn"), callback_data="shop_note_menu", style="success")])
     rows.append([InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
@@ -4611,6 +4622,18 @@ async def shop_custom_gift_start(call: types.CallbackQuery):
     save_data(user_data)
     await call.message.answer(get_text(user, "custom_gift_prompt", price=CUSTOM_GIFT_PRICE, n=CUSTOM_GIFT_MAX_LEN))
     await call.answer()
+
+
+@dp.callback_query(lambda c: c.data.startswith("shop_game_"))
+async def shop_game_ticket_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    key = call.data[len("shop_game_"):]
+    ok, error = buy_game_ticket(user, key)
+    if not ok:
+        await call.answer(error, show_alert=True)
+        return
+    await call.answer()
+    await call.message.answer(gt(user, "ticket_bought", name=game_ticket_name(user, key)))
 
 
 @dp.callback_query(lambda c: c.data == "shop_noop")
@@ -6481,19 +6504,24 @@ GAME_TEXTS = {
     "ru": {
         "btn": "🎲 Игры вместе",
         "menu": "🎲 Игры вместе — проведи время с персонажем.\n💵 У тебя: {bucks}",
-        "cities_btn": "🏙 Города — бесплатно",
-        "tod_btn": "🎭 Правда или действие — бесплатно",
+        "cities_btn": "🏙 Города",
+        "tod_btn": "🎭 Правда или действие",
         "tod_start": "🎭 Правда или действие! {rounds} раундов. Выбирай — и отвечай мне сообщением. Награда в конце — XP.",
         "tod_truth": "💬 Правда", "tod_dare": "🔥 Действие", "tod_swap": "🔄 Теперь ты", "tod_end": "🏁 Закончить",
         "tod_answer_hint": "✍️ Ответь мне сообщением.",
         "tod_finished": "🎭 Игра закончилась. +{xp} XP за откровенный вечер.",
-        "bj_btn": "🃏 Блэкджек — ставка от 100💵",
-        "movie_btn": "🎬 Кино — {price}💵",
+        "bj_btn": "🃏 Блэкджек",
+        "movie_btn": "🎬 Кино",
+        "shop_games_btn": "🛍 Билеты — в магазине",
+        "shop_cat_games": "🎮 Игры",
+        "ticket_effects": "Билет на игру. У тебя: {have} 🎟 (на {uses})",
+        "ticket_bought": "🎟 Билет куплен: {name}. Теперь он есть в «Играх вместе» (/games).",
+        "no_ticket": "Нужен билет: «{name}». Купи его в магазине (🎮 Игры).",
         "busy": "Сначала закончи текущую игру.",
         "asleep": "Персонаж спит — сначала разбуди его.",
         "sick": "Персонаж болеет и сейчас не в настроении играть — сначала вылечи его.",
         "need_char": "Сначала создай персонажа через /start.",
-        "cities_start": "🏙 Играем в города! Бесплатно. Время партии — 10 минут, не больше 15 ходов. Назови любой город, дальше — на последнюю букву (ь, ъ, ы, й пропускаем). Победишь — получишь XP.",
+        "cities_start": "🏙 Играем в города! Время партии — 10 минут, не больше 15 ходов. Назови любой город, дальше — на последнюю букву (ь, ъ, ы, й пропускаем). Победишь — получишь XP.",
         "cities_surrender": "🏳️ Сдаюсь",
         "cities_your_letter": "тебе на «{letter}»",
         "cities_unknown": "Не знаю такого города 🤔 Попробуй другой. Нужна буква «{letter}».",
@@ -6504,13 +6532,13 @@ GAME_TEXTS = {
         "daily_limit": "На сегодня лимит игр с репликами персонажа исчерпан — возвращайся завтра.",
         "cities_timeup": "⏱ Время партии вышло — ничья.",
         "cities_stuck": "У меня закончились города на «{letter}» — ты победил(а)!",
-        "bj_menu": "🃏 Блэкджек. Выбери ставку:\n💵 У тебя: {bucks}",
+        "bj_menu": "🃏 Блэкджек. Выбери ставку:\n💵 У тебя: {bucks} · 🎟 раундов: {tickets}",
         "bj_state": "🃏 Твои карты: {player} = {pv}\nУ меня: {dealer}\nСтавка: {bet}💵",
         "bj_hit": "➕ Ещё", "bj_stand": "✋ Хватит",
         "bj_end": "{player} = {pv}\nУ меня: {dealer} = {dv}\n\n{result}",
         "bj_win": "🎉 Ты выиграл(а): +{amount}💵", "bj_blackjack": "🃏 Блэкджек! +{amount}💵",
         "bj_lose": "💸 Проигрыш: −{amount}💵", "bj_push": "🤝 Ничья, ставка возвращена.",
-        "movie_pick": "🎬 Что смотрим вместе? Билеты {price}💵.\n💵 У тебя: {bucks}",
+        "movie_pick": "🎬 Что смотрим вместе? 🎟 Билетов: {tickets}.\n💵 У тебя: {bucks}",
         "movie_genres": {"romance": "💞 Мелодрама", "comedy": "😂 Комедия", "horror": "👻 Ужастик", "drama": "😢 Драма"},
         "movie_react": {"cry": "😭 Поплакать", "laugh": "😂 Посмеяться", "hug": "🤗 Прижаться", "comment": "💬 Обсудить"},
         "movie_done": "🎬 Фильм закончился. +{xp} XP за вечер вместе.",
@@ -6519,19 +6547,24 @@ GAME_TEXTS = {
     "en": {
         "btn": "🎲 Games together",
         "menu": "🎲 Games together — spend time with your companion.\n💵 You have: {bucks}",
-        "cities_btn": "🏙 Cities — free",
-        "tod_btn": "🎭 Truth or dare — free",
+        "cities_btn": "🏙 Cities",
+        "tod_btn": "🎭 Truth or dare",
         "tod_start": "🎭 Truth or dare! {rounds} rounds. Pick one — and answer me with a message. XP reward at the end.",
         "tod_truth": "💬 Truth", "tod_dare": "🔥 Dare", "tod_swap": "🔄 Your turn", "tod_end": "🏁 Finish",
         "tod_answer_hint": "✍️ Answer me with a message.",
         "tod_finished": "🎭 Game over. +{xp} XP for an honest evening.",
-        "bj_btn": "🃏 Blackjack — bets from 100💵",
-        "movie_btn": "🎬 Movie — {price}💵",
+        "bj_btn": "🃏 Blackjack",
+        "movie_btn": "🎬 Movie",
+        "shop_games_btn": "🛍 Tickets — in the shop",
+        "shop_cat_games": "🎮 Games",
+        "ticket_effects": "A game ticket. You have: {have} 🎟 (for {uses})",
+        "ticket_bought": "🎟 Ticket bought: {name}. It is now in «Games together» (/games).",
+        "no_ticket": "You need a ticket: «{name}». Buy it in the shop (🎮 Games).",
         "busy": "Finish the current game first.",
         "asleep": "Your companion is asleep — wake them first.",
         "sick": "Your companion is sick and not in the mood — cure them first.",
         "need_char": "Create a character with /start first.",
-        "cities_start": "🏙 Let's play cities! Free. The round lasts up to 10 minutes / 15 moves. Name any city, then one starting with the last letter (skipping ь, ъ, ы, й). Win and get XP.",
+        "cities_start": "🏙 Let's play cities! The round lasts up to 10 minutes / 15 moves. Name any city, then one starting with the last letter (skipping ь, ъ, ы, й). Win and get XP.",
         "cities_surrender": "🏳️ I give up",
         "cities_your_letter": "your letter: «{letter}»",
         "cities_unknown": "I don't know that city 🤔 Try another. Letter needed: «{letter}».",
@@ -6542,13 +6575,13 @@ GAME_TEXTS = {
         "daily_limit": "Today's limit of games with character lines is used up — come back tomorrow.",
         "cities_timeup": "⏱ Time is up — a draw.",
         "cities_stuck": "I'm out of cities for «{letter}» — you win!",
-        "bj_menu": "🃏 Blackjack. Choose your bet:\n💵 You have: {bucks}",
+        "bj_menu": "🃏 Blackjack. Choose your bet:\n💵 You have: {bucks} · 🎟 rounds: {tickets}",
         "bj_state": "🃏 Your cards: {player} = {pv}\nMine: {dealer}\nBet: {bet}💵",
         "bj_hit": "➕ Hit", "bj_stand": "✋ Stand",
         "bj_end": "{player} = {pv}\nMine: {dealer} = {dv}\n\n{result}",
         "bj_win": "🎉 You won: +{amount}💵", "bj_blackjack": "🃏 Blackjack! +{amount}💵",
         "bj_lose": "💸 You lost: −{amount}💵", "bj_push": "🤝 Push, bet returned.",
-        "movie_pick": "🎬 What do we watch together? Tickets {price}💵.\n💵 You have: {bucks}",
+        "movie_pick": "🎬 What do we watch together? 🎟 Tickets: {tickets}.\n💵 You have: {bucks}",
         "movie_genres": {"romance": "💞 Romance", "comedy": "😂 Comedy", "horror": "👻 Horror", "drama": "😢 Drama"},
         "movie_react": {"cry": "😭 Cry", "laugh": "😂 Laugh", "hug": "🤗 Cuddle up", "comment": "💬 Talk about it"},
         "movie_done": "🎬 The movie is over. +{xp} XP for the evening together.",
@@ -6563,10 +6596,54 @@ def gt(user, key, **kw):
     return value.format(**kw) if kw and isinstance(value, str) else value
 
 
-CITIES_ENTRY = 0   # бесплатно: токены уже оплачены энергией персонажа и дневным лимитом реплик
 CITIES_PRIZE = 0     # без денег: награда -- только XP (по фидбэку)
 CITIES_XP = 30
-MOVIE_PRICE = 1500
+# Игры покупаются в магазине как билеты (категория «🎮 Игры»); uses -- сколько партий/раундов в билете.
+GAME_TICKETS = {
+    "cities": {"emoji": "🏙", "ru": "Города", "en": "Cities", "price": 450, "uses": 1},
+    "tod": {"emoji": "🎭", "ru": "Правда или действие", "en": "Truth or dare", "price": 600, "uses": 1},
+    "bj": {"emoji": "🃏", "ru": "Блэкджек", "en": "Blackjack", "price": 750, "uses": 5},
+    "movie": {"emoji": "🎬", "ru": "Кино", "en": "Movie", "price": 2250, "uses": 1},
+}
+
+
+def game_tickets_have(user, key):
+    return (user.get("game_tickets") or {}).get(key, 0)
+
+
+def game_ticket_name(user, key):
+    t = GAME_TICKETS[key]
+    return t["ru"] if user.get("lang", "ru") == "ru" else t["en"]
+
+
+def give_game_ticket(user, key, n=1):
+    tickets = user.setdefault("game_tickets", {})
+    tickets[key] = tickets.get(key, 0) + n
+
+
+def use_game_ticket(user, key):
+    if game_tickets_have(user, key) <= 0:
+        return False
+    user["game_tickets"][key] -= 1
+    return True
+
+
+def buy_game_ticket(user, key):
+    """Покупка билета за баксы (общая для чатового магазина и Mini App). (ok, error_text)."""
+    t = GAME_TICKETS.get(key)
+    if not t:
+        return False, "Not found"
+    if not spend_bucks(user, t["price"]):
+        return False, get_text(user, "not_enough_bucks", n=t["price"] - user.get("bucks", 0))
+    give_game_ticket(user, key, t["uses"])
+    save_data(user_data)
+    return True, None
+
+
+def games_ticket_error(user, key):
+    if game_tickets_have(user, key) <= 0:
+        return gt(user, "no_ticket", name=game_ticket_name(user, key))
+    return None
 MOVIE_XP = 40
 MOVIE_BEATS = 4
 BJ_BETS = [100, 500, 1000, 5000]
@@ -6618,11 +6695,21 @@ async def game_ai_line(chat_id, user, instruction, tail=None, max_tokens=350):
 
 
 def games_menu_kb(user):
+    def label(key):
+        have = game_tickets_have(user, key)
+        return gt(user, key_text[key]) + (f" · 🎟{have}" if have else " · 🔒")
+
+    key_text = {"cities": "cities_btn", "tod": "tod_btn", "bj": "bj_btn", "movie": "movie_btn"}
+    if WEBAPP_URL:
+        shop_btn = InlineKeyboardButton(text=gt(user, "shop_games_btn"), web_app=WebAppInfo(url=f"{WEBAPP_URL}/shop"), style="success")
+    else:
+        shop_btn = InlineKeyboardButton(text=gt(user, "shop_games_btn"), callback_data="profile_shop", style="success")
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=gt(user, "cities_btn", price=CITIES_ENTRY), callback_data="game_cities")],
-        [InlineKeyboardButton(text=gt(user, "tod_btn"), callback_data="game_tod")],
-        [InlineKeyboardButton(text=gt(user, "bj_btn"), callback_data="game_bj")],
-        [InlineKeyboardButton(text=gt(user, "movie_btn", price=MOVIE_PRICE), callback_data="game_movie")],
+        [InlineKeyboardButton(text=label("cities"), callback_data="game_cities")],
+        [InlineKeyboardButton(text=label("tod"), callback_data="game_tod")],
+        [InlineKeyboardButton(text=label("bj"), callback_data="game_bj")],
+        [InlineKeyboardButton(text=label("movie"), callback_data="game_movie")],
+        [shop_btn],
         [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")],
     ])
 
@@ -6701,15 +6788,17 @@ async def cities_start_cb(call: types.CallbackQuery):
     if error:
         await call.answer(error, show_alert=True)
         return
-    if not spend_bucks(user, CITIES_ENTRY):
-        await call.answer(get_text(user, "not_enough_bucks", n=CITIES_ENTRY - user.get("bucks", 0)), show_alert=True)
+    error = games_ticket_error(user, "cities")
+    if error:
+        await call.answer(error, show_alert=True)
         return
+    use_game_ticket(user, "cities")
     user["game"] = {"type": "cities", "used": [], "last": None, "moves": 0, "started": datetime.now().isoformat()}
     game_touch(user["game"])
     save_data(user_data)
     await safe_delete(call.message)
     await call.answer()
-    await bot.send_message(call.message.chat.id, gt(user, "cities_start", price=CITIES_ENTRY, prize=CITIES_PRIZE), reply_markup=cities_kb(user))
+    await bot.send_message(call.message.chat.id, gt(user, "cities_start"), reply_markup=cities_kb(user))
 
 
 async def cities_finish(chat_id, user, won):
@@ -6721,7 +6810,7 @@ async def cities_finish(chat_id, user, won):
         await grant_gift_xp(chat_id, user, CITIES_XP)
     else:
         save_data(user_data)
-        await bot.send_message(chat_id, gt(user, "cities_lose", price=CITIES_ENTRY), reply_markup=games_menu_kb(user))
+        await bot.send_message(chat_id, gt(user, "cities_lose"), reply_markup=games_menu_kb(user))
 
 
 @dp.callback_query(lambda c: c.data == "cities_surrender")
@@ -6763,9 +6852,9 @@ async def cities_user_move(message: types.Message, user):
         too_long = True
     if game["moves"] > CITIES_MAX_MOVES or too_long:
         user["game"] = None
-        user["bucks"] = user.get("bucks", 0) + CITIES_ENTRY  # время вышло -- ничья, вход возвращаем
+        give_game_ticket(user, "cities")  # время вышло -- ничья, билет возвращаем
         save_data(user_data)
-        await message.answer(gt(user, "cities_timeup", price=CITIES_ENTRY), reply_markup=games_menu_kb(user))
+        await message.answer(gt(user, "cities_timeup"), reply_markup=games_menu_kb(user))
         return
     game["used"].append(city)
     letter = city_last_letter(city)
@@ -6815,6 +6904,11 @@ async def tod_start_cb(call: types.CallbackQuery):
     if error:
         await call.answer(error, show_alert=True)
         return
+    error = games_ticket_error(user, "tod")
+    if error:
+        await call.answer(error, show_alert=True)
+        return
+    use_game_ticket(user, "tod")
     user["game"] = {"type": "tod", "round": 0, "pending": None}
     game_touch(user["game"])
     save_data(user_data)
@@ -6923,11 +7017,15 @@ async def bj_menu_cb(call: types.CallbackQuery):
     if error:
         await call.answer(error, show_alert=True)
         return
+    error = games_ticket_error(user, "bj")
+    if error:
+        await call.answer(error, show_alert=True)
+        return
     rows = [[InlineKeyboardButton(text=f"{b}💵", callback_data=f"bj_bet_{b}") for b in BJ_BETS[:2]],
             [InlineKeyboardButton(text=f"{b}💵", callback_data=f"bj_bet_{b}") for b in BJ_BETS[2:]],
             [InlineKeyboardButton(text=gt(user, "back"), callback_data="games_menu", style="danger")]]
     await safe_delete(call.message)
-    await bot.send_message(call.message.chat.id, gt(user, "bj_menu", bucks=user.get("bucks", 0)),
+    await bot.send_message(call.message.chat.id, gt(user, "bj_menu", bucks=user.get("bucks", 0), tickets=game_tickets_have(user, "bj")),
                            reply_markup=InlineKeyboardMarkup(inline_keyboard=rows))
     await call.answer()
 
@@ -6940,9 +7038,14 @@ async def bj_bet_cb(call: types.CallbackQuery):
     if error or bet not in BJ_BETS:
         await call.answer(error or "", show_alert=bool(error))
         return
+    error = games_ticket_error(user, "bj")
+    if error:
+        await call.answer(error, show_alert=True)
+        return
     if not spend_bucks(user, bet):
         await call.answer(get_text(user, "not_enough_bucks", n=bet - user.get("bucks", 0)), show_alert=True)
         return
+    use_game_ticket(user, "bj")
     deck = [(r, s) for r in RANKS for s in SUITS]
     random.shuffle(deck)
     game = {"type": "bj", "bet": bet, "deck": deck, "player": [], "dealer": []}
@@ -7020,11 +7123,15 @@ async def movie_menu_cb(call: types.CallbackQuery):
     if error:
         await call.answer(error, show_alert=True)
         return
+    error = games_ticket_error(user, "movie")
+    if error:
+        await call.answer(error, show_alert=True)
+        return
     genres = gt(user, "movie_genres")
     rows = [[InlineKeyboardButton(text=label, callback_data=f"movie_start_{key}")] for key, label in genres.items()]
     rows.append([InlineKeyboardButton(text=gt(user, "back"), callback_data="games_menu", style="danger")])
     await safe_delete(call.message)
-    await bot.send_message(call.message.chat.id, gt(user, "movie_pick", price=MOVIE_PRICE, bucks=user.get("bucks", 0)),
+    await bot.send_message(call.message.chat.id, gt(user, "movie_pick", tickets=game_tickets_have(user, "movie"), bucks=user.get("bucks", 0)),
                            reply_markup=InlineKeyboardMarkup(inline_keyboard=rows))
     await call.answer()
 
@@ -7079,9 +7186,11 @@ async def movie_start_cb(call: types.CallbackQuery):
     if error or genre not in MOVIE_PLOTS:
         await call.answer(error or "", show_alert=bool(error))
         return
-    if not spend_bucks(user, MOVIE_PRICE):
-        await call.answer(get_text(user, "not_enough_bucks", n=MOVIE_PRICE - user.get("bucks", 0)), show_alert=True)
+    error = games_ticket_error(user, "movie")
+    if error:
+        await call.answer(error, show_alert=True)
         return
+    use_game_ticket(user, "movie")
     user["game"] = {"type": "movie", "genre": genre, "beat": 0, "tail": []}
     game_touch(user["game"])
     save_data(user_data)
@@ -7513,6 +7622,13 @@ def serialize_shop_state(user):
         if items:
             categories.append({"key": shop_category, "name": get_text(user, SHOP_CATEGORY_TEXT_KEY[shop_category]), "items": items})
 
+    game_items = [{
+        "key": key, "category": "game", "emoji": t["emoji"], "name": game_ticket_name(user, key), "price": t["price"],
+        "effects": gt(user, "ticket_effects", have=game_tickets_have(user, key), uses=t["uses"]),
+        "ready_in": None, "refuse": False,
+    } for key, t in GAME_TICKETS.items()]
+    categories.append({"key": "games", "name": gt(user, "shop_cat_games"), "items": game_items})
+
     medicine = []
     if user.get("illness"):
         for key, item in MEDICINE_ITEMS.items():
@@ -7571,6 +7687,11 @@ async def perform_webapp_purchase(user, user_id, category, key, note=None):
     """Та же последовательность проверок, что в buy_food/buy_gift/buy_medicine и в
     writing_item_note-ветке handle_message — просто вызывается из API, а не из
     callback-хендлера. Содержательная логика по-прежнему только в execute_item_purchase."""
+    if category == "game":
+        ok, error = buy_game_ticket(user, key)
+        if not ok:
+            return {"ok": False, "error": error}
+        return {"ok": True}
     catalog = {"food": FOOD_ITEMS, "gift": GIFT_ITEMS, "medicine": MEDICINE_ITEMS}.get(category)
     item = catalog.get(key) if catalog else None
     if not item:
@@ -11304,7 +11425,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
     top.appendChild(emoji);
 
     var noteBox = null;
-    if (item.category !== "medicine" && item.category !== "energizer") {
+    if (item.category !== "medicine" && item.category !== "energizer" && item.category !== "game") {
       var toggle = document.createElement("button");
       toggle.className = "note-toggle";
       toggle.textContent = "✍️";
