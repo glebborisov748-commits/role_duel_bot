@@ -7673,6 +7673,7 @@ def serialize_shop_state(user):
         return {
             "key": key,
             "category": category,
+            "image": shop_item_image(category, key),
             "emoji": item["emoji"],
             "name": item.get(lang, item["ru"]),
             "price": item["price"],
@@ -7691,7 +7692,7 @@ def serialize_shop_state(user):
             categories.append({"key": shop_category, "name": get_text(user, SHOP_CATEGORY_TEXT_KEY[shop_category]), "items": items})
 
     game_items = [{
-        "key": key, "category": "game", "emoji": t["emoji"], "name": game_ticket_name(user, key), "price": t["price"],
+        "key": key, "category": "game", "image": shop_item_image("game", key), "emoji": t["emoji"], "name": game_ticket_name(user, key), "price": t["price"],
         "effects": gt(user, "ticket_effects", have=game_tickets_have(user, key), uses=t["uses"]),
         "ready_in": None, "refuse": False,
     } for key, t in GAME_TICKETS.items()]
@@ -7701,7 +7702,7 @@ def serialize_shop_state(user):
     if user.get("illness"):
         for key, item in MEDICINE_ITEMS.items():
             medicine.append({
-                "key": key, "emoji": item["emoji"], "name": item.get(lang, item["ru"]),
+                "key": key, "emoji": item["emoji"], "image": shop_item_image("medicine", key), "name": item.get(lang, item["ru"]),
                 "price": item["price"], "cures": sorted(item["cures"]),
             })
 
@@ -11461,7 +11462,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
         key: "medicine",
         name: s.ui.shop_category_medicine,
         items: s.medicine.map(function (m) {
-          return {key: m.key, category: "medicine", emoji: m.emoji, name: m.name, price: m.price,
+          return {key: m.key, category: "medicine", emoji: m.emoji, image: m.image, name: m.name, price: m.price,
                   effects: "", ready_in: null, refuse: false};
         })
       });
@@ -11762,14 +11763,26 @@ SHOP_PAGE_HTML = '''<!doctype html>
 '''
 
 
-ASSET_IMAGES = {f"energizer_{n}.png" for n in (2, 6, 15, 35)}
+ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
+ASSET_NAME_RE = re.compile(r"^[a-z0-9_]+\.(png|webp|jpg)$")
+
+
+def shop_item_image(category, key):
+    """Картинка товара: просто положи assets/<category>_<key>.png (webp/jpg), например assets/gift_ring.png,
+    assets/food_sushi.png, assets/game_movie.png, assets/medicine_light_medicine.png -- появится в магазине сама;
+    нет файла -- остаётся эмодзи."""
+    for ext in ("png", "webp", "jpg"):
+        name = f"{category}_{key}.{ext}"
+        if os.path.isfile(os.path.join(ASSETS_DIR, name)):
+            return f"/assets/{name}"
+    return None
 
 
 async def asset_image_handler(request):
     name = request.match_info.get("name", "")
-    if name not in ASSET_IMAGES:
+    path = os.path.join(ASSETS_DIR, name)
+    if not ASSET_NAME_RE.match(name) or not os.path.isfile(path):
         raise web.HTTPNotFound()
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", name)
     return web.FileResponse(path, headers={"Cache-Control": "public, max-age=86400"})
 
 
