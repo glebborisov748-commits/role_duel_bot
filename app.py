@@ -10849,6 +10849,13 @@ CONTACT_PHONE = os.getenv("CONTACT_PHONE", "")
 CONTACT_ADDRESS = os.getenv("CONTACT_ADDRESS", "")  # юридический или фактический адрес
 SUPPORT_TELEGRAM = os.getenv("SUPPORT_TELEGRAM", "")  # необязательно: например @username отдельного аккаунта поддержки
 SITE_NAME = "Role Duel"
+# Подтверждение владения сайтом для платёжных сервисов (Lava просит DNS/HTML-файл/мета-тег). DNS у
+# домена хостинга менять нельзя, поэтому поддержаны два других способа: SITE_HEAD_HTML — готовый
+# <meta ...> тег целиком (вставляется в <head> каждой страницы сайта) и пара
+# SITE_VERIFY_FILE_NAME/SITE_VERIFY_FILE_CONTENT — файл в корне сайта (например lava-verify.html).
+SITE_HEAD_HTML = os.getenv("SITE_HEAD_HTML", "")
+SITE_VERIFY_FILE_NAME = os.getenv("SITE_VERIFY_FILE_NAME", "").strip("/ ")
+SITE_VERIFY_FILE_CONTENT = os.getenv("SITE_VERIFY_FILE_CONTENT", "")
 
 SITE_CSS = """
 :root { --bg:#fff; --fg:#1a1a1a; --muted:#666; --card:#f4f5f7; --accent:#2481cc; }
@@ -10895,6 +10902,7 @@ def render_site_page(title, body_html):
     return (
         '<!doctype html><html lang="ru"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
+        f"{SITE_HEAD_HTML}"
         f"<title>{html_lib.escape(title)} — {SITE_NAME}</title><style>{SITE_CSS}</style></head><body>"
         f'<header><a class="brand" href="/">{SITE_NAME}</a><nav>{nav}</nav></header>'
         f"<main>{body_html}</main><footer class=\"muted\">{footer}</footer></body></html>"
@@ -11011,6 +11019,10 @@ def site_refund_html():
 def site_contacts_html():
     lines = "".join(f"<p>{html_lib.escape(l)}</p>" for l in _seller_lines())
     return f"<h1>Контакты</h1>{lines}<p class=\"muted\">Служба поддержки отвечает в течение нескольких рабочих дней.</p>"
+
+
+async def site_verify_file_handler(request):
+    return web.Response(text=SITE_VERIFY_FILE_CONTENT, content_type="text/plain" if not SITE_VERIFY_FILE_NAME.endswith(".html") else "text/html")
 
 
 async def site_page_handler(request):
@@ -14072,6 +14084,8 @@ async def run_webapp_server():
     for _p in ("/", "/offer", "/privacy", "/refund", "/contacts"):
         app_web.router.add_get(_p, site_page_handler)
     warn_missing_site_details()
+    if SITE_VERIFY_FILE_NAME:
+        app_web.router.add_get("/" + SITE_VERIFY_FILE_NAME, site_verify_file_handler)
     app_web.router.add_get("/tg-sdk.js", telegram_sdk_handler)
     app_web.router.add_get("/shop", shop_page_handler)
     app_web.router.add_get("/api/state", api_state_handler)
