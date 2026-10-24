@@ -6488,7 +6488,7 @@ GAME_TEXTS = {
         "asleep": "Персонаж спит — сначала разбуди его.",
         "sick": "Персонаж болеет и сейчас не в настроении играть — сначала вылечи его.",
         "need_char": "Сначала создай персонажа через /start.",
-        "cities_start": "🏙 Играем в города! Вход {price}💵. Назови любой город, дальше — на последнюю букву (ь, ъ, ы, й пропускаем). Победишь — получишь {prize}💵.",
+        "cities_start": "🏙 Играем в города! Вход {price}💵. Время партии — 10 минут, не больше 15 ходов. Назови любой город, дальше — на последнюю букву (ь, ъ, ы, й пропускаем). Победишь — получишь {prize}💵.",
         "cities_surrender": "🏳️ Сдаюсь",
         "cities_your_letter": "тебе на «{letter}»",
         "cities_unknown": "Не знаю такого города 🤔 Попробуй другой. Нужна буква «{letter}».",
@@ -6496,6 +6496,8 @@ GAME_TEXTS = {
         "cities_used": "Этот город уже был, назови другой.",
         "cities_win": "🏆 Ты выиграл(а)! Приз: +{prize}💵 и +{xp} XP.",
         "cities_lose": "😌 Эту партию выиграл(а) я. Вход {price}💵 остаётся у меня — попробуем ещё?",
+        "daily_limit": "На сегодня лимит игр с репликами персонажа исчерпан — возвращайся завтра.",
+        "cities_timeup": "⏱ Время партии вышло — ничья, вход {price}💵 возвращён.",
         "cities_stuck": "У меня закончились города на «{letter}» — ты победил(а)!",
         "bj_menu": "🃏 Блэкджек. Выбери ставку:\n💵 У тебя: {bucks}",
         "bj_state": "🃏 Твои карты: {player} = {pv}\nУ меня: {dealer}\nСтавка: {bet}💵",
@@ -6519,7 +6521,7 @@ GAME_TEXTS = {
         "asleep": "Your companion is asleep — wake them first.",
         "sick": "Your companion is sick and not in the mood — cure them first.",
         "need_char": "Create a character with /start first.",
-        "cities_start": "🏙 Let's play cities! Entry {price}💵. Name any city, then one starting with the last letter (skipping ь, ъ, ы, й). Win and get {prize}💵.",
+        "cities_start": "🏙 Let's play cities! Entry {price}💵. The round lasts up to 10 minutes / 15 moves. Name any city, then one starting with the last letter (skipping ь, ъ, ы, й). Win and get {prize}💵.",
         "cities_surrender": "🏳️ I give up",
         "cities_your_letter": "your letter: «{letter}»",
         "cities_unknown": "I don't know that city 🤔 Try another. Letter needed: «{letter}».",
@@ -6527,6 +6529,8 @@ GAME_TEXTS = {
         "cities_used": "That city was already used, name another.",
         "cities_win": "🏆 You won! Prize: +{prize}💵 and +{xp} XP.",
         "cities_lose": "😌 I won this round. Your {price}💵 entry stays with me — another go?",
+        "daily_limit": "Today's limit of games with character lines is used up — come back tomorrow.",
+        "cities_timeup": "⏱ Time is up — a draw, your {price}💵 entry is returned.",
         "cities_stuck": "I'm out of cities for «{letter}» — you win!",
         "bj_menu": "🃏 Blackjack. Choose your bet:\n💵 You have: {bucks}",
         "bj_state": "🃏 Your cards: {player} = {pv}\nMine: {dealer}\nBet: {bet}💵",
@@ -6585,6 +6589,8 @@ def city_first_letter(name):
 
 async def game_ai_line(chat_id, user, instruction, tail=None, max_tokens=350):
     """Короткая реплика персонажа в образе по инструкции игры; тратит энергию как обычное сообщение."""
+    if game_ai_lines_left(user) <= 0:
+        return None  # дневной лимит реплик исчерпан -- партию можно доиграть без комментариев ИИ
     system_prompt = build_prompt(user) + "\n**ИГРА:** " + instruction + " Ответь 1-3 короткими предложениями, без списков.\n"
     messages = [{"role": "system", "content": system_prompt}] + (tail or []) + [{"role": "user", "content": "Твой ход."}]
     typing = asyncio.create_task(_keep_typing(chat_id))
@@ -6597,6 +6603,7 @@ async def game_ai_line(chat_id, user, instruction, tail=None, max_tokens=350):
         typing.cancel()
     _, clean = extract_reaction_from_answer(text)
     apply_activity_stat_cost(user, ENERGY_COST_MESSAGE, SATIETY_COST_MESSAGE, WATER_COST_MESSAGE)
+    game_ai_line_used(user)
     return clean
 
 
@@ -6609,7 +6616,24 @@ def games_menu_kb(user):
     ])
 
 
-GAME_STALE_MINUTES = 30
+GAME_STALE_MINUTES = 10  # без ходов дольше -- партия сгорает (вход не возвращается)
+CITIES_MAX_MINUTES = 10  # общий лимит времени партии в города
+CITIES_MAX_MOVES = 15    # и лимит ходов игрока -- дальше "ничья", вход возвращается
+GAME_AI_LINES_PER_DAY = {None: 40, "pro": 80, "super_pro": 120, "elite": 200}  # реплик ИИ в играх за сутки
+
+
+def game_ai_lines_left(user):
+    today = datetime.now().date().isoformat()
+    used = user.get("game_ai_day") or {}
+    count = used.get("count", 0) if used.get("date") == today else 0
+    return max(0, GAME_AI_LINES_PER_DAY.get(get_subscription_level(user), 40) - count)
+
+
+def game_ai_line_used(user):
+    today = datetime.now().date().isoformat()
+    used = user.get("game_ai_day") or {}
+    count = used.get("count", 0) if used.get("date") == today else 0
+    user["game_ai_day"] = {"date": today, "count": count + 1}
 
 
 def game_touch(game):
@@ -6631,6 +6655,8 @@ def games_gate_error(user):
         user["game"] = None  # брошенная партия (вход не возвращаем) -- не блокируем новые игры навсегда
     if user.get("game"):
         return gt(user, "busy")
+    if game_ai_lines_left(user) <= 0:
+        return gt(user, "daily_limit")
     if is_asleep(user):
         return gt(user, "asleep")
     if user.get("illness"):
@@ -6667,7 +6693,7 @@ async def cities_start_cb(call: types.CallbackQuery):
     if not spend_bucks(user, CITIES_ENTRY):
         await call.answer(get_text(user, "not_enough_bucks", n=CITIES_ENTRY - user.get("bucks", 0)), show_alert=True)
         return
-    user["game"] = {"type": "cities", "used": [], "last": None}
+    user["game"] = {"type": "cities", "used": [], "last": None, "moves": 0, "started": datetime.now().isoformat()}
     game_touch(user["game"])
     save_data(user_data)
     await safe_delete(call.message)
@@ -6719,6 +6745,17 @@ async def cities_user_move(message: types.Message, user):
         await message.answer(gt(user, "cities_used"), reply_markup=cities_kb(user))
         return
     game_touch(game)
+    game["moves"] = game.get("moves", 0) + 1
+    try:
+        too_long = (datetime.now() - datetime.fromisoformat(game["started"])).total_seconds() > CITIES_MAX_MINUTES * 60
+    except (KeyError, ValueError, TypeError):
+        too_long = True
+    if game["moves"] > CITIES_MAX_MOVES or too_long:
+        user["game"] = None
+        user["bucks"] = user.get("bucks", 0) + CITIES_ENTRY  # время вышло -- ничья, вход возвращаем
+        save_data(user_data)
+        await message.answer(gt(user, "cities_timeup", price=CITIES_ENTRY), reply_markup=games_menu_kb(user))
+        return
     game["used"].append(city)
     letter = city_last_letter(city)
     options = [c for c in CITY_LIST if c not in game["used"] and city_first_letter(c) == letter]
