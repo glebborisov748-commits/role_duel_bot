@@ -3316,6 +3316,7 @@ def get_profile_keyboard(user):
         [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")],
         [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
         [InlineKeyboardButton(text=get_text(user, "events_btn"), callback_data="events_menu", style="success")],
+        [InlineKeyboardButton(text=gt(user, "btn"), callback_data="games_menu", style="success")],
         [InlineKeyboardButton(text=get_text(user, mute_key), callback_data="toggle_notifications", style="primary")],
     ]
     # Иммунитет к болезням — перк именно ELITE (самый верхний тариф), не SUPER PRO. Кнопка теперь
@@ -6470,6 +6471,501 @@ async def generate_event_opening(chat_id, user, event):
 
 
 # ============================================================
+#  ИГРЫ ВМЕСТЕ С ПЕРСОНАЖЕМ (за баксы): Города, Блэкджек, Кино
+# ============================================================
+# Все три идут прямо в чате (кнопки + обычные сообщения), чтобы персонаж говорил в своём стиле, а не
+# просто "играл". Правила -- в коде (ИИ плохо следит за правилами), ИИ только оформляет реплику
+# персонажа. Каждая реплика ИИ тратит энергию/сытость/воду как обычное сообщение (см.
+# apply_activity_stat_cost) -- так расход токенов от игр оплачен той же экономикой энергетиков.
+GAME_TEXTS = {
+    "ru": {
+        "btn": "🎲 Игры вместе",
+        "menu": "🎲 Игры вместе — проведи время с персонажем.\n💵 У тебя: {bucks}",
+        "cities_btn": "🏙 Города — вход {price}💵",
+        "bj_btn": "🃏 Блэкджек — ставка от 100💵",
+        "movie_btn": "🎬 Кино — {price}💵",
+        "busy": "Сначала закончи текущую игру.",
+        "asleep": "Персонаж спит — сначала разбуди его.",
+        "sick": "Персонаж болеет и сейчас не в настроении играть — сначала вылечи его.",
+        "need_char": "Сначала создай персонажа через /start.",
+        "cities_start": "🏙 Играем в города! Вход {price}💵. Назови любой город, дальше — на последнюю букву (ь, ъ, ы, й пропускаем). Победишь — получишь {prize}💵.",
+        "cities_surrender": "🏳️ Сдаюсь",
+        "cities_your_letter": "тебе на «{letter}»",
+        "cities_unknown": "Не знаю такого города 🤔 Попробуй другой. Нужна буква «{letter}».",
+        "cities_wrong_letter": "Город должен начинаться на «{letter}».",
+        "cities_used": "Этот город уже был, назови другой.",
+        "cities_win": "🏆 Ты выиграл(а)! Приз: +{prize}💵 и +{xp} XP.",
+        "cities_lose": "😌 Эту партию выиграл(а) я. Вход {price}💵 остаётся у меня — попробуем ещё?",
+        "cities_stuck": "У меня закончились города на «{letter}» — ты победил(а)!",
+        "bj_menu": "🃏 Блэкджек. Выбери ставку:\n💵 У тебя: {bucks}",
+        "bj_state": "🃏 Твои карты: {player} = {pv}\nУ меня: {dealer}\nСтавка: {bet}💵",
+        "bj_hit": "➕ Ещё", "bj_stand": "✋ Хватит",
+        "bj_end": "{player} = {pv}\nУ меня: {dealer} = {dv}\n\n{result}",
+        "bj_win": "🎉 Ты выиграл(а): +{amount}💵", "bj_blackjack": "🃏 Блэкджек! +{amount}💵",
+        "bj_lose": "💸 Проигрыш: −{amount}💵", "bj_push": "🤝 Ничья, ставка возвращена.",
+        "movie_pick": "🎬 Что смотрим вместе? Билеты {price}💵.\n💵 У тебя: {bucks}",
+        "movie_genres": {"romance": "💞 Мелодрама", "comedy": "😂 Комедия", "horror": "👻 Ужастик", "drama": "😢 Драма"},
+        "movie_react": {"cry": "😭 Поплакать", "laugh": "😂 Посмеяться", "hug": "🤗 Прижаться", "comment": "💬 Обсудить"},
+        "movie_done": "🎬 Фильм закончился. +{xp} XP за вечер вместе.",
+        "back": "⬅️ Назад",
+    },
+    "en": {
+        "btn": "🎲 Games together",
+        "menu": "🎲 Games together — spend time with your companion.\n💵 You have: {bucks}",
+        "cities_btn": "🏙 Cities — entry {price}💵",
+        "bj_btn": "🃏 Blackjack — bets from 100💵",
+        "movie_btn": "🎬 Movie — {price}💵",
+        "busy": "Finish the current game first.",
+        "asleep": "Your companion is asleep — wake them first.",
+        "sick": "Your companion is sick and not in the mood — cure them first.",
+        "need_char": "Create a character with /start first.",
+        "cities_start": "🏙 Let's play cities! Entry {price}💵. Name any city, then one starting with the last letter (skipping ь, ъ, ы, й). Win and get {prize}💵.",
+        "cities_surrender": "🏳️ I give up",
+        "cities_your_letter": "your letter: «{letter}»",
+        "cities_unknown": "I don't know that city 🤔 Try another. Letter needed: «{letter}».",
+        "cities_wrong_letter": "The city must start with «{letter}».",
+        "cities_used": "That city was already used, name another.",
+        "cities_win": "🏆 You won! Prize: +{prize}💵 and +{xp} XP.",
+        "cities_lose": "😌 I won this round. Your {price}💵 entry stays with me — another go?",
+        "cities_stuck": "I'm out of cities for «{letter}» — you win!",
+        "bj_menu": "🃏 Blackjack. Choose your bet:\n💵 You have: {bucks}",
+        "bj_state": "🃏 Your cards: {player} = {pv}\nMine: {dealer}\nBet: {bet}💵",
+        "bj_hit": "➕ Hit", "bj_stand": "✋ Stand",
+        "bj_end": "{player} = {pv}\nMine: {dealer} = {dv}\n\n{result}",
+        "bj_win": "🎉 You won: +{amount}💵", "bj_blackjack": "🃏 Blackjack! +{amount}💵",
+        "bj_lose": "💸 You lost: −{amount}💵", "bj_push": "🤝 Push, bet returned.",
+        "movie_pick": "🎬 What do we watch together? Tickets {price}💵.\n💵 You have: {bucks}",
+        "movie_genres": {"romance": "💞 Romance", "comedy": "😂 Comedy", "horror": "👻 Horror", "drama": "😢 Drama"},
+        "movie_react": {"cry": "😭 Cry", "laugh": "😂 Laugh", "hug": "🤗 Cuddle up", "comment": "💬 Talk about it"},
+        "movie_done": "🎬 The movie is over. +{xp} XP for the evening together.",
+        "back": "⬅️ Back",
+    },
+}
+
+
+def gt(user, key, **kw):
+    lang = "ru" if user.get("lang", "ru") == "ru" else "en"
+    value = GAME_TEXTS[lang][key]
+    return value.format(**kw) if kw and isinstance(value, str) else value
+
+
+CITIES_ENTRY = 300
+CITIES_PRIZE = 700
+CITIES_XP = 20
+MOVIE_PRICE = 1500
+MOVIE_XP = 40
+MOVIE_BEATS = 4
+BJ_BETS = [100, 500, 1000, 5000]
+
+CITIES = """Абакан|Абу-Даби|Авиньон|Адана|Аддис-Абеба|Аден|Азов|Актау|Актобе|Албукерке|Александрия|Алжир|Алма-Ата|Алматы|Амстердам|Анадырь|Анапа|Ангарск|Анкара|Антананариву|Антверпен|Апатиты|Арзамас|Армавир|Архангельск|Асуан|Асунсьон|Астана|Астрахань|Асуан|Афины|Ашхабад|Аккра|Ахен|Баку|Бангкок|Барнаул|Барселона|Бейрут|Белград|Белгород|Берлин|Берн|Бишкек|Благовещенск|Богота|Болонья|Бордо|Бостон|Братск|Брест|Брисбен|Брно|Брюссель|Брянск|Будапешт|Бухарест|Бухара|Буэнос-Айрес|Бердянск|Варшава|Вашингтон|Ванкувер|Вена|Венеция|Верона|Видное|Вильнюс|Винница|Владивосток|Владикавказ|Владимир|Волгоград|Волжский|Вологда|Воркута|Воронеж|Выборг|Вязьма|Гаага|Гавана|Гданьск|Генуя|Гент|Глазго|Гомель|Гонконг|Гранада|Грозный|Гродно|Гамбург|Гётеборг|Гуанчжоу|Дакар|Дамаск|Дели|Денвер|Детройт|Дижон|Дмитров|Днепр|Донецк|Дортмунд|Дубай|Дублин|Дубна|Дрезден|Душанбе|Дюссельдорф|Евпатория|Екатеринбург|Елец|Ереван|Ейск|Енисейск|Женева|Жуковский|Житомир|Железногорск|Загреб|Запорожье|Зеленоград|Златоуст|Зальцбург|Зурих|Иваново|Ижевск|Измир|Иерусалим|Иркутск|Исламабад|Ишимбай|Инсбрук|Йошкар-Ола|Йорк|Казань|Калининград|Калуга|Каир|Кабул|Канберра|Каракас|Кардифф|Кемерово|Киев|Киото|Кингстон|Киров|Кишинёв|Коломна|Кострома|Краснодар|Красноярск|Краков|Куала-Лумпур|Курск|Кутаиси|Кёльн|Кисловодск|Лаппеенранта|Лиссабон|Лима|Липецк|Лион|Лондон|Лос-Анджелес|Луганск|Лозанна|Львов|Люксембург|Магадан|Магнитогорск|Мадрид|Майами|Манила|Мапуту|Марсель|Махачкала|Милан|Минск|Мирный|Монако|Монреаль|Москва|Мурманск|Мюнхен|Мытищи|Набережные Челны|Нальчик|Нарьян-Мар|Находка|Нижневартовск|Нижний Новгород|Нижний Тагил|Нью-Йорк|Новосибирск|Новороссийск|Ницца|Нюрнберг|Одесса|Омск|Орёл|Оренбург|Осло|Оттава|Орск|Охотск|Осака|Остин|Паттайя|Париж|Пекин|Пенза|Пермь|Петрозаводск|Подольск|Прага|Псков|Пятигорск|Пльзень|Рабат|Ростов-на-Дону|Рим|Рига|Рио-де-Жанейро|Ровно|Рязань|Рыбинск|Реймс|Ржев|Саратов|Самара|Санкт-Петербург|Сантьяго|Сараево|Севастополь|Сеул|Симферополь|Сингапур|Смоленск|Сочи|София|Ставрополь|Стамбул|Стокгольм|Сургут|Сыктывкар|Сидней|Сиэтл|Таллин|Тамбов|Ташкент|Тбилиси|Тверь|Тегеран|Токио|Томск|Торонто|Тула|Тюмень|Тирана|Тель-Авив|Улан-Удэ|Ульяновск|Уфа|Ухта|Ужгород|Урюпинск|Фергана|Флоренция|Франкфурт|Фуджейра|Фрязино|Фивы|Хабаровск|Ханты-Мансийск|Харбин|Харьков|Хельсинки|Хиросима|Хьюстон|Хургада|Хайфа|Цюрих|Цхинвал|Цзинань|Цетине|Чебоксары|Челябинск|Череповец|Чикаго|Чита|Чернигов|Чехов|Чанчунь|Шанхай|Шарм-эль-Шейх|Шахты|Шимкент|Шымкент|Шэньчжэнь|Шуя|Щёлково|Щучинск|Щецин|Электросталь|Эдинбург|Элиста|Энгельс|Эр-Рияд|Эссен|Эдмонтон|Юрмала|Южно-Сахалинск|Юнусабад|Юрга|Ялта|Якутск|Ярославль|Яффа|Янгон"""
+CITY_LIST = sorted({c.strip() for c in CITIES.split("|") if c.strip()})
+
+
+def city_norm(name):
+    name = name.lower().replace("ё", "е").strip()
+    name = re.sub(r"^(г\.|город)\s*", "", name)
+    return re.sub(r"\s+", " ", name)
+
+
+CITY_BY_NORM = {city_norm(c): c for c in CITY_LIST}
+
+
+def city_last_letter(name):
+    n = city_norm(name)
+    for ch in reversed(n):
+        if ch in "ьъый -":
+            continue
+        return ch
+    return n[-1]
+
+
+def city_first_letter(name):
+    return city_norm(name)[0]
+
+
+async def game_ai_line(chat_id, user, instruction, tail=None, max_tokens=350):
+    """Короткая реплика персонажа в образе по инструкции игры; тратит энергию как обычное сообщение."""
+    system_prompt = build_prompt(user) + "\n**ИГРА:** " + instruction + " Ответь 1-3 короткими предложениями, без списков.\n"
+    messages = [{"role": "system", "content": system_prompt}] + (tail or []) + [{"role": "user", "content": "Твой ход."}]
+    typing = asyncio.create_task(_keep_typing(chat_id))
+    try:
+        response = await asyncio.to_thread(call_ai, AI_MODEL, "ai", messages=messages, temperature=0.9, max_tokens=max_tokens)
+        text = response.choices[0].message.content
+    except Exception:
+        return None
+    finally:
+        typing.cancel()
+    _, clean = extract_reaction_from_answer(text)
+    apply_activity_stat_cost(user, ENERGY_COST_MESSAGE, SATIETY_COST_MESSAGE, WATER_COST_MESSAGE)
+    return clean
+
+
+def games_menu_kb(user):
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=gt(user, "cities_btn", price=CITIES_ENTRY), callback_data="game_cities")],
+        [InlineKeyboardButton(text=gt(user, "bj_btn"), callback_data="game_bj")],
+        [InlineKeyboardButton(text=gt(user, "movie_btn", price=MOVIE_PRICE), callback_data="game_movie")],
+        [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")],
+    ])
+
+
+GAME_STALE_MINUTES = 30
+
+
+def game_touch(game):
+    game["t"] = datetime.now().isoformat()
+
+
+def game_is_stale(game):
+    try:
+        return (datetime.now() - datetime.fromisoformat(game["t"])).total_seconds() > GAME_STALE_MINUTES * 60
+    except (KeyError, ValueError, TypeError):
+        return True
+
+
+def games_gate_error(user):
+    """Текст причины, по которой играть сейчас нельзя, или None."""
+    if not user.get("personality_ready"):
+        return gt(user, "need_char")
+    if user.get("game") and game_is_stale(user["game"]):
+        user["game"] = None  # брошенная партия (вход не возвращаем) -- не блокируем новые игры навсегда
+    if user.get("game"):
+        return gt(user, "busy")
+    if is_asleep(user):
+        return gt(user, "asleep")
+    if user.get("illness"):
+        return gt(user, "sick")
+    return None
+
+
+@dp.message(Command("games"))
+async def games_cmd(message: types.Message):
+    user = get_user(message.from_user.id)
+    await message.answer(gt(user, "menu", bucks=user.get("bucks", 0)), reply_markup=games_menu_kb(user))
+
+
+@dp.callback_query(lambda c: c.data == "games_menu")
+async def games_menu_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    await safe_delete(call.message)
+    await bot.send_message(call.message.chat.id, gt(user, "menu", bucks=user.get("bucks", 0)), reply_markup=games_menu_kb(user))
+    await call.answer()
+
+
+# ---------- Города ----------
+def cities_kb(user):
+    return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=gt(user, "cities_surrender"), callback_data="cities_surrender")]])
+
+
+@dp.callback_query(lambda c: c.data == "game_cities")
+async def cities_start_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    error = games_gate_error(user)
+    if error:
+        await call.answer(error, show_alert=True)
+        return
+    if not spend_bucks(user, CITIES_ENTRY):
+        await call.answer(get_text(user, "not_enough_bucks", n=CITIES_ENTRY - user.get("bucks", 0)), show_alert=True)
+        return
+    user["game"] = {"type": "cities", "used": [], "last": None}
+    game_touch(user["game"])
+    save_data(user_data)
+    await safe_delete(call.message)
+    await call.answer()
+    await bot.send_message(call.message.chat.id, gt(user, "cities_start", price=CITIES_ENTRY, prize=CITIES_PRIZE), reply_markup=cities_kb(user))
+
+
+async def cities_finish(chat_id, user, won):
+    user["game"] = None
+    if won:
+        user["bucks"] = user.get("bucks", 0) + CITIES_PRIZE
+        save_data(user_data)
+        await bot.send_message(chat_id, gt(user, "cities_win", prize=CITIES_PRIZE, xp=CITIES_XP))
+        await grant_gift_xp(chat_id, user, CITIES_XP)
+    else:
+        save_data(user_data)
+        await bot.send_message(chat_id, gt(user, "cities_lose", price=CITIES_ENTRY), reply_markup=games_menu_kb(user))
+
+
+@dp.callback_query(lambda c: c.data == "cities_surrender")
+async def cities_surrender_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    if (user.get("game") or {}).get("type") != "cities":
+        await call.answer()
+        return
+    await safe_delete(call.message)
+    await call.answer()
+    await cities_finish(call.message.chat.id, user, won=False)
+
+
+async def cities_user_move(message: types.Message, user):
+    game = user["game"]
+    if is_asleep(user):
+        user["game"] = None
+        save_data(user_data)
+        await message.answer(gt(user, "asleep"))
+        return
+    chat_id = message.chat.id
+    norm = city_norm(message.text)
+    city = CITY_BY_NORM.get(norm)
+    need = city_last_letter(game["last"]) if game["last"] else None
+    if not city:
+        await message.answer(gt(user, "cities_unknown", letter=need.upper() if need else "—"), reply_markup=cities_kb(user))
+        return
+    if need and city_first_letter(city) != need:
+        await message.answer(gt(user, "cities_wrong_letter", letter=need.upper()), reply_markup=cities_kb(user))
+        return
+    if city in game["used"]:
+        await message.answer(gt(user, "cities_used"), reply_markup=cities_kb(user))
+        return
+    game_touch(game)
+    game["used"].append(city)
+    letter = city_last_letter(city)
+    options = [c for c in CITY_LIST if c not in game["used"] and city_first_letter(c) == letter]
+    if not options:
+        await cities_finish(chat_id, user, won=True)
+        await message.answer(gt(user, "cities_stuck", letter=letter.upper()))
+        return
+    mine = random.choice(options)
+    game["used"].append(mine)
+    game["last"] = mine
+    next_letter = city_last_letter(mine)
+    save_data(user_data)
+    line = await game_ai_line(
+        chat_id, user,
+        f"Вы играете в города. Собеседник назвал «{city}». Ты называешь город «{mine}» — обязательно назови именно его, "
+        f"в конце реплики. Следующий город собеседнику нужен на букву «{next_letter.upper()}». Реагируй в своём стиле: "
+        "смейся, подначивай, радуйся.")
+    save_data(user_data)
+    # Название и нужная буква добавляем сами, а не надеемся на ИИ: игроку нужно точно знать мой город.
+    await message.answer((line + "\n\n" if line else "") + f"🏙 {mine} — {gt(user, 'cities_your_letter', letter=next_letter.upper())}",
+                         reply_markup=cities_kb(user))
+
+
+# ---------- Блэкджек ----------
+SUITS = ["♠", "♥", "♦", "♣"]
+RANKS = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
+
+
+def bj_value(hand):
+    total, aces = 0, 0
+    for rank, _ in hand:
+        if rank == "A":
+            total += 11
+            aces += 1
+        elif rank in ("J", "Q", "K"):
+            total += 10
+        else:
+            total += int(rank)
+    while total > 21 and aces:
+        total -= 10
+        aces -= 1
+    return total
+
+
+def bj_show(hand, hide_second=False):
+    if hide_second:
+        return f"{hand[0][0]}{hand[0][1]} 🂠"
+    return " ".join(f"{r}{s}" for r, s in hand)
+
+
+def bj_draw(game):
+    return game["deck"].pop()
+
+
+def bj_kb(user):
+    return InlineKeyboardMarkup(inline_keyboard=[[
+        InlineKeyboardButton(text=gt(user, "bj_hit"), callback_data="bj_hit", style="success"),
+        InlineKeyboardButton(text=gt(user, "bj_stand"), callback_data="bj_stand", style="primary")]])
+
+
+@dp.callback_query(lambda c: c.data == "game_bj")
+async def bj_menu_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    error = games_gate_error(user)
+    if error:
+        await call.answer(error, show_alert=True)
+        return
+    rows = [[InlineKeyboardButton(text=f"{b}💵", callback_data=f"bj_bet_{b}") for b in BJ_BETS[:2]],
+            [InlineKeyboardButton(text=f"{b}💵", callback_data=f"bj_bet_{b}") for b in BJ_BETS[2:]],
+            [InlineKeyboardButton(text=gt(user, "back"), callback_data="games_menu", style="danger")]]
+    await safe_delete(call.message)
+    await bot.send_message(call.message.chat.id, gt(user, "bj_menu", bucks=user.get("bucks", 0)),
+                           reply_markup=InlineKeyboardMarkup(inline_keyboard=rows))
+    await call.answer()
+
+
+@dp.callback_query(lambda c: c.data.startswith("bj_bet_"))
+async def bj_bet_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    bet = int(call.data[len("bj_bet_"):])
+    error = games_gate_error(user)
+    if error or bet not in BJ_BETS:
+        await call.answer(error or "", show_alert=bool(error))
+        return
+    if not spend_bucks(user, bet):
+        await call.answer(get_text(user, "not_enough_bucks", n=bet - user.get("bucks", 0)), show_alert=True)
+        return
+    deck = [(r, s) for r in RANKS for s in SUITS]
+    random.shuffle(deck)
+    game = {"type": "bj", "bet": bet, "deck": deck, "player": [], "dealer": []}
+    game["player"] = [bj_draw(game), bj_draw(game)]
+    game["dealer"] = [bj_draw(game), bj_draw(game)]
+    game_touch(game)
+    user["game"] = game
+    save_data(user_data)
+    await safe_delete(call.message)
+    await call.answer()
+    if bj_value(game["player"]) == 21:
+        await bj_finish(call.message.chat.id, user)
+        return
+    await bot.send_message(call.message.chat.id, gt(user, "bj_state", player=bj_show(game["player"]), pv=bj_value(game["player"]),
+                                                  dealer=bj_show(game["dealer"], hide_second=True), bet=bet), reply_markup=bj_kb(user))
+
+
+async def bj_finish(chat_id, user):
+    game = user["game"]
+    while bj_value(game["dealer"]) < 17 and bj_value(game["player"]) <= 21:
+        game["dealer"].append(bj_draw(game))
+    pv, dv, bet = bj_value(game["player"]), bj_value(game["dealer"]), game["bet"]
+    natural = pv == 21 and len(game["player"]) == 2
+    if pv > 21:
+        outcome, payout = "lose", 0
+    elif natural and not (dv == 21 and len(game["dealer"]) == 2):
+        outcome, payout = "blackjack", int(bet * 2.5)
+    elif dv > 21 or pv > dv:
+        outcome, payout = "win", bet * 2
+    elif pv == dv:
+        outcome, payout = "push", bet
+    else:
+        outcome, payout = "lose", 0
+    user["bucks"] = user.get("bucks", 0) + payout
+    result = {"lose": gt(user, "bj_lose", amount=bet), "win": gt(user, "bj_win", amount=bet),
+              "blackjack": gt(user, "bj_blackjack", amount=payout - bet), "push": gt(user, "bj_push")}[outcome]
+    user["game"] = None
+    save_data(user_data)
+    await bot.send_message(chat_id, gt(user, "bj_end", player=bj_show(game["player"]), pv=pv, dealer=bj_show(game["dealer"]),
+                                       dv=dv, result=result), reply_markup=games_menu_kb(user))
+    facts = {"lose": "ты выиграл(а) этот раунд — собеседник проиграл ставку", "win": "собеседник выиграл раунд — ты проиграл(а)",
+             "blackjack": "у собеседника блэкджек — ты в шоке", "push": "ничья"}[outcome]
+    line = await game_ai_line(chat_id, user, f"Вы играете в блэкджек. Итог раунда: {facts}. У собеседника {pv}, у тебя {dv}. "
+                                              "Прокомментируй в образе, можно подколоть или предложить ещё раунд.")
+    save_data(user_data)
+    if line:
+        await bot.send_message(chat_id, line)
+
+
+@dp.callback_query(lambda c: c.data in ("bj_hit", "bj_stand"))
+async def bj_action_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    game = user.get("game")
+    if not game or game.get("type") != "bj":
+        await call.answer()
+        return
+    chat_id = call.message.chat.id
+    await safe_delete(call.message)
+    await call.answer()
+    if call.data == "bj_hit":
+        game["player"].append(bj_draw(game))
+        if bj_value(game["player"]) < 21:
+            save_data(user_data)
+            await bot.send_message(chat_id, gt(user, "bj_state", player=bj_show(game["player"]), pv=bj_value(game["player"]),
+                                               dealer=bj_show(game["dealer"], hide_second=True), bet=game["bet"]), reply_markup=bj_kb(user))
+            return
+    await bj_finish(chat_id, user)
+
+
+# ---------- Кино ----------
+@dp.callback_query(lambda c: c.data == "game_movie")
+async def movie_menu_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    error = games_gate_error(user)
+    if error:
+        await call.answer(error, show_alert=True)
+        return
+    genres = gt(user, "movie_genres")
+    rows = [[InlineKeyboardButton(text=label, callback_data=f"movie_start_{key}")] for key, label in genres.items()]
+    rows.append([InlineKeyboardButton(text=gt(user, "back"), callback_data="games_menu", style="danger")])
+    await safe_delete(call.message)
+    await bot.send_message(call.message.chat.id, gt(user, "movie_pick", price=MOVIE_PRICE, bucks=user.get("bucks", 0)),
+                           reply_markup=InlineKeyboardMarkup(inline_keyboard=rows))
+    await call.answer()
+
+
+MOVIE_PLOTS = {
+    "romance": "романтическая мелодрама: двое разлучены обстоятельствами, но тянутся друг к другу",
+    "comedy": "лёгкая комедия положений с нелепыми ситуациями и неловкими шутками",
+    "horror": "атмосферный ужастик в старом доме: скрипы, тени и резкие пугающие моменты (без жестокости)",
+    "drama": "трогательная драма о потере и примирении, от которой хочется плакать",
+}
+
+
+def movie_react_kb(user):
+    labels = gt(user, "movie_react")
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=labels["cry"], callback_data="movie_react_cry"),
+         InlineKeyboardButton(text=labels["laugh"], callback_data="movie_react_laugh")],
+        [InlineKeyboardButton(text=labels["hug"], callback_data="movie_react_hug"),
+         InlineKeyboardButton(text=labels["comment"], callback_data="movie_react_comment")]])
+
+
+async def movie_beat(chat_id, user, reaction):
+    game = user["game"]
+    game_touch(game)
+    game["beat"] += 1
+    last = game["beat"] >= MOVIE_BEATS
+    plot = MOVIE_PLOTS[game["genre"]]
+    reaction_text = {"start": "Вы только сели смотреть, фильм начинается", "cry": "собеседник расчувствовался и плачет",
+                     "laugh": "собеседник смеётся", "hug": "собеседник прижался к тебе", "comment": "собеседник что-то шепчет про фильм"}[reaction]
+    instruction = (f"Вы вдвоём смотрите кино (сцена {game['beat']} из {MOVIE_BEATS}): {plot}. {reaction_text}. "
+                   "Коротко опиши, что происходит на экране, и свою живую реакцию (плачешь, смеёшься, пугаешься, прижимаешься)"
+                   + (". Это финал фильма — завершай историю тёплой репликой после титров." if last else ". Оставь интригу для следующей сцены."))
+    line = await game_ai_line(chat_id, user, instruction, tail=game["tail"][-4:], max_tokens=450)
+    line = line or "…"
+    game["tail"] += [{"role": "user", "content": reaction_text}, {"role": "assistant", "content": line}]
+    if last:
+        user["game"] = None
+        save_data(user_data)
+        await bot.send_message(chat_id, line)
+        await bot.send_message(chat_id, gt(user, "movie_done", xp=MOVIE_XP), reply_markup=games_menu_kb(user))
+        await grant_gift_xp(chat_id, user, MOVIE_XP)
+    else:
+        save_data(user_data)
+        await bot.send_message(chat_id, line, reply_markup=movie_react_kb(user))
+
+
+@dp.callback_query(lambda c: c.data.startswith("movie_start_"))
+async def movie_start_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    genre = call.data[len("movie_start_"):]
+    error = games_gate_error(user)
+    if error or genre not in MOVIE_PLOTS:
+        await call.answer(error or "", show_alert=bool(error))
+        return
+    if not spend_bucks(user, MOVIE_PRICE):
+        await call.answer(get_text(user, "not_enough_bucks", n=MOVIE_PRICE - user.get("bucks", 0)), show_alert=True)
+        return
+    user["game"] = {"type": "movie", "genre": genre, "beat": 0, "tail": []}
+    game_touch(user["game"])
+    save_data(user_data)
+    await safe_delete(call.message)
+    await call.answer()
+    await movie_beat(call.message.chat.id, user, "start")
+
+
+@dp.callback_query(lambda c: c.data.startswith("movie_react_"))
+async def movie_react_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    if (user.get("game") or {}).get("type") != "movie":
+        await call.answer()
+        return
+    reaction = call.data[len("movie_react_"):]
+    await safe_delete(call.message)
+    await call.answer()
+    await movie_beat(call.message.chat.id, user, reaction if reaction in ("cry", "laugh", "hug", "comment") else "comment")
+
+
+# ============================================================
 #  ПОДДЕРЖКА: /support -> сообщение уходит админам, ответ админа (reply) возвращается пользователю
 # ============================================================
 SUPPORT_ADMIN_IDS = [int(x) for x in os.getenv("SUPPORT_ADMIN_IDS", "").replace(" ", "").split(",") if x] or ADMIN_IDS
@@ -6547,6 +7043,10 @@ async def handle_message(message: types.Message):
 
     if user.get("support_mode"):
         await forward_to_support(message, user)
+        return
+
+    if (user.get("game") or {}).get("type") == "cities" and not game_is_stale(user["game"]):
+        await cities_user_move(message, user)
         return
 
     # 1. Создание собственного персонажа (SUPER PRO)
@@ -14584,6 +15084,7 @@ async def main():
     await bot.set_my_commands([
         BotCommand(command="start", description="Регистрация / главное меню"),
         BotCommand(command="help", description="Список команд"),
+        BotCommand(command="games", description="Игры вместе с персонажем"),
         BotCommand(command="support", description="Связаться с поддержкой"),
         BotCommand(command="language", description="Сменить язык"),
         BotCommand(command="hot", description="Горячая сцена с персонажем"),
