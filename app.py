@@ -6513,10 +6513,10 @@ GAME_TEXTS = {
         "bj_btn": "🃏 Блэкджек",
         "movie_btn": "🎬 Кино",
         "shop_games_btn": "🛍 Билеты — в магазине",
-        "shop_cat_games": "🎮 Игры",
-        "ticket_effects": "Билет на игру. У тебя: {have} 🎟 (на {uses})",
+        "shop_cat_games": "🎡 Развлечения",
+        "ticket_effects": "Билет на развлечение. У тебя: {have} 🎟 (на {uses})",
         "ticket_bought": "🎟 Билет куплен: {name}. Теперь он есть в «Играх вместе» (/games).",
-        "no_ticket": "Нужен билет: «{name}». Купи его в магазине (🎮 Игры).",
+        "no_ticket": "Нужен билет: «{name}». Купи его в магазине (🎡 Развлечения).",
         "busy": "Сначала закончи текущую игру.",
         "asleep": "Персонаж спит — сначала разбуди его.",
         "sick": "Персонаж болеет и сейчас не в настроении играть — сначала вылечи его.",
@@ -6556,10 +6556,10 @@ GAME_TEXTS = {
         "bj_btn": "🃏 Blackjack",
         "movie_btn": "🎬 Movie",
         "shop_games_btn": "🛍 Tickets — in the shop",
-        "shop_cat_games": "🎮 Games",
-        "ticket_effects": "A game ticket. You have: {have} 🎟 (for {uses})",
+        "shop_cat_games": "🎡 Entertainment",
+        "ticket_effects": "An entertainment ticket. You have: {have} 🎟 (for {uses})",
         "ticket_bought": "🎟 Ticket bought: {name}. It is now in «Games together» (/games).",
-        "no_ticket": "You need a ticket: «{name}». Buy it in the shop (🎮 Games).",
+        "no_ticket": "You need a ticket: «{name}». Buy it in the shop (🎡 Entertainment).",
         "busy": "Finish the current game first.",
         "asleep": "Your companion is asleep — wake them first.",
         "sick": "Your companion is sick and not in the mood — cure them first.",
@@ -7646,7 +7646,7 @@ def serialize_shop_state(user):
     # не за баксы (энергетики — за звёзды через openInvoice) или не из фиксированного каталога
     # (свой подарок — произвольный текст), так что не вписываются в общую карточку category/key.
     energizer_packs = [
-        {"key": key, "amount": pack["amount"], "emoji": pack["emoji"],
+        {"key": key, "amount": pack["amount"], "emoji": pack["emoji"], "image": f"/assets/{key}.png",
          "name": get_text(user, "invoice_energizer_title", amount=pack["amount"]),
          "stars": PRODUCTS[key]["stars"],
          "restore_hint": get_text(user, "energizer_restore_hint", amount=ENERGIZER_RESTORE_AMOUNT)}
@@ -11189,14 +11189,15 @@ SHOP_PAGE_HTML = '''<!doctype html>
     color: var(--tg-theme-button-text-color, #ffffff);
   }
   .tab-energizer {
-    background: linear-gradient(135deg, #ffd54f, #ff9800);
-    color: #1a1a1a;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: #ffffff;
     font-weight: 800;
-    box-shadow: 0 0 0 2px rgba(255,152,0,.35);
+    box-shadow: 0 0 0 2px rgba(139,92,246,.45);
   }
   .tab-energizer.active {
-    background: linear-gradient(135deg, #ffca28, #f57c00);
-    color: #1a1a1a;
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: #ffffff;
+    box-shadow: 0 0 10px 2px rgba(124,58,237,.6);
   }
   #items {
     display: grid;
@@ -11213,12 +11214,14 @@ SHOP_PAGE_HTML = '''<!doctype html>
     gap: 6px;
   }
   .card-energizer {
-    border: 1px solid rgba(255,152,0,.4);
-    background: linear-gradient(160deg, rgba(255,193,7,.16), transparent 65%);
+    border: 1px solid rgba(139,92,246,.5);
+    background: linear-gradient(160deg, rgba(59,130,246,.18), rgba(139,92,246,.1) 60%, transparent);
   }
+  .card-img { width: 84px; height: 84px; object-fit: contain; display: block; filter: drop-shadow(0 2px 6px rgba(124,58,237,.5)); }
   .card-top { display: flex; align-items: center; justify-content: space-between; }
   .card-emoji { font-size: 26px; }
   .card-emoji-energizer { font-size: 20px; }
+  .card-emoji-energizer .card-img { margin: 2px 0; }
   .note-toggle {
     font-size: 15px;
     background: none;
@@ -11375,7 +11378,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
         key: "energizer",
         name: s.ui.shop_category_energizer,
         items: s.energizer_packs.map(function (p) {
-          return {key: p.key, category: "energizer", emoji: p.emoji, name: p.name, stars: p.stars,
+          return {key: p.key, category: "energizer", emoji: p.emoji, image: p.image, name: p.name, stars: p.stars,
                   effects: p.restore_hint || "", ready_in: null, refuse: false};
         })
       });
@@ -11421,7 +11424,15 @@ SHOP_PAGE_HTML = '''<!doctype html>
     top.className = "card-top";
     var emoji = document.createElement("div");
     emoji.className = "card-emoji" + (item.category === "energizer" ? " card-emoji-energizer" : "");
-    emoji.textContent = item.emoji;
+    if (item.image) {
+      var img = document.createElement("img");
+      img.className = "card-img";
+      img.src = item.image;
+      img.alt = item.emoji;
+      emoji.appendChild(img);
+    } else {
+      emoji.textContent = item.emoji;
+    }
     top.appendChild(emoji);
 
     var noteBox = null;
@@ -11680,6 +11691,17 @@ SHOP_PAGE_HTML = '''<!doctype html>
 </body>
 </html>
 '''
+
+
+ASSET_IMAGES = {f"energizer_{n}.png" for n in (2, 6, 15, 35)}
+
+
+async def asset_image_handler(request):
+    name = request.match_info.get("name", "")
+    if name not in ASSET_IMAGES:
+        raise web.HTTPNotFound()
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", name)
+    return web.FileResponse(path, headers={"Cache-Control": "public, max-age=86400"})
 
 
 async def shop_page_handler(request):
@@ -15031,6 +15053,7 @@ async def run_webapp_server():
         app_web.router.add_get("/" + SITE_VERIFY_FILE_NAME, site_verify_file_handler)
     app_web.router.add_get("/tg-sdk.js", telegram_sdk_handler)
     app_web.router.add_get("/shop", shop_page_handler)
+    app_web.router.add_get("/assets/{name}", asset_image_handler)
     app_web.router.add_get("/api/state", api_state_handler)
     app_web.router.add_post("/api/buy", api_buy_handler)
     app_web.router.add_post("/api/shop/energizer/invoice", api_shop_energizer_invoice_handler)
