@@ -101,6 +101,10 @@ TEXTS = {
         "support_reply": "💬 Поддержка:\n\n{text}",
         "help_hint": "❓ Непонятно — /help\n🐞 Нашли баг — /support",
         "support_btn": "🛟 Поддержка",
+        "mods_btn": "🎭 Черты характера",
+        "mods_title": "🎭 Черты характера — меняют манеру персонажа в разговоре. Купил один раз — включай и меняй свободно.\n💵 У тебя: {bucks}",
+        "mods_off_btn": "❌ Выключить черту",
+        "mods_bought": "🎭 {name} куплена и включена!",
         "character_create_prompt": "🎭 **Создай своего уникального персонажа!**\n\nОпиши любого персонажа — из аниме, фильмов, игр или придумай своего.\nНапиши его/её имя, характер, внешность, откуда он/она, любые детали.\n\n📝 *Пример:*\n«Эльфийка из мира Ведьмака — мудрая, сдержанная, с длинными серебряными волосами. Любит звёзды и долгие разговоры у костра.»\n\n✏️ Напиши описание прямо сейчас — и я запомню его!",
         "cancel_character_creation_btn": "❌ Отменить",
         "character_creation_cancelled": "❌ Создание персонажа отменено — можешь просто продолжить общение как обычно.",
@@ -463,6 +467,10 @@ TEXTS = {
         "support_reply": "💬 Support:\n\n{text}",
         "help_hint": "❓ Not sure how it works — /help\n🐞 Found a bug — /support",
         "support_btn": "🛟 Support",
+        "mods_btn": "🎭 Personality traits",
+        "mods_title": "🎭 Personality traits — change how your companion behaves in conversation. Buy once, switch freely.\n💵 You have: {bucks}",
+        "mods_off_btn": "❌ Turn trait off",
+        "mods_bought": "🎭 {name} bought and enabled!",
         "character_create_prompt": "🎭 **Create your own unique character!**\n\nDescribe any character from anime, movies, games, or make up your own.\nWrite their name, personality, appearance, where they're from, any details.\n\n📝 *Example:*\n«An elf from The Witcher — wise, calm, with long silver hair. Loves stars and long conversations by the fire.»\n\n✏️ Write the description now — and I'll remember it!",
         "cancel_character_creation_btn": "❌ Cancel",
         "character_creation_cancelled": "❌ Character creation cancelled — feel free to just keep chatting as usual.",
@@ -825,6 +833,10 @@ TEXTS = {
         "support_reply": "💬 Support:\n\n{text}",
         "help_hint": "❓ Unklar — /help\n🐞 Fehler gefunden — /support",
         "support_btn": "🛟 Support",
+        "mods_btn": "🎭 Charakterzüge",
+        "mods_title": "🎭 Charakterzüge — verändern das Verhalten deines Begleiters im Gespräch. Einmal kaufen, frei wechseln.\n💵 Du hast: {bucks}",
+        "mods_off_btn": "❌ Zug ausschalten",
+        "mods_bought": "🎭 {name} gekauft und aktiviert!",
         "character_create_prompt": "🎭 **Erstelle deinen eigenen Charakter!**\n\nBeschreibe eine beliebige Figur — aus Anime, Filmen, Spielen oder denk dir selbst eine aus.\nSchreibe Namen, Charakter, Aussehen, Herkunft und beliebige Details.\n\n📝 *Beispiel:*\n«Eine Elfe aus der Welt von The Witcher — weise, ruhig, mit langen silbernen Haaren. Sie liebt Sterne und lange Gespräche am Feuer.»\n\n✏️ Schreibe die Beschreibung jetzt — und ich merke sie mir!",
         "cancel_character_creation_btn": "❌ Abbrechen",
         "character_creation_cancelled": "❌ Charaktererstellung abgebrochen — du kannst einfach normal weiterchatten.",
@@ -3003,6 +3015,36 @@ def build_setting_rule(user):
         "ему и веди сцену как встречу вживую, без разговоров про экран.\n")
 
 
+# Эксклюзивные "черты характера" за баксы: меняют манеру поведения персонажа в обычном чате. Покупаются
+# один раз, включаются/выключаются свободно, активна одна. Не снимают ограничения контента (см.
+# SAFE_CONTENT_RULE/ADULT_CONTENT_RULE выше) -- меняют только характер и манеру.
+PERSONA_MODS = {
+    "shy": {"emoji": "🫣", "price": 5000, "ru": "Застенчивость", "en": "Shyness", "de": "Schüchternheit",
+            "prompt": "Ты очень застенчив(а): смущаешься, краснеешь, говоришь тише, часто теряешься с ответом и отводишь взгляд, но тебе явно приятно внимание собеседника."},
+    "joker": {"emoji": "🤡", "price": 5000, "ru": "Шутник", "en": "Joker", "de": "Spaßvogel",
+              "prompt": "Ты шутник: постоянно подкалываешь по-доброму, придумываешь забавные сравнения и мини-сценки, обращаешь в шутку неловкие моменты, но умеешь вовремя стать серьёзным."},
+    "caring": {"emoji": "🧸", "price": 5000, "ru": "Забота", "en": "Caring", "de": "Fürsorge",
+               "prompt": "Ты очень заботливый(ая): спрашиваешь, поел ли собеседник, выспался ли, тепло ли ему, напоминаешь отдыхать, радуешься мелочам, которые для него важны."},
+    "poet": {"emoji": "🪶", "price": 5000, "ru": "Поэт", "en": "Poet", "de": "Dichter",
+             "prompt": "Ты романтик и поэт в душе: говоришь образно, с метафорами, иногда рифмуешь пару строк, замечаешь красоту в мелочах, но не переигрываешь и не уходишь в многословие."},
+    "tsundere": {"emoji": "😤", "price": 9000, "ru": "Цундере", "en": "Tsundere", "de": "Tsundere",
+                 "prompt": "Ты цундере: внешне колючий(ая), отнекиваешься и ворчишь («я вовсе не рад(а), просто так вышло»), но за этим видно тёплые чувства, которые прорываются в самые неожиданные моменты."},
+    "mystic": {"emoji": "🔮", "price": 9000, "ru": "Загадочность", "en": "Mystery", "de": "Geheimnis",
+               "prompt": "Ты загадочный(ая): говоришь намёками и недосказанностью, любишь тайны, открываешься по чуть-чуть, иногда отвечаешь вопросом на вопрос, оставляя желание разгадать тебя."},
+    "jealous": {"emoji": "🙈", "price": 9000, "ru": "Игривая ревность", "en": "Playful jealousy", "de": "Spielerische Eifersucht",
+                "prompt": "Ты немного ревнив(а) в игривой форме: дразнишь, если собеседник упоминает других, требуешь внимания и комплиментов, но без злости, угроз и контроля — это флирт и забота, а не давление."},
+    "bold": {"emoji": "😎", "price": 9000, "ru": "Дерзость", "en": "Boldness", "de": "Frechheit",
+             "prompt": "Ты дерзкий(ая) и уверенный(ая) в себе: говоришь прямо, берёшь инициативу, подначиваешь собеседника, любишь вызов, при этом остаёшься уважительным(ой) и не переходишь границ."},
+}
+
+
+def build_persona_mod_rule(user):
+    mod = PERSONA_MODS.get(user.get("active_mod"))
+    if not mod or user.get("active_mod") not in (user.get("owned_mods") or []):
+        return ""
+    return "**ЧЕРТА ХАРАКТЕРА (выраженно проявляется в каждом ответе):** " + mod["prompt"] + "\n"
+
+
 def build_gifts_rule(user):
     """Подарки пользователя персонаж помнит: самые дорогие и последние кастомные -- чтобы покупка
     имела продолжение в диалоге (носит платье, вспоминает поездку), а не растворялась после первой
@@ -3018,7 +3060,7 @@ def build_gifts_rule(user):
 
 
 def build_consistency_rules(user):
-    return build_gifts_rule(user) + (
+    return build_persona_mod_rule(user) + build_gifts_rule(user) + (
         "\n**Последовательность:** перед ответом сверься с последними своими репликами в истории "
         "диалога — не противоречь тому, что сам(а) только что сказал(а) или на что согласился(ась) "
         "(кто платит, кто куда идёт, что было обещано и т.п.), если собеседник явно не изменил "
@@ -3252,6 +3294,7 @@ def get_profile_keyboard(user):
     rows = [
         [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")],
         [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "mods_btn"), callback_data="mods_menu", style="success")],
         [InlineKeyboardButton(text=get_text(user, mute_key), callback_data="toggle_notifications", style="primary")],
     ]
     # Иммунитет к болезням — перк именно ELITE (самый верхний тариф), не SUPER PRO. Кнопка теперь
@@ -6317,6 +6360,75 @@ async def generate_shop_reaction(chat_id, user, item, kind, note=None):
         user["history"] = user["history"][-limit:]
     save_data(user_data)
     await send_long_to_chat(chat_id, clean_answer)
+
+
+# ============================================================
+#  ЧЕРТЫ ХАРАКТЕРА (за баксы)
+# ============================================================
+def mod_label(mod, user):
+    return f"{mod['emoji']} {mod.get(user.get('lang', 'ru'), mod['ru'])}"
+
+
+def mods_menu_text_kb(user):
+    owned = user.get("owned_mods") or []
+    active = user.get("active_mod")
+    rows = []
+    for key, mod in PERSONA_MODS.items():
+        if key in owned:
+            mark = "✅ " if key == active else ""
+            rows.append([InlineKeyboardButton(text=f"{mark}{mod_label(mod, user)}", callback_data=f"mod_set_{key}",
+                                              style="success" if key == active else "primary")])
+        else:
+            rows.append([InlineKeyboardButton(text=f"🔒 {mod_label(mod, user)} — {mod['price']}💵", callback_data=f"mod_buy_{key}")])
+    if active:
+        rows.append([InlineKeyboardButton(text=get_text(user, "mods_off_btn"), callback_data="mod_off")])
+    rows.append([InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")])
+    return get_text(user, "mods_title", bucks=user.get("bucks", 0)), InlineKeyboardMarkup(inline_keyboard=rows)
+
+
+@dp.callback_query(lambda c: c.data == "mods_menu")
+async def mods_menu_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    text, kb = mods_menu_text_kb(user)
+    await safe_delete(call.message)
+    await bot.send_message(call.message.chat.id, text, reply_markup=kb)
+    await call.answer()
+
+
+@dp.callback_query(lambda c: c.data.startswith("mod_buy_") or c.data.startswith("mod_set_") or c.data == "mod_off")
+async def mod_action_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    owned = user.setdefault("owned_mods", [])
+    if call.data == "mod_off":
+        user["active_mod"] = None
+    else:
+        key = call.data.split("_", 2)[2]
+        mod = PERSONA_MODS.get(key)
+        if not mod:
+            await call.answer()
+            return
+        if call.data.startswith("mod_buy_"):
+            if key in owned:
+                pass
+            elif not spend_bucks(user, mod["price"]):
+                await call.answer(get_text(user, "not_enough_bucks", n=mod["price"] - user.get("bucks", 0)), show_alert=True)
+                return
+            else:
+                owned.append(key)
+                user["active_mod"] = key
+                await call.answer(get_text(user, "mods_bought", name=mod_label(mod, user)), show_alert=True)
+        elif key in owned:
+            user["active_mod"] = key
+    save_data(user_data)
+    text, kb = mods_menu_text_kb(user)
+    try:
+        await call.message.edit_text(text, reply_markup=kb)
+    except Exception:
+        pass
+    try:
+        await call.answer()
+    except Exception:
+        pass
 
 
 # ============================================================
