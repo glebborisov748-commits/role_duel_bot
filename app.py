@@ -108,7 +108,7 @@ TEXTS = {
         "spin_title": "🎰 **Колесо фортуны**",
         "spin_hint": "Крути колесо каждый день и выбивай призы!",
         "webapp_spin_prizes_title": "🎁 Доступные призы:",
-        "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 550–1200💵 баксов\n• 🎟 Доп. прокрут\n• 🍱 100 еды + 100 воды\n• 🔥 Горячие сцены\n• ⚡x5 буст заработка на час (редко)\n• 2–4⚡ энергетика (редко)\n• 💰 10 000💵 ДЖЕКПОТ, 🔥 PRO, ✨ SUPER PRO (крайне редко)\n🍀 Удача (24ч за ⭐, у ELITE всегда) повышает шансы на редкое",
+        "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 550–1200💵 баксов\n• 🎟 Доп. прокрут\n• 🍱 100 еды + 100 воды\n• 🔥 Горячие сцены\n• ⚡x5 буст заработка на 10 минут (редко)\n• 2–4⚡ энергетика (редко)\n• 💰 10 000💵 ДЖЕКПОТ, 🔥 PRO, ✨ SUPER PRO (крайне редко)\n🍀 Удача (24ч за ⭐, у ELITE всегда) повышает шансы на редкое",
         "spin_choose": "Выбери вариант:",
         "spin_nothing": "😢 Ничего... В следующий раз повезёт!",        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+{inviter_bucks}💵, +{inviter_energizers}⚡ и 🔥 горячая сцена** тебе, ему — **+{invitee_bucks}💵, 🔥 горячая сцена и 🎟 доп. прокрут**!\n\n📊 Приглашено друзей: **{count}**\n💵 Заработано баксов: **{earned_bucks}**\n⚡ Заработано энергетиков: **{earned_energizers}**",
         "choose_lang_label": "🌍 Выбери язык:",
@@ -470,7 +470,7 @@ TEXTS = {
         "spin_title": "🎰 **Spin wheel**",
         "spin_hint": "Spin the wheel every day and win prizes!",
         "webapp_spin_prizes_title": "🎁 Available prizes:",
-        "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 550–1200💵 bucks\n• 🎟 Extra spin\n• 🍱 100 food + 100 water\n• 🔥 Hot scenes\n• ⚡x5 earnings boost for an hour (rare)\n• 2–4⚡ energizers (rare)\n• 💰 10,000💵 JACKPOT, 🔥 PRO, ✨ SUPER PRO (extremely rare)\n🍀 Luck (24h for ⭐, always on for ELITE) boosts the odds of rare prizes",
+        "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 550–1200💵 bucks\n• 🎟 Extra spin\n• 🍱 100 food + 100 water\n• 🔥 Hot scenes\n• ⚡x5 earnings boost for 10 minutes (rare)\n• 2–4⚡ energizers (rare)\n• 💰 10,000💵 JACKPOT, 🔥 PRO, ✨ SUPER PRO (extremely rare)\n🍀 Luck (24h for ⭐, always on for ELITE) boosts the odds of rare prizes",
         "spin_choose": "Choose an option:",
         "spin_nothing": "😢 Nothing... Better luck next time!",        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+{inviter_bucks}💵, +{inviter_energizers}⚡ and a 🔥 hot scene** for you, and **+{invitee_bucks}💵, a 🔥 hot scene and a 🎟 extra spin** for them!\n\n📊 Friends invited: **{count}**\n💵 Bucks earned: **{earned_bucks}**\n⚡ Energizers earned: **{earned_energizers}**",
         "choose_lang_label": "🌍 Choose language:",
@@ -832,7 +832,7 @@ TEXTS = {
         "spin_title": "🎰 **Glücksrad**",
         "spin_hint": "Dreh jeden Tag am Rad und gewinne Preise!",
         "webapp_spin_prizes_title": "🎁 Verfügbare Preise:",
-        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 550–1200💵 Bucks\n• 🎟 Extra-Dreh\n• 🍱 100 Essen + 100 Wasser\n• 🔥 Heiße Szenen\n• ⚡x5 Verdienst-Boost für eine Stunde (selten)\n• 2–4⚡ Energydrinks (selten)\n• 💰 10.000💵 JACKPOT, 🔥 PRO, ✨ SUPER PRO (extrem selten)\n🍀 Glück (24 Std. für ⭐, bei ELITE immer) erhöht die Chancen auf Seltenes",
+        "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 550–1200💵 Bucks\n• 🎟 Extra-Dreh\n• 🍱 100 Essen + 100 Wasser\n• 🔥 Heiße Szenen\n• ⚡x5 Verdienst-Boost für 10 Minuten (selten)\n• 2–4⚡ Energydrinks (selten)\n• 💰 10.000💵 JACKPOT, 🔥 PRO, ✨ SUPER PRO (extrem selten)\n🍀 Glück (24 Std. für ⭐, bei ELITE immer) erhöht die Chancen auf Seltenes",
         "spin_choose": "Wähle eine Option:",
         "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+{inviter_bucks}💵, +{inviter_energizers}⚡ und eine 🔥 heiße Szene** für dich und **+{invitee_bucks}💵, eine 🔥 heiße Szene und ein 🎟 Extra-Dreh** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💵 Verdiente Bucks: **{earned_bucks}**\n⚡ Verdiente Energydrinks: **{earned_energizers}**",
         "choose_lang_label": "🌍 Sprache wählen:",
@@ -1971,6 +1971,17 @@ GIFT_ITEMS = {
     "concert": {"emoji": "🎸", "ru": "Билет на рок-концерт", "en": "Rock concert ticket", "de": "Rockkonzert-Ticket", "price": 2600, "mood": 48, "xp": 45,
                 "category": "treat", "cooldown_minutes": 1440,
                 "reaction_hint": "Энергичный, живой вечер вместе — благодарность заряженная адреналином, ты в восторге от атмосферы."},
+    # Особые подарки за большие баксы — редкие "события" с сильной реакцией и большим XP; после покупки
+    # персонаж запоминает подарок и иногда упоминает его (см. build_gifts_rule).
+    "serenade": {"emoji": "🎻", "ru": "Серенада под окном", "en": "Serenade", "de": "Ständchen", "price": 4500, "mood": 45, "xp": 70,
+                 "category": "treat", "cooldown_minutes": 2880,
+                 "reaction_hint": "Живая музыка специально для тебя — ты растрогана до мурашек, смущена и счастлива, вспоминаешь отдельные ноты и слова."},
+    "paris": {"emoji": "🗼", "ru": "Поездка в Париж", "en": "Trip to Paris", "de": "Reise nach Paris", "price": 15000, "xp": 160,
+              "category": "treat", "full_restore": True, "cooldown_minutes": 10080,
+              "reaction_hint": "Настоящая поездка мечты вдвоём — ошеломлена, не верит, что это правда, в восторге рассказывает о том, что хочет увидеть, и благодарит всем сердцем."},
+    "star": {"emoji": "⭐", "ru": "Именная звезда", "en": "A star named after you", "de": "Ein Stern mit deinem Namen", "price": 25000, "mood": 80, "xp": 260,
+             "category": "accessory", "cooldown_minutes": 43200,
+             "reaction_hint": "Самый космический подарок: звезда на небе, названная в твою честь — потрясена до слёз, тихо и серьёзно говоришь, что этого никогда не забудешь."},
     "theater": {"emoji": "🎭", "ru": "Билет в театр", "en": "Theater ticket", "de": "Theater-Ticket", "price": 2900, "mood": 52, "xp": 55,
                 "category": "treat", "cooldown_minutes": 1440,
                 "reaction_hint": "Изысканный, немного торжественный вечер — благодарность тёплая и чуть возвышенная, ты тронута таким жестом."},
@@ -2567,7 +2578,7 @@ WORK_MULTIPLIER = {"pro": 1.5, "super_pro": 2.0, "elite": 2.8}  # та же ти
 
 
 SPIN_WORK_BOOST_MULTIPLIER = 5  # приз "x5 буст заработка" с колеса, см. SPIN_PRIZES type=work_boost
-SPIN_WORK_BOOST_MINUTES = 60
+SPIN_WORK_BOOST_MINUTES = 10  # было 60
 
 
 def work_earnings_multiplier(user):
@@ -2992,8 +3003,22 @@ def build_setting_rule(user):
         "ему и веди сцену как встречу вживую, без разговоров про экран.\n")
 
 
+def build_gifts_rule(user):
+    """Подарки пользователя персонаж помнит: самые дорогие и последние кастомные -- чтобы покупка
+    имела продолжение в диалоге (носит платье, вспоминает поездку), а не растворялась после первой
+    реакции."""
+    log = user.get("gift_log") or {}
+    names = [e["name"] for e in sorted(log.values(), key=lambda e: e.get("price", 0), reverse=True)[:6]]
+    names += [f"«{t}»" for t in (user.get("custom_gifts_given") or [])[-3:]]
+    if not names:
+        return ""
+    return ("**ПОДАРКИ:** собеседник дарил тебе: " + ", ".join(names) + ". Ты ими дорожишь и иногда (не в "
+            "каждом ответе, примерно раз в 5–10 реплик, когда это уместно по ситуации) естественно "
+            "вспоминаешь, носишь или используешь их; не перечисляй списком.\n")
+
+
 def build_consistency_rules(user):
-    return (
+    return build_gifts_rule(user) + (
         "\n**Последовательность:** перед ответом сверься с последними своими репликами в истории "
         "диалога — не противоречь тому, что сам(а) только что сказал(а) или на что согласился(ась) "
         "(кто платит, кто куда идёт, что было обещано и т.п.), если собеседник явно не изменил "
@@ -4088,7 +4113,7 @@ SPIN_PRIZES = [
     {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 0.5, "wheel_label": "4⚡", "fx": "bolts", "fx_power": 2},
     {"name": "🎟 +1 доп. прокрут", "name_en": "🎟 +1 extra spin", "name_de": "🎟 +1 Extra-Dreh", "value": 1, "type": "extra_spin", "weight": 6, "wheel_label": "🎟+1", "fx": "spark", "fx_power": 2},
     {"name": "🍱 100 еды + 100 воды", "name_en": "🍱 100 food + 100 water", "name_de": "🍱 100 Essen + 100 Wasser", "value": 0, "type": "care_package", "weight": 5, "wheel_label": "🍱+100", "fx": "spark", "fx_power": 2},
-    {"name": "⚡x5 буст заработка на час", "name_en": "⚡x5 earnings boost for an hour", "name_de": "⚡x5 Verdienst-Boost für eine Stunde", "value": 0, "type": "work_boost", "weight": 3.5, "wheel_label": "⚡x5", "fx": "silver", "fx_power": 3},
+    {"name": "⚡x5 буст заработка на 10 минут", "name_en": "⚡x5 earnings boost for 10 minutes", "name_de": "⚡x5 Verdienst-Boost für 10 Minuten", "value": 0, "type": "work_boost", "weight": 3.5, "wheel_label": "⚡x5", "fx": "silver", "fx_power": 3},
     {"name": "💰🎉 10 000💵 баксов (ДЖЕКПОТ!)", "name_en": "💰🎉 10,000💵 bucks (JACKPOT!)", "name_de": "💰🎉 10.000💵 Bucks (JACKPOT!)", "value": 10000, "type": "bucks", "weight": 0.1, "wheel_label": "💰10K", "fx": "gold", "fx_power": 3},
     {"name": "🔥 PRO на 5 дней", "name_en": "🔥 PRO for 5 days", "name_de": "🔥 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.2, "wheel_label": "🔥PRO", "fx": "rainbow", "fx_power": 3},
     {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.1, "wheel_label": "✨SUPER", "fx": "rainbow", "fx_power": 3},
@@ -4719,6 +4744,13 @@ async def execute_item_purchase(chat_id, user, category, key, item, note=None):
     display_item = gift_effective_item(item, user) if category == "gift" else item
     apply_shop_item_effects(user, item)
     mark_item_purchased(user, category, key)
+    if category == "gift":
+        log = user.setdefault("gift_log", {})
+        entry = log.setdefault(key, {"count": 0})
+        entry["count"] += 1
+        entry["price"] = item.get("price", 0)
+        entry["name"] = display_item.get("ru", key)
+        entry["last"] = datetime.now().isoformat()
     save_data(user_data)
     if item.get("xp"):
         await grant_gift_xp(chat_id, user, item["xp"])
