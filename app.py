@@ -13436,16 +13436,31 @@ WORK_PAGE_HTML = r'''<!doctype html>
   .farm-plot {
     position: relative;
     min-width: 0;
-    height: 175px;
+    height: 215px;
     border-radius: 14px;
     overflow: hidden;
-    background: linear-gradient(180deg, #d7f0d0 0%, #d7f0d0 42%, #8a5a34 42%, #6b4423 100%);
+    background: linear-gradient(180deg, #d7f0d0 0%, #bfe3b4 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 16px 4px 10px;
   }
+  .sprite { width: 1.15em; height: 1.15em; object-fit: contain; display: block; pointer-events: none; -webkit-user-drag: none; user-select: none; }
+  .catch-item .sprite { width: 1.25em; height: 1.25em; }
+  .catch-item.big-hazard .sprite { width: 1.3em; height: 1.3em; }
+  #courier-rider .sprite { width: 1.55em; height: 1.55em; transform: scaleX(-1); }
+  .courier-recipient .sprite { width: auto; height: 1.45em; }
+  .courier-obstacle .sprite { width: 1.3em; height: 1.3em; }
+  .courier-handoff .sprite { width: 1.3em; height: 1.3em; }
+  .farm-water-drop .sprite { width: 1.3em; height: 1.3em; }
+  .farm-scene { position: relative; width: 100%; height: 100px; margin-bottom: 4px; flex-shrink: 0; }
+  .farm-bed { position: absolute; left: 4%; right: 4%; bottom: 0; z-index: 0; }
+  .farm-bed .sprite { width: 100%; height: auto; }
+  .farm-scene .farm-plant { position: absolute; left: 0; right: 0; bottom: 26px; margin: 0; display: flex; justify-content: center; }
+  .farm-plant .sprite { width: 66px; height: 66px; }
   .farm-plant {
+    position: relative;
+    z-index: 1;
     font-size: 34px;
     line-height: 1;
     margin-bottom: 4px;
@@ -13836,6 +13851,40 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var COURIER_LANE_Y = [65, 135, 205]; // px centers, matches 3x70px lanes in a 270px-tall #courier-road
   var COURIER_TREE_TOP_Y = 15, COURIER_TREE_BOTTOM_Y = 255; // центры деревянных обочин сверху/снизу
   var courierLane = 1;
+  // Картинки из /assets (см. bot assets/*.png): пока не загрузились или файла нет -- остаётся эмодзи.
+  var SPRITE_KEYS = ["catch_bomb", "catch_bighazard", "catch_slow", "catch_double", "catch_shield", "catch_magnet", "catch_bills", "catch_coins",
+    "courier_rider", "courier_parcel", "courier_obstacle", "person_wave", "person_coffee", "person_arms", "person_point",
+    "crop_carrot", "crop_wheat", "crop_tomato", "crop_corn", "crop_pumpkin", "crop_melon", "crop_seedling", "crop_young",
+    "farm_bed_dry", "farm_bed_wet", "farm_drop"];
+  var PERSON_KEYS = ["person_wave", "person_coffee", "person_arms", "person_point"];
+  var SPRITES = {};
+  function setSprite(el, key, fallbackText) {
+    if (SPRITES[key]) {
+      var c = SPRITES[key].cloneNode();
+      c.className = "sprite";
+      c.draggable = false;
+      el.textContent = "";
+      el.appendChild(c);
+    } else {
+      el.textContent = fallbackText;
+    }
+  }
+  var spritesPending = SPRITE_KEYS.length;
+  SPRITE_KEYS.forEach(function (k) {
+    var img = new Image();
+    img.onerror = function () { spritesPending--; };
+    img.onload = function () {
+      SPRITES[k] = img;
+      spritesPending--;
+      // Состояние обычно приходит раньше картинок -- перерисовываем ферму, когда все подгрузились.
+      if (spritesPending === 0 && typeof renderFarm === "function" && typeof state !== "undefined" && state && state.farm) renderFarm();
+      if (k === "courier_rider") {
+        var r = document.getElementById("courier-rider");
+        if (r) setSprite(r, k, "🛵");
+      }
+    };
+    img.src = "/assets/" + k + ".png";
+  });
   var COURIER_OBSTACLE_EMOJIS = ["🚧", "🪨", "🛢", "🕳️"]; // cosmetic variety only, same hitbox/behavior
   var COURIER_RECIPIENT_EMOJI = "🙋";
   var COURIER_RECIPIENT_CHANCE = 0.22; // было 0.4 -- по фидбэку реже, но каждый платит больше
@@ -14172,10 +14221,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
     field.addEventListener("pointercancel", function () { dragging = false; });
   }
 
-  function appendFallingItem(field, x, className, text, dataset) {
+  function appendFallingItem(field, x, className, text, dataset, sprite) {
     var item = document.createElement("div");
     item.className = className;
-    item.textContent = text;
+    if (sprite) setSprite(item, sprite, text); else item.textContent = text;
     Object.keys(dataset || {}).forEach(function (k) { item.dataset[k] = dataset[k]; });
     item.style.left = x + "%";
     var baseDuration = CATCH_FALL_MIN_S + Math.random() * CATCH_FALL_RANGE_S;
@@ -14208,7 +14257,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       var liveField = document.getElementById("catch-field");
       if (!liveField || liveField.style.display === "none") return;
       appendFallingItem(liveField, x, "catch-item big-hazard",
-        BIG_HAZARD_EMOJIS[Math.floor(Math.random() * BIG_HAZARD_EMOJIS.length)], { bighazard: "1" });
+        BIG_HAZARD_EMOJIS[Math.floor(Math.random() * BIG_HAZARD_EMOJIS.length)], { bighazard: "1" }, "catch_bighazard");
     }, BIG_HAZARD_WARN_MS);
     bigHazardTimeoutIds.push(tid);
   }
@@ -14228,17 +14277,17 @@ WORK_PAGE_HTML = r'''<!doctype html>
       return;
     }
     if (isBomb) {
-      appendFallingItem(field, x, "catch-item bomb", BOMB_EMOJI, { bomb: "1" });
+      appendFallingItem(field, x, "catch-item bomb", BOMB_EMOJI, { bomb: "1" }, "catch_bomb");
     } else if (isSlowFall) {
-      appendFallingItem(field, x, "catch-item", SLOWFALL_EMOJI, { slowfall: "1" });
+      appendFallingItem(field, x, "catch-item", SLOWFALL_EMOJI, { slowfall: "1" }, "catch_slow");
     } else if (isMagnet) {
-      appendFallingItem(field, x, "catch-item", MAGNET_EMOJI, { magnet: "1" });
+      appendFallingItem(field, x, "catch-item", MAGNET_EMOJI, { magnet: "1" }, "catch_magnet");
     } else if (isDouble) {
-      appendFallingItem(field, x, "catch-item", DOUBLE_EMOJI, { double: "1" });
+      appendFallingItem(field, x, "catch-item", DOUBLE_EMOJI, { double: "1" }, "catch_double");
     } else if (isShield) {
-      appendFallingItem(field, x, "catch-item", SHIELD_EMOJI, { shield: "1" });
+      appendFallingItem(field, x, "catch-item", SHIELD_EMOJI, { shield: "1" }, "catch_shield");
     } else {
-      appendFallingItem(field, x, "catch-item", CATCH_EMOJIS[Math.floor(Math.random() * CATCH_EMOJIS.length)], {});
+      appendFallingItem(field, x, "catch-item", CATCH_EMOJIS[Math.floor(Math.random() * CATCH_EMOJIS.length)], {}, Math.random() < 0.5 ? "catch_coins" : "catch_bills");
     }
   }
 
@@ -14409,10 +14458,11 @@ WORK_PAGE_HTML = r'''<!doctype html>
     el.addEventListener("animationend", function () { if (el.parentNode) el.remove(); });
     if (spawnRecipient) {
       el.className = "courier-recipient";
-      el.textContent = COURIER_RECIPIENT_EMOJI;
+      setSprite(el, PERSON_KEYS[Math.floor(Math.random() * PERSON_KEYS.length)], COURIER_RECIPIENT_EMOJI);
     } else {
       el.className = "courier-obstacle";
-      el.textContent = COURIER_OBSTACLE_EMOJIS[Math.floor(Math.random() * COURIER_OBSTACLE_EMOJIS.length)];
+      var obstacleEmoji = COURIER_OBSTACLE_EMOJIS[Math.floor(Math.random() * COURIER_OBSTACLE_EMOJIS.length)];
+      if (obstacleEmoji === "🚧" || obstacleEmoji === "🛢") setSprite(el, "courier_obstacle", obstacleEmoji); else el.textContent = obstacleEmoji;
     }
     road.appendChild(el);
   }
@@ -14507,7 +14557,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function spawnCourierHandoff(rider, road) {
     var el = document.createElement("div");
     el.className = "courier-handoff";
-    el.textContent = "📦";
+    setSprite(el, "courier_parcel", "📦");
     el.style.left = rider.offsetLeft + "px";
     el.style.top = rider.offsetTop + "px";
     road.appendChild(el);
@@ -14662,7 +14712,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (!snap || !snap.can_water) return;
     var drop = document.createElement("div");
     drop.className = "farm-water-drop";
-    drop.textContent = "💧";
+    setSprite(drop, "farm_drop", "💧");
     plot.appendChild(drop);
     var plant = plot.querySelector(".farm-plant");
     if (plant) plant.classList.add("watered");
@@ -14727,10 +14777,19 @@ WORK_PAGE_HTML = r'''<!doctype html>
       }
       plot.appendChild(pips);
 
+      var scene = document.createElement("div");
+      scene.className = "farm-scene";
+      var bed = document.createElement("div");
+      bed.className = "farm-bed";
+      setSprite(bed, snap.can_water ? "farm_bed_dry" : "farm_bed_wet", "");
+      scene.appendChild(bed);
+      plot.appendChild(scene);
+
       var plant = document.createElement("div");
       plant.className = "farm-plant" + (snap.ready ? " ready" : "");
-      plant.textContent = snap.ready ? snap.emoji : (snap.progress >= 0.33 ? "🌿" : "🌱");
-      plot.appendChild(plant);
+      if (snap.ready) setSprite(plant, "crop_" + snap.crop, snap.emoji);
+      else setSprite(plant, snap.progress >= 0.33 ? "crop_young" : "crop_seedling", snap.progress >= 0.33 ? "🌿" : "🌱");
+      scene.appendChild(plant);
 
       var status = document.createElement("div");
       status.className = "farm-status";
