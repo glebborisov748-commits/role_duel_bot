@@ -6614,6 +6614,14 @@ GAME_TEXTS = {
         "game_desc_movie": "Смотрите фильм и обсуждаете, +40 XP",
         "event_desc": "Сюжет на {hours} ч: персонаж живёт в этой истории",
         "started_toast": "▶️ Начинаем! Переходи в чат с ботом.",
+        "game_desc_rps": "До трёх побед, победа — +20 XP",
+        "rps_names": {"rock": "Камень", "scissors": "Ножницы", "paper": "Бумага"},
+        "rps_start": "✊ Камень, ножницы, бумага — играем до {wins} побед! Выбирай:",
+        "rps_round": "Ты: {mine}\nЯ: {theirs}\n\n{outcome}\nСчёт {me}:{ai}",
+        "rps_round_win": "✅ Раунд твой!", "rps_round_lose": "❌ Раунд мой!", "rps_draw": "🤝 Ничья в раунде.",
+        "rps_win": "🏆 Ты победил(а)! +{xp} XP.", "rps_lose": "😏 В этот раз победа за мной. Реванш?",
+        "rps_stopped": "✊ Игру закончили.",
+        "movie_end": "🏁 Закончить фильм", "movie_stopped": "🎬 Фильм выключили.",
         "shop_cat_exchange": "💎 За баксы",
         "play_btn": "▶️ Играть",
         "start_btn": "▶️ Начать",
@@ -6674,6 +6682,14 @@ GAME_TEXTS = {
         "game_desc_movie": "Watch a movie together and talk about it, +40 XP",
         "event_desc": "A {hours} h storyline your companion lives in",
         "started_toast": "▶️ Let's go! Head to the chat with the bot.",
+        "game_desc_rps": "First to three wins, a win gives +20 XP",
+        "rps_names": {"rock": "Rock", "scissors": "Scissors", "paper": "Paper"},
+        "rps_start": "✊ Rock, paper, scissors — first to {wins} wins! Pick:",
+        "rps_round": "You: {mine}\nMe: {theirs}\n\n{outcome}\nScore {me}:{ai}",
+        "rps_round_win": "✅ Your round!", "rps_round_lose": "❌ My round!", "rps_draw": "🤝 A tie this round.",
+        "rps_win": "🏆 You won! +{xp} XP.", "rps_lose": "😏 I win this time. Rematch?",
+        "rps_stopped": "✊ Game over.",
+        "movie_end": "🏁 Stop the movie", "movie_stopped": "🎬 The movie is off.",
         "shop_cat_exchange": "💎 For bucks",
         "play_btn": "▶️ Play",
         "start_btn": "▶️ Start",
@@ -6728,6 +6744,7 @@ GAME_OFFERS = {
     "tod": {"emoji": "🤫", "ru": "Правда или действие", "en": "Truth or dare", "price": 600},
     "bj": {"emoji": "🃏", "ru": "Блэкджек", "en": "Blackjack", "price": 0},
     "movie": {"emoji": "🎬", "ru": "Кино вместе", "en": "Movie together", "price": 2250},
+    "rps": {"emoji": "✊", "ru": "Камень, ножницы, бумага", "en": "Rock, paper, scissors", "price": 300},
 }
 
 
@@ -6835,6 +6852,11 @@ async def start_game(chat_id, user, key):
         save_data(user_data)
         await bot.send_message(chat_id, gt(user, "tod_start", rounds=TOD_ROUNDS))
         await tod_send_pick(chat_id, user)
+    elif key == "rps":
+        user["game"] = {"type": "rps", "me": 0, "ai": 0, "busy": False}
+        game_touch(user["game"])
+        save_data(user_data)
+        await bot.send_message(chat_id, gt(user, "rps_start", wins=RPS_WINS), reply_markup=rps_kb(user))
     return None
 MOVIE_XP = 40
 MOVIE_BEATS = 4
@@ -6928,8 +6950,10 @@ def games_gate_error(user):
     """Текст причины, по которой играть сейчас нельзя, или None."""
     if not user.get("personality_ready"):
         return gt(user, "need_char")
-    if user.get("game") and game_is_stale(user["game"]):
-        user["game"] = None  # брошенная партия (вход не возвращаем) -- не блокируем новые игры навсегда
+    if user.get("game") and (game_is_stale(user["game"]) or user["game"].get("type") != "bj"):
+        # брошенная или незаконченная партия (вход не возвращаем) -- новая игра просто заменяет её,
+        # иначе застрявшее кино блокировало все остальные развлечения (баг из фидбэка)
+        user["game"] = None
     if user.get("game"):
         return gt(user, "busy")
     if game_ai_lines_left(user) <= 0:
@@ -6960,7 +6984,7 @@ def cities_kb(user):
     return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=gt(user, "cities_surrender"), callback_data="cities_surrender")]])
 
 
-@dp.callback_query(lambda c: c.data in ("game_cities", "game_tod", "game_bj", "game_movie"))
+@dp.callback_query(lambda c: c.data in ("game_cities", "game_tod", "game_bj", "game_movie", "game_rps"))
 async def game_start_cb(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     error = await start_game(call.message.chat.id, user, call.data[len("game_"):])
@@ -7171,6 +7195,77 @@ async def tod_user_text(message: types.Message, user):
             save_data(user_data)
 
 
+# ---------- Камень, ножницы, бумага ----------
+RPS_WINS = 3   # до трёх побед
+RPS_XP = 20
+RPS_BEATS = {"rock": "scissors", "scissors": "paper", "paper": "rock"}
+RPS_EMOJI = {"rock": "🪨", "scissors": "✂️", "paper": "📄"}
+
+
+def rps_kb(user):
+    names = gt(user, "rps_names")
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=f"{RPS_EMOJI[k]} {names[k]}", callback_data=f"rps_{k}") for k in ("rock", "scissors", "paper")],
+        [InlineKeyboardButton(text=gt(user, "tod_end"), callback_data="rps_end", style="danger")]])
+
+
+@dp.callback_query(lambda c: c.data in ("rps_rock", "rps_scissors", "rps_paper", "rps_end"))
+async def rps_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    game = user.get("game")
+    if not game or game.get("type") != "rps":
+        await call.answer()
+        return
+    chat_id = call.message.chat.id
+    if call.data == "rps_end":
+        user["game"] = None
+        save_data(user_data)
+        await safe_delete(call.message)
+        await call.answer()
+        await bot.send_message(chat_id, gt(user, "rps_stopped"), reply_markup=games_menu_kb(user))
+        return
+    if game.get("busy"):
+        await call.answer(gt(user, "tod_wait"))
+        return
+    game["busy"] = True
+    game_touch(game)
+    await safe_delete(call.message)
+    await call.answer()
+    try:
+        mine = call.data[len("rps_"):]
+        theirs = random.choice(list(RPS_BEATS))
+        names = gt(user, "rps_names")
+        if mine == theirs:
+            outcome = gt(user, "rps_draw")
+        elif RPS_BEATS[mine] == theirs:
+            game["me"] += 1
+            outcome = gt(user, "rps_round_win")
+        else:
+            game["ai"] += 1
+            outcome = gt(user, "rps_round_lose")
+        text = gt(user, "rps_round", mine=f"{RPS_EMOJI[mine]} {names[mine]}", theirs=f"{RPS_EMOJI[theirs]} {names[theirs]}",
+                  outcome=outcome, me=game["me"], ai=game["ai"])
+        if game["me"] >= RPS_WINS or game["ai"] >= RPS_WINS:
+            won = game["me"] >= RPS_WINS
+            score = f"{game['me']}:{game['ai']}"
+            user["game"] = None
+            save_data(user_data)
+            await bot.send_message(chat_id, text)
+            facts = "собеседник обыграл тебя" if won else "ты обыграл(а) собеседника"
+            line = await game_ai_line(chat_id, user, f"Вы играли в камень-ножницы-бумагу до {RPS_WINS} побед, счёт {score}: {facts}. "
+                                                      "Отреагируй в образе: подколи, порадуйся или предложи реванш.")
+            if line:
+                await bot.send_message(chat_id, line)
+            await bot.send_message(chat_id, gt(user, "rps_win", xp=RPS_XP) if won else gt(user, "rps_lose"), reply_markup=games_menu_kb(user))
+            if won:
+                await grant_gift_xp(chat_id, user, RPS_XP)
+            return
+        save_data(user_data)
+        await bot.send_message(chat_id, text, reply_markup=rps_kb(user))
+    finally:
+        game["busy"] = False
+
+
 # ---------- Блэкджек ----------
 SUITS = ["♠", "♥", "♦", "♣"]
 RANKS = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
@@ -7316,7 +7411,19 @@ def movie_react_kb(user):
         [InlineKeyboardButton(text=labels["cry"], callback_data="movie_react_cry"),
          InlineKeyboardButton(text=labels["laugh"], callback_data="movie_react_laugh")],
         [InlineKeyboardButton(text=labels["hug"], callback_data="movie_react_hug"),
-         InlineKeyboardButton(text=labels["comment"], callback_data="movie_react_comment")]])
+         InlineKeyboardButton(text=labels["comment"], callback_data="movie_react_comment")],
+        [InlineKeyboardButton(text=gt(user, "movie_end"), callback_data="movie_end", style="danger")]])
+
+
+@dp.callback_query(lambda c: c.data == "movie_end")
+async def movie_end_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    if (user.get("game") or {}).get("type") == "movie":
+        user["game"] = None
+        save_data(user_data)
+    await safe_delete(call.message)
+    await call.answer()
+    await bot.send_message(call.message.chat.id, gt(user, "movie_stopped"), reply_markup=games_menu_kb(user))
 
 
 async def movie_beat(chat_id, user, reaction):
