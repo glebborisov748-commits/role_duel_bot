@@ -234,10 +234,10 @@ TEXTS = {
         "pro_only_alert": "❌ Только для PRO.",
         "subs_title": "👑 Подписки Role Duel",
         "subs_body": "🔥 PRO (220⭐/мес)\n👉 База для тех, кто только начинает — очень сбалансированный набор.\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 40 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-15%)\n• +2⚡ энергетика каждый день\n• 💼 Заработок на работе x1.5\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (500⭐/мес)\n👉 Для тех, кто хочет побольше разных фишек и возможностей.\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 60 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-25%)\n• +3⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (1000⭐/мес)\n👉 Для тех, кто ООЧЕНЬ много общается.\n• Всё, что есть в SUPER PRO\n• Память: 80 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-40%)\n• +4⚡ энергетика каждый день\n• 💼 Заработок на работе x2.8\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (350⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n🎁 При первой покупке любой подписки — бонус: 300💵 баксов, 3⚡ энергетика и 1 горячая сцена!\n\n⚠️ Подписки НЕ продлеваются автоматически.",
-        "subs_btn_pro": "🔥 PRO — 220 ⭐/мес · ≈7⭐ в день",
-        "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐/мес · ≈17⭐ в день",
-        "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐/мес · ≈33⭐ в день",
-        "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (350⭐)",
+        "subs_btn_pro": "🔥 PRO — {price} ⭐/мес · ≈{day}⭐ в день",
+        "subs_btn_super": "✨ SUPER PRO ✨ — {price} ⭐/мес · ≈{day}⭐ в день",
+        "subs_btn_elite": "💎 ELITE 💎 — {price} ⭐/мес · ≈{day}⭐ в день",
+        "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO ({price}⭐)",
         "invoice_pro_title": "PRO подписка на месяц",
         "invoice_pro_desc": "Память 40 сообщений, стили Страстный и Магнетический.",
         "invoice_pro_label": "PRO месяц",
@@ -248,7 +248,7 @@ TEXTS = {
         "invoice_elite_desc": "Память 80 сообщений, все стили включая 18+, XP x3.5, минимальный расход энергии/сытости.",
         "invoice_elite_label": "ELITE месяц",
         "invoice_upgrade_title": "Апгрейд до SUPER PRO",
-        "invoice_upgrade_desc": "Повысьте PRO до SUPER PRO на оставшийся срок. 350⭐.",
+        "invoice_upgrade_desc": "Повысьте PRO до SUPER PRO на оставшийся срок.",
         "invoice_upgrade_label": "Апгрейд",
         "shop_btn": "🛍 Магазин",
         "open_btn": "Открыть",
@@ -297,6 +297,11 @@ TEXTS = {
         "webapp_note_placeholder": "Записка (необязательно)",
         "webapp_refuse_badge": "Не хочет",
         "promo_banner": "🔥 Акции дня: {items}",
+        "sub_sale_line": "🔥 Пятничная распродажа: SUPER PRO и ELITE −{n}% — только сегодня!",
+        "coupon_line": "🎁 Твоя персональная скидка −{n}% на любую покупку за звёзды — осталось {hours} ч.",
+        "coupon_granted": "🎁 Спасибо за первую покупку! Дарю тебе −{n}% на следующую покупку за звёзды: подписку, энергетики, сцену — что угодно. Скидка действует {hours} ч.",
+        "coupon_used": "🎁 Персональная скидка применена — спасибо!",
+        "sub_sale_part": "👑 SUPER PRO и ELITE −{n}% только сегодня",
         "subs_per_day": "💡 В день это всего ≈7⭐ за PRO, ≈17⭐ за SUPER PRO и ≈33⭐ за ELITE. Для сравнения: один энергетик — ≈{energizer}⭐, а подписка каждый день сама даёт энергетики, сцены и прокруты.",
         "energizer_sale_part": "⚡ Энергетики −{n}% до воскресенья",
         "pack_saving": "Выгода −{n}%",
@@ -610,10 +615,10 @@ TEXTS = {
         "pro_only_alert": "❌ PRO only.",
         "subs_title": "👑 Role Duel Subscriptions",
         "subs_body": "🔥 PRO (220⭐ per month)\n👉 The balanced starting point for those just getting to know their companion.\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 40 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-15%)\n• +2⚡ energizers every day\n• 💼 1.5x earnings from work\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (500⭐ per month)\n👉 For those who want a lot more features and options.\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 60 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-25%)\n• +3⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (1000⭐ per month)\n👉 For those who chat A LOT.\n• Everything in SUPER PRO\n• Memory: 80 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-40%)\n• +4⚡ energizers every day\n• 💼 2.8x earnings from work\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (350⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n🎁 Get a bonus on your first subscription purchase: 300💵 bucks, 3⚡ energizers and 1 hot scene!\n\n⚠️ Subscriptions do NOT renew automatically.",
-        "subs_btn_pro": "🔥 PRO — 220 ⭐/month · ≈7⭐ a day",
-        "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐/month · ≈17⭐ a day",
-        "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐/month · ≈33⭐ a day",
-        "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (350⭐)",
+        "subs_btn_pro": "🔥 PRO — {price} ⭐/month · ≈{day}⭐ a day",
+        "subs_btn_super": "✨ SUPER PRO ✨ — {price} ⭐/month · ≈{day}⭐ a day",
+        "subs_btn_elite": "💎 ELITE 💎 — {price} ⭐/month · ≈{day}⭐ a day",
+        "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO ({price}⭐)",
         "invoice_pro_title": "PRO subscription for a month",
         "invoice_pro_desc": "40-message memory, Passionate and Magnetic styles.",
         "invoice_pro_label": "PRO month",
@@ -624,7 +629,7 @@ TEXTS = {
         "invoice_elite_desc": "80-message memory, all styles including 18+, XP x3.5, minimal energy/satiety drain.",
         "invoice_elite_label": "ELITE month",
         "invoice_upgrade_title": "Upgrade to SUPER PRO",
-        "invoice_upgrade_desc": "Upgrade PRO to SUPER PRO for the remaining time. 350⭐.",
+        "invoice_upgrade_desc": "Upgrade PRO to SUPER PRO for the remaining time.",
         "invoice_upgrade_label": "Upgrade",
         "shop_btn": "🛍 Shop",
         "open_btn": "Open",
@@ -673,6 +678,11 @@ TEXTS = {
         "webapp_note_placeholder": "Note (optional)",
         "webapp_refuse_badge": "Doesn't want it",
         "promo_banner": "🔥 Today's deals: {items}",
+        "sub_sale_line": "🔥 Friday sale: SUPER PRO and ELITE −{n}% — today only!",
+        "coupon_line": "🎁 Your personal −{n}% discount on any Stars purchase — {hours} h left.",
+        "coupon_granted": "🎁 Thanks for your first purchase! Here's −{n}% off your next Stars purchase: a subscription, energizers, a scene — anything. Valid for {hours} h.",
+        "coupon_used": "🎁 Personal discount applied — thank you!",
+        "sub_sale_part": "👑 SUPER PRO and ELITE −{n}% today only",
         "subs_per_day": "💡 Per day that's just ≈7⭐ for PRO, ≈17⭐ for SUPER PRO and ≈33⭐ for ELITE. For comparison: one energizer is ≈{energizer}⭐, while a subscription gives you energizers, scenes and spins every day.",
         "energizer_sale_part": "⚡ Energizers −{n}% until Sunday",
         "pack_saving": "Save {n}%",
@@ -986,10 +996,10 @@ TEXTS = {
         "pro_only_alert": "❌ Nur für PRO.",
         "subs_title": "👑 Role Duel Abos",
         "subs_body": "🔥 PRO (220⭐ pro Monat)\n👉 Der ausgewogene Einstieg für alle, die ihren Begleiter gerade erst kennenlernen.\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 40 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-15%)\n• +2⚡ Energydrinks jeden Tag\n• 💼 1.5x Verdienst bei der Arbeit\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (500⭐ pro Monat)\n👉 Für alle, die viele zusätzliche Features und Möglichkeiten wollen.\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-25%)\n• +3⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (1000⭐ pro Monat)\n👉 Für alle, die SEHR viel chatten.\n• Alles aus SUPER PRO\n• Gedächtnis: 80 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-40%)\n• +4⚡ Energydrinks jeden Tag\n• 💼 2.8x Verdienst bei der Arbeit\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (350⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n🎁 Bei der ersten Abo-Buchung gibt's einen Bonus: 300💵 Bucks, 3⚡ Energydrinks und 1 heiße Szene!\n\n⚠️ Abos verlängern sich NICHT automatisch.",
-        "subs_btn_pro": "🔥 PRO — 220 ⭐/Monat · ≈7⭐ am Tag",
-        "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐/Monat · ≈17⭐ am Tag",
-        "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐/Monat · ≈33⭐ am Tag",
-        "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO (350⭐)",
+        "subs_btn_pro": "🔥 PRO — {price} ⭐/Monat · ≈{day}⭐ am Tag",
+        "subs_btn_super": "✨ SUPER PRO ✨ — {price} ⭐/Monat · ≈{day}⭐ am Tag",
+        "subs_btn_elite": "💎 ELITE 💎 — {price} ⭐/Monat · ≈{day}⭐ am Tag",
+        "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO ({price}⭐)",
         "invoice_pro_title": "PRO-Abo für einen Monat",
         "invoice_pro_desc": "Gedächtnis 40 Nachrichten, Stile Leidenschaftlich und Magnetisch.",
         "invoice_pro_label": "PRO Monat",
@@ -1000,7 +1010,7 @@ TEXTS = {
         "invoice_elite_desc": "Gedächtnis 80 Nachrichten, alle Stile inklusive 18+, XP x3.5, minimaler Energie-/Sättigungsverbrauch.",
         "invoice_elite_label": "ELITE Monat",
         "invoice_upgrade_title": "Upgrade auf SUPER PRO",
-        "invoice_upgrade_desc": "Hebt PRO für die Restlaufzeit auf SUPER PRO an. 350⭐.",
+        "invoice_upgrade_desc": "Hebt PRO für die Restlaufzeit auf SUPER PRO an.",
         "invoice_upgrade_label": "Upgrade",
         "shop_btn": "🛍 Shop",
         "open_btn": "Öffnen",
@@ -1049,6 +1059,11 @@ TEXTS = {
         "webapp_note_placeholder": "Notiz (optional)",
         "webapp_refuse_badge": "Will nicht",
         "promo_banner": "🔥 Angebote des Tages: {items}",
+        "sub_sale_line": "🔥 Freitags-Sale: SUPER PRO und ELITE −{n}% — nur heute!",
+        "coupon_line": "🎁 Dein persönlicher Rabatt von −{n}% auf jeden Kauf mit Stars — noch {hours} Std.",
+        "coupon_granted": "🎁 Danke für deinen ersten Kauf! Du bekommst −{n}% auf deinen nächsten Kauf mit Stars: Abo, Energydrinks, Szene — egal was. Gültig {hours} Std.",
+        "coupon_used": "🎁 Persönlicher Rabatt angewendet — danke!",
+        "sub_sale_part": "👑 SUPER PRO und ELITE −{n}% nur heute",
         "subs_per_day": "💡 Pro Tag sind das nur ≈7⭐ für PRO, ≈17⭐ für SUPER PRO und ≈33⭐ für ELITE. Zum Vergleich: ein Energydrink kostet ≈{energizer}⭐, und ein Abo gibt dir jeden Tag Energydrinks, Szenen und Drehs.",
         "energizer_sale_part": "⚡ Energydrinks −{n}% bis Sonntag",
         "pack_saving": "Spare {n}%",
@@ -4130,7 +4145,7 @@ async def send_spin_menu(message: types.Message, user):
             callback_data="spin_free" if has_free else "spin_no",
             style="success" if has_free else None
         )],
-        [InlineKeyboardButton(text=get_text(user, "spin_paid", price=price_label("spin_paid_20")), callback_data="spin_paid", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "spin_paid", price=price_label("spin_paid_20", user)), callback_data="spin_paid", style="success")],
         [InlineKeyboardButton(text=get_text(user, "back"), callback_data="spin_back", style="danger")]
     ])
 
@@ -4339,7 +4354,7 @@ async def spin_result(chat_id, user, free=False):
         rows.append([InlineKeyboardButton(
             text=get_text(user, "free", left=free_left, total=free_spins_allowed(user)),
             callback_data="spin_free", style="success")])
-    rows.append([InlineKeyboardButton(text=get_text(user, "spin_more", price=price_label("spin_paid_20")), callback_data="spin_paid", style="success")])
+    rows.append([InlineKeyboardButton(text=get_text(user, "spin_more", price=price_label("spin_paid_20", user)), callback_data="spin_paid", style="success")])
     rows.append([InlineKeyboardButton(text=get_text(user, "back"), callback_data="spin_back", style="danger")])
     keyboard = InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -4383,15 +4398,24 @@ async def profile_subs(call: types.CallbackQuery):
     if not user["personality_ready"]:
         await call.answer(get_text(user, "need_character_alert"), show_alert=True)
         return
+    def sub_btn(text_key, payload):
+        price = product_stars(payload, user)
+        return InlineKeyboardButton(text=get_text(user, text_key, price=price_label(payload, user), day=round(price / 30)),
+                                    callback_data=f"buy:{payload}", style="success")
+
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "subs_btn_pro"), callback_data="buy:subscribe_pro", style="success")],
-        [InlineKeyboardButton(text=get_text(user, "subs_btn_super"), callback_data="buy:subscribe_super", style="success")],
-        [InlineKeyboardButton(text=get_text(user, "subs_btn_elite"), callback_data="buy:subscribe_elite", style="success")],
-        [InlineKeyboardButton(text=get_text(user, "subs_btn_upgrade"), callback_data="buy:upgrade_to_super", style="success")],
+        [sub_btn("subs_btn_pro", "subscribe_pro")],
+        [sub_btn("subs_btn_super", "subscribe_super")],
+        [sub_btn("subs_btn_elite", "subscribe_elite")],
+        [InlineKeyboardButton(text=get_text(user, "subs_btn_upgrade", price=price_label("upgrade_to_super", user)),
+                              callback_data="buy:upgrade_to_super", style="success")],
         [InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")]
     ])
     text = get_text(user, "subs_title") + "\n\n" + get_text(user, "subs_body") + "\n\n" + get_text(
         user, "subs_per_day", energizer=round(energizer_stars("energizer_2") / ENERGIZER_PACKS["energizer_2"]["amount"]))
+    sales = sales_lines(user)
+    if sales:
+        text = "\n".join(sales) + "\n\n" + text
     await call.message.answer(text, reply_markup=keyboard)
 
 
@@ -4636,6 +4660,8 @@ def promo_banner_text(user):
         parts.append(f"{shown['emoji']} {shown.get(lang, shown['ru'])} −{int(discount * 100)}%")
     if energizer_sale_active():
         parts.insert(0, get_text(user, "energizer_sale_part", n=energizer_sale_percent()))
+    if sub_sale_active():
+        parts.insert(0, get_text(user, "sub_sale_part", n=int(SUB_SALE_DISCOUNT * 100)))
     return get_text(user, "promo_banner", items=", ".join(parts))
 
 
@@ -4672,8 +4698,31 @@ def spin_stars():
     return PRODUCTS["spin_paid_20"]["stars"] if energizer_sale_active() else SPIN_LIST_STARS
 
 
-def product_stars(payload):
-    """Цена товара в звёздах на сегодня -- одна точка правды для счетов и подписей."""
+# Пятничная распродажа подписок: SUPER PRO и ELITE реально дешевле только по пятницам.
+SUB_SALE_WEEKDAY = 4
+SUB_SALE_DISCOUNT = 0.2
+SUB_SALE_PRODUCTS = {"subscribe_super", "subscribe_elite"}
+# Бонус за первую покупку: скидка на следующую покупку за звёзды, на ограниченное время.
+FIRST_BUY_COUPON = 0.15
+FIRST_BUY_COUPON_HOURS = 72
+
+
+def sub_sale_active():
+    return datetime.now().weekday() == SUB_SALE_WEEKDAY
+
+
+def coupon_active(user):
+    coupon = (user or {}).get("coupon")
+    if not coupon:
+        return False
+    try:
+        return datetime.now() < datetime.fromisoformat(coupon["until"])
+    except (KeyError, ValueError, TypeError):
+        return False
+
+
+def regular_stars(payload):
+    """Обычная цена без персональных скидок (с учётом будней/выходных у энергетиков и прокрута)."""
     if payload in ENERGIZER_PACKS:
         return energizer_stars(payload)
     if payload in ("spin_paid_20", "spin_paid_webapp"):
@@ -4681,14 +4730,42 @@ def product_stars(payload):
     return PRODUCTS[payload]["stars"]
 
 
-def price_label(payload):
-    """«4̶5̶ 30» -- если у товара есть настоящая прежняя цена или сейчас распродажа, иначе просто цена."""
-    now = product_stars(payload)
+def product_discount(payload, user=None):
+    discount = SUB_SALE_DISCOUNT if payload in SUB_SALE_PRODUCTS and sub_sale_active() else 0
+    if coupon_active(user):
+        discount = max(discount, user["coupon"]["discount"])
+    return discount
+
+
+def product_stars(payload, user=None):
+    """Цена товара в звёздах для этого пользователя сейчас -- одна точка правды для счетов и подписей."""
+    base = regular_stars(payload)
+    discount = product_discount(payload, user)
+    return max(1, int(round(base * (1 - discount)))) if discount else base
+
+
+def price_label(payload, user=None):
+    """«4̶5̶ 30» -- если есть настоящая прежняя/обычная цена выше текущей, иначе просто цена."""
+    now = product_stars(payload, user)
+    ref = regular_stars(payload)
+    if payload in ENERGIZER_PACKS:
+        ref = ENERGIZER_LIST_STARS[payload]
+    elif payload in ("spin_paid_20", "spin_paid_webapp"):
+        ref = SPIN_LIST_STARS
     if payload in PREVIOUS_STARS:
-        return f"{strike(PREVIOUS_STARS[payload])} {now}"
-    if payload in ("spin_paid_20", "spin_paid_webapp") and now < SPIN_LIST_STARS:
-        return f"{strike(SPIN_LIST_STARS)} {now}"
-    return str(now)
+        ref = max(ref, PREVIOUS_STARS[payload])
+    return f"{strike(ref)} {now}" if now < ref else str(now)
+
+
+def sales_lines(user):
+    """Строки об актуальных распродажах и купоне -- для меню подписок."""
+    lines = []
+    if sub_sale_active():
+        lines.append(get_text(user, "sub_sale_line", n=int(SUB_SALE_DISCOUNT * 100)))
+    if coupon_active(user):
+        left = max(1, round((datetime.fromisoformat(user["coupon"]["until"]) - datetime.now()).total_seconds() / 3600))
+        lines.append(get_text(user, "coupon_line", n=int(user["coupon"]["discount"] * 100), hours=left))
+    return lines
 
 
 def energizer_pack_saving(key):
@@ -4962,7 +5039,7 @@ def update_overfeed_strikes(user, item):
 
 def get_death_kb(user):
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "defibrillator_btn", price=price_label("defibrillator")),
+        [InlineKeyboardButton(text=get_text(user, "defibrillator_btn", price=price_label("defibrillator", user)),
                               callback_data="buy:defibrillator", style="success")],
         [InlineKeyboardButton(text=get_text(user, "new_character_btn"), callback_data="revive_new_character", style="danger")],
     ])
@@ -5576,7 +5653,7 @@ async def send_stars_invoice(chat_id, user, payload):
         payload=payload,
         provider_token="",
         currency="XTR",
-        prices=[LabeledPrice(label=label, amount=product_stars(payload))],
+        prices=[LabeledPrice(label=label, amount=product_stars(payload, user))],
     )
 
 
@@ -5610,7 +5687,7 @@ async def start_payment(call: types.CallbackQuery, user, method, payload):
 def get_payment_methods_kb(user, payload):
     prices = PRODUCTS[payload]
     labels = {
-        "stars": get_text(user, "pay_stars", amount=product_stars(payload)),
+        "stars": get_text(user, "pay_stars", amount=product_stars(payload, user)),
         "crypto": get_text(user, "pay_crypto", amount=prices["usd"]),
         "lava": get_text(user, "pay_lava", amount=prices["rub"]),
     }
@@ -5682,7 +5759,21 @@ async def pre_checkout(query: types.PreCheckoutQuery):
 @dp.message(lambda m: m.successful_payment)
 async def payment_success(message: types.Message):
     user = get_user(message.from_user.id)
-    await grant_product(user, message.successful_payment.invoice_payload, message.chat.id)
+    payment = message.successful_payment
+    payload = payment.invoice_payload
+    # Купон тратим только если счёт и правда был со скидкой купона (сумма ниже цены без купона).
+    if coupon_active(user) and payload in PRODUCTS and payment.total_amount < product_stars(payload):
+        user["coupon"] = None
+        save_data(user_data)
+        await message.answer(get_text(user, "coupon_used"))
+    first_purchase = not user.get("first_purchase_done")
+    await grant_product(user, payload, message.chat.id)
+    if first_purchase:
+        user["first_purchase_done"] = True
+        user["coupon"] = {"discount": FIRST_BUY_COUPON,
+                          "until": (datetime.now() + timedelta(hours=FIRST_BUY_COUPON_HOURS)).isoformat()}
+        save_data(user_data)
+        await message.answer(get_text(user, "coupon_granted", n=int(FIRST_BUY_COUPON * 100), hours=FIRST_BUY_COUPON_HOURS))
 
 
 # ============================================================
@@ -5950,7 +6041,7 @@ def get_wake_kb(user):
         rows.append([InlineKeyboardButton(text=get_text(user, "elite_free_wake_btn"), callback_data="elite_free_wake", style="success")])
     if user.get("energizers", 0) > 0:
         rows.append([InlineKeyboardButton(text=get_text(user, "wake_energizer_btn", count=user.get("energizers", 0)), callback_data="wake_up", style="success")])
-    rows.append([InlineKeyboardButton(text=get_text(user, "wake_now_btn", price=price_label("wake_now")),
+    rows.append([InlineKeyboardButton(text=get_text(user, "wake_now_btn", price=price_label("wake_now", user)),
                                       callback_data="buy:wake_now", style="success")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -7794,7 +7885,7 @@ async def handle_message(message: types.Message):
     # не генерируем (экономит и токены, и веру в механику), а кнопки навигации выше уже
     # обработаны и по-прежнему работают, чтобы можно было зайти в профиль и разбудить/покормить.
     if is_asleep(user):
-        await message.answer(get_text(user, "asleep_message", price=price_label("wake_now")), reply_markup=get_wake_kb(user))
+        await message.answer(get_text(user, "asleep_message", price=price_label("wake_now", user)), reply_markup=get_wake_kb(user))
         return
 
     # 5. Режим редактирования последнего сообщения
@@ -8037,8 +8128,8 @@ def serialize_shop_state(user):
     energizer_packs = [
         {"key": key, "amount": pack["amount"], "emoji": pack["emoji"], "image": f"/assets/{key}.png",
          "name": get_text(user, "invoice_energizer_title", amount=pack["amount"]),
-         "stars": energizer_stars(key), "saving": energizer_pack_saving(key),
-         "old_stars": ENERGIZER_LIST_STARS[key] if energizer_sale_active() else None,
+         "stars": product_stars(key, user), "saving": energizer_pack_saving(key),
+         "old_stars": ENERGIZER_LIST_STARS[key] if product_stars(key, user) < ENERGIZER_LIST_STARS[key] else None,
          "restore_hint": get_text(user, "energizer_restore_hint", amount=ENERGIZER_RESTORE_AMOUNT)}
         for key, pack in ENERGIZER_PACKS.items()
     ]
@@ -12236,7 +12327,7 @@ async def api_shop_energizer_invoice_handler(request):
             payload=payload,
             provider_token="",
             currency="XTR",
-            prices=[LabeledPrice(label=label, amount=energizer_stars(payload))],
+            prices=[LabeledPrice(label=label, amount=product_stars(payload, user))],
         )
     except Exception as e:
         logging.error(f"create_invoice_link ({payload}) для {user_id}: {e}")
@@ -12503,7 +12594,7 @@ def serialize_spin_state(user):
             "spin_hint": get_text(user, "spin_hint"),
             "free_label": spin_free_label(user),
             "tomorrow_label": get_text(user, "tomorrow"),
-            "paid_label": get_text(user, "spin_paid", price=price_label("spin_paid_webapp")),
+            "paid_label": get_text(user, "spin_paid", price=price_label("spin_paid_webapp", user)),
             "luck_btn": get_text(user, "spin_luck_btn", price=PRODUCTS["spin_luck"]["stars"]),
             "luck_active": get_text(user, "spin_luck_active", time="{time}"),
             "luck_elite": get_text(user, "spin_luck_elite"),
@@ -15404,7 +15495,7 @@ async def api_spin_paid_invoice_handler(request):
             payload="spin_paid_webapp",
             provider_token="",
             currency="XTR",
-            prices=[LabeledPrice(label=label, amount=product_stars("spin_paid_webapp"))],
+            prices=[LabeledPrice(label=label, amount=product_stars("spin_paid_webapp", user))],
         )
     except Exception as e:
         logging.error(f"create_invoice_link (spin_paid_webapp) для {user_id}: {e}")
