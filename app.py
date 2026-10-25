@@ -11894,7 +11894,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
         name: s.ui.shop_category_energizer,
         items: s.energizer_packs.map(function (p) {
           return {key: p.key, category: "energizer", emoji: p.emoji, image: p.image, name: p.name, stars: p.stars, saving: p.saving,
-                  effects: "", ready_in: null, refuse: false};
+                  effects: p.restore_hint || "", ready_in: null, refuse: false};
         })
       });
     }
