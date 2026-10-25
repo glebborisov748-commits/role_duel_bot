@@ -52,14 +52,14 @@ TEXTS = {
         "channel": "📢 Перейти в канал",
         "free": "🎁 Бесплатно ({left}/{total})",
         "tomorrow": "⏳ Завтра",
-        "spin_paid": "💎 Крутить за 15⭐",
+        "spin_paid": "💎 Крутить за {price}⭐",
         "spin_luck_btn": "🍀 Удача на 24ч — {price}⭐",
         "spin_luck_active": "🍀 Удача активна: ещё {time}",
         "spin_luck_elite": "🍀 Удача ELITE активна всегда",
         "invoice_luck_title": "Удача колеса",
         "invoice_luck_desc": "24 часа повышенных шансов на редкие призы колеса фортуны.",
         "invoice_luck_label": "Удача на 24ч",
-        "spin_more": "💎 Крутить ещё за 15⭐",
+        "spin_more": "💎 Крутить ещё за {price}⭐",
         "welcome": "👋 Добро пожаловать!",
         "age_confirm": "🔞 **ВНИМАНИЕ!**\nЭтот бот предназначен для лиц старше 18 лет.\nПодтверди свой возраст:",
         "age_ok": "✅ Возраст подтверждён.",
@@ -172,7 +172,7 @@ TEXTS = {
         "world_name_anime": "аниме-мира",
         "spin_already": "⏳ Ты уже крутил сегодня! Завтра будет новое бесплатное вращение.",
         "spin_tomorrow_alert": "⏳ Бесплатное вращение будет доступно завтра!",
-        "spin_invoice_desc": "Платное вращение — 15⭐. Удачи!",
+        "spin_invoice_desc": "Платное вращение колеса. Удачи!",
         "spin_invoice_label": "Прокрутка",
         "spin_rolling": "🎰 Крутим...",
         "spin_almost": "🎰 Почти выпало: {name}",
@@ -211,7 +211,7 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Твоя подписка закончилась, выбери бесплатный стиль:",
         "quarrel": "💢 Ссора! Уровень близости снижен.",
         "generation_error": "⚠️ Ошибка генерации ответа: {error}",
-        "intim_buy_btn": "🔥 Купить горячую сцену (30⭐)",
+        "intim_buy_btn": "🔥 Купить горячую сцену (4̶5̶ 30⭐)",
         "intim_menu_title": "🔥 **Горячая сцена**\n\nДоступно сцен: {n}\nВыбери, что будет происходить:",
         "intim_choose_location": "📍 Выбери место:",
         "intim_choose_dominant": "🎭 Кто проявляет инициативу?",
@@ -234,9 +234,9 @@ TEXTS = {
         "pro_only_alert": "❌ Только для PRO.",
         "subs_title": "👑 Подписки Role Duel",
         "subs_body": "🔥 PRO (220⭐/мес)\n👉 База для тех, кто только начинает — очень сбалансированный набор.\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 40 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-15%)\n• +2⚡ энергетика каждый день\n• 💼 Заработок на работе x1.5\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (500⭐/мес)\n👉 Для тех, кто хочет побольше разных фишек и возможностей.\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 60 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-25%)\n• +3⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (1000⭐/мес)\n👉 Для тех, кто ООЧЕНЬ много общается.\n• Всё, что есть в SUPER PRO\n• Память: 80 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-40%)\n• +4⚡ энергетика каждый день\n• 💼 Заработок на работе x2.8\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (350⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n🎁 При первой покупке любой подписки — бонус: 300💵 баксов, 3⚡ энергетика и 1 горячая сцена!\n\n⚠️ Подписки НЕ продлеваются автоматически.",
-        "subs_btn_pro": "🔥 PRO — 220 ⭐/мес",
-        "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐/мес",
-        "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐/мес",
+        "subs_btn_pro": "🔥 PRO — 220 ⭐/мес · ≈7⭐ в день",
+        "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐/мес · ≈17⭐ в день",
+        "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐/мес · ≈33⭐ в день",
         "subs_btn_upgrade": "⬆️ Апгрейд до SUPER PRO (350⭐)",
         "invoice_pro_title": "PRO подписка на месяц",
         "invoice_pro_desc": "Память 40 сообщений, стили Страстный и Магнетический.",
@@ -297,6 +297,7 @@ TEXTS = {
         "webapp_note_placeholder": "Записка (необязательно)",
         "webapp_refuse_badge": "Не хочет",
         "promo_banner": "🔥 Акции дня: {items}",
+        "subs_per_day": "💡 В день это всего ≈7⭐ за PRO, ≈17⭐ за SUPER PRO и ≈33⭐ за ELITE. Для сравнения: один энергетик — ≈{energizer}⭐, а подписка каждый день сама даёт энергетики, сцены и прокруты.",
         "energizer_sale_part": "⚡ Энергетики −{n}% до воскресенья",
         "pack_saving": "Выгода −{n}%",
         "gift_locked_alert": "🔒 Этот подарок откроется на {level} уровне близости. Общайся с персонажем, чтобы стать ближе 💬",
@@ -427,14 +428,14 @@ TEXTS = {
         "channel": "📢 Go to channel",
         "free": "🎁 Free ({left}/{total})",
         "tomorrow": "⏳ Tomorrow",
-        "spin_paid": "💎 Spin for 15⭐",
+        "spin_paid": "💎 Spin for {price}⭐",
         "spin_luck_btn": "🍀 Luck for 24h — {price}⭐",
         "spin_luck_active": "🍀 Luck active: {time} left",
         "spin_luck_elite": "🍀 ELITE luck is always on",
         "invoice_luck_title": "Wheel luck",
         "invoice_luck_desc": "24 hours of boosted odds for rare wheel prizes.",
         "invoice_luck_label": "Luck for 24h",
-        "spin_more": "💎 Spin again for 15⭐",
+        "spin_more": "💎 Spin again for {price}⭐",
         "welcome": "👋 Welcome!",
         "age_confirm": "🔞 **WARNING!**\nThis bot is for 18+ only.\nConfirm your age:",
         "age_ok": "✅ Age confirmed.",
@@ -547,7 +548,7 @@ TEXTS = {
         "world_name_anime": "the anime world",
         "spin_already": "⏳ You already spun today! A new free spin will be available tomorrow.",
         "spin_tomorrow_alert": "⏳ The free spin will be available tomorrow!",
-        "spin_invoice_desc": "Paid spin — 15⭐. Good luck!",
+        "spin_invoice_desc": "Paid wheel spin. Good luck!",
         "spin_invoice_label": "Spin",
         "spin_rolling": "🎰 Spinning...",
         "spin_almost": "🎰 Almost got: {name}",
@@ -586,7 +587,7 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Your subscription has ended, pick a free style:",
         "quarrel": "💢 A quarrel! Your closeness level dropped.",
         "generation_error": "⚠️ Failed to generate a reply: {error}",
-        "intim_buy_btn": "🔥 Buy a hot scene (30⭐)",
+        "intim_buy_btn": "🔥 Buy a hot scene (4̶5̶ 30⭐)",
         "intim_menu_title": "🔥 **Hot scene**\n\nScenes available: {n}\nChoose what happens:",
         "intim_choose_location": "📍 Choose a place:",
         "intim_choose_dominant": "🎭 Who takes the lead?",
@@ -609,9 +610,9 @@ TEXTS = {
         "pro_only_alert": "❌ PRO only.",
         "subs_title": "👑 Role Duel Subscriptions",
         "subs_body": "🔥 PRO (220⭐ per month)\n👉 The balanced starting point for those just getting to know their companion.\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 40 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-15%)\n• +2⚡ energizers every day\n• 💼 1.5x earnings from work\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (500⭐ per month)\n👉 For those who want a lot more features and options.\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 60 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-25%)\n• +3⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (1000⭐ per month)\n👉 For those who chat A LOT.\n• Everything in SUPER PRO\n• Memory: 80 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-40%)\n• +4⚡ energizers every day\n• 💼 2.8x earnings from work\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (350⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n🎁 Get a bonus on your first subscription purchase: 300💵 bucks, 3⚡ energizers and 1 hot scene!\n\n⚠️ Subscriptions do NOT renew automatically.",
-        "subs_btn_pro": "🔥 PRO — 220 ⭐ per month",
-        "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐ per month",
-        "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐ per month",
+        "subs_btn_pro": "🔥 PRO — 220 ⭐/month · ≈7⭐ a day",
+        "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐/month · ≈17⭐ a day",
+        "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐/month · ≈33⭐ a day",
         "subs_btn_upgrade": "⬆️ Upgrade to SUPER PRO (350⭐)",
         "invoice_pro_title": "PRO subscription for a month",
         "invoice_pro_desc": "40-message memory, Passionate and Magnetic styles.",
@@ -672,6 +673,7 @@ TEXTS = {
         "webapp_note_placeholder": "Note (optional)",
         "webapp_refuse_badge": "Doesn't want it",
         "promo_banner": "🔥 Today's deals: {items}",
+        "subs_per_day": "💡 Per day that's just ≈7⭐ for PRO, ≈17⭐ for SUPER PRO and ≈33⭐ for ELITE. For comparison: one energizer is ≈{energizer}⭐, while a subscription gives you energizers, scenes and spins every day.",
         "energizer_sale_part": "⚡ Energizers −{n}% until Sunday",
         "pack_saving": "Save {n}%",
         "gift_locked_alert": "🔒 This gift unlocks at closeness level {level}. Chat with your companion to get closer 💬",
@@ -802,14 +804,14 @@ TEXTS = {
         "channel": "📢 Zum Kanal",
         "free": "🎁 Gratis ({left}/{total})",
         "tomorrow": "⏳ Morgen",
-        "spin_paid": "💎 Für 15⭐ drehen",
+        "spin_paid": "💎 Für {price}⭐ drehen",
         "spin_luck_btn": "🍀 Glück für 24 Std. — {price}⭐",
         "spin_luck_active": "🍀 Glück aktiv: noch {time}",
         "spin_luck_elite": "🍀 ELITE-Glück ist immer aktiv",
         "invoice_luck_title": "Rad-Glück",
         "invoice_luck_desc": "24 Stunden bessere Chancen auf seltene Radpreise.",
         "invoice_luck_label": "Glück für 24 Std.",
-        "spin_more": "💎 Nochmal für 15⭐ drehen",
+        "spin_more": "💎 Nochmal für {price}⭐ drehen",
         "welcome": "👋 Willkommen!",
         "age_confirm": "🔞 **ACHTUNG!**\nDieser Bot ist nur für Personen ab 18 Jahren.\nBestätige dein Alter:",
         "age_ok": "✅ Alter bestätigt.",
@@ -922,7 +924,7 @@ TEXTS = {
         "world_name_anime": "der Anime-Welt",
         "spin_already": "⏳ Du hast heute schon gedreht! Morgen gibt es eine neue Gratisdrehung.",
         "spin_tomorrow_alert": "⏳ Die Gratisdrehung gibt es morgen wieder!",
-        "spin_invoice_desc": "Bezahlte Drehung — 15⭐. Viel Glück!",
+        "spin_invoice_desc": "Bezahlte Drehung am Glücksrad. Viel Glück!",
         "spin_invoice_label": "Drehung",
         "spin_rolling": "🎰 Es dreht sich...",
         "spin_almost": "🎰 Fast gewonnen: {name}",
@@ -961,7 +963,7 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Dein Abo ist abgelaufen, wähle einen kostenlosen Stil:",
         "quarrel": "💢 Streit! Dein Nähe-Level ist gesunken.",
         "generation_error": "⚠️ Antwort konnte nicht erzeugt werden: {error}",
-        "intim_buy_btn": "🔥 Heiße Szene kaufen (30⭐)",
+        "intim_buy_btn": "🔥 Heiße Szene kaufen (4̶5̶ 30⭐)",
         "intim_menu_title": "🔥 **Heiße Szene**\n\nVerfügbare Szenen: {n}\nWähle, was passiert:",
         "intim_choose_location": "📍 Wähle einen Ort:",
         "intim_choose_dominant": "🎭 Wer übernimmt die Führung?",
@@ -984,9 +986,9 @@ TEXTS = {
         "pro_only_alert": "❌ Nur für PRO.",
         "subs_title": "👑 Role Duel Abos",
         "subs_body": "🔥 PRO (220⭐ pro Monat)\n👉 Der ausgewogene Einstieg für alle, die ihren Begleiter gerade erst kennenlernen.\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 40 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-15%)\n• +2⚡ Energydrinks jeden Tag\n• 💼 1.5x Verdienst bei der Arbeit\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (500⭐ pro Monat)\n👉 Für alle, die viele zusätzliche Features und Möglichkeiten wollen.\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-25%)\n• +3⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (1000⭐ pro Monat)\n👉 Für alle, die SEHR viel chatten.\n• Alles aus SUPER PRO\n• Gedächtnis: 80 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-40%)\n• +4⚡ Energydrinks jeden Tag\n• 💼 2.8x Verdienst bei der Arbeit\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (350⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n🎁 Bei der ersten Abo-Buchung gibt's einen Bonus: 300💵 Bucks, 3⚡ Energydrinks und 1 heiße Szene!\n\n⚠️ Abos verlängern sich NICHT automatisch.",
-        "subs_btn_pro": "🔥 PRO — 220 ⭐ pro Monat",
-        "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐ pro Monat",
-        "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐ pro Monat",
+        "subs_btn_pro": "🔥 PRO — 220 ⭐/Monat · ≈7⭐ am Tag",
+        "subs_btn_super": "✨ SUPER PRO ✨ — 500 ⭐/Monat · ≈17⭐ am Tag",
+        "subs_btn_elite": "💎 ELITE 💎 — 1000 ⭐/Monat · ≈33⭐ am Tag",
         "subs_btn_upgrade": "⬆️ Upgrade auf SUPER PRO (350⭐)",
         "invoice_pro_title": "PRO-Abo für einen Monat",
         "invoice_pro_desc": "Gedächtnis 40 Nachrichten, Stile Leidenschaftlich und Magnetisch.",
@@ -1047,6 +1049,7 @@ TEXTS = {
         "webapp_note_placeholder": "Notiz (optional)",
         "webapp_refuse_badge": "Will nicht",
         "promo_banner": "🔥 Angebote des Tages: {items}",
+        "subs_per_day": "💡 Pro Tag sind das nur ≈7⭐ für PRO, ≈17⭐ für SUPER PRO und ≈33⭐ für ELITE. Zum Vergleich: ein Energydrink kostet ≈{energizer}⭐, und ein Abo gibt dir jeden Tag Energydrinks, Szenen und Drehs.",
         "energizer_sale_part": "⚡ Energydrinks −{n}% bis Sonntag",
         "pack_saving": "Spare {n}%",
         "gift_locked_alert": "🔒 Dieses Geschenk wird ab Nähe-Stufe {level} freigeschaltet. Schreib mit deinem Begleiter, um euch näherzukommen 💬",
@@ -4127,7 +4130,7 @@ async def send_spin_menu(message: types.Message, user):
             callback_data="spin_free" if has_free else "spin_no",
             style="success" if has_free else None
         )],
-        [InlineKeyboardButton(text=get_text(user, "spin_paid"), callback_data="spin_paid", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "spin_paid", price=price_label("spin_paid_20")), callback_data="spin_paid", style="success")],
         [InlineKeyboardButton(text=get_text(user, "back"), callback_data="spin_back", style="danger")]
     ])
 
@@ -4336,7 +4339,7 @@ async def spin_result(chat_id, user, free=False):
         rows.append([InlineKeyboardButton(
             text=get_text(user, "free", left=free_left, total=free_spins_allowed(user)),
             callback_data="spin_free", style="success")])
-    rows.append([InlineKeyboardButton(text=get_text(user, "spin_more"), callback_data="spin_paid", style="success")])
+    rows.append([InlineKeyboardButton(text=get_text(user, "spin_more", price=price_label("spin_paid_20")), callback_data="spin_paid", style="success")])
     rows.append([InlineKeyboardButton(text=get_text(user, "back"), callback_data="spin_back", style="danger")])
     keyboard = InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -4387,7 +4390,8 @@ async def profile_subs(call: types.CallbackQuery):
         [InlineKeyboardButton(text=get_text(user, "subs_btn_upgrade"), callback_data="buy:upgrade_to_super", style="success")],
         [InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")]
     ])
-    text = get_text(user, "subs_title") + "\n\n" + get_text(user, "subs_body")
+    text = get_text(user, "subs_title") + "\n\n" + get_text(user, "subs_body") + "\n\n" + get_text(
+        user, "subs_per_day", energizer=round(energizer_stars("energizer_2") / ENERGIZER_PACKS["energizer_2"]["amount"]))
     await call.message.answer(text, reply_markup=keyboard)
 
 
@@ -4652,6 +4656,39 @@ def energizer_stars(key):
 def energizer_sale_percent():
     key = "energizer_35"
     return int(round((1 - PRODUCTS[key]["stars"] / ENERGIZER_LIST_STARS[key]) * 100))
+
+
+# Прежние цены, которые реально были у товаров (показываем зачёркнутыми рядом с текущей).
+PREVIOUS_STARS = {"intim_scene": 45, "wake_now": 50, "defibrillator": 55}
+SPIN_LIST_STARS = 20  # обычная цена прокрута пн-чт; пт-вс -- распродажа по цене из PRODUCTS (15⭐)
+
+
+def strike(text):
+    """Зачёркнутый текст для кнопок Telegram (там нет разметки) -- через комбинирующий символ U+0336."""
+    return "".join(ch + "\u0336" for ch in str(text))
+
+
+def spin_stars():
+    return PRODUCTS["spin_paid_20"]["stars"] if energizer_sale_active() else SPIN_LIST_STARS
+
+
+def product_stars(payload):
+    """Цена товара в звёздах на сегодня -- одна точка правды для счетов и подписей."""
+    if payload in ENERGIZER_PACKS:
+        return energizer_stars(payload)
+    if payload in ("spin_paid_20", "spin_paid_webapp"):
+        return spin_stars()
+    return PRODUCTS[payload]["stars"]
+
+
+def price_label(payload):
+    """«4̶5̶ 30» -- если у товара есть настоящая прежняя цена или сейчас распродажа, иначе просто цена."""
+    now = product_stars(payload)
+    if payload in PREVIOUS_STARS:
+        return f"{strike(PREVIOUS_STARS[payload])} {now}"
+    if payload in ("spin_paid_20", "spin_paid_webapp") and now < SPIN_LIST_STARS:
+        return f"{strike(SPIN_LIST_STARS)} {now}"
+    return str(now)
 
 
 def energizer_pack_saving(key):
@@ -4925,7 +4962,7 @@ def update_overfeed_strikes(user, item):
 
 def get_death_kb(user):
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "defibrillator_btn", price=PRODUCTS["defibrillator"]["stars"]),
+        [InlineKeyboardButton(text=get_text(user, "defibrillator_btn", price=price_label("defibrillator")),
                               callback_data="buy:defibrillator", style="success")],
         [InlineKeyboardButton(text=get_text(user, "new_character_btn"), callback_data="revive_new_character", style="danger")],
     ])
@@ -5177,7 +5214,7 @@ PRODUCTS = {
     "spin_luck": {"stars": 25, "usd": 0.35, "rub": 29},
     "intim_scene": {"stars": 30, "usd": 0.4, "rub": 35},  # было 45⭐ — снизили по просьбе
     "wake_now": {"stars": 25, "usd": 0.4, "rub": 29},
-    "defibrillator": {"stars": 55, "usd": 0.8, "rub": 65},
+    "defibrillator": {"stars": 50, "usd": 0.7, "rub": 59},  # было 55⭐/65₽
 }
 # Подстраховка на случай, если когда-нибудь добавят товар без явного rub — тогда он по
 # умолчанию будет 1:1 со звёздами, а не упадёт с KeyError.
@@ -5539,7 +5576,7 @@ async def send_stars_invoice(chat_id, user, payload):
         payload=payload,
         provider_token="",
         currency="XTR",
-        prices=[LabeledPrice(label=label, amount=PRODUCTS[payload]["stars"])],
+        prices=[LabeledPrice(label=label, amount=product_stars(payload))],
     )
 
 
@@ -5573,7 +5610,7 @@ async def start_payment(call: types.CallbackQuery, user, method, payload):
 def get_payment_methods_kb(user, payload):
     prices = PRODUCTS[payload]
     labels = {
-        "stars": get_text(user, "pay_stars", amount=prices["stars"]),
+        "stars": get_text(user, "pay_stars", amount=product_stars(payload)),
         "crypto": get_text(user, "pay_crypto", amount=prices["usd"]),
         "lava": get_text(user, "pay_lava", amount=prices["rub"]),
     }
@@ -5913,7 +5950,7 @@ def get_wake_kb(user):
         rows.append([InlineKeyboardButton(text=get_text(user, "elite_free_wake_btn"), callback_data="elite_free_wake", style="success")])
     if user.get("energizers", 0) > 0:
         rows.append([InlineKeyboardButton(text=get_text(user, "wake_energizer_btn", count=user.get("energizers", 0)), callback_data="wake_up", style="success")])
-    rows.append([InlineKeyboardButton(text=get_text(user, "wake_now_btn", price=PRODUCTS["wake_now"]["stars"]),
+    rows.append([InlineKeyboardButton(text=get_text(user, "wake_now_btn", price=price_label("wake_now")),
                                       callback_data="buy:wake_now", style="success")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
@@ -7757,7 +7794,7 @@ async def handle_message(message: types.Message):
     # не генерируем (экономит и токены, и веру в механику), а кнопки навигации выше уже
     # обработаны и по-прежнему работают, чтобы можно было зайти в профиль и разбудить/покормить.
     if is_asleep(user):
-        await message.answer(get_text(user, "asleep_message", price=PRODUCTS["wake_now"]["stars"]), reply_markup=get_wake_kb(user))
+        await message.answer(get_text(user, "asleep_message", price=price_label("wake_now")), reply_markup=get_wake_kb(user))
         return
 
     # 5. Режим редактирования последнего сообщения
@@ -11584,8 +11621,15 @@ SHOP_PAGE_HTML = '''<!doctype html>
   .card-locked { opacity: .55; }
   #promo-banner { display: none; margin: 8px 14px 0; padding: 8px 12px; border-radius: 12px; font-size: 13px; font-weight: 700;
     color: #fff; background: linear-gradient(135deg, #ff7043, #e53935); }
-  .save-badge { display: inline-block; white-space: nowrap; margin-top: 2px; padding: 1px 6px; border-radius: 8px; font-size: 10px; font-weight: 800;
-    color: #fff; background: #2e7d32; }
+  .save-badge { position: relative; overflow: hidden; display: inline-block; white-space: nowrap; margin-top: 3px; padding: 2px 7px;
+    border-radius: 8px; font-size: 10px; font-weight: 800; color: #fff;
+    background: linear-gradient(135deg, #22c55e, #059669); box-shadow: 0 0 8px rgba(34,197,94,.55);
+    animation: save-pulse 1.6s ease-in-out infinite; }
+  .save-badge::after { content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.75), transparent); transform: skewX(-20deg);
+    animation: save-shine 2.2s ease-in-out infinite; }
+  @keyframes save-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+  @keyframes save-shine { 0% { left: -60%; } 60%, 100% { left: 130%; } }
   .card-deal { border: 1px solid rgba(255,112,67,.55); background: linear-gradient(160deg, rgba(255,112,67,.14), transparent 65%); }
   .old-price { display: block; opacity: .55; font-weight: 400; font-size: 11px; }
   .card-energizer {
@@ -11874,7 +11918,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
       } else {
         starsPrice.textContent = item.stars + "⭐";
       }
-      if (item.saving > 0 && !item.old_stars) {
+      if (item.saving > 0) {
         var save = document.createElement("span");
         save.className = "save-badge";
         save.textContent = s.ui.pack_saving.replace("{n}", item.saving);
@@ -12459,7 +12503,7 @@ def serialize_spin_state(user):
             "spin_hint": get_text(user, "spin_hint"),
             "free_label": spin_free_label(user),
             "tomorrow_label": get_text(user, "tomorrow"),
-            "paid_label": get_text(user, "spin_paid"),
+            "paid_label": get_text(user, "spin_paid", price=price_label("spin_paid_webapp")),
             "luck_btn": get_text(user, "spin_luck_btn", price=PRODUCTS["spin_luck"]["stars"]),
             "luck_active": get_text(user, "spin_luck_active", time="{time}"),
             "luck_elite": get_text(user, "spin_luck_elite"),
@@ -15360,7 +15404,7 @@ async def api_spin_paid_invoice_handler(request):
             payload="spin_paid_webapp",
             provider_token="",
             currency="XTR",
-            prices=[LabeledPrice(label=label, amount=PRODUCTS["spin_paid_webapp"]["stars"])],
+            prices=[LabeledPrice(label=label, amount=product_stars("spin_paid_webapp"))],
         )
     except Exception as e:
         logging.error(f"create_invoice_link (spin_paid_webapp) для {user_id}: {e}")
