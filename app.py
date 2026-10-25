@@ -293,7 +293,7 @@ TEXTS = {
         "overfeed_refuse_alert": "❌ Персонаж наелся и отказывается есть ещё — дай сытости немного снизиться.",
         "webapp_title": "🛍 Магазин",
         "webapp_buy_btn": "Купить",
-        "webapp_buy_stars_btn": "⭐ Купить",
+        "webapp_buy_stars_btn": "Купить",
         "webapp_note_placeholder": "Записка (необязательно)",
         "webapp_refuse_badge": "Не хочет",
         "promo_banner": "🔥 Акции дня: {items}",
@@ -674,7 +674,7 @@ TEXTS = {
         "overfeed_refuse_alert": "❌ Your companion is full and refuses to eat more — let their satiety drop a bit first.",
         "webapp_title": "🛍 Shop",
         "webapp_buy_btn": "Buy",
-        "webapp_buy_stars_btn": "⭐ Buy",
+        "webapp_buy_stars_btn": "Buy",
         "webapp_note_placeholder": "Note (optional)",
         "webapp_refuse_badge": "Doesn't want it",
         "promo_banner": "🔥 Today's deals: {items}",
@@ -1055,7 +1055,7 @@ TEXTS = {
         "overfeed_refuse_alert": "❌ Dein Begleiter ist satt und weigert sich, mehr zu essen — lass die Sättigung erst etwas sinken.",
         "webapp_title": "🛍 Shop",
         "webapp_buy_btn": "Kaufen",
-        "webapp_buy_stars_btn": "⭐ Kaufen",
+        "webapp_buy_stars_btn": "Kaufen",
         "webapp_note_placeholder": "Notiz (optional)",
         "webapp_refuse_badge": "Will nicht",
         "promo_banner": "🔥 Angebote des Tages: {items}",
@@ -4768,11 +4768,12 @@ def sales_lines(user):
     return lines
 
 
-def energizer_pack_saving(key):
-    """Честная выгода пачки: насколько штука дешевле, чем в самой маленькой пачке (в %)."""
-    per_unit = {k: energizer_stars(k) / pack["amount"] for k, pack in ENERGIZER_PACKS.items()}
-    base = max(per_unit.values())
-    return int(round((1 - per_unit[key] / base) * 100))
+def energizer_pack_saving(key, user=None):
+    """Честная выгода: насколько штука в этой пачке сейчас дешевле обычной цены штуки в самой маленькой
+    пачке (пн-чт, ENERGIZER_LIST_STARS) -- учитывает и размер пачки, и распродажу выходных, и купон."""
+    base = ENERGIZER_LIST_STARS["energizer_2"] / ENERGIZER_PACKS["energizer_2"]["amount"]
+    now = product_stars(key, user) / ENERGIZER_PACKS[key]["amount"]
+    return max(0, int(round((1 - now / base) * 100)))
 
 
 def get_shop_kb(user):
@@ -8128,8 +8129,7 @@ def serialize_shop_state(user):
     energizer_packs = [
         {"key": key, "amount": pack["amount"], "emoji": pack["emoji"], "image": f"/assets/{key}.png",
          "name": get_text(user, "invoice_energizer_title", amount=pack["amount"]),
-         "stars": product_stars(key, user), "saving": energizer_pack_saving(key),
-         "old_stars": ENERGIZER_LIST_STARS[key] if product_stars(key, user) < ENERGIZER_LIST_STARS[key] else None,
+         "stars": product_stars(key, user), "saving": energizer_pack_saving(key, user),
          "restore_hint": get_text(user, "energizer_restore_hint", amount=ENERGIZER_RESTORE_AMOUNT)}
         for key, pack in ENERGIZER_PACKS.items()
     ]
@@ -11712,7 +11712,10 @@ SHOP_PAGE_HTML = '''<!doctype html>
   .card-locked { opacity: .55; }
   #promo-banner { display: none; margin: 8px 14px 0; padding: 8px 12px; border-radius: 12px; font-size: 13px; font-weight: 700;
     color: #fff; background: linear-gradient(135deg, #ff7043, #e53935); }
-  .save-badge { position: relative; overflow: hidden; display: inline-block; white-space: nowrap; margin-top: 3px; padding: 2px 7px;
+  .footer-col { flex-direction: column; align-items: stretch; gap: 8px; }
+  .price-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+  .buy-btn-wide { width: 100%; }
+  .save-badge { position: relative; overflow: hidden; display: inline-block; white-space: nowrap; padding: 2px 7px;
     border-radius: 8px; font-size: 10px; font-weight: 800; color: #fff;
     background: linear-gradient(135deg, #22c55e, #059669); box-shadow: 0 0 8px rgba(34,197,94,.55);
     animation: save-pulse 1.6s ease-in-out infinite; }
@@ -11890,8 +11893,8 @@ SHOP_PAGE_HTML = '''<!doctype html>
         key: "energizer",
         name: s.ui.shop_category_energizer,
         items: s.energizer_packs.map(function (p) {
-          return {key: p.key, category: "energizer", emoji: p.emoji, image: p.image, name: p.name, stars: p.stars, saving: p.saving, old_stars: p.old_stars,
-                  effects: p.restore_hint || "", ready_in: null, refuse: false};
+          return {key: p.key, category: "energizer", emoji: p.emoji, image: p.image, name: p.name, stars: p.stars, saving: p.saving,
+                  effects: "", ready_in: null, refuse: false};
         })
       });
     }
@@ -11973,6 +11976,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
     var effects = document.createElement("div");
     effects.className = "card-effects";
     effects.textContent = item.effects || "";
+    if (!item.effects) effects.style.display = "none";
     card.appendChild(effects);
 
     if (noteBox) card.appendChild(noteBox);
@@ -12000,26 +12004,22 @@ SHOP_PAGE_HTML = '''<!doctype html>
     } else if (item.category === "energizer") {
       var starsPrice = document.createElement("span");
       starsPrice.className = "price";
-      if (item.old_stars) {
-        var oldStars = document.createElement("s");
-        oldStars.className = "old-price";
-        oldStars.textContent = item.old_stars + "⭐";
-        starsPrice.appendChild(oldStars);
-        starsPrice.appendChild(document.createTextNode("🔥" + item.stars + "⭐"));
-      } else {
-        starsPrice.textContent = item.stars + "⭐";
-      }
+      // Энергетики: цена + бейдж «Выгода» в одну строку, кнопка на всю ширину под ними (без зачёркиваний).
+      footer.classList.add("footer-col");
+      var priceRow = document.createElement("div");
+      priceRow.className = "price-row";
+      starsPrice.textContent = item.stars + "⭐";
+      priceRow.appendChild(starsPrice);
       if (item.saving > 0) {
         var save = document.createElement("span");
         save.className = "save-badge";
         save.textContent = s.ui.pack_saving.replace("{n}", item.saving);
-        starsPrice.appendChild(document.createElement("br"));
-        starsPrice.appendChild(save);
+        priceRow.appendChild(save);
       }
-      footer.appendChild(starsPrice);
+      footer.appendChild(priceRow);
 
       var starsBtn = document.createElement("button");
-      starsBtn.className = "buy-btn";
+      starsBtn.className = "buy-btn buy-btn-wide";
       starsBtn.textContent = s.ui.webapp_buy_stars_btn;
       if (busyKeys[itemKey]) starsBtn.disabled = true;
       starsBtn.onclick = function () { buyEnergizer(item.key); };
