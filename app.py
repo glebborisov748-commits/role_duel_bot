@@ -264,6 +264,8 @@ TEXTS = {
         "shop_category_food": "🍽 Еда",
         "shop_category_treat": "🎁 Подарки",
         "shop_category_accessory": "💍 Аксессуары",
+        "shop_category_gift": "🎁 Подарки",
+        "shop_category_date": "🌹 Свидания и поездки",
         "shop_category_energizer": "⚡ Энергетики",
         "energizer_restore_hint": "+{amount}⚡ энергии за штуку",
         "shop_category_custom": "🎁 Свой подарок",
@@ -632,6 +634,8 @@ TEXTS = {
         "shop_category_food": "🍽 Food",
         "shop_category_treat": "🎁 Treats",
         "shop_category_accessory": "💍 Accessories",
+        "shop_category_gift": "🎁 Gifts",
+        "shop_category_date": "🌹 Dates & trips",
         "shop_category_energizer": "⚡ Energizers",
         "energizer_restore_hint": "+{amount}⚡ energy per can",
         "shop_category_custom": "🎁 Custom gift",
@@ -1000,6 +1004,8 @@ TEXTS = {
         "shop_category_food": "🍽 Essen",
         "shop_category_treat": "🎁 Geschenke",
         "shop_category_accessory": "💍 Accessoires",
+        "shop_category_gift": "🎁 Geschenke",
+        "shop_category_date": "🌹 Dates & Reisen",
         "shop_category_energizer": "⚡ Energydrinks",
         "energizer_restore_hint": "+{amount}⚡ Energie pro Dose",
         "shop_category_custom": "🎁 Eigenes Geschenk",
@@ -1938,70 +1944,73 @@ FOOD_ITEMS = {
 }
 GIFT_ITEMS = {
     "sweets": {"emoji": "🍫", "ru": "Шоколадки", "en": "Chocolates", "de": "Pralinen", "price": 200, "satiety": 6, "mood": 25, "xp": 5,
-               "category": "treat", "cooldown_minutes": 180,
+               "category": "gift", "cooldown_minutes": 180,
                "reaction_hint": "Простой милый подарок — благодарность лёгкая, с улыбкой, без надрыва."},
     "flowers": {"emoji": "💐", "ru": "Цветы", "en": "Flowers", "de": "Blumen", "price": 300, "mood": 18, "xp": 8,
-                "category": "treat", "cooldown_minutes": 360,
+                "category": "gift", "cooldown_minutes": 360,
                 "reaction_hint": "Классический трогательный жест — благодарность искренняя и нежная, ты правда растрогана.",
                 "male_variant": {"emoji": "👔", "ru": "Стильный галстук", "en": "Stylish necktie", "de": "Stilvolle Krawatte",
                                   "reaction_hint": "Классический элегантный жест — искренне тронут такой заботой о стиле, благодарность тёплая и немного смущённая."}},
     "perfume": {"emoji": "🧴", "ru": "Духи", "en": "Perfume", "de": "Parfüm", "price": 450, "mood": 18, "xp": 10,
-                "category": "accessory", "cooldown_minutes": 1440,
+                "category": "gift", "cooldown_minutes": 1440,
                 "reaction_hint": "Личный, продуманный подарок про заботу о тебе — приятно удивлена, что он угадал(а) со вкусом."},
     "cosmetics": {"emoji": "💄", "ru": "Косметика", "en": "Cosmetics", "de": "Kosmetik", "price": 600, "mood": 20, "xp": 12,
-                  "category": "accessory", "cooldown_minutes": 1440,
+                  "category": "gift", "cooldown_minutes": 1440,
                   "reaction_hint": "Подарок про заботу о твоей красоте — благодарность тёплая, немного смущённая, приятно, что заметили детали.",
                   "male_variant": {"emoji": "🪒", "ru": "Набор для бритья", "en": "Shaving set", "de": "Rasierset",
                                     "reaction_hint": "Подарок про заботу о твоём уходе за собой — благодарность тёплая, немного смущённая, приятно, что заметили детали."}},
     "heels": {"emoji": "👠", "ru": "Каблуки", "en": "Heels", "de": "High Heels", "price": 900, "mood": 25, "xp": 16,
-              "category": "accessory", "cooldown_minutes": 2880,
+              "category": "gift", "cooldown_minutes": 2880,
               "reaction_hint": "Дерзкий, чуть сексуальный подарок — благодарность кокетливая и уверенная в себе.",
               "male_variant": {"emoji": "⌚", "ru": "Наручные часы", "en": "Wristwatch", "de": "Armbanduhr",
                                 "reaction_hint": "Дорогой, статусный подарок — благодарность сдержанная, но искренне впечатлён вниманием к деталям."}},
     "dress": {"emoji": "👗", "ru": "Платье", "en": "Dress", "de": "Kleid", "price": 1200, "mood": 30, "xp": 20,
-              "category": "accessory", "cooldown_minutes": 2880,
+              "category": "gift", "cooldown_minutes": 2880,
               "reaction_hint": "Особенный подарок, который хочется сразу примерить — благодарность взволнованная, с предвкушением похвастаться.",
               "male_variant": {"emoji": "🧥", "ru": "Стильный костюм", "en": "Stylish suit", "de": "Eleganter Anzug",
                                 "reaction_hint": "Особенный подарок, который хочется сразу примерить — благодарность довольная, с предвкушением показаться в нём."}},
-    "jewelry": {"emoji": "💎", "ru": "Украшение", "en": "Jewelry", "de": "Schmuck", "price": 1600, "mood": 38, "xp": 28,
-                "category": "accessory", "cooldown_minutes": 2880,
-                "reaction_hint": "Дорогой, значимый подарок — благодарность глубокая, ты растрогана и немного смущена такой щедростью."},
+    # Раньше назывался просто «Украшение» и путался с бриллиантовым кольцом -- теперь это конкретно колье.
+    "jewelry": {"emoji": "📿", "ru": "Колье", "en": "Necklace", "de": "Halskette", "price": 1600, "mood": 38, "xp": 28,
+                "category": "gift", "cooldown_minutes": 2880,
+                "reaction_hint": "Дорогое колье — благодарность глубокая, ты растрогана, сразу хочешь примерить и покрутиться перед зеркалом.",
+                "male_variant": {"emoji": "🔗", "ru": "Запонки", "en": "Cufflinks", "de": "Manschettenknöpfe",
+                                  "reaction_hint": "Стильные запонки — благодарность сдержанная, но видно, что он польщён и сразу представляет, с чем их наденет."}},
     "phone": {"emoji": "📱", "ru": "Телефон", "en": "Phone", "de": "Handy", "price": 2500, "mood": 45, "xp": 40,
-              "category": "accessory", "cooldown_minutes": 4320,
+              "category": "gift", "cooldown_minutes": 4320,
               "reaction_hint": "Очень дорогой подарок — искренний шок и восторг, ты не ожидала такой щедрости и говоришь об этом прямо."},
     "ring": {"emoji": "💍", "ru": "Бриллиантовое кольцо", "en": "Diamond ring", "de": "Diamantring", "price": 6500, "mood": 54, "xp": 65,
-             "category": "accessory", "cooldown_minutes": 5760,
+             "category": "gift", "cooldown_minutes": 5760,
              "reaction_hint": "Самый романтичный и серьёзный подарок после машины — искренний шок и восторг, ты не до конца веришь, что это происходит.",
              "male_variant": {"emoji": "⛓️", "ru": "Цепочка", "en": "Gold chain", "de": "Goldkette",
                                "reaction_hint": "Статусный, серьёзный подарок — искренне впечатлён такой щедростью, благодарность гордая и немного смущённая."}},
     "date": {"emoji": "🌹", "ru": "Романтический вечер", "en": "Romantic evening", "de": "Romantischer Abend", "price": 3000, "xp": 60,
-             "category": "treat", "full_restore": True, "cooldown_minutes": 1440,
+             "category": "date", "full_restore": True, "cooldown_minutes": 1440,
              "reaction_hint": "Самый интимный из подарков — не вещь, а вечер вдвоём — благодарность взволнованная, с предвкушением встречи, самая тёплая из всех."},
     "car": {"emoji": "🚗", "ru": "Машина", "en": "Car", "de": "Auto", "price": 10000, "mood": 60, "xp": 80,
-            "category": "accessory", "cooldown_minutes": 8640,
+            "category": "gift", "cooldown_minutes": 8640,
             "reaction_hint": "Самый дорогой и статусный подарок из всех — искренний шок и восторг, ты не веришь своим глазам от такой щедрости."},
     # Билеты — крупные "события", а не вещи: заметно поднимают настроение и XP (близость), но
     # НЕ энергию — energy принципиально не должна восполняться ничем, кроме энергетика/платного
     # "разбудить сейчас" (см. апрельский разбор экономики), иначе это дыра в монетизации.
     "sea_trip": {"emoji": "🏖", "ru": "Билет на море", "en": "Beach trip ticket", "de": "Ticket ans Meer", "price": 3200, "xp": 70,
-                 "category": "treat", "full_restore": True, "cooldown_minutes": 2880,
+                 "category": "date", "full_restore": True, "cooldown_minutes": 2880,
                  "reaction_hint": "Настоящее совместное путешествие — благодарность искренне взволнованная, ты давно не отдыхала так по-настоящему."},
     "concert": {"emoji": "🎸", "ru": "Билет на рок-концерт", "en": "Rock concert ticket", "de": "Rockkonzert-Ticket", "price": 2600, "mood": 48, "xp": 45,
-                "category": "treat", "cooldown_minutes": 1440,
+                "category": "date", "cooldown_minutes": 1440,
                 "reaction_hint": "Энергичный, живой вечер вместе — благодарность заряженная адреналином, ты в восторге от атмосферы."},
     # Особые подарки за большие баксы — редкие "события" с сильной реакцией и большим XP; после покупки
     # персонаж запоминает подарок и иногда упоминает его (см. build_gifts_rule).
     "serenade": {"emoji": "🎻", "ru": "Серенада под окном", "en": "Serenade", "de": "Ständchen", "price": 4500, "mood": 45, "xp": 70,
-                 "category": "treat", "cooldown_minutes": 2880,
+                 "category": "date", "cooldown_minutes": 2880,
                  "reaction_hint": "Живая музыка специально для тебя — ты растрогана до мурашек, смущена и счастлива, вспоминаешь отдельные ноты и слова."},
     "paris": {"emoji": "🗼", "ru": "Поездка в Париж", "en": "Trip to Paris", "de": "Reise nach Paris", "price": 15000, "xp": 160,
-              "category": "treat", "full_restore": True, "cooldown_minutes": 10080,
+              "category": "date", "full_restore": True, "cooldown_minutes": 10080,
               "reaction_hint": "Настоящая поездка мечты вдвоём — ошеломлена, не верит, что это правда, в восторге рассказывает о том, что хочет увидеть, и благодарит всем сердцем."},
     "star": {"emoji": "⭐", "ru": "Именная звезда", "en": "A star named after you", "de": "Ein Stern mit deinem Namen", "price": 25000, "mood": 80, "xp": 260,
-             "category": "accessory", "cooldown_minutes": 43200,
+             "category": "gift", "cooldown_minutes": 43200,
              "reaction_hint": "Самый космический подарок: звезда на небе, названная в твою честь — потрясена до слёз, тихо и серьёзно говоришь, что этого никогда не забудешь."},
     "theater": {"emoji": "🎭", "ru": "Билет в театр", "en": "Theater ticket", "de": "Theater-Ticket", "price": 2900, "mood": 52, "xp": 55,
-                "category": "treat", "cooldown_minutes": 1440,
+                "category": "date", "cooldown_minutes": 1440,
                 "reaction_hint": "Изысканный, немного торжественный вечер — благодарность тёплая и чуть возвышенная, ты тронута таким жестом."},
 }
 
@@ -3331,8 +3340,6 @@ def get_profile_keyboard(user):
     rows = [
         [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")],
         [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
-        [InlineKeyboardButton(text=get_text(user, "events_btn"), callback_data="events_menu", style="success")],
-        [InlineKeyboardButton(text=gt(user, "btn"), callback_data="games_menu", style="success")],
         [InlineKeyboardButton(text=get_text(user, mute_key), callback_data="toggle_notifications", style="primary")],
     ]
     # Иммунитет к болезням — перк именно ELITE (самый верхний тариф), не SUPER PRO. Кнопка теперь
@@ -4502,8 +4509,8 @@ def apply_shop_item_effects(user, item):
         user["tipsy_level"] = item.get("tipsy_level", "light")
 
 
-SHOP_CATEGORY_ORDER = ["food", "treat", "accessory"]
-SHOP_CATEGORY_TEXT_KEY = {"food": "shop_category_food", "treat": "shop_category_treat", "accessory": "shop_category_accessory"}
+SHOP_CATEGORY_ORDER = ["food", "gift", "date"]
+SHOP_CATEGORY_TEXT_KEY = {"food": "shop_category_food", "gift": "shop_category_gift", "date": "shop_category_date"}
 
 # Каталог аксессуаров конечен и одноразовый — рано или поздно всё куплено. "Свой подарок" даёт
 # запасной вариант: любой текст, который ещё не дарили (дубли по нормализованному тексту), с
@@ -4545,6 +4552,22 @@ def apply_custom_gift(user, gift_text):
 ITEM_NOTE_MAX_LEN = 150
 
 
+# Товар дня: каждый день один подарок со скидкой -- повод заглядывать в магазин и тратить баксы
+# (по фидбэку «баксы копятся, и на них всё равно»). Выбор детерминирован по дате -- одинаков для всех.
+DEAL_DISCOUNT = 0.3
+
+
+def deal_of_day_key():
+    keys = sorted(GIFT_ITEMS)
+    return keys[datetime.now().date().toordinal() % len(keys)]
+
+
+def item_price(user, category, key, item):
+    if category == "gift" and key == deal_of_day_key():
+        return int(round(item["price"] * (1 - DEAL_DISCOUNT) / 25.0)) * 25
+    return item["price"]
+
+
 def get_shop_kb(user):
     """Один товар — один ряд на всю ширину: раньше в паре с этой кнопкой была ещё и ✍️ для
     записки, из-за чего у каждой кнопки оставалась едва половина ширины и текст (вместе с ценой)
@@ -4571,20 +4594,29 @@ def get_shop_kb(user):
             else:
                 label = intim_option_label(FOOD_ITEMS, key, user)
             ready_at = item_ready_at(user, "gift" if is_gift else "food", key, item)
-            suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {item['price']}💵"
-            rows.append([InlineKeyboardButton(text=f"{label}{suffix}", callback_data=callback_data, style="success")])
+            price = item_price(user, "gift" if is_gift else "food", key, item)
+            deal = "🔥 " if is_gift and key == deal_of_day_key() else ""
+            suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {price}💵"
+            rows.append([InlineKeyboardButton(text=f"{deal}{label}{suffix}", callback_data=callback_data, style="success")])
         # ВАЖНО: было "category = ..." внутри цикла выше — это затирало переменную внешнего
         # цикла (SHOP_CATEGORY_ORDER: food/treat/accessory), из-за чего проверка ниже никогда
         # не срабатывала и кнопка "Свой подарок" молча пропадала из магазина. Убрано.
-        if category == "accessory":
+        if category == "gift":
             rows.append([InlineKeyboardButton(
                 text=get_text(user, "custom_gift_btn", price=CUSTOM_GIFT_PRICE),
                 callback_data="shop_custom_gift_start", style="success")])
 
     rows.append([InlineKeyboardButton(text=gt(user, "shop_cat_games"), callback_data="shop_noop")])
-    for key, t in GAME_TICKETS.items():
-        rows.append([InlineKeyboardButton(text=f"{t['emoji']} {game_ticket_name(user, key)} — {t['price']}💵",
-                                          callback_data=f"shop_game_{key}", style="success")])
+    for key, offer in GAME_OFFERS.items():
+        rows.append([InlineKeyboardButton(text=f"{offer['emoji']} {game_offer_name(user, key)} — {game_price_label(user, key)}",
+                                          callback_data=f"game_{key}", style="success")])
+    for key, event in STORY_EVENTS.items():
+        rows.append([InlineKeyboardButton(text=f"{event_label(event, user)} — {event['price']}💵 · {event['hours']}ч",
+                                          callback_data=f"event_buy_{key}", style="success")])
+    rows.append([InlineKeyboardButton(text=gt(user, "shop_cat_exchange"), callback_data="shop_noop")])
+    for key, offer in BUCKS_EXCHANGE.items():
+        rows.append([InlineKeyboardButton(text=f"{offer['emoji']} {exchange_name(user, key)} — {offer['price']}💵",
+                                          callback_data=f"shop_ex_{key}", style="success")])
     rows.append([InlineKeyboardButton(text=get_text(user, "shop_note_menu_btn"), callback_data="shop_note_menu", style="success")])
     rows.append([InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
@@ -4609,8 +4641,10 @@ def get_shop_note_kb(user):
             else:
                 label = intim_option_label(FOOD_ITEMS, key, user)
             ready_at = item_ready_at(user, "gift" if is_gift else "food", key, item)
-            suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {item['price']}💵"
-            rows.append([InlineKeyboardButton(text=f"{label}{suffix}", callback_data=callback_data, style="success")])
+            price = item_price(user, "gift" if is_gift else "food", key, item)
+            deal = "🔥 " if is_gift and key == deal_of_day_key() else ""
+            suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {price}💵"
+            rows.append([InlineKeyboardButton(text=f"{deal}{label}{suffix}", callback_data=callback_data, style="success")])
 
     rows.append([InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_shop", style="danger")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
@@ -4633,16 +4667,15 @@ async def shop_custom_gift_start(call: types.CallbackQuery):
     await call.answer()
 
 
-@dp.callback_query(lambda c: c.data.startswith("shop_game_"))
-async def shop_game_ticket_cb(call: types.CallbackQuery):
+@dp.callback_query(lambda c: c.data.startswith("shop_ex_"))
+async def shop_exchange_cb(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
-    key = call.data[len("shop_game_"):]
-    ok, error = buy_game_ticket(user, key)
+    key = call.data[len("shop_ex_"):]
+    ok, error = buy_exchange(user, key)
     if not ok:
         await call.answer(error, show_alert=True)
         return
-    await call.answer()
-    await call.message.answer(gt(user, "ticket_bought", name=game_ticket_name(user, key)))
+    await call.answer(gt(user, "ex_done", name=exchange_name(user, key)), show_alert=True)
 
 
 @dp.callback_query(lambda c: c.data == "shop_noop")
@@ -4894,8 +4927,9 @@ async def buy_gift(call: types.CallbackQuery):
     if ready_at:
         await call.answer(get_text(user, "item_cooldown_alert", when=cooldown_phrase(user, ready_at)), show_alert=True)
         return
-    if not spend_bucks(user, base_item["price"]):
-        await call.answer(get_text(user, "not_enough_bucks", n=base_item["price"] - user.get("bucks", 0)), show_alert=True)
+    price = item_price(user, "gift", key, base_item)
+    if not spend_bucks(user, price):
+        await call.answer(get_text(user, "not_enough_bucks", n=price - user.get("bucks", 0)), show_alert=True)
         return
     await call.answer()
     await execute_item_purchase(call.message.chat.id, user, "gift", key, base_item)
@@ -4942,8 +4976,9 @@ async def shop_item_note_start(call: types.CallbackQuery):
     if ready_at:
         await call.answer(get_text(user, "item_cooldown_alert", when=cooldown_phrase(user, ready_at)), show_alert=True)
         return
-    if user.get("bucks", 0) < item["price"]:
-        await call.answer(get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0)), show_alert=True)
+    price = item_price(user, category, key, item)
+    if user.get("bucks", 0) < price:
+        await call.answer(get_text(user, "not_enough_bucks", n=price - user.get("bucks", 0)), show_alert=True)
         return
     user["writing_item_note"] = {"category": category, "key": key}
     save_data(user_data)
@@ -6455,25 +6490,31 @@ async def event_buy_cb(call: types.CallbackQuery):
     if not event:
         await call.answer()
         return
+    error = await start_story_event(call.message.chat.id, user, key)
+    if error:
+        await call.answer(error, show_alert=True)
+        return
+    await call.answer()
+
+
+async def start_story_event(chat_id, user, key):
+    """Запуск события за баксы -- из чатового магазина, Mini App и старого меню. Ошибка текстом или None."""
+    event = STORY_EVENTS.get(key)
+    if not event:
+        return "Not found"
     if not user.get("personality_ready"):
-        await call.answer(get_text(user, "need_character_alert"), show_alert=True)
-        return
+        return get_text(user, "need_character_alert")
     if story_event_active(user):
-        await call.answer(get_text(user, "events_busy"), show_alert=True)
-        return
+        return get_text(user, "events_busy")
     if is_asleep(user):
-        await call.answer(get_text(user, "events_asleep"), show_alert=True)
-        return
+        return get_text(user, "events_asleep")
     if not spend_bucks(user, event["price"]):
-        await call.answer(get_text(user, "not_enough_bucks", n=event["price"] - user.get("bucks", 0)), show_alert=True)
-        return
+        return get_text(user, "not_enough_bucks", n=event["price"] - user.get("bucks", 0))
     user["event"] = {"key": key, "until": (datetime.now() + timedelta(hours=event["hours"])).isoformat()}
     save_data(user_data)
-    await safe_delete(call.message)
-    await call.answer()
-    chat_id = call.message.chat.id
     await bot.send_message(chat_id, get_text(user, "events_started", name=event_label(event, user), hours=event["hours"]))
     await generate_event_opening(chat_id, user, event)
+    return None
 
 
 async def generate_event_opening(chat_id, user, event):
@@ -6512,7 +6553,7 @@ async def generate_event_opening(chat_id, user, event):
 GAME_TEXTS = {
     "ru": {
         "btn": "🎲 Игры вместе",
-        "menu": "🎲 Игры вместе — проведи время с персонажем.\n💵 У тебя: {bucks}",
+        "menu": "🎮 Развлечения с персонажем — во что сыграем?\n💵 У тебя: {bucks}",
         "cities_btn": "🏙 Города",
         "tod_btn": "🎭 Правда или действие",
         "tod_start": "🎭 Правда или действие! {rounds} раунда. В каждом раунде сначала ходишь ты (выбираешь и отвечаешь мне), потом я (выбираю и отвечаю тебе). Награда в конце — XP.",
@@ -6526,11 +6567,23 @@ GAME_TEXTS = {
         "tod_finished": "🎭 Игра закончилась. +{xp} XP за откровенный вечер.",
         "bj_btn": "🃏 Блэкджек",
         "movie_btn": "🎬 Кино",
-        "shop_games_btn": "🛍 Билеты — в магазине",
         "shop_cat_games": "🎮 Развлечения",
-        "ticket_effects": "Билет на развлечение. У тебя: {have} 🎟 (на {uses})",
-        "ticket_bought": "🎟 Билет куплен: {name}. Теперь он есть в «Играх вместе» (/games).",
-        "no_ticket": "Нужен билет: «{name}». Купи его в магазине (🎮 Развлечения).",
+        "bj_price": "от 100💵",
+        "game_desc_cities": "Играете в города, победа — +30 XP",
+        "game_desc_tod": "4 раунда откровенностей по очереди, +30 XP",
+        "game_desc_bj": "Карты против персонажа на баксы",
+        "game_desc_movie": "Смотрите фильм и обсуждаете, +40 XP",
+        "event_desc": "Сюжет на {hours} ч: персонаж живёт в этой истории",
+        "started_toast": "▶️ Начинаем! Переходи в чат с ботом.",
+        "shop_cat_exchange": "💎 За баксы",
+        "play_btn": "▶️ Играть",
+        "start_btn": "▶️ Начать",
+        "ex_desc_energizer": "+1 энергетик. Осталось сегодня: {left}",
+        "ex_desc_spin": "+1 прокрут колеса. Осталось сегодня: {left}",
+        "ex_desc_scene": "+1 горячая сцена (/hot). Осталось на неделе: {left}",
+        "ex_limit_day": "На сегодня лимит исчерпан — завтра снова можно.",
+        "ex_limit_week": "На этой неделе уже брал(а) — со следующей недели снова можно.",
+        "ex_done": "✅ Готово: {name} уже у тебя.",
         "busy": "Сначала закончи текущую игру.",
         "asleep": "Персонаж спит — сначала разбуди его.",
         "sick": "Персонаж болеет и сейчас не в настроении играть — сначала вылечи его.",
@@ -6546,13 +6599,13 @@ GAME_TEXTS = {
         "daily_limit": "На сегодня лимит игр с репликами персонажа исчерпан — возвращайся завтра.",
         "cities_timeup": "⏱ Время партии вышло — ничья.",
         "cities_stuck": "У меня закончились города на «{letter}» — ты победил(а)!",
-        "bj_menu": "🃏 Блэкджек. Выбери ставку:\n💵 У тебя: {bucks} · 🎟 раундов: {tickets}",
+        "bj_menu": "🃏 Блэкджек. Выбери ставку:\n💵 У тебя: {bucks}",
         "bj_state": "🃏 БЛЭКДЖЕК · ставка {bet}💵\n\n🧑 Ты: {player}  →  {pv}\n🤖 Я (крупье): {dealer}  →  {dv}+?\n\nБерёшь ещё карту или хватит?",
         "bj_hit": "➕ Ещё", "bj_stand": "✋ Хватит",
         "bj_end": "🃏 Итог раунда\n\n🧑 Ты: {player}  →  {pv}\n🤖 Я (крупье): {dealer}  →  {dv}\n\n{result}",
         "bj_win": "🎉 Ты выиграл(а): +{amount}💵", "bj_blackjack": "🃏 Блэкджек! +{amount}💵",
         "bj_lose": "💸 Проигрыш: −{amount}💵", "bj_push": "🤝 Ничья, ставка возвращена.",
-        "movie_pick": "🎬 Что смотрим вместе? 🎟 Билетов: {tickets}.\n💵 У тебя: {bucks}",
+        "movie_pick": "🎬 Что смотрим вместе? Сеанс — {price}💵.\n💵 У тебя: {bucks}",
         "movie_genres": {"romance": "💞 Мелодрама", "comedy": "😂 Комедия", "horror": "👻 Ужастик", "drama": "😢 Драма"},
         "movie_react": {"cry": "😭 Поплакать", "laugh": "😂 Посмеяться", "hug": "🤗 Прижаться", "comment": "💬 Обсудить"},
         "movie_done": "🎬 Фильм закончился. +{xp} XP за вечер вместе.",
@@ -6560,7 +6613,7 @@ GAME_TEXTS = {
     },
     "en": {
         "btn": "🎲 Games together",
-        "menu": "🎲 Games together — spend time with your companion.\n💵 You have: {bucks}",
+        "menu": "🎮 Fun with your companion — what shall we play?\n💵 You have: {bucks}",
         "cities_btn": "🏙 Cities",
         "tod_btn": "🎭 Truth or dare",
         "tod_start": "🎭 Truth or dare! {rounds} rounds. Each round you go first (pick and answer me), then it is my turn (I pick and you ask me). XP reward at the end.",
@@ -6574,11 +6627,23 @@ GAME_TEXTS = {
         "tod_finished": "🎭 Game over. +{xp} XP for an honest evening.",
         "bj_btn": "🃏 Blackjack",
         "movie_btn": "🎬 Movie",
-        "shop_games_btn": "🛍 Tickets — in the shop",
         "shop_cat_games": "🎮 Entertainment",
-        "ticket_effects": "An entertainment ticket. You have: {have} 🎟 (for {uses})",
-        "ticket_bought": "🎟 Ticket bought: {name}. It is now in «Games together» (/games).",
-        "no_ticket": "You need a ticket: «{name}». Buy it in the shop (🎮 Entertainment).",
+        "bj_price": "from 100💵",
+        "game_desc_cities": "Play cities, a win gives +30 XP",
+        "game_desc_tod": "4 rounds of taking turns opening up, +30 XP",
+        "game_desc_bj": "Cards against your companion for bucks",
+        "game_desc_movie": "Watch a movie together and talk about it, +40 XP",
+        "event_desc": "A {hours} h storyline your companion lives in",
+        "started_toast": "▶️ Let's go! Head to the chat with the bot.",
+        "shop_cat_exchange": "💎 For bucks",
+        "play_btn": "▶️ Play",
+        "start_btn": "▶️ Start",
+        "ex_desc_energizer": "+1 energizer. Left today: {left}",
+        "ex_desc_spin": "+1 wheel spin. Left today: {left}",
+        "ex_desc_scene": "+1 hot scene (/hot). Left this week: {left}",
+        "ex_limit_day": "Today's limit is used up — come back tomorrow.",
+        "ex_limit_week": "Already taken this week — available again next week.",
+        "ex_done": "✅ Done: {name} is yours.",
         "busy": "Finish the current game first.",
         "asleep": "Your companion is asleep — wake them first.",
         "sick": "Your companion is sick and not in the mood — cure them first.",
@@ -6594,13 +6659,13 @@ GAME_TEXTS = {
         "daily_limit": "Today's limit of games with character lines is used up — come back tomorrow.",
         "cities_timeup": "⏱ Time is up — a draw.",
         "cities_stuck": "I'm out of cities for «{letter}» — you win!",
-        "bj_menu": "🃏 Blackjack. Choose your bet:\n💵 You have: {bucks} · 🎟 rounds: {tickets}",
+        "bj_menu": "🃏 Blackjack. Choose your bet:\n💵 You have: {bucks}",
         "bj_state": "🃏 BLACKJACK · bet {bet}💵\n\n🧑 You: {player}  →  {pv}\n🤖 Me (dealer): {dealer}  →  {dv}+?\n\nHit or stand?",
         "bj_hit": "➕ Hit", "bj_stand": "✋ Stand",
         "bj_end": "🃏 Round result\n\n🧑 You: {player}  →  {pv}\n🤖 Me (dealer): {dealer}  →  {dv}\n\n{result}",
         "bj_win": "🎉 You won: +{amount}💵", "bj_blackjack": "🃏 Blackjack! +{amount}💵",
         "bj_lose": "💸 You lost: −{amount}💵", "bj_push": "🤝 Push, bet returned.",
-        "movie_pick": "🎬 What do we watch together? 🎟 Tickets: {tickets}.\n💵 You have: {bucks}",
+        "movie_pick": "🎬 What do we watch together? A screening is {price}💵.\n💵 You have: {bucks}",
         "movie_genres": {"romance": "💞 Romance", "comedy": "😂 Comedy", "horror": "👻 Horror", "drama": "😢 Drama"},
         "movie_react": {"cry": "😭 Cry", "laugh": "😂 Laugh", "hug": "🤗 Cuddle up", "comment": "💬 Talk about it"},
         "movie_done": "🎬 The movie is over. +{xp} XP for the evening together.",
@@ -6617,12 +6682,13 @@ def gt(user, key, **kw):
 
 CITIES_PRIZE = 0     # без денег: награда -- только XP (по фидбэку)
 CITIES_XP = 30
-# Игры покупаются в магазине как билеты (категория «🎮 Игры»); uses -- сколько партий/раундов в билете.
-GAME_TICKETS = {
-    "cities": {"emoji": "🏙", "ru": "Города", "en": "Cities", "price": 450, "uses": 1},
-    "tod": {"emoji": "🎭", "ru": "Правда или действие", "en": "Truth or dare", "price": 600, "uses": 1},
-    "bj": {"emoji": "🃏", "ru": "Блэкджек", "en": "Blackjack", "price": 750, "uses": 5},
-    "movie": {"emoji": "🎬", "ru": "Кино", "en": "Movie", "price": 2250, "uses": 1},
+# Развлечения покупаются в магазине (вкладка «🎮 Развлечения») и стартуют сразу, без билетов. price=0 у
+# блэкджека: там платишь ставкой. Оставшиеся старые билеты (game_tickets) засчитываются как оплата.
+GAME_OFFERS = {
+    "cities": {"emoji": "🏙", "ru": "Города", "en": "Cities", "price": 450},
+    "tod": {"emoji": "🤫", "ru": "Правда или действие", "en": "Truth or dare", "price": 600},
+    "bj": {"emoji": "🃏", "ru": "Блэкджек", "en": "Blackjack", "price": 0},
+    "movie": {"emoji": "🎬", "ru": "Кино вместе", "en": "Movie together", "price": 2250},
 }
 
 
@@ -6630,38 +6696,108 @@ def game_tickets_have(user, key):
     return (user.get("game_tickets") or {}).get(key, 0)
 
 
-def game_ticket_name(user, key):
-    t = GAME_TICKETS[key]
-    return t["ru"] if user.get("lang", "ru") == "ru" else t["en"]
+def game_offer_name(user, key):
+    offer = GAME_OFFERS[key]
+    return offer["ru"] if user.get("lang", "ru") == "ru" else offer["en"]
 
 
-def give_game_ticket(user, key, n=1):
-    tickets = user.setdefault("game_tickets", {})
-    tickets[key] = tickets.get(key, 0) + n
+def game_price_label(user, key):
+    price = GAME_OFFERS[key]["price"]
+    return gt(user, "bj_price") if key == "bj" else f"{price}💵"
 
 
-def use_game_ticket(user, key):
-    if game_tickets_have(user, key) <= 0:
-        return False
-    user["game_tickets"][key] -= 1
-    return True
+def pay_for_game(user, key):
+    """Списывает оплату за партию: старый билет, если остался, иначе баксы. Возвращает сумму (0 за билет) или None."""
+    tickets = user.get("game_tickets") or {}
+    if tickets.get(key, 0) > 0:
+        tickets[key] -= 1
+        return 0
+    price = GAME_OFFERS[key]["price"]
+    if not spend_bucks(user, price):
+        return None
+    return price
 
 
-def buy_game_ticket(user, key):
-    """Покупка билета за баксы (общая для чатового магазина и Mini App). (ok, error_text)."""
-    t = GAME_TICKETS.get(key)
-    if not t:
+# «💎 За баксы»: то, ради чего баксы хочется копить, -- вещи, которые обычно стоят звёзд. С лимитами,
+# чтобы не съесть продажи: энергетики и прокрут -- в день, горячая сцена -- раз в неделю.
+BUCKS_EXCHANGE = {
+    "energizer": {"emoji": "⚡", "ru": "Энергетик", "en": "Energizer", "price": 3500, "limit": 2, "period": "day"},
+    "spin": {"emoji": "🎰", "ru": "Прокрут колеса", "en": "Wheel spin", "price": 2000, "limit": 1, "period": "day"},
+    "scene": {"emoji": "🔥", "ru": "Горячая сцена", "en": "Hot scene", "price": 30000, "limit": 1, "period": "week"},
+}
+
+
+def _exchange_period_id(period):
+    today = datetime.now().date()
+    if period == "week":
+        year, week, _ = today.isocalendar()
+        return f"{year}-W{week}"
+    return today.isoformat()
+
+
+def exchange_left(user, key):
+    offer = BUCKS_EXCHANGE[key]
+    used = (user.get("bucks_exchange") or {}).get(key) or {}
+    count = used.get("n", 0) if used.get("p") == _exchange_period_id(offer["period"]) else 0
+    return max(0, offer["limit"] - count)
+
+
+def exchange_name(user, key):
+    offer = BUCKS_EXCHANGE[key]
+    return offer["ru"] if user.get("lang", "ru") == "ru" else offer["en"]
+
+
+def buy_exchange(user, key):
+    """(ok, error_text). Выдаёт энергетик/прокрут/сцену за баксы в пределах лимита."""
+    offer = BUCKS_EXCHANGE.get(key)
+    if not offer:
         return False, "Not found"
-    if not spend_bucks(user, t["price"]):
-        return False, get_text(user, "not_enough_bucks", n=t["price"] - user.get("bucks", 0))
-    give_game_ticket(user, key, t["uses"])
+    if exchange_left(user, key) <= 0:
+        return False, gt(user, "ex_limit_" + offer["period"])
+    if not spend_bucks(user, offer["price"]):
+        return False, get_text(user, "not_enough_bucks", n=offer["price"] - user.get("bucks", 0))
+    if key == "energizer":
+        user["energizers"] = user.get("energizers", 0) + 1
+    elif key == "spin":
+        user["bonus_spins"] = user.get("bonus_spins", 0) + 1
+    elif key == "scene":
+        user["intim_scenes"] = user.get("intim_scenes", 0) + 1
+    period = _exchange_period_id(offer["period"])
+    store = user.setdefault("bucks_exchange", {})
+    used = store.get(key) or {}
+    store[key] = {"p": period, "n": (used.get("n", 0) if used.get("p") == period else 0) + 1}
     save_data(user_data)
     return True, None
 
 
-def games_ticket_error(user, key):
-    if game_tickets_have(user, key) <= 0:
-        return gt(user, "no_ticket", name=game_ticket_name(user, key))
+async def start_game(chat_id, user, key):
+    """Единый запуск развлечения из меню, чатового магазина и Mini App. Возвращает текст ошибки или None."""
+    if key not in GAME_OFFERS:
+        return "Not found"
+    error = games_gate_error(user)
+    if error:
+        return error
+    if key == "bj":
+        await send_bj_bets(chat_id, user)
+        return None
+    if key == "movie":
+        await send_movie_genres(chat_id, user)
+        return None
+    paid = pay_for_game(user, key)
+    if paid is None:
+        price = GAME_OFFERS[key]["price"]
+        return get_text(user, "not_enough_bucks", n=price - user.get("bucks", 0))
+    if key == "cities":
+        user["game"] = {"type": "cities", "used": [], "last": None, "moves": 0, "started": datetime.now().isoformat(), "paid": paid}
+        game_touch(user["game"])
+        save_data(user_data)
+        await bot.send_message(chat_id, gt(user, "cities_start"), reply_markup=cities_kb(user))
+    elif key == "tod":
+        user["game"] = {"type": "tod", "round": 0, "phase": "pick", "busy": False}
+        game_touch(user["game"])
+        save_data(user_data)
+        await bot.send_message(chat_id, gt(user, "tod_start", rounds=TOD_ROUNDS))
+        await tod_send_pick(chat_id, user)
     return None
 MOVIE_XP = 40
 MOVIE_BEATS = 4
@@ -6714,23 +6850,10 @@ async def game_ai_line(chat_id, user, instruction, tail=None, max_tokens=350):
 
 
 def games_menu_kb(user):
-    def label(key):
-        have = game_tickets_have(user, key)
-        return gt(user, key_text[key]) + (f" · 🎟{have}" if have else " · 🔒")
-
-    key_text = {"cities": "cities_btn", "tod": "tod_btn", "bj": "bj_btn", "movie": "movie_btn"}
-    if WEBAPP_URL:
-        shop_btn = InlineKeyboardButton(text=gt(user, "shop_games_btn"), web_app=WebAppInfo(url=f"{WEBAPP_URL}/shop"), style="success")
-    else:
-        shop_btn = InlineKeyboardButton(text=gt(user, "shop_games_btn"), callback_data="profile_shop", style="success")
-    return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=label("cities"), callback_data="game_cities")],
-        [InlineKeyboardButton(text=label("tod"), callback_data="game_tod")],
-        [InlineKeyboardButton(text=label("bj"), callback_data="game_bj")],
-        [InlineKeyboardButton(text=label("movie"), callback_data="game_movie")],
-        [shop_btn],
-        [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")],
-    ])
+    """«Сыграем ещё?» после партии -- те же развлечения, что во вкладке магазина: нажал -- заплатил -- играешь."""
+    rows = [[InlineKeyboardButton(text=f"{offer['emoji']} {game_offer_name(user, key)} — {game_price_label(user, key)}",
+                                  callback_data=f"game_{key}", style="success")] for key, offer in GAME_OFFERS.items()]
+    return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
 GAME_STALE_MINUTES = 10  # без ходов дольше -- партия сгорает (вход не возвращается)
@@ -6800,24 +6923,15 @@ def cities_kb(user):
     return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=gt(user, "cities_surrender"), callback_data="cities_surrender")]])
 
 
-@dp.callback_query(lambda c: c.data == "game_cities")
-async def cities_start_cb(call: types.CallbackQuery):
+@dp.callback_query(lambda c: c.data in ("game_cities", "game_tod", "game_bj", "game_movie"))
+async def game_start_cb(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
-    error = games_gate_error(user)
+    error = await start_game(call.message.chat.id, user, call.data[len("game_"):])
     if error:
         await call.answer(error, show_alert=True)
         return
-    error = games_ticket_error(user, "cities")
-    if error:
-        await call.answer(error, show_alert=True)
-        return
-    use_game_ticket(user, "cities")
-    user["game"] = {"type": "cities", "used": [], "last": None, "moves": 0, "started": datetime.now().isoformat()}
-    game_touch(user["game"])
-    save_data(user_data)
-    await safe_delete(call.message)
     await call.answer()
-    await bot.send_message(call.message.chat.id, gt(user, "cities_start"), reply_markup=cities_kb(user))
+    await safe_delete(call.message)
 
 
 async def cities_finish(chat_id, user, won):
@@ -6871,7 +6985,7 @@ async def cities_user_move(message: types.Message, user):
         too_long = True
     if game["moves"] > CITIES_MAX_MOVES or too_long:
         user["game"] = None
-        give_game_ticket(user, "cities")  # время вышло -- ничья, билет возвращаем
+        user["bucks"] = user.get("bucks", 0) + game.get("paid", 0)  # время вышло -- ничья, вход возвращаем
         save_data(user_data)
         await message.answer(gt(user, "cities_timeup"), reply_markup=games_menu_kb(user))
         return
@@ -6920,27 +7034,6 @@ async def tod_send_pick(chat_id, user):
     game_touch(game)
     save_data(user_data)
     await bot.send_message(chat_id, gt(user, "tod_pick_prompt", n=game["round"] + 1, total=TOD_ROUNDS), reply_markup=tod_kb(user))
-
-
-@dp.callback_query(lambda c: c.data == "game_tod")
-async def tod_start_cb(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    error = games_gate_error(user)
-    if error:
-        await call.answer(error, show_alert=True)
-        return
-    error = games_ticket_error(user, "tod")
-    if error:
-        await call.answer(error, show_alert=True)
-        return
-    use_game_ticket(user, "tod")
-    user["game"] = {"type": "tod", "round": 0, "phase": "pick", "busy": False}
-    game_touch(user["game"])
-    save_data(user_data)
-    await safe_delete(call.message)
-    await call.answer()
-    await bot.send_message(call.message.chat.id, gt(user, "tod_start", rounds=TOD_ROUNDS))
-    await tod_send_pick(call.message.chat.id, user)
 
 
 async def tod_finish(chat_id, user):
@@ -7078,24 +7171,10 @@ def bj_kb(user):
         InlineKeyboardButton(text=gt(user, "bj_stand"), callback_data="bj_stand", style="primary")]])
 
 
-@dp.callback_query(lambda c: c.data == "game_bj")
-async def bj_menu_cb(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    error = games_gate_error(user)
-    if error:
-        await call.answer(error, show_alert=True)
-        return
-    error = games_ticket_error(user, "bj")
-    if error:
-        await call.answer(error, show_alert=True)
-        return
+async def send_bj_bets(chat_id, user):
     rows = [[InlineKeyboardButton(text=f"{b}💵", callback_data=f"bj_bet_{b}") for b in BJ_BETS[:2]],
-            [InlineKeyboardButton(text=f"{b}💵", callback_data=f"bj_bet_{b}") for b in BJ_BETS[2:]],
-            [InlineKeyboardButton(text=gt(user, "back"), callback_data="games_menu", style="danger")]]
-    await safe_delete(call.message)
-    await bot.send_message(call.message.chat.id, gt(user, "bj_menu", bucks=user.get("bucks", 0), tickets=game_tickets_have(user, "bj")),
-                           reply_markup=InlineKeyboardMarkup(inline_keyboard=rows))
-    await call.answer()
+            [InlineKeyboardButton(text=f"{b}💵", callback_data=f"bj_bet_{b}") for b in BJ_BETS[2:]]]
+    await bot.send_message(chat_id, gt(user, "bj_menu", bucks=user.get("bucks", 0)), reply_markup=InlineKeyboardMarkup(inline_keyboard=rows))
 
 
 @dp.callback_query(lambda c: c.data.startswith("bj_bet_"))
@@ -7106,14 +7185,9 @@ async def bj_bet_cb(call: types.CallbackQuery):
     if error or bet not in BJ_BETS:
         await call.answer(error or "", show_alert=bool(error))
         return
-    error = games_ticket_error(user, "bj")
-    if error:
-        await call.answer(error, show_alert=True)
-        return
     if not spend_bucks(user, bet):
         await call.answer(get_text(user, "not_enough_bucks", n=bet - user.get("bucks", 0)), show_alert=True)
         return
-    use_game_ticket(user, "bj")
     deck = [(r, s) for r in RANKS for s in SUITS]
     random.shuffle(deck)
     game = {"type": "bj", "bet": bet, "deck": deck, "player": [], "dealer": []}
@@ -7184,24 +7258,11 @@ async def bj_action_cb(call: types.CallbackQuery):
 
 
 # ---------- Кино ----------
-@dp.callback_query(lambda c: c.data == "game_movie")
-async def movie_menu_cb(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    error = games_gate_error(user)
-    if error:
-        await call.answer(error, show_alert=True)
-        return
-    error = games_ticket_error(user, "movie")
-    if error:
-        await call.answer(error, show_alert=True)
-        return
+async def send_movie_genres(chat_id, user):
     genres = gt(user, "movie_genres")
     rows = [[InlineKeyboardButton(text=label, callback_data=f"movie_start_{key}")] for key, label in genres.items()]
-    rows.append([InlineKeyboardButton(text=gt(user, "back"), callback_data="games_menu", style="danger")])
-    await safe_delete(call.message)
-    await bot.send_message(call.message.chat.id, gt(user, "movie_pick", tickets=game_tickets_have(user, "movie"), bucks=user.get("bucks", 0)),
+    await bot.send_message(chat_id, gt(user, "movie_pick", price=GAME_OFFERS["movie"]["price"], bucks=user.get("bucks", 0)),
                            reply_markup=InlineKeyboardMarkup(inline_keyboard=rows))
-    await call.answer()
 
 
 MOVIE_PLOTS = {
@@ -7254,11 +7315,10 @@ async def movie_start_cb(call: types.CallbackQuery):
     if error or genre not in MOVIE_PLOTS:
         await call.answer(error or "", show_alert=bool(error))
         return
-    error = games_ticket_error(user, "movie")
-    if error:
-        await call.answer(error, show_alert=True)
+    if pay_for_game(user, "movie") is None:
+        price = GAME_OFFERS["movie"]["price"]
+        await call.answer(get_text(user, "not_enough_bucks", n=price - user.get("bucks", 0)), show_alert=True)
         return
-    use_game_ticket(user, "movie")
     user["game"] = {"type": "movie", "genre": genre, "beat": 0, "tail": []}
     game_touch(user["game"])
     save_data(user_data)
@@ -7428,8 +7488,9 @@ async def handle_message(message: types.Message):
         if category == "food" and overfeed_would_refuse(user, item):
             await message.answer(get_text(user, "overfeed_refuse_alert"))
             return
-        if not spend_bucks(user, item["price"]):
-            await message.answer(get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0)))
+        price = item_price(user, category, key, item)
+        if not spend_bucks(user, price):
+            await message.answer(get_text(user, "not_enough_bucks", n=price - user.get("bucks", 0)))
             return
         await execute_item_purchase(message.chat.id, user, category, key, item, note=note_text)
         return
@@ -7676,7 +7737,8 @@ def serialize_shop_state(user):
             "image": shop_item_image(category, key),
             "emoji": item["emoji"],
             "name": item.get(lang, item["ru"]),
-            "price": item["price"],
+            "price": item_price(user, category, key, base_item),
+            "old_price": base_item["price"] if item_price(user, category, key, base_item) != base_item["price"] else None,
             "effects": format_item_effects(item, user),
             "ready_in": cooldown_phrase(user, ready_at) if ready_at else None,
             "refuse": (not is_gift) and overfeed_would_refuse(user, base_item),
@@ -7688,15 +7750,27 @@ def serialize_shop_state(user):
                  for key, it in FOOD_ITEMS.items() if it.get("category") == shop_category]
         items += [serialize_item(GIFT_ITEMS, key, True)
                   for key, it in GIFT_ITEMS.items() if it.get("category") == shop_category]
+        items.sort(key=lambda it: 0 if it.get("old_price") else 1)  # товар дня -- первым
         if items:
             categories.append({"key": shop_category, "name": get_text(user, SHOP_CATEGORY_TEXT_KEY[shop_category]), "items": items})
 
     game_items = [{
-        "key": key, "category": "game", "image": shop_item_image("game", key), "emoji": t["emoji"], "name": game_ticket_name(user, key), "price": t["price"],
-        "effects": gt(user, "ticket_effects", have=game_tickets_have(user, key), uses=t["uses"]),
-        "ready_in": None, "refuse": False,
-    } for key, t in GAME_TICKETS.items()]
+        "key": key, "category": "game", "image": shop_item_image("game", key), "emoji": offer["emoji"],
+        "name": game_offer_name(user, key), "price": offer["price"],
+        "price_label": gt(user, "bj_price") if key == "bj" else None,
+        "effects": gt(user, "game_desc_" + key), "ready_in": None, "refuse": False,
+    } for key, offer in GAME_OFFERS.items()]
+    game_items += [{
+        "key": key, "category": "event", "image": shop_item_image("event", key), "emoji": event["emoji"],
+        "name": event.get(lang, event["ru"]), "price": event["price"],
+        "effects": gt(user, "event_desc", hours=event["hours"]), "ready_in": None, "refuse": False,
+    } for key, event in STORY_EVENTS.items()]
     categories.append({"key": "games", "name": gt(user, "shop_cat_games"), "items": game_items})
+    categories.append({"key": "exchange", "name": gt(user, "shop_cat_exchange"), "items": [{
+        "key": key, "category": "exchange", "image": shop_item_image("exchange", key), "emoji": offer["emoji"],
+        "name": exchange_name(user, key), "price": offer["price"],
+        "effects": gt(user, "ex_desc_" + key, left=exchange_left(user, key)), "ready_in": None, "refuse": False,
+    } for key, offer in BUCKS_EXCHANGE.items()]})
 
     medicine = []
     if user.get("illness"):
@@ -7729,6 +7803,8 @@ def serialize_shop_state(user):
         "webapp_shop_invoice_error", "webapp_custom_gift_placeholder",
     )}
     ui["custom_gift_btn"] = get_text(user, "custom_gift_btn", price=CUSTOM_GIFT_PRICE)
+    ui["play_btn"] = gt(user, "play_btn")
+    ui["start_btn"] = gt(user, "start_btn")
 
     return {
         "lang": lang,
@@ -7756,11 +7832,17 @@ async def perform_webapp_purchase(user, user_id, category, key, note=None):
     """Та же последовательность проверок, что в buy_food/buy_gift/buy_medicine и в
     writing_item_note-ветке handle_message — просто вызывается из API, а не из
     callback-хендлера. Содержательная логика по-прежнему только в execute_item_purchase."""
-    if category == "game":
-        ok, error = buy_game_ticket(user, key)
+    if category in ("game", "event"):
+        # Игра/сюжет идут в чате с персонажем -- Mini App после старта закрываем (см. buy() в SHOP_PAGE_HTML).
+        error = await (start_game(user_id, user, key) if category == "game" else start_story_event(user_id, user, key))
+        if error:
+            return {"ok": False, "error": error}
+        return {"ok": True, "close": True, "toast": gt(user, "started_toast")}
+    if category == "exchange":
+        ok, error = buy_exchange(user, key)
         if not ok:
             return {"ok": False, "error": error}
-        return {"ok": True}
+        return {"ok": True, "toast": gt(user, "ex_done", name=exchange_name(user, key))}
     catalog = {"food": FOOD_ITEMS, "gift": GIFT_ITEMS, "medicine": MEDICINE_ITEMS}.get(category)
     item = catalog.get(key) if catalog else None
     if not item:
@@ -7784,8 +7866,9 @@ async def perform_webapp_purchase(user, user_id, category, key, note=None):
         if note and len(note) > ITEM_NOTE_MAX_LEN:
             return {"ok": False, "error": get_text(user, "item_note_invalid", n=ITEM_NOTE_MAX_LEN)}
 
-    if not spend_bucks(user, item["price"]):
-        return {"ok": False, "error": get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0))}
+    price = item_price(user, category, key, item) if category in ("food", "gift") else item["price"]
+    if not spend_bucks(user, price):
+        return {"ok": False, "error": get_text(user, "not_enough_bucks", n=price - user.get("bucks", 0))}
 
     await execute_item_purchase(user_id, user, category, key, item, note=note)
     return {"ok": True}
@@ -11282,6 +11365,8 @@ SHOP_PAGE_HTML = '''<!doctype html>
     flex-direction: column;
     gap: 6px;
   }
+  .card-deal { border: 1px solid rgba(255,112,67,.55); background: linear-gradient(160deg, rgba(255,112,67,.14), transparent 65%); }
+  .old-price { display: block; opacity: .55; font-weight: 400; font-size: 11px; }
   .card-energizer {
     border: 1px solid rgba(139,92,246,.5);
     background: linear-gradient(160deg, rgba(59,130,246,.18), rgba(139,92,246,.1) 60%, transparent);
@@ -11506,7 +11591,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
     top.appendChild(emoji);
 
     var noteBox = null;
-    if (item.category !== "medicine" && item.category !== "energizer" && item.category !== "game") {
+    if (["medicine", "energizer", "game", "event", "exchange"].indexOf(item.category) < 0) {
       var toggle = document.createElement("button");
       toggle.className = "note-toggle";
       toggle.textContent = "✍️";
@@ -11564,12 +11649,21 @@ SHOP_PAGE_HTML = '''<!doctype html>
     } else {
       var price = document.createElement("span");
       price.className = "price";
-      price.textContent = item.price + "💵";
+      if (item.old_price) {
+        var old = document.createElement("s");
+        old.className = "old-price";
+        old.textContent = item.old_price + "💵";
+        price.appendChild(old);
+        price.appendChild(document.createTextNode("🔥" + item.price + "💵"));
+        card.classList.add("card-deal");
+      } else {
+        price.textContent = item.price_label || (item.price + "💵");
+      }
       footer.appendChild(price);
 
       var buyBtn = document.createElement("button");
       buyBtn.className = "buy-btn";
-      buyBtn.textContent = s.ui.webapp_buy_btn;
+      buyBtn.textContent = item.category === "game" ? s.ui.play_btn : (item.category === "event" ? s.ui.start_btn : s.ui.webapp_buy_btn);
       if (busyKeys[itemKey]) buyBtn.disabled = true;
       buyBtn.onclick = function () { buy(item.category, item.key, noteBox ? noteBox.value : ""); };
       footer.appendChild(buyBtn);
@@ -11647,7 +11741,12 @@ SHOP_PAGE_HTML = '''<!doctype html>
       if (res.state) state = res.state;
       if (res.ok) {
         safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
-        safe(function () { tg.showPopup({message: state.ui.webapp_bought_toast}); });
+        if (res.close) {
+          // Игра/сюжет уже начались в чате -- закрываем магазин, чтобы сразу оказаться там.
+          setTimeout(function () { safe(function () { tg.close(); }); }, 250);
+        } else {
+          safe(function () { tg.showPopup({message: res.toast || state.ui.webapp_bought_toast}); });
+        }
       } else {
         safe(function () { tg.HapticFeedback.notificationOccurred("error"); });
         safe(function () { tg.showAlert(res.error || res.message || "Error"); });
@@ -15512,7 +15611,7 @@ async def main():
     await bot.set_my_commands([
         BotCommand(command="start", description="Регистрация / главное меню"),
         BotCommand(command="help", description="Список команд"),
-        BotCommand(command="games", description="Игры вместе с персонажем"),
+        BotCommand(command="games", description="Развлечения с персонажем"),
         BotCommand(command="support", description="Связаться с поддержкой"),
         BotCommand(command="language", description="Сменить язык"),
         BotCommand(command="hot", description="Горячая сцена с персонажем"),
