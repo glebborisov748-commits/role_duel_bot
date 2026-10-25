@@ -296,6 +296,8 @@ TEXTS = {
         "webapp_buy_stars_btn": "⭐ Купить",
         "webapp_note_placeholder": "Записка (необязательно)",
         "webapp_refuse_badge": "Не хочет",
+        "gift_locked_alert": "🔒 Этот подарок откроется на {level} уровне близости. Общайся с персонажем, чтобы стать ближе 💬",
+        "gift_locked_short": "с {level} уровня",
         "webapp_bought_toast": "✅ Куплено! Ответ персонажа — в чате.",
         "webapp_shop_invoice_error": "Не удалось создать счёт. Попробуй ещё раз.",
         "webapp_custom_gift_placeholder": "Что подаришь?",
@@ -666,6 +668,8 @@ TEXTS = {
         "webapp_buy_stars_btn": "⭐ Buy",
         "webapp_note_placeholder": "Note (optional)",
         "webapp_refuse_badge": "Doesn't want it",
+        "gift_locked_alert": "🔒 This gift unlocks at closeness level {level}. Chat with your companion to get closer 💬",
+        "gift_locked_short": "from level {level}",
         "webapp_bought_toast": "✅ Purchased! Your companion's reaction is in the chat.",
         "webapp_shop_invoice_error": "Could not create the invoice. Please try again.",
         "webapp_custom_gift_placeholder": "What will you gift?",
@@ -1036,6 +1040,8 @@ TEXTS = {
         "webapp_buy_stars_btn": "⭐ Kaufen",
         "webapp_note_placeholder": "Notiz (optional)",
         "webapp_refuse_badge": "Will nicht",
+        "gift_locked_alert": "🔒 Dieses Geschenk wird ab Nähe-Stufe {level} freigeschaltet. Schreib mit deinem Begleiter, um euch näherzukommen 💬",
+        "gift_locked_short": "ab Stufe {level}",
         "webapp_bought_toast": "✅ Gekauft! Die Reaktion deines Begleiters steht im Chat.",
         "webapp_shop_invoice_error": "Rechnung konnte nicht erstellt werden. Bitte versuche es erneut.",
         "webapp_custom_gift_placeholder": "Was schenkst du?",
@@ -4521,10 +4527,32 @@ CUSTOM_GIFT_MOOD_RANGE = (18, 45)
 CUSTOM_GIFT_MAX_LEN = 60
 
 
+# Подарки и свидания открываются по уровню близости: иначе магазин + работа заменяли бы переписку
+# (купил кольцо на первом же уровне -- и общаться незачем). Близость растёт от общения, а не от баксов.
+GIFT_MIN_LEVEL = {
+    "sweets": 1, "flowers": 1, "perfume": 2, "cosmetics": 2, "heels": 3, "concert": 3, "theater": 3,
+    "dress": 4, "date": 4, "jewelry": 5, "serenade": 5, "phone": 6, "sea_trip": 6,
+    "ring": 8, "paris": 8, "car": 9, "star": 10,
+}
+CUSTOM_GIFT_MIN_LEVEL = 4
+
+
+def gift_locked_level(user, key):
+    """Нужный уровень, если подарок ещё закрыт, иначе None."""
+    need = GIFT_MIN_LEVEL.get(key, 1)
+    return need if get_intimacy_level(user) < need else None
+
+
+def gift_locked_text(user, level):
+    return get_text(user, "gift_locked_alert", level=level)
+
+
 def apply_custom_gift(user, gift_text):
     """Общая проверка+списание для чатового ввода (writing_custom_gift) и для Shop Mini App
     (см. api_custom_gift_handler) — применяет эффекты и возвращает (ok, error_text, custom_item).
     error_text уже локализован через get_text, custom_item отдаётся только при ok=True."""
+    if get_intimacy_level(user) < CUSTOM_GIFT_MIN_LEVEL:
+        return False, gift_locked_text(user, CUSTOM_GIFT_MIN_LEVEL), None
     gift_text = (gift_text or "").strip()
     if not gift_text or len(gift_text) > CUSTOM_GIFT_MAX_LEN:
         return False, get_text(user, "custom_gift_invalid", n=CUSTOM_GIFT_MAX_LEN), None
@@ -4596,7 +4624,10 @@ def get_shop_kb(user):
             ready_at = item_ready_at(user, "gift" if is_gift else "food", key, item)
             price = item_price(user, "gift" if is_gift else "food", key, item)
             deal = "🔥 " if is_gift and key == deal_of_day_key() else ""
+            locked = gift_locked_level(user, key) if is_gift else None
             suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {price}💵"
+            if locked:
+                deal, suffix = "🔒 ", " — " + get_text(user, "gift_locked_short", level=locked)
             rows.append([InlineKeyboardButton(text=f"{deal}{label}{suffix}", callback_data=callback_data, style="success")])
         # ВАЖНО: было "category = ..." внутри цикла выше — это затирало переменную внешнего
         # цикла (SHOP_CATEGORY_ORDER: food/treat/accessory), из-за чего проверка ниже никогда
@@ -4610,9 +4641,6 @@ def get_shop_kb(user):
     for key, offer in GAME_OFFERS.items():
         rows.append([InlineKeyboardButton(text=f"{offer['emoji']} {game_offer_name(user, key)} — {game_price_label(user, key)}",
                                           callback_data=f"game_{key}", style="success")])
-    for key, event in STORY_EVENTS.items():
-        rows.append([InlineKeyboardButton(text=f"{event_label(event, user)} — {event['price']}💵 · {event['hours']}ч",
-                                          callback_data=f"event_buy_{key}", style="success")])
     rows.append([InlineKeyboardButton(text=gt(user, "shop_cat_exchange"), callback_data="shop_noop")])
     for key, offer in BUCKS_EXCHANGE.items():
         rows.append([InlineKeyboardButton(text=f"{offer['emoji']} {exchange_name(user, key)} — {offer['price']}💵",
@@ -4643,7 +4671,10 @@ def get_shop_note_kb(user):
             ready_at = item_ready_at(user, "gift" if is_gift else "food", key, item)
             price = item_price(user, "gift" if is_gift else "food", key, item)
             deal = "🔥 " if is_gift and key == deal_of_day_key() else ""
+            locked = gift_locked_level(user, key) if is_gift else None
             suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {price}💵"
+            if locked:
+                deal, suffix = "🔒 ", " — " + get_text(user, "gift_locked_short", level=locked)
             rows.append([InlineKeyboardButton(text=f"{deal}{label}{suffix}", callback_data=callback_data, style="success")])
 
     rows.append([InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_shop", style="danger")])
@@ -4923,6 +4954,10 @@ async def buy_gift(call: types.CallbackQuery):
     if not base_item:
         await call.answer()
         return
+    locked = gift_locked_level(user, key)
+    if locked:
+        await call.answer(gift_locked_text(user, locked), show_alert=True)
+        return
     ready_at = item_ready_at(user, "gift", key, base_item)
     if ready_at:
         await call.answer(get_text(user, "item_cooldown_alert", when=cooldown_phrase(user, ready_at)), show_alert=True)
@@ -4971,6 +5006,10 @@ async def shop_item_note_start(call: types.CallbackQuery):
     item = catalog.get(key)
     if not item:
         await call.answer()
+        return
+    locked = gift_locked_level(user, key) if is_gift else None
+    if locked:
+        await call.answer(gift_locked_text(user, locked), show_alert=True)
         return
     ready_at = item_ready_at(user, category, key, item)
     if ready_at:
@@ -7475,6 +7514,10 @@ async def handle_message(message: types.Message):
         item = (GIFT_ITEMS if category == "gift" else FOOD_ITEMS).get(key) if category else None
         if not item:
             return
+        locked = gift_locked_level(user, key) if category == "gift" else None
+        if locked:
+            await message.answer(gift_locked_text(user, locked))
+            return
         note_text = message.text.strip()
         if not note_text or len(note_text) > ITEM_NOTE_MAX_LEN:
             await message.answer(get_text(user, "item_note_invalid", n=ITEM_NOTE_MAX_LEN))
@@ -7739,6 +7782,7 @@ def serialize_shop_state(user):
             "old_price": base_item["price"] if item_price(user, category, key, base_item) != base_item["price"] else None,
             "effects": format_item_effects(item, user),
             "ready_in": cooldown_phrase(user, ready_at) if ready_at else None,
+            "locked_level": gift_locked_level(user, key) if is_gift else None,
             "refuse": (not is_gift) and overfeed_would_refuse(user, base_item),
         }
 
@@ -7748,7 +7792,7 @@ def serialize_shop_state(user):
                  for key, it in FOOD_ITEMS.items() if it.get("category") == shop_category]
         items += [serialize_item(GIFT_ITEMS, key, True)
                   for key, it in GIFT_ITEMS.items() if it.get("category") == shop_category]
-        items.sort(key=lambda it: 0 if it.get("old_price") else 1)  # товар дня -- первым
+        items.sort(key=lambda it: 0 if it.get("old_price") and not it.get("locked_level") else 1)  # доступный товар дня -- первым
         if items:
             categories.append({"key": shop_category, "name": get_text(user, SHOP_CATEGORY_TEXT_KEY[shop_category]), "items": items})
 
@@ -7758,11 +7802,6 @@ def serialize_shop_state(user):
         "price_label": gt(user, "bj_price") if key == "bj" else None,
         "effects": gt(user, "game_desc_" + key), "ready_in": None, "refuse": False,
     } for key, offer in GAME_OFFERS.items()]
-    game_items += [{
-        "key": key, "category": "event", "image": shop_item_image("event", key), "emoji": event["emoji"],
-        "name": event.get(lang, event["ru"]), "price": event["price"],
-        "effects": gt(user, "event_desc", hours=event["hours"]), "ready_in": None, "refuse": False,
-    } for key, event in STORY_EVENTS.items()]
     categories.append({"key": "games", "name": gt(user, "shop_cat_games"), "items": game_items})
     categories.append({"key": "exchange", "name": gt(user, "shop_cat_exchange"), "items": [{
         "key": key, "category": "exchange", "image": shop_item_image("exchange", key), "emoji": offer["emoji"],
@@ -7801,6 +7840,7 @@ def serialize_shop_state(user):
         "webapp_shop_invoice_error", "webapp_custom_gift_placeholder",
     )}
     ui["custom_gift_btn"] = get_text(user, "custom_gift_btn", price=CUSTOM_GIFT_PRICE)
+    ui["locked_badge"] = get_text(user, "gift_locked_short", level="{level}")
     ui["play_btn"] = gt(user, "play_btn")
     ui["start_btn"] = gt(user, "start_btn")
 
@@ -7853,6 +7893,9 @@ async def perform_webapp_purchase(user, user_id, category, key, note=None):
         if illness not in item["cures"]:
             return {"ok": False, "error": get_text(user, "wrong_medicine_alert")}
     else:
+        locked = gift_locked_level(user, key) if category == "gift" else None
+        if locked:
+            return {"ok": False, "error": gift_locked_text(user, locked)}
         ready_at = item_ready_at(user, category, key, item)
         if ready_at:
             return {"ok": False, "error": get_text(user, "item_cooldown_alert", when=cooldown_phrase(user, ready_at))}
@@ -11363,6 +11406,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
     flex-direction: column;
     gap: 6px;
   }
+  .card-locked { opacity: .55; }
   .card-deal { border: 1px solid rgba(255,112,67,.55); background: linear-gradient(160deg, rgba(255,112,67,.14), transparent 65%); }
   .old-price { display: block; opacity: .55; font-weight: 400; font-size: 11px; }
   .card-energizer {
@@ -11622,7 +11666,13 @@ SHOP_PAGE_HTML = '''<!doctype html>
     footer.className = "card-footer";
     var itemKey = item.category + ":" + item.key;
 
-    if (item.ready_in) {
+    if (item.locked_level) {
+      var lbadge = document.createElement("span");
+      lbadge.className = "badge";
+      lbadge.textContent = "🔒 " + s.ui.locked_badge.replace("{level}", item.locked_level);
+      footer.appendChild(lbadge);
+      card.classList.add("card-locked");
+    } else if (item.ready_in) {
       var badge = document.createElement("span");
       badge.className = "badge";
       badge.textContent = "⏳ " + item.ready_in;
