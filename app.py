@@ -296,6 +296,8 @@ TEXTS = {
         "webapp_buy_stars_btn": "⭐ Купить",
         "webapp_note_placeholder": "Записка (необязательно)",
         "webapp_refuse_badge": "Не хочет",
+        "promo_banner": "🔥 Акции дня: {items}",
+        "pack_saving": "Выгода −{n}%",
         "gift_locked_alert": "🔒 Этот подарок откроется на {level} уровне близости. Общайся с персонажем, чтобы стать ближе 💬",
         "gift_locked_short": "с {level} уровня",
         "webapp_bought_toast": "✅ Куплено! Ответ персонажа — в чате.",
@@ -668,6 +670,8 @@ TEXTS = {
         "webapp_buy_stars_btn": "⭐ Buy",
         "webapp_note_placeholder": "Note (optional)",
         "webapp_refuse_badge": "Doesn't want it",
+        "promo_banner": "🔥 Today's deals: {items}",
+        "pack_saving": "Save {n}%",
         "gift_locked_alert": "🔒 This gift unlocks at closeness level {level}. Chat with your companion to get closer 💬",
         "gift_locked_short": "from level {level}",
         "webapp_bought_toast": "✅ Purchased! Your companion's reaction is in the chat.",
@@ -1040,6 +1044,8 @@ TEXTS = {
         "webapp_buy_stars_btn": "⭐ Kaufen",
         "webapp_note_placeholder": "Notiz (optional)",
         "webapp_refuse_badge": "Will nicht",
+        "promo_banner": "🔥 Angebote des Tages: {items}",
+        "pack_saving": "Spare {n}%",
         "gift_locked_alert": "🔒 Dieses Geschenk wird ab Nähe-Stufe {level} freigeschaltet. Schreib mit deinem Begleiter, um euch näherzukommen 💬",
         "gift_locked_short": "ab Stufe {level}",
         "webapp_bought_toast": "✅ Gekauft! Die Reaktion deines Begleiters steht im Chat.",
@@ -4004,10 +4010,10 @@ async def shop_reply(message: types.Message):
             [InlineKeyboardButton(text=get_text(user, "open_btn"),
                                   web_app=WebAppInfo(url=f"{WEBAPP_URL}/shop"), style="success")]
         ])
-        await message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)),
+        await message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)) + "\n\n" + promo_banner_text(user),
                               reply_markup=keyboard, parse_mode="Markdown")
         return
-    await message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)),
+    await message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)) + "\n\n" + promo_banner_text(user),
                           reply_markup=get_shop_kb(user), parse_mode="Markdown")
 
 
@@ -4017,7 +4023,7 @@ async def open_shop_cb(call: types.CallbackQuery):
     тот же старый инлайн-каталог, что и в shop_reply, когда Mini App не настроен."""
     await call.answer()
     user = get_user(call.from_user.id)
-    await call.message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)),
+    await call.message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)) + "\n\n" + promo_banner_text(user),
                               reply_markup=get_shop_kb(user), parse_mode="Markdown")
 
 
@@ -4580,20 +4586,55 @@ def apply_custom_gift(user, gift_text):
 ITEM_NOTE_MAX_LEN = 150
 
 
-# Товар дня: каждый день один подарок со скидкой -- повод заглядывать в магазин и тратить баксы
-# (по фидбэку «баксы копятся, и на них всё равно»). Выбор детерминирован по дате -- одинаков для всех.
+# Акции дня: товар дня (-30%) и ещё по одному подарку и еде (-15%) -- повод заглядывать в магазин и
+# тратить баксы (по фидбэку «баксы копятся, и на них всё равно»). Скидки настоящие: цена за баксы
+# реально ниже, это ничего не стоит (баксы виртуальные). На товары за звёзды скидок нет -- там
+# только честная «выгода» пачек (см. energizer_pack_saving). Выбор по дате -- одинаков для всех.
 DEAL_DISCOUNT = 0.3
+PROMO_DISCOUNT = 0.15
+
+
+def promo_of_day():
+    """{(category, key): скидка} на сегодня."""
+    rnd = random.Random(datetime.now().date().toordinal())
+    gifts = sorted(GIFT_ITEMS)
+    deal = gifts[datetime.now().date().toordinal() % len(gifts)]
+    second = rnd.choice([k for k in gifts if k != deal])
+    food = rnd.choice(sorted(k for k, it in FOOD_ITEMS.items() if it["price"] >= 500))
+    return {("gift", deal): DEAL_DISCOUNT, ("gift", second): PROMO_DISCOUNT, ("food", food): PROMO_DISCOUNT}
 
 
 def deal_of_day_key():
-    keys = sorted(GIFT_ITEMS)
-    return keys[datetime.now().date().toordinal() % len(keys)]
+    return next(k for (cat, k), d in promo_of_day().items() if cat == "gift" and d == DEAL_DISCOUNT)
+
+
+def promo_discount(category, key):
+    return promo_of_day().get((category, key), 0)
 
 
 def item_price(user, category, key, item):
-    if category == "gift" and key == deal_of_day_key():
-        return int(round(item["price"] * (1 - DEAL_DISCOUNT) / 25.0)) * 25
+    discount = promo_discount(category, key)
+    if discount:
+        return int(round(item["price"] * (1 - discount) / 25.0)) * 25
     return item["price"]
+
+
+def promo_banner_text(user):
+    """Короткая строка «акции дня» -- только в шапке магазина, не рассылкой."""
+    lang = user.get("lang", "ru")
+    parts = []
+    for (cat, key), discount in promo_of_day().items():
+        item = (GIFT_ITEMS if cat == "gift" else FOOD_ITEMS)[key]
+        shown = gift_effective_item(item, user) if cat == "gift" else item
+        parts.append(f"{shown['emoji']} {shown.get(lang, shown['ru'])} −{int(discount * 100)}%")
+    return get_text(user, "promo_banner", items=", ".join(parts))
+
+
+def energizer_pack_saving(key):
+    """Честная выгода пачки: насколько штука дешевле, чем в самой маленькой пачке (в %)."""
+    per_unit = {k: PRODUCTS[k]["stars"] / pack["amount"] for k, pack in ENERGIZER_PACKS.items()}
+    base = max(per_unit.values())
+    return int(round((1 - per_unit[key] / base) * 100))
 
 
 def get_shop_kb(user):
@@ -4623,7 +4664,7 @@ def get_shop_kb(user):
                 label = intim_option_label(FOOD_ITEMS, key, user)
             ready_at = item_ready_at(user, "gift" if is_gift else "food", key, item)
             price = item_price(user, "gift" if is_gift else "food", key, item)
-            deal = "🔥 " if is_gift and key == deal_of_day_key() else ""
+            deal = "🔥 " if promo_discount("gift" if is_gift else "food", key) else ""
             locked = gift_locked_level(user, key) if is_gift else None
             suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {price}💵"
             if locked:
@@ -4670,7 +4711,7 @@ def get_shop_note_kb(user):
                 label = intim_option_label(FOOD_ITEMS, key, user)
             ready_at = item_ready_at(user, "gift" if is_gift else "food", key, item)
             price = item_price(user, "gift" if is_gift else "food", key, item)
-            deal = "🔥 " if is_gift and key == deal_of_day_key() else ""
+            deal = "🔥 " if promo_discount("gift" if is_gift else "food", key) else ""
             locked = gift_locked_level(user, key) if is_gift else None
             suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {price}💵"
             if locked:
@@ -4785,7 +4826,7 @@ async def profile_shop(call: types.CallbackQuery):
     if not user["personality_ready"]:
         await call.answer(get_text(user, "need_character_alert"), show_alert=True)
         return
-    await call.message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)),
+    await call.message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)) + "\n\n" + promo_banner_text(user),
                               reply_markup=get_shop_kb(user), parse_mode="Markdown")
     await call.answer()
 
@@ -7935,7 +7976,7 @@ def serialize_shop_state(user):
     energizer_packs = [
         {"key": key, "amount": pack["amount"], "emoji": pack["emoji"], "image": f"/assets/{key}.png",
          "name": get_text(user, "invoice_energizer_title", amount=pack["amount"]),
-         "stars": PRODUCTS[key]["stars"],
+         "stars": PRODUCTS[key]["stars"], "saving": energizer_pack_saving(key),
          "restore_hint": get_text(user, "energizer_restore_hint", amount=ENERGIZER_RESTORE_AMOUNT)}
         for key, pack in ENERGIZER_PACKS.items()
     ]
@@ -7947,6 +7988,7 @@ def serialize_shop_state(user):
         "webapp_shop_invoice_error", "webapp_custom_gift_placeholder",
     )}
     ui["custom_gift_btn"] = get_text(user, "custom_gift_btn", price=CUSTOM_GIFT_PRICE)
+    ui["pack_saving"] = get_text(user, "pack_saving", n="{n}")
     ui["locked_badge"] = get_text(user, "gift_locked_short", level="{level}")
     ui["play_btn"] = gt(user, "play_btn")
     ui["start_btn"] = gt(user, "start_btn")
@@ -7969,6 +8011,7 @@ def serialize_shop_state(user):
         "energizer_packs": energizer_packs,
         "custom_gift": {"price": CUSTOM_GIFT_PRICE, "max_len": CUSTOM_GIFT_MAX_LEN},
         "note_max_len": ITEM_NOTE_MAX_LEN,
+        "promo_banner": promo_banner_text(user),
         "ui": ui,
     }
 
@@ -11514,6 +11557,10 @@ SHOP_PAGE_HTML = '''<!doctype html>
     gap: 6px;
   }
   .card-locked { opacity: .55; }
+  #promo-banner { display: none; margin: 8px 14px 0; padding: 8px 12px; border-radius: 12px; font-size: 13px; font-weight: 700;
+    color: #fff; background: linear-gradient(135deg, #ff7043, #e53935); }
+  .save-badge { display: inline-block; white-space: nowrap; margin-top: 2px; padding: 1px 6px; border-radius: 8px; font-size: 10px; font-weight: 800;
+    color: #fff; background: #2e7d32; }
   .card-deal { border: 1px solid rgba(255,112,67,.55); background: linear-gradient(160deg, rgba(255,112,67,.14), transparent 65%); }
   .old-price { display: block; opacity: .55; font-weight: 400; font-size: 11px; }
   .card-energizer {
@@ -11593,6 +11640,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
 <body>
   <div id="stats"></div>
   <div id="illness-badge"></div>
+  <div id="promo-banner"></div>
   <div id="tabs"></div>
   <div id="items">Loading…</div>
   <div id="footer-hint"></div>
@@ -11645,7 +11693,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
   }
 
   function showFullScreen(text) {
-    ["stats", "illness-badge", "tabs", "items", "footer-hint"].forEach(function (id) {
+    ["stats", "illness-badge", "promo-banner", "tabs", "items", "footer-hint"].forEach(function (id) {
       document.getElementById(id).style.display = "none";
     });
     var el = document.getElementById("full-screen-msg");
@@ -11682,7 +11730,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
         key: "energizer",
         name: s.ui.shop_category_energizer,
         items: s.energizer_packs.map(function (p) {
-          return {key: p.key, category: "energizer", emoji: p.emoji, image: p.image, name: p.name, stars: p.stars,
+          return {key: p.key, category: "energizer", emoji: p.emoji, image: p.image, name: p.name, stars: p.stars, saving: p.saving,
                   effects: p.restore_hint || "", ready_in: null, refuse: false};
         })
       });
@@ -11793,6 +11841,13 @@ SHOP_PAGE_HTML = '''<!doctype html>
       var starsPrice = document.createElement("span");
       starsPrice.className = "price";
       starsPrice.textContent = item.stars + "⭐";
+      if (item.saving > 0) {
+        var save = document.createElement("span");
+        save.className = "save-badge";
+        save.textContent = s.ui.pack_saving.replace("{n}", item.saving);
+        starsPrice.appendChild(document.createElement("br"));
+        starsPrice.appendChild(save);
+      }
       footer.appendChild(starsPrice);
 
       var starsBtn = document.createElement("button");
@@ -11875,6 +11930,9 @@ SHOP_PAGE_HTML = '''<!doctype html>
     if (!state) return;
     try {
       renderStats(state);
+      var banner = document.getElementById("promo-banner");
+      banner.textContent = state.promo_banner || "";
+      banner.style.display = state.promo_banner ? "block" : "none";
       renderTabs(state);
       renderItems(state);
       document.getElementById("footer-hint").textContent = state.ui.webapp_open_chat_hint;
