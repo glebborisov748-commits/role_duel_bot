@@ -297,6 +297,7 @@ TEXTS = {
         "webapp_note_placeholder": "Записка (необязательно)",
         "webapp_refuse_badge": "Не хочет",
         "promo_banner": "🔥 Акции дня: {items}",
+        "energizer_sale_part": "⚡ Энергетики −{n}% до воскресенья",
         "pack_saving": "Выгода −{n}%",
         "gift_locked_alert": "🔒 Этот подарок откроется на {level} уровне близости. Общайся с персонажем, чтобы стать ближе 💬",
         "gift_locked_short": "с {level} уровня",
@@ -671,6 +672,7 @@ TEXTS = {
         "webapp_note_placeholder": "Note (optional)",
         "webapp_refuse_badge": "Doesn't want it",
         "promo_banner": "🔥 Today's deals: {items}",
+        "energizer_sale_part": "⚡ Energizers −{n}% until Sunday",
         "pack_saving": "Save {n}%",
         "gift_locked_alert": "🔒 This gift unlocks at closeness level {level}. Chat with your companion to get closer 💬",
         "gift_locked_short": "from level {level}",
@@ -1045,6 +1047,7 @@ TEXTS = {
         "webapp_note_placeholder": "Notiz (optional)",
         "webapp_refuse_badge": "Will nicht",
         "promo_banner": "🔥 Angebote des Tages: {items}",
+        "energizer_sale_part": "⚡ Energydrinks −{n}% bis Sonntag",
         "pack_saving": "Spare {n}%",
         "gift_locked_alert": "🔒 Dieses Geschenk wird ab Nähe-Stufe {level} freigeschaltet. Schreib mit deinem Begleiter, um euch näherzukommen 💬",
         "gift_locked_short": "ab Stufe {level}",
@@ -4627,12 +4630,33 @@ def promo_banner_text(user):
         item = (GIFT_ITEMS if cat == "gift" else FOOD_ITEMS)[key]
         shown = gift_effective_item(item, user) if cat == "gift" else item
         parts.append(f"{shown['emoji']} {shown.get(lang, shown['ru'])} −{int(discount * 100)}%")
+    if energizer_sale_active():
+        parts.insert(0, get_text(user, "energizer_sale_part", n=energizer_sale_percent()))
     return get_text(user, "promo_banner", items=", ".join(parts))
+
+
+# Энергетики: обычная цена (ENERGIZER_LIST_STARS) действует пн-чт, а пт-вс -- распродажа выходных по цене
+# из PRODUCTS. Скидка настоящая: в будни платят именно обычную цену.
+ENERGIZER_LIST_STARS = {"energizer_2": 25, "energizer_6": 69, "energizer_15": 165, "energizer_35": 359}
+ENERGIZER_SALE_WEEKDAYS = {4, 5, 6}  # пятница, суббота, воскресенье
+
+
+def energizer_sale_active():
+    return datetime.now().weekday() in ENERGIZER_SALE_WEEKDAYS
+
+
+def energizer_stars(key):
+    return PRODUCTS[key]["stars"] if energizer_sale_active() else ENERGIZER_LIST_STARS[key]
+
+
+def energizer_sale_percent():
+    key = "energizer_35"
+    return int(round((1 - PRODUCTS[key]["stars"] / ENERGIZER_LIST_STARS[key]) * 100))
 
 
 def energizer_pack_saving(key):
     """Честная выгода пачки: насколько штука дешевле, чем в самой маленькой пачке (в %)."""
-    per_unit = {k: PRODUCTS[k]["stars"] / pack["amount"] for k, pack in ENERGIZER_PACKS.items()}
+    per_unit = {k: energizer_stars(k) / pack["amount"] for k, pack in ENERGIZER_PACKS.items()}
     base = max(per_unit.values())
     return int(round((1 - per_unit[key] / base) * 100))
 
@@ -7976,7 +8000,8 @@ def serialize_shop_state(user):
     energizer_packs = [
         {"key": key, "amount": pack["amount"], "emoji": pack["emoji"], "image": f"/assets/{key}.png",
          "name": get_text(user, "invoice_energizer_title", amount=pack["amount"]),
-         "stars": PRODUCTS[key]["stars"], "saving": energizer_pack_saving(key),
+         "stars": energizer_stars(key), "saving": energizer_pack_saving(key),
+         "old_stars": ENERGIZER_LIST_STARS[key] if energizer_sale_active() else None,
          "restore_hint": get_text(user, "energizer_restore_hint", amount=ENERGIZER_RESTORE_AMOUNT)}
         for key, pack in ENERGIZER_PACKS.items()
     ]
@@ -11730,7 +11755,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
         key: "energizer",
         name: s.ui.shop_category_energizer,
         items: s.energizer_packs.map(function (p) {
-          return {key: p.key, category: "energizer", emoji: p.emoji, image: p.image, name: p.name, stars: p.stars, saving: p.saving,
+          return {key: p.key, category: "energizer", emoji: p.emoji, image: p.image, name: p.name, stars: p.stars, saving: p.saving, old_stars: p.old_stars,
                   effects: p.restore_hint || "", ready_in: null, refuse: false};
         })
       });
@@ -11840,8 +11865,16 @@ SHOP_PAGE_HTML = '''<!doctype html>
     } else if (item.category === "energizer") {
       var starsPrice = document.createElement("span");
       starsPrice.className = "price";
-      starsPrice.textContent = item.stars + "⭐";
-      if (item.saving > 0) {
+      if (item.old_stars) {
+        var oldStars = document.createElement("s");
+        oldStars.className = "old-price";
+        oldStars.textContent = item.old_stars + "⭐";
+        starsPrice.appendChild(oldStars);
+        starsPrice.appendChild(document.createTextNode("🔥" + item.stars + "⭐"));
+      } else {
+        starsPrice.textContent = item.stars + "⭐";
+      }
+      if (item.saving > 0 && !item.old_stars) {
         var save = document.createElement("span");
         save.className = "save-badge";
         save.textContent = s.ui.pack_saving.replace("{n}", item.saving);
@@ -12159,7 +12192,7 @@ async def api_shop_energizer_invoice_handler(request):
             payload=payload,
             provider_token="",
             currency="XTR",
-            prices=[LabeledPrice(label=label, amount=PRODUCTS[payload]["stars"])],
+            prices=[LabeledPrice(label=label, amount=energizer_stars(payload))],
         )
     except Exception as e:
         logging.error(f"create_invoice_link ({payload}) для {user_id}: {e}")
