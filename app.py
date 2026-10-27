@@ -81,6 +81,11 @@ TEXTS = {
         "character_created": "✅ Персонаж создан!\n\nТеперь ты общаешься с:\n«{text}»\n\nЧтобы вернуться к обычному персонажу — /reset_character",
         "character_reset": "✅ Персонаж сброшен.",
         "help_title": "📖 Команды бота",
+        "gift_note_sub": "🎁 Тебе подарок: {name} на 30 дней! Приятного общения 💞",
+        "gift_note_scenes": "🎁 Тебе подарок: +{n} горячих сцен (/hot) 🔥",
+        "gift_note_energizers": "🎁 Тебе подарок: +{n}⚡ энергетиков!",
+        "gift_note_bucks": "🎁 Тебе подарок: +{n}💵!",
+        "gift_note_giveaway": "🎁 Спасибо за участие в розыгрыше! Держи +{n}💵 — трать в магазине 🛍",
         "help_base": (
             "/start — регистрация / открыть главное меню\n"
             "/language — сменить язык\n"
@@ -471,6 +476,11 @@ TEXTS = {
         "character_created": "✅ Character created!\n\nNow you're talking to:\n«{text}»\n\nTo go back to the default character — /reset_character",
         "character_reset": "✅ Character reset.",
         "help_title": "📖 Bot commands",
+        "gift_note_sub": "🎁 A gift for you: {name} for 30 days! Enjoy 💞",
+        "gift_note_scenes": "🎁 A gift for you: +{n} hot scenes (/hot) 🔥",
+        "gift_note_energizers": "🎁 A gift for you: +{n}⚡ energizers!",
+        "gift_note_bucks": "🎁 A gift for you: +{n}💵!",
+        "gift_note_giveaway": "🎁 Thanks for joining the giveaway! Here are +{n}💵 to spend in the shop 🛍",
         "help_base": (
             "/start — sign up / open the main menu\n"
             "/language — change language\n"
@@ -861,6 +871,11 @@ TEXTS = {
         "character_created": "✅ Charakter erstellt!\n\nDu sprichst jetzt mit:\n«{text}»\n\nZurück zum normalen Charakter — /reset_character",
         "character_reset": "✅ Charakter zurückgesetzt.",
         "help_title": "📖 Bot-Befehle",
+        "gift_note_sub": "🎁 Ein Geschenk für dich: {name} für 30 Tage! Viel Spaß 💞",
+        "gift_note_scenes": "🎁 Ein Geschenk für dich: +{n} heiße Szenen (/hot) 🔥",
+        "gift_note_energizers": "🎁 Ein Geschenk für dich: +{n}⚡ Energydrinks!",
+        "gift_note_bucks": "🎁 Ein Geschenk für dich: +{n}💵!",
+        "gift_note_giveaway": "🎁 Danke fürs Mitmachen beim Gewinnspiel! Hier sind +{n}💵 für den Shop 🛍",
         "help_base": (
             "/start — registrieren / Hauptmenü öffnen\n"
             "/language — Sprache ändern\n"
@@ -3572,6 +3587,12 @@ async def start_cmd(message: types.Message):
     # Реферальная ссылка — разбираем только из настоящего /start-сообщения пользователя,
     # а не из переиспользованного message бота (как было раньше).
     args = message.text.split() if message.text else []
+    if not user.get("first_seen"):
+        user["first_seen"] = datetime.now().isoformat()
+        # Метка рекламы: t.me/<бот>?start=telega1 -> source="telega1" (запоминаем только первую), см. /stats.
+        if len(args) > 1:
+            user["source"] = "ref" if args[1].startswith("ref_") else re.sub(r"[^a-zA-Z0-9_-]", "", args[1])[:32] or None
+        save_data(user_data)
     if len(args) > 1 and args[1].startswith("ref_"):
         referrer_id = args[1].split("_", 1)[1]
         if str(message.from_user.id) != referrer_id and not user.get("referred_by"):
@@ -6197,6 +6218,7 @@ async def grant_cmd(message: types.Message):
         user["intim_scenes"] = user.get("intim_scenes", 0) + amount
         save_data(user_data)
         await message.answer(f"✅ {args[1]} выдано горячих сцен: {amount}.")
+        await notify_gift(user_id, user, get_text(user, "gift_note_scenes", n=amount))
         return
     if len(args) >= 3 and args[2].lower() in ("energizers", "bucks"):
         field = args[2].lower()
@@ -6210,6 +6232,7 @@ async def grant_cmd(message: types.Message):
         user[field] = user.get(field, 0) + amount
         save_data(user_data)
         await message.answer(f"✅ {args[1]} выдано {field}: {amount}.")
+        await notify_gift(user_id, user, get_text(user, "gift_note_" + field, n=amount))
         return
     level = "super_pro"
     if len(args) >= 3 and args[2].lower() in ("pro", "elite"):
@@ -6221,9 +6244,81 @@ async def grant_cmd(message: types.Message):
     # прямо сейчас — иначе, как раньше, они появились бы только на следующий день.
     user["last_daily_reset"] = None
     _reset_daily_quota_if_needed(user)
+    user["granted_sub_at"] = datetime.now().isoformat()  # чтобы /giveaway_all не начислил баксы победителям
     save_data(user_data)
     label = {"pro": "PRO", "super_pro": "SUPER PRO", "elite": "ELITE"}[level]
     await message.answer(f"✅ {args[1]} выдана {label}.")
+    await notify_gift(user_id, user, get_text(user, "gift_note_sub", name=label))
+
+
+async def notify_gift(user_id, user, text):
+    try:
+        await bot.send_message(user_id, text)
+    except Exception as e:
+        logging.warning(f"Не удалось уведомить {user_id} о подарке: {e}")
+
+
+GIVEAWAY_WINNER_DAYS = 14  # кому за эти дни выдали подписку через /grant -- тот победитель, баксы за участие не получает
+
+
+@dp.message(Command("giveaway_all"))
+async def giveaway_all_cmd(message: types.Message):
+    """/giveaway_all 1000 -- всем, кто создал персонажа, +N баксов за участие в розыгрыше (кроме победителей)."""
+    if message.from_user.id not in ADMIN_IDS:
+        await message.answer("⛔ Нет прав.")
+        return
+    args = message.text.split()
+    try:
+        amount = int(args[1])
+    except (IndexError, ValueError):
+        await message.answer("/giveaway_all N — начислить N💵 всем с персонажем, кроме тех, кому за "
+                             f"{GIVEAWAY_WINNER_DAYS} дней выдана подписка через /grant")
+        return
+    cutoff = datetime.now() - timedelta(days=GIVEAWAY_WINNER_DAYS)
+    given, skipped = 0, 0
+    for uid, user in list(user_data.items()):
+        if not str(uid).isdigit() or not user.get("personality_ready"):
+            continue
+        try:
+            if user.get("granted_sub_at") and datetime.fromisoformat(user["granted_sub_at"]) > cutoff:
+                skipped += 1
+                continue
+        except (ValueError, TypeError):
+            pass
+        user["bucks"] = user.get("bucks", 0) + amount
+        given += 1
+        await notify_gift(int(uid), user, get_text(user, "gift_note_giveaway", n=amount))
+        await asyncio.sleep(0.05)  # лимиты Telegram на рассылку
+    save_data(user_data)
+    await message.answer(f"✅ Начислено {amount}💵: {given} чел. Пропущено победителей: {skipped}.")
+
+
+@dp.message(Command("stats"))
+async def stats_cmd(message: types.Message):
+    """Сводка по источникам (?start=метка): сколько пришло, создали персонажа, активны за 7 дней, заплатили."""
+    if message.from_user.id not in ADMIN_IDS:
+        return
+    week_ago = datetime.now() - timedelta(days=7)
+    rows = {}
+    for uid, user in user_data.items():
+        if not str(uid).isdigit():
+            continue
+        src = user.get("source") or "без метки"
+        row = rows.setdefault(src, [0, 0, 0, 0])
+        row[0] += 1
+        row[1] += 1 if user.get("personality_ready") else 0
+        try:
+            row[2] += 1 if user.get("last_activity") and datetime.fromisoformat(user["last_activity"]) > week_ago else 0
+        except (ValueError, TypeError):
+            pass
+        row[3] += 1 if user.get("has_purchased") else 0
+    total = [sum(r[i] for r in rows.values()) for i in range(4)]
+    lines = ["📊 Пришло / персонаж / активны 7д / платили"]
+    for src, r in sorted(rows.items(), key=lambda kv: -kv[1][0]):
+        lines.append(f"{src}: {r[0]} / {r[1]} / {r[2]} / {r[3]}")
+    lines.append(f"\nВсего: {total[0]} / {total[1]} / {total[2]} / {total[3]}")
+    lines.append("Ссылка с меткой: t.me/role_duel_bot?start=МЕТКА (латиница, цифры, _ и -)")
+    await message.answer("\n".join(lines))
 
 
 @dp.message(Command("revoke_subscription"))
