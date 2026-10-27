@@ -51,7 +51,7 @@ TEXTS = {
         "scene_live": "👫 Реальная встреча",
         "channel": "📢 Перейти в канал",
         "free": "🎰 Крутить ({left}/{total})",
-        "tomorrow": "⏳ Завтра",
+        "tomorrow": "⏳ Новые прокруты в 00:00 МСК",
         "spin_paid": "💎 Крутить за {price}⭐",
         "spin_luck_btn": "🍀 Удача на 24ч — {price}⭐",
         "spin_luck_active": "🍀 Удача активна: ещё {time}",
@@ -441,7 +441,7 @@ TEXTS = {
         "scene_live": "👫 Real meeting",
         "channel": "📢 Go to channel",
         "free": "🎰 Spin ({left}/{total})",
-        "tomorrow": "⏳ Tomorrow",
+        "tomorrow": "⏳ New spins at 00:00 (Moscow time)",
         "spin_paid": "💎 Spin for {price}⭐",
         "spin_luck_btn": "🍀 Luck for 24h — {price}⭐",
         "spin_luck_active": "🍀 Luck active: {time} left",
@@ -831,7 +831,7 @@ TEXTS = {
         "scene_live": "👫 Echtes Treffen",
         "channel": "📢 Zum Kanal",
         "free": "🎰 Drehen ({left}/{total})",
-        "tomorrow": "⏳ Morgen",
+        "tomorrow": "⏳ Neue Drehs um 00:00 (Moskauer Zeit)",
         "spin_paid": "💎 Für {price}⭐ drehen",
         "spin_luck_btn": "🍀 Glück für 24 Std. — {price}⭐",
         "spin_luck_active": "🍀 Glück aktiv: noch {time}",
@@ -2366,9 +2366,28 @@ def _maybe_escalate_illness(user):
         user["illness_since"] = datetime.now().isoformat()
 
 
+# «День» бота -- по московскому времени (BOT_TZ), а не по часам сервера: прокруты, лимиты, акции и товар
+# дня обновляются ровно в 00:00 МСК. Сохранённые метки времени (isoformat) не трогаем -- от часового пояса
+# зависит только то, какой сейчас календарный день.
+try:
+    from zoneinfo import ZoneInfo
+    BOT_TZ = ZoneInfo(os.getenv("BOT_TZ", "Europe/Moscow"))
+except Exception:  # нет базы часовых поясов на хостинге -- фиксированный UTC+3
+    from datetime import timezone as _tz
+    BOT_TZ = _tz(timedelta(hours=3))
+
+
+def local_now():
+    return datetime.now(BOT_TZ).replace(tzinfo=None)
+
+
+def local_today():
+    return local_now().date()
+
+
 def _reset_daily_quota_if_needed(user):
     level = get_subscription_level(user)
-    today = datetime.now().date().isoformat()
+    today = local_today().isoformat()
     _maybe_escalate_illness(user)
     if user.get("last_daily_reset") == today:
         return
@@ -2966,7 +2985,7 @@ def elite_free_wake_available(user):
     использовали последний раз; сравнение с текущей неделей и даёт доступность."""
     if get_subscription_level(user) != "elite":
         return False
-    now = datetime.now()
+    now = local_now()
     week_key = f"{now.isocalendar()[0]}-W{now.isocalendar()[1]}"
     return user.get("elite_free_wake_week") != week_key
 
@@ -4721,9 +4740,9 @@ PROMO_DISCOUNT = 0.15
 
 def promo_of_day():
     """{(category, key): скидка} на сегодня."""
-    rnd = random.Random(datetime.now().date().toordinal())
+    rnd = random.Random(local_today().toordinal())
     gifts = sorted(GIFT_ITEMS)
-    deal = gifts[datetime.now().date().toordinal() % len(gifts)]
+    deal = gifts[local_today().toordinal() % len(gifts)]
     second = rnd.choice([k for k in gifts if k != deal])
     food = rnd.choice(sorted(k for k, it in FOOD_ITEMS.items() if it["price"] >= 500))
     return {("gift", deal): DEAL_DISCOUNT, ("gift", second): PROMO_DISCOUNT, ("food", food): PROMO_DISCOUNT}
@@ -4776,7 +4795,7 @@ def promo_max_percent(user):
 # Распродажи по календарю: в какой день какая скидка -- случайно, но детерминированно по дате (одинаково
 # у всех и не меняется в течение дня). Скидки настоящие: в дни без распродажи действует обычная цена.
 def _day_rng(tag):
-    return random.Random(f"{tag}-{datetime.now().date().isoformat()}")
+    return random.Random(f"{tag}-{local_today().isoformat()}")
 
 
 # Энергетики: обычная цена ENERGIZER_LIST_STARS; примерно в 3 днях из 5 -- скидка 15/20/28%.
@@ -4830,7 +4849,7 @@ FIRST_BUY_COUPON_HOURS = 72
 
 
 def sub_sale_active():
-    return datetime.now().weekday() in SUB_SALE_WEEKDAYS
+    return local_today().weekday() in SUB_SALE_WEEKDAYS
 
 
 def coupon_active(user):
@@ -6324,7 +6343,7 @@ async def elite_free_wake_cb(call: types.CallbackQuery):
     if not elite_free_wake_available(user):
         await call.answer(get_text(user, "elite_free_wake_used_alert"), show_alert=True)
         return
-    now = datetime.now()
+    now = local_now()
     user["elite_free_wake_week"] = f"{now.isocalendar()[0]}-W{now.isocalendar()[1]}"
     user["energy"] = ENERGY_MAX
     user["sleep_until"] = None
@@ -7268,13 +7287,13 @@ EXCHANGE_ROTATION = ["energizer", "defib", "energizer", "scene", "energizer", "d
 
 
 def exchange_today():
-    return EXCHANGE_ROTATION[datetime.now().date().toordinal() % len(EXCHANGE_ROTATION)]
+    return EXCHANGE_ROTATION[local_today().toordinal() % len(EXCHANGE_ROTATION)]
 
 
 def exchange_left(user, key):
     if key != exchange_today():
         return 0
-    return 0 if (user.get("bucks_exchange") or {}).get("day") == datetime.now().date().isoformat() else 1
+    return 0 if (user.get("bucks_exchange") or {}).get("day") == local_today().isoformat() else 1
 
 
 def exchange_name(user, key):
@@ -7300,7 +7319,7 @@ def buy_exchange(user, key):
             user["dead"] = False  # уже мёртв -- сразу воскрешаем
         else:
             user["defib_stock"] = user.get("defib_stock", 0) + 1  # иначе лежит в запасе до случая
-    user["bucks_exchange"] = {"day": datetime.now().date().isoformat()}
+    user["bucks_exchange"] = {"day": local_today().isoformat()}
     save_data(user_data)
     return True, None
 
@@ -7408,14 +7427,14 @@ GAME_AI_LINES_PER_DAY = {None: 40, "pro": 80, "super_pro": 120, "elite": 200}  #
 
 
 def game_ai_lines_left(user):
-    today = datetime.now().date().isoformat()
+    today = local_today().isoformat()
     used = user.get("game_ai_day") or {}
     count = used.get("count", 0) if used.get("date") == today else 0
     return max(0, GAME_AI_LINES_PER_DAY.get(get_subscription_level(user), 40) - count)
 
 
 def game_ai_line_used(user):
-    today = datetime.now().date().isoformat()
+    today = local_today().isoformat()
     used = user.get("game_ai_day") or {}
     count = used.get("count", 0) if used.get("date") == today else 0
     user["game_ai_day"] = {"date": today, "count": count + 1}
