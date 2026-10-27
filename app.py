@@ -50,7 +50,7 @@ TEXTS = {
         "scene_phone": "📱 Переписка в телефоне",
         "scene_live": "👫 Реальная встреча",
         "channel": "📢 Перейти в канал",
-        "free": "🎁 Бесплатно ({left}/{total})",
+        "free": "🎰 Крутить ({left}/{total})",
         "tomorrow": "⏳ Завтра",
         "spin_paid": "💎 Крутить за {price}⭐",
         "spin_luck_btn": "🍀 Удача на 24ч — {price}⭐",
@@ -319,6 +319,7 @@ TEXTS = {
         "webapp_loading": "Загрузка…",
         "webapp_spin_btn": "Крутить",
         "webapp_spin_paid_pending": "Обрабатываем оплату…",
+        "webapp_spin_paid_ready": "🎰 Прокрут куплен! Жми «Крутить» в колесе.",
         "webapp_spin_invoice_error": "Не удалось создать счёт. Попробуй ещё раз.",
         "defibrillator_btn": "🔌 Дефибриллятор — воскресить за {price}⭐",
         "defib_stock_btn": "🔌 Использовать дефибриллятор из запаса ({n})",
@@ -436,7 +437,7 @@ TEXTS = {
         "scene_phone": "📱 Phone chat",
         "scene_live": "👫 Real meeting",
         "channel": "📢 Go to channel",
-        "free": "🎁 Free ({left}/{total})",
+        "free": "🎰 Spin ({left}/{total})",
         "tomorrow": "⏳ Tomorrow",
         "spin_paid": "💎 Spin for {price}⭐",
         "spin_luck_btn": "🍀 Luck for 24h — {price}⭐",
@@ -705,6 +706,7 @@ TEXTS = {
         "webapp_loading": "Loading…",
         "webapp_spin_btn": "Spin",
         "webapp_spin_paid_pending": "Processing payment…",
+        "webapp_spin_paid_ready": "🎰 Spin purchased! Tap «Spin» on the wheel.",
         "webapp_spin_invoice_error": "Could not create the invoice. Please try again.",
         "defibrillator_btn": "🔌 Defibrillator — revive for {price}⭐",
         "defib_stock_btn": "🔌 Use a defibrillator from stock ({n})",
@@ -822,7 +824,7 @@ TEXTS = {
         "scene_phone": "📱 Chat am Handy",
         "scene_live": "👫 Echtes Treffen",
         "channel": "📢 Zum Kanal",
-        "free": "🎁 Gratis ({left}/{total})",
+        "free": "🎰 Drehen ({left}/{total})",
         "tomorrow": "⏳ Morgen",
         "spin_paid": "💎 Für {price}⭐ drehen",
         "spin_luck_btn": "🍀 Glück für 24 Std. — {price}⭐",
@@ -1091,6 +1093,7 @@ TEXTS = {
         "webapp_loading": "Lädt…",
         "webapp_spin_btn": "Drehen",
         "webapp_spin_paid_pending": "Zahlung wird verarbeitet…",
+        "webapp_spin_paid_ready": "🎰 Dreh gekauft! Tippe auf «Drehen» am Rad.",
         "webapp_spin_invoice_error": "Rechnung konnte nicht erstellt werden. Bitte versuche es erneut.",
         "defibrillator_btn": "🔌 Defibrillator — wiederbeleben für {price}⭐",
         "defib_stock_btn": "🔌 Defibrillator aus dem Vorrat nutzen ({n})",
@@ -5723,13 +5726,12 @@ async def grant_product(user, payload, chat_id):
         # api_spin_paid_result_handler. Раньше ещё дублировали результат отдельным сообщением в
         # чат — убрали по просьбе пользователя: в мини-аппе итак всё видно, а то сообщение к тому
         # же слалось без parse_mode="Markdown", так что звёздочки **так** оставались буквальными.
-        chosen = choose_spin_prize(user)
-        result_text = apply_spin_prize(user, chosen)
-        user["webapp_paid_spin_pending"] = {
-            "prize_index": SPIN_PRIZES.index(chosen),
-            "result_text": result_text,
-        }
+        # Раньше приз крутился прямо здесь, а Mini App ждал его ~14 с опросом -- если Telegram присылал
+        # подтверждение оплаты позже, колесо так и не крутилось, хотя звёзды списались (баг из фидбэка).
+        # Теперь покупка просто добавляет прокрут, и он сразу виден на кнопке «Крутить».
+        user["bonus_spins"] = user.get("bonus_spins", 0) + 1
         save_data(user_data)
+        await bot.send_message(chat_id, get_text(user, "webapp_spin_paid_ready"))
 
 
 async def check_pending_payments():
@@ -12946,6 +12948,7 @@ def serialize_spin_state(user):
             "luck_elite": get_text(user, "spin_luck_elite"),
             "spin_btn": get_text(user, "webapp_spin_btn"),
             "paid_pending_label": get_text(user, "webapp_spin_paid_pending"),
+            "paid_ready": get_text(user, "webapp_spin_paid_ready"),
             "invoice_error": get_text(user, "webapp_spin_invoice_error"),
             "open_chat_hint": get_text(user, "webapp_open_chat_hint"),
             "reminder_on_label": get_text(user, "webapp_spin_reminder_on_btn"),
@@ -13734,9 +13737,10 @@ SPIN_PAGE_HTML = '''<!doctype html>
         safe(function () { tg.showAlert(res.error || state.ui.invoice_error); });
         return;
       }
+      var leftBefore = state.free_left;
       tg.openInvoice(res.invoice_url, function (result) {
         if (result.status === "paid" || result.status === "pending") {
-          pollPaidResult(20);
+          pollPaidSpin(leftBefore, 55);
         } else {
           spinning = false;
           paidStatusText = null;
@@ -13747,6 +13751,33 @@ SPIN_PAGE_HTML = '''<!doctype html>
       spinning = false;
       paidStatusText = null;
       renderActions(state);
+    });
+  }
+
+  // После оплаты ждём, пока сервер добавит купленный прокрут (подтверждение от Telegram приходит отдельно),
+  // и просто включаем кнопку «Крутить» -- крутит пользователь сам.
+  function pollPaidSpin(leftBefore, attemptsLeft) {
+    api("/api/spin/state").then(function (res) {
+      if (res.ok && res.state && res.state.free_left > leftBefore) {
+        state = res.state;
+        spinning = false;
+        paidStatusText = null;
+        render();
+        fx("win");
+        safe(function () { tg.showPopup({message: state.ui.paid_ready}); });
+        return;
+      }
+      if (attemptsLeft <= 1) {
+        spinning = false;
+        paidStatusText = null;
+        renderActions(state);
+        safe(function () { tg.showAlert(state.ui.open_chat_hint); });
+        return;
+      }
+      setTimeout(function () { pollPaidSpin(leftBefore, attemptsLeft - 1); }, 800);
+    }).catch(function () {
+      if (attemptsLeft <= 1) { spinning = false; paidStatusText = null; renderActions(state); return; }
+      setTimeout(function () { pollPaidSpin(leftBefore, attemptsLeft - 1); }, 800);
     });
   }
 
@@ -13785,6 +13816,14 @@ SPIN_PAGE_HTML = '''<!doctype html>
       }
       state = res.state;
       render();
+      api("/api/spin/paid/result").then(function (r) {
+        if (r.ok && r.ready) {
+          if (r.state) state = r.state;
+          spinning = true;
+          renderActions(state);
+          showSpinOutcome(r.prize_index, r.result_text);
+        }
+      }).catch(function () {});
     }).catch(function (e) {
       showFullScreen("Network error: " + (e && (e.name === "AbortError" ? "timeout" : e.message) || "unknown") + "\\n\\n" + diag());
     });
