@@ -213,7 +213,7 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Твоя подписка закончилась, выбери бесплатный стиль:",
         "quarrel": "💢 Ссора! Уровень близости снижен.",
         "generation_error": "⚠️ Ошибка генерации ответа: {error}",
-        "intim_buy_btn": "🔥 Купить горячую сцену (4̶5̶ 30⭐)",
+        "intim_buy_btn": "🔥 Купить горячую сцену ({price}⭐)",
         "intim_menu_title": "🔥 **Горячая сцена**\n\nДоступно сцен: {n}\nВыбери, что будет происходить:",
         "intim_choose_location": "📍 Выбери место:",
         "intim_choose_dominant": "🎭 Кто проявляет инициативу?",
@@ -601,7 +601,7 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Your subscription has ended, pick a free style:",
         "quarrel": "💢 A quarrel! Your closeness level dropped.",
         "generation_error": "⚠️ Failed to generate a reply: {error}",
-        "intim_buy_btn": "🔥 Buy a hot scene (4̶5̶ 30⭐)",
+        "intim_buy_btn": "🔥 Buy a hot scene ({price}⭐)",
         "intim_menu_title": "🔥 **Hot scene**\n\nScenes available: {n}\nChoose what happens:",
         "intim_choose_location": "📍 Choose a place:",
         "intim_choose_dominant": "🎭 Who takes the lead?",
@@ -989,7 +989,7 @@ TEXTS = {
         "subscription_expired_style": "⚠️ Dein Abo ist abgelaufen, wähle einen kostenlosen Stil:",
         "quarrel": "💢 Streit! Dein Nähe-Level ist gesunken.",
         "generation_error": "⚠️ Antwort konnte nicht erzeugt werden: {error}",
-        "intim_buy_btn": "🔥 Heiße Szene kaufen (4̶5̶ 30⭐)",
+        "intim_buy_btn": "🔥 Heiße Szene kaufen ({price}⭐)",
         "intim_menu_title": "🔥 **Heiße Szene**\n\nVerfügbare Szenen: {n}\nWähle, was passiert:",
         "intim_choose_location": "📍 Wähle einen Ort:",
         "intim_choose_dominant": "🎭 Wer übernimmt die Führung?",
@@ -3464,7 +3464,7 @@ def get_profile_keyboard(user):
     mute_key = "notifications_off_btn" if user.get("notifications_muted") else "notifications_on_btn"
     rows = [
         [InlineKeyboardButton(text=get_text(user, "subscribe"), callback_data="profile_subs", style="success")],
-        [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "intim_buy_btn", price=price_label("intim_scene", user)), callback_data="buy:intim_scene", style="success")],
         [InlineKeyboardButton(text=get_text(user, mute_key), callback_data="toggle_notifications", style="primary")],
     ]
     # Иммунитет к болезням — перк именно ELITE (самый верхний тариф), не SUPER PRO. Кнопка теперь
@@ -6170,7 +6170,7 @@ def get_intim_dominant_kb(user, scene_type, location):
 
 def get_intim_buy_kb(user):
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "intim_buy_btn"), callback_data="buy:intim_scene", style="success")],
+        [InlineKeyboardButton(text=get_text(user, "intim_buy_btn", price=price_label("intim_scene", user)), callback_data="buy:intim_scene", style="success")],
         [InlineKeyboardButton(text=get_text(user, "back"), callback_data="profile_back", style="danger")],
     ])
 
@@ -12962,7 +12962,7 @@ def serialize_spin_state(user):
             "free_label": spin_free_label(user),
             "tomorrow_label": get_text(user, "tomorrow"),
             "paid_label": get_text(user, "spin_paid", price=price_label("spin_paid_webapp", user)),
-            "luck_btn": get_text(user, "spin_luck_btn", price=PRODUCTS["spin_luck"]["stars"]),
+            "luck_btn": get_text(user, "spin_luck_btn", price=price_label("spin_luck", user)),
             "luck_active": get_text(user, "spin_luck_active", time="{time}"),
             "luck_elite": get_text(user, "spin_luck_elite"),
             "spin_btn": get_text(user, "webapp_spin_btn"),
@@ -16081,7 +16081,7 @@ async def api_spin_luck_invoice_handler(request):
     try:
         invoice_url = await bot.create_invoice_link(
             title=title, description=description, payload="spin_luck", provider_token="",
-            currency="XTR", prices=[LabeledPrice(label=label, amount=PRODUCTS["spin_luck"]["stars"])],
+            currency="XTR", prices=[LabeledPrice(label=label, amount=product_stars("spin_luck", user))],
         )
     except Exception as e:
         logging.error(f"create_invoice_link (spin_luck) для {user_id}: {e}")
