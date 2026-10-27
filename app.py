@@ -5429,9 +5429,10 @@ PLATEGA_MERCHANT_ID = os.getenv("PLATEGA_MERCHANT_ID", "")
 PLATEGA_SECRET = os.getenv("PLATEGA_SECRET", "")
 PLATEGA_API = os.getenv("PLATEGA_API", "https://app.platega.io")
 PLATEGA_RETURN_URL = os.getenv("PLATEGA_RETURN_URL", "https://t.me/role_duel_bot")
-# Что НЕ продаём через Platega: по умолчанию тот же список, что и для Lava (всё, что открывает 18+:
-# горячие сцены, SUPER PRO/ELITE, апгрейд, дефибриллятор) -- эти товары только за звёзды. Переопределить:
+# Что НЕ продаём через Platega: по умолчанию только горячие сцены (они только за звёзды); подписки и
+# дефибриллятор -- картой можно (по решению владельца). Переопределить:
 # PLATEGA_RESTRICTED_PRODUCTS=ключ1,ключ2 (или "none", чтобы разрешить всё).
+PLATEGA_DEFAULT_RESTRICTED = {"intim_scene"}
 PLATEGA_RESTRICTED_ENV = os.getenv("PLATEGA_RESTRICTED_PRODUCTS")
 RUB_PER_STAR = 1.2  # цена картой = цена в звёздах (со всеми скидками) x этот курс
 
@@ -5518,7 +5519,7 @@ LAVA_RESTRICTED_PRODUCTS = {"subscribe_super", "subscribe_elite", "upgrade_to_su
 
 def platega_restricted_products():
     if PLATEGA_RESTRICTED_ENV is None:
-        return LAVA_RESTRICTED_PRODUCTS
+        return PLATEGA_DEFAULT_RESTRICTED
     if PLATEGA_RESTRICTED_ENV.strip().lower() == "none":
         return set()
     return {x.strip() for x in PLATEGA_RESTRICTED_ENV.split(",") if x.strip()}
