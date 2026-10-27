@@ -5429,8 +5429,10 @@ PLATEGA_MERCHANT_ID = os.getenv("PLATEGA_MERCHANT_ID", "")
 PLATEGA_SECRET = os.getenv("PLATEGA_SECRET", "")
 PLATEGA_API = os.getenv("PLATEGA_API", "https://app.platega.io")
 PLATEGA_RETURN_URL = os.getenv("PLATEGA_RETURN_URL", "https://t.me/role_duel_bot")
-# Если менеджер Platega запретит какие-то товары -- перечислить их ключи через запятую (как LAVA_RESTRICTED_PRODUCTS).
-PLATEGA_RESTRICTED_PRODUCTS = {x.strip() for x in os.getenv("PLATEGA_RESTRICTED_PRODUCTS", "").split(",") if x.strip()}
+# Что НЕ продаём через Platega: по умолчанию тот же список, что и для Lava (всё, что открывает 18+:
+# горячие сцены, SUPER PRO/ELITE, апгрейд, дефибриллятор) -- эти товары только за звёзды. Переопределить:
+# PLATEGA_RESTRICTED_PRODUCTS=ключ1,ключ2 (или "none", чтобы разрешить всё).
+PLATEGA_RESTRICTED_ENV = os.getenv("PLATEGA_RESTRICTED_PRODUCTS")
 RUB_PER_STAR = 1.2  # цена картой = цена в звёздах (со всеми скидками) x этот курс
 
 PAYMENT_TIMEOUT_MINUTES = 60  # через сколько снимаем неоплаченный счёт с отслеживания
@@ -5514,11 +5516,19 @@ def is_method_enabled(method):
 LAVA_RESTRICTED_PRODUCTS = {"subscribe_super", "subscribe_elite", "upgrade_to_super", "intim_scene", "defibrillator"}
 
 
+def platega_restricted_products():
+    if PLATEGA_RESTRICTED_ENV is None:
+        return LAVA_RESTRICTED_PRODUCTS
+    if PLATEGA_RESTRICTED_ENV.strip().lower() == "none":
+        return set()
+    return {x.strip() for x in PLATEGA_RESTRICTED_ENV.split(",") if x.strip()}
+
+
 def available_payment_methods(payload=None):
     methods = [m for m in ("stars", "platega", "crypto", "lava") if is_method_enabled(m)]
     if payload in LAVA_RESTRICTED_PRODUCTS:
         methods = [m for m in methods if m != "lava"]
-    if payload in PLATEGA_RESTRICTED_PRODUCTS:
+    if payload in platega_restricted_products():
         methods = [m for m in methods if m != "platega"]
     return methods
 
@@ -12850,6 +12860,13 @@ def _price_rub(key):
     return f"{PRODUCTS[key]['rub']} ₽"
 
 
+def _site_price(key):
+    """Цена на сайте: картой -- как в боте; товары, которые картой не продаются, -- честно «только Telegram Stars»."""
+    if key in platega_restricted_products():
+        return f"{product_stars(key)} ⭐ · только Telegram Stars"
+    return f"{product_rub(key)} ₽"
+
+
 def site_pricing_html():
     # Горячие сцены (intim_scene) на сайт намеренно не выносим -- они продаются только за Stars в боте.
     items = [
@@ -12867,7 +12884,7 @@ def site_pricing_html():
     ]
     cards = "".join(
         f'<div class="card"><b>{html_lib.escape(name)}</b><span class="muted">{html_lib.escape(desc)}</span>'
-        f'<div class="price">{_price_rub(key)}</div></div>'
+        f'<div class="price">{_site_price(key)}</div></div>'
         for name, desc, key in items)
     return f'<div class="grid">{cards}</div>'
 
