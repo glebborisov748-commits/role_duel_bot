@@ -86,6 +86,7 @@ TEXTS = {
             "/language — сменить язык\n"
             "/support — связаться с поддержкой\n"
             "/hot — горячая сцена с персонажем\n"
+            "/games — развлечения с персонажем\n"
             "/feed — покормить персонажа\n"
             "/work — пойти на работу за баксы для персонажа\n"
             "/spin — колесо фортуны\n"
@@ -296,14 +297,16 @@ TEXTS = {
         "webapp_buy_stars_btn": "Купить",
         "webapp_note_placeholder": "Записка (необязательно)",
         "webapp_refuse_badge": "Не хочет",
-        "promo_banner": "🔥 Акции дня: {items}",
-        "sub_sale_line": "🔥 Пятничная распродажа: SUPER PRO и ELITE −{n}% — только сегодня!",
+        "promo_banner": "🏷 Скидки до {n}%! {items}",
+        "promo_title": "Скидки до {n}%",
+        "spin_sale_part": "🎰 Прокрут {sale}⭐ вместо {regular}⭐",
+        "sub_sale_line": "🔥 Распродажа выходных: SUPER PRO и ELITE −{n}% — до воскресенья!",
         "coupon_line": "🎁 Твоя персональная скидка −{n}% на любую покупку за звёзды — осталось {hours} ч.",
         "coupon_granted": "🎁 Спасибо за первую покупку! Дарю тебе −{n}% на следующую покупку за звёзды: подписку, энергетики, сцену — что угодно. Скидка действует {hours} ч.",
         "coupon_used": "🎁 Персональная скидка применена — спасибо!",
-        "sub_sale_part": "👑 SUPER PRO и ELITE −{n}% только сегодня",
+        "sub_sale_part": "👑 SUPER PRO и ELITE −{n}%",
         "subs_per_day": "💡 В день это всего ≈7⭐ за PRO, ≈17⭐ за SUPER PRO и ≈33⭐ за ELITE. Для сравнения: один энергетик — ≈{energizer}⭐, а подписка каждый день сама даёт энергетики, сцены и прокруты.",
-        "energizer_sale_part": "⚡ Энергетики −{n}% до воскресенья",
+        "energizer_sale_part": "⚡ Энергетики −{n}%",
         "pack_saving": "Выгода −{n}%",
         "gift_locked_alert": "🔒 Этот подарок откроется на {level} уровне близости. Общайся с персонажем, чтобы стать ближе 💬",
         "gift_locked_short": "с {level} уровня",
@@ -317,6 +320,7 @@ TEXTS = {
         "webapp_spin_paid_pending": "Обрабатываем оплату…",
         "webapp_spin_invoice_error": "Не удалось создать счёт. Попробуй ещё раз.",
         "defibrillator_btn": "🔌 Дефибриллятор — воскресить за {price}⭐",
+        "defib_stock_btn": "🔌 Использовать дефибриллятор из запаса ({n})",
         "new_character_btn": "🆕 Начать заново с новым персонажем",
         "new_character_started": "🆕 Хорошо, начнём с чистого листа.",
         "defibrillator_success": "🔌 Дефибриллятор сработал! Персонаж снова с тобой, вся история на месте.",
@@ -467,6 +471,7 @@ TEXTS = {
             "/language — change language\n"
             "/support — contact support\n"
             "/hot — a hot scene with your character\n"
+            "/games — fun and games with your character\n"
             "/feed — feed your character\n"
             "/work — go to work for bucks for your character\n"
             "/spin — the wheel of fortune\n"
@@ -677,14 +682,16 @@ TEXTS = {
         "webapp_buy_stars_btn": "Buy",
         "webapp_note_placeholder": "Note (optional)",
         "webapp_refuse_badge": "Doesn't want it",
-        "promo_banner": "🔥 Today's deals: {items}",
-        "sub_sale_line": "🔥 Friday sale: SUPER PRO and ELITE −{n}% — today only!",
+        "promo_banner": "🏷 Up to {n}% off! {items}",
+        "promo_title": "Up to {n}% off",
+        "spin_sale_part": "🎰 Spin {sale}⭐ instead of {regular}⭐",
+        "sub_sale_line": "🔥 Weekend sale: SUPER PRO and ELITE −{n}% — until Sunday!",
         "coupon_line": "🎁 Your personal −{n}% discount on any Stars purchase — {hours} h left.",
         "coupon_granted": "🎁 Thanks for your first purchase! Here's −{n}% off your next Stars purchase: a subscription, energizers, a scene — anything. Valid for {hours} h.",
         "coupon_used": "🎁 Personal discount applied — thank you!",
-        "sub_sale_part": "👑 SUPER PRO and ELITE −{n}% today only",
+        "sub_sale_part": "👑 SUPER PRO and ELITE −{n}%",
         "subs_per_day": "💡 Per day that's just ≈7⭐ for PRO, ≈17⭐ for SUPER PRO and ≈33⭐ for ELITE. For comparison: one energizer is ≈{energizer}⭐, while a subscription gives you energizers, scenes and spins every day.",
-        "energizer_sale_part": "⚡ Energizers −{n}% until Sunday",
+        "energizer_sale_part": "⚡ Energizers −{n}%",
         "pack_saving": "Save {n}%",
         "gift_locked_alert": "🔒 This gift unlocks at closeness level {level}. Chat with your companion to get closer 💬",
         "gift_locked_short": "from level {level}",
@@ -698,6 +705,7 @@ TEXTS = {
         "webapp_spin_paid_pending": "Processing payment…",
         "webapp_spin_invoice_error": "Could not create the invoice. Please try again.",
         "defibrillator_btn": "🔌 Defibrillator — revive for {price}⭐",
+        "defib_stock_btn": "🔌 Use a defibrillator from stock ({n})",
         "new_character_btn": "🆕 Start over with a new character",
         "new_character_started": "🆕 Alright, starting with a clean slate.",
         "defibrillator_success": "🔌 The defibrillator worked! Your companion is back, with the whole history intact.",
@@ -848,6 +856,7 @@ TEXTS = {
             "/language — Sprache ändern\n"
             "/support — Support kontaktieren\n"
             "/hot — heiße Szene mit deinem Charakter\n"
+            "/games — Spiele mit deinem Charakter\n"
             "/feed — deinen Charakter füttern\n"
             "/work — für Bucks für deinen Charakter arbeiten gehen\n"
             "/spin — das Glücksrad\n"
@@ -1058,14 +1067,16 @@ TEXTS = {
         "webapp_buy_stars_btn": "Kaufen",
         "webapp_note_placeholder": "Notiz (optional)",
         "webapp_refuse_badge": "Will nicht",
-        "promo_banner": "🔥 Angebote des Tages: {items}",
-        "sub_sale_line": "🔥 Freitags-Sale: SUPER PRO und ELITE −{n}% — nur heute!",
+        "promo_banner": "🏷 Bis zu {n}% Rabatt! {items}",
+        "promo_title": "Bis zu {n}% Rabatt",
+        "spin_sale_part": "🎰 Dreh für {sale}⭐ statt {regular}⭐",
+        "sub_sale_line": "🔥 Wochenend-Sale: SUPER PRO und ELITE −{n}% — bis Sonntag!",
         "coupon_line": "🎁 Dein persönlicher Rabatt von −{n}% auf jeden Kauf mit Stars — noch {hours} Std.",
         "coupon_granted": "🎁 Danke für deinen ersten Kauf! Du bekommst −{n}% auf deinen nächsten Kauf mit Stars: Abo, Energydrinks, Szene — egal was. Gültig {hours} Std.",
         "coupon_used": "🎁 Persönlicher Rabatt angewendet — danke!",
-        "sub_sale_part": "👑 SUPER PRO und ELITE −{n}% nur heute",
+        "sub_sale_part": "👑 SUPER PRO und ELITE −{n}%",
         "subs_per_day": "💡 Pro Tag sind das nur ≈7⭐ für PRO, ≈17⭐ für SUPER PRO und ≈33⭐ für ELITE. Zum Vergleich: ein Energydrink kostet ≈{energizer}⭐, und ein Abo gibt dir jeden Tag Energydrinks, Szenen und Drehs.",
-        "energizer_sale_part": "⚡ Energydrinks −{n}% bis Sonntag",
+        "energizer_sale_part": "⚡ Energydrinks −{n}%",
         "pack_saving": "Spare {n}%",
         "gift_locked_alert": "🔒 Dieses Geschenk wird ab Nähe-Stufe {level} freigeschaltet. Schreib mit deinem Begleiter, um euch näherzukommen 💬",
         "gift_locked_short": "ab Stufe {level}",
@@ -1079,6 +1090,7 @@ TEXTS = {
         "webapp_spin_paid_pending": "Zahlung wird verarbeitet…",
         "webapp_spin_invoice_error": "Rechnung konnte nicht erstellt werden. Bitte versuche es erneut.",
         "defibrillator_btn": "🔌 Defibrillator — wiederbeleben für {price}⭐",
+        "defib_stock_btn": "🔌 Defibrillator aus dem Vorrat nutzen ({n})",
         "new_character_btn": "🆕 Neu anfangen mit einem neuen Charakter",
         "new_character_started": "🆕 Gut, wir fangen mit einem sauberen Blatt an.",
         "defibrillator_success": "🔌 Der Defibrillator hat funktioniert! Dein Begleiter ist zurück, die ganze Geschichte ist erhalten.",
@@ -3143,7 +3155,14 @@ def build_consistency_rules(user):
         "\n**Последовательность:** перед ответом сверься с последними своими репликами в истории "
         "диалога — не противоречь тому, что сам(а) только что сказал(а) или на что согласился(ась) "
         "(кто платит, кто куда идёт, что было обещано и т.п.), если собеседник явно не изменил "
-        "ситуацию.\n" + build_setting_rule(user))
+        "ситуацию.\n" + build_setting_rule(user) + ENGAGEMENT_RULE)
+
+
+ENGAGEMENT_RULE = (
+    "**Инициатива:** ты живой человек со своими желаниями. Не жди, пока разговор поведут за тебя: задавай встречные "
+    "вопросы, иногда сам(а) предлагай тему, делись мелкими новостями своего дня, проси о небольшом (рассказать о себе, "
+    "помочь выбрать, поддержать), показывай эмоции — радость, любопытство, скуку, когда долго не пишут. Но не дави: "
+    "не вызывай чувство вины, не обижайся демонстративно и не уговаривай собеседника остаться.\n")
 
 
 def build_prompt(user):
@@ -3659,6 +3678,7 @@ async def choose_scene(call: types.CallbackQuery):
         # Разовая памятка новичку: что откуда берётся и куда идти, если что-то не понятно.
         # Флаг отдельный от personality_ready — пересоздание/смена персонажа (reset_character
         # тоже проходит этот же путь) не должны показывать её повторно.
+        asyncio.create_task(generate_first_message(call.message.chat.id, user))
         if not user.get("onboarding_shown"):
             user["onboarding_shown"] = True
             save_data(user_data)
@@ -3818,7 +3838,8 @@ HELP_URLS = {
 
 def get_help_guide_kb(user):
     lang = user.get("lang", "ru")
-    url = HELP_URLS.get(lang, HELP_URLS["ru"])
+    # Свой гайд на сервере бота (актуальный), Telegraph -- только если Mini App/сайт не настроен.
+    url = f"{WEBAPP_URL}/guide?lang={lang}" if WEBAPP_URL else HELP_URLS.get(lang, HELP_URLS["ru"])
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=get_text(user, "help_guide_btn"), url=url, style="primary")],
     ])
@@ -4031,10 +4052,10 @@ async def shop_reply(message: types.Message):
             [InlineKeyboardButton(text=get_text(user, "open_btn"),
                                   web_app=WebAppInfo(url=f"{WEBAPP_URL}/shop"), style="success")]
         ])
-        await message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)) + "\n\n" + promo_banner_text(user),
+        await message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)) + "\n\n" + get_text(user, "promo_banner", n=promo_max_percent(user), items=promo_banner_text(user)),
                               reply_markup=keyboard, parse_mode="Markdown")
         return
-    await message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)) + "\n\n" + promo_banner_text(user),
+    await message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)) + "\n\n" + get_text(user, "promo_banner", n=promo_max_percent(user), items=promo_banner_text(user)),
                           reply_markup=get_shop_kb(user), parse_mode="Markdown")
 
 
@@ -4044,7 +4065,7 @@ async def open_shop_cb(call: types.CallbackQuery):
     тот же старый инлайн-каталог, что и в shop_reply, когда Mini App не настроен."""
     await call.answer()
     user = get_user(call.from_user.id)
-    await call.message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)) + "\n\n" + promo_banner_text(user),
+    await call.message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)) + "\n\n" + get_text(user, "promo_banner", n=promo_max_percent(user), items=promo_banner_text(user)),
                               reply_markup=get_shop_kb(user), parse_mode="Markdown")
 
 
@@ -4311,13 +4332,21 @@ def apply_spin_prize(user, chosen):
         result_text = get_text(user, "spin_win_care_package")
     elif chosen["type"] == "subscription_pro":
         grant_subscription_days(user, "pro", 5)
+        # Сразу выдаём дневные бонусы подписки, но счётчик бесплатных прокрутов сохраняем: раньше
+        # полный сброс дня обнулял его, и прокруты «начинались заново» (баг из фидбэка).
+        spins_used = user.get("free_spins_used", 0)
         user["last_daily_reset"] = None
         _reset_daily_quota_if_needed(user)
+        user["free_spins_used"] = spins_used
         result_text = get_text(user, "spin_win_pro")
     elif chosen["type"] == "subscription_super":
         grant_subscription_days(user, "super_pro", 3)
+        # Сразу выдаём дневные бонусы подписки, но счётчик бесплатных прокрутов сохраняем: раньше
+        # полный сброс дня обнулял его, и прокруты «начинались заново» (баг из фидбэка).
+        spins_used = user.get("free_spins_used", 0)
         user["last_daily_reset"] = None
         _reset_daily_quota_if_needed(user)
+        user["free_spins_used"] = spins_used
         result_text = get_text(user, "spin_win_super")
     elif chosen["type"] == "work_boost":
         user["work_boost_until"] = (datetime.now() + timedelta(minutes=SPIN_WORK_BOOST_MINUTES)).isoformat()
@@ -4658,35 +4687,59 @@ def promo_banner_text(user):
         item = (GIFT_ITEMS if cat == "gift" else FOOD_ITEMS)[key]
         shown = gift_effective_item(item, user) if cat == "gift" else item
         parts.append(f"{shown['emoji']} {shown.get(lang, shown['ru'])} −{int(discount * 100)}%")
+    if spin_sale_active():
+        parts.insert(0, get_text(user, "spin_sale_part", sale=SPIN_SALE_STARS, regular=SPIN_LIST_STARS))
     if energizer_sale_active():
         parts.insert(0, get_text(user, "energizer_sale_part", n=energizer_sale_percent()))
     if sub_sale_active():
         parts.insert(0, get_text(user, "sub_sale_part", n=int(SUB_SALE_DISCOUNT * 100)))
-    return get_text(user, "promo_banner", items=", ".join(parts))
+    return ", ".join(parts)
 
 
-# Энергетики: обычная цена (ENERGIZER_LIST_STARS) действует пн-чт, а пт-вс -- распродажа выходных по цене
-# из PRODUCTS. Скидка настоящая: в будни платят именно обычную цену.
+def promo_max_percent(user):
+    """Самая большая скидка сегодня -- для бирки «Скидки до N%» в шапке магазина."""
+    values = [d for d in promo_of_day().values()] + [energizer_discount_today()]
+    if spin_sale_active():
+        values.append(1 - SPIN_SALE_STARS / SPIN_LIST_STARS)
+    if sub_sale_active():
+        values.append(SUB_SALE_DISCOUNT)
+    if coupon_active(user):
+        values.append(user["coupon"]["discount"])
+    return int(round(max(values) * 100))
+
+
+# Распродажи по календарю: в какой день какая скидка -- случайно, но детерминированно по дате (одинаково
+# у всех и не меняется в течение дня). Скидки настоящие: в дни без распродажи действует обычная цена.
+def _day_rng(tag):
+    return random.Random(f"{tag}-{datetime.now().date().isoformat()}")
+
+
+# Энергетики: обычная цена ENERGIZER_LIST_STARS; примерно в 3 днях из 5 -- скидка 15/20/28%.
 ENERGIZER_LIST_STARS = {"energizer_2": 25, "energizer_6": 69, "energizer_15": 165, "energizer_35": 359}
-ENERGIZER_SALE_WEEKDAYS = {4, 5, 6}  # пятница, суббота, воскресенье
+ENERGIZER_SALE_OPTIONS = [0, 0, 0.15, 0.2, 0.28]
+
+
+def energizer_discount_today():
+    return _day_rng("energizer").choice(ENERGIZER_SALE_OPTIONS)
 
 
 def energizer_sale_active():
-    return datetime.now().weekday() in ENERGIZER_SALE_WEEKDAYS
+    return energizer_discount_today() > 0
 
 
 def energizer_stars(key):
-    return PRODUCTS[key]["stars"] if energizer_sale_active() else ENERGIZER_LIST_STARS[key]
+    return max(1, int(round(ENERGIZER_LIST_STARS[key] * (1 - energizer_discount_today()))))
 
 
 def energizer_sale_percent():
-    key = "energizer_35"
-    return int(round((1 - PRODUCTS[key]["stars"] / ENERGIZER_LIST_STARS[key]) * 100))
+    return int(round(energizer_discount_today() * 100))
 
 
 # Прежние цены, которые реально были у товаров (показываем зачёркнутыми рядом с текущей).
 PREVIOUS_STARS = {"intim_scene": 45, "wake_now": 50, "defibrillator": 55}
-SPIN_LIST_STARS = 20  # обычная цена прокрута пн-чт; пт-вс -- распродажа по цене из PRODUCTS (15⭐)
+SPIN_LIST_STARS = 15  # обычная цена платного прокрута
+SPIN_SALE_STARS = 10  # примерно в 2 днях из 5 -- распродажа
+SPIN_SALE_CHANCE = 0.4
 
 
 def strike(text):
@@ -4694,12 +4747,16 @@ def strike(text):
     return "".join(ch + "\u0336" for ch in str(text))
 
 
+def spin_sale_active():
+    return _day_rng("spin").random() < SPIN_SALE_CHANCE
+
+
 def spin_stars():
-    return PRODUCTS["spin_paid_20"]["stars"] if energizer_sale_active() else SPIN_LIST_STARS
+    return SPIN_SALE_STARS if spin_sale_active() else SPIN_LIST_STARS
 
 
-# Пятничная распродажа подписок: SUPER PRO и ELITE реально дешевле только по пятницам.
-SUB_SALE_WEEKDAY = 4
+# Распродажа подписок на выходных: SUPER PRO и ELITE реально дешевле только в пт-вс.
+SUB_SALE_WEEKDAYS = {4, 5, 6}
 SUB_SALE_DISCOUNT = 0.2
 SUB_SALE_PRODUCTS = {"subscribe_super", "subscribe_elite"}
 # Бонус за первую покупку: скидка на следующую покупку за звёзды, на ограниченное время.
@@ -4708,7 +4765,7 @@ FIRST_BUY_COUPON_HOURS = 72
 
 
 def sub_sale_active():
-    return datetime.now().weekday() == SUB_SALE_WEEKDAY
+    return datetime.now().weekday() in SUB_SALE_WEEKDAYS
 
 
 def coupon_active(user):
@@ -4822,9 +4879,11 @@ def get_shop_kb(user):
         rows.append([InlineKeyboardButton(text=f"{offer['emoji']} {game_offer_name(user, key)} — {game_price_label(user, key)}",
                                           callback_data=f"game_{key}", style="success")])
     rows.append([InlineKeyboardButton(text=gt(user, "shop_cat_exchange"), callback_data="shop_noop")])
-    for key, offer in BUCKS_EXCHANGE.items():
-        rows.append([InlineKeyboardButton(text=f"{offer['emoji']} {exchange_name(user, key)} — {offer['price']}💵",
-                                          callback_data=f"shop_ex_{key}", style="success")])
+    ex_key = exchange_today()
+    ex_offer = BUCKS_EXCHANGE[ex_key]
+    ex_label = f" — {ex_offer['price']}💵" if exchange_left(user, ex_key) else " — " + gt(user, "ex_bought_today")
+    rows.append([InlineKeyboardButton(text=f"{ex_offer['emoji']} {exchange_name(user, ex_key)}{ex_label}",
+                                      callback_data=f"shop_ex_{ex_key}", style="success")])
     rows.append([InlineKeyboardButton(text=get_text(user, "shop_note_menu_btn"), callback_data="shop_note_menu", style="success")])
     rows.append([InlineKeyboardButton(text=get_text(user, "back_to_profile"), callback_data="back_to_profile", style="danger")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
@@ -4965,7 +5024,7 @@ async def profile_shop(call: types.CallbackQuery):
     if not user["personality_ready"]:
         await call.answer(get_text(user, "need_character_alert"), show_alert=True)
         return
-    await call.message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)) + "\n\n" + promo_banner_text(user),
+    await call.message.answer(get_text(user, "shop_title", bucks=user.get("bucks", 0)) + "\n\n" + get_text(user, "promo_banner", n=promo_max_percent(user), items=promo_banner_text(user)),
                               reply_markup=get_shop_kb(user), parse_mode="Markdown")
     await call.answer()
 
@@ -5039,11 +5098,29 @@ def update_overfeed_strikes(user, item):
 
 
 def get_death_kb(user):
-    return InlineKeyboardMarkup(inline_keyboard=[
+    rows = []
+    if user.get("defib_stock", 0) > 0:
+        rows.append([InlineKeyboardButton(text=get_text(user, "defib_stock_btn", n=user["defib_stock"]),
+                                          callback_data="use_defib_stock", style="success")])
+    return InlineKeyboardMarkup(inline_keyboard=rows + [
         [InlineKeyboardButton(text=get_text(user, "defibrillator_btn", price=price_label("defibrillator", user)),
                               callback_data="buy:defibrillator", style="success")],
         [InlineKeyboardButton(text=get_text(user, "new_character_btn"), callback_data="revive_new_character", style="danger")],
     ])
+
+
+@dp.callback_query(lambda c: c.data == "use_defib_stock")
+async def use_defib_stock_cb(call: types.CallbackQuery):
+    user = get_user(call.from_user.id)
+    if not user.get("dead") or user.get("defib_stock", 0) <= 0:
+        await call.answer()
+        return
+    user["defib_stock"] -= 1
+    user["dead"] = False
+    save_data(user_data)
+    await safe_delete(call.message)
+    await call.answer()
+    await bot.send_message(call.message.chat.id, get_text(user, "defibrillator_success"))
 
 
 async def kill_character(chat_id, user, cause):
@@ -6750,6 +6827,33 @@ async def start_story_event(chat_id, user, key):
     return None
 
 
+async def generate_first_message(chat_id, user):
+    """Сразу после создания персонажа он сам пишет первым -- чтобы человек не остался перед пустым чатом."""
+    await asyncio.sleep(2)  # пусть сначала придут меню и памятка
+    system_prompt = build_prompt(user) + (
+        "\n**ПЕРВОЕ СООБЩЕНИЕ:** собеседник только что тебя выбрал, вы ещё не общались. Напиши первым(ой): живо, в образе и "
+        "в текущей обстановке, с эмоцией и маленькой деталью о себе (чем занят(а) прямо сейчас, что на душе). 2-4 предложения, "
+        "без шаблонного «привет, я ...». Закончи личным вопросом или небольшой просьбой, на которую хочется ответить.\n")
+    typing_task = asyncio.create_task(_keep_typing(chat_id))
+    try:
+        response = await asyncio.to_thread(
+            call_ai, AI_MODEL, "ai",
+            messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": "*собеседник открыл чат*"}],
+            temperature=0.95, max_tokens=1200)
+        answer = response.choices[0].message.content or ""
+    except Exception as e:
+        logging.warning(f"generate_first_message: {e}")
+        return
+    finally:
+        typing_task.cancel()
+    _, clean = extract_reaction_from_answer(answer)
+    if not (clean or "").strip():
+        return
+    user["history"].append({"role": "assistant", "content": clean})
+    save_data(user_data)
+    await send_long_to_chat(chat_id, clean)
+
+
 async def generate_event_opening(chat_id, user, event):
     """Открывающая реплика события -- ИИ сам начинает историю (как реакция на подарок)."""
     system_prompt = build_prompt(user)
@@ -6797,6 +6901,12 @@ GAME_TEXTS = {
         "tod_ai_turn": "🔄 Теперь моя очередь! Я выбираю {kind}. Придумай мне {what} и напиши сообщением.",
         "tod_use_buttons": "Сейчас выбирай кнопкой: правда или действие 👆",
         "tod_wait": "Секунду, я отвечаю…",
+        "tod_fallback_truth": ["Что тебя во мне больше всего зацепило? 🙈", "О чём ты мечтаешь, но никому не рассказываешь?",
+                               "Когда ты в последний раз по-настоящему смущался(ась)?", "Какой твой самый странный страх? 😅",
+                               "Что бы ты сделал(а), если бы у нас был целый день вдвоём?"],
+        "tod_fallback_dare": ["Опиши, как бы ты меня обнял(а) прямо сейчас 🤗", "Напиши мне комплимент из трёх слов — но честный 😏",
+                              "Придумай нам смешное парное прозвище!", "Расскажи анекдот — посмотрим, рассмешишь ли 😄",
+                              "Опиши своё идеальное свидание со мной одним сообщением 🌙"],
         "tod_finished": "🎭 Игра закончилась. +{xp} XP за откровенный вечер.",
         "bj_btn": "🃏 Блэкджек",
         "movie_btn": "🎬 Кино",
@@ -6819,11 +6929,12 @@ GAME_TEXTS = {
         "shop_cat_exchange": "💎 За баксы",
         "play_btn": "▶️ Играть",
         "start_btn": "▶️ Начать",
-        "ex_desc_energizer": "+1 энергетик. Осталось сегодня: {left}",
-        "ex_desc_spin": "+1 прокрут колеса. Осталось сегодня: {left}",
-        "ex_desc_scene": "+1 горячая сцена (/hot). Осталось на неделе: {left}",
+        "ex_desc_energizer": "Товар дня: +1 энергетик, чтобы продолжить общение. Один раз в день, завтра будет другой товар.",
+        "ex_desc_scene": "Товар дня: +1 горячая сцена (/hot). Один раз в день, завтра будет другой товар.",
         "ex_limit_day": "На сегодня лимит исчерпан — завтра снова можно.",
-        "ex_limit_week": "На этой неделе уже брал(а) — со следующей недели снова можно.",
+        "ex_desc_defib": "Товар дня: спасёт персонажа, если он умрёт, — лежит в запасе, пока не понадобится. В запасе: {stock}",
+        "ex_bought_today": "куплено, завтра новый товар",
+        "ex_not_today": "Сегодня в обменнике другой товар — загляни завтра.",
         "ex_done": "✅ Готово: {name} уже у тебя.",
         "busy": "Сначала закончи текущую игру.",
         "asleep": "Персонаж спит — сначала разбуди его.",
@@ -6865,6 +6976,12 @@ GAME_TEXTS = {
         "tod_ai_turn": "🔄 My turn now! I pick {kind}. Come up with a {what} for me and write it.",
         "tod_use_buttons": "Pick with the buttons now: truth or dare 👆",
         "tod_wait": "One sec, I am answering…",
+        "tod_fallback_truth": ["What hooked you about me the most? 🙈", "What do you dream about but never tell anyone?",
+                               "When were you last truly embarrassed?", "What's your weirdest fear? 😅",
+                               "What would you do if we had a whole day together?"],
+        "tod_fallback_dare": ["Describe how you'd hug me right now 🤗", "Give me a three-word compliment — an honest one 😏",
+                              "Come up with a funny couple nickname for us!", "Tell me a joke — let's see if you can make me laugh 😄",
+                              "Describe your perfect date with me in one message 🌙"],
         "tod_finished": "🎭 Game over. +{xp} XP for an honest evening.",
         "bj_btn": "🃏 Blackjack",
         "movie_btn": "🎬 Movie",
@@ -6887,11 +7004,12 @@ GAME_TEXTS = {
         "shop_cat_exchange": "💎 For bucks",
         "play_btn": "▶️ Play",
         "start_btn": "▶️ Start",
-        "ex_desc_energizer": "+1 energizer. Left today: {left}",
-        "ex_desc_spin": "+1 wheel spin. Left today: {left}",
-        "ex_desc_scene": "+1 hot scene (/hot). Left this week: {left}",
+        "ex_desc_energizer": "Item of the day: +1 energizer to keep chatting. Once a day, tomorrow there'll be something else.",
+        "ex_desc_scene": "Item of the day: +1 hot scene (/hot). Once a day, tomorrow there'll be something else.",
         "ex_limit_day": "Today's limit is used up — come back tomorrow.",
-        "ex_limit_week": "Already taken this week — available again next week.",
+        "ex_desc_defib": "Item of the day: saves your companion if they die — kept in stock until needed. In stock: {stock}",
+        "ex_bought_today": "bought, new item tomorrow",
+        "ex_not_today": "There's a different item in the exchange today — check back tomorrow.",
         "ex_done": "✅ Done: {name} is yours.",
         "busy": "Finish the current game first.",
         "asleep": "Your companion is asleep — wake them first.",
@@ -6971,23 +7089,23 @@ def pay_for_game(user, key):
 # «💎 За баксы»: цель, ради которой баксы хочется копить. Энергетики и прокрут сюда намеренно не входят --
 # их покупают только за звёзды (по решению владельца). Горячая сцена -- раз в неделю.
 BUCKS_EXCHANGE = {
-    "scene": {"emoji": "🔥", "ru": "Горячая сцена", "en": "Hot scene", "price": 30000, "limit": 1, "period": "week"},
+    "energizer": {"emoji": "⚡", "ru": "1 энергетик", "en": "1 energizer", "price": 12000},
+    "defib": {"emoji": "🔌", "ru": "Дефибриллятор", "en": "Defibrillator", "price": 20000},
+    "scene": {"emoji": "🔥", "ru": "Горячая сцена", "en": "Hot scene", "price": 30000},
 }
+# Что продаётся сегодня: каждый день что-то одно и купить можно один раз -- глоток бесплатного удовольствия,
+# после которого хочется ещё (а дальше -- только за звёзды). Энергетик чаще остальных.
+EXCHANGE_ROTATION = ["energizer", "defib", "energizer", "scene", "energizer", "defib", "energizer"]
 
 
-def _exchange_period_id(period):
-    today = datetime.now().date()
-    if period == "week":
-        year, week, _ = today.isocalendar()
-        return f"{year}-W{week}"
-    return today.isoformat()
+def exchange_today():
+    return EXCHANGE_ROTATION[datetime.now().date().toordinal() % len(EXCHANGE_ROTATION)]
 
 
 def exchange_left(user, key):
-    offer = BUCKS_EXCHANGE[key]
-    used = (user.get("bucks_exchange") or {}).get(key) or {}
-    count = used.get("n", 0) if used.get("p") == _exchange_period_id(offer["period"]) else 0
-    return max(0, offer["limit"] - count)
+    if key != exchange_today():
+        return 0
+    return 0 if (user.get("bucks_exchange") or {}).get("day") == datetime.now().date().isoformat() else 1
 
 
 def exchange_name(user, key):
@@ -6996,24 +7114,24 @@ def exchange_name(user, key):
 
 
 def buy_exchange(user, key):
-    """(ok, error_text). Выдаёт энергетик/прокрут/сцену за баксы в пределах лимита."""
+    """(ok, error_text). Сегодняшний товар за баксы, один раз в день."""
     offer = BUCKS_EXCHANGE.get(key)
-    if not offer:
-        return False, "Not found"
+    if not offer or key != exchange_today():
+        return False, gt(user, "ex_not_today")
     if exchange_left(user, key) <= 0:
-        return False, gt(user, "ex_limit_" + offer["period"])
+        return False, gt(user, "ex_limit_day")
     if not spend_bucks(user, offer["price"]):
         return False, get_text(user, "not_enough_bucks", n=offer["price"] - user.get("bucks", 0))
     if key == "energizer":
         user["energizers"] = user.get("energizers", 0) + 1
-    elif key == "spin":
-        user["bonus_spins"] = user.get("bonus_spins", 0) + 1
     elif key == "scene":
         user["intim_scenes"] = user.get("intim_scenes", 0) + 1
-    period = _exchange_period_id(offer["period"])
-    store = user.setdefault("bucks_exchange", {})
-    used = store.get(key) or {}
-    store[key] = {"p": period, "n": (used.get("n", 0) if used.get("p") == period else 0) + 1}
+    elif key == "defib":
+        if user.get("dead"):
+            user["dead"] = False  # уже мёртв -- сразу воскрешаем
+        else:
+            user["defib_stock"] = user.get("defib_stock", 0) + 1  # иначе лежит в запасе до случая
+    user["bucks_exchange"] = {"day": datetime.now().date().isoformat()}
     save_data(user_data)
     return True, None
 
@@ -7082,7 +7200,7 @@ def city_first_letter(name):
     return city_norm(name)[0]
 
 
-async def game_ai_line(chat_id, user, instruction, tail=None, max_tokens=350):
+async def game_ai_line(chat_id, user, instruction, tail=None, max_tokens=1200):
     """Короткая реплика персонажа в образе по инструкции игры; тратит энергию как обычное сообщение."""
     if game_ai_lines_left(user) <= 0:
         return None  # дневной лимит реплик исчерпан -- партию можно доиграть без комментариев ИИ
@@ -7090,13 +7208,18 @@ async def game_ai_line(chat_id, user, instruction, tail=None, max_tokens=350):
     messages = [{"role": "system", "content": system_prompt}] + (tail or []) + [{"role": "user", "content": "Твой ход."}]
     typing = asyncio.create_task(_keep_typing(chat_id))
     try:
+        # max_tokens с запасом: у reasoning-моделей скрытые «мысли» входят в лимит, и при 350 ответ
+        # часто приходил пустым -- в чате было просто «…» (баг из фидбэка).
         response = await asyncio.to_thread(call_ai, AI_MODEL, "ai", messages=messages, temperature=0.9, max_tokens=max_tokens)
-        text = response.choices[0].message.content
-    except Exception:
+        text = response.choices[0].message.content or ""
+    except Exception as e:
+        logging.warning(f"game_ai_line: {e}")
         return None
     finally:
         typing.cancel()
     _, clean = extract_reaction_from_answer(text)
+    if not (clean or "").strip():
+        return None
     apply_activity_stat_cost(user, ENERGY_COST_MESSAGE, SATIETY_COST_MESSAGE, WATER_COST_MESSAGE)
     game_ai_line_used(user)
     return clean
@@ -7331,7 +7454,9 @@ async def tod_action_cb(call: types.CallbackQuery):
                     "изобразить словами); без нарушений правил и без пошлости.")
             word = "действие"
         line = await game_ai_line(chat_id, user, f"Игра «правда или действие». Собеседник выбрал {word}. {task} Только один вопрос или задание.")
-        await bot.send_message(chat_id, (line or "…") + "\n\n" + gt(user, "tod_answer_hint"), reply_markup=tod_end_kb(user))
+        if not line:  # ИИ не ответил -- берём вопрос/задание из запасного списка, а не «…»
+            line = random.choice(gt(user, "tod_fallback_truth" if game["kind"] == "truth" else "tod_fallback_dare"))
+        await bot.send_message(chat_id, line + "\n\n" + gt(user, "tod_answer_hint"), reply_markup=tod_end_kb(user))
     finally:
         game["busy"] = False
         save_data(user_data)
@@ -7631,7 +7756,7 @@ async def movie_beat(chat_id, user, reaction):
     instruction = (f"Вы вдвоём смотрите кино (сцена {game['beat']} из {MOVIE_BEATS}): {plot}. {reaction_text}. "
                    "Коротко опиши, что происходит на экране, и свою живую реакцию (плачешь, смеёшься, пугаешься, прижимаешься)"
                    + (". Это финал фильма — завершай историю тёплой репликой после титров." if last else ". Оставь интригу для следующей сцены."))
-    line = await game_ai_line(chat_id, user, instruction, tail=game["tail"][-4:], max_tokens=450)
+    line = await game_ai_line(chat_id, user, instruction, tail=game["tail"][-4:])
     line = line or "…"
     game["tail"] += [{"role": "user", "content": reaction_text}, {"role": "assistant", "content": line}]
     if last:
@@ -8104,11 +8229,14 @@ def serialize_shop_state(user):
         "effects": gt(user, "game_desc_" + key), "ready_in": None, "refuse": False,
     } for key, offer in GAME_OFFERS.items()]
     categories.append({"key": "games", "name": gt(user, "shop_cat_games"), "items": game_items})
+    ex_key = exchange_today()
+    ex_offer = BUCKS_EXCHANGE[ex_key]
     categories.append({"key": "exchange", "name": gt(user, "shop_cat_exchange"), "items": [{
-        "key": key, "category": "exchange", "image": shop_item_image("exchange", key), "emoji": offer["emoji"],
-        "name": exchange_name(user, key), "price": offer["price"],
-        "effects": gt(user, "ex_desc_" + key, left=exchange_left(user, key)), "ready_in": None, "refuse": False,
-    } for key, offer in BUCKS_EXCHANGE.items()]})
+        "key": ex_key, "category": "exchange", "image": shop_item_image("exchange", ex_key), "emoji": ex_offer["emoji"],
+        "name": exchange_name(user, ex_key), "price": ex_offer["price"],
+        "effects": gt(user, "ex_desc_" + ex_key, stock=user.get("defib_stock", 0)),
+        "ready_in": None if exchange_left(user, ex_key) else gt(user, "ex_bought_today"), "refuse": False,
+    }]})
 
     medicine = []
     if user.get("illness"):
@@ -8142,6 +8270,7 @@ def serialize_shop_state(user):
     )}
     ui["custom_gift_btn"] = get_text(user, "custom_gift_btn", price=CUSTOM_GIFT_PRICE)
     ui["pack_saving"] = get_text(user, "pack_saving", n="{n}")
+    ui["promo_title"] = get_text(user, "promo_title", n="{n}")
     ui["locked_badge"] = get_text(user, "gift_locked_short", level="{level}")
     ui["play_btn"] = gt(user, "play_btn")
     ui["start_btn"] = gt(user, "start_btn")
@@ -8165,6 +8294,7 @@ def serialize_shop_state(user):
         "custom_gift": {"price": CUSTOM_GIFT_PRICE, "max_len": CUSTOM_GIFT_MAX_LEN},
         "note_max_len": ITEM_NOTE_MAX_LEN,
         "promo_banner": promo_banner_text(user),
+        "promo_max": promo_max_percent(user),
         "ui": ui,
     }
 
@@ -11710,8 +11840,21 @@ SHOP_PAGE_HTML = '''<!doctype html>
     gap: 6px;
   }
   .card-locked { opacity: .55; }
-  #promo-banner { display: none; margin: 8px 14px 0; padding: 8px 12px; border-radius: 12px; font-size: 13px; font-weight: 700;
-    color: #fff; background: linear-gradient(135deg, #ff7043, #e53935); }
+  #promo-banner { display: none; align-items: center; gap: 10px; position: relative; overflow: hidden; margin: 8px 14px 0;
+    padding: 9px 12px; border-radius: 14px; color: #fff; background: linear-gradient(135deg, #ff7043, #e53935, #d81b60);
+    background-size: 200% 200%; animation: promo-bg 4s ease infinite; box-shadow: 0 4px 14px rgba(229,57,53,.35); }
+  #promo-banner::after { content: ""; position: absolute; top: 0; left: -50%; width: 35%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.45), transparent); transform: skewX(-20deg);
+    animation: save-shine 3s ease-in-out infinite; }
+  @keyframes promo-bg { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  .promo-tag { flex-shrink: 0; position: relative; padding: 6px 10px 6px 16px; font-size: 17px; font-weight: 900; color: #b71c1c;
+    background: #ffeb3b; border-radius: 4px 8px 8px 4px; transform: rotate(-6deg);
+    clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%); animation: tag-swing 2.4s ease-in-out infinite; }
+  .promo-tag::before { content: ""; position: absolute; left: 6px; top: 50%; width: 5px; height: 5px; margin-top: -2.5px;
+    border-radius: 50%; background: #b71c1c; }
+  @keyframes tag-swing { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(4deg) scale(1.06); } }
+  .promo-title { font-size: 15px; font-weight: 900; letter-spacing: .2px; }
+  .promo-list { font-size: 11px; font-weight: 600; opacity: .92; margin-top: 1px; }
   .footer-col { flex-direction: column; align-items: stretch; gap: 8px; }
   .price-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
   .buy-btn-wide { width: 100%; }
@@ -12099,8 +12242,25 @@ SHOP_PAGE_HTML = '''<!doctype html>
     try {
       renderStats(state);
       var banner = document.getElementById("promo-banner");
-      banner.textContent = state.promo_banner || "";
-      banner.style.display = state.promo_banner ? "block" : "none";
+      banner.innerHTML = "";
+      if (state.promo_max) {
+        var tag = document.createElement("div");
+        tag.className = "promo-tag";
+        tag.textContent = "−" + state.promo_max + "%";
+        var body = document.createElement("div");
+        body.className = "promo-body";
+        var title = document.createElement("div");
+        title.className = "promo-title";
+        title.textContent = state.ui.promo_title.replace("{n}", state.promo_max);
+        var list = document.createElement("div");
+        list.className = "promo-list";
+        list.textContent = state.promo_banner || "";
+        body.appendChild(title);
+        body.appendChild(list);
+        banner.appendChild(tag);
+        banner.appendChild(body);
+      }
+      banner.style.display = state.promo_max ? "flex" : "none";
       renderTabs(state);
       renderItems(state);
       document.getElementById("footer-hint").textContent = state.ui.webapp_open_chat_hint;
@@ -12564,6 +12724,139 @@ async def site_page_handler(request):
     return web.Response(text=render_site_page(title, builder()), content_type="text/html")
 
 
+# Гайд прямо на сайте бота (/guide) -- его легко держать в актуальном состоянии вместе с кодом, в отличие от Telegraph.
+GUIDE_HTML = {
+    "ru": """
+<h1>Как устроен Role Duel</h1>
+<p>Role Duel — это персонаж на базе ИИ, с которым ты переписываешься в Telegram. Он помнит разговор, у него есть настроение,
+привычки и жизнь — а ваши отношения развиваются от общения.</p>
+
+<h2>💬 Общение и энергия</h2>
+<ul>
+<li>Каждое сообщение персонажу тратит его <b>энергию ⚡</b> (максимум 150). Когда она кончается, персонаж засыпает и не отвечает.</li>
+<li>Разбудить можно <b>энергетиком</b> (+78 энергии) или кнопкой «Разбудить сейчас» — сразу и полностью.</li>
+<li>Ещё у персонажа есть <b>сытость 🍽 и вода 💧</b>. Голодный и без воды он грустит, а если долго не поить — может умереть.
+Тогда спасёт <b>дефибриллятор 🔌</b>, история при этом не теряется.</li>
+<li>Иногда персонаж <b>болеет 🤧</b>: простуда без лечения через сутки становится бронхитом. Лекарства — в магазине.</li>
+</ul>
+
+<h2>❤️ Уровень близости</h2>
+<ul>
+<li>Шкала от 1 до 10. Растёт от общения, подарков и совместных игр.</li>
+<li>Чем ближе вы, тем теплее и смелее персонаж: от вежливого знакомства до настоящей пары.</li>
+<li>Дорогие подарки и свидания открываются только на нужном уровне — без общения их не купить.</li>
+<li>На 8 уровне — бесплатная горячая сцена в подарок.</li>
+</ul>
+
+<h2>💵 Баксы и работа</h2>
+<p>Баксы — игровая валюта. Зарабатываются в <b>«Работе»</b>:</p>
+<ul>
+<li><b>Взлом</b> — введи код и соедини провода по цветам.</li>
+<li><b>Ловля</b> — лови деньги корзиной, обходи бомбы; бонусы: замедление, магнит, x2, щит.</li>
+<li><b>Курьер</b> — объезжай препятствия, тормози у стоп-линии и доставляй посылки людям на обочине.</li>
+<li><b>Ферма</b> — сажай, поливай и собирай урожай.</li>
+</ul>
+<p>Ошибся — игра закончится, часть баксов сгорит, жми «Повторить».</p>
+
+<h2>🛍 Магазин</h2>
+<ul>
+<li><b>⚡ Энергетики</b> — за звёзды, чем больше пачка, тем выгоднее.</li>
+<li><b>🍽 Еда</b> — кормить и поить персонажа.</li>
+<li><b>🎁 Подарки</b> и <b>🌹 Свидания и поездки</b> — поднимают настроение и близость. Персонаж помнит подарки и вспоминает о них.</li>
+<li><b>🎮 Развлечения</b> — играйте вместе прямо в чате: Города, Правда или действие, Блэкджек, Кино вместе, Камень-ножницы-бумага.</li>
+<li><b>💎 За баксы</b> — каждый день один особый товар (энергетик, дефибриллятор или горячая сцена), купить можно раз в день.</li>
+<li><b>🎁 Свой подарок</b> — придумай подарок сам.</li>
+<li>Каждый день — <b>акции и скидки</b>, они видны в шапке магазина.</li>
+</ul>
+
+<h2>🎰 Колесо фортуны</h2>
+<p>Бесплатные прокруты каждый день (у подписчиков больше), есть платный прокрут и «Удача» на 24 часа.
+Призы: баксы, XP, энергетики, горячие сцены, еда и вода, буст заработка, дни подписки и джекпот.</p>
+
+<h2>🔥 Горячие сцены (18+)</h2>
+<p>Команда /hot: выбираешь тип сцены и место — персонаж пишет сцену. Сцены покупаются отдельно, выпадают на колесе
+и входят в подписку.</p>
+
+<h2>👑 Подписки</h2>
+<ul>
+<li><b>PRO</b>, <b>SUPER PRO</b>, <b>ELITE</b> — каждый день энергетики, бесплатные сцены и прокруты, энергия тратится медленнее,
+XP растёт быстрее, персонаж помнит больше сообщений.</li>
+<li>SUPER PRO и ELITE — дополнительные стили, свой персонаж, смена мира и стиля без потери истории.</li>
+<li>Подписки не продлеваются автоматически.</li>
+</ul>
+
+<h2>⌨️ Команды</h2>
+<ul>
+<li>/start — главное меню</li>
+<li>/hot — горячая сцена</li>
+<li>/games — развлечения с персонажем</li>
+<li>/language — сменить язык</li>
+<li>/support — написать в поддержку</li>
+<li>/reset_character — сбросить своего персонажа</li>
+</ul>
+<p>Если что-то сломалось или есть идея — пиши в /support, отвечаем.</p>
+""",
+    "en": """
+<h1>How Role Duel works</h1>
+<p>Role Duel is an AI character you chat with in Telegram. They remember the conversation, have moods, habits and a life of
+their own — and your relationship grows as you talk.</p>
+
+<h2>💬 Chatting and energy</h2>
+<ul>
+<li>Every message spends your companion's <b>energy ⚡</b> (max 150). When it runs out, they fall asleep and stop replying.</li>
+<li>Wake them with an <b>energizer</b> (+78 energy) or the "Wake up now" button — instantly and fully.</li>
+<li>They also have <b>food 🍽 and water 💧</b>. Hungry and thirsty, they get sad, and without water for too long they may die.
+A <b>defibrillator 🔌</b> brings them back with the whole history intact.</li>
+<li>Sometimes they <b>get sick 🤧</b>: an untreated cold turns into bronchitis within a day. Medicine is in the shop.</li>
+</ul>
+
+<h2>❤️ Closeness level</h2>
+<ul>
+<li>A scale from 1 to 10. It grows from chatting, gifts and playing together.</li>
+<li>The closer you are, the warmer and bolder they get: from a polite acquaintance to a real couple.</li>
+<li>Expensive gifts and dates unlock only at the right level — you can't buy them without chatting.</li>
+<li>Level 8 gives you a free hot scene.</li>
+</ul>
+
+<h2>💵 Bucks and jobs</h2>
+<p>Bucks are the in-game currency. Earn them in <b>"Work"</b>: hacking, catching, courier and farm.
+Make a mistake and the round ends, some bucks are lost — tap "Retry".</p>
+
+<h2>🛍 Shop</h2>
+<ul>
+<li><b>⚡ Energizers</b> — for Stars, bigger packs are better value.</li>
+<li><b>🍽 Food</b>, <b>🎁 Gifts</b>, <b>🌹 Dates & trips</b> — mood and closeness. Your companion remembers gifts.</li>
+<li><b>🎮 Entertainment</b> — play together in the chat: Cities, Truth or dare, Blackjack, Movie together, Rock-paper-scissors.</li>
+<li><b>💎 For bucks</b> — one special item every day, once a day.</li>
+<li>Daily <b>deals and discounts</b> are shown at the top of the shop.</li>
+</ul>
+
+<h2>🎰 Wheel of fortune</h2>
+<p>Free spins every day (more for subscribers), paid spins and 24-hour "Luck". Prizes: bucks, XP, energizers, hot scenes,
+food and water, earnings boosts, subscription days and a jackpot.</p>
+
+<h2>🔥 Hot scenes (18+)</h2>
+<p>/hot: pick a scene type and place — your companion writes the scene.</p>
+
+<h2>👑 Subscriptions</h2>
+<p>PRO, SUPER PRO and ELITE give daily energizers, free scenes and spins, slower energy use, faster XP and longer memory.
+They don't renew automatically.</p>
+
+<h2>⌨️ Commands</h2>
+<p>/start, /hot, /games, /language, /support, /reset_character. Found a bug or have an idea? Write to /support.</p>
+""",
+}
+
+
+async def guide_page_handler(request):
+    lang = request.query.get("lang", "ru")
+    body = GUIDE_HTML.get(lang, GUIDE_HTML["en"] if lang != "ru" else GUIDE_HTML["ru"])
+    page = ('<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+            f"<title>Guide — {SITE_NAME}</title><style>{SITE_CSS} li {{ margin: 4px 0; }}</style></head><body>"
+            f'<header><span class="brand">{SITE_NAME}</span></header><main>{body}</main></body></html>')
+    return web.Response(text=page, content_type="text/html")
+
+
 def warn_missing_site_details():
     missing = [name for name, value in (("SELLER_NAME", SELLER_NAME), ("SELLER_INN", SELLER_INN),
                ("CONTACT_EMAIL", CONTACT_EMAIL), ("CONTACT_PHONE", CONTACT_PHONE),
@@ -12930,6 +13223,55 @@ SPIN_PAGE_HTML = '''<!doctype html>
   var state = null;
   var spinning = false;
   var paidStatusText = null;
+  // Звуки (WebAudio, без файлов) и вибрация. Звук выключается кнопкой 🔊 в «Работе», выбор хранится в браузере.
+  var sfxCtx = null;
+  var sfxOn = true;
+  try { sfxOn = localStorage.getItem("rd_sound") !== "off"; } catch (e) {}
+  function sfxUnlock() {
+    if (sfxCtx || !sfxOn) return;
+    try { sfxCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { sfxCtx = null; }
+  }
+  document.addEventListener("pointerdown", sfxUnlock, true);
+  function tone(freq, dur, type, vol, delay, slideTo) {
+    if (!sfxOn || !sfxCtx) return;
+    try {
+      var t0 = sfxCtx.currentTime + (delay || 0);
+      var osc = sfxCtx.createOscillator(), g = sfxCtx.createGain();
+      osc.type = type || "sine";
+      osc.frequency.setValueAtTime(freq, t0);
+      if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
+      g.gain.setValueAtTime(vol || 0.12, t0);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      osc.connect(g); g.connect(sfxCtx.destination);
+      osc.start(t0); osc.stop(t0 + dur + 0.02);
+    } catch (e) {}
+  }
+  function haptic(kind) {
+    if (!tg || !tg.HapticFeedback) return;
+    try {
+      if (kind === "select") tg.HapticFeedback.selectionChanged();
+      else if (kind === "success" || kind === "error" || kind === "warning") tg.HapticFeedback.notificationOccurred(kind);
+      else tg.HapticFeedback.impactOccurred(kind);
+    } catch (e) {}
+  }
+  function fx(kind) {
+    if (kind === "coin") { tone(880, .07, "square", .05); tone(1320, .1, "square", .05, .06); haptic("light"); }
+    else if (kind === "loss") { tone(220, .22, "sawtooth", .07, 0, 110); haptic("warning"); }
+    else if (kind === "over") { tone(392, .16, "triangle", .12); tone(311, .16, "triangle", .12, .15); tone(196, .38, "triangle", .12, .3);
+      haptic("error"); setTimeout(function () { haptic("heavy"); }, 260); }
+    else if (kind === "key") { tone(660, .035, "square", .04); haptic("select"); }
+    else if (kind === "good") { tone(988, .06, "sine", .09); haptic("light"); }
+    else if (kind === "wire") { tone(523, .05, "square", .06); tone(784, .08, "square", .06, .05); haptic("medium"); }
+    else if (kind === "lane") { tone(300, .06, "sine", .06, 0, 460); haptic("select"); }
+    else if (kind === "drop") { tone(1300, .14, "sine", .09, 0, 320); haptic("light"); }
+    else if (kind === "power") { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, .08, "square", .06, i * .06); }); haptic("heavy"); }
+    else if (kind === "win") { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, .14, "triangle", .1, i * .09); });
+      haptic("success"); setTimeout(function () { haptic("medium"); }, 200); }
+    else if (kind === "deliver") { tone(700, .07, "sine", .09); tone(1050, .11, "sine", .09, .08); haptic("medium"); }
+    else if (kind === "tick") { tone(1900, .018, "square", .035); haptic("select"); }
+    else if (kind === "start") { tone(330, .3, "sawtooth", .05, 0, 990); haptic("medium"); }
+  }
+
   var currentRotation = 0;
   var colors = ["#ff6b6b", "#4ecdc4", "#ffd93d", "#6c5ce7", "#1dd1a1", "#feca57"];
 
@@ -13031,7 +13373,33 @@ SPIN_PAGE_HTML = '''<!doctype html>
     var deltaToBase = ((baseOffset - currentMod) % 360 + 360) % 360;
     var extraSpins = 5;
     currentRotation += extraSpins * 360 + deltaToBase;
-    document.getElementById("wheel").style.transform = "rotate(" + currentRotation + "deg)";
+    var wheel = document.getElementById("wheel");
+    wheel.style.transform = "rotate(" + currentRotation + "deg)";
+    startWheelTicks(wheel, n);
+  }
+
+  // Пока колесо крутится -- щелчок и вибрация на каждом секторе под стрелкой: быстро в начале, всё реже к концу,
+  // как у настоящего барабана (по фидбэку «чтобы было желание крутить»).
+  function wheelAngle(el) {
+    var m = getComputedStyle(el).transform;
+    if (!m || m === "none") return 0;
+    var v = m.split("(")[1].split(")")[0].split(",");
+    var a = Math.atan2(parseFloat(v[1]), parseFloat(v[0])) * 180 / Math.PI;
+    return (a + 360) % 360;
+  }
+  function startWheelTicks(el, n) {
+    var slice = 360 / n, started = Date.now(), lastSector = Math.floor(wheelAngle(el) / slice), lastTick = 0;
+    fx("start");
+    (function loop() {
+      var sector = Math.floor(wheelAngle(el) / slice);
+      var now = Date.now();
+      if (sector !== lastSector && now - lastTick > 45) {
+        lastSector = sector;
+        lastTick = now;
+        fx("tick");
+      }
+      if (now - started < 4050) requestAnimationFrame(loop);
+    })();
   }
 
   function renderStats(s) {
@@ -13261,6 +13629,8 @@ SPIN_PAGE_HTML = '''<!doctype html>
       renderStats(state);
       renderActions(state);
       if (kind) playFx(kind, prize.fx_power);
+      if (kind) tone(1047, .25, "triangle", .1, .1);
+      fx(kind ? "win" : "loss");
       var heavy = kind === "silver" || kind === "gold" || kind === "rainbow";
       safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
       if (heavy) safe(function () { tg.HapticFeedback.impactOccurred("heavy"); });
@@ -13630,6 +14000,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   .debuffed { opacity: .45; pointer-events: none; filter: grayscale(.5); transition: opacity .2s ease; }
 
+  #sound-toggle { margin-left: 8px; border: none; background: rgba(127,127,127,.15); border-radius: 10px; font-size: 15px;
+    padding: 3px 7px; cursor: pointer; }
   #catch-hint, #courier-hint, #clicker-hint { font-size: 13px; opacity: .7; margin-bottom: 10px; }
   #catch-field {
     position: relative;
@@ -14071,7 +14443,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   <div id="topbar">
     <div id="title"></div>
     <div>
-      <span id="balance"></span><span id="multiplier-badge"></span>
+      <span id="balance"></span><span id="multiplier-badge"></span><button id="sound-toggle" type="button">🔊</button>
     </div>
   </div>
   <div id="tabs">
@@ -14290,7 +14662,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
         hackerWireLinks[drag.i] = j;
         hackerWireConnected++;
         renderHackerWires();
-        if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.impactOccurred("light"); } catch (err) {} }
+        fx("wire");
         if (hackerWireConnected >= hackerWires.length) finishHackerCombo();
       } else {
         drag.line.remove();
@@ -14304,6 +14676,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
 
   function finishHackerCombo() {
+    fx("win");
     var terminal = document.getElementById("hacker-terminal");
     registerHit("hacker_combo", terminal ? terminal.offsetWidth / 2 : 0, 0, terminal, false, function (awarded) {
       var fb = document.getElementById("clicker-feedback");
@@ -14459,12 +14832,74 @@ WORK_PAGE_HTML = r'''<!doctype html>
     el.textContent = text;
   }
 
+  // Звуки (WebAudio, без файлов) и вибрация. Звук выключается кнопкой 🔊 в «Работе», выбор хранится в браузере.
+  var sfxCtx = null;
+  var sfxOn = true;
+  try { sfxOn = localStorage.getItem("rd_sound") !== "off"; } catch (e) {}
+  function sfxUnlock() {
+    if (sfxCtx || !sfxOn) return;
+    try { sfxCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { sfxCtx = null; }
+  }
+  document.addEventListener("pointerdown", sfxUnlock, true);
+  function tone(freq, dur, type, vol, delay, slideTo) {
+    if (!sfxOn || !sfxCtx) return;
+    try {
+      var t0 = sfxCtx.currentTime + (delay || 0);
+      var osc = sfxCtx.createOscillator(), g = sfxCtx.createGain();
+      osc.type = type || "sine";
+      osc.frequency.setValueAtTime(freq, t0);
+      if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
+      g.gain.setValueAtTime(vol || 0.12, t0);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      osc.connect(g); g.connect(sfxCtx.destination);
+      osc.start(t0); osc.stop(t0 + dur + 0.02);
+    } catch (e) {}
+  }
+  function haptic(kind) {
+    if (!tg || !tg.HapticFeedback) return;
+    try {
+      if (kind === "select") tg.HapticFeedback.selectionChanged();
+      else if (kind === "success" || kind === "error" || kind === "warning") tg.HapticFeedback.notificationOccurred(kind);
+      else tg.HapticFeedback.impactOccurred(kind);
+    } catch (e) {}
+  }
+  function fx(kind) {
+    if (kind === "coin") { tone(880, .07, "square", .05); tone(1320, .1, "square", .05, .06); haptic("light"); }
+    else if (kind === "loss") { tone(220, .22, "sawtooth", .07, 0, 110); haptic("warning"); }
+    else if (kind === "over") { tone(392, .16, "triangle", .12); tone(311, .16, "triangle", .12, .15); tone(196, .38, "triangle", .12, .3);
+      haptic("error"); setTimeout(function () { haptic("heavy"); }, 260); }
+    else if (kind === "key") { tone(660, .035, "square", .04); haptic("select"); }
+    else if (kind === "good") { tone(988, .06, "sine", .09); haptic("light"); }
+    else if (kind === "wire") { tone(523, .05, "square", .06); tone(784, .08, "square", .06, .05); haptic("medium"); }
+    else if (kind === "lane") { tone(300, .06, "sine", .06, 0, 460); haptic("select"); }
+    else if (kind === "drop") { tone(1300, .14, "sine", .09, 0, 320); haptic("light"); }
+    else if (kind === "power") { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, .08, "square", .06, i * .06); }); haptic("heavy"); }
+    else if (kind === "win") { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, .14, "triangle", .1, i * .09); });
+      haptic("success"); setTimeout(function () { haptic("medium"); }, 200); }
+    else if (kind === "deliver") { tone(700, .07, "sine", .09); tone(1050, .11, "sine", .09, .08); haptic("medium"); }
+    else if (kind === "tick") { tone(1900, .018, "square", .035); haptic("select"); }
+    else if (kind === "start") { tone(330, .3, "sawtooth", .05, 0, 990); haptic("medium"); }
+  }
+
   function setBalance(bucks) {
     document.getElementById("balance").textContent = "💵 " + bucks;
   }
 
+  (function bindSoundToggle() {
+    var btn = document.getElementById("sound-toggle");
+    if (!btn) return;
+    btn.textContent = sfxOn ? "🔊" : "🔇";
+    btn.onclick = function () {
+      sfxOn = !sfxOn;
+      try { localStorage.setItem("rd_sound", sfxOn ? "on" : "off"); } catch (e) {}
+      btn.textContent = sfxOn ? "🔊" : "🔇";
+      if (sfxOn) { sfxUnlock(); fx("good"); }
+    };
+  })();
+
   function popupGain(amount, x, y, container) {
     if (!amount || !container) return;
+    fx("coin");
     var el = document.createElement("div");
     el.className = "gain-popup";
     el.textContent = "+" + amount + "💵";
@@ -14476,6 +14911,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   function popupLoss(amount, x, y, container) {
     if (!amount || !container) return;
+    fx("loss");
     var el = document.createElement("div");
     el.className = "gain-popup loss-popup";
     el.textContent = "-" + amount + "💵";
@@ -14579,7 +15015,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     lostEl.textContent = "";
     document.getElementById("gameover-retry").textContent = state.ui.retry_btn;
     overlay.classList.add("shown");
-    if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.notificationOccurred("error"); } catch (e) {} }
+    fx("over");
     registerPenalty(game, popupX, popupY, popupContainer, function (lost) {
       lostEl.textContent = state.ui.gameover_lost.replace("{amount}", String(lost));
     });
@@ -14641,10 +15077,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
   // "одна и та же цена у всех мгновенных игр", см. комментарий там же.
   function pressHackerKey(digit, keyEl) {
     if (debuffState.clicker) return;
+    fx("key");
     keyEl.classList.add("pressed");
     setTimeout(function () { keyEl.classList.remove("pressed"); }, 100);
     if (digit === hackerCode[hackerCodeIndex]) {
       keyEl.classList.add("correct");
+      fx("good");
       setTimeout(function () { keyEl.classList.remove("correct"); }, 300);
       hackerCodeIndex++;
       renderHackerCode();
@@ -14819,6 +15257,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
             (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 160); })(item);
             registerHit("catch", basket.offsetLeft + basket.offsetWidth / 2, basket.offsetTop,
               document.getElementById("catch-field"));
+            if (item.dataset.slowfall || item.dataset.magnet || item.dataset.double || item.dataset.shield) fx("power");
             if (item.dataset.slowfall === "1") {
               slowFallUntil = Date.now() + SLOWFALL_DURATION_MS;
               field.classList.add("slow-active");
@@ -14867,7 +15306,9 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   // ---------- Courier ----------
   function setCourierLane(lane) {
+    var prevLane = courierLane;
     courierLane = Math.max(0, Math.min(2, lane));
+    if (courierLane !== prevLane) fx("lane");
     var rider = document.getElementById("courier-rider");
     if (rider) rider.style.top = COURIER_LANE_Y[courierLane] + "px";
     var upBtn = document.getElementById("courier-up");
@@ -15036,6 +15477,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   // Короткая анимация "вручения" посылки -- всплывающая 📦 над получателем при доставке (по
   // фидбэку "нужна анимация вручения заказа", раньше была только подсветка получателя).
   function spawnCourierHandoff(rider, road) {
+    fx("deliver");
     var el = document.createElement("div");
     el.className = "courier-handoff";
     setSprite(el, "courier_parcel", "📦");
@@ -15169,6 +15611,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   // запроса на РАЗНЫЕ слоты не могут друг другу что-то перезаписать).
   function farmAction(action, slot, extra) {
     if (farmInFlight[slot]) return;
+    if (action === "harvest") fx("win");
     farmInFlight[slot] = true;
     var payload = extra ? Object.assign({ slot: slot }, extra) : { slot: slot };
     api("/api/work/farm/" + action, {
@@ -15199,7 +15642,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (plant) plant.classList.add("watered");
     var badge = plot.querySelector(".farm-thirsty-badge");
     if (badge) badge.remove();
-    if (tg && tg.HapticFeedback) { try { tg.HapticFeedback.impactOccurred("light"); } catch (e) {} }
+    fx("drop");
     setTimeout(function () { farmAction("water", slot); }, 550);
   }
 
@@ -15670,6 +16113,7 @@ async def api_work_farm_buy_slot_handler(request):
 
 async def run_webapp_server():
     app_web = web.Application()
+    app_web.router.add_get("/guide", guide_page_handler)
     for _p in ("/", "/offer", "/privacy", "/refund", "/contacts"):
         app_web.router.add_get(_p, site_page_handler)
     warn_missing_site_details()
