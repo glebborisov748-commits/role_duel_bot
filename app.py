@@ -183,6 +183,7 @@ TEXTS = {
         "spin_win_care_package": "🍱 **+100 еды и +100 воды!**\nСытость и вода — на максимум.",
         "spin_win_pro": "🎁 **PRO подписка на 5 дней!**\n🔥 Стили Страстный и Магнетический, энергия и сытость тратятся медленнее!",
         "spin_win_super": "✨ **SUPER PRO на 3 дня!**\n👑 Все стили, включая 18+, свой уникальный персонаж!",
+        "spin_win_sub_converted": "🎁 **Выпала подписка {name}!** Но подписка у тебя уже есть — держи вместо неё **{bucks}💵**",
         "spin_win_work_boost": "⚡ **Буст заработка x{mult} на {minutes} минут!**\nВся работа платит в {mult} раз больше, пока буст активен.",
         "spin_win_extra_spin": "🎟 **+{value} дополнительный прокрут!**\nОн не сгорает с дневным лимитом — используй, когда захочешь.",
         "spin_result_header": "🎰 **Результат!**\n\nТы выиграл: {result}\n{mode}",
@@ -568,6 +569,7 @@ TEXTS = {
         "spin_win_care_package": "🍱 **+100 food and +100 water!**\nSatiety and water — topped up.",
         "spin_win_pro": "🎁 **PRO subscription for 5 days!**\n🔥 Passionate and Magnetic styles, energy and satiety drain slower!",
         "spin_win_super": "✨ **SUPER PRO for 3 days!**\n👑 All styles including 18+, your own unique character!",
+        "spin_win_sub_converted": "🎁 **You won {name}!** You already have a subscription, so here are **{bucks}💵** instead",
         "spin_win_work_boost": "⚡ **x{mult} earnings boost for {minutes} minutes!**\nAll work pays {mult}x more while the boost is active.",
         "spin_win_extra_spin": "🎟 **+{value} extra spin!**\nIt doesn't expire with the daily limit — use it whenever you like.",
         "spin_result_header": "🎰 **Result!**\n\nYou won: {result}\n{mode}",
@@ -953,6 +955,7 @@ TEXTS = {
         "spin_win_care_package": "🍱 **+100 Essen und +100 Wasser!**\nSättigung und Wasser — aufgefüllt.",
         "spin_win_pro": "🎁 **PRO-Abo für 5 Tage!**\n🔥 Stile Leidenschaftlich und Magnetisch, Energie und Sättigung sinken langsamer!",
         "spin_win_super": "✨ **SUPER PRO für 3 Tage!**\n👑 Alle Stile inklusive 18+, dein eigener einzigartiger Charakter!",
+        "spin_win_sub_converted": "🎁 **{name} gewonnen!** Du hast schon ein Abo — dafür bekommst du **{bucks}💵**",
         "spin_win_work_boost": "⚡ **x{mult} Verdienst-Boost für {minutes} Minuten!**\nJede Arbeit zahlt {mult}x mehr, solange der Boost aktiv ist.",
         "spin_win_extra_spin": "🎟 **+{value} Extra-Dreh!**\nVerfällt nicht mit dem Tageslimit — nutze ihn, wann du willst.",
         "spin_result_header": "🎰 **Ergebnis!**\n\nDu hast gewonnen: {result}\n{mode}",
@@ -2241,6 +2244,27 @@ def free_spins_allowed(user):
 def free_spins_left(user):
     _reset_daily_quota_if_needed(user)
     return max(0, free_spins_allowed(user) - user.get("free_spins_used", 0)) + user.get("bonus_spins", 0)
+
+
+# Подписка с колеса тому, у кого подписка уже есть, -- не продлевает её (иначе ELITE с постоянной «Удачей»
+# сам себе продлевал подписку на пару недель в месяц, а PRO, выигравший SUPER, получал SUPER на весь
+# оставшийся срок), а меняется на баксы.
+SPIN_SUB_BUCKS = {"pro": 3000, "super_pro": 6000}
+
+
+def grant_spin_subscription(user, tier, days, text_key):
+    if has_active_subscription(user):
+        bucks = SPIN_SUB_BUCKS[tier]
+        user["bucks"] = user.get("bucks", 0) + bucks
+        return get_text(user, "spin_win_sub_converted", name="PRO" if tier == "pro" else "SUPER PRO", bucks=bucks)
+    grant_subscription_days(user, tier, days)
+    # Сразу выдаём дневные бонусы подписки, но счётчик бесплатных прокрутов сохраняем: раньше полный
+    # сброс дня обнулял его, и прокруты «начинались заново» (баг из фидбэка).
+    spins_used = user.get("free_spins_used", 0)
+    user["last_daily_reset"] = None
+    _reset_daily_quota_if_needed(user)
+    user["free_spins_used"] = spins_used
+    return get_text(user, text_key)
 
 
 def spin_free_label(user):
@@ -4331,23 +4355,9 @@ def apply_spin_prize(user, chosen):
         user["dehydration_urgent_warned"] = False
         result_text = get_text(user, "spin_win_care_package")
     elif chosen["type"] == "subscription_pro":
-        grant_subscription_days(user, "pro", 5)
-        # Сразу выдаём дневные бонусы подписки, но счётчик бесплатных прокрутов сохраняем: раньше
-        # полный сброс дня обнулял его, и прокруты «начинались заново» (баг из фидбэка).
-        spins_used = user.get("free_spins_used", 0)
-        user["last_daily_reset"] = None
-        _reset_daily_quota_if_needed(user)
-        user["free_spins_used"] = spins_used
-        result_text = get_text(user, "spin_win_pro")
+        result_text = grant_spin_subscription(user, "pro", 5, "spin_win_pro")
     elif chosen["type"] == "subscription_super":
-        grant_subscription_days(user, "super_pro", 3)
-        # Сразу выдаём дневные бонусы подписки, но счётчик бесплатных прокрутов сохраняем: раньше
-        # полный сброс дня обнулял его, и прокруты «начинались заново» (баг из фидбэка).
-        spins_used = user.get("free_spins_used", 0)
-        user["last_daily_reset"] = None
-        _reset_daily_quota_if_needed(user)
-        user["free_spins_used"] = spins_used
-        result_text = get_text(user, "spin_win_super")
+        result_text = grant_spin_subscription(user, "super_pro", 3, "spin_win_super")
     elif chosen["type"] == "work_boost":
         user["work_boost_until"] = (datetime.now() + timedelta(minutes=SPIN_WORK_BOOST_MINUTES)).isoformat()
         result_text = get_text(user, "spin_win_work_boost", minutes=SPIN_WORK_BOOST_MINUTES,
