@@ -194,6 +194,8 @@ TEXTS = {
         "pay_stars": "⭐ Telegram Stars — {amount}⭐",
         "pay_crypto": "🪙 Криптовалюта — ${amount}",
         "pay_lava": "💳 Карта (Lava) — {amount}₽",
+        "pay_platega": "💳 Картой / СБП — {amount}₽",
+        "pay_card_btn": "💳 Картой {amount}₽",
         "pay_invoice_ready": "🧾 Счёт создан. Оплати по ссылке — доступ откроется автоматически в течение минуты после оплаты.",
         "pay_open_invoice": "💳 Перейти к оплате",
         "pay_error": "⚠️ Не удалось создать счёт. Попробуй другой способ оплаты.",
@@ -582,6 +584,8 @@ TEXTS = {
         "pay_stars": "⭐ Telegram Stars — {amount}⭐",
         "pay_crypto": "🪙 Crypto — ${amount}",
         "pay_lava": "💳 Card (Lava) — {amount}₽",
+        "pay_platega": "💳 Card / SBP — {amount}₽",
+        "pay_card_btn": "💳 Card {amount}₽",
         "pay_invoice_ready": "🧾 Invoice created. Pay via the link — access opens automatically within a minute after payment.",
         "pay_open_invoice": "💳 Go to payment",
         "pay_error": "⚠️ Could not create the invoice. Please try another payment method.",
@@ -970,6 +974,8 @@ TEXTS = {
         "pay_stars": "⭐ Telegram Stars — {amount}⭐",
         "pay_crypto": "🪙 Krypto — ${amount}",
         "pay_lava": "💳 Karte (Lava) — {amount}₽",
+        "pay_platega": "💳 Karte / SBP — {amount}₽",
+        "pay_card_btn": "💳 Karte {amount}₽",
         "pay_invoice_ready": "🧾 Rechnung erstellt. Zahle über den Link — der Zugang wird innerhalb einer Minute nach der Zahlung automatisch freigeschaltet.",
         "pay_open_invoice": "💳 Zur Zahlung",
         "pay_error": "⚠️ Rechnung konnte nicht erstellt werden. Bitte versuche eine andere Zahlungsart.",
@@ -5399,6 +5405,14 @@ CRYPTO_PAY_API = os.getenv("CRYPTO_PAY_API", "https://pay.crypt.bot/api")
 LAVA_SECRET_KEY = os.getenv("LAVA_SECRET_KEY", "")
 LAVA_SHOP_ID = os.getenv("LAVA_SHOP_ID", "")
 LAVA_API = os.getenv("LAVA_API", "https://api.lava.ru/business")
+# Platega (карты РФ / СБП): MerchantId и API-ключ выдаёт менеджер, они же в личном кабинете -> «Настройки».
+PLATEGA_MERCHANT_ID = os.getenv("PLATEGA_MERCHANT_ID", "")
+PLATEGA_SECRET = os.getenv("PLATEGA_SECRET", "")
+PLATEGA_API = os.getenv("PLATEGA_API", "https://app.platega.io")
+PLATEGA_RETURN_URL = os.getenv("PLATEGA_RETURN_URL", "https://t.me/role_duel_bot")
+# Если менеджер Platega запретит какие-то товары -- перечислить их ключи через запятую (как LAVA_RESTRICTED_PRODUCTS).
+PLATEGA_RESTRICTED_PRODUCTS = {x.strip() for x in os.getenv("PLATEGA_RESTRICTED_PRODUCTS", "").split(",") if x.strip()}
+RUB_PER_STAR = 1.2  # цена картой = цена в звёздах (со всеми скидками) x этот курс
 
 PAYMENT_TIMEOUT_MINUTES = 60  # через сколько снимаем неоплаченный счёт с отслеживания
 
@@ -5466,6 +5480,8 @@ def is_method_enabled(method):
         return False
     if method == "lava":
         return bool(LAVA_SECRET_KEY and LAVA_SHOP_ID)
+    if method == "platega":
+        return bool(PLATEGA_MERCHANT_ID and PLATEGA_SECRET)
     return False
 
 
@@ -5480,9 +5496,11 @@ LAVA_RESTRICTED_PRODUCTS = {"subscribe_super", "subscribe_elite", "upgrade_to_su
 
 
 def available_payment_methods(payload=None):
-    methods = [m for m in ("stars", "crypto", "lava") if is_method_enabled(m)]
+    methods = [m for m in ("stars", "platega", "crypto", "lava") if is_method_enabled(m)]
     if payload in LAVA_RESTRICTED_PRODUCTS:
         methods = [m for m in methods if m != "lava"]
+    if payload in PLATEGA_RESTRICTED_PRODUCTS:
+        methods = [m for m in methods if m != "platega"]
     return methods
 
 
@@ -5594,18 +5612,93 @@ async def check_lava_invoice(order_id):
     return (data.get("data") or {}).get("status")
 
 
+# ---------- Platega ----------
+def product_rub(payload, user=None):
+    """Цена картой: от цены в звёздах для этого пользователя (распродажи и купон учитываются так же)."""
+    return max(10, int(round(product_stars(payload, user) * RUB_PER_STAR)))
+
+
+def _platega_headers():
+    return {"X-MerchantId": PLATEGA_MERCHANT_ID, "X-Secret": PLATEGA_SECRET, "Content-Type": "application/json"}
+
+
+async def create_platega_invoice(user, user_id, payload, description):
+    body = {
+        "paymentDetails": {"amount": product_rub(payload, user), "currency": "RUB"},
+        "description": description[:250],
+        "return": PLATEGA_RETURN_URL,
+        "failedUrl": PLATEGA_RETURN_URL,
+        "payload": f"{user_id}:{payload}",
+        "metadata": {"userId": str(user_id), "userName": str(user.get("username") or user_id)},
+    }
+    async with httpx.AsyncClient(timeout=20) as client:
+        response = await client.post(f"{PLATEGA_API}/v2/transaction/process", json=body, headers=_platega_headers())
+    data = response.json()
+    if not data.get("url") or not data.get("transactionId"):
+        raise RuntimeError(f"Platega transaction/process {response.status_code}: {data}")
+    return data["transactionId"], data["url"]
+
+
+async def check_platega_invoice(transaction_id):
+    async with httpx.AsyncClient(timeout=20) as client:
+        response = await client.get(f"{PLATEGA_API}/transaction/{transaction_id}", headers=_platega_headers())
+    return (response.json() or {}).get("status")
+
+
+async def finish_external_payment(user, user_id, item):
+    """Выдача товара по внешнему платежу (Platega/Lava/CryptoBot) + купон, как у оплаты звёздами."""
+    if item.get("coupon") and coupon_active(user):
+        user["coupon"] = None
+        save_data(user_data)
+        await bot.send_message(user_id, get_text(user, "coupon_used"))
+    first_purchase = not user.get("first_purchase_done")
+    await grant_product(user, item["payload"], user_id)
+    if first_purchase:
+        await grant_first_purchase_coupon(user, user_id)
+
+
+async def platega_callback_handler(request):
+    """Колбэк Platega о смене статуса: подлинность -- по X-MerchantId/X-Secret (так в их документации)."""
+    if not PLATEGA_SECRET or request.headers.get("X-Secret") != PLATEGA_SECRET \
+            or request.headers.get("X-MerchantId") != PLATEGA_MERCHANT_ID:
+        return web.Response(status=403)
+    try:
+        body = await request.json()
+    except (json.JSONDecodeError, ValueError):
+        return web.Response(status=400)
+    transaction_id = body.get("id")
+    status = (body.get("status") or "").lower()
+    for user_id, user in list(user_data.items()):
+        for item in list(user.get("pending_payments") or []):
+            if item.get("provider") != "platega" or item.get("invoice_id") != transaction_id:
+                continue
+            user["pending_payments"].remove(item)  # до await -- повтор колбэка/опрос не выдадут товар дважды
+            save_data(user_data)
+            if status in PAID_STATUSES:
+                try:
+                    await finish_external_payment(user, int(user_id), item)
+                except Exception as e:
+                    logging.error(f"Platega: не удалось выдать {item['payload']} для {user_id}: {e}")
+            elif status not in DEAD_STATUSES:
+                user["pending_payments"].append(item)  # неизвестный статус -- ждём дальше
+                save_data(user_data)
+            return web.Response(text="ok")
+    return web.Response(text="ok")
+
+
 # ---------- общая часть ----------
-PAID_STATUSES = {"paid", "success", "successful", "completed"}
-DEAD_STATUSES = {"expired", "cancel", "cancelled", "canceled", "failed", "error"}
+PAID_STATUSES = {"paid", "success", "successful", "completed", "confirmed"}
+DEAD_STATUSES = {"expired", "cancel", "cancelled", "canceled", "failed", "error", "chargebacked"}
 
 
-def add_pending_payment(user, provider, invoice_id, payload):
+def add_pending_payment(user, provider, invoice_id, payload, coupon=False):
     pending = user.setdefault("pending_payments", [])
     pending.append({
         "provider": provider,
         "invoice_id": invoice_id,
         "payload": payload,
         "created_at": datetime.now().isoformat(),
+        "coupon": coupon,  # счёт выставлен с персональной скидкой -- при оплате купон гасим
     })
     save_data(user_data)
 
@@ -5760,6 +5853,8 @@ async def check_pending_payments():
                             status = await check_crypto_invoice(item["invoice_id"])
                         elif provider == "lava":
                             status = await check_lava_invoice(item["invoice_id"])
+                        elif provider == "platega":
+                            status = await check_platega_invoice(item["invoice_id"])
                         else:
                             status = None
                     except Exception as e:
@@ -5778,7 +5873,7 @@ async def check_pending_payments():
                         user["pending_payments"].remove(item)
                         save_data(user_data)
                         try:
-                            await grant_product(user, item["payload"], int(user_id))
+                            await finish_external_payment(user, int(user_id), item)
                         except Exception as e:
                             logging.error(f"Не удалось выдать товар {item['payload']} для {user_id}: {e}")
                     elif status_key in DEAD_STATUSES or expired:
@@ -5814,6 +5909,8 @@ async def start_payment(call: types.CallbackQuery, user, method, payload):
             invoice_id, url = await create_crypto_invoice(call.from_user.id, payload, description)
         elif method == "lava":
             invoice_id, url = await create_lava_invoice(call.from_user.id, payload, description)
+        elif method == "platega":
+            invoice_id, url = await create_platega_invoice(user, call.from_user.id, payload, description)
         else:
             return
     except Exception as e:
@@ -5821,7 +5918,8 @@ async def start_payment(call: types.CallbackQuery, user, method, payload):
         await call.message.answer(get_text(user, "pay_error"))
         return
 
-    add_pending_payment(user, method, invoice_id, payload)
+    add_pending_payment(user, method, invoice_id, payload,
+                        coupon=method == "platega" and coupon_active(user) and product_stars(payload, user) < product_stars(payload))
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=get_text(user, "pay_open_invoice"), url=url, style="success")]
     ])
@@ -5834,6 +5932,7 @@ def get_payment_methods_kb(user, payload):
         "stars": get_text(user, "pay_stars", amount=product_stars(payload, user)),
         "crypto": get_text(user, "pay_crypto", amount=prices["usd"]),
         "lava": get_text(user, "pay_lava", amount=prices["rub"]),
+        "platega": get_text(user, "pay_platega", amount=product_rub(payload, user)),
     }
     rows = [[InlineKeyboardButton(text=labels[method], callback_data=f"pay:{method}:{payload}", style="success")]
             for method in available_payment_methods(payload)]
@@ -5913,11 +6012,15 @@ async def payment_success(message: types.Message):
     first_purchase = not user.get("first_purchase_done")
     await grant_product(user, payload, message.chat.id)
     if first_purchase:
-        user["first_purchase_done"] = True
-        user["coupon"] = {"discount": FIRST_BUY_COUPON,
-                          "until": (datetime.now() + timedelta(hours=FIRST_BUY_COUPON_HOURS)).isoformat()}
-        save_data(user_data)
-        await message.answer(get_text(user, "coupon_granted", n=int(FIRST_BUY_COUPON * 100), hours=FIRST_BUY_COUPON_HOURS))
+        await grant_first_purchase_coupon(user, message.chat.id)
+
+
+async def grant_first_purchase_coupon(user, chat_id):
+    user["first_purchase_done"] = True
+    user["coupon"] = {"discount": FIRST_BUY_COUPON,
+                      "until": (datetime.now() + timedelta(hours=FIRST_BUY_COUPON_HOURS)).isoformat()}
+    save_data(user_data)
+    await bot.send_message(chat_id, get_text(user, "coupon_granted", n=int(FIRST_BUY_COUPON * 100), hours=FIRST_BUY_COUPON_HOURS))
 
 
 # ============================================================
@@ -8324,6 +8427,7 @@ def serialize_shop_state(user):
         {"key": key, "amount": pack["amount"], "emoji": pack["emoji"], "image": f"/assets/{key}.png",
          "name": get_text(user, "invoice_energizer_title", amount=pack["amount"]),
          "stars": product_stars(key, user), "saving": energizer_pack_saving(key, user),
+         "rub": product_rub(key, user) if "platega" in available_payment_methods(key) else None,
          "restore_hint": get_text(user, "energizer_restore_hint", amount=ENERGIZER_RESTORE_AMOUNT)}
         for key, pack in ENERGIZER_PACKS.items()
     ]
@@ -8336,6 +8440,7 @@ def serialize_shop_state(user):
     )}
     ui["custom_gift_btn"] = get_text(user, "custom_gift_btn", price=CUSTOM_GIFT_PRICE)
     ui["pack_saving"] = get_text(user, "pack_saving", n="{n}")
+    ui["pay_card_btn"] = get_text(user, "pay_card_btn", amount="{amount}")
     ui["promo_title"] = get_text(user, "promo_title", n="{n}")
     ui["locked_badge"] = get_text(user, "gift_locked_short", level="{level}")
     ui["play_btn"] = gt(user, "play_btn")
@@ -11927,6 +12032,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
   .footer-col { flex-direction: column; align-items: stretch; gap: 8px; }
   .price-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
   .buy-btn-wide { width: 100%; }
+  .buy-btn.buy-btn-card { background: rgba(127,127,127,.18); color: inherit; }
   .save-badge { position: relative; overflow: hidden; display: inline-block; white-space: nowrap; padding: 2px 7px;
     border-radius: 8px; font-size: 10px; font-weight: 800; color: #fff;
     background: linear-gradient(135deg, #22c55e, #059669); box-shadow: 0 0 8px rgba(34,197,94,.55);
@@ -12106,7 +12212,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
         key: "energizer",
         name: s.ui.shop_category_energizer,
         items: s.energizer_packs.map(function (p) {
-          return {key: p.key, category: "energizer", emoji: p.emoji, image: p.image, name: p.name, stars: p.stars, saving: p.saving,
+          return {key: p.key, category: "energizer", emoji: p.emoji, image: p.image, name: p.name, stars: p.stars, saving: p.saving, rub: p.rub,
                   effects: p.restore_hint || "", ready_in: null, refuse: false};
         })
       });
@@ -12237,6 +12343,14 @@ SHOP_PAGE_HTML = '''<!doctype html>
       if (busyKeys[itemKey]) starsBtn.disabled = true;
       starsBtn.onclick = function () { buyEnergizer(item.key); };
       footer.appendChild(starsBtn);
+      if (item.rub) {
+        var cardBtn = document.createElement("button");
+        cardBtn.className = "buy-btn buy-btn-wide buy-btn-card";
+        cardBtn.textContent = s.ui.pay_card_btn.replace("{amount}", item.rub);
+        if (busyKeys[itemKey]) cardBtn.disabled = true;
+        cardBtn.onclick = function () { buyEnergizerCard(item.key); };
+        footer.appendChild(cardBtn);
+      }
     } else {
       var price = document.createElement("span");
       price.className = "price";
@@ -12382,6 +12496,25 @@ SHOP_PAGE_HTML = '''<!doctype html>
   // бота и открываем её openInvoice() (та же схема, что у платного прокрута в SPIN_PAGE_HTML).
   // Начисление идёт через successful_payment на сервере асинхронно, поэтому после "paid" просто
   // переcчитываем состояние с небольшой задержкой — тут нет анимации, которую нужно синхронизировать.
+  // Картой/СБП (Platega): ссылка на оплату открывается в браузере, энергетики придут сами после оплаты.
+  function buyEnergizerCard(key) {
+    var itemKey = "energizer:" + key;
+    if (busyKeys[itemKey]) return;
+    busyKeys[itemKey] = true;
+    render();
+    api("/api/shop/energizer/platega", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({pack: key})
+    }).then(function (res) {
+      delete busyKeys[itemKey];
+      render();
+      if (!res.ok) { safe(function () { tg.showAlert(res.error || state.ui.webapp_shop_invoice_error); }); return; }
+      safe(function () { tg.openLink(res.url); });
+      setTimeout(refreshState, 15000);
+    }).catch(function () { delete busyKeys[itemKey]; render(); });
+  }
+
   function buyEnergizer(key) {
     var itemKey = "energizer:" + key;
     if (busyKeys[itemKey]) return;
@@ -12534,6 +12667,31 @@ async def api_buy_handler(request):
     result = await perform_webapp_purchase(user, user_id, category, key, note=note)
     result["state"] = serialize_shop_state(user)
     return web.json_response(result)
+
+
+async def api_shop_energizer_platega_handler(request):
+    """Энергетики картой/СБП через Platega: ссылка на оплату открывается из Mini App (tg.openLink),
+    энергетики приходят по колбэку/опросу -- так же, как и любые другие оплаты Platega."""
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    try:
+        body = await request.json()
+    except (json.JSONDecodeError, ValueError):
+        body = {}
+    payload = body.get("pack") if isinstance(body, dict) else None
+    if payload not in ENERGIZER_PACKS or "platega" not in available_payment_methods(payload):
+        return web.json_response({"ok": False, "error": "Bad request"}, status=400)
+    _, description, _ = product_invoice_texts(user, payload)
+    try:
+        invoice_id, url = await create_platega_invoice(user, user_id, payload, description)
+    except Exception as e:
+        logging.error(f"Platega ({payload}) для {user_id}: {e}")
+        return web.json_response({"ok": False, "error": get_text(user, "webapp_shop_invoice_error")})
+    add_pending_payment(user, "platega", invoice_id, payload,
+                        coupon=coupon_active(user) and product_stars(payload, user) < product_stars(payload))
+    return web.json_response({"ok": True, "url": url})
 
 
 async def api_shop_energizer_invoice_handler(request):
@@ -16247,6 +16405,8 @@ async def run_webapp_server():
     app_web.router.add_get("/api/state", api_state_handler)
     app_web.router.add_post("/api/buy", api_buy_handler)
     app_web.router.add_post("/api/shop/energizer/invoice", api_shop_energizer_invoice_handler)
+    app_web.router.add_post("/api/shop/energizer/platega", api_shop_energizer_platega_handler)
+    app_web.router.add_post("/api/platega/callback", platega_callback_handler)
     app_web.router.add_post("/api/shop/custom", api_custom_gift_handler)
     app_web.router.add_get("/spin", spin_page_handler)
     app_web.router.add_get("/api/spin/state", api_spin_state_handler)
