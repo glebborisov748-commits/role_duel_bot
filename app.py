@@ -303,6 +303,7 @@ TEXTS = {
         "spin_sale_part": "🎰 Прокрут {sale}⭐ вместо {regular}⭐",
         "sub_sale_line": "🔥 Распродажа выходных: SUPER PRO и ELITE −{n}% — до воскресенья!",
         "coupon_line": "🎁 Твоя персональная скидка −{n}% на любую покупку за звёзды — осталось {hours} ч.",
+        "coupon_note": "🎁 Персональная скидка −{n}% за первую покупку · ещё {hours} ч",
         "coupon_granted": "🎁 Спасибо за первую покупку! Дарю тебе −{n}% на следующую покупку за звёзды: подписку, энергетики, сцену — что угодно. Скидка действует {hours} ч.",
         "coupon_used": "🎁 Персональная скидка применена — спасибо!",
         "sub_sale_part": "👑 SUPER PRO и ELITE −{n}%",
@@ -690,6 +691,7 @@ TEXTS = {
         "spin_sale_part": "🎰 Spin {sale}⭐ instead of {regular}⭐",
         "sub_sale_line": "🔥 Weekend sale: SUPER PRO and ELITE −{n}% — until Sunday!",
         "coupon_line": "🎁 Your personal −{n}% discount on any Stars purchase — {hours} h left.",
+        "coupon_note": "🎁 Personal −{n}% discount for your first purchase · {hours} h left",
         "coupon_granted": "🎁 Thanks for your first purchase! Here's −{n}% off your next Stars purchase: a subscription, energizers, a scene — anything. Valid for {hours} h.",
         "coupon_used": "🎁 Personal discount applied — thank you!",
         "sub_sale_part": "👑 SUPER PRO and ELITE −{n}%",
@@ -1077,6 +1079,7 @@ TEXTS = {
         "spin_sale_part": "🎰 Dreh für {sale}⭐ statt {regular}⭐",
         "sub_sale_line": "🔥 Wochenend-Sale: SUPER PRO und ELITE −{n}% — bis Sonntag!",
         "coupon_line": "🎁 Dein persönlicher Rabatt von −{n}% auf jeden Kauf mit Stars — noch {hours} Std.",
+        "coupon_note": "🎁 Persönlicher Rabatt −{n}% für deinen ersten Kauf · noch {hours} Std.",
         "coupon_granted": "🎁 Danke für deinen ersten Kauf! Du bekommst −{n}% auf deinen nächsten Kauf mit Stars: Abo, Energydrinks, Szene — egal was. Gültig {hours} Std.",
         "coupon_used": "🎁 Persönlicher Rabatt angewendet — danke!",
         "sub_sale_part": "👑 SUPER PRO und ELITE −{n}%",
@@ -4870,6 +4873,14 @@ def price_label(payload, user=None):
     return f"{strike(ref)} {now}" if now < ref else str(now)
 
 
+def coupon_note(user):
+    """Подпись «персональная скидка за первую покупку» рядом с ценами, пока купон действует, иначе None."""
+    if not coupon_active(user):
+        return None
+    left = max(1, round((datetime.fromisoformat(user["coupon"]["until"]) - datetime.now()).total_seconds() / 3600))
+    return get_text(user, "coupon_note", n=int(user["coupon"]["discount"] * 100), hours=left)
+
+
 def sales_lines(user):
     """Строки об актуальных распродажах и купоне -- для меню подписок."""
     lines = []
@@ -8350,6 +8361,7 @@ def serialize_shop_state(user):
         "note_max_len": ITEM_NOTE_MAX_LEN,
         "promo_banner": promo_banner_text(user),
         "promo_max": promo_max_percent(user),
+        "coupon_note": coupon_note(user),
         "ui": ui,
     }
 
@@ -11902,6 +11914,8 @@ SHOP_PAGE_HTML = '''<!doctype html>
     background: linear-gradient(90deg, transparent, rgba(255,255,255,.45), transparent); transform: skewX(-20deg);
     animation: save-shine 3s ease-in-out infinite; }
   @keyframes promo-bg { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+  #coupon-note { display: none; margin: 6px 14px 0; padding: 6px 12px; border-radius: 10px; font-size: 12px; font-weight: 800;
+    color: #fff; background: linear-gradient(135deg, #8b5cf6, #ec4899); box-shadow: 0 0 10px rgba(236,72,153,.4); }
   .promo-tag { flex-shrink: 0; position: relative; padding: 6px 10px 6px 16px; font-size: 17px; font-weight: 900; color: #b71c1c;
     background: #ffeb3b; border-radius: 4px 8px 8px 4px; transform: rotate(-6deg);
     clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%); animation: tag-swing 2.4s ease-in-out infinite; }
@@ -12002,6 +12016,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
   <div id="stats"></div>
   <div id="illness-badge"></div>
   <div id="promo-banner"></div>
+  <div id="coupon-note"></div>
   <div id="tabs"></div>
   <div id="items">Loading…</div>
   <div id="footer-hint"></div>
@@ -12054,7 +12069,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
   }
 
   function showFullScreen(text) {
-    ["stats", "illness-badge", "promo-banner", "tabs", "items", "footer-hint"].forEach(function (id) {
+    ["stats", "illness-badge", "promo-banner", "coupon-note", "tabs", "items", "footer-hint"].forEach(function (id) {
       document.getElementById(id).style.display = "none";
     });
     var el = document.getElementById("full-screen-msg");
@@ -12316,6 +12331,9 @@ SHOP_PAGE_HTML = '''<!doctype html>
         banner.appendChild(body);
       }
       banner.style.display = state.promo_max ? "flex" : "none";
+      var cnote = document.getElementById("coupon-note");
+      cnote.textContent = state.coupon_note || "";
+      cnote.style.display = state.coupon_note ? "block" : "none";
       renderTabs(state);
       renderItems(state);
       document.getElementById("footer-hint").textContent = state.ui.webapp_open_chat_hint;
@@ -12932,6 +12950,7 @@ def serialize_spin_state(user):
         "bucks": user.get("bucks", 0),
         "reminder_enabled": user.get("spin_reminder_enabled", False),
         "luck": {"left": spin_luck_seconds_left(user), "elite": has_active_subscription(user) and get_subscription_level(user) == "elite"},
+        "coupon_note": coupon_note(user),
         "prizes": [
             {"index": i, "wheel_label": p["wheel_label"], "name": prize_name(p, user),
              "fx": p.get("fx", "none"), "fx_power": p.get("fx_power", 1)}
@@ -13242,6 +13261,10 @@ SPIN_PAGE_HTML = '''<!doctype html>
     white-space: pre-line;
     word-break: break-word;
   }
+  .coupon-note { margin: 2px auto 6px; max-width: 300px; padding: 6px 10px; border-radius: 10px; font-size: 12px; font-weight: 800;
+    color: #fff; background: linear-gradient(135deg, #8b5cf6, #ec4899); box-shadow: 0 0 10px rgba(236,72,153,.45);
+    animation: coupon-pulse 1.8s ease-in-out infinite; }
+  @keyframes coupon-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
 </style>
 </head>
 <body>
@@ -13511,6 +13534,13 @@ SPIN_PAGE_HTML = '''<!doctype html>
       freeBtn.disabled = true;
     }
     el.appendChild(freeBtn);
+
+    if (s.coupon_note) {
+      var note = document.createElement("div");
+      note.className = "coupon-note";
+      note.textContent = s.coupon_note;
+      el.appendChild(note);
+    }
 
     var paidBtn = document.createElement("button");
     paidBtn.className = "action-btn secondary";
