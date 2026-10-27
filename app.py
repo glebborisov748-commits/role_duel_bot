@@ -1325,6 +1325,46 @@ def call_ai(explicit_model, cache_key, **kwargs):
     умолчанию) и одной повторной попыткой — если провайдер вдруг снял именно эту модель
     с каталога (как уже случилось с deepseek/deepseek-chat), или если запрос просто не
     успел за отведённое время (транзиентная задержка на стороне провайдера)."""
+    response = _call_ai_raw(explicit_model, cache_key, **kwargs)
+    # Защита от «каши из языков»: DeepSeek Flash иногда вставляет посреди русского ответа иероглифы или
+    # целые английские фразы (по фидбэку). Тогда пробуем ещё раз чуть «холоднее», а если снова --
+    # вырезаем иероглифы, чтобы до пользователя они не дошли.
+    try:
+        text = response.choices[0].message.content or ""
+    except (AttributeError, IndexError):
+        return response
+    if not _language_glitch(text):
+        return response
+    logging.warning("Ответ ИИ со смешением языков, повторяем запрос")
+    retry_kwargs = dict(kwargs)
+    retry_kwargs["temperature"] = max(0.5, (kwargs.get("temperature") or 0.9) - 0.25)
+    try:
+        retry = _call_ai_raw(explicit_model, cache_key, **retry_kwargs)
+        retry_text = retry.choices[0].message.content or ""
+        if retry_text.strip() and not _language_glitch(retry_text):
+            return retry
+        if retry_text.strip():
+            response, text = retry, retry_text
+    except Exception as e:
+        logging.warning(f"Повтор после смешения языков не удался: {e}")
+    response.choices[0].message.content = CJK_RE.sub("", text)
+    return response
+
+
+CJK_RE = re.compile(r"[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uac00-\ud7af\uff00-\uffef]+")
+LATIN_PHRASE_RE = re.compile(r"\b[A-Za-z']{2,}(?:[ ,]+[A-Za-z']{2,}){1,}\b")
+
+
+def _language_glitch(text):
+    """Иероглифы в любом ответе, либо английская фраза из 2+ слов внутри в основном кириллического текста."""
+    if CJK_RE.search(text):
+        return True
+    letters = [ch for ch in text if ch.isalpha()]
+    cyr = sum(1 for ch in letters if "а" <= ch.lower() <= "я" or ch.lower() == "ё")
+    return bool(letters) and cyr / len(letters) > 0.5 and bool(LATIN_PHRASE_RE.search(text))
+
+
+def _call_ai_raw(explicit_model, cache_key, **kwargs):
     model = explicit_model or resolve_model(cache_key)
     kwargs.setdefault("timeout", AI_REQUEST_TIMEOUT)
     try:
@@ -3077,16 +3117,19 @@ LANGUAGE_RULES = {
     "ru": ("**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на РУССКОМ языке, независимо от языка "
            "предыдущих сообщений в истории диалога ниже (пользователь мог только что сменить "
            "язык командой /language) — начиная с этого ответа общайся исключительно на русском. "
+           "Никаких иероглифов и вставок на других языках — даже отдельных фраз. "
            "Это касается ВСЕГО текста ответа целиком, включая описания действий в *звёздочках* — "
            "они тоже на русском, а не только реплики в кавычках."),
     "en": ("**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на АНГЛИЙСКОМ языке, независимо от языка "
            "предыдущих сообщений в истории диалога ниже (пользователь мог только что сменить "
            "язык командой /language) — начиная с этого ответа общайся исключительно на английском. "
+           "Никаких иероглифов и вставок на других языках — даже отдельных фраз. "
            "Это касается ВСЕГО текста ответа целиком, включая описания действий в *звёздочках* — "
            "они тоже на английском, а не только реплики."),
     "de": ("**ВАЖНО:** Ты ОБЯЗАН отвечать ТОЛЬКО на НЕМЕЦКОМ языке, независимо от языка "
            "предыдущих сообщений в истории диалога ниже (пользователь мог только что сменить "
            "язык командой /language) — начиная с этого ответа общайся исключительно на немецком. "
+           "Никаких иероглифов и вставок на других языках — даже отдельных фраз. "
            "Это касается ВСЕГО текста ответа целиком, включая описания действий в *звёздочках* — "
            "они тоже на немецком, а не только реплики."),
 }
