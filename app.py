@@ -242,7 +242,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
         "subs_title": "👑 Подписки Role Duel",
-        "subs_body": "🔥 PRO (220⭐/мес)\n👉 База для тех, кто только начинает — очень сбалансированный набор.\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 40 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-15%)\n• +2⚡ энергетика каждый день\n• 💼 Заработок на работе x1.5\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (500⭐/мес)\n👉 Для тех, кто хочет побольше разных фишек и возможностей.\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 60 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-25%)\n• +3⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n\n💎 ELITE 💎 (1000⭐/мес)\n👉 Для тех, кто ООЧЕНЬ много общается.\n• Всё, что есть в SUPER PRO\n• Память: 80 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-40%)\n• +4⚡ энергетика каждый день\n• 💼 Заработок на работе x2.8\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (350⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n🎁 При первой покупке любой подписки — бонус: 300💵 баксов, 3⚡ энергетика и 1 горячая сцена!\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_body": "🔥 PRO (220⭐/мес)\n👉 База для тех, кто только начинает — очень сбалансированный набор.\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 40 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-15%)\n• +2⚡ энергетика каждый день\n• 💼 Заработок на работе x1.5\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (500⭐/мес)\n👉 Для тех, кто хочет побольше разных фишек и возможностей.\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 60 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-25%)\n• +3⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n• 🔥 Игра на раздевание 18+ в 🎮 Играх\n\n💎 ELITE 💎 (1000⭐/мес)\n👉 Для тех, кто ООЧЕНЬ много общается.\n• Всё, что есть в SUPER PRO\n• Память: 80 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-40%)\n• +4⚡ энергетика каждый день\n• 💼 Заработок на работе x2.8\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (350⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n🎁 При первой покупке любой подписки — бонус: 300💵 баксов, 3⚡ энергетика и 1 горячая сцена!\n\n⚠️ Подписки НЕ продлеваются автоматически.",
         "subs_btn_pro": "🔥 PRO — {price} ⭐/мес · ≈{day}⭐ в день",
         "subs_btn_super": "✨ SUPER PRO ✨ — {price} ⭐/мес · ≈{day}⭐ в день",
         "subs_btn_elite": "💎 ELITE 💎 — {price} ⭐/мес · ≈{day}⭐ в день",
@@ -649,7 +649,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
         "subs_title": "👑 Role Duel Subscriptions",
-        "subs_body": "🔥 PRO (220⭐ per month)\n👉 The balanced starting point for those just getting to know their companion.\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 40 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-15%)\n• +2⚡ energizers every day\n• 💼 1.5x earnings from work\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (500⭐ per month)\n👉 For those who want a lot more features and options.\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 60 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-25%)\n• +3⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n\n💎 ELITE 💎 (1000⭐ per month)\n👉 For those who chat A LOT.\n• Everything in SUPER PRO\n• Memory: 80 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-40%)\n• +4⚡ energizers every day\n• 💼 2.8x earnings from work\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (350⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n🎁 Get a bonus on your first subscription purchase: 300💵 bucks, 3⚡ energizers and 1 hot scene!\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_body": "🔥 PRO (220⭐ per month)\n👉 The balanced starting point for those just getting to know their companion.\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 40 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-15%)\n• +2⚡ energizers every day\n• 💼 1.5x earnings from work\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (500⭐ per month)\n👉 For those who want a lot more features and options.\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 60 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-25%)\n• +3⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n• 🔥 Strip game 18+ in 🎮 Games\n\n💎 ELITE 💎 (1000⭐ per month)\n👉 For those who chat A LOT.\n• Everything in SUPER PRO\n• Memory: 80 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-40%)\n• +4⚡ energizers every day\n• 💼 2.8x earnings from work\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (350⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n🎁 Get a bonus on your first subscription purchase: 300💵 bucks, 3⚡ energizers and 1 hot scene!\n\n⚠️ Subscriptions do NOT renew automatically.",
         "subs_btn_pro": "🔥 PRO — {price} ⭐/month · ≈{day}⭐ a day",
         "subs_btn_super": "✨ SUPER PRO ✨ — {price} ⭐/month · ≈{day}⭐ a day",
         "subs_btn_elite": "💎 ELITE 💎 — {price} ⭐/month · ≈{day}⭐ a day",
@@ -1056,7 +1056,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
         "subs_title": "👑 Role Duel Abos",
-        "subs_body": "🔥 PRO (220⭐ pro Monat)\n👉 Der ausgewogene Einstieg für alle, die ihren Begleiter gerade erst kennenlernen.\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 40 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-15%)\n• +2⚡ Energydrinks jeden Tag\n• 💼 1.5x Verdienst bei der Arbeit\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (500⭐ pro Monat)\n👉 Für alle, die viele zusätzliche Features und Möglichkeiten wollen.\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-25%)\n• +3⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n\n💎 ELITE 💎 (1000⭐ pro Monat)\n👉 Für alle, die SEHR viel chatten.\n• Alles aus SUPER PRO\n• Gedächtnis: 80 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-40%)\n• +4⚡ Energydrinks jeden Tag\n• 💼 2.8x Verdienst bei der Arbeit\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (350⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n🎁 Bei der ersten Abo-Buchung gibt's einen Bonus: 300💵 Bucks, 3⚡ Energydrinks und 1 heiße Szene!\n\n⚠️ Abos verlängern sich NICHT automatisch.",
+        "subs_body": "🔥 PRO (220⭐ pro Monat)\n👉 Der ausgewogene Einstieg für alle, die ihren Begleiter gerade erst kennenlernen.\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 40 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-15%)\n• +2⚡ Energydrinks jeden Tag\n• 💼 1.5x Verdienst bei der Arbeit\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (500⭐ pro Monat)\n👉 Für alle, die viele zusätzliche Features und Möglichkeiten wollen.\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-25%)\n• +3⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n• 🔥 Strip-Spiel 18+ in 🎮 Spiele\n\n💎 ELITE 💎 (1000⭐ pro Monat)\n👉 Für alle, die SEHR viel chatten.\n• Alles aus SUPER PRO\n• Gedächtnis: 80 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-40%)\n• +4⚡ Energydrinks jeden Tag\n• 💼 2.8x Verdienst bei der Arbeit\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (350⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n🎁 Bei der ersten Abo-Buchung gibt's einen Bonus: 300💵 Bucks, 3⚡ Energydrinks und 1 heiße Szene!\n\n⚠️ Abos verlängern sich NICHT automatisch.",
         "subs_btn_pro": "🔥 PRO — {price} ⭐/Monat · ≈{day}⭐ am Tag",
         "subs_btn_super": "✨ SUPER PRO ✨ — {price} ⭐/Monat · ≈{day}⭐ am Tag",
         "subs_btn_elite": "💎 ELITE 💎 — {price} ⭐/Monat · ≈{day}⭐ am Tag",
@@ -7346,11 +7346,14 @@ GAME_TEXTS = {
         "play_rps_title": '✊ Камень, ножницы, бумага',
         "play_rps_desc": 'Играете до {wins} побед, персонаж комментирует итог. Победа — +20 XP.',
         "play_strip_title": '🔥 На раздевание (18+)',
-        "play_strip_desc": 'Проиграл раунд — снимаешь вещь. Выиграл — сам выбираешь, что снимет персонаж: очки, часы, шляпу… и дальше. Каждый раз разная одежда. Играете, пока кто-то не останется без всего. Победа — +50 XP.',
+        "play_strip_desc": 'Ставка — только одежда. Выиграл раунд — выбираешь, что снимет персонаж: очки, часы, шляпу… и дальше. Проиграл — персонаж сам с ухмылкой решает, что снять с тебя. Каждый раз разная одежда. Играете, пока кто-то не останется без всего. Победа — +50 XP.',
         "play_strip_cost": 'SUPER PRO',
         "play_strip_locked": '🔞 Игра для 18+: доступна после подтверждения возраста. Если персонаж болеет — сначала вылечи.',
         "play_need_super": '💎 Игра на раздевание доступна с подпиской SUPER PRO или ELITE — без ограничений. Оформить: профиль → «👑 Оформить подписку».',
         "play_start": '▶️ Играть',
+        "play_free": 'бесплатно',
+        "play_she_took": '😏 Персонаж выбрал, что снимешь ты: {item}',
+        "play_fallback_take": ['Хм… дай-ка подумать 😏 Мой выбор: {item}. Снимай.', 'Мой раунд! {item} — долой… только медленно 😉', 'Ну что… уговор есть уговор: {item} 🔥'],
         "play_her": 'Персонаж',
         "play_me": 'Ты',
         "play_score": 'Счёт {me}:{ai} · до {wins} побед',
@@ -7453,11 +7456,14 @@ GAME_TEXTS = {
         "play_rps_title": '✊ Rock, paper, scissors',
         "play_rps_desc": 'First to {wins} wins, your companion comments on the result. A win gives +20 XP.',
         "play_strip_title": '🔥 Strip version (18+)',
-        "play_strip_desc": 'Lose a round — take something off. Win — you choose what your companion takes off: glasses, a watch, a hat… and further. Different clothes every time. Play until someone has nothing left. A win gives +50 XP.',
+        "play_strip_desc": 'The only stake is clothes. Win a round — you choose what your companion takes off: glasses, a watch, a hat… and further. Lose — your companion picks, with a smirk, what comes off you. Different clothes every time. Play until someone has nothing left. A win gives +50 XP.',
         "play_strip_cost": 'SUPER PRO',
         "play_strip_locked": '🔞 18+ game: available after age confirmation. If your companion is sick, cure them first.',
         "play_need_super": '💎 The strip game comes with SUPER PRO or ELITE — unlimited. Get it: profile → «👑 Subscribe».',
         "play_start": '▶️ Play',
+        "play_free": 'free',
+        "play_she_took": '😏 Your companion picked what you take off: {item}',
+        "play_fallback_take": ['Hmm… let me think 😏 Take off the {item}.', 'My round! Let\'s start with the {item}… slowly 😉', 'Well, loser… the {item} goes 🔥'],
         "play_her": 'Companion',
         "play_me": 'You',
         "play_score": 'Score {me}:{ai} · first to {wins}',
@@ -7540,11 +7546,12 @@ CITIES_XP = 30
 # Развлечения покупаются в магазине (вкладка «🎮 Развлечения») и стартуют сразу, без билетов. price=0 у
 # блэкджека: там платишь ставкой. Оставшиеся старые билеты (game_tickets) засчитываются как оплата.
 GAME_OFFERS = {
-    "cities": {"emoji": "🏙", "ru": "Города", "en": "Cities", "price": 450},
-    "tod": {"emoji": "🤫", "ru": "Правда или действие", "en": "Truth or dare", "price": 600},
+    # Все развлечения бесплатные (по фидбэку: "чтобы было реалистично") -- кроме блэкджека, там ставки.
+    "cities": {"emoji": "🏙", "ru": "Города", "en": "Cities", "price": 0},
+    "tod": {"emoji": "🤫", "ru": "Правда или действие", "en": "Truth or dare", "price": 0},
     "bj": {"emoji": "🃏", "ru": "Блэкджек", "en": "Blackjack", "price": 0},
-    "movie": {"emoji": "🎬", "ru": "Кино вместе", "en": "Movie together", "price": 2250},
-    "rps": {"emoji": "✊", "ru": "Камень, ножницы, бумага", "en": "Rock, paper, scissors", "price": 300},
+    "movie": {"emoji": "🎬", "ru": "Кино вместе", "en": "Movie together", "price": 0},
+    "rps": {"emoji": "✊", "ru": "Камень, ножницы, бумага", "en": "Rock, paper, scissors", "price": 0},
 }
 
 
@@ -7559,11 +7566,15 @@ def game_offer_name(user, key):
 
 def game_price_label(user, key):
     price = GAME_OFFERS[key]["price"]
-    return gt(user, "bj_price") if key == "bj" else f"{price}💵"
+    if key == "bj":
+        return gt(user, "bj_price")
+    return f"{price}💵" if price else gt(user, "play_free")
 
 
 def pay_for_game(user, key):
     """Списывает оплату за партию: старый билет, если остался, иначе баксы. Возвращает сумму (0 за билет) или None."""
+    if not GAME_OFFERS[key]["price"]:
+        return 0  # бесплатная игра -- старые билеты не тратим
     tickets = user.get("game_tickets") or {}
     if tickets.get(key, 0) > 0:
         tickets[key] -= 1
@@ -8726,7 +8737,7 @@ def serialize_shop_state(user):
     game_items = [{
         "key": key, "category": "play" if key == "rps" else "game", "image": shop_item_image("game", key), "emoji": offer["emoji"],
         "name": game_offer_name(user, key), "price": offer["price"],
-        "price_label": gt(user, "bj_price") if key == "bj" else None,
+        "price_label": game_price_label(user, key),
         "effects": gt(user, "game_desc_" + key), "ready_in": None, "refuse": False,
     } for key, offer in GAME_OFFERS.items()]
     game_items.append({
@@ -16794,7 +16805,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
 #  МИНИ-ПРИЛОЖЕНИЕ ИГР (/play): камень-ножницы-бумага и КНБ на раздевание (18+)
 # ============================================================
 # Правила -- на сервере (клиенту не верим ни в выбор персонажа, ни в «что снято»), ИИ только комментирует.
-PLAY_RPS_PRICE = 300
+PLAY_RPS_PRICE = 0  # игры бесплатные (кроме блэкджека)
 PLAY_RPS_WINS = 3
 PLAY_RPS_XP = 20
 PLAY_STRIP_XP = 50
@@ -16829,7 +16840,8 @@ CLOTHES_MALE = {
 }
 # Что должно быть уже снято, прежде чем можно снять вещь этой категории.
 CLOTH_BLOCKERS = {"top": {"outer"}, "dress": {"outer"}, "legs": {"shoes"}, "bra": {"top", "dress", "outer"},
-                  "panties": {"bottom", "dress", "legs"}, "boxers": {"bottom"}}
+                  "panties": {"bottom", "dress", "legs"}, "boxers": {"bottom"},
+                  "bottom": {"shoes", "acc-belt"}}  # брюки -- после обуви и ремня ("acc-belt" -- по id вещи)
 
 
 def make_outfit(gender, rnd):
@@ -16860,7 +16872,7 @@ def make_outfit(gender, rnd):
 
 def cloth_removable(items, item):
     blockers = CLOTH_BLOCKERS.get(item["cat"], set())
-    return not any(other["cat"] in blockers for other in items if other is not item)
+    return not any(other["cat"] in blockers or other["id"] in blockers for other in items if other is not item)
 
 
 def cloth_names(items, lang="ru"):
@@ -16893,13 +16905,14 @@ def serialize_play_state(user):
             return [{"id": i["id"], "name": i[lang], "emoji": i["emoji"],
                      "removable": pick == picker and cloth_removable(lst, i)} for i in lst]
         game = {"mode": play["mode"], "phase": play["phase"], "me": play.get("me", 0), "ai": play.get("ai", 0),
-                "last": play.get("last"), "line": play.get("line"), "result": play.get("result"),
+                "last": play.get("last"), "line": play.get("line"), "result": play.get("result"), "took": play.get("took"),
                 "her": items("her", "pick_her") if play["mode"] == "strip" else [],
                 "mine": items("mine", "pick_me") if play["mode"] == "strip" else [],
                 "her_removed": len(play.get("her_removed", [])), "mine_removed": len(play.get("mine_removed", []))}
     ui = {k: gt(user, k) for k in GAME_TEXTS["ru"] if k.startswith("play_") and isinstance(GAME_TEXTS["ru"][k], str)}
     return {"bucks": user.get("bucks", 0), "price": PLAY_RPS_PRICE, "wins": PLAY_RPS_WINS,
             "strip_allowed": play_strip_allowed(user), "strip_subscribed": play_strip_subscribed(user),
+            "char_gender": user.get("gender") or "female",
             "rps_names": gt(user, "rps_names"), "game": game, "ui": ui}
 
 
@@ -16977,6 +16990,8 @@ async def api_play_move_handler(request):
         return err
     play = user.get("play")
     choice = body.get("choice")
+    if play and play.get("phase") == "pick_me":
+        play["phase"] = "move"  # партии со старым ходом "выбери сам" доигрываются по новым правилам
     if not play or play.get("phase") != "move" or choice not in RPS_KEYS or play.get("busy"):
         return _play_reply(user, False, None)
     theirs = random.choice(RPS_KEYS)
@@ -16984,6 +16999,7 @@ async def api_play_move_handler(request):
     outcome = "draw" if choice == theirs else ("win" if beats[choice] == theirs else "lose")
     play["last"] = {"mine": choice, "theirs": theirs, "outcome": outcome}
     play["line"] = None
+    play["took"] = None
     if play["mode"] == "rps":
         if outcome == "win":
             play["me"] += 1
@@ -17000,10 +17016,65 @@ async def api_play_move_handler(request):
             finally:
                 play["busy"] = False
             await play_finish(user_id, user, won)
-    elif outcome != "draw":
-        play["phase"] = "pick_her" if outcome == "win" else "pick_me"
+    elif outcome == "win":
+        play["phase"] = "pick_her"
+    elif outcome == "lose":
+        play["busy"] = True
+        try:
+            await play_character_takes(user_id, user, play)
+        finally:
+            play["busy"] = False
+        if not play["mine"]:
+            await play_finish(user_id, user, False)
     save_data(user_data)
     return _play_reply(user)
+
+
+async def play_character_takes(user_id, user, play):
+    """Персонаж выиграл раунд -- сам выбирает, что снять с собеседника, и говорит это в своём стиле."""
+    options = [i for i in play["mine"] if cloth_removable(play["mine"], i)]
+    if not options:
+        return
+    numbered = "; ".join(f"{n}) {i['ru']}" for n, i in enumerate(options, 1))
+    rest = cloth_names(play["mine"])
+    last = len(play["mine"]) == 1
+    she = play_self_gender(user) == "female"
+    instr = ("Игра «камень-ножницы-бумага на раздевание», ставка — только одежда. Ты выиграл(а) раунд и сам(а) решаешь, "
+             f"что {'собеседница' if she else 'собеседник'} снимет. Сейчас на {'ней' if she else 'нём'}: {rest}. Снять можно: {numbered}. Выбери то, что тебе самой/самому "
+             "интереснее увидеть снятым. Начни ответ строго с номера в квадратных скобках, например [2], а дальше — "
+             "с ухмылкой, заигрывая, в своём стиле скажи, что выбираешь и почему, и подразни собеседника. "
+             + (f"Это {'её' if she else 'его'} последняя вещь — после неё {'она полностью раздета' if she else 'он полностью раздет'} "
+                "и ты выигрываешь игру." if last else ""))
+    text = await game_ai_line(user_id, user, instr, tail=play_tail(play))
+    item = None
+    if text:
+        m = re.match(r"\s*\[(\d+)\]\s*", text)
+        if m and 1 <= int(m.group(1)) <= len(options):
+            item = options[int(m.group(1)) - 1]
+        text = re.sub(r"\[\d+\]\s*", "", text, count=1).strip() or None
+    if item is None:
+        item = random.choice(options)
+        if text and item["ru"].lower() not in text.lower():
+            text = None  # модель не назвала номер, а в реплике другая вещь -- лучше заготовка, чем путаница
+    lang = "ru" if user.get("lang", "ru") == "ru" else "en"
+    if not text:
+        text = random.choice(gt(user, "play_fallback_take")).format(item=item[lang] if lang == "ru" else item[lang].lower())
+    play["mine"].remove(item)
+    play["mine_removed"].append(item)
+    play["took"] = f"{item['emoji']} {item[lang]}"
+    play["line"] = text
+    play_log(play, text)
+
+
+def play_tail(play):
+    """Последние реплики персонажа в этой партии -- чтобы он помнил, что уже говорил, и не повторялся."""
+    return [{"role": "assistant", "content": t} for t in play.get("log", [])[-4:]]
+
+
+def play_log(play, text):
+    if text:
+        play.setdefault("log", []).append(text)
+        play["log"] = play["log"][-6:]
 
 
 async def api_play_remove_handler(request):
@@ -17011,9 +17082,9 @@ async def api_play_remove_handler(request):
     if err:
         return err
     play = user.get("play")
-    if not play or play.get("mode") != "strip" or play.get("phase") not in ("pick_her", "pick_me") or play.get("busy"):
+    if not play or play.get("mode") != "strip" or play.get("phase") != "pick_her" or play.get("busy"):
         return _play_reply(user, False, None)
-    side = "her" if play["phase"] == "pick_her" else "mine"
+    side = "her"
     item = next((i for i in play[side] if i["id"] == body.get("item")), None)
     if not item or not cloth_removable(play[side], item):
         return _play_reply(user, False, gt(user, "play_cant_remove"))
@@ -17026,11 +17097,14 @@ async def api_play_remove_handler(request):
         rest = cloth_names(play[side])
         if side == "her":
             last = not play["her"]
-            instr = (f"Игра «камень-ножницы-бумага на раздевание». Ты проиграл(а) раунд, и собеседник выбрал, что тебе снять: "
-                     f"«{item['ru']}». Опиши от первого лица, как ты это снимаешь — живо, игриво, с эмоцией (смущение, азарт, "
-                     f"кокетство). " + ("Это была последняя вещь — теперь на тебе ничего нет, ты проиграл(а) всю игру: отреагируй ярко."
-                                        if last else f"На тебе ещё: {rest}."))
-            play["line"] = await play_ai(user_id, user, instr, "play_fallback_her")
+            instr = (f"Игра «камень-ножницы-бумага на раздевание», ставка — только одежда. Ты проиграл(а) раунд, и собеседник "
+                     f"выбрал, что тебе снять: «{item['ru']}». Сначала отреагируй на его выбор в своём стиле (подколи, удивись, "
+                     f"пофлиртуй — почему именно это?), потом опиши от первого лица, как ты это снимаешь — живо, с эмоцией. "
+                     + ("Это была последняя вещь — теперь на тебе ничего нет, ты проиграл(а) всю игру: отреагируй ярко."
+                        if last else f"На тебе ещё: {rest}."))
+            line = await game_ai_line(user_id, user, instr, tail=play_tail(play))
+            play_log(play, line)
+            play["line"] = line or random.choice(gt(user, "play_fallback_her"))
         else:
             last = not play["mine"]
             instr = (f"Игра «камень-ножницы-бумага на раздевание». Собеседник проиграл раунд и снимает с себя «{item['ru']}». "
@@ -17121,7 +17195,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   @keyframes chip-glow { 0%, 100% { box-shadow: 0 0 0 rgba(229,57,53,.0); } 50% { box-shadow: 0 0 12px rgba(229,57,53,.8); } }
   .chip.gone { animation: chip-gone .5s ease forwards; }
   @keyframes chip-gone { to { transform: translateY(-20px) scale(.5); opacity: 0; } }
-  #prompt { font-weight: 800; margin: 6px 0; min-height: 20px; }
+  #prompt { font-weight: 800; margin: 6px 0; min-height: 20px; white-space: pre-line; }
   #over { display: none; }
   #over .big { font-size: 22px; font-weight: 900; margin: 6px 0 12px; }
   #full-screen-msg { display: none; padding: 30px 10px; text-align: center; color: var(--hint); white-space: pre-wrap; }
@@ -17206,7 +17280,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     var rps = el("div", "card");
     rps.appendChild(el("h3", null, ui.play_rps_title));
     rps.appendChild(el("p", null, ui.play_rps_desc.replace("{wins}", s.wins)));
-    var b1 = el("button", "btn", ui.play_start + " · " + s.price + "💵");
+    var b1 = el("button", "btn", ui.play_start + " · " + (s.price ? s.price + "💵" : ui.play_free));
     b1.onclick = function () { start("rps"); };
     rps.appendChild(b1);
     menu.appendChild(rps);
@@ -17254,7 +17328,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     document.getElementById("my-wardrobe").style.display = strip ? "block" : "none";
     if (strip) {
       renderWardrobe("her-wardrobe", (s.char_gender === "female" ? "👩 " : "👨 ") + ui.play_her, g.her, g.her_removed, g.phase === "pick_her");
-      renderWardrobe("my-wardrobe", "🙂 " + ui.play_me, g.mine, g.mine_removed, g.phase === "pick_me");
+      renderWardrobe("my-wardrobe", "🙂 " + ui.play_me, g.mine, g.mine_removed, false);
     }
     document.getElementById("lbl-her").textContent = ui.play_her;
     document.getElementById("lbl-me").textContent = ui.play_me;
@@ -17263,7 +17337,8 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     line.className = "";
     if (g.line) { line.style.display = "block"; line.textContent = g.line; } else line.style.display = "none";
     var prompt = document.getElementById("prompt");
-    prompt.textContent = g.phase === "pick_her" ? ui.play_pick_her : (g.phase === "pick_me" ? ui.play_pick_me : (g.phase === "move" ? ui.play_make_move : ""));
+    prompt.textContent = g.phase === "pick_her" ? ui.play_pick_her
+      : (g.phase === "move" ? (g.took ? ui.play_she_took.replace("{item}", g.took) + "\n" + ui.play_make_move : ui.play_make_move) : "");
     var moves = document.getElementById("moves");
     moves.innerHTML = "";
     moves.style.display = g.phase === "move" ? "flex" : "none";
@@ -17314,7 +17389,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     fx("shake"); setTimeout(function () { fx("shake"); }, 300); setTimeout(function () { fx("shake"); }, 600);
     var req = api("/api/play/move", { choice: choice });
     var minWait = new Promise(function (r) { setTimeout(r, 950); });
-    if (state.game.mode === "rps") setTimeout(thinking, 1000);
+    setTimeout(function () { if (busy) thinking(); }, 1000);
     Promise.all([req, minWait]).then(function (v) {
       var res = v[0];
       busy = false;
