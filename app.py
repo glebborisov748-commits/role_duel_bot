@@ -287,13 +287,20 @@ TEXTS = {
         "shop_category_medicine": "💊 Лекарства",
         "illness_status_line": "{emoji} Болеет: {name} — лекарство есть в 🛍 Магазине",
         "illness_escalate_timer": "⏳ Без лечения перейдёт в бронхит через {hours}ч",
-        "illness_push_cold": "🤒 Персонаж заболел: {emoji} {name}. Лекарство — в 🛍 Магазине. Пока он болеет, сообщения выматывают сильнее, а горячие сцены недоступны. Без лечения через {hours}ч станет бронхитом.",
-        "illness_push_bronchitis": "😷 Стало хуже: {emoji} {name}. Нужно сильное лекарство из 🛍 Магазина — сообщения выматывают ещё сильнее, горячие сцены недоступны.",
+        "illness_push_cold": "🤒 Персонаж заболел: {emoji} {name}. Лекарство — в 🛍 Магазине. Пока он болеет, сообщения выматывают сильнее, а игры, подарки, свидания и горячие сцены недоступны. Лечится курсом: {doses} приёма лекарства с перерывом {gap}ч. Без лечения через {hours}ч станет бронхитом.",
+        "illness_push_bronchitis": "😷 Стало хуже: {emoji} {name}. Нужно сильное лекарство из 🛍 Магазина — курс из {doses} приёмов с перерывом {gap}ч. Сообщения выматывают ещё сильнее, игры, подарки, свидания и горячие сцены недоступны.",
         "tipsy_status_light": "🥂 Слегка навеселе — чувствуется лёгкое опьянение.",
         "tipsy_status_full": "🍾 Хорошенько выпил(а) — реально пьян(а), это чувствуется во всём.",
         "intim_blocked_illness": "🤒 Персонаж слишком плохо себя чувствует для этого сейчас — сначала вылечи его в 🛍 Магазине.",
         "not_sick_alert": "😊 Персонаж сейчас не болеет — лекарство ни к чему.",
         "wrong_medicine_alert": "❌ Это лекарство не от этой болезни — нужно другое.",
+        "gift_blocked_illness": "🤒 Персонаж болеет — сейчас не до подарков и свиданий. Сначала вылечи его: лекарство в 🛍 Магазине.",
+        "gift_sick_short": "болеет",
+        "medicine_wait_alert": "⏳ Лекарство принимают курсом ({n}/{total}). Следующий приём — через {when}.",
+        "medicine_dose_progress": "💊 Приём {n}/{total}. Стало чуть легче, но персонаж ещё болеет. Следующий приём — через {hours}ч.",
+        "medicine_cured": "✅ Курс лечения завершён — персонаж выздоровел!",
+        "illness_course_line": "💊 Лечение: принято {n} из {total}",
+        "illness_course_next": "💊 Лечение: принято {n} из {total}, следующий приём — через {when}",
         "character_died": "💔 Персонаж мёртв — весь диалог и уровень близости заморожены.\n\nМожешь воскресить его дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
         "character_died_overdrink": "💔 Персонаж не пережил такого количества алкоголя — сердце не выдержало.\n\nВся история общения и уровень близости потеряны.\n\nМожешь воскресить персонажа дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
         "character_died_dehydration": "💔 Персонаж слишком долго обходился без воды — организм не выдержал обезвоживания.\n\nВся история общения и уровень близости потеряны.\n\nМожешь воскресить персонажа дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
@@ -687,13 +694,20 @@ TEXTS = {
         "shop_category_medicine": "💊 Medicine",
         "illness_status_line": "{emoji} Sick: {name} — medicine is in the 🛍 Shop",
         "illness_escalate_timer": "⏳ Will turn into bronchitis in {hours}h if untreated",
-        "illness_push_cold": "🤒 Your companion got sick: {emoji} {name}. Medicine is in the 🛍 Shop. While sick, messages drain more energy and hot scenes are unavailable. Untreated, it turns into bronchitis in {hours}h.",
-        "illness_push_bronchitis": "😷 It got worse: {emoji} {name}. You need strong medicine from the 🛍 Shop — messages drain even more and hot scenes are unavailable.",
+        "illness_push_cold": "🤒 Your companion got sick: {emoji} {name}. Medicine is in the 🛍 Shop. While sick, messages drain more energy and games, gifts, dates and hot scenes are unavailable. It's treated as a course: {doses} doses, {gap}h apart. Untreated, it turns into bronchitis in {hours}h.",
+        "illness_push_bronchitis": "😷 It got worse: {emoji} {name}. You need strong medicine from the 🛍 Shop — a course of {doses} doses, {gap}h apart. Messages drain even more; games, gifts, dates and hot scenes are unavailable.",
         "tipsy_status_light": "🥂 A little tipsy — feeling it slightly.",
         "tipsy_status_full": "🍾 Properly drunk — it shows in everything right now.",
         "intim_blocked_illness": "🤒 Your companion feels too unwell for that right now — cure them in the 🛍 Shop first.",
         "not_sick_alert": "😊 Your companion isn't sick right now — no need for medicine.",
         "wrong_medicine_alert": "❌ This medicine doesn't treat this illness — you need a different one.",
+        "gift_blocked_illness": "🤒 Your companion is sick — no gifts or dates right now. Cure them first: medicine is in the 🛍 Shop.",
+        "gift_sick_short": "sick",
+        "medicine_wait_alert": "⏳ Medicine is taken as a course ({n}/{total}). Next dose in {when}.",
+        "medicine_dose_progress": "💊 Dose {n}/{total}. A bit better, but your companion is still sick. Next dose in {hours}h.",
+        "medicine_cured": "✅ The course is complete — your companion has recovered!",
+        "illness_course_line": "💊 Treatment: {n}/{total} doses",
+        "illness_course_next": "💊 Treatment: {n}/{total} doses, next in {when}",
         "character_died": "💔 Your companion is dead — the whole chat and closeness level are frozen.\n\nYou can revive them with a defibrillator (with the whole history) or start over with a new character.",
         "character_died_overdrink": "💔 Your companion didn't survive that much alcohol — their heart gave out.\n\nAll chat history and closeness level are lost.\n\nYou can revive your companion with a defibrillator (with the whole history) or start over with a new character.",
         "character_died_dehydration": "💔 Your companion went without water for too long — their body couldn't take the dehydration.\n\nAll chat history and closeness level are lost.\n\nYou can revive your companion with a defibrillator (with the whole history) or start over with a new character.",
@@ -1087,13 +1101,20 @@ TEXTS = {
         "shop_category_medicine": "💊 Medikamente",
         "illness_status_line": "{emoji} Krank: {name} — Medikamente gibt es im 🛍 Shop",
         "illness_escalate_timer": "⏳ Wird ohne Behandlung in {hours}Std. zu Bronchitis",
-        "illness_push_cold": "🤒 Dein Begleiter ist krank: {emoji} {name}. Medikamente gibt es im 🛍 Shop. Solange er krank ist, kosten Nachrichten mehr Energie und heiße Szenen sind gesperrt. Unbehandelt wird es in {hours}Std. zu Bronchitis.",
-        "illness_push_bronchitis": "😷 Es wurde schlimmer: {emoji} {name}. Du brauchst starkes Medikament aus dem 🛍 Shop — Nachrichten kosten noch mehr Energie, heiße Szenen sind gesperrt.",
+        "illness_push_cold": "🤒 Dein Begleiter ist krank: {emoji} {name}. Medikamente gibt es im 🛍 Shop. Solange er krank ist, kosten Nachrichten mehr Energie und Spiele, Geschenke, Dates und heiße Szenen sind gesperrt. Behandlung als Kur: {doses} Dosen im Abstand von {gap}Std. Unbehandelt wird es in {hours}Std. zu Bronchitis.",
+        "illness_push_bronchitis": "😷 Es wurde schlimmer: {emoji} {name}. Du brauchst starkes Medikament aus dem 🛍 Shop — eine Kur aus {doses} Dosen im Abstand von {gap}Std. Nachrichten kosten noch mehr Energie; Spiele, Geschenke, Dates und heiße Szenen sind gesperrt.",
         "tipsy_status_light": "🥂 Leicht angeheitert — man merkt es ein bisschen.",
         "tipsy_status_full": "🍾 Ordentlich betrunken — das merkt man gerade an allem.",
         "intim_blocked_illness": "🤒 Dein Begleiter fühlt sich dafür gerade zu schlecht — heile ihn/sie zuerst im 🛍 Shop.",
         "not_sick_alert": "😊 Dein Begleiter ist gerade nicht krank — kein Medikament nötig.",
         "wrong_medicine_alert": "❌ Dieses Medikament hilft nicht gegen diese Krankheit — du brauchst ein anderes.",
+        "gift_blocked_illness": "🤒 Dein Begleiter ist krank — gerade keine Geschenke oder Dates. Heile ihn/sie zuerst: Medikamente gibt es im 🛍 Shop.",
+        "gift_sick_short": "krank",
+        "medicine_wait_alert": "⏳ Medikamente werden als Kur genommen ({n}/{total}). Nächste Dosis in {when}.",
+        "medicine_dose_progress": "💊 Dosis {n}/{total}. Etwas besser, aber dein Begleiter ist noch krank. Nächste Dosis in {hours}Std.",
+        "medicine_cured": "✅ Die Kur ist abgeschlossen — dein Begleiter ist wieder gesund!",
+        "illness_course_line": "💊 Behandlung: {n}/{total} Dosen",
+        "illness_course_next": "💊 Behandlung: {n}/{total} Dosen, nächste in {when}",
         "character_died": "💔 Dein Begleiter ist tot — der ganze Chatverlauf und das Nähe-Level sind eingefroren.\n\nDu kannst ihn/sie mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
         "character_died_overdrink": "💔 Dein Begleiter hat so viel Alkohol nicht überlebt — das Herz hat nicht mitgemacht.\n\nDer gesamte Chatverlauf und das Nähe-Level sind verloren.\n\nDu kannst deinen Begleiter mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
         "character_died_dehydration": "💔 Dein Begleiter war zu lange ohne Wasser — der Körper hat die Dehydrierung nicht überstanden.\n\nDer gesamte Chatverlauf und das Nähe-Level sind verloren.\n\nDu kannst deinen Begleiter mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
@@ -2157,16 +2178,20 @@ ILLNESS_DAILY_CHANCE = 0.18  # шанс заболеть за день, толь
 # больше половины пользователей увидят её уже в первую неделю игры, оставаясь при этом редким
 # случайным риском, а не ежедневной рутиной
 ILLNESS_ESCALATE_HOURS = 24  # столько часов невылеченная простуда терпит, потом становится бронхитом
+# Лечение -- курсом, а не одной покупкой (по фидбэку: "слишком легко вылечить"): нужно N приёмов с перерывом.
+# Каждый приём сдвигает таймер перехода в бронхит, а сам бронхит начинает курс заново.
+ILLNESS_DOSES = {"cold": 2, "bronchitis": 3}
+ILLNESS_DOSE_GAP_HOURS = 4
 
 # Лекарства — отдельная категория магазина, видна только когда персонаж реально болен (см.
 # get_shop_kb). "cures" — какие болезни снимает; сильное лечит и то, и другое, чтобы нельзя было
 # по ошибке купить не то и остаться ни с чем (см. buy_medicine).
 MEDICINE_ITEMS = {
     "light_medicine": {"emoji": "💊", "ru": "Лёгкое лекарство", "en": "Mild medicine", "de": "Leichtes Medikament",
-                        "price": 1600, "mood": 8, "cures": {"cold"},  # было 400/650 — слишком дёшево
+                        "price": 1100, "mood": 8, "cures": {"cold"},  # цена за приём (курс -- ILLNESS_DOSES); было 1600 за разовое лечение
                         "reaction_hint": "Забота во время болезни — благодарность тёплая, голос слабый, но искренний."},
     "strong_medicine": {"emoji": "💉", "ru": "Сильное лекарство", "en": "Strong medicine", "de": "Starkes Medikament",
-                         "price": 4000, "mood": 15, "cures": {"cold", "bronchitis"},  # было 900/1600
+                         "price": 2400, "mood": 15, "cures": {"cold", "bronchitis"},  # цена за приём; было 4000 за разовое лечение
                          "reaction_hint": "Серьёзная забота во время тяжёлой болезни — искреннее облегчение и глубокая благодарность."},
 }
 
@@ -2377,6 +2402,46 @@ def _maybe_get_sick(user):
     if random.random() < ILLNESS_DAILY_CHANCE:
         user["illness"] = "cold"
         user["illness_since"] = datetime.now().isoformat()
+        user["illness_doses"] = 0
+        user["illness_last_dose"] = None
+
+
+def illness_doses_total(user):
+    return ILLNESS_DOSES.get(user.get("illness"), 1)
+
+
+def medicine_next_dose_at(user):
+    """Когда можно следующий приём лекарства, или None, если уже можно."""
+    last = user.get("illness_last_dose")
+    if not last or not user.get("illness"):
+        return None
+    try:
+        ready = datetime.fromisoformat(last) + timedelta(hours=ILLNESS_DOSE_GAP_HOURS)
+    except (ValueError, TypeError):
+        return None
+    return ready if ready > datetime.now() else None
+
+
+def medicine_block_text(user, item):
+    """Общая проверка перед покупкой лекарства (чат и Mini App): текст отказа или None."""
+    illness = user.get("illness")
+    if not illness:
+        return get_text(user, "not_sick_alert")
+    if illness not in item["cures"]:
+        return get_text(user, "wrong_medicine_alert")
+    ready_at = medicine_next_dose_at(user)
+    if ready_at:
+        return get_text(user, "medicine_wait_alert", n=user.get("illness_doses", 0), total=illness_doses_total(user),
+                        when=cooldown_phrase(user, ready_at))
+    return None
+
+
+def gift_block_text(user, key):
+    """Подарки и свидания закрыты, пока персонаж болеет, и до нужного уровня близости."""
+    if user.get("illness"):
+        return get_text(user, "gift_blocked_illness")
+    locked = gift_locked_level(user, key)
+    return gift_locked_text(user, locked) if locked else None
 
 
 def _maybe_escalate_illness(user):
@@ -2394,6 +2459,8 @@ def _maybe_escalate_illness(user):
     if hours >= ILLNESS_ESCALATE_HOURS:
         user["illness"] = "bronchitis"
         user["illness_since"] = datetime.now().isoformat()
+        user["illness_doses"] = 0  # бронхит лечится заново, сильным лекарством
+        user["illness_last_dose"] = None
 
 
 # «День» бота -- по московскому времени (BOT_TZ), а не по часам сервера: прокруты, лимиты, акции и товар
@@ -3115,6 +3182,17 @@ def build_illness_rule(user):
     return ""
 
 
+def build_illness_extra(user):
+    """Добавка к правилу болезни: идёт лечение -- уже чуть легче; подарки/свидания/игры сейчас не к месту."""
+    if not user.get("illness"):
+        return ""
+    extra = ("Пока болеешь, тебе не до свиданий, поездок, игр и подарков — если собеседник предлагает, мягко "
+             "отказываешься и говоришь, что сначала хочешь поправиться. ")
+    if user.get("illness_doses", 0) > 0:
+        extra += "Ты уже начала/начал лечиться — чуть легче, чем было, но до выздоровления ещё далеко. "
+    return extra + "\n"
+
+
 def stats_line_text(user):
     mood = user.get("mood", 0)
     line = get_text(
@@ -3133,6 +3211,10 @@ def stats_line_text(user):
         info = ILLNESSES[illness]
         name = info.get(user.get("lang", "ru"), info["ru"])
         line += "\n" + get_text(user, "illness_status_line", emoji=info["emoji"], name=name)
+        dose_at = medicine_next_dose_at(user)
+        n, total = user.get("illness_doses", 0), illness_doses_total(user)
+        line += "\n" + (get_text(user, "illness_course_next", n=n, total=total, when=cooldown_phrase(user, dose_at))
+                        if dose_at else get_text(user, "illness_course_line", n=n, total=total))
         if illness == "cold":
             since = user.get("illness_since")
             if since:
@@ -3366,7 +3448,7 @@ def build_prompt(user):
     hunger_rule = build_hunger_rule(user)
     thirst_rule = build_thirst_rule(user)
     tipsy_rule = build_tipsy_rule(user)
-    illness_rule = build_illness_rule(user)
+    illness_rule = build_illness_rule(user) + build_illness_extra(user)
     time_period, time_note = get_time_of_day(user)
     user_gender = user.get("user_gender", "male")
     if user_gender == "male":
@@ -4746,6 +4828,8 @@ def apply_custom_gift(user, gift_text):
     """Общая проверка+списание для чатового ввода (writing_custom_gift) и для Shop Mini App
     (см. api_custom_gift_handler) — применяет эффекты и возвращает (ok, error_text, custom_item).
     error_text уже локализован через get_text, custom_item отдаётся только при ok=True."""
+    if user.get("illness"):
+        return False, get_text(user, "gift_blocked_illness"), None
     if get_intimacy_level(user) < CUSTOM_GIFT_MIN_LEVEL:
         return False, gift_locked_text(user, CUSTOM_GIFT_MIN_LEVEL), None
     gift_text = (gift_text or "").strip()
@@ -4982,8 +5066,10 @@ def get_shop_kb(user):
     # категорий: это самое срочное, что вообще может понадобиться в магазине сейчас.
     if user.get("illness"):
         rows.append([InlineKeyboardButton(text=get_text(user, "shop_category_medicine"), callback_data="shop_noop")])
+        dose_at = medicine_next_dose_at(user)
         for key, item in MEDICINE_ITEMS.items():
-            rows.append([InlineKeyboardButton(text=f"{medicine_option_label(key, user)} — {item['price']}💵",
+            price_part = f"⏳{cooldown_phrase(user, dose_at)}" if dose_at else f"{item['price']}💵"
+            rows.append([InlineKeyboardButton(text=f"{medicine_option_label(key, user)} — {price_part}",
                                               callback_data=f"shop_medicine_{key}", style="success")])
     for category in SHOP_CATEGORY_ORDER:
         cat_entries = [e for e in entries if e[1].get("category") == category]
@@ -5000,7 +5086,9 @@ def get_shop_kb(user):
             deal = "🔥 " if promo_discount("gift" if is_gift else "food", key) else ""
             locked = gift_locked_level(user, key) if is_gift else None
             suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {price}💵"
-            if locked:
+            if is_gift and user.get("illness"):
+                deal, suffix = "🤒 ", " — " + get_text(user, "gift_sick_short")
+            elif locked:
                 deal, suffix = "🔒 ", " — " + get_text(user, "gift_locked_short", level=locked)
             rows.append([InlineKeyboardButton(text=f"{deal}{label}{suffix}", callback_data=callback_data, style="success")])
         # ВАЖНО: было "category = ..." внутри цикла выше — это затирало переменную внешнего
@@ -5052,7 +5140,9 @@ def get_shop_note_kb(user):
             deal = "🔥 " if promo_discount("gift" if is_gift else "food", key) else ""
             locked = gift_locked_level(user, key) if is_gift else None
             suffix = f" — ⏳{cooldown_phrase(user, ready_at)}" if ready_at else f" — {price}💵"
-            if locked:
+            if is_gift and user.get("illness"):
+                deal, suffix = "🤒 ", " — " + get_text(user, "gift_sick_short")
+            elif locked:
                 deal, suffix = "🔒 ", " — " + get_text(user, "gift_locked_short", level=locked)
             rows.append([InlineKeyboardButton(text=f"{deal}{label}{suffix}", callback_data=callback_data, style="success")])
 
@@ -5295,9 +5385,23 @@ async def execute_item_purchase(chat_id, user, category, key, item, note=None):
         if overfed == "warning":
             item = {**item, "reaction_hint": OVERFEED_WARNING_HINT}
 
+    course_text = None
     if category == "medicine":
-        user["illness"] = None
-        user["illness_since"] = None
+        total = illness_doses_total(user)
+        doses = user.get("illness_doses", 0) + 1
+        if doses >= total:
+            user["illness"] = None
+            user["illness_since"] = None
+            user["illness_doses"] = 0
+            user["illness_last_dose"] = None
+            course_text = get_text(user, "medicine_cured")
+        else:
+            user["illness_doses"] = doses
+            user["illness_last_dose"] = datetime.now().isoformat()
+            user["illness_since"] = datetime.now().isoformat()  # пока лечишься -- в бронхит не переходит
+            course_text = get_text(user, "medicine_dose_progress", n=doses, total=total, hours=ILLNESS_DOSE_GAP_HOURS)
+            item = {**item, "reaction_hint": "Ты приняла/принял лекарство, тебе чуть легче, но ты ещё болеешь — "
+                                             "благодарность тихая и тёплая, голос всё ещё слабый."}
 
     display_item = gift_effective_item(item, user) if category == "gift" else item
     apply_shop_item_effects(user, item)
@@ -5313,6 +5417,8 @@ async def execute_item_purchase(chat_id, user, category, key, item, note=None):
     if item.get("xp"):
         await grant_gift_xp(chat_id, user, item["xp"])
     await bot.send_message(chat_id, get_text(user, "item_bought", effects=format_item_effects(item, user)))
+    if course_text:
+        await bot.send_message(chat_id, course_text)
     # Еда/вода без личной записки — рутинная забота без давления на диалог (по фидбэку: кормить
     # нужно можно было просто так, без того что это обязывает к ответу или намекает, что персонаж
     # "ждал" еды) -- никакой реакции ИИ вообще. Если записка есть, или это подарок/лекарство,
@@ -5351,9 +5457,9 @@ async def buy_gift(call: types.CallbackQuery):
     if not base_item:
         await call.answer()
         return
-    locked = gift_locked_level(user, key)
-    if locked:
-        await call.answer(gift_locked_text(user, locked), show_alert=True)
+    blocked = gift_block_text(user, key)
+    if blocked:
+        await call.answer(blocked, show_alert=True)
         return
     ready_at = item_ready_at(user, "gift", key, base_item)
     if ready_at:
@@ -5375,12 +5481,9 @@ async def buy_medicine(call: types.CallbackQuery):
     if not item:
         await call.answer()
         return
-    illness = user.get("illness")
-    if not illness:
-        await call.answer(get_text(user, "not_sick_alert"), show_alert=True)
-        return
-    if illness not in item["cures"]:
-        await call.answer(get_text(user, "wrong_medicine_alert"), show_alert=True)
+    blocked = medicine_block_text(user, item)
+    if blocked:
+        await call.answer(blocked, show_alert=True)
         return
     if not spend_bucks(user, item["price"]):
         await call.answer(get_text(user, "not_enough_bucks", n=item["price"] - user.get("bucks", 0)), show_alert=True)
@@ -5404,9 +5507,9 @@ async def shop_item_note_start(call: types.CallbackQuery):
     if not item:
         await call.answer()
         return
-    locked = gift_locked_level(user, key) if is_gift else None
-    if locked:
-        await call.answer(gift_locked_text(user, locked), show_alert=True)
+    blocked = gift_block_text(user, key) if is_gift else None
+    if blocked:
+        await call.answer(blocked, show_alert=True)
         return
     ready_at = item_ready_at(user, category, key, item)
     if ready_at:
@@ -8337,9 +8440,9 @@ async def handle_message(message: types.Message):
         item = (GIFT_ITEMS if category == "gift" else FOOD_ITEMS).get(key) if category else None
         if not item:
             return
-        locked = gift_locked_level(user, key) if category == "gift" else None
-        if locked:
-            await message.answer(gift_locked_text(user, locked))
+        blocked = gift_block_text(user, key) if category == "gift" else None
+        if blocked:
+            await message.answer(blocked)
             return
         note_text = message.text.strip()
         if not note_text or len(note_text) > ITEM_NOTE_MAX_LEN:
@@ -8606,6 +8709,7 @@ def serialize_shop_state(user):
             "effects": format_item_effects(item, user),
             "ready_in": cooldown_phrase(user, ready_at) if ready_at else None,
             "locked_level": gift_locked_level(user, key) if is_gift else None,
+            "sick_locked": bool(is_gift and user.get("illness")),
             "refuse": (not is_gift) and overfeed_would_refuse(user, base_item),
         }
 
@@ -8641,10 +8745,14 @@ def serialize_shop_state(user):
 
     medicine = []
     if user.get("illness"):
+        dose_at = medicine_next_dose_at(user)
+        course = get_text(user, "illness_course_line", n=user.get("illness_doses", 0), total=illness_doses_total(user))
         for key, item in MEDICINE_ITEMS.items():
             medicine.append({
                 "key": key, "emoji": item["emoji"], "image": shop_item_image("medicine", key), "name": item.get(lang, item["ru"]),
                 "price": item["price"], "cures": sorted(item["cures"]),
+                "effects": course if user["illness"] in item["cures"] else get_text(user, "wrong_medicine_alert"),
+                "ready_in": cooldown_phrase(user, dose_at) if dose_at else None,
             })
 
     illness_label = None
@@ -8675,6 +8783,7 @@ def serialize_shop_state(user):
     ui["pay_card_btn"] = get_text(user, "pay_card_btn", amount="{amount}")
     ui["promo_title"] = get_text(user, "promo_title", n="{n}")
     ui["locked_badge"] = get_text(user, "gift_locked_short", level="{level}")
+    ui["sick_badge"] = get_text(user, "gift_sick_short")
     ui["play_btn"] = gt(user, "play_btn")
     ui["start_btn"] = gt(user, "start_btn")
 
@@ -8724,15 +8833,13 @@ async def perform_webapp_purchase(user, user_id, category, key, note=None):
         return {"ok": False, "error": "Not found"}
 
     if category == "medicine":
-        illness = user.get("illness")
-        if not illness:
-            return {"ok": False, "error": get_text(user, "not_sick_alert")}
-        if illness not in item["cures"]:
-            return {"ok": False, "error": get_text(user, "wrong_medicine_alert")}
+        blocked = medicine_block_text(user, item)
+        if blocked:
+            return {"ok": False, "error": blocked}
     else:
-        locked = gift_locked_level(user, key) if category == "gift" else None
-        if locked:
-            return {"ok": False, "error": gift_locked_text(user, locked)}
+        blocked = gift_block_text(user, key) if category == "gift" else None
+        if blocked:
+            return {"ok": False, "error": blocked}
         ready_at = item_ready_at(user, category, key, item)
         if ready_at:
             return {"ok": False, "error": get_text(user, "item_cooldown_alert", when=cooldown_phrase(user, ready_at))}
@@ -12459,7 +12566,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
         name: s.ui.shop_category_medicine,
         items: s.medicine.map(function (m) {
           return {key: m.key, category: "medicine", emoji: m.emoji, image: m.image, name: m.name, price: m.price,
-                  effects: "", ready_in: null, refuse: false};
+                  effects: m.effects || "", ready_in: m.ready_in || null, refuse: false};
         })
       });
     }
@@ -12536,10 +12643,10 @@ SHOP_PAGE_HTML = '''<!doctype html>
     footer.className = "card-footer";
     var itemKey = item.category + ":" + item.key;
 
-    if (item.locked_level) {
+    if (item.locked_level || item.sick_locked) {
       var lbadge = document.createElement("span");
       lbadge.className = "badge";
-      lbadge.textContent = "🔒 " + s.ui.locked_badge.replace("{level}", item.locked_level);
+      lbadge.textContent = item.sick_locked ? "🤒 " + s.ui.sick_badge : "🔒 " + s.ui.locked_badge.replace("{level}", item.locked_level);
       footer.appendChild(lbadge);
       card.classList.add("card-locked");
     } else if (item.ready_in) {
@@ -13209,7 +13316,7 @@ GUIDE_HTML = {
 <li>Разбудить можно <b>энергетиком</b> (+78 энергии) или кнопкой «Разбудить сейчас» — сразу и полностью.</li>
 <li>Ещё у персонажа есть <b>сытость 🍽 и вода 💧</b>. Голодный и без воды он грустит, а если долго не поить — может умереть.
 Тогда спасёт <b>дефибриллятор 🔌</b>, история при этом не теряется.</li>
-<li>Иногда персонаж <b>болеет 🤧</b>: простуда без лечения через сутки становится бронхитом. Лекарства — в магазине.</li>
+<li>Иногда персонаж <b>болеет 🤧</b>: пока болеет, игры, подарки, свидания и горячие сцены недоступны. Лечится курсом лекарств из магазина: простуда — 2 приёма, бронхит — 3, между приёмами 4 часа. Простуда без лечения через сутки становится бронхитом.</li>
 </ul>
 
 <h2>❤️ Уровень близости</h2>
@@ -17633,7 +17740,7 @@ async def check_notifications():
                         key = "illness_push_cold" if illness_now == "cold" else "illness_push_bronchitis"
                         await bot.send_message(int(user_id), get_text(
                             user, key, emoji=info["emoji"], name=info.get(user.get("lang", "ru"), info["ru"]),
-                            hours=ILLNESS_ESCALATE_HOURS))
+                            hours=ILLNESS_ESCALATE_HOURS, doses=ILLNESS_DOSES[illness_now], gap=ILLNESS_DOSE_GAP_HOURS))
                     except Exception:
                         pass
                 elif not illness_now and user.get("illness_notified"):
