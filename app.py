@@ -7381,6 +7381,7 @@ GAME_TEXTS = {
         "play_quit": '🏁 Выйти из игры',
         "play_cant_remove": 'Сначала нужно снять то, что надето сверху 😉',
         "play_thinking": 'персонаж печатает…',
+        "play_choosing": '😏 персонаж выбирает, что снять с тебя…',
         "play_open_btn": '🎮 Открыть игру',
         "play_open_text": '🎮 Игра открывается в мини-приложении — жми кнопку ниже.',
         "play_strip_btn": '🔥 На раздевание (18+)',
@@ -7501,6 +7502,7 @@ GAME_TEXTS = {
         "play_quit": '🏁 Leave the game',
         "play_cant_remove": "Take off what's on top first 😉",
         "play_thinking": 'companion is typing…',
+        "play_choosing": '😏 your companion is choosing what you take off…',
         "play_open_btn": '🎮 Open the game',
         "play_open_text": '🎮 The game opens in the mini app — tap the button below.',
         "play_strip_btn": '🔥 Strip version (18+)',
@@ -14242,6 +14244,52 @@ SPIN_PAGE_HTML = '''<!doctype html>
     setTimeout(function () { f.className = ""; }, 2200);
   }
 
+  // ---- звуки приза: чем реже приз, тем богаче звук (у подписок -- салют) ----
+  function noiseBurst(delay, dur, vol, freq) {
+    if (!sfxOn || !sfxCtx) return;
+    try {
+      var len = Math.floor(sfxCtx.sampleRate * dur), buf = sfxCtx.createBuffer(1, len, sfxCtx.sampleRate), d = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.2);
+      var src = sfxCtx.createBufferSource(), flt = sfxCtx.createBiquadFilter(), g = sfxCtx.createGain(), t0 = sfxCtx.currentTime + (delay || 0);
+      src.buffer = buf; flt.type = "lowpass"; flt.frequency.value = freq || 900; g.gain.value = vol || .3;
+      src.connect(flt); flt.connect(g); g.connect(sfxCtx.destination); src.start(t0);
+    } catch (e) {}
+  }
+  function rocket(delay) {
+    tone(500, .45, "sine", .045, delay, 2200);        // свист взлёта
+    noiseBurst(delay + .45, .7, .35, 1100);           // бах
+    noiseBurst(delay + .5, 1.1, .12, 4200);           // треск искр
+    setTimeout(function () { haptic("heavy"); }, (delay + .45) * 1000);
+  }
+  function fanfare(delay, notes, step, len) {
+    notes.forEach(function (f, i) { tone(f, len || .22, "triangle", .1, delay + i * step); tone(f * 2, (len || .22) * .8, "sine", .035, delay + i * step); });
+  }
+  function prizeSound(kind, power) {
+    power = power || 1;
+    if (!kind) { fx("loss"); return; }
+    if (kind === "rainbow") {                          // подписка -- настоящий салют и торжественные фанфары
+      for (var k = 0; k < 6; k++) rocket(k * .42);
+      fanfare(.5, [523, 659, 784, 1047, 784, 1047, 1319], .13, .26);
+      [523, 659, 784, 1047].forEach(function (f) { tone(f, 1.3, "triangle", .06, 1.45); });
+      haptic("success");
+    } else if (kind === "gold") {                      // джекпот -- звон монет и фанфары
+      for (var c = 0; c < 22; c++) tone(1800 + Math.random() * 1600, .05, "square", .03, c * .06);
+      fanfare(.2, [392, 523, 659, 784, 1047, 1319], .11, .24);
+      rocket(1.1); rocket(1.5);
+      haptic("success");
+    } else if (kind === "silver") {                    // буст x5 -- маленький салют
+      rocket(0); rocket(.5); rocket(1);
+      fanfare(.3, [659, 784, 988, 1319], .1, .18);
+      haptic("success");
+    } else if (power >= 2) {                           // заметный приз -- длинное арпеджио с блеском
+      fanfare(0, [523, 659, 784, 1047, 1319], .08, .16);
+      for (var j = 0; j < 6; j++) tone(2000 + j * 220, .05, "sine", .03, .45 + j * .05);
+      haptic("success");
+    } else {
+      fx("win");
+    }
+  }
+
   function playFx(kind, power) {
     power = power || 1;
     if (kind === "spark") {
@@ -14268,6 +14316,11 @@ SPIN_PAGE_HTML = '''<!doctype html>
       particles(["🪙", "💰"], 18, "burst", 3);
     } else if (kind === "rainbow") {
       flash("rainbow");
+      for (var r = 0; r < 6; r++) {
+        (function (r) {
+          setTimeout(function () { fireworkAt(12 + Math.random() * 76, 12 + Math.random() * 45, ["✨", "🎆", "💖", "⭐", "🎇", "🌟"], 18); }, 450 + r * 420);
+        })(r);
+      }
       particles(["🌈", "✨", "💖", "🦄", "⭐", "🎉"], 40, "burst", 3);
       particles(["🌈", "✨", "🎊"], 30, "rain", 3);
     }
@@ -14287,8 +14340,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
       renderStats(state);
       renderActions(state);
       if (kind) playFx(kind, prize.fx_power);
-      if (kind) tone(1047, .25, "triangle", .1, .1);
-      fx(kind ? "win" : "loss");
+      prizeSound(kind, prize && prize.fx_power);
       var heavy = kind === "silver" || kind === "gold" || kind === "rainbow";
       safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
       if (heavy) safe(function () { tg.HapticFeedback.impactOccurred("heavy"); });
@@ -16944,7 +16996,8 @@ def serialize_play_state(user):
         game = {"mode": "bj", "phase": play["phase"], "bet": play["bet"], "player": [list(c) for c in play["player"]],
                 "dealer": dealer, "pv": bj_value(play["player"]),
                 "dv": bj_value(play["dealer"][:1] if hidden else play["dealer"]),
-                "result": play.get("result"), "result_text": play.get("result_text"), "line": play.get("line")}
+                "result": play.get("result"), "result_text": play.get("result_text"), "line": play.get("line"),
+                "busy": bool(play.get("busy"))}
         play = None
     if play:
         pick = play.get("phase")
@@ -16954,6 +17007,7 @@ def serialize_play_state(user):
                      "removable": pick == picker and cloth_removable(lst, i)} for i in lst]
         game = {"mode": play["mode"], "phase": play["phase"], "me": play.get("me", 0), "ai": play.get("ai", 0),
                 "last": play.get("last"), "line": play.get("line"), "result": play.get("result"), "took": play.get("took"),
+                "busy": bool(play.get("busy")), "pending": play.get("pending"),
                 "her": items("her", "pick_her") if play["mode"] == "strip" else [],
                 "mine": items("mine", "pick_me") if play["mode"] == "strip" else [],
                 "her_removed": len(play.get("her_removed", [])), "mine_removed": len(play.get("mine_removed", []))}
@@ -16999,6 +17053,7 @@ async def api_play_state_handler(request):
     user_id, user, body, err = await _play_request(request)
     if err:
         return err
+    play_unstick(user)
     return _play_reply(user)
 
 
@@ -17034,6 +17089,92 @@ async def api_play_start_handler(request):
     return _play_reply(user)
 
 
+# Реплика персонажа в мини-играх пишется В ФОНЕ: результат раунда приходит сразу (по фидбэку игра «зависала»
+# на проигрыше, пока ИИ думал), а клиент показывает «персонаж печатает…» и опрашивает /api/play/state, пока busy.
+PLAY_BUSY_STALE_SECONDS = 90
+
+# Как персонаж ведёт себя на раздевании -- под выбранный стиль (дерзкая -- «блин, ну придётся…», страстная --
+# «ух ты, шалунишка…», стеснительная -- краснеет и медлит).
+PLAY_STRIP_STYLE = {
+    "warm": "тепло, нежно и с лёгким смущением, улыбаешься",
+    "daring": "дерзко и с вызовом — вроде «блин, ну ладно, придётся снимать для тебя…», подначиваешь и не сдаёшься",
+    "shy": "очень стеснительно: краснеешь, медлишь, прикрываешься, говоришь тихо и сбивчиво, но всё-таки делаешь",
+    "passionate": "страстно и игриво — вроде «ух ты, шалунишка, вот что выбрал(а)? ну давай, любуйся мной», с огоньком",
+    "magnetic": "уверенно и притягательно: медленно, держишь взгляд, будто это ты управляешь ситуацией",
+    "rude": "грубовато и насмешливо, с подколками, но так, что это заводит",
+    "seduction": "соблазнительно и медленно, дразнишь каждым движением и словом",
+}
+
+
+# А когда раунд выиграл персонаж и он сам выбирает, что снять с собеседника:
+PLAY_TAKE_STYLE = {
+    "warm": "мягко и игриво, с тёплой улыбкой",
+    "daring": "дерзко, с вызовом и подколкой — командуешь и смотришь, не струсит ли",
+    "shy": "смущённо: краснеешь от собственной смелости, но выбор всё-таки делаешь",
+    "passionate": "страстно, с огоньком и предвкушением — тебе явно не терпится",
+    "magnetic": "спокойно и властно, уверенным тоном, будто всё идёт по твоему плану",
+    "rude": "грубовато и нагло, с насмешкой",
+    "seduction": "соблазнительно и медленно, растягивая удовольствие",
+}
+
+
+def play_style_hint(user, taking=False):
+    table = PLAY_TAKE_STYLE if taking else PLAY_STRIP_STYLE
+    return table.get(user.get("style"), table["warm"])
+
+
+def play_round_facts(user, play):
+    """Что реально выпало в ЭТОМ раунде -- чтобы персонаж не путал ходы и не придумывал новые."""
+    last = play.get("last")
+    if not last:
+        return ""
+    names = GAME_TEXTS["ru"]["rps_names"]
+    return (f"В этом раунде ты показал(а) «{names[last['theirs']]}», а собеседник — «{names[last['mine']]}». "
+            "Раунд уже сыгран: не придумывай и не описывай других ходов, не выбрасывай новую фигуру и не говори о "
+            "прошлых раундах как о текущем. ")
+
+
+def play_run_bg(user_id, user, play, job):
+    """Запускает реплику персонажа в фоне. job() -- корутина; пока она идёт, play["busy"] блокирует ходы."""
+    token = f"{random.getrandbits(32):08x}"
+    play["busy"] = True
+    play["busy_token"] = token
+    play["busy_at"] = datetime.now().isoformat()
+
+    async def runner():
+        try:
+            await job()
+        except Exception as e:
+            logging.warning(f"play bg line: {e}")
+        finally:
+            if play.get("busy_token") == token:
+                if play.get("pending") == "take":
+                    play_take_fallback(user, play)
+                play["busy"] = False
+                play["pending"] = None
+            save_data(user_data)
+
+    asyncio.create_task(runner())
+
+
+def play_unstick(user):
+    """Если фоновая реплика так и не пришла (рестарт бота, зависший запрос) -- снимаем блок."""
+    play = user.get("play")
+    if not play or not play.get("busy"):
+        return
+    try:
+        age = (datetime.now() - datetime.fromisoformat(play.get("busy_at"))).total_seconds()
+    except (ValueError, TypeError):
+        age = PLAY_BUSY_STALE_SECONDS + 1
+    if age > PLAY_BUSY_STALE_SECONDS:
+        if play.get("pending") == "take":
+            play_take_fallback(user, play)
+        play["busy"] = False
+        play["pending"] = None
+        play["busy_token"] = None
+        save_data(user_data)
+
+
 async def api_play_move_handler(request):
     user_id, user, body, err = await _play_request(request)
     if err:
@@ -17042,7 +17183,7 @@ async def api_play_move_handler(request):
     choice = body.get("choice")
     if play and play.get("phase") == "pick_me":
         play["phase"] = "move"  # партии со старым ходом "выбери сам" доигрываются по новым правилам
-    if not play or play.get("phase") != "move" or choice not in RPS_KEYS or play.get("busy"):
+    if not play or play.get("phase") != "move" or choice not in RPS_KEYS or play.get("busy") or play.get("mode") == "bj":
         return _play_reply(user, False, None)
     theirs = random.choice(RPS_KEYS)
     beats = {"rock": "scissors", "scissors": "paper", "paper": "rock"}
@@ -17057,45 +17198,78 @@ async def api_play_move_handler(request):
             play["ai"] += 1
         if play["me"] >= PLAY_RPS_WINS or play["ai"] >= PLAY_RPS_WINS:
             won = play["me"] >= PLAY_RPS_WINS
-            play["busy"] = True
-            try:
-                facts = "собеседник обыграл тебя" if won else "ты обыграл(а) собеседника"
-                play["line"] = await play_ai(user_id, user, f"Вы играли в камень-ножницы-бумагу до {PLAY_RPS_WINS} побед, счёт "
-                                             f"{play['me']}:{play['ai']}: {facts}. Отреагируй в образе: подколи, порадуйся или "
-                                             "предложи реванш.", "play_fallback_rps")
-            finally:
-                play["busy"] = False
             await play_finish(user_id, user, won)
+            facts = "собеседник обыграл тебя" if won else "ты обыграл(а) собеседника"
+            instr = (f"Вы играли в камень-ножницы-бумагу до {PLAY_RPS_WINS} побед, итоговый счёт {play['me']}:{play['ai']} "
+                     f"в пользу {'собеседника' if won else 'тебя'}: {facts}. " + play_round_facts(user, play) +
+                     "Отреагируй в образе: подколи, порадуйся или предложи реванш.")
+
+            async def job():
+                line = await game_ai_line(user_id, user, instr, tail=play_tail(play))
+                play_log(play, line)
+                play["line"] = line or random.choice(gt(user, "play_fallback_rps"))
+            play_run_bg(user_id, user, play, job)
     elif outcome == "win":
         play["phase"] = "pick_her"
     elif outcome == "lose":
-        play["busy"] = True
-        try:
+        play["pending"] = "take"
+
+        async def job():
             await play_character_takes(user_id, user, play)
-        finally:
-            play["busy"] = False
-        if not play["mine"]:
-            await play_finish(user_id, user, False)
+            if not play["mine"]:
+                await play_finish(user_id, user, False)
+        play_run_bg(user_id, user, play, job)
     save_data(user_data)
     return _play_reply(user)
 
 
+def play_take_options(play):
+    return [i for i in play["mine"] if cloth_removable(play["mine"], i)]
+
+
+def play_apply_take(user, play, item, text):
+    lang = "ru" if user.get("lang", "ru") == "ru" else "en"
+    if not text:
+        text = random.choice(gt(user, "play_fallback_take")).format(item=item[lang] if lang == "ru" else item[lang].lower())
+    play["mine"].remove(item)
+    play["mine_removed"].append(item)
+    play["took"] = f"{item['emoji']} {item[lang]}"
+    play["line"] = text
+    play["pending"] = None
+    play_log(play, text)
+
+
+def play_take_fallback(user, play):
+    """ИИ не ответил -- персонаж всё равно забирает вещь (заготовкой), иначе партия застрянет."""
+    options = play_take_options(play)
+    if options:
+        play_apply_take(user, play, random.choice(options), None)
+        if not play["mine"]:
+            play["phase"] = "over"
+            play["result"] = "lose"
+    play["pending"] = None
+
+
 async def play_character_takes(user_id, user, play):
     """Персонаж выиграл раунд -- сам выбирает, что снять с собеседника, и говорит это в своём стиле."""
-    options = [i for i in play["mine"] if cloth_removable(play["mine"], i)]
+    options = play_take_options(play)
     if not options:
+        play["pending"] = None
         return
     numbered = "; ".join(f"{n}) {i['ru']}" for n, i in enumerate(options, 1))
     rest = cloth_names(play["mine"])
     last = len(play["mine"]) == 1
     she = play_self_gender(user) == "female"
-    instr = ("Игра «камень-ножницы-бумага на раздевание», ставка — только одежда. Ты выиграл(а) раунд и сам(а) решаешь, "
-             f"что {'собеседница' if she else 'собеседник'} снимет. Сейчас на {'ней' if she else 'нём'}: {rest}. Снять можно: {numbered}. Выбери то, что тебе самой/самому "
+    instr = ("Игра «камень-ножницы-бумага на раздевание», ставка — только одежда. " + play_round_facts(user, play) +
+             f"Ты выиграл(а) этот раунд и сам(а) решаешь, что {'собеседница' if she else 'собеседник'} снимет. "
+             f"Сейчас на {'ней' if she else 'нём'}: {rest}. Снять можно: {numbered}. Выбери то, что тебе самой/самому "
              "интереснее увидеть снятым. Начни ответ строго с номера в квадратных скобках, например [2], а дальше — "
-             "с ухмылкой, заигрывая, в своём стиле скажи, что выбираешь и почему, и подразни собеседника. "
+             f"с ухмылкой, заигрывая, скажи, что выбираешь и почему, и подразни. Манера: {play_style_hint(user, taking=True)}. "
              + (f"Это {'её' if she else 'его'} последняя вещь — после неё {'она полностью раздета' if she else 'он полностью раздет'} "
                 "и ты выигрываешь игру." if last else ""))
     text = await game_ai_line(user_id, user, instr, tail=play_tail(play))
+    if play.get("pending") != "take":
+        return  # уже отработала страховка
     item = None
     if text:
         m = re.match(r"\s*\[(\d+)\]\s*", text)
@@ -17106,14 +17280,7 @@ async def play_character_takes(user_id, user, play):
         item = random.choice(options)
         if text and item["ru"].lower() not in text.lower():
             text = None  # модель не назвала номер, а в реплике другая вещь -- лучше заготовка, чем путаница
-    lang = "ru" if user.get("lang", "ru") == "ru" else "en"
-    if not text:
-        text = random.choice(gt(user, "play_fallback_take")).format(item=item[lang] if lang == "ru" else item[lang].lower())
-    play["mine"].remove(item)
-    play["mine_removed"].append(item)
-    play["took"] = f"{item['emoji']} {item[lang]}"
-    play["line"] = text
-    play_log(play, text)
+    play_apply_take(user, play, item, text)
 
 
 def play_tail(play):
@@ -17134,40 +17301,30 @@ async def api_play_remove_handler(request):
     play = user.get("play")
     if not play or play.get("mode") != "strip" or play.get("phase") != "pick_her" or play.get("busy"):
         return _play_reply(user, False, None)
-    side = "her"
-    item = next((i for i in play[side] if i["id"] == body.get("item")), None)
-    if not item or not cloth_removable(play[side], item):
+    item = next((i for i in play["her"] if i["id"] == body.get("item")), None)
+    if not item or not cloth_removable(play["her"], item):
         return _play_reply(user, False, gt(user, "play_cant_remove"))
-    play[side].remove(item)
-    play[side + "_removed"].append(item)
-    play["busy"] = True
+    play["her"].remove(item)
+    play["her_removed"].append(item)
     play["phase"] = "move"
-    save_data(user_data)
-    try:
-        rest = cloth_names(play[side])
-        if side == "her":
-            last = not play["her"]
-            instr = (f"Игра «камень-ножницы-бумага на раздевание», ставка — только одежда. Ты проиграл(а) раунд, и собеседник "
-                     f"выбрал, что тебе снять: «{item['ru']}». Сначала отреагируй на его выбор в своём стиле (подколи, удивись, "
-                     f"пофлиртуй — почему именно это?), потом опиши от первого лица, как ты это снимаешь — живо, с эмоцией. "
-                     + ("Это была последняя вещь — теперь на тебе ничего нет, ты проиграл(а) всю игру: отреагируй ярко."
-                        if last else f"На тебе ещё: {rest}."))
-            line = await game_ai_line(user_id, user, instr, tail=play_tail(play))
-            play_log(play, line)
-            play["line"] = line or random.choice(gt(user, "play_fallback_her"))
-        else:
-            last = not play["mine"]
-            instr = (f"Игра «камень-ножницы-бумага на раздевание». Собеседник проиграл раунд и снимает с себя «{item['ru']}». "
-                     "Отреагируй в образе: подразни, полюбуйся, сделай комплимент. "
-                     + ("Это была его последняя вещь — он полностью раздет, ты выиграл(а) игру: отреагируй ярко."
-                        if last else f"На нём ещё: {rest}."))
-            play["line"] = await play_ai(user_id, user, instr, "play_fallback_me")
-    finally:
-        play["busy"] = False
-    if side == "her" and not play["her"]:
+    play["line"] = None
+    last = not play["her"]
+    if last:
         await play_finish(user_id, user, True)
-    elif side == "mine" and not play["mine"]:
-        await play_finish(user_id, user, False)
+    rest = cloth_names(play["her"])
+    she_user = play_self_gender(user) == "female"
+    instr = ("Игра «камень-ножницы-бумага на раздевание», ставка — только одежда. " + play_round_facts(user, play) +
+             f"Ты проиграл(а) этот раунд, и {'собеседница выбрала' if she_user else 'собеседник выбрал'}, что тебе снять: "
+             f"«{item['ru']}». Сначала отреагируй именно на этот выбор (почему именно это?), потом опиши от первого лица, "
+             f"как ты это снимаешь. Манера: {play_style_hint(user)}. "
+             + ("Это была последняя вещь — теперь на тебе ничего нет, ты проиграл(а) всю игру: отреагируй ярко."
+                if last else f"На тебе ещё: {rest}."))
+
+    async def job():
+        line = await game_ai_line(user_id, user, instr, tail=play_tail(play))
+        play_log(play, line)
+        play["line"] = line or random.choice(gt(user, "play_fallback_her"))
+    play_run_bg(user_id, user, play, job)
     save_data(user_data)
     return _play_reply(user)
 
@@ -17205,17 +17362,15 @@ async def play_bj_settle(user_id, user):
     play["phase"] = "done"
     play["result"] = outcome
     play["result_text"] = bj_result_text(user, outcome, play["bet"], payout)
-    play["busy"] = True
-    save_data(user_data)
-    try:
-        pv, dv = bj_value(play["player"]), bj_value(play["dealer"])
-        line = await game_ai_line(user_id, user, f"Вы играете в блэкджек, ты — крупье. Итог раунда: {BJ_AI_FACTS[outcome]}. "
-                                                 f"У собеседника {pv}, у тебя {dv}, ставка {play['bet']}. Прокомментируй в образе: "
-                                                 "подколи, порадуйся или предложи ещё раунд.", tail=play_tail(play))
+    pv, dv = bj_value(play["player"]), bj_value(play["dealer"])
+    instr = (f"Вы играете в блэкджек, ты — крупье. Итог ЭТОГО раунда: {BJ_AI_FACTS[outcome]}. У собеседника {pv}, у тебя {dv}, "
+             f"ставка {play['bet']}. Не путай с прошлыми раундами. Прокомментируй в образе: подколи, порадуйся или предложи ещё раунд.")
+
+    async def job():
+        line = await game_ai_line(user_id, user, instr, tail=play_tail(play))
         play_log(play, line)
         play["line"] = line or random.choice(gt(user, "play_fallback_bj"))
-    finally:
-        play["busy"] = False
+    play_run_bg(user_id, user, play, job)
 
 
 async def api_play_bj_handler(request):
@@ -17224,7 +17379,7 @@ async def api_play_bj_handler(request):
         return err
     play = user.get("play")
     action = body.get("action")
-    if not play or play.get("mode") != "bj" or play.get("phase") != "turn" or play.get("busy") or action not in ("hit", "stand"):
+    if not play or play.get("mode") != "bj" or play.get("phase") != "turn" or action not in ("hit", "stand"):
         return _play_reply(user, False, None)
     if action == "hit":
         play["player"].append(bj_draw(play))
@@ -17499,7 +17654,8 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     out.className = g.phase === "done" ? (g.result === "lose" ? "lose" : (g.result === "push" ? "" : "win")) : "";
     var line = document.getElementById("line");
     line.className = "";
-    if (g.line && g.phase === "done") { line.style.display = "block"; line.textContent = g.line; } else line.style.display = "none";
+    if (g.busy && g.phase === "done") { line.style.display = "block"; line.className = "thinking"; line.textContent = ui.play_thinking; }
+    else if (g.line && g.phase === "done") { line.style.display = "block"; line.textContent = g.line; } else line.style.display = "none";
     var prompt = document.getElementById("prompt");
     var acts = document.getElementById("bj-actions");
     acts.innerHTML = "";
@@ -17523,9 +17679,8 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     if (busy) return;
     busy = true;
     bjShown = { player: 0, dealer: 0 };
-    var t = setTimeout(function () { if (busy) thinking(); }, 500);
     api("/api/play/start", { mode: "bj", bet: bet }).then(function (res) {
-      busy = false; clearTimeout(t);
+      busy = false;
       if (res.state) state = res.state;
       if (!res.ok && res.error) safe(function () { tg.showAlert(res.error); });
       render();
@@ -17537,9 +17692,8 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     if (busy) return;
     busy = true;
     document.getElementById("bj-actions").querySelectorAll("button").forEach(function (b) { b.disabled = true; });
-    var t = setTimeout(function () { if (busy && action === "stand") thinking(); }, 400);
     api("/api/play/bj", { action: action }).then(function (res) {
-      busy = false; clearTimeout(t);
+      busy = false;
       if (res.state) state = res.state;
       render();
       bjAfter();
@@ -17548,6 +17702,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
 
   function bjAfter() {
     var g = state.game;
+    if (g && g.busy) pollBusy();
     if (!g || g.mode !== "bj" || g.phase !== "done") return;
     setTimeout(function () { fx(g.result === "lose" ? "lose" : (g.result === "push" ? "draw" : (g.result === "blackjack" ? "big" : "win"))); }, 450);
   }
@@ -17588,18 +17743,20 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     document.getElementById("score").textContent = strip ? "" : ui.play_score.replace("{me}", g.me).replace("{ai}", g.ai).replace("{wins}", s.wins);
     var line = document.getElementById("line");
     line.className = "";
-    if (g.line) { line.style.display = "block"; line.textContent = g.line; } else line.style.display = "none";
+    if (g.busy) { line.style.display = "block"; line.className = "thinking"; line.textContent = g.pending === "take" ? ui.play_choosing : ui.play_thinking; }
+    else if (g.line) { line.style.display = "block"; line.textContent = g.line; } else line.style.display = "none";
     var prompt = document.getElementById("prompt");
-    prompt.textContent = g.phase === "pick_her" ? ui.play_pick_her
+    prompt.textContent = g.busy && g.phase !== "over" ? "" : g.phase === "pick_her" ? ui.play_pick_her
       : (g.phase === "move" ? (g.took ? ui.play_she_took.replace("{item}", g.took) + "\n" + ui.play_make_move : ui.play_make_move) : "");
     var moves = document.getElementById("moves");
     moves.innerHTML = "";
     moves.style.display = g.phase === "move" ? "flex" : "none";
+    if (g.busy) moves.style.opacity = ".45"; else moves.style.opacity = "";
     ["rock", "scissors", "paper"].forEach(function (k) {
       var b = el("button", "move");
       b.textContent = EMO[k];
       b.appendChild(el("span", null, s.rps_names[k]));
-      b.disabled = busy;
+      b.disabled = busy || g.busy;
       b.onclick = function () { move(k); };
       moves.appendChild(b);
     });
@@ -17620,6 +17777,23 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     else if (state.game) { document.getElementById("bj").style.display = "none"; document.getElementById("bj-actions").style.display = "none";
       ["hands", "labels"].forEach(function (id) { document.getElementById(id).style.display = ""; }); renderArena(); }
     else renderMenu();
+  }
+
+  var pollTimer = null;
+  function pollBusy() {
+    if (pollTimer) return;
+    pollTimer = setTimeout(function tick() {
+      api("/api/play/state").then(function (res) {
+        if (res.state) state = res.state;
+        var g = state.game;
+        if (g && g.busy) { pollTimer = setTimeout(tick, 800); return; }
+        pollTimer = null;
+        var tookNow = g && g.took;
+        render();
+        if (tookNow) fx("strip");
+        if (g && g.phase === "over") fx(g.result === "win" ? "big" : "lose");
+      }).catch(function () { pollTimer = setTimeout(tick, 1500); });
+    }, 700);
   }
 
   function thinking() { var line = document.getElementById("line"); line.style.display = "block"; line.className = "thinking"; line.textContent = state.ui.play_thinking; }
@@ -17646,7 +17820,6 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     fx("shake"); setTimeout(function () { fx("shake"); }, 300); setTimeout(function () { fx("shake"); }, 600);
     var req = api("/api/play/move", { choice: choice });
     var minWait = new Promise(function (r) { setTimeout(r, 950); });
-    setTimeout(function () { if (busy) thinking(); }, 1000);
     Promise.all([req, minWait]).then(function (v) {
       var res = v[0];
       busy = false;
@@ -17662,6 +17835,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
       }
       render();
       if (state.game && state.game.phase === "over") fx(state.game.result === "win" ? "big" : "lose");
+      if (state.game && state.game.busy) pollBusy();
     }).catch(function () { busy = false; render(); });
   }
 
@@ -17670,7 +17844,6 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     busy = true;
     chip.classList.add("gone");
     fx("strip");
-    thinking();
     api("/api/play/remove", { item: id }).then(function (res) {
       busy = false;
       if (res.state) state = res.state;
@@ -17678,6 +17851,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
       document.getElementById("outcome").textContent = "";
       render();
       if (state.game && state.game.phase === "over") fx(state.game.result === "win" ? "big" : "lose");
+      if (state.game && state.game.busy) pollBusy();
     }).catch(function () { busy = false; render(); });
   }
 
@@ -17694,6 +17868,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
       document.getElementById("again-btn").textContent = ui.play_again;
       document.getElementById("chat-btn").textContent = ui.play_to_chat;
       render();
+      if (state.game && state.game.busy) pollBusy();
       var want = (location.search.match(/game=(\w+)/) || [])[1];
       var target = !state.game && { strip: ".strip-card", bj: ".bj-card" }[want];
       if (target && document.querySelector(target)) document.querySelector(target).scrollIntoView();
