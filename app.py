@@ -7244,12 +7244,9 @@ GAME_TEXTS = {
         "play_rps_desc": 'Играете до {wins} побед, персонаж комментирует итог. Победа — +20 XP.',
         "play_strip_title": '🔥 На раздевание (18+)',
         "play_strip_desc": 'Проиграл раунд — снимаешь вещь. Выиграл — сам выбираешь, что снимет персонаж: очки, часы, шляпу… и дальше. Каждый раз разная одежда. Играете, пока кто-то не останется без всего. Победа — +50 XP.',
-        "play_strip_cost": '1 горячая сцена (у тебя: {n})',
+        "play_strip_cost": 'SUPER PRO',
         "play_strip_locked": '🔞 Игра для 18+: доступна после подтверждения возраста. Если персонаж болеет — сначала вылечи.',
-        "play_need_scene": 'Нужна горячая сцена 🔥 — она даётся по подписке, выпадает на колесе или покупается в /hot.',
-        "play_self_gender": 'Твоя одежда:',
-        "play_male": '👔 Мужская',
-        "play_female": '👗 Женская',
+        "play_need_super": '💎 Игра на раздевание доступна с подпиской SUPER PRO или ELITE — без ограничений. Оформить: профиль → «👑 Оформить подписку».',
         "play_start": '▶️ Играть',
         "play_her": 'Персонаж',
         "play_me": 'Ты',
@@ -7354,12 +7351,9 @@ GAME_TEXTS = {
         "play_rps_desc": 'First to {wins} wins, your companion comments on the result. A win gives +20 XP.',
         "play_strip_title": '🔥 Strip version (18+)',
         "play_strip_desc": 'Lose a round — take something off. Win — you choose what your companion takes off: glasses, a watch, a hat… and further. Different clothes every time. Play until someone has nothing left. A win gives +50 XP.',
-        "play_strip_cost": '1 hot scene (you have: {n})',
+        "play_strip_cost": 'SUPER PRO',
         "play_strip_locked": '🔞 18+ game: available after age confirmation. If your companion is sick, cure them first.',
-        "play_need_scene": 'You need a hot scene 🔥 — it comes with subscriptions, drops on the wheel or can be bought in /hot.',
-        "play_self_gender": 'Your clothes:',
-        "play_male": "👔 Men's",
-        "play_female": "👗 Women's",
+        "play_need_super": '💎 The strip game comes with SUPER PRO or ELITE — unlimited. Get it: profile → «👑 Subscribe».',
         "play_start": '▶️ Play',
         "play_her": 'Companion',
         "play_me": 'You',
@@ -8633,7 +8627,7 @@ def serialize_shop_state(user):
     } for key, offer in GAME_OFFERS.items()]
     game_items.append({
         "key": "strip", "category": "play", "image": None, "emoji": "🔥", "name": gt(user, "play_strip_title"), "price": 0,
-        "price_label": gt(user, "play_strip_cost", n=intim_scenes_available(user)), "effects": gt(user, "play_strip_desc"),
+        "price_label": gt(user, "play_strip_cost"), "effects": gt(user, "play_strip_desc"),
         "ready_in": None, "refuse": False})
     categories.append({"key": "games", "name": gt(user, "shop_cat_games"), "items": game_items})
     ex_key = exchange_today()
@@ -16771,6 +16765,16 @@ def play_strip_allowed(user):
     return bool(user.get("verified") and user.get("agreement_accepted") and not user.get("illness"))
 
 
+def play_strip_subscribed(user):
+    """Сама игра на раздевание -- бесплатно, но только с SUPER PRO / ELITE."""
+    return get_subscription_level(user) in ("super_pro", "elite")
+
+
+def play_self_gender(user):
+    """Одежда пользователя -- по полу, который он указал при старте бота."""
+    return "female" if user.get("user_gender") == "female" else "male"
+
+
 def serialize_play_state(user):
     lang = "ru" if user.get("lang", "ru") == "ru" else "en"
     play = user.get("play")
@@ -16788,9 +16792,7 @@ def serialize_play_state(user):
                 "her_removed": len(play.get("her_removed", [])), "mine_removed": len(play.get("mine_removed", []))}
     ui = {k: gt(user, k) for k in GAME_TEXTS["ru"] if k.startswith("play_") and isinstance(GAME_TEXTS["ru"][k], str)}
     return {"bucks": user.get("bucks", 0), "price": PLAY_RPS_PRICE, "wins": PLAY_RPS_WINS,
-            "scenes": intim_scenes_available(user), "strip_allowed": play_strip_allowed(user),
-            "char_gender": user.get("gender") or "female", "self_gender": user.get("play_self_gender") or
-            ("male" if (user.get("gender") or "female") == "female" else "female"),
+            "strip_allowed": play_strip_allowed(user), "strip_subscribed": play_strip_subscribed(user),
             "rps_names": gt(user, "rps_names"), "game": game, "ui": ui}
 
 
@@ -16847,15 +16849,13 @@ async def api_play_start_handler(request):
     if mode == "strip":
         if not play_strip_allowed(user):
             return _play_reply(user, False, gt(user, "play_strip_locked"))
-        if body.get("self_gender") in ("male", "female"):
-            user["play_self_gender"] = body["self_gender"]
-        if not consume_intim_scene(user):
-            return _play_reply(user, False, gt(user, "play_need_scene"))
+        if not play_strip_subscribed(user):
+            return _play_reply(user, False, gt(user, "play_need_super"))
     elif not spend_bucks(user, PLAY_RPS_PRICE):
         return _play_reply(user, False, get_text(user, "not_enough_bucks", n=PLAY_RPS_PRICE - user.get("bucks", 0)))
     rnd = random.Random()
     char_gender = user.get("gender") or "female"
-    self_gender = user.get("play_self_gender") or ("male" if char_gender == "female" else "female")
+    self_gender = play_self_gender(user)
     user["play"] = {"mode": mode, "phase": "move", "me": 0, "ai": 0, "last": None, "line": None, "result": None,
                     "her": make_outfit(char_gender, rnd) if mode == "strip" else [],
                     "mine": make_outfit(self_gender, rnd) if mode == "strip" else [],
@@ -16981,9 +16981,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   .btn { width: 100%; border: none; border-radius: 14px; padding: 13px; font-size: 16px; font-weight: 800; background: var(--accent); color: var(--accent-fg); cursor: pointer; }
   .btn.secondary { background: rgba(127,127,127,.2); color: var(--fg); }
   .btn:disabled { opacity: .5; }
-  .row { display: flex; gap: 8px; margin-bottom: 10px; }
-  .seg { flex: 1; border: 2px solid transparent; background: rgba(127,127,127,.15); color: var(--fg); border-radius: 12px; padding: 9px; font-weight: 700; }
-  .seg.on { border-color: var(--accent); background: rgba(108,92,231,.18); }
+  .locked-note { background: rgba(255,200,80,.12); border: 1px solid rgba(255,200,80,.35); border-radius: 12px; padding: 10px; color: var(--fg); }
   .strip-card { background: linear-gradient(150deg, rgba(229,57,53,.28), rgba(216,27,96,.18) 60%, var(--card)); }
   #arena { text-align: center; }
   #score { font-size: 14px; color: var(--hint); margin-bottom: 6px; }
@@ -17051,7 +17049,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   var tg = (window.Telegram && window.Telegram.WebApp) || null;
   function safe(fn) { try { fn(); } catch (e) {} }
   if (tg) { safe(function () { tg.ready(); }); safe(function () { tg.expand(); }); }
-  var state = null, busy = false, selfGender = null;
+  var state = null, busy = false;
   var EMO = { rock: "🪨", scissors: "✌️", paper: "✋" };
 
   // ---- звук и вибрация ----
@@ -17110,17 +17108,10 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     st.appendChild(el("p", null, ui.play_strip_desc));
     if (!s.strip_allowed) {
       st.appendChild(el("p", null, ui.play_strip_locked));
+    } else if (!s.strip_subscribed) {
+      st.appendChild(el("p", "locked-note", ui.play_need_super));
     } else {
-      st.appendChild(el("p", null, ui.play_self_gender));
-      var row = el("div", "row");
-      selfGender = selfGender || s.self_gender;
-      ["male", "female"].forEach(function (g) {
-        var b = el("button", "seg" + (selfGender === g ? " on" : ""), g === "male" ? ui.play_male : ui.play_female);
-        b.onclick = function () { selfGender = g; renderMenu(); };
-        row.appendChild(b);
-      });
-      st.appendChild(row);
-      var b2 = el("button", "btn", ui.play_start + " · " + ui.play_strip_cost.replace("{n}", s.scenes));
+      var b2 = el("button", "btn", ui.play_start + " · " + ui.play_strip_cost);
       b2.onclick = function () { start("strip"); };
       st.appendChild(b2);
     }
@@ -17197,7 +17188,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   function start(mode) {
     if (busy) return;
     busy = true;
-    api("/api/play/start", { mode: mode, self_gender: selfGender }).then(function (res) {
+    api("/api/play/start", { mode: mode }).then(function (res) {
       busy = false;
       if (res.state) state = res.state;
       if (!res.ok) { safe(function () { tg.showAlert(res.error || "Error"); }); }
