@@ -13555,10 +13555,13 @@ SPIN_PAGE_HTML = '''<!doctype html>
     color: #fff; background: linear-gradient(135deg, #8b5cf6, #ec4899); box-shadow: 0 0 10px rgba(236,72,153,.45);
     animation: coupon-pulse 1.8s ease-in-out infinite; }
   @keyframes coupon-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+  #sound-toggle { position: absolute; top: 8px; right: 12px; border: none; background: rgba(127,127,127,.18); border-radius: 10px;
+    font-size: 16px; padding: 4px 8px; cursor: pointer; z-index: 5; }
 </style>
 </head>
 <body>
   <div id="stats"></div>
+  <button id="sound-toggle" type="button">🔊</button>
   <div id="title"></div>
   <div id="spin-hint"></div>
   <div id="wheel-wrap">
@@ -13640,6 +13643,18 @@ SPIN_PAGE_HTML = '''<!doctype html>
     else if (kind === "tick") { tone(1900, .018, "square", .035); haptic("select"); }
     else if (kind === "start") { tone(330, .3, "sawtooth", .05, 0, 990); haptic("medium"); }
   }
+
+  (function bindSoundToggle() {
+    var btn = document.getElementById("sound-toggle");
+    if (!btn) return;
+    btn.textContent = sfxOn ? "🔊" : "🔇";
+    btn.onclick = function () {
+      sfxOn = !sfxOn;
+      try { localStorage.setItem("rd_sound", sfxOn ? "on" : "off"); } catch (e) {}
+      btn.textContent = sfxOn ? "🔊" : "🔇";
+      if (sfxOn) { sfxUnlock(); fx("tick"); }
+    };
+  })();
 
   var currentRotation = 0;
   var colors = ["#ff6b6b", "#4ecdc4", "#ffd93d", "#6c5ce7", "#1dd1a1", "#feca57"];
@@ -14475,11 +14490,15 @@ WORK_PAGE_HTML = r'''<!doctype html>
     pointer-events: none;
   }
   #catch-basket.hit { animation: basket-hit .3s ease; }
-  #catch-basket.magnet-active { filter: drop-shadow(0 0 8px #9b6bff) drop-shadow(0 0 2px #9b6bff); }
-  #catch-basket.double-active { filter: drop-shadow(0 0 10px #ffd23f) drop-shadow(0 0 3px #ffb300); }
-  #catch-basket.double-active::after { content: "x2💰"; position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 13px; font-weight: 800; color: #b8860b; white-space: nowrap; }
-  #catch-basket.shield-active { filter: drop-shadow(0 0 10px #4ea8ff) drop-shadow(0 0 3px #4ea8ff); }
-  #catch-basket.shield-active::before { content: "🛡️"; position: absolute; top: -20px; right: -6px; font-size: 18px; }
+  /* Бусты больше не через filter (они перетирали друг друга -- «магнит пропадал») -- значки кружат вокруг корзины. */
+  .buff-orbit { position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px 0 0 -11px; font-size: 18px;
+    line-height: 22px; text-align: center; animation: buff-orbit 1.8s linear infinite; filter: drop-shadow(0 0 4px rgba(155,107,255,.8)); }
+  @keyframes buff-orbit { from { transform: rotate(0deg) translateX(40px) rotate(0deg); } to { transform: rotate(360deg) translateX(40px) rotate(-360deg); } }
+  #catch-basket.magnet-active::before { content: ""; position: absolute; left: 50%; top: 50%; width: 110px; height: 110px;
+    margin: -55px 0 0 -55px; border-radius: 50%; border: 2px dashed rgba(155,107,255,.6); animation: magnet-ring 1s linear infinite; }
+  @keyframes magnet-ring { from { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(.9); } to { transform: rotate(360deg) scale(1); } }
+  .catch-item.pulled { filter: drop-shadow(0 0 6px #9b6bff); }
+  .catch-item.rocket { font-size: 30px; transform: rotate(135deg); filter: drop-shadow(0 0 6px #ff7043); }
   #catch-basket.shield-pop { animation: shield-pop .4s ease; }
   @keyframes shield-pop { 0% { filter: drop-shadow(0 0 4px #4ea8ff); } 40% { filter: drop-shadow(0 0 22px #bfe1ff) brightness(1.4); } 100% { filter: none; } }
   @keyframes basket-hit {
@@ -15177,28 +15196,37 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var courierStoplineFrozen = false; // true только пока стоим на красной линии
 
   var BASKET_WIDTH_PCT = 26;
-  var CATCH_EMOJIS = ["🍎", "💧", "🎁", "🍪", "🥤", "🍕", "🧀", "🥐"];
+  var CATCH_EMOJIS = ["🍎", "💧", "🎁", "🍪", "🥤", "🍕", "🧀", "🥐", "💎", "🍩", "🍓", "🧃", "💵", "🪙", "🍬", "🧸"];
   var BOMB_EMOJI = "💣";
   var BOMB_CHANCE = 0.32; // was 0.22 -- more bombs, harder to just drag across blindly
   var SLOWFALL_EMOJI = "🐌";
-  var SLOWFALL_CHANCE = 0.08; // rolled only when the spawn didn't already roll a bomb
+  var SLOWFALL_CHANCE = 0.04; // rolled only when the spawn didn't already roll a bomb
   var SLOWFALL_DURATION_MS = 5000;
   var SLOWFALL_MULTIPLIER = 1.6; // how much longer newly-spawned items take to fall while active
   var slowFallUntil = 0;
   var MAGNET_EMOJI = "🧲";
-  var MAGNET_CHANCE = 0.06; // rolled only when the spawn didn't already roll a bomb/slowfall/big hazard
+  var MAGNET_CHANCE = 0.035; // rolled only when the spawn didn't already roll a bomb/slowfall/big hazard
   var MAGNET_DURATION_MS = 5000;
   var MAGNET_MARGIN_PCT = 14; // wider catch margin for normal items while active -- never widens bomb/big-hazard hitboxes
   var magnetUntil = 0;
   var DOUBLE_EMOJI = "💰";
-  var DOUBLE_CHANCE = 0.05; // x2 деньги на несколько секунд -- сервер сам удваивает выплату (см. api_work_powerup_handler)
+  var DOUBLE_CHANCE = 0.03; // x2 деньги на несколько секунд -- сервер сам удваивает выплату (см. api_work_powerup_handler)
   var doubleUntil = 0;
   var SHIELD_EMOJI = "🛡️";
-  var SHIELD_CHANCE = 0.05; // щит гасит ОДНУ следующую бомбу/большую угрозу вместо проигрыша
+  var SHIELD_CHANCE = 0.03; // щит гасит ОДНУ следующую бомбу/большую угрозу вместо проигрыша
   var shieldCharges = 0;
   var CATCH_FALL_MIN_S = 1.5, CATCH_FALL_RANGE_S = 1.0; // was 2.1-3.5s -- faster, harder to react to
-  var BIG_HAZARD_CHANCE = 0.05; // rolled only when the spawn didn't already roll a bomb/slowfall
-  var BIG_HAZARD_EMOJIS = ["⚫", "💣"]; // "cannonball" and "big bomb" -- same wide-miss treatment
+  var BIG_HAZARD_CHANCE = 0.08; // rolled only when the spawn didn't already roll a bomb/slowfall
+  var BIG_HAZARD_EMOJIS = ["⚫", "💣", "🪨"]; // ядро, большая бомба, валун -- одинаково опасны
+  // Ракета: летит втрое быстрее обычного, перед ней -- короткое предупреждение ❗ (по фидбэку «больше препятствий»).
+  var ROCKET_CHANCE = 0.08;
+  var ROCKET_WARN_MS = 500;
+  var ROCKET_FALL_MIN_S = 0.6, ROCKET_FALL_RANGE_S = 0.25;
+  // Чтобы предмет не оказался внутри бомбы и его можно было взять: новые предметы появляются не ближе
+  // CATCH_MIN_GAP_PCT по горизонтали к тем, что выпали за последние CATCH_GAP_WINDOW_MS.
+  var CATCH_MIN_GAP_PCT = 14, CATCH_GAP_WINDOW_MS = 1300;
+  var recentCatchSpawns = [];
+  var MAGNET_PULL_RANGE_PCT = 42; // магнит подтягивает обычные предметы в этой полосе вокруг корзины
   var BIG_HAZARD_WARN_MS = 900;
   var BIG_HAZARD_MARGIN_PCT = 3; // how far past the basket's own edges still counts as a hit --
   // was 16, which widened the danger zone to ~58% of the field (basket's own ~26% + 16% each
@@ -15333,9 +15361,31 @@ WORK_PAGE_HTML = r'''<!doctype html>
     setTimeout(function () { if (el.parentNode) el.remove(); }, 700);
   }
 
+  // Попадания, пришедшие, пока предыдущее ещё летит на сервер, раньше просто терялись (два предмета
+  // в одну секунду -- деньги за один). Теперь они ждут в очереди и уходят с паузой, которую требует
+  // анти-спам сервера (WORK_MIN_HIT_INTERVAL_SECONDS = 0.35 с).
+  var hitQueue = [];
+  var HIT_QUEUE_GAP_MS = 380;
+  var lastHitSentAt = 0;
+  var hitDrainTimer = null;
+  function drainHitQueue() {
+    if (!hitQueue.length || hitInFlight || hitDrainTimer) return;
+    var wait = Math.max(0, HIT_QUEUE_GAP_MS - (Date.now() - lastHitSentAt));
+    hitDrainTimer = setTimeout(function () {
+      hitDrainTimer = null;
+      var next = hitQueue.shift();
+      if (next) registerHit(next[0], next[1], next[2], next[3], next[4], next[5]);
+    }, wait);
+  }
+
   function registerHit(game, x, y, container, tip, onAwarded) {
-    if (hitInFlight) return;
+    if (hitInFlight || hitDrainTimer || Date.now() - lastHitSentAt < HIT_QUEUE_GAP_MS) {
+      if (hitQueue.length < 4) hitQueue.push([game, x, y, container, tip, onAwarded]);
+      drainHitQueue();
+      return;
+    }
     hitInFlight = true;
+    lastHitSentAt = Date.now();
     api("/api/work/hit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -15348,7 +15398,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
         if (res.awarded) popupGain(res.awarded, x, y, container);
         if (onAwarded) onAwarded(res.awarded || 0);
       }
-    }).catch(function () { hitInFlight = false; });
+      drainHitQueue();
+    }).catch(function () { hitInFlight = false; drainHitQueue(); });
   }
 
   // Штраф за провал -- отдельная от registerHit ветка (своя in-flight защита, чтобы быстрый
@@ -15401,6 +15452,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
     shieldCharges = 0;
     var catchBasketEl = document.getElementById("catch-basket");
     if (catchBasketEl) catchBasketEl.classList.remove("magnet-active", "double-active", "shield-active", "shield-pop");
+    BUFF_ORDER.forEach(function (k) { setBuffOrbit(k, null); });
+    recentCatchSpawns = [];
     var road = document.getElementById("courier-road");
     if (road) {
       var obstacles = road.querySelectorAll(".courier-obstacle, .courier-recipient, .courier-car, .courier-warning, .courier-stopline, .courier-handoff");
@@ -15558,7 +15611,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (sprite) setSprite(item, sprite, text); else item.textContent = text;
     Object.keys(dataset || {}).forEach(function (k) { item.dataset[k] = dataset[k]; });
     item.style.left = x + "%";
-    var baseDuration = CATCH_FALL_MIN_S + Math.random() * CATCH_FALL_RANGE_S;
+    var baseDuration = dataset && dataset.fast ? ROCKET_FALL_MIN_S + Math.random() * ROCKET_FALL_RANGE_S
+      : CATCH_FALL_MIN_S + Math.random() * CATCH_FALL_RANGE_S;
     item.style.animationDuration = (Date.now() < slowFallUntil ? baseDuration * SLOWFALL_MULTIPLIER : baseDuration) + "s";
     item.addEventListener("animationend", function () {
       // Пропустил обычный (не баф, не угроза) предмет корзинкой -- минус деньги, см. фидбэк
@@ -15593,10 +15647,43 @@ WORK_PAGE_HTML = r'''<!doctype html>
     bigHazardTimeoutIds.push(tid);
   }
 
+  function pickCatchX() {
+    var now = Date.now();
+    recentCatchSpawns = recentCatchSpawns.filter(function (s) { return now - s.t < CATCH_GAP_WINDOW_MS; });
+    var x = 6 + Math.random() * 82;
+    for (var tries = 0; tries < 10; tries++) {
+      var ok = recentCatchSpawns.every(function (s) { return Math.abs(s.x - x) >= CATCH_MIN_GAP_PCT; });
+      if (ok) break;
+      x = 6 + Math.random() * 82;
+    }
+    recentCatchSpawns.push({ x: x, t: now });
+    return x;
+  }
+
+  function spawnRocketWithWarning(field, x) {
+    var warn = document.createElement("div");
+    warn.className = "catch-warning";
+    warn.textContent = "❗";
+    warn.style.left = x + "%";
+    field.appendChild(warn);
+    var tid = setTimeout(function () {
+      bigHazardTimeoutIds = bigHazardTimeoutIds.filter(function (id) { return id !== tid; });
+      if (warn.parentNode) warn.remove();
+      var liveField = document.getElementById("catch-field");
+      if (!liveField || liveField.style.display === "none") return;
+      appendFallingItem(liveField, x, "catch-item rocket", "🚀", { bomb: "1", fast: "1" });
+    }, ROCKET_WARN_MS);
+    bigHazardTimeoutIds.push(tid);
+  }
+
   function spawnCatchItem() {
     var field = document.getElementById("catch-field");
     if (!field) return;
-    var x = 6 + Math.random() * 82;
+    var x = pickCatchX();
+    if (Math.random() < ROCKET_CHANCE) {
+      spawnRocketWithWarning(field, x);
+      return;
+    }
     var isBomb = Math.random() < BOMB_CHANCE;
     var isSlowFall = !isBomb && Math.random() < SLOWFALL_CHANCE;
     var isBigHazard = !isBomb && !isSlowFall && Math.random() < BIG_HAZARD_CHANCE;
@@ -15632,6 +15719,20 @@ WORK_PAGE_HTML = r'''<!doctype html>
       var magnetMarginPx = fieldRect.width * (MAGNET_MARGIN_PCT / 100);
       var magnetActive = Date.now() < magnetUntil;
       var items = field.querySelectorAll(".catch-item:not([data-caught])");
+      if (magnetActive) {
+        // Магнит реально тянет: обычные предметы в нижней половине поля плавно съезжают к корзине.
+        var basketCenterPct = ((basketRect.left + basketRect.width / 2) - fieldRect.left) / fieldRect.width * 100;
+        for (var m = 0; m < items.length; m++) {
+          var it = items[m];
+          if (it.dataset.bomb === "1" || it.dataset.bighazard === "1") continue;
+          var ir = it.getBoundingClientRect();
+          if (ir.top - fieldRect.top < fieldRect.height * 0.3) continue;
+          var curPct = parseFloat(it.style.left) || 0;
+          if (Math.abs(curPct - basketCenterPct) > MAGNET_PULL_RANGE_PCT) continue;
+          it.style.left = (curPct + (basketCenterPct - curPct) * 0.09) + "%";
+          it.classList.add("pulled");
+        }
+      }
       for (var i = 0; i < items.length; i++) {
         var item = items[i];
         var isBig = item.dataset.bighazard === "1";
@@ -15654,6 +15755,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
             if (shieldCharges > 0) {
               // щит поглотил взрыв -- игра продолжается
               shieldCharges = 0;
+              setBuffOrbit("shield", null);
               basket.classList.remove("shield-active");
               basket.classList.add("shield-pop");
               setTimeout(function () { basket.classList.remove("shield-pop"); }, 400);
@@ -15672,12 +15774,14 @@ WORK_PAGE_HTML = r'''<!doctype html>
             if (item.dataset.slowfall || item.dataset.magnet || item.dataset.double || item.dataset.shield) fx("power");
             if (item.dataset.slowfall === "1") {
               slowFallUntil = Date.now() + SLOWFALL_DURATION_MS;
+              setBuffOrbit("slow", "🐌", SLOWFALL_DURATION_MS);
               field.classList.add("slow-active");
               setTimeout(function () {
                 if (Date.now() >= slowFallUntil) field.classList.remove("slow-active");
               }, SLOWFALL_DURATION_MS);
             } else if (item.dataset.magnet === "1") {
               magnetUntil = Date.now() + MAGNET_DURATION_MS;
+              setBuffOrbit("magnet", "🧲", MAGNET_DURATION_MS);
               basket.classList.add("magnet-active");
               setTimeout(function () {
                 if (Date.now() >= magnetUntil) basket.classList.remove("magnet-active");
@@ -15686,6 +15790,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
               activateDouble(basket);
             } else if (item.dataset.shield === "1") {
               shieldCharges = 1;
+              setBuffOrbit("shield", "🛡️");
               basket.classList.add("shield-active");
             }
           }
@@ -15693,6 +15798,26 @@ WORK_PAGE_HTML = r'''<!doctype html>
       }
     }
     catchRafId = debuffState.catch ? null : requestAnimationFrame(catchCollisionTick);
+  }
+
+  // Значок активного буста кружит вокруг корзины, у каждого свой; ms -- через сколько убрать (без ms -- до снятия вручную).
+  var buffOrbitTimers = {};
+  var BUFF_ORDER = ["magnet", "double", "shield", "slow"];
+  function setBuffOrbit(kind, emoji, ms) {
+    var basket = document.getElementById("catch-basket");
+    if (!basket) return;
+    var el = basket.querySelector(".buff-orbit[data-kind=" + kind + "]");
+    if (buffOrbitTimers[kind]) { clearTimeout(buffOrbitTimers[kind]); buffOrbitTimers[kind] = null; }
+    if (!emoji) { if (el) el.remove(); return; }
+    if (!el) {
+      el = document.createElement("span");
+      el.className = "buff-orbit";
+      el.dataset.kind = kind;
+      el.style.animationDelay = (-0.45 * BUFF_ORDER.indexOf(kind)) + "s";
+      basket.appendChild(el);
+    }
+    el.textContent = emoji;
+    if (ms) buffOrbitTimers[kind] = setTimeout(function () { if (el.parentNode) el.remove(); buffOrbitTimers[kind] = null; }, ms);
   }
 
   function activateDouble(basket) {
@@ -15703,6 +15828,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     }).then(function (res) {
       if (!res.ok || !res.granted) return;
       doubleUntil = Date.now() + res.seconds * 1000;
+      setBuffOrbit("double", "💰", res.seconds * 1000);
       basket.classList.add("double-active");
       setTimeout(function () {
         if (Date.now() >= doubleUntil) basket.classList.remove("double-active");
