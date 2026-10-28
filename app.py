@@ -5015,6 +5015,9 @@ def get_shop_kb(user):
     for key, offer in GAME_OFFERS.items():
         rows.append([InlineKeyboardButton(text=f"{offer['emoji']} {game_offer_name(user, key)} — {game_price_label(user, key)}",
                                           callback_data=f"game_{key}", style="success")])
+    if WEBAPP_URL:
+        rows.append([InlineKeyboardButton(text=gt(user, "play_strip_btn"), web_app=WebAppInfo(url=f"{WEBAPP_URL}/play?game=strip"),
+                                          style="success")])
     rows.append([InlineKeyboardButton(text=gt(user, "shop_cat_exchange"), callback_data="shop_noop")])
     ex_key = exchange_today()
     ex_offer = BUCKS_EXCHANGE[ex_key]
@@ -7236,6 +7239,41 @@ GAME_TEXTS = {
         "game_desc_movie": "Смотрите фильм и обсуждаете, +40 XP",
         "event_desc": "Сюжет на {hours} ч: персонаж живёт в этой истории",
         "started_toast": "▶️ Начинаем! Переходи в чат с ботом.",
+        "play_title": '🎮 Игры с персонажем',
+        "play_rps_title": '✊ Камень, ножницы, бумага',
+        "play_rps_desc": 'Играете до {wins} побед, персонаж комментирует итог. Победа — +20 XP.',
+        "play_strip_title": '🔥 На раздевание (18+)',
+        "play_strip_desc": 'Проиграл раунд — снимаешь вещь. Выиграл — сам выбираешь, что снимет персонаж: очки, часы, шляпу… и дальше. Каждый раз разная одежда. Играете, пока кто-то не останется без всего. Победа — +50 XP.',
+        "play_strip_cost": '1 горячая сцена (у тебя: {n})',
+        "play_strip_locked": '🔞 Игра для 18+: доступна после подтверждения возраста. Если персонаж болеет — сначала вылечи.',
+        "play_need_scene": 'Нужна горячая сцена 🔥 — она даётся по подписке, выпадает на колесе или покупается в /hot.',
+        "play_self_gender": 'Твоя одежда:',
+        "play_male": '👔 Мужская',
+        "play_female": '👗 Женская',
+        "play_start": '▶️ Играть',
+        "play_her": 'Персонаж',
+        "play_me": 'Ты',
+        "play_score": 'Счёт {me}:{ai} · до {wins} побед',
+        "play_make_move": 'Твой ход 👇',
+        "play_pick_her": '🔥 Раунд твой! Выбери, что персонаж снимет 👇',
+        "play_pick_me": '😏 Раунд за персонажем — выбери, что снимешь ты 👇',
+        "play_round_win": '✅ Раунд твой!',
+        "play_round_lose": '❌ Раунд за персонажем',
+        "play_draw": '🤝 Ничья — ещё раз!',
+        "play_win_rps": '🏆 Победа! +20 XP',
+        "play_win_strip": '🏆 Ты раздел персонажа! +50 XP',
+        "play_lose": '😏 В этот раз выиграл персонаж',
+        "play_again": '🔄 Ещё раз',
+        "play_to_chat": '💬 В чат',
+        "play_quit": '🏁 Выйти из игры',
+        "play_cant_remove": 'Сначала нужно снять то, что надето сверху 😉',
+        "play_thinking": 'персонаж печатает…',
+        "play_open_btn": '🎮 Открыть игру',
+        "play_open_text": '🎮 Игра открывается в мини-приложении — жми кнопку ниже.',
+        "play_strip_btn": '🔥 На раздевание (18+)',
+        "play_fallback_rps": ['Ну что, ещё партию? Я так просто не сдамся 😏', 'Ха! Неплохо сыграли 😄 Реванш?', 'Это было весело! Давай ещё раз? 🙌'],
+        "play_fallback_her": ['Ох… ладно, уговор есть уговор 😳', 'Медленно снимаю и смотрю тебе в глаза… доволен? 😏', 'Ну всё, держись, следующий раунд мой 🔥'],
+        "play_fallback_me": ['Мм, а мне нравится эта игра 😏', 'Ну-ну, продолжай в том же духе 😉', 'Ого… смелее, следующий раунд ещё впереди 🔥'],
         "game_desc_rps": "До трёх побед, победа — +20 XP",
         "rps_names": {"rock": "Камень", "scissors": "Ножницы", "paper": "Бумага"},
         "rps_start": "✊ Камень, ножницы, бумага — играем до {wins} побед! Выбирай:",
@@ -7311,6 +7349,41 @@ GAME_TEXTS = {
         "game_desc_movie": "Watch a movie together and talk about it, +40 XP",
         "event_desc": "A {hours} h storyline your companion lives in",
         "started_toast": "▶️ Let's go! Head to the chat with the bot.",
+        "play_title": '🎮 Games with your companion',
+        "play_rps_title": '✊ Rock, paper, scissors',
+        "play_rps_desc": 'First to {wins} wins, your companion comments on the result. A win gives +20 XP.',
+        "play_strip_title": '🔥 Strip version (18+)',
+        "play_strip_desc": 'Lose a round — take something off. Win — you choose what your companion takes off: glasses, a watch, a hat… and further. Different clothes every time. Play until someone has nothing left. A win gives +50 XP.',
+        "play_strip_cost": '1 hot scene (you have: {n})',
+        "play_strip_locked": '🔞 18+ game: available after age confirmation. If your companion is sick, cure them first.',
+        "play_need_scene": 'You need a hot scene 🔥 — it comes with subscriptions, drops on the wheel or can be bought in /hot.',
+        "play_self_gender": 'Your clothes:',
+        "play_male": "👔 Men's",
+        "play_female": "👗 Women's",
+        "play_start": '▶️ Play',
+        "play_her": 'Companion',
+        "play_me": 'You',
+        "play_score": 'Score {me}:{ai} · first to {wins}',
+        "play_make_move": 'Your move 👇',
+        "play_pick_her": '🔥 Your round! Pick what your companion takes off 👇',
+        "play_pick_me": '😏 Your companion won the round — pick what you take off 👇',
+        "play_round_win": '✅ Your round!',
+        "play_round_lose": "❌ Companion's round",
+        "play_draw": '🤝 A draw — again!',
+        "play_win_rps": '🏆 Victory! +20 XP',
+        "play_win_strip": '🏆 You undressed your companion! +50 XP',
+        "play_lose": '😏 Your companion won this time',
+        "play_again": '🔄 Play again',
+        "play_to_chat": '💬 To chat',
+        "play_quit": '🏁 Leave the game',
+        "play_cant_remove": "Take off what's on top first 😉",
+        "play_thinking": 'companion is typing…',
+        "play_open_btn": '🎮 Open the game',
+        "play_open_text": '🎮 The game opens in the mini app — tap the button below.',
+        "play_strip_btn": '🔥 Strip version (18+)',
+        "play_fallback_rps": ["So, another round? I won't give up that easily 😏", 'Ha! Good game 😄 Rematch?', 'That was fun! Again? 🙌'],
+        "play_fallback_her": ["Oh… fine, a deal's a deal 😳", 'Slowly taking it off and looking into your eyes… happy? 😏', 'Alright, brace yourself, the next round is mine 🔥'],
+        "play_fallback_me": ['Mm, I like this game 😏', 'Well, well, keep it up 😉', 'Wow… bolder, the next round is still ahead 🔥'],
         "game_desc_rps": "First to three wins, a win gives +20 XP",
         "rps_names": {"rock": "Rock", "scissors": "Scissors", "paper": "Paper"},
         "rps_start": "✊ Rock, paper, scissors — first to {wins} wins! Pick:",
@@ -7454,6 +7527,11 @@ def buy_exchange(user, key):
     return True, None
 
 
+def play_link_kb(user, game="rps"):
+    return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(
+        text=gt(user, "play_open_btn"), web_app=WebAppInfo(url=f"{WEBAPP_URL}/play?game={game}"), style="success")]])
+
+
 async def start_game(chat_id, user, key):
     """Единый запуск развлечения из меню, чатового магазина и Mini App. Возвращает текст ошибки или None."""
     if key not in GAME_OFFERS:
@@ -7461,6 +7539,10 @@ async def start_game(chat_id, user, key):
     error = games_gate_error(user)
     if error:
         return error
+    if key == "rps" and WEBAPP_URL:
+        # КНБ теперь в мини-приложении (/play): там анимация, звук и режим на раздевание; оплата -- внутри.
+        await bot.send_message(chat_id, gt(user, "play_open_text"), reply_markup=play_link_kb(user))
+        return None
     if key == "bj":
         await send_bj_bets(chat_id, user)
         return None
@@ -7547,6 +7629,9 @@ def games_menu_kb(user):
     """«Сыграем ещё?» после партии -- те же развлечения, что во вкладке магазина: нажал -- заплатил -- играешь."""
     rows = [[InlineKeyboardButton(text=f"{offer['emoji']} {game_offer_name(user, key)} — {game_price_label(user, key)}",
                                   callback_data=f"game_{key}", style="success")] for key, offer in GAME_OFFERS.items()]
+    if WEBAPP_URL:
+        rows.append([InlineKeyboardButton(text=gt(user, "play_strip_btn"), web_app=WebAppInfo(url=f"{WEBAPP_URL}/play?game=strip"),
+                                          style="danger")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -8541,11 +8626,15 @@ def serialize_shop_state(user):
             categories.append({"key": shop_category, "name": get_text(user, SHOP_CATEGORY_TEXT_KEY[shop_category]), "items": items})
 
     game_items = [{
-        "key": key, "category": "game", "image": shop_item_image("game", key), "emoji": offer["emoji"],
+        "key": key, "category": "play" if key == "rps" else "game", "image": shop_item_image("game", key), "emoji": offer["emoji"],
         "name": game_offer_name(user, key), "price": offer["price"],
         "price_label": gt(user, "bj_price") if key == "bj" else None,
         "effects": gt(user, "game_desc_" + key), "ready_in": None, "refuse": False,
     } for key, offer in GAME_OFFERS.items()]
+    game_items.append({
+        "key": "strip", "category": "play", "image": None, "emoji": "🔥", "name": gt(user, "play_strip_title"), "price": 0,
+        "price_label": gt(user, "play_strip_cost", n=intim_scenes_available(user)), "effects": gt(user, "play_strip_desc"),
+        "ready_in": None, "refuse": False})
     categories.append({"key": "games", "name": gt(user, "shop_cat_games"), "items": game_items})
     ex_key = exchange_today()
     ex_offer = BUCKS_EXCHANGE[ex_key]
@@ -12419,7 +12508,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
     top.appendChild(emoji);
 
     var noteBox = null;
-    if (["medicine", "energizer", "game", "event", "exchange"].indexOf(item.category) < 0) {
+    if (["medicine", "energizer", "game", "event", "exchange", "play"].indexOf(item.category) < 0) {
       var toggle = document.createElement("button");
       toggle.className = "note-toggle";
       toggle.textContent = "✍️";
@@ -12517,9 +12606,11 @@ SHOP_PAGE_HTML = '''<!doctype html>
 
       var buyBtn = document.createElement("button");
       buyBtn.className = "buy-btn";
-      buyBtn.textContent = item.category === "game" ? s.ui.play_btn : (item.category === "event" ? s.ui.start_btn : s.ui.webapp_buy_btn);
+      buyBtn.textContent = (item.category === "game" || item.category === "play") ? s.ui.play_btn : (item.category === "event" ? s.ui.start_btn : s.ui.webapp_buy_btn);
       if (busyKeys[itemKey]) buyBtn.disabled = true;
-      buyBtn.onclick = function () { buy(item.category, item.key, noteBox ? noteBox.value : ""); };
+      buyBtn.onclick = item.category === "play"
+        ? function () { window.location.href = "/play?game=" + item.key + window.location.hash; }  // игры -- своё мини-приложение
+        : function () { buy(item.category, item.key, noteBox ? noteBox.value : ""); };
       footer.appendChild(buyBtn);
     }
     card.appendChild(footer);
@@ -16598,6 +16689,597 @@ WORK_PAGE_HTML = r'''<!doctype html>
 </html>'''
 
 
+# ============================================================
+#  МИНИ-ПРИЛОЖЕНИЕ ИГР (/play): камень-ножницы-бумага и КНБ на раздевание (18+)
+# ============================================================
+# Правила -- на сервере (клиенту не верим ни в выбор персонажа, ни в «что снято»), ИИ только комментирует.
+PLAY_RPS_PRICE = 300
+PLAY_RPS_WINS = 3
+PLAY_RPS_XP = 20
+PLAY_STRIP_XP = 50
+RPS_KEYS = ("rock", "scissors", "paper")
+
+# (id, категория, ru, en, emoji). Категория решает, что можно снять раньше (см. CLOTH_BLOCKERS).
+CLOTHES_FEMALE = {
+    "acc": [("glasses", "Очки", "Glasses", "👓"), ("hat", "Шляпа", "Hat", "👒"), ("watch", "Часы", "Watch", "⌚"),
+            ("earrings", "Серёжки", "Earrings", "💎"), ("bracelet", "Браслет", "Bracelet", "📿"), ("scarf", "Шарф", "Scarf", "🧣"),
+            ("choker", "Чокер", "Choker", "🖤"), ("gloves", "Перчатки", "Gloves", "🧤"), ("hairclip", "Заколка", "Hair clip", "🎀")],
+    "outer": [("jacket", "Куртка", "Jacket", "🧥"), ("cardigan", "Кардиган", "Cardigan", "🧶"), ("hoodie", "Толстовка", "Hoodie", "🧥")],
+    "top": [("blouse", "Блузка", "Blouse", "👚"), ("tshirt", "Футболка", "T-shirt", "👕"), ("croptop", "Топ", "Crop top", "👚"),
+            ("sweater", "Свитер", "Sweater", "🧶")],
+    "bottom": [("jeans", "Джинсы", "Jeans", "👖"), ("skirt", "Юбка", "Skirt", "👗"), ("shorts", "Шорты", "Shorts", "🩳"),
+               ("trousers", "Брюки", "Trousers", "👖")],
+    "dress": [("dress", "Платье", "Dress", "👗")],
+    "legs": [("stockings", "Чулки", "Stockings", "🧦"), ("tights", "Колготки", "Tights", "🧦"), ("socks", "Носочки", "Socks", "🧦")],
+    "shoes": [("sneakers", "Кроссовки", "Sneakers", "👟"), ("heels", "Туфли", "Heels", "👠"), ("boots", "Ботинки", "Boots", "👢")],
+    "bra": [("bra", "Бюстгальтер", "Bra", "👙")],
+    "panties": [("panties", "Трусики", "Panties", "🩲")],
+}
+CLOTHES_MALE = {
+    "acc": [("glasses", "Очки", "Glasses", "👓"), ("cap", "Кепка", "Cap", "🧢"), ("watch", "Часы", "Watch", "⌚"),
+            ("chain", "Цепочка", "Chain", "⛓️"), ("bracelet", "Браслет", "Bracelet", "📿"), ("belt", "Ремень", "Belt", "🪢"),
+            ("tie", "Галстук", "Tie", "👔"), ("ring", "Перстень", "Ring", "💍")],
+    "outer": [("jacket", "Куртка", "Jacket", "🧥"), ("hoodie", "Толстовка", "Hoodie", "🧥"), ("blazer", "Пиджак", "Blazer", "🥼")],
+    "top": [("shirt", "Рубашка", "Shirt", "👔"), ("tshirt", "Футболка", "T-shirt", "👕"), ("sweater", "Свитер", "Sweater", "🧶")],
+    "bottom": [("jeans", "Джинсы", "Jeans", "👖"), ("trousers", "Брюки", "Trousers", "👖"), ("shorts", "Шорты", "Shorts", "🩳")],
+    "legs": [("socks", "Носки", "Socks", "🧦")],
+    "shoes": [("sneakers", "Кроссовки", "Sneakers", "👟"), ("boots", "Ботинки", "Boots", "🥾"), ("shoes", "Туфли", "Shoes", "👞")],
+    "boxers": [("boxers", "Боксёры", "Boxers", "🩲")],
+}
+# Что должно быть уже снято, прежде чем можно снять вещь этой категории.
+CLOTH_BLOCKERS = {"top": {"outer"}, "dress": {"outer"}, "legs": {"shoes"}, "bra": {"top", "dress", "outer"},
+                  "panties": {"bottom", "dress", "legs"}, "boxers": {"bottom"}}
+
+
+def make_outfit(gender, rnd):
+    """Каждый раз разный наряд: 1-3 аксессуара, иногда верхняя одежда, платье или верх+низ, обувь и бельё."""
+    pool = CLOTHES_FEMALE if gender == "female" else CLOTHES_MALE
+    picked = [("acc", a) for a in rnd.sample(pool["acc"], rnd.randint(1, 3))]
+    if rnd.random() < 0.5:
+        picked.append(("outer", rnd.choice(pool["outer"])))
+    skirt_like = False
+    if gender == "female" and rnd.random() < 0.35:
+        picked.append(("dress", pool["dress"][0]))
+        skirt_like = True
+    else:
+        picked.append(("top", rnd.choice(pool["top"])))
+        bottom = rnd.choice(pool["bottom"])
+        skirt_like = bottom[0] in ("skirt", "shorts")
+        picked.append(("bottom", bottom))
+    legs = pool["legs"] if skirt_like else [x for x in pool["legs"] if x[0] == "socks"]
+    if rnd.random() < (0.7 if gender == "female" else 0.8):
+        picked.append(("legs", rnd.choice(legs)))
+    picked.append(("shoes", rnd.choice(pool["shoes"])))
+    if gender == "female":
+        picked += [("bra", pool["bra"][0]), ("panties", pool["panties"][0])]
+    else:
+        picked.append(("boxers", pool["boxers"][0]))
+    return [{"id": f"{cat}-{item[0]}", "cat": cat, "ru": item[1], "en": item[2], "emoji": item[3]} for cat, item in picked]
+
+
+def cloth_removable(items, item):
+    blockers = CLOTH_BLOCKERS.get(item["cat"], set())
+    return not any(other["cat"] in blockers for other in items if other is not item)
+
+
+def cloth_names(items, lang="ru"):
+    return ", ".join(i[lang] for i in items) or ("ничего" if lang == "ru" else "nothing")
+
+
+def play_strip_allowed(user):
+    """Раздевание -- тот же доступ, что у горячих сцен (/hot): возраст подтверждён, соглашение принято, не болен."""
+    return bool(user.get("verified") and user.get("agreement_accepted") and not user.get("illness"))
+
+
+def serialize_play_state(user):
+    lang = "ru" if user.get("lang", "ru") == "ru" else "en"
+    play = user.get("play")
+    game = None
+    if play:
+        pick = play.get("phase")
+        def items(side, picker):
+            lst = play[side]
+            return [{"id": i["id"], "name": i[lang], "emoji": i["emoji"],
+                     "removable": pick == picker and cloth_removable(lst, i)} for i in lst]
+        game = {"mode": play["mode"], "phase": play["phase"], "me": play.get("me", 0), "ai": play.get("ai", 0),
+                "last": play.get("last"), "line": play.get("line"), "result": play.get("result"),
+                "her": items("her", "pick_her") if play["mode"] == "strip" else [],
+                "mine": items("mine", "pick_me") if play["mode"] == "strip" else [],
+                "her_removed": len(play.get("her_removed", [])), "mine_removed": len(play.get("mine_removed", []))}
+    ui = {k: gt(user, k) for k in GAME_TEXTS["ru"] if k.startswith("play_") and isinstance(GAME_TEXTS["ru"][k], str)}
+    return {"bucks": user.get("bucks", 0), "price": PLAY_RPS_PRICE, "wins": PLAY_RPS_WINS,
+            "scenes": intim_scenes_available(user), "strip_allowed": play_strip_allowed(user),
+            "char_gender": user.get("gender") or "female", "self_gender": user.get("play_self_gender") or
+            ("male" if (user.get("gender") or "female") == "female" else "female"),
+            "rps_names": gt(user, "rps_names"), "game": game, "ui": ui}
+
+
+async def play_ai(user_id, user, instruction, fallback_key):
+    line = await game_ai_line(user_id, user, instruction)
+    return line or random.choice(gt(user, fallback_key))
+
+
+async def play_finish(user_id, user, won):
+    play = user["play"]
+    play["phase"] = "over"
+    play["result"] = "win" if won else "lose"
+    xp = (PLAY_STRIP_XP if play["mode"] == "strip" else PLAY_RPS_XP) if won else 0
+    save_data(user_data)
+    if xp:
+        await grant_gift_xp(user_id, user, xp)
+
+
+async def _play_request(request):
+    init_data = request.headers.get("X-Telegram-Init-Data", "")
+    user_id, user, error = resolve_webapp_user(init_data)
+    if error:
+        return None, None, None, web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    return user_id, user, body if isinstance(body, dict) else {}, None
+
+
+def _play_reply(user, ok=True, error=None):
+    return web.json_response({"ok": ok, "error": error, "state": serialize_play_state(user)})
+
+
+async def api_play_state_handler(request):
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    return _play_reply(user)
+
+
+async def api_play_start_handler(request):
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    mode = body.get("mode")
+    if mode not in ("rps", "strip"):
+        return _play_reply(user, False, "Bad request")
+    if user.get("game"):
+        user["game"] = None  # чатовая партия, если висела, не мешает
+    error = games_gate_error(user)
+    if error:
+        return _play_reply(user, False, error)
+    if mode == "strip":
+        if not play_strip_allowed(user):
+            return _play_reply(user, False, gt(user, "play_strip_locked"))
+        if body.get("self_gender") in ("male", "female"):
+            user["play_self_gender"] = body["self_gender"]
+        if not consume_intim_scene(user):
+            return _play_reply(user, False, gt(user, "play_need_scene"))
+    elif not spend_bucks(user, PLAY_RPS_PRICE):
+        return _play_reply(user, False, get_text(user, "not_enough_bucks", n=PLAY_RPS_PRICE - user.get("bucks", 0)))
+    rnd = random.Random()
+    char_gender = user.get("gender") or "female"
+    self_gender = user.get("play_self_gender") or ("male" if char_gender == "female" else "female")
+    user["play"] = {"mode": mode, "phase": "move", "me": 0, "ai": 0, "last": None, "line": None, "result": None,
+                    "her": make_outfit(char_gender, rnd) if mode == "strip" else [],
+                    "mine": make_outfit(self_gender, rnd) if mode == "strip" else [],
+                    "her_removed": [], "mine_removed": [], "busy": False}
+    save_data(user_data)
+    return _play_reply(user)
+
+
+async def api_play_move_handler(request):
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    play = user.get("play")
+    choice = body.get("choice")
+    if not play or play.get("phase") != "move" or choice not in RPS_KEYS or play.get("busy"):
+        return _play_reply(user, False, None)
+    theirs = random.choice(RPS_KEYS)
+    beats = {"rock": "scissors", "scissors": "paper", "paper": "rock"}
+    outcome = "draw" if choice == theirs else ("win" if beats[choice] == theirs else "lose")
+    play["last"] = {"mine": choice, "theirs": theirs, "outcome": outcome}
+    play["line"] = None
+    if play["mode"] == "rps":
+        if outcome == "win":
+            play["me"] += 1
+        elif outcome == "lose":
+            play["ai"] += 1
+        if play["me"] >= PLAY_RPS_WINS or play["ai"] >= PLAY_RPS_WINS:
+            won = play["me"] >= PLAY_RPS_WINS
+            play["busy"] = True
+            try:
+                facts = "собеседник обыграл тебя" if won else "ты обыграл(а) собеседника"
+                play["line"] = await play_ai(user_id, user, f"Вы играли в камень-ножницы-бумагу до {PLAY_RPS_WINS} побед, счёт "
+                                             f"{play['me']}:{play['ai']}: {facts}. Отреагируй в образе: подколи, порадуйся или "
+                                             "предложи реванш.", "play_fallback_rps")
+            finally:
+                play["busy"] = False
+            await play_finish(user_id, user, won)
+    elif outcome != "draw":
+        play["phase"] = "pick_her" if outcome == "win" else "pick_me"
+    save_data(user_data)
+    return _play_reply(user)
+
+
+async def api_play_remove_handler(request):
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    play = user.get("play")
+    if not play or play.get("mode") != "strip" or play.get("phase") not in ("pick_her", "pick_me") or play.get("busy"):
+        return _play_reply(user, False, None)
+    side = "her" if play["phase"] == "pick_her" else "mine"
+    item = next((i for i in play[side] if i["id"] == body.get("item")), None)
+    if not item or not cloth_removable(play[side], item):
+        return _play_reply(user, False, gt(user, "play_cant_remove"))
+    play[side].remove(item)
+    play[side + "_removed"].append(item)
+    play["busy"] = True
+    play["phase"] = "move"
+    save_data(user_data)
+    try:
+        rest = cloth_names(play[side])
+        if side == "her":
+            last = not play["her"]
+            instr = (f"Игра «камень-ножницы-бумага на раздевание». Ты проиграл(а) раунд, и собеседник выбрал, что тебе снять: "
+                     f"«{item['ru']}». Опиши от первого лица, как ты это снимаешь — живо, игриво, с эмоцией (смущение, азарт, "
+                     f"кокетство). " + ("Это была последняя вещь — теперь на тебе ничего нет, ты проиграл(а) всю игру: отреагируй ярко."
+                                        if last else f"На тебе ещё: {rest}."))
+            play["line"] = await play_ai(user_id, user, instr, "play_fallback_her")
+        else:
+            last = not play["mine"]
+            instr = (f"Игра «камень-ножницы-бумага на раздевание». Собеседник проиграл раунд и снимает с себя «{item['ru']}». "
+                     "Отреагируй в образе: подразни, полюбуйся, сделай комплимент. "
+                     + ("Это была его последняя вещь — он полностью раздет, ты выиграл(а) игру: отреагируй ярко."
+                        if last else f"На нём ещё: {rest}."))
+            play["line"] = await play_ai(user_id, user, instr, "play_fallback_me")
+    finally:
+        play["busy"] = False
+    if side == "her" and not play["her"]:
+        await play_finish(user_id, user, True)
+    elif side == "mine" and not play["mine"]:
+        await play_finish(user_id, user, False)
+    save_data(user_data)
+    return _play_reply(user)
+
+
+async def api_play_quit_handler(request):
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    user["play"] = None
+    save_data(user_data)
+    return _play_reply(user)
+
+
+async def play_page_handler(request):
+    return web.Response(text=PLAY_PAGE_HTML, content_type="text/html")
+
+
+# Страница игр -- статичная, всё состояние через /api/play/* (как у колеса и магазина).
+PLAY_PAGE_HTML = r'''<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Play</title>
+<script>
+  window.__tgSdkSettled = false;
+  window.__tgSdkOnSettle = function () { window.__tgSdkSettled = true; if (window.__tgTryBoot) window.__tgTryBoot(); };
+</script>
+<script src="/tg-sdk.js" async onload="window.__tgSdkOnSettle()" onerror="window.__tgSdkOnSettle()"></script>
+<style>
+  :root { --bg: var(--tg-theme-bg-color, #12131a); --fg: var(--tg-theme-text-color, #f2f2f7); --hint: var(--tg-theme-hint-color, #8e8e98);
+    --card: var(--tg-theme-secondary-bg-color, #1e2030); --accent: var(--tg-theme-button-color, #6c5ce7); --accent-fg: var(--tg-theme-button-text-color, #fff); }
+  html, body { margin: 0; background: var(--bg); color: var(--fg); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+  body { padding: 12px 14px 28px; }
+  #top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  #title { font-size: 18px; font-weight: 800; }
+  #bucks { font-weight: 800; }
+  #sound-toggle { margin-left: 8px; border: none; background: rgba(127,127,127,.18); color: inherit; border-radius: 10px; font-size: 15px; padding: 3px 7px; }
+  .card { background: var(--card); border-radius: 18px; padding: 14px; margin-bottom: 12px; }
+  .card h3 { margin: 0 0 4px; font-size: 17px; }
+  .card p { margin: 0 0 10px; color: var(--hint); font-size: 13px; line-height: 1.35; }
+  .btn { width: 100%; border: none; border-radius: 14px; padding: 13px; font-size: 16px; font-weight: 800; background: var(--accent); color: var(--accent-fg); cursor: pointer; }
+  .btn.secondary { background: rgba(127,127,127,.2); color: var(--fg); }
+  .btn:disabled { opacity: .5; }
+  .row { display: flex; gap: 8px; margin-bottom: 10px; }
+  .seg { flex: 1; border: 2px solid transparent; background: rgba(127,127,127,.15); color: var(--fg); border-radius: 12px; padding: 9px; font-weight: 700; }
+  .seg.on { border-color: var(--accent); background: rgba(108,92,231,.18); }
+  .strip-card { background: linear-gradient(150deg, rgba(229,57,53,.28), rgba(216,27,96,.18) 60%, var(--card)); }
+  #arena { text-align: center; }
+  #score { font-size: 14px; color: var(--hint); margin-bottom: 6px; }
+  #hands { display: flex; justify-content: center; align-items: center; gap: 26px; font-size: 64px; height: 92px; }
+  #hands .vs { font-size: 18px; color: var(--hint); font-weight: 800; }
+  .hand { display: inline-block; }
+  .hand.shake { animation: shake .3s ease-in-out 3; }
+  .hand.mine.shake { animation-name: shake-r; }
+  @keyframes shake { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-16px) rotate(-12deg); } }
+  @keyframes shake-r { 0%, 100% { transform: translateY(0) rotate(0) scaleX(-1); } 50% { transform: translateY(-16px) rotate(12deg) scaleX(-1); } }
+  .hand.mine { transform: scaleX(-1); }
+  .hand.pop { animation: pop .35s ease; }
+  @keyframes pop { 0% { transform: scale(.6); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+  #labels { display: flex; justify-content: center; gap: 70px; font-size: 12px; color: var(--hint); margin-bottom: 4px; }
+  #outcome { min-height: 24px; font-weight: 800; font-size: 16px; margin: 6px 0; }
+  #outcome.win { color: #2ecc71; } #outcome.lose { color: #ff6b6b; }
+  #line { display: none; text-align: left; background: rgba(127,127,127,.14); border-radius: 16px 16px 16px 4px; padding: 10px 12px;
+    font-size: 14px; line-height: 1.4; margin: 8px 0 12px; white-space: pre-wrap; }
+  #line.thinking { color: var(--hint); font-style: italic; }
+  #moves { display: flex; gap: 10px; margin-top: 8px; }
+  .move { flex: 1; font-size: 40px; padding: 12px 0 8px; border: none; border-radius: 18px; background: rgba(127,127,127,.18); color: var(--fg); }
+  .move span { display: block; font-size: 12px; font-weight: 700; margin-top: 2px; }
+  .move:active { transform: scale(.94); }
+  .wardrobe { text-align: left; margin-bottom: 10px; }
+  .wardrobe .who { font-size: 13px; font-weight: 800; margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { border: none; border-radius: 12px; padding: 6px 9px; font-size: 13px; background: rgba(127,127,127,.16); color: var(--fg); }
+  .chip.pickable { background: linear-gradient(135deg, #e53935, #d81b60); color: #fff; font-weight: 800; animation: chip-glow 1s ease-in-out infinite; }
+  .chip.locked { opacity: .45; }
+  @keyframes chip-glow { 0%, 100% { box-shadow: 0 0 0 rgba(229,57,53,.0); } 50% { box-shadow: 0 0 12px rgba(229,57,53,.8); } }
+  .chip.gone { animation: chip-gone .5s ease forwards; }
+  @keyframes chip-gone { to { transform: translateY(-20px) scale(.5); opacity: 0; } }
+  #prompt { font-weight: 800; margin: 6px 0; min-height: 20px; }
+  #over { display: none; }
+  #over .big { font-size: 22px; font-weight: 900; margin: 6px 0 12px; }
+  #full-screen-msg { display: none; padding: 30px 10px; text-align: center; color: var(--hint); white-space: pre-wrap; }
+</style>
+</head>
+<body>
+  <div id="top"><div id="title"></div><div><span id="bucks"></span><button id="sound-toggle" type="button">🔊</button></div></div>
+  <div id="menu"></div>
+  <div id="arena" style="display:none">
+    <div id="her-wardrobe" class="wardrobe card" style="display:none"></div>
+    <div class="card">
+      <div id="score"></div>
+      <div id="labels"><span id="lbl-her"></span><span id="lbl-me"></span></div>
+      <div id="hands"><span class="hand theirs" id="hand-theirs">✊</span><span class="vs">VS</span><span class="hand mine" id="hand-mine">✊</span></div>
+      <div id="outcome"></div>
+      <div id="line"></div>
+      <div id="prompt"></div>
+      <div id="moves"></div>
+      <div id="over"><div class="big" id="over-text"></div>
+        <div class="row"><button class="btn" id="again-btn"></button><button class="btn secondary" id="chat-btn"></button></div></div>
+    </div>
+    <div id="my-wardrobe" class="wardrobe card" style="display:none"></div>
+    <button class="btn secondary" id="quit-btn"></button>
+  </div>
+  <div id="full-screen-msg"></div>
+<script>
+(function () {
+  var booted = false;
+  function boot() {
+  if (booted) return;
+  booted = true;
+  var tg = (window.Telegram && window.Telegram.WebApp) || null;
+  function safe(fn) { try { fn(); } catch (e) {} }
+  if (tg) { safe(function () { tg.ready(); }); safe(function () { tg.expand(); }); }
+  var state = null, busy = false, selfGender = null;
+  var EMO = { rock: "🪨", scissors: "✌️", paper: "✋" };
+
+  // ---- звук и вибрация ----
+  var sfxCtx = null, sfxOn = true;
+  try { sfxOn = localStorage.getItem("rd_sound") !== "off"; } catch (e) {}
+  function sfxUnlock() { if (sfxCtx || !sfxOn) return; try { sfxCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+  document.addEventListener("pointerdown", sfxUnlock, true);
+  function tone(f, d, type, v, delay, to) {
+    if (!sfxOn || !sfxCtx) return;
+    try { var t0 = sfxCtx.currentTime + (delay || 0), o = sfxCtx.createOscillator(), g = sfxCtx.createGain();
+      o.type = type || "sine"; o.frequency.setValueAtTime(f, t0); if (to) o.frequency.exponentialRampToValueAtTime(to, t0 + d);
+      g.gain.setValueAtTime(v || .1, t0); g.gain.exponentialRampToValueAtTime(.0001, t0 + d);
+      o.connect(g); g.connect(sfxCtx.destination); o.start(t0); o.stop(t0 + d + .02); } catch (e) {}
+  }
+  function haptic(k) { if (!tg || !tg.HapticFeedback) return; try { if (k === "select") tg.HapticFeedback.selectionChanged();
+    else if (k === "success" || k === "error" || k === "warning") tg.HapticFeedback.notificationOccurred(k); else tg.HapticFeedback.impactOccurred(k); } catch (e) {} }
+  function fx(k) {
+    if (k === "shake") { tone(220, .06, "square", .05); haptic("light"); }
+    else if (k === "win") { [523, 659, 784].forEach(function (f, i) { tone(f, .12, "triangle", .1, i * .08); }); haptic("success"); }
+    else if (k === "lose") { tone(330, .2, "sawtooth", .06, 0, 160); haptic("warning"); }
+    else if (k === "draw") { tone(440, .1, "sine", .08); haptic("select"); }
+    else if (k === "strip") { tone(900, .15, "sine", .07, 0, 300); tone(600, .2, "triangle", .05, .1, 1200); haptic("medium"); }
+    else if (k === "big") { [523, 659, 784, 1047, 1319].forEach(function (f, i) { tone(f, .16, "triangle", .1, i * .09); }); haptic("heavy"); }
+  }
+  var soundBtn = document.getElementById("sound-toggle");
+  soundBtn.textContent = sfxOn ? "🔊" : "🔇";
+  soundBtn.onclick = function () { sfxOn = !sfxOn; try { localStorage.setItem("rd_sound", sfxOn ? "on" : "off"); } catch (e) {}
+    soundBtn.textContent = sfxOn ? "🔊" : "🔇"; if (sfxOn) { sfxUnlock(); fx("draw"); } };
+
+  function initData() { return tg ? tg.initData : ""; }
+  function api(path, body) {
+    var controller = new AbortController();
+    var tid = setTimeout(function () { controller.abort(); }, 60000);
+    var opts = { method: body ? "POST" : "GET", headers: { "X-Telegram-Init-Data": initData(), "Content-Type": "application/json" }, signal: controller.signal };
+    if (body) opts.body = JSON.stringify(body);
+    return fetch(path, opts).then(function (r) { clearTimeout(tid); return r.json(); }, function (e) { clearTimeout(tid); throw e; });
+  }
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function showFullScreen(text) { ["menu", "arena", "top"].forEach(function (id) { document.getElementById(id).style.display = "none"; });
+    var m = document.getElementById("full-screen-msg"); m.style.display = "block"; m.textContent = text; }
+
+  function renderMenu() {
+    var s = state, ui = s.ui, menu = document.getElementById("menu");
+    menu.innerHTML = "";
+    menu.style.display = "block";
+    document.getElementById("arena").style.display = "none";
+    var rps = el("div", "card");
+    rps.appendChild(el("h3", null, ui.play_rps_title));
+    rps.appendChild(el("p", null, ui.play_rps_desc.replace("{wins}", s.wins)));
+    var b1 = el("button", "btn", ui.play_start + " · " + s.price + "💵");
+    b1.onclick = function () { start("rps"); };
+    rps.appendChild(b1);
+    menu.appendChild(rps);
+    var st = el("div", "card strip-card");
+    st.appendChild(el("h3", null, ui.play_strip_title));
+    st.appendChild(el("p", null, ui.play_strip_desc));
+    if (!s.strip_allowed) {
+      st.appendChild(el("p", null, ui.play_strip_locked));
+    } else {
+      st.appendChild(el("p", null, ui.play_self_gender));
+      var row = el("div", "row");
+      selfGender = selfGender || s.self_gender;
+      ["male", "female"].forEach(function (g) {
+        var b = el("button", "seg" + (selfGender === g ? " on" : ""), g === "male" ? ui.play_male : ui.play_female);
+        b.onclick = function () { selfGender = g; renderMenu(); };
+        row.appendChild(b);
+      });
+      st.appendChild(row);
+      var b2 = el("button", "btn", ui.play_start + " · " + ui.play_strip_cost.replace("{n}", s.scenes));
+      b2.onclick = function () { start("strip"); };
+      st.appendChild(b2);
+    }
+    menu.appendChild(st);
+  }
+
+  function renderWardrobe(boxId, title, items, removed, picking) {
+    var box = document.getElementById(boxId);
+    box.innerHTML = "";
+    var who = el("div", "who");
+    who.appendChild(el("span", null, title));
+    who.appendChild(el("span", null, "👕 " + items.length + (removed ? "  ·  🧺 " + removed : "")));
+    box.appendChild(who);
+    var chips = el("div", "chips");
+    items.forEach(function (it) {
+      var c = el("button", "chip", it.emoji + " " + it.name);
+      if (picking) {
+        if (it.removable) { c.classList.add("pickable"); c.onclick = function () { removeItem(it.id, c); }; }
+        else { c.classList.add("locked"); c.onclick = function () { safe(function () { tg.showAlert(state.ui.play_cant_remove); }); }; }
+      }
+      chips.appendChild(c);
+    });
+    if (!items.length) chips.appendChild(el("span", "chip", "🫣"));
+    box.appendChild(chips);
+  }
+
+  function renderArena() {
+    var s = state, g = s.game, ui = s.ui;
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("arena").style.display = "block";
+    var strip = g.mode === "strip";
+    document.getElementById("her-wardrobe").style.display = strip ? "block" : "none";
+    document.getElementById("my-wardrobe").style.display = strip ? "block" : "none";
+    if (strip) {
+      renderWardrobe("her-wardrobe", (s.char_gender === "female" ? "👩 " : "👨 ") + ui.play_her, g.her, g.her_removed, g.phase === "pick_her");
+      renderWardrobe("my-wardrobe", "🙂 " + ui.play_me, g.mine, g.mine_removed, g.phase === "pick_me");
+    }
+    document.getElementById("lbl-her").textContent = ui.play_her;
+    document.getElementById("lbl-me").textContent = ui.play_me;
+    document.getElementById("score").textContent = strip ? "" : ui.play_score.replace("{me}", g.me).replace("{ai}", g.ai).replace("{wins}", s.wins);
+    var line = document.getElementById("line");
+    line.className = "";
+    if (g.line) { line.style.display = "block"; line.textContent = g.line; } else line.style.display = "none";
+    var prompt = document.getElementById("prompt");
+    prompt.textContent = g.phase === "pick_her" ? ui.play_pick_her : (g.phase === "pick_me" ? ui.play_pick_me : (g.phase === "move" ? ui.play_make_move : ""));
+    var moves = document.getElementById("moves");
+    moves.innerHTML = "";
+    moves.style.display = g.phase === "move" ? "flex" : "none";
+    ["rock", "scissors", "paper"].forEach(function (k) {
+      var b = el("button", "move");
+      b.textContent = EMO[k];
+      b.appendChild(el("span", null, s.rps_names[k]));
+      b.disabled = busy;
+      b.onclick = function () { move(k); };
+      moves.appendChild(b);
+    });
+    var over = document.getElementById("over");
+    over.style.display = g.phase === "over" ? "block" : "none";
+    if (g.phase === "over") {
+      document.getElementById("over-text").textContent = g.result === "win" ? (strip ? ui.play_win_strip : ui.play_win_rps) : ui.play_lose;
+      prompt.textContent = "";
+    }
+    document.getElementById("quit-btn").style.display = g.phase === "over" ? "none" : "block";
+  }
+
+  function render() {
+    document.getElementById("title").textContent = state.ui.play_title;
+    document.getElementById("bucks").textContent = "💵 " + state.bucks;
+    if (state.game) renderArena(); else renderMenu();
+  }
+
+  function thinking() { var line = document.getElementById("line"); line.style.display = "block"; line.className = "thinking"; line.textContent = state.ui.play_thinking; }
+
+  function start(mode) {
+    if (busy) return;
+    busy = true;
+    api("/api/play/start", { mode: mode, self_gender: selfGender }).then(function (res) {
+      busy = false;
+      if (res.state) state = res.state;
+      if (!res.ok) { safe(function () { tg.showAlert(res.error || "Error"); }); }
+      render();
+    }).catch(function () { busy = false; });
+  }
+
+  function move(choice) {
+    if (busy) return;
+    busy = true;
+    var mine = document.getElementById("hand-mine"), theirs = document.getElementById("hand-theirs"), out = document.getElementById("outcome");
+    out.textContent = ""; out.className = "";
+    mine.textContent = "✊"; theirs.textContent = "✊";
+    [mine, theirs].forEach(function (h) { h.classList.remove("pop"); void h.offsetWidth; h.classList.add("shake"); });
+    document.getElementById("moves").querySelectorAll("button").forEach(function (b) { b.disabled = true; });
+    fx("shake"); setTimeout(function () { fx("shake"); }, 300); setTimeout(function () { fx("shake"); }, 600);
+    var req = api("/api/play/move", { choice: choice });
+    var minWait = new Promise(function (r) { setTimeout(r, 950); });
+    if (state.game.mode === "rps") setTimeout(thinking, 1000);
+    Promise.all([req, minWait]).then(function (v) {
+      var res = v[0];
+      busy = false;
+      [mine, theirs].forEach(function (h) { h.classList.remove("shake"); });
+      if (res.state) state = res.state;
+      var last = state.game && state.game.last;
+      if (last) {
+        mine.textContent = EMO[last.mine]; theirs.textContent = EMO[last.theirs];
+        [mine, theirs].forEach(function (h) { void h.offsetWidth; h.classList.add("pop"); });
+        out.textContent = last.outcome === "win" ? state.ui.play_round_win : (last.outcome === "lose" ? state.ui.play_round_lose : state.ui.play_draw);
+        out.className = last.outcome;
+        fx(last.outcome);
+      }
+      render();
+      if (state.game && state.game.phase === "over") fx(state.game.result === "win" ? "big" : "lose");
+    }).catch(function () { busy = false; render(); });
+  }
+
+  function removeItem(id, chip) {
+    if (busy) return;
+    busy = true;
+    chip.classList.add("gone");
+    fx("strip");
+    thinking();
+    api("/api/play/remove", { item: id }).then(function (res) {
+      busy = false;
+      if (res.state) state = res.state;
+      if (!res.ok && res.error) safe(function () { tg.showAlert(res.error); });
+      document.getElementById("outcome").textContent = "";
+      render();
+      if (state.game && state.game.phase === "over") fx(state.game.result === "win" ? "big" : "lose");
+    }).catch(function () { busy = false; render(); });
+  }
+
+  document.getElementById("quit-btn").onclick = function () { api("/api/play/quit", {}).then(function (res) { if (res.state) state = res.state; render(); }); };
+  document.getElementById("again-btn").onclick = function () { api("/api/play/quit", {}).then(function (res) { if (res.state) state = res.state; render(); }); };
+  document.getElementById("chat-btn").onclick = function () { safe(function () { tg.close(); }); };
+
+  function load() {
+    api("/api/play/state").then(function (res) {
+      if (!res.state) { showFullScreen(res.message || res.error || "Error"); return; }
+      state = res.state;
+      var ui = state.ui;
+      document.getElementById("quit-btn").textContent = ui.play_quit;
+      document.getElementById("again-btn").textContent = ui.play_again;
+      document.getElementById("chat-btn").textContent = ui.play_to_chat;
+      render();
+      var want = (location.search.match(/game=(\w+)/) || [])[1];
+      if (want === "strip" && !state.game) { document.querySelector(".strip-card") && document.querySelector(".strip-card").scrollIntoView(); }
+    }).catch(function (e) { showFullScreen("Network error: " + (e && e.message || "unknown")); });
+  }
+  load();
+  }
+  window.__tgTryBoot = function () { if (window.__tgSdkSettled) boot(); };
+  window.__tgTryBoot();
+  setTimeout(boot, 3000);
+})();
+</script>
+</body>
+</html>
+'''
+
+
 async def spin_page_handler(request):
     return web.Response(text=SPIN_PAGE_HTML, content_type="text/html")
 
@@ -16846,6 +17528,12 @@ async def run_webapp_server():
     app_web.router.add_post("/api/platega/callback", platega_callback_handler)
     app_web.router.add_post("/api/shop/custom", api_custom_gift_handler)
     app_web.router.add_get("/spin", spin_page_handler)
+    app_web.router.add_get("/play", play_page_handler)
+    app_web.router.add_get("/api/play/state", api_play_state_handler)
+    app_web.router.add_post("/api/play/start", api_play_start_handler)
+    app_web.router.add_post("/api/play/move", api_play_move_handler)
+    app_web.router.add_post("/api/play/remove", api_play_remove_handler)
+    app_web.router.add_post("/api/play/quit", api_play_quit_handler)
     app_web.router.add_get("/api/spin/state", api_spin_state_handler)
     app_web.router.add_post("/api/spin/free", api_spin_free_handler)
     app_web.router.add_post("/api/spin/paid/invoice", api_spin_paid_invoice_handler)
