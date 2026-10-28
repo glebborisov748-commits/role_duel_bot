@@ -7352,6 +7352,16 @@ GAME_TEXTS = {
         "play_need_super": '💎 Игра на раздевание доступна с подпиской SUPER PRO или ELITE — без ограничений. Оформить: профиль → «👑 Оформить подписку».',
         "play_start": '▶️ Играть',
         "play_free": 'бесплатно',
+        "play_bj_title": '🃏 Блэкджек',
+        "play_bj_desc": 'Персонаж — крупье. Набери ближе к 21, чем он, и не перебери. Выигрыш x2, блэкджек x2.5.',
+        "play_bj_bet": 'Ставка {bet}💵',
+        "play_bj_dealer": 'Персонаж (крупье)',
+        "play_bj_you": 'Ты',
+        "play_bj_hit": '➕ Ещё карту',
+        "play_bj_stand": '✋ Хватит',
+        "play_bj_again": 'Ещё раунд — выбери ставку:',
+        "play_bj_choose": 'Выбери ставку:',
+        "play_fallback_bj": ['Ещё раунд? Самое интересное только начинается 😏', 'Карты сегодня на чьей-то стороне 😉 Продолжим?', 'Ну что, рискнёшь ещё? 🃏'],
         "play_she_took": '😏 Персонаж выбрал, что снимешь ты: {item}',
         "play_fallback_take": ['Хм… дай-ка подумать 😏 Мой выбор: {item}. Снимай.', 'Мой раунд! {item} — долой… только медленно 😉', 'Ну что… уговор есть уговор: {item} 🔥'],
         "play_her": 'Персонаж',
@@ -7462,6 +7472,16 @@ GAME_TEXTS = {
         "play_need_super": '💎 The strip game comes with SUPER PRO or ELITE — unlimited. Get it: profile → «👑 Subscribe».',
         "play_start": '▶️ Play',
         "play_free": 'free',
+        "play_bj_title": '🃏 Blackjack',
+        "play_bj_desc": 'Your companion is the dealer. Get closer to 21 than them without going over. A win pays x2, blackjack x2.5.',
+        "play_bj_bet": 'Bet {bet}💵',
+        "play_bj_dealer": 'Companion (dealer)',
+        "play_bj_you": 'You',
+        "play_bj_hit": '➕ Hit',
+        "play_bj_stand": '✋ Stand',
+        "play_bj_again": 'Another round — pick a bet:',
+        "play_bj_choose": 'Pick a bet:',
+        "play_fallback_bj": ["Another round? I'm just warming up 😏", 'The cards are on someone\'s side tonight 😉 Shall we go on?', 'So, risking it again? 🃏'],
         "play_she_took": '😏 Your companion picked what you take off: {item}',
         "play_fallback_take": ['Hmm… let me think 😏 Take off the {item}.', 'My round! Let\'s start with the {item}… slowly 😉', 'Well, loser… the {item} goes 🔥'],
         "play_her": 'Companion',
@@ -7546,11 +7566,11 @@ CITIES_XP = 30
 # Развлечения покупаются в магазине (вкладка «🎮 Развлечения») и стартуют сразу, без билетов. price=0 у
 # блэкджека: там платишь ставкой. Оставшиеся старые билеты (game_tickets) засчитываются как оплата.
 GAME_OFFERS = {
-    # Все развлечения бесплатные (по фидбэку: "чтобы было реалистично") -- кроме блэкджека, там ставки.
+    # Развлечения бесплатные (по фидбэку: "чтобы было реалистично") -- кроме кино и блэкджека (там ставки).
     "cities": {"emoji": "🏙", "ru": "Города", "en": "Cities", "price": 0},
     "tod": {"emoji": "🤫", "ru": "Правда или действие", "en": "Truth or dare", "price": 0},
     "bj": {"emoji": "🃏", "ru": "Блэкджек", "en": "Blackjack", "price": 0},
-    "movie": {"emoji": "🎬", "ru": "Кино вместе", "en": "Movie together", "price": 0},
+    "movie": {"emoji": "🎬", "ru": "Кино вместе", "en": "Movie together", "price": 2250},  # кино -- за баксы
     "rps": {"emoji": "✊", "ru": "Камень, ножницы, бумага", "en": "Rock, paper, scissors", "price": 0},
 }
 
@@ -7652,7 +7672,10 @@ async def start_game(chat_id, user, key):
         await bot.send_message(chat_id, gt(user, "play_open_text"), reply_markup=play_link_kb(user))
         return None
     if key == "bj":
-        await send_bj_bets(chat_id, user)
+        if WEBAPP_URL:
+            await bot.send_message(chat_id, gt(user, "play_open_text"), reply_markup=play_link_kb(user, "bj"))
+        else:
+            await send_bj_bets(chat_id, user)
         return None
     if key == "movie":
         await send_movie_genres(chat_id, user)
@@ -8150,11 +8173,7 @@ async def bj_bet_cb(call: types.CallbackQuery):
     if not spend_bucks(user, bet):
         await call.answer(get_text(user, "not_enough_bucks", n=bet - user.get("bucks", 0)), show_alert=True)
         return
-    deck = [(r, s) for r in RANKS for s in SUITS]
-    random.shuffle(deck)
-    game = {"type": "bj", "bet": bet, "deck": deck, "player": [], "dealer": []}
-    game["player"] = [bj_draw(game), bj_draw(game)]
-    game["dealer"] = [bj_draw(game), bj_draw(game)]
+    game = bj_new_hand(bet)
     game_touch(game)
     user["game"] = game
     save_data(user_data)
@@ -8167,31 +8186,52 @@ async def bj_bet_cb(call: types.CallbackQuery):
                                                   dealer=bj_show(game["dealer"], hide_second=True), dv=bj_value(game["dealer"][:1]), bet=bet), reply_markup=bj_kb(user))
 
 
-async def bj_finish(chat_id, user):
-    game = user["game"]
+def bj_new_hand(bet):
+    deck = [(r, s) for r in RANKS for s in SUITS]
+    random.shuffle(deck)
+    game = {"type": "bj", "bet": bet, "deck": deck, "player": [], "dealer": []}
+    game["player"] = [bj_draw(game), bj_draw(game)]
+    game["dealer"] = [bj_draw(game), bj_draw(game)]
+    return game
+
+
+def bj_settle(game):
+    """Добор крупье и расчёт -- общий для чата и мини-приложения. Возвращает (исход, выплата)."""
     while bj_value(game["dealer"]) < 17 and bj_value(game["player"]) <= 21:
         game["dealer"].append(bj_draw(game))
     pv, dv, bet = bj_value(game["player"]), bj_value(game["dealer"]), game["bet"]
     natural = pv == 21 and len(game["player"]) == 2
     if pv > 21:
-        outcome, payout = "lose", 0
-    elif natural and not (dv == 21 and len(game["dealer"]) == 2):
-        outcome, payout = "blackjack", int(bet * 2.5)
-    elif dv > 21 or pv > dv:
-        outcome, payout = "win", bet * 2
-    elif pv == dv:
-        outcome, payout = "push", bet
-    else:
-        outcome, payout = "lose", 0
+        return "lose", 0
+    if natural and not (dv == 21 and len(game["dealer"]) == 2):
+        return "blackjack", int(bet * 2.5)
+    if dv > 21 or pv > dv:
+        return "win", bet * 2
+    if pv == dv:
+        return "push", bet
+    return "lose", 0
+
+
+def bj_result_text(user, outcome, bet, payout):
+    return {"lose": gt(user, "bj_lose", amount=bet), "win": gt(user, "bj_win", amount=bet),
+            "blackjack": gt(user, "bj_blackjack", amount=payout - bet), "push": gt(user, "bj_push")}[outcome]
+
+
+BJ_AI_FACTS = {"lose": "ты выиграл(а) этот раунд — собеседник проиграл ставку", "win": "собеседник выиграл раунд — ты проиграл(а)",
+               "blackjack": "у собеседника блэкджек — ты в шоке", "push": "ничья"}
+
+
+async def bj_finish(chat_id, user):
+    game = user["game"]
+    outcome, payout = bj_settle(game)
+    pv, dv, bet = bj_value(game["player"]), bj_value(game["dealer"]), game["bet"]
     user["bucks"] = user.get("bucks", 0) + payout
-    result = {"lose": gt(user, "bj_lose", amount=bet), "win": gt(user, "bj_win", amount=bet),
-              "blackjack": gt(user, "bj_blackjack", amount=payout - bet), "push": gt(user, "bj_push")}[outcome]
+    result = bj_result_text(user, outcome, bet, payout)
     user["game"] = None
     save_data(user_data)
     await bot.send_message(chat_id, gt(user, "bj_end", player=bj_show(game["player"]), pv=pv, dealer=bj_show(game["dealer"]),
                                        dv=dv, result=result), reply_markup=games_menu_kb(user))
-    facts = {"lose": "ты выиграл(а) этот раунд — собеседник проиграл ставку", "win": "собеседник выиграл раунд — ты проиграл(а)",
-             "blackjack": "у собеседника блэкджек — ты в шоке", "push": "ничья"}[outcome]
+    facts = BJ_AI_FACTS[outcome]
     line = await game_ai_line(chat_id, user, f"Вы играете в блэкджек. Итог раунда: {facts}. У собеседника {pv}, у тебя {dv}. "
                                               "Прокомментируй в образе, можно подколоть или предложить ещё раунд.")
     save_data(user_data)
@@ -8735,7 +8775,7 @@ def serialize_shop_state(user):
             categories.append({"key": shop_category, "name": get_text(user, SHOP_CATEGORY_TEXT_KEY[shop_category]), "items": items})
 
     game_items = [{
-        "key": key, "category": "play" if key == "rps" else "game", "image": shop_item_image("game", key), "emoji": offer["emoji"],
+        "key": key, "category": "play" if key in ("rps", "bj") else "game", "image": shop_item_image("game", key), "emoji": offer["emoji"],
         "name": game_offer_name(user, key), "price": offer["price"],
         "price_label": game_price_label(user, key),
         "effects": gt(user, "game_desc_" + key), "ready_in": None, "refuse": False,
@@ -16898,6 +16938,14 @@ def serialize_play_state(user):
     lang = "ru" if user.get("lang", "ru") == "ru" else "en"
     play = user.get("play")
     game = None
+    if play and play.get("mode") == "bj":
+        hidden = play["phase"] == "turn"
+        dealer = [list(play["dealer"][0]), None] if hidden else [list(c) for c in play["dealer"]]
+        game = {"mode": "bj", "phase": play["phase"], "bet": play["bet"], "player": [list(c) for c in play["player"]],
+                "dealer": dealer, "pv": bj_value(play["player"]),
+                "dv": bj_value(play["dealer"][:1] if hidden else play["dealer"]),
+                "result": play.get("result"), "result_text": play.get("result_text"), "line": play.get("line")}
+        play = None
     if play:
         pick = play.get("phase")
         def items(side, picker):
@@ -16910,7 +16958,7 @@ def serialize_play_state(user):
                 "mine": items("mine", "pick_me") if play["mode"] == "strip" else [],
                 "her_removed": len(play.get("her_removed", [])), "mine_removed": len(play.get("mine_removed", []))}
     ui = {k: gt(user, k) for k in GAME_TEXTS["ru"] if k.startswith("play_") and isinstance(GAME_TEXTS["ru"][k], str)}
-    return {"bucks": user.get("bucks", 0), "price": PLAY_RPS_PRICE, "wins": PLAY_RPS_WINS,
+    return {"bucks": user.get("bucks", 0), "price": PLAY_RPS_PRICE, "wins": PLAY_RPS_WINS, "bj_bets": BJ_BETS,
             "strip_allowed": play_strip_allowed(user), "strip_subscribed": play_strip_subscribed(user),
             "char_gender": user.get("gender") or "female",
             "rps_names": gt(user, "rps_names"), "game": game, "ui": ui}
@@ -16959,8 +17007,10 @@ async def api_play_start_handler(request):
     if err:
         return err
     mode = body.get("mode")
-    if mode not in ("rps", "strip"):
+    if mode not in ("rps", "strip", "bj"):
         return _play_reply(user, False, "Bad request")
+    if mode == "bj":
+        return await play_bj_start(user_id, user, body)
     if user.get("game"):
         user["game"] = None  # чатовая партия, если висела, не мешает
     error = games_gate_error(user)
@@ -17122,6 +17172,70 @@ async def api_play_remove_handler(request):
     return _play_reply(user)
 
 
+async def play_bj_start(user_id, user, body):
+    try:
+        bet = int(body.get("bet"))
+    except (TypeError, ValueError):
+        bet = 0
+    if bet not in BJ_BETS:
+        return _play_reply(user, False, "Bad request")
+    if user.get("play") and user["play"].get("mode") == "bj" and user["play"].get("phase") == "turn":
+        return _play_reply(user, False, None)  # раунд уже идёт -- двойной тап не списывает вторую ставку
+    if user.get("game"):
+        user["game"] = None
+    error = games_gate_error(user)
+    if error:
+        return _play_reply(user, False, error)
+    if not spend_bucks(user, bet):
+        return _play_reply(user, False, get_text(user, "not_enough_bucks", n=bet - user.get("bucks", 0)))
+    hand = bj_new_hand(bet)
+    prev_log = (user.get("play") or {}).get("log", []) if (user.get("play") or {}).get("mode") == "bj" else []
+    user["play"] = {"mode": "bj", "phase": "turn", "bet": bet, "deck": hand["deck"], "player": hand["player"],
+                    "dealer": hand["dealer"], "line": None, "result": None, "result_text": None, "busy": False, "log": prev_log}
+    if bj_value(hand["player"]) == 21:
+        await play_bj_settle(user_id, user)
+    save_data(user_data)
+    return _play_reply(user)
+
+
+async def play_bj_settle(user_id, user):
+    play = user["play"]
+    outcome, payout = bj_settle(play)
+    user["bucks"] = user.get("bucks", 0) + payout
+    play["phase"] = "done"
+    play["result"] = outcome
+    play["result_text"] = bj_result_text(user, outcome, play["bet"], payout)
+    play["busy"] = True
+    save_data(user_data)
+    try:
+        pv, dv = bj_value(play["player"]), bj_value(play["dealer"])
+        line = await game_ai_line(user_id, user, f"Вы играете в блэкджек, ты — крупье. Итог раунда: {BJ_AI_FACTS[outcome]}. "
+                                                 f"У собеседника {pv}, у тебя {dv}, ставка {play['bet']}. Прокомментируй в образе: "
+                                                 "подколи, порадуйся или предложи ещё раунд.", tail=play_tail(play))
+        play_log(play, line)
+        play["line"] = line or random.choice(gt(user, "play_fallback_bj"))
+    finally:
+        play["busy"] = False
+
+
+async def api_play_bj_handler(request):
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    play = user.get("play")
+    action = body.get("action")
+    if not play or play.get("mode") != "bj" or play.get("phase") != "turn" or play.get("busy") or action not in ("hit", "stand"):
+        return _play_reply(user, False, None)
+    if action == "hit":
+        play["player"].append(bj_draw(play))
+        if bj_value(play["player"]) < 21:
+            save_data(user_data)
+            return _play_reply(user)
+    await play_bj_settle(user_id, user)
+    save_data(user_data)
+    return _play_reply(user)
+
+
 async def api_play_quit_handler(request):
     user_id, user, body, err = await _play_request(request)
     if err:
@@ -17198,6 +17312,24 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   #prompt { font-weight: 800; margin: 6px 0; min-height: 20px; white-space: pre-line; }
   #over { display: none; }
   #over .big { font-size: 22px; font-weight: 900; margin: 6px 0 12px; }
+  #over .row, .bets { display: flex; gap: 8px; }
+  .bets { flex-wrap: wrap; }
+  .bets .btn { flex: 1 1 40%; padding: 11px 6px; font-size: 15px; }
+  .bj-card { background: linear-gradient(150deg, rgba(46,204,113,.22), rgba(22,160,133,.12) 60%, var(--card)); }
+  #bj { display: none; }
+  .bj-side { margin: 6px 0 10px; }
+  .bj-who { font-size: 13px; color: var(--hint); font-weight: 700; margin-bottom: 6px; }
+  .bj-hand { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; min-height: 84px; }
+  .pc { width: 54px; height: 78px; border-radius: 9px; background: #fff; color: #1b1b1f; display: flex; flex-direction: column; justify-content: space-between;
+    padding: 5px 6px; box-sizing: border-box; font-weight: 900; box-shadow: 0 3px 10px rgba(0,0,0,.35); animation: deal .35s ease both; }
+  .pc .r { font-size: 18px; text-align: left; } .pc .s { font-size: 22px; text-align: right; }
+  .pc.red { color: #d63031; }
+  .pc.back { background: repeating-linear-gradient(45deg, #6c5ce7 0 6px, #5a4bd1 6px 12px); border: 3px solid #fff; }
+  @keyframes deal { from { transform: translateY(-30px) rotate(-8deg); opacity: 0; } to { transform: none; opacity: 1; } }
+  .bj-val { display: inline-block; margin-top: 4px; font-weight: 900; font-size: 15px; background: rgba(127,127,127,.18); border-radius: 10px; padding: 2px 10px; }
+  #bj-bet { color: var(--hint); font-weight: 700; font-size: 13px; }
+  #bj-actions { display: flex; gap: 10px; margin-top: 8px; }
+  #bj-actions .btn { flex: 1; }
   #full-screen-msg { display: none; padding: 30px 10px; text-align: center; color: var(--hint); white-space: pre-wrap; }
 </style>
 </head>
@@ -17208,12 +17340,18 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     <div id="her-wardrobe" class="wardrobe card" style="display:none"></div>
     <div class="card">
       <div id="score"></div>
+      <div id="bj">
+        <div id="bj-bet"></div>
+        <div class="bj-side"><div class="bj-who" id="bj-who-dealer"></div><div class="bj-hand" id="bj-dealer"></div><div class="bj-val" id="bj-dv"></div></div>
+        <div class="bj-side"><div class="bj-who" id="bj-who-me"></div><div class="bj-hand" id="bj-player"></div><div class="bj-val" id="bj-pv"></div></div>
+      </div>
       <div id="labels"><span id="lbl-her"></span><span id="lbl-me"></span></div>
       <div id="hands"><span class="hand theirs" id="hand-theirs">✊</span><span class="vs">VS</span><span class="hand mine" id="hand-mine">✊</span></div>
       <div id="outcome"></div>
       <div id="line"></div>
       <div id="prompt"></div>
       <div id="moves"></div>
+      <div id="bj-actions"></div>
       <div id="over"><div class="big" id="over-text"></div>
         <div class="row"><button class="btn" id="again-btn"></button><button class="btn secondary" id="chat-btn"></button></div></div>
     </div>
@@ -17253,6 +17391,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     else if (k === "lose") { tone(330, .2, "sawtooth", .06, 0, 160); haptic("warning"); }
     else if (k === "draw") { tone(440, .1, "sine", .08); haptic("select"); }
     else if (k === "strip") { tone(900, .15, "sine", .07, 0, 300); tone(600, .2, "triangle", .05, .1, 1200); haptic("medium"); }
+    else if (k === "card") { tone(1400, .04, "triangle", .05); tone(700, .05, "sine", .04, .03); haptic("light"); }
     else if (k === "big") { [523, 659, 784, 1047, 1319].forEach(function (f, i) { tone(f, .16, "triangle", .1, i * .09); }); haptic("heavy"); }
   }
   var soundBtn = document.getElementById("sound-toggle");
@@ -17274,6 +17413,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
 
   function renderMenu() {
     var s = state, ui = s.ui, menu = document.getElementById("menu");
+    document.getElementById("outcome").textContent = "";
     menu.innerHTML = "";
     menu.style.display = "block";
     document.getElementById("arena").style.display = "none";
@@ -17297,6 +17437,119 @@ PLAY_PAGE_HTML = r'''<!doctype html>
       st.appendChild(b2);
     }
     menu.appendChild(st);
+    var bj = el("div", "card bj-card");
+    bj.appendChild(el("h3", null, ui.play_bj_title));
+    bj.appendChild(el("p", null, ui.play_bj_desc));
+    bj.appendChild(el("p", null, ui.play_bj_choose));
+    bj.appendChild(betButtons());
+    menu.appendChild(bj);
+  }
+
+  function betButtons() {
+    var row = el("div", "bets");
+    state.bj_bets.forEach(function (b) {
+      var btn = el("button", "btn", b + "💵");
+      btn.disabled = busy || state.bucks < b;
+      btn.onclick = function () { bjStart(b); };
+      row.appendChild(btn);
+    });
+    return row;
+  }
+
+  function cardEl(c, delay) {
+    if (!c) return el("div", "pc back");
+    var red = c[1] === "♥" || c[1] === "♦";
+    var e = el("div", "pc" + (red ? " red" : ""));
+    e.appendChild(el("div", "r", c[0])); e.appendChild(el("div", "s", c[1]));
+    e.style.animationDelay = (delay || 0) + "s";
+    return e;
+  }
+
+  var bjShown = { player: 0, dealer: 0 };
+  function renderHand(id, cards, key) {
+    var box = document.getElementById(id);
+    box.innerHTML = "";
+    var fresh = 0;
+    cards.forEach(function (c, i) {
+      var isNew = i >= bjShown[key];
+      var e = cardEl(c, isNew ? fresh++ * .18 : 0);
+      if (!isNew) e.style.animation = "none";
+      box.appendChild(e);
+    });
+    for (var i = 0; i < fresh; i++) setTimeout(function () { fx("card"); }, i * 180);
+    bjShown[key] = cards.length;
+  }
+
+  function renderBj() {
+    var s = state, g = s.game, ui = s.ui;
+    ["hands", "labels", "moves", "over", "her-wardrobe", "my-wardrobe"].forEach(function (id) { document.getElementById(id).style.display = "none"; });
+    document.getElementById("score").textContent = "";
+    document.getElementById("bj").style.display = "block";
+    document.getElementById("bj-bet").textContent = ui.play_bj_bet.replace("{bet}", g.bet);
+    document.getElementById("bj-who-dealer").textContent = (s.char_gender === "female" ? "👩 " : "👨 ") + ui.play_bj_dealer;
+    document.getElementById("bj-who-me").textContent = "🙂 " + ui.play_bj_you;
+    // карта крупье, открытая в конце, -- тоже «новая», чтобы перевернулась с анимацией
+    if (g.phase === "done" && bjShown.dealer === 2 && g.dealer.length >= 2) bjShown.dealer = 1;
+    renderHand("bj-dealer", g.dealer, "dealer");
+    renderHand("bj-player", g.player, "player");
+    document.getElementById("bj-dv").textContent = g.dv + (g.phase === "turn" ? " + ?" : "");
+    document.getElementById("bj-pv").textContent = g.pv;
+    var out = document.getElementById("outcome");
+    out.textContent = g.phase === "done" ? g.result_text : "";
+    out.className = g.phase === "done" ? (g.result === "lose" ? "lose" : (g.result === "push" ? "" : "win")) : "";
+    var line = document.getElementById("line");
+    line.className = "";
+    if (g.line && g.phase === "done") { line.style.display = "block"; line.textContent = g.line; } else line.style.display = "none";
+    var prompt = document.getElementById("prompt");
+    var acts = document.getElementById("bj-actions");
+    acts.innerHTML = "";
+    if (g.phase === "turn") {
+      prompt.textContent = "";
+      acts.style.display = "flex";
+      var h = el("button", "btn", ui.play_bj_hit), st = el("button", "btn secondary", ui.play_bj_stand);
+      h.disabled = st.disabled = busy;
+      h.onclick = function () { bjAct("hit"); };
+      st.onclick = function () { bjAct("stand"); };
+      acts.appendChild(h); acts.appendChild(st);
+    } else {
+      prompt.textContent = ui.play_bj_again;
+      acts.style.display = "block";
+      acts.appendChild(betButtons());
+    }
+    document.getElementById("quit-btn").style.display = "block";
+  }
+
+  function bjStart(bet) {
+    if (busy) return;
+    busy = true;
+    bjShown = { player: 0, dealer: 0 };
+    var t = setTimeout(function () { if (busy) thinking(); }, 500);
+    api("/api/play/start", { mode: "bj", bet: bet }).then(function (res) {
+      busy = false; clearTimeout(t);
+      if (res.state) state = res.state;
+      if (!res.ok && res.error) safe(function () { tg.showAlert(res.error); });
+      render();
+      bjAfter();
+    }).catch(function () { busy = false; render(); });
+  }
+
+  function bjAct(action) {
+    if (busy) return;
+    busy = true;
+    document.getElementById("bj-actions").querySelectorAll("button").forEach(function (b) { b.disabled = true; });
+    var t = setTimeout(function () { if (busy && action === "stand") thinking(); }, 400);
+    api("/api/play/bj", { action: action }).then(function (res) {
+      busy = false; clearTimeout(t);
+      if (res.state) state = res.state;
+      render();
+      bjAfter();
+    }).catch(function () { busy = false; render(); });
+  }
+
+  function bjAfter() {
+    var g = state.game;
+    if (!g || g.mode !== "bj" || g.phase !== "done") return;
+    setTimeout(function () { fx(g.result === "lose" ? "lose" : (g.result === "push" ? "draw" : (g.result === "blackjack" ? "big" : "win"))); }, 450);
   }
 
   function renderWardrobe(boxId, title, items, removed, picking) {
@@ -17362,7 +17615,11 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   function render() {
     document.getElementById("title").textContent = state.ui.play_title;
     document.getElementById("bucks").textContent = "💵 " + state.bucks;
-    if (state.game) renderArena(); else renderMenu();
+    if (state.game && state.game.mode === "bj") { document.getElementById("menu").style.display = "none";
+      document.getElementById("arena").style.display = "block"; renderBj(); }
+    else if (state.game) { document.getElementById("bj").style.display = "none"; document.getElementById("bj-actions").style.display = "none";
+      ["hands", "labels"].forEach(function (id) { document.getElementById(id).style.display = ""; }); renderArena(); }
+    else renderMenu();
   }
 
   function thinking() { var line = document.getElementById("line"); line.style.display = "block"; line.className = "thinking"; line.textContent = state.ui.play_thinking; }
@@ -17438,7 +17695,8 @@ PLAY_PAGE_HTML = r'''<!doctype html>
       document.getElementById("chat-btn").textContent = ui.play_to_chat;
       render();
       var want = (location.search.match(/game=(\w+)/) || [])[1];
-      if (want === "strip" && !state.game) { document.querySelector(".strip-card") && document.querySelector(".strip-card").scrollIntoView(); }
+      var target = !state.game && { strip: ".strip-card", bj: ".bj-card" }[want];
+      if (target && document.querySelector(target)) document.querySelector(target).scrollIntoView();
     }).catch(function (e) { showFullScreen("Network error: " + (e && e.message || "unknown")); });
   }
   load();
@@ -17707,6 +17965,7 @@ async def run_webapp_server():
     app_web.router.add_post("/api/play/move", api_play_move_handler)
     app_web.router.add_post("/api/play/remove", api_play_remove_handler)
     app_web.router.add_post("/api/play/quit", api_play_quit_handler)
+    app_web.router.add_post("/api/play/bj", api_play_bj_handler)
     app_web.router.add_get("/api/spin/state", api_spin_state_handler)
     app_web.router.add_post("/api/spin/free", api_spin_free_handler)
     app_web.router.add_post("/api/spin/paid/invoice", api_spin_paid_invoice_handler)
