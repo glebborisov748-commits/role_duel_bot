@@ -346,11 +346,16 @@ TEXTS = {
         "work_tab_catch": "📦 Заказ",
         "work_tab_rhythm": "🚴 Курьер",
         "work_tab_farm": "🌽 Ферма",
-        "work_clicker_hint": "Введи код по порядку, затем протяни каждый провод к гнезду того же цвета. Ошибка — игра окончена.",
+        "work_clicker_hint": "Каждый раз новый замок: введи код по порядку, соедини провода с гнёздами того же цвета или вскрой отмычкой — жми, когда она в зелёной зоне. Ошибка — игра окончена.",
         "work_catch_hint": "Веди корзину из стороны в сторону, лови предметы и не лови бомбы 💣! Улитка 🐌 замедлит падение, магнит 🧲 притянет, 💰 удвоит деньги на несколько секунд, щит 🛡️ спасёт от одной бомбы.",
         "work_rhythm_hint": "▲▼ — смена полосы. Люди 🙋 ждут на обочине: проезжай мимо них по крайней полосе. На красной стоп-линии жми 🛑, когда она у самого колеса.",
         "work_courier_arrived": "🏠 Доставлено!",
         "work_courier_arrived_tip": "🏠 Доставлено! 🎉 + чаевые",
+        "work_courier_tip_popup": "💸 +{amount}💵 чаевые!",
+        "work_hack_mode_code": "🔢 Кодовый замок",
+        "work_hack_mode_wires": "🔌 Щиток с проводами",
+        "work_hack_mode_lock": "🗝 Замок — вскрой отмычкой",
+        "work_hack_lock_btn": "⛏ Поддеть штифт",
         "work_hack_success": "✅ Взлом удался! +{amount}💵",
         "work_gameover_title": "Игра окончена",
         "work_gameover_lost": "Потеряно: {amount}💵",
@@ -741,11 +746,16 @@ TEXTS = {
         "work_tab_catch": "📦 Delivery",
         "work_tab_rhythm": "🚴 Courier",
         "work_tab_farm": "🌽 Farm",
-        "work_clicker_hint": "Enter the code in order, then drag each wire to the socket of the same color. One mistake — game over.",
+        "work_clicker_hint": "A new lock every time: enter the code in order, connect the wires to sockets of the same color, or pick the lock — tap when the pick is in the green zone. One mistake — game over.",
         "work_catch_hint": "Drag the basket side to side, catch the items, and dodge the bombs 💣! A snail 🐌 slows the fall, a magnet 🧲 pulls items in, 💰 doubles your money for a few seconds, a shield 🛡️ saves you from one bomb.",
         "work_rhythm_hint": "▲▼ — change lanes. People 🙋 wait on the roadside: pass them in the outer lane. At a red stop line, tap 🛑 right as it reaches your wheel.",
         "work_courier_arrived": "🏠 Delivered!",
         "work_courier_arrived_tip": "🏠 Delivered! 🎉 + tip",
+        "work_courier_tip_popup": "💸 +{amount}💵 tip!",
+        "work_hack_mode_code": "🔢 Code lock",
+        "work_hack_mode_wires": "🔌 Wiring panel",
+        "work_hack_mode_lock": "🗝 Lock — pick it",
+        "work_hack_lock_btn": "⛏ Lift the pin",
         "work_hack_success": "✅ Hack successful! +{amount}💵",
         "work_gameover_title": "Game over",
         "work_gameover_lost": "Lost: {amount}💵",
@@ -1136,11 +1146,16 @@ TEXTS = {
         "work_tab_catch": "📦 Lieferung",
         "work_tab_rhythm": "🚴 Kurier",
         "work_tab_farm": "🌽 Farm",
-        "work_clicker_hint": "Gib den Code der Reihe nach ein und zieh dann jedes Kabel zur Buchse in derselben Farbe. Ein Fehler — Spiel vorbei.",
+        "work_clicker_hint": "Jedes Mal ein neues Schloss: gib den Code ein, verbinde die Kabel mit gleichfarbigen Buchsen oder knack das Schloss — tippe, wenn der Dietrich im grünen Bereich ist. Ein Fehler — Spiel vorbei.",
         "work_catch_hint": "Zieh den Korb hin und her, fang die Gegenstände und weich den Bomben 💣 aus! Eine Schnecke 🐌 verlangsamt den Fall, ein Magnet 🧲 zieht an, 💰 verdoppelt kurz dein Geld, ein Schild 🛡️ rettet dich vor einer Bombe.",
         "work_rhythm_hint": "▲▼ — Spur wechseln. Leute 🙋 warten am Straßenrand: fahr auf der äußeren Spur an ihnen vorbei. An einer roten Haltelinie tippe 🛑, wenn sie dein Rad erreicht.",
         "work_courier_arrived": "🏠 Geliefert!",
         "work_courier_arrived_tip": "🏠 Geliefert! 🎉 + Trinkgeld",
+        "work_courier_tip_popup": "💸 +{amount}💵 Trinkgeld!",
+        "work_hack_mode_code": "🔢 Zahlenschloss",
+        "work_hack_mode_wires": "🔌 Kabelkasten",
+        "work_hack_mode_lock": "🗝 Schloss — knack es",
+        "work_hack_lock_btn": "⛏ Stift anheben",
         "work_hack_success": "✅ Hack gelungen! +{amount}💵",
         "work_gameover_title": "Spiel vorbei",
         "work_gameover_lost": "Verloren: {amount}💵",
@@ -2691,7 +2706,7 @@ def is_asleep(user):
 # ощущалось криво ("почему играть, ПОКА работаешь?"), поэтому чат теперь не блокируется вообще:
 # мини-апп "Работа" — отдельная поверхность, как Магазин/Колесо (см. send_work_menu), и так же не
 # ограничена тамагочи-механикой (сном и т.п.) — та же логика, что и у /hot (см. intim_cmd).
-WORK_HIT_BUCKS = {"clicker": 3, "catch": 3, "courier": 20, "hacker_combo": 150}  # мгновенная
+WORK_HIT_BUCKS = {"clicker": 3, "catch": 3, "courier": 20, "hacker_combo": 110}  # взлом теперь одна фаза (код, провода или отмычка), было 150 за код+провода  # мгновенная
 # выплата за одно засчитанное попадание — ОДИНАКОВАЯ для catch/courier/clicker, и это не
 # упрощение "на будущее": сервер физически не может проверить, что хит пришёл от реальной
 # визуальной игры (общий анти-спам таймер один на все, см. register_work_hit) — разная цена по
@@ -2713,7 +2728,8 @@ WORK_MIN_HIT_INTERVAL_SECONDS = 0.35  # было 0.5 (а до этого 0.1) �
                                        # предметов часть честных попаданий тихо отклонялась этим же
                                        # анти-спам таймером. 0.35 всё ещё жёсткий потолок (~170/мин
                                        # вместо старых ~600), просто с запасом под обычную игру руками
-WORK_MIN_HIT_INTERVAL_BY_GAME = {"courier": 1.5, "hacker_combo": 4.0}  # см. комментарий у WORK_HIT_BUCKS
+WORK_MIN_HIT_INTERVAL_BY_GAME = {"courier": 1.5, "hacker_combo": 4.0}
+COURIER_TIPS = [(100, 0.01), (40, 0.04), (15, 0.12)]  # (чаевые, шанс «не больше»): 1% / +3% / +8%  # см. комментарий у WORK_HIT_BUCKS
 WORK_PENALTY_BUCKS = {"clicker": 60, "catch": 40, "courier": 100}  # было 5/5/10 — по фидбэку проигрыш
 # должен стоить заметнее (вместе с ростом заработка выше)
 WORK_FAILURE_PENALTY_BUCKS = 40  # штраф за провал в catch/clicker (бомба, неверный код) — флэт для
@@ -2842,8 +2858,16 @@ def register_work_hit(user, game, tip=False):
     per_game[game] = now.isoformat()
     user["work_last_hit_by_game"] = per_game
     base = WORK_HIT_BUCKS[game]
-    if tip and game == "courier":
-        base *= 2  # чаевые -- тот же один хит x2, а не второй запрос (см. COURIER_TIP_CHANCE)
+    user["work_last_tip"] = 0
+    if game == "courier":
+        # Получатель платит всегда; чаевые -- отдельный редкий бонус сверху, и чем щедрее, тем реже.
+        # Решает сервер (клиенту нельзя верить, что «дали чаевые»).
+        roll = random.random()
+        for tip_amount, chance in COURIER_TIPS:
+            if roll < chance:
+                user["work_last_tip"] = tip_amount
+                base += tip_amount
+                break
     if work_double_active(user):
         base *= 2
     amount = credit_work_bucks(user, base)
@@ -14234,6 +14258,11 @@ def serialize_work_state(user):
             "courier_hint": get_text(user, "work_rhythm_hint"),
             "courier_arrived": get_text(user, "work_courier_arrived"),
             "courier_arrived_tip": get_text(user, "work_courier_arrived_tip"),
+            "courier_tip_popup": get_text(user, "work_courier_tip_popup", amount="{amount}"),
+            "hack_mode_code": get_text(user, "work_hack_mode_code"),
+            "hack_mode_wires": get_text(user, "work_hack_mode_wires"),
+            "hack_mode_lock": get_text(user, "work_hack_mode_lock"),
+            "hack_lock_btn": get_text(user, "work_hack_lock_btn"),
             "multiplier_badge": get_text(user, "work_multiplier_badge", multiplier=_multiplier_display),
             "farm_water_btn": get_text(user, "farm_water_btn"),
             "farm_harvest_btn": get_text(user, "farm_harvest_btn"),
@@ -14404,6 +14433,18 @@ WORK_PAGE_HTML = r'''<!doctype html>
      пальцем), а не просто тапаешь по цветным плиткам. */
   #hacker-wires { display: none; position: relative; width: 100%; height: 220px; touch-action: none; user-select: none; }
   #hacker-wires.active { display: block; }
+  #hacker-mode { text-align: center; font-size: 13px; font-weight: 800; color: #3dffb0; margin-bottom: 8px; letter-spacing: .3px; }
+  #hacker-lock { display: none; padding: 8px 4px 4px; }
+  #hacker-lock.active { display: block; }
+  #hacker-lock-pins { display: flex; justify-content: center; gap: 10px; margin-bottom: 14px; }
+  .lock-pin { width: 14px; height: 34px; border-radius: 4px; background: #2b3245; border: 2px solid #4b5675; transition: all .2s ease; }
+  .lock-pin.active { border-color: #f6b93b; box-shadow: 0 0 8px rgba(246,185,59,.7); }
+  .lock-pin.set { background: #3dffb0; border-color: #3dffb0; transform: translateY(-8px); box-shadow: 0 0 10px rgba(61,255,176,.7); }
+  #hacker-lock-track { position: relative; height: 36px; border-radius: 10px; background: #1b2030; border: 2px solid #4b5675; overflow: hidden; margin-bottom: 14px; }
+  #hacker-lock-zone { position: absolute; top: 0; height: 100%; background: rgba(61,255,176,.35); border-left: 2px solid #3dffb0; border-right: 2px solid #3dffb0; }
+  #hacker-lock-pick { position: absolute; top: 50%; font-size: 24px; transform: translate(-50%, -50%) rotate(-45deg); }
+  #hacker-lock-btn { width: 100%; padding: 12px; border: none; border-radius: 12px; font-size: 16px; font-weight: 800;
+    background: #f6b93b; color: #1a1a1a; cursor: pointer; }
   #hacker-wires-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
   .hacker-wire-col { position: absolute; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-around; }
   #hacker-wires-left { left: 0; }
@@ -14440,7 +14481,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     touch-action: none;
     transition: box-shadow .2s ease;
   }
-  #catch-field.slow-active { box-shadow: inset 0 0 0 3px #4ea8ff; }
+  #catch-field.slow-active { box-shadow: inset 0 0 0 3px #4ea8ff, inset 0 0 18px rgba(78,168,255,.45); }
   .catch-item {
     position: absolute;
     top: -34px;
@@ -14463,11 +14504,11 @@ WORK_PAGE_HTML = r'''<!doctype html>
     from { top: -34px; }
     to { top: 100%; }
   }
-  .catch-item.big-hazard { font-size: 42px; }
+  .catch-item.big-hazard { font-size: 66px; filter: drop-shadow(0 0 6px rgba(232,56,61,.6)); }
   .catch-warning {
     position: absolute;
     top: 0;
-    width: 60px;
+    width: 84px;
     height: 100%;
     transform: translateX(-50%);
     display: flex;
@@ -14498,6 +14539,18 @@ WORK_PAGE_HTML = r'''<!doctype html>
     margin: -55px 0 0 -55px; border-radius: 50%; border: 2px dashed rgba(155,107,255,.6); animation: magnet-ring 1s linear infinite; }
   @keyframes magnet-ring { from { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(.9); } to { transform: rotate(360deg) scale(1); } }
   .catch-item.pulled { filter: drop-shadow(0 0 6px #9b6bff); }
+  /* Щит -- синий пузырь с сотами вокруг корзины. */
+  #catch-basket.shield-active::after { content: ""; position: absolute; left: 50%; top: 50%; width: 92px; height: 92px; margin: -50px 0 0 -46px;
+    border-radius: 50%; border: 2px solid rgba(120,190,255,.95); pointer-events: none;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='42' viewBox='0 0 24 42'><path d='M12 0 L24 7 L24 21 L12 28 L0 21 L0 7 Z M12 28 L12 42' fill='none' stroke='%23bfe3ff' stroke-width='1.2' opacity='.85'/></svg>"), radial-gradient(circle at 35% 30%, rgba(255,255,255,.55), rgba(78,168,255,.28) 45%, rgba(30,110,230,.35) 100%);
+    background-size: 14px 24px, 100% 100%; box-shadow: 0 0 16px rgba(78,168,255,.8), inset 0 0 14px rgba(78,168,255,.6);
+    animation: shield-bubble 2.2s ease-in-out infinite; }
+  @keyframes shield-bubble { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  /* x2 -- корзина светится золотым, рядом надпись x2. */
+  #catch-basket.double-active { filter: drop-shadow(0 0 10px #ffd23f) drop-shadow(0 0 4px #ffb300); }
+  .x2-label { position: absolute; top: -6px; right: -22px; font-size: 18px; font-weight: 900; color: #ffb300;
+    text-shadow: 0 0 6px rgba(255,210,63,.9), 0 1px 0 #7a5200; animation: x2-pop .9s ease-in-out infinite; }
+  @keyframes x2-pop { 0%, 100% { transform: scale(1) rotate(-6deg); } 50% { transform: scale(1.18) rotate(4deg); } }
   .catch-item.rocket { font-size: 30px; transform: rotate(135deg); filter: drop-shadow(0 0 6px #ff7043); }
   #catch-basket.shield-pop { animation: shield-pop .4s ease; }
   @keyframes shield-pop { 0% { filter: drop-shadow(0 0 4px #4ea8ff); } 40% { filter: drop-shadow(0 0 22px #bfe1ff) brightness(1.4); } 100% { filter: none; } }
@@ -14676,6 +14729,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   .courier-obstacle.hit-flash, .courier-car.hit-flash { filter: drop-shadow(0 0 8px #e8383d); }
   .courier-recipient.delivered { filter: drop-shadow(0 0 8px #1dd1a1); }
   .courier-recipient.tipped { filter: drop-shadow(0 0 8px #ffd23f); }
+  .tip-popup { color: #ffb300; font-size: 16px; font-weight: 900; white-space: nowrap; text-shadow: 0 0 6px rgba(255,210,63,.8); animation-duration: 1.4s; }
   .courier-car { font-size: 32px; }
   /* Светофор теперь реально замораживает движение (а не только слой кнопки сверху, см.
      pressCourierLight/resetCourierLight) -- по фидбэку "при светофоре всё должно стоять". */
@@ -14887,9 +14941,11 @@ WORK_PAGE_HTML = r'''<!doctype html>
   <div id="game-clicker" class="game-panel">
     <div id="clicker-hint"></div>
     <div id="hacker-terminal">
+      <div id="hacker-mode"></div>
       <div id="hacker-code"></div>
       <div id="hacker-keyboard"></div>
       <div id="hacker-wires"><svg id="hacker-wires-svg"></svg><div class="hacker-wire-col" id="hacker-wires-left"></div><div class="hacker-wire-col" id="hacker-wires-right"></div></div>
+      <div id="hacker-lock"><div id="hacker-lock-pins"></div><div id="hacker-lock-track"><div id="hacker-lock-zone"></div><div id="hacker-lock-pick">🗝</div></div><button id="hacker-lock-btn" type="button"></button></div>
     </div>
     <div id="clicker-feedback"></div>
   </div>
@@ -14983,7 +15039,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var SVG_NS = "http://www.w3.org/2000/svg";
 
   function startHackerWires() {
-    hackerWires = HACKER_WIRE_COLORS.slice(0, HACKER_WIRE_COUNT);
+    hackerWires = HACKER_WIRE_COLORS.slice(0, Math.random() < 0.5 ? 3 : 5);
     hackerWireRightOrder = shuffleArray(hackerWires.slice());
     hackerWireLinks = {};
     hackerWireConnected = 0;
@@ -15121,12 +15177,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       terminal.classList.add("access-granted");
       setTimeout(function () { terminal.classList.remove("access-granted"); }, 400);
     }
-    setTimeout(function () {
-      document.getElementById("hacker-wires").classList.remove("active");
-      document.getElementById("hacker-keyboard").style.display = "grid";
-      newHackerCode();
-      buildHackerKeyboard();
-    }, 400);
+    setTimeout(startHacker, 450);
   }
 
   // ---- Courier ----
@@ -15216,10 +15267,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var SHIELD_CHANCE = 0.03; // щит гасит ОДНУ следующую бомбу/большую угрозу вместо проигрыша
   var shieldCharges = 0;
   var CATCH_FALL_MIN_S = 1.5, CATCH_FALL_RANGE_S = 1.0; // was 2.1-3.5s -- faster, harder to react to
-  var BIG_HAZARD_CHANCE = 0.08; // rolled only when the spawn didn't already roll a bomb/slowfall
+  var BIG_HAZARD_CHANCE = 0.04; // rolled only when the spawn didn't already roll a bomb/slowfall
   var BIG_HAZARD_EMOJIS = ["⚫", "💣", "🪨"]; // ядро, большая бомба, валун -- одинаково опасны
   // Ракета: летит втрое быстрее обычного, перед ней -- короткое предупреждение ❗ (по фидбэку «больше препятствий»).
-  var ROCKET_CHANCE = 0.08;
+  var ROCKET_CHANCE = 0.03;
   var ROCKET_WARN_MS = 500;
   var ROCKET_FALL_MIN_S = 0.6, ROCKET_FALL_RANGE_S = 0.25;
   // Чтобы предмет не оказался внутри бомбы и его можно было взять: новые предметы появляются не ближе
@@ -15295,6 +15346,21 @@ WORK_PAGE_HTML = r'''<!doctype html>
       osc.start(t0); osc.stop(t0 + dur + 0.02);
     } catch (e) {}
   }
+  // Шум (для «вжух» машины/ракеты и земли при посадке): dur, громкость, частота фильтра, задержка, конечная частота.
+  function noise(dur, vol, freq, delay, freqTo) {
+    if (!sfxOn || !sfxCtx) return;
+    try {
+      var t0 = sfxCtx.currentTime + (delay || 0);
+      var len = Math.floor(sfxCtx.sampleRate * dur), buf = sfxCtx.createBuffer(1, len, sfxCtx.sampleRate), d = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      var src = sfxCtx.createBufferSource(), f = sfxCtx.createBiquadFilter(), g = sfxCtx.createGain();
+      src.buffer = buf; f.type = "bandpass"; f.frequency.setValueAtTime(freq, t0);
+      if (freqTo) f.frequency.exponentialRampToValueAtTime(freqTo, t0 + dur * 0.5);
+      g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + dur * 0.4); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      src.connect(f); f.connect(g); g.connect(sfxCtx.destination); src.start(t0); src.stop(t0 + dur + 0.02);
+    } catch (e) {}
+  }
+
   function haptic(kind) {
     if (!tg || !tg.HapticFeedback) return;
     try {
@@ -15319,6 +15385,9 @@ WORK_PAGE_HTML = r'''<!doctype html>
     else if (kind === "deliver") { tone(700, .07, "sine", .09); tone(1050, .11, "sine", .09, .08); haptic("medium"); }
     else if (kind === "tick") { tone(1900, .018, "square", .035); haptic("select"); }
     else if (kind === "start") { tone(330, .3, "sawtooth", .05, 0, 990); haptic("medium"); }
+    else if (kind === "plant") { tone(140, .12, "sine", .16, 0, 70); noise(.06, .08, 900, 0); tone(620, .09, "triangle", .08, .1, 980); haptic("medium"); }
+    else if (kind === "car") { noise(.9, .07, 500, 0, 1400); tone(95, .9, "sawtooth", .03, 0, 70); }
+    else if (kind === "rocket") { tone(2200, .55, "sine", .06, 0, 500); noise(.55, .05, 2500, 0); haptic("rigid"); }
   }
 
   function setBalance(bucks) {
@@ -15396,7 +15465,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
         state.bucks = res.state.bucks;
         setBalance(state.bucks);
         if (res.awarded) popupGain(res.awarded, x, y, container);
-        if (onAwarded) onAwarded(res.awarded || 0);
+        if (onAwarded) onAwarded(res.awarded || 0, res);
       }
       drainHitQueue();
     }).catch(function () { hitInFlight = false; drainHitQueue(); });
@@ -15425,6 +15494,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
 
   function stopAllGames() {
+    stopLockpick();
     if (catchSpawnInterval) { clearInterval(catchSpawnInterval); catchSpawnInterval = null; }
     if (catchRafId) { cancelAnimationFrame(catchRafId); catchRafId = null; }
     if (courierRafId) { cancelAnimationFrame(courierRafId); courierRafId = null; }
@@ -15453,6 +15523,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     var catchBasketEl = document.getElementById("catch-basket");
     if (catchBasketEl) catchBasketEl.classList.remove("magnet-active", "double-active", "shield-active", "shield-pop");
     BUFF_ORDER.forEach(function (k) { setBuffOrbit(k, null); });
+    if (catchBasketEl) setX2Label(catchBasketEl, false);
     recentCatchSpawns = [];
     var road = document.getElementById("courier-road");
     if (road) {
@@ -15552,26 +15623,115 @@ WORK_PAGE_HTML = r'''<!doctype html>
       hackerCodeIndex++;
       renderHackerCode();
       if (hackerCodeIndex >= hackerCode.length) {
-        // Код угадан -- не платим ещё, сначала вторая фаза (соединить провода), см. startHackerWires().
-        setTimeout(function () { startHackerWires(); }, 250);
+        // Код угадан -- взлом готов (раньше после кода ещё шли провода, теперь это отдельный вид взлома).
+        setTimeout(function () { finishHackerCombo(); }, 250);
       }
     } else {
       keyEl.classList.add("wrong");
       setTimeout(function () { keyEl.classList.remove("wrong"); }, 300);
       triggerDebuff("clicker", "clicker-feedback", "hacker-keyboard",
         keyEl.offsetLeft + keyEl.offsetWidth / 2, keyEl.offsetTop, document.getElementById("hacker-terminal"));
-      newHackerCode();
-      buildHackerKeyboard();
     }
   }
 
+  // Каждый взлом -- случайный вид: кодовый замок, щиток с проводами (3 или 5) или замок с отмычкой.
+  var hackerMode = "code";
   function startHacker() {
+    var modes = ["code", "wires", "lock"];
+    hackerMode = modes[Math.floor(Math.random() * modes.length)];
+    stopLockpick();
     var wires = document.getElementById("hacker-wires");
-    if (wires) wires.classList.remove("active");
     var kb = document.getElementById("hacker-keyboard");
-    if (kb) kb.style.display = "grid";
-    newHackerCode();
-    buildHackerKeyboard();
+    var code = document.getElementById("hacker-code");
+    var lock = document.getElementById("hacker-lock");
+    if (wires) wires.classList.remove("active");
+    if (lock) lock.classList.remove("active");
+    kb.style.display = "none";
+    code.style.display = "none";
+    document.getElementById("hacker-mode").textContent = state.ui["hack_mode_" + hackerMode];
+    if (hackerMode === "code") {
+      code.style.display = "flex";
+      kb.style.display = "grid";
+      newHackerCode();
+      buildHackerKeyboard();
+    } else if (hackerMode === "wires") {
+      startHackerWires();
+    } else {
+      startLockpick();
+    }
+  }
+
+  // ---- Отмычка: штифты по очереди, жми, когда отмычка в зелёной зоне; каждый следующий быстрее и уже ----
+  var LOCK_PINS_MIN = 3, LOCK_PINS_RANGE = 2;
+  var lockState = null;
+  (function bindLockBtn() {
+    var btn = document.getElementById("hacker-lock-btn");
+    if (btn) btn.addEventListener("pointerdown", function (e) { e.preventDefault(); pressLockpick(); });
+  })();
+
+  function startLockpick() {
+    var lock = document.getElementById("hacker-lock");
+    lock.classList.add("active");
+    document.getElementById("hacker-lock-btn").textContent = state.ui.hack_lock_btn;
+    lockState = { pins: LOCK_PINS_MIN + Math.floor(Math.random() * LOCK_PINS_RANGE), done: 0, pos: 0, dir: 1, raf: null, last: 0 };
+    newLockZone();
+    renderLockPins();
+    lockState.last = performance.now();
+    lockState.raf = requestAnimationFrame(lockTick);
+  }
+  function newLockZone() {
+    var width = Math.max(10, 24 - lockState.done * 4);
+    lockState.zoneW = width;
+    lockState.zoneL = 5 + Math.random() * (90 - width);
+    lockState.speed = 70 + lockState.done * 22; // % ширины в секунду
+    var zone = document.getElementById("hacker-lock-zone");
+    zone.style.left = lockState.zoneL + "%";
+    zone.style.width = width + "%";
+  }
+  function renderLockPins() {
+    var el = document.getElementById("hacker-lock-pins");
+    el.innerHTML = "";
+    for (var i = 0; i < lockState.pins; i++) {
+      var pin = document.createElement("div");
+      pin.className = "lock-pin" + (i < lockState.done ? " set" : (i === lockState.done ? " active" : ""));
+      el.appendChild(pin);
+    }
+  }
+  function lockTick(t) {
+    if (!lockState) return;
+    var dt = (t - lockState.last) / 1000;
+    lockState.last = t;
+    lockState.pos += lockState.dir * lockState.speed * dt;
+    if (lockState.pos >= 100) { lockState.pos = 100; lockState.dir = -1; }
+    if (lockState.pos <= 0) { lockState.pos = 0; lockState.dir = 1; }
+    document.getElementById("hacker-lock-pick").style.left = lockState.pos + "%";
+    lockState.raf = requestAnimationFrame(lockTick);
+  }
+  function stopLockpick() {
+    if (lockState && lockState.raf) cancelAnimationFrame(lockState.raf);
+    lockState = null;
+  }
+  function pressLockpick() {
+    if (!lockState || debuffState.clicker) return;
+    var inZone = lockState.pos >= lockState.zoneL && lockState.pos <= lockState.zoneL + lockState.zoneW;
+    var btn = document.getElementById("hacker-lock-btn");
+    if (inZone) {
+      lockState.done++;
+      fx("good");
+      if (lockState.done >= lockState.pins) {
+        renderLockPins();
+        stopLockpick();
+        setTimeout(finishHackerCombo, 200);
+        return;
+      }
+      newLockZone();
+      renderLockPins();
+    } else {
+      fx("key");
+      stopLockpick();
+      triggerDebuff("clicker", "clicker-feedback", "hacker-lock", btn.offsetLeft + btn.offsetWidth / 2, btn.offsetTop,
+        document.getElementById("hacker-terminal"));
+    }
   }
 
   // ---------- Order (drag basket) ----------
@@ -15672,6 +15832,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       var liveField = document.getElementById("catch-field");
       if (!liveField || liveField.style.display === "none") return;
       appendFallingItem(liveField, x, "catch-item rocket", "🚀", { bomb: "1", fast: "1" });
+      fx("rocket");
     }, ROCKET_WARN_MS);
     bigHazardTimeoutIds.push(tid);
   }
@@ -15755,7 +15916,6 @@ WORK_PAGE_HTML = r'''<!doctype html>
             if (shieldCharges > 0) {
               // щит поглотил взрыв -- игра продолжается
               shieldCharges = 0;
-              setBuffOrbit("shield", null);
               basket.classList.remove("shield-active");
               basket.classList.add("shield-pop");
               setTimeout(function () { basket.classList.remove("shield-pop"); }, 400);
@@ -15774,7 +15934,6 @@ WORK_PAGE_HTML = r'''<!doctype html>
             if (item.dataset.slowfall || item.dataset.magnet || item.dataset.double || item.dataset.shield) fx("power");
             if (item.dataset.slowfall === "1") {
               slowFallUntil = Date.now() + SLOWFALL_DURATION_MS;
-              setBuffOrbit("slow", "🐌", SLOWFALL_DURATION_MS);
               field.classList.add("slow-active");
               setTimeout(function () {
                 if (Date.now() >= slowFallUntil) field.classList.remove("slow-active");
@@ -15790,7 +15949,6 @@ WORK_PAGE_HTML = r'''<!doctype html>
               activateDouble(basket);
             } else if (item.dataset.shield === "1") {
               shieldCharges = 1;
-              setBuffOrbit("shield", "🛡️");
               basket.classList.add("shield-active");
             }
           }
@@ -15820,6 +15978,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (ms) buffOrbitTimers[kind] = setTimeout(function () { if (el.parentNode) el.remove(); buffOrbitTimers[kind] = null; }, ms);
   }
 
+  function setX2Label(basket, on) {
+    var el = basket.querySelector(".x2-label");
+    if (on && !el) { el = document.createElement("span"); el.className = "x2-label"; el.textContent = "x2"; basket.appendChild(el); }
+    if (!on && el) el.remove();
+  }
+
   function activateDouble(basket) {
     api("/api/work/powerup", {
       method: "POST",
@@ -15828,10 +15992,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
     }).then(function (res) {
       if (!res.ok || !res.granted) return;
       doubleUntil = Date.now() + res.seconds * 1000;
-      setBuffOrbit("double", "💰", res.seconds * 1000);
       basket.classList.add("double-active");
+      setX2Label(basket, true);
       setTimeout(function () {
-        if (Date.now() >= doubleUntil) basket.classList.remove("double-active");
+        if (Date.now() >= doubleUntil) { basket.classList.remove("double-active"); setX2Label(basket, false); }
       }, res.seconds * 1000 + 50);
     }).catch(function () {});
   }
@@ -15945,6 +16109,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       if (!liveRoad) return;
       var car = document.createElement("div");
       car.className = "courier-car";
+      fx("car");
       car.textContent = COURIER_CAR_EMOJI;
       car.dataset.lane = String(lane);
       car.style.top = COURIER_LANE_Y[lane] + "px";
@@ -15983,11 +16148,23 @@ WORK_PAGE_HTML = r'''<!doctype html>
         el.dataset.resolved = "1";
         if (el.classList.contains("courier-recipient")) {
           if (inLane) {
-            var tip = Math.random() < COURIER_TIP_CHANCE;
             el.classList.add("delivered");
-            if (tip) el.classList.add("tipped");
             courierRecipientsDelivered++;
-            registerHit("courier", rider.offsetLeft, rider.offsetTop, road, tip); // чаевые -- тот же один запрос, сервер платит x2
+            // Получатель платит всегда; чаевые (редкие, разного размера) решает сервер и возвращает в res.tip.
+            (function (recipient) {
+              registerHit("courier", rider.offsetLeft, rider.offsetTop, road, false, function (awarded, res) {
+                if (!res || !res.tip) return;
+                recipient.classList.add("tipped");
+                var tipEl = document.createElement("div");
+                tipEl.className = "gain-popup tip-popup";
+                tipEl.textContent = state.ui.courier_tip_popup.replace("{amount}", String(res.tip));
+                tipEl.style.left = rider.offsetLeft + "px";
+                tipEl.style.top = (rider.offsetTop - 30) + "px";
+                road.appendChild(tipEl);
+                fx("win");
+                setTimeout(function () { if (tipEl.parentNode) tipEl.remove(); }, 1400);
+              });
+            })(el);
             spawnCourierHandoff(rider, road);
             setCourierProgress();
             if (courierRecipientsDelivered >= courierRecipientsTotal) completeCourierLeg();
@@ -16316,6 +16493,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
         opt.onclick = function () {
           var slot = farmPickingSlot;
           farmPickingSlot = -1;
+          fx("plant");
           farmAction("plant", slot, { crop: crop.key });
         };
         picker.appendChild(opt);
@@ -16551,7 +16729,8 @@ async def api_work_hit_handler(request):
     awarded = register_work_hit(user, game, tip=tip)
     if awarded is None:
         return web.json_response({"ok": False, "error": "bad_game", "state": serialize_work_state(user)})
-    return web.json_response({"ok": True, "awarded": awarded, "state": serialize_work_state(user)})
+    return web.json_response({"ok": True, "awarded": awarded, "tip": user.get("work_last_tip", 0) if awarded else 0,
+                              "state": serialize_work_state(user)})
 
 
 async def api_work_powerup_handler(request):
