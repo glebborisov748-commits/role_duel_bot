@@ -15,7 +15,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import (
     InlineKeyboardMarkup, InlineKeyboardButton, LabeledPrice,
-    ReplyKeyboardMarkup, KeyboardButton, BotCommand, FSInputFile, WebAppInfo
+    ReplyKeyboardMarkup, KeyboardButton, BotCommand, FSInputFile, WebAppInfo, MenuButtonWebApp
 )
 from aiohttp import web
 import httpx
@@ -28,6 +28,7 @@ from openai import OpenAI, APITimeoutError
 TEXTS = {
     "ru": {
         "main_menu": "📋 Главное меню",
+        "open_app_btn": "📱 Открыть приложение",
         "my_profile": "👤 Мой профиль",
         "spin_wheel": "🎰 Колесо фортуны",
         "our_channel": "📢 Наш канал",
@@ -435,6 +436,7 @@ TEXTS = {
     },
     "en": {
         "main_menu": "📋 Main menu",
+        "open_app_btn": "📱 Open the app",
         "my_profile": "👤 My profile",
         "spin_wheel": "🎰 Spin wheel",
         "our_channel": "📢 Our channel",
@@ -842,6 +844,7 @@ TEXTS = {
     },
     "de": {
         "main_menu": "📋 Hauptmenü",
+        "open_app_btn": "📱 App öffnen",
         "my_profile": "👤 Mein Profil",
         "spin_wheel": "🎰 Glücksrad",
         "our_channel": "📢 Unser Kanal",
@@ -3592,7 +3595,9 @@ def get_full_kb(user):
 
 
 def get_main_menu_keyboard(user):
-    buttons = [
+    buttons = [[InlineKeyboardButton(text=get_text(user, "open_app_btn"), web_app=WebAppInfo(url=f"{WEBAPP_URL}/app"),
+                                     style="success")]] if WEBAPP_URL else []
+    buttons += [
         [InlineKeyboardButton(text=get_text(user, "change_character"), callback_data="main_change", style="primary")],
         [InlineKeyboardButton(text=get_text(user, "invite_friend"), callback_data="referral_menu")]
     ]
@@ -7055,31 +7060,98 @@ async def send_long(message: types.Message, text, **kwargs):
     return await send_long_to_chat(message.chat.id, text, **kwargs)
 
 
+def apply_user_text(user, text):
+    """Всё, что происходит с репликой пользователя до ответа ИИ (негатив и ссора, XP, уровень близости,
+    локация, запись в историю). Общая для чата в Telegram (handle_message) и чата в Mini App
+    (api_app_send_handler). Возвращает {"quarrel": bool, "notices": [тексты для пользователя]}."""
+    notices = []
+    negative = contains_negative(text)
+    sub_level = get_subscription_level(user)
+    multiplier = XP_MULTIPLIER.get(sub_level, 1.0)
+
+    if negative:
+        user["negative_count"] = user.get("negative_count", 0) + 1
+        if user["negative_count"] >= 5:
+            user["xp"] = max(0, user.get("xp", 0) - 50)
+            user["mood"] = max(-MOOD_MAX, user.get("mood", 0) - 30)
+            user["negative_count"] = 0
+            user["history"].append({"role": "assistant", "content": "💢 Ссора!"})
+            save_data(user_data)
+            return {"quarrel": True, "notices": [get_text(user, "quarrel")]}
+        xp_change, mood_change = -10, -10
+    else:
+        xp_change = int(3 * multiplier + 0.5)
+        mood_change = 0  # настроение больше не растёт от самой переписки — только от подарков
+                          # (см. apply_shop_item_effects); тут оно может только падать
+        user["negative_count"] = max(0, user.get("negative_count", 0) - 1)
+
+    user["xp"] = max(0, user.get("xp", 0) + xp_change)
+    user["mood"] = min(MOOD_MAX, max(-MOOD_MAX, user.get("mood", 0) + mood_change))
+
+    # Проверка уровня близости
+    new_level = get_intimacy_level(user)
+    old_level = user.get("last_level", 0)
+    if new_level != old_level:
+        user["last_level"] = new_level
+        if new_level >= INTIM_LEVEL_REWARD and not user.get("intim_scene_unlocked"):
+            user["intim_scene_unlocked"] = True
+        if new_level > old_level:
+            congrats = get_level_congratulation(user, new_level)
+            if congrats:
+                notices.append(congrats)
+            if new_level == INTIM_LEVEL_REWARD:
+                notices.append(get_text(user, "intim_free_level"))
+        else:
+            notices.append(get_text(user, "level_down", level=new_level))
+
+    # Локация
+    new_loc = extract_location_from_text(text)
+    if new_loc and new_loc != user.get("location"):
+        user["location"] = new_loc
+
+    # Сохранение истории
+    user["history"].append({"role": "user", "content": text})
+    limit = get_history_limit(user)
+    if len(user["history"]) > limit:
+        user["history"] = user["history"][-limit:]
+    save_data(user_data)
+    return {"quarrel": False, "notices": notices}
+
+
+async def ai_chat_answer(user):
+    """Ответ персонажа на текущую историю: вызывает ИИ, пишет ответ в историю, тратит энергию.
+    Возвращает (реакция-эмодзи, текст). Исключение ИИ пробрасывается вызывающему."""
+    system_prompt = build_prompt(user)
+    response = await asyncio.to_thread(
+        call_ai, AI_MODEL, "ai",
+        messages=[{"role": "system", "content": system_prompt}] + user["history"],
+        temperature=0.9,
+        max_tokens=1000
+    )
+    answer = response.choices[0].message.content or ""
+    reaction, clean_answer = extract_reaction_from_answer(answer)
+    clean_answer = (clean_answer or "").strip() or "…"
+    user["history"].append({"role": "assistant", "content": clean_answer})
+    limit = get_history_limit(user)
+    if len(user["history"]) > limit:
+        user["history"] = user["history"][-limit:]
+    user["last_activity"] = datetime.now().isoformat()
+    apply_activity_stat_cost(user, ENERGY_COST_MESSAGE, SATIETY_COST_MESSAGE, WATER_COST_MESSAGE)
+    save_data(user_data)
+    return reaction, clean_answer
+
+
 async def generate_and_reply(message: types.Message, user):
     """Общая логика вызова ИИ и отправки ответа — используется и для обычных сообщений,
     и для регенерации после редактирования (edit)."""
-    system_prompt = build_prompt(user)
     typing_task = asyncio.create_task(_keep_typing(message.chat.id))
     try:
-        response = await asyncio.to_thread(
-            call_ai, AI_MODEL, "ai",
-            messages=[{"role": "system", "content": system_prompt}] + user["history"],
-            temperature=0.9,
-            max_tokens=1000
-        )
-        answer = response.choices[0].message.content
+        reaction, clean_answer = await ai_chat_answer(user)
     except Exception as e:
         await message.answer(get_text(user, "generation_error", error=e))
         return
     finally:
         typing_task.cancel()
-
-    reaction, clean_answer = extract_reaction_from_answer(answer)
-    user["history"].append({"role": "assistant", "content": clean_answer})
-    limit = get_history_limit(user)
-    if len(user["history"]) > limit:
-        user["history"] = user["history"][-limit:]
-    save_data(user_data)
 
     sent = await send_long(message, clean_answer, reply_markup=get_full_kb(user))
     # Запоминаем id именно последнего отправленного сообщения — нужно, чтобы удалить его, если
@@ -7098,8 +7170,6 @@ async def generate_and_reply(message: types.Message, user):
         except Exception:
             pass
 
-    user["last_activity"] = datetime.now().isoformat()
-    apply_activity_stat_cost(user, ENERGY_COST_MESSAGE, SATIETY_COST_MESSAGE, WATER_COST_MESSAGE)
     save_data(user_data)
     await maybe_send_feed_nudge(message.chat.id, user)
     await maybe_send_energy_nudge(message.chat.id, user)
@@ -8586,62 +8656,12 @@ async def handle_message(message: types.Message):
         await message.answer(get_text(user, "subscription_expired_style"), reply_markup=keyboard)
         return
 
-    # 7. Негатив / XP / настроение
-    negative = contains_negative(message.text)
-    sub_level = get_subscription_level(user)
-    multiplier = XP_MULTIPLIER.get(sub_level, 1.0)
-
-    if negative:
-        user["negative_count"] = user.get("negative_count", 0) + 1
-        if user["negative_count"] >= 5:
-            user["xp"] = max(0, user.get("xp", 0) - 50)
-            user["mood"] = max(-MOOD_MAX, user.get("mood", 0) - 30)
-            user["negative_count"] = 0
-            save_data(user_data)
-            await message.answer(get_text(user, "quarrel"), reply_markup=get_full_kb(user))
-            user["history"].append({"role": "assistant", "content": "💢 Ссора!"})
-            save_data(user_data)
-            return
-        xp_change, mood_change = -10, -10
-    else:
-        xp_change = int(3 * multiplier + 0.5)
-        mood_change = 0  # настроение больше не растёт от самой переписки — только от подарков
-                          # (см. apply_shop_item_effects); тут оно может только падать
-        user["negative_count"] = max(0, user.get("negative_count", 0) - 1)
-
-    user["xp"] = max(0, user.get("xp", 0) + xp_change)
-    user["mood"] = min(MOOD_MAX, max(-MOOD_MAX, user.get("mood", 0) + mood_change))
-
-    # 9. Проверка уровня близости
-    new_level = get_intimacy_level(user)
-    old_level = user.get("last_level", 0)
-    if new_level != old_level:
-        user["last_level"] = new_level
-        save_data(user_data)
-        if new_level >= INTIM_LEVEL_REWARD and not user.get("intim_scene_unlocked"):
-            user["intim_scene_unlocked"] = True
-            save_data(user_data)
-        if new_level > old_level:
-            congrats = get_level_congratulation(user, new_level)
-            if congrats:
-                await message.answer(congrats, reply_markup=get_full_kb(user))
-            if new_level == INTIM_LEVEL_REWARD:
-                await message.answer(get_text(user, "intim_free_level"), reply_markup=get_full_kb(user))
-        else:
-            await message.answer(get_text(user, "level_down", level=new_level), reply_markup=get_full_kb(user))
-
-    # 10. Локация
-    new_loc = extract_location_from_text(message.text)
-    if new_loc and new_loc != user.get("location"):
-        user["location"] = new_loc
-    save_data(user_data)
-
-    # 11. Сохранение истории
-    user["history"].append({"role": "user", "content": message.text})
-    limit = get_history_limit(user)
-    if len(user["history"]) > limit:
-        user["history"] = user["history"][-limit:]
-    save_data(user_data)
+    # 7-11. Негатив / XP / настроение / уровень / локация / история -- общая часть с чатом Mini App
+    applied = apply_user_text(user, message.text)
+    for notice in applied["notices"]:
+        await message.answer(notice, reply_markup=get_full_kb(user))
+    if applied["quarrel"]:
+        return
 
     # 12. Реакция на сообщение пользователя (SUPER PRO)
     if get_subscription_level(user) in ("super_pro", "elite"):
@@ -13027,7 +13047,7 @@ async def asset_image_handler(request):
 
 
 async def shop_page_handler(request):
-    return web.Response(text=SHOP_PAGE_HTML, content_type="text/html")
+    return web.Response(text=with_app_back(SHOP_PAGE_HTML), content_type="text/html")
 
 
 async def telegram_sdk_handler(request):
@@ -13486,7 +13506,7 @@ async def guide_page_handler(request):
     page = ('<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
             f"<title>Guide — {SITE_NAME}</title><style>{SITE_CSS} li {{ margin: 4px 0; }}</style></head><body>"
             f'<header><span class="brand">{SITE_NAME}</span></header><main>{body}</main></body></html>')
-    return web.Response(text=page, content_type="text/html")
+    return web.Response(text=with_app_back(page), content_type="text/html")
 
 
 def warn_missing_site_details():
@@ -17401,7 +17421,7 @@ async def api_play_quit_handler(request):
 
 
 async def play_page_handler(request):
-    return web.Response(text=PLAY_PAGE_HTML, content_type="text/html")
+    return web.Response(text=with_app_back(PLAY_PAGE_HTML), content_type="text/html")
 
 
 # Страница игр -- статичная, всё состояние через /api/play/* (как у колеса и магазина).
@@ -17886,8 +17906,790 @@ PLAY_PAGE_HTML = r'''<!doctype html>
 '''
 
 
+# ============================================================
+#  ГЛАВНОЕ MINI APP (/app): чат с персонажем, профиль и подписки, навигация по всем разделам
+# ============================================================
+# Весь бот в одном мини-приложении (как у крупных ботов-персонажей): чат здесь работает на той же
+# логике и той же истории, что и чат в Telegram (apply_user_text + ai_chat_answer), поэтому можно
+# переписываться и там, и там -- переписка общая. Игры, магазин, колесо и работа -- свои страницы
+# (/play, /shop, /spin, /work), на них нативная кнопка «Назад» Telegram возвращает сюда.
+APP_HISTORY_SHOWN = 80
+APP_MESSAGE_MAX_LEN = 2000
+APP_PENDING_STALE_SECONDS = 120
+APP_SUB_PAYLOADS = ("subscribe_pro", "subscribe_super", "subscribe_elite", "upgrade_to_super")
+APP_INVOICE_PAYLOADS = APP_SUB_PAYLOADS + ("wake_now", "intim_scene", "defibrillator")
+
+APP_TEXTS = {
+    "ru": {
+        "tab_chat": "Чат", "tab_games": "Игры", "tab_shop": "Магазин", "tab_spin": "Колесо", "tab_work": "Работа",
+        "tab_profile": "Профиль",
+        "online": "в сети", "typing": "печатает…", "asleep": "спит 😴", "sick": "болеет",
+        "placeholder": "Сообщение…", "send": "Отправить",
+        "empty": "Напиши первым — персонаж ждёт 💬",
+        "reroll": "🔄 Другой ответ",
+        "asleep_title": "😴 Персонаж уснул — энергия закончилась",
+        "asleep_text": "Разбуди энергетиком или подожди, пока выспится.",
+        "wake_energizer": "⚡ Разбудить энергетиком (у тебя {n})",
+        "wake_elite": "💎 Бесплатно разбудить (раз в неделю)",
+        "wake_now": "⭐ Разбудить сейчас · {price}⭐",
+        "wake_done": "☀️ Персонаж проснулся!",
+        "wait_reply": "Подожди ответа на прошлое сообщение 🙂",
+        "too_long": "Слишком длинное сообщение — максимум {n} символов.",
+        "gen_error": "⚠️ Не получилось ответить, попробуй ещё раз.",
+        "level": "Уровень близости {n}",
+        "xp": "{p} / {c} XP",
+        "stats_title": "Состояние",
+        "energy": "Энергия", "satiety": "Сытость", "water": "Вода", "mood": "Настроение",
+        "bucks": "Баксы", "energizers": "Энергетики", "scenes": "Горячие сцены",
+        "sub_title": "Подписка",
+        "sub_none": "Без подписки",
+        "sub_until": "до {date}",
+        "buy_stars": "⭐ {price}",
+        "buy_card": "💳 {price}₽",
+        "sub_active_note": "Подписка уже активна — новая оформляется после окончания текущей.",
+        "upgrade": "⬆️ Апгрейд до SUPER PRO",
+        "hot_btn": "🔥 Горячая сцена",
+        "hot_note": "Сцена откроется в чате с ботом",
+        "guide_btn": "📖 Как всё устроено",
+        "chat_btn": "💬 Чат в Telegram",
+        "paid_wait": "Оплата прошла — начисляем…",
+        "char_female": "Твоя девушка", "char_male": "Твой парень",
+        "perks_pro": ["Стили ❤️‍🔥 Страстный и ✨ Магнетический", "Память 40 сообщений", "XP x1.8, работа x1.5",
+                      "+2⚡ энергетика каждый день", "2 бесплатных прокрута колеса в день"],
+        "perks_super": ["Все стили + 😤 Грубый 18+ и 😏 Соблазн 18+", "Память 60 сообщений, XP x2.5, работа x2",
+                        "🎭 Свой уникальный персонаж", "🔥 Игра на раздевание 18+", "+3⚡ в день, 3 прокрута колеса"],
+        "perks_elite": ["Всё из SUPER PRO", "Память 80 сообщений, XP x3.5, работа x2.8", "🔥 5 горячих сцен в день",
+                        "+4⚡ в день, 5 прокрутов колеса", "Раз в неделю — бесплатное пробуждение"],
+        "per_month": "/ мес",
+        "coupon": "🎟 Твоя скидка −{n}% ещё {h} ч",
+        "sale": "🔥 Распродажа: SUPER PRO и ELITE −{n}%",
+    },
+    "en": {
+        "tab_chat": "Chat", "tab_games": "Games", "tab_shop": "Shop", "tab_spin": "Wheel", "tab_work": "Work",
+        "tab_profile": "Profile",
+        "online": "online", "typing": "typing…", "asleep": "asleep 😴", "sick": "sick",
+        "placeholder": "Message…", "send": "Send",
+        "empty": "Say hi — your companion is waiting 💬",
+        "reroll": "🔄 Another reply",
+        "asleep_title": "😴 Your companion fell asleep — out of energy",
+        "asleep_text": "Wake them with an energizer or wait until they've slept.",
+        "wake_energizer": "⚡ Wake with an energizer (you have {n})",
+        "wake_elite": "💎 Free wake-up (once a week)",
+        "wake_now": "⭐ Wake now · {price}⭐",
+        "wake_done": "☀️ Your companion is awake!",
+        "wait_reply": "Wait for the reply to your last message 🙂",
+        "too_long": "Message is too long — {n} characters max.",
+        "gen_error": "⚠️ Couldn't reply, please try again.",
+        "level": "Closeness level {n}",
+        "xp": "{p} / {c} XP",
+        "stats_title": "Status",
+        "energy": "Energy", "satiety": "Satiety", "water": "Water", "mood": "Mood",
+        "bucks": "Bucks", "energizers": "Energizers", "scenes": "Hot scenes",
+        "sub_title": "Subscription",
+        "sub_none": "No subscription",
+        "sub_until": "until {date}",
+        "buy_stars": "⭐ {price}",
+        "buy_card": "💳 {price}₽",
+        "sub_active_note": "A subscription is already active — a new one can be bought after it ends.",
+        "upgrade": "⬆️ Upgrade to SUPER PRO",
+        "hot_btn": "🔥 Hot scene",
+        "hot_note": "The scene opens in the bot chat",
+        "guide_btn": "📖 How it all works",
+        "chat_btn": "💬 Telegram chat",
+        "paid_wait": "Payment received — crediting…",
+        "char_female": "Your girlfriend", "char_male": "Your boyfriend",
+        "perks_pro": ["Styles ❤️‍🔥 Passionate and ✨ Magnetic", "40-message memory", "XP x1.8, work x1.5",
+                      "+2⚡ energizers every day", "2 free wheel spins a day"],
+        "perks_super": ["All styles + 😤 Rough 18+ and 😏 Temptation 18+", "60-message memory, XP x2.5, work x2",
+                        "🎭 Your own unique character", "🔥 Strip game 18+", "+3⚡ a day, 3 wheel spins"],
+        "perks_elite": ["Everything in SUPER PRO", "80-message memory, XP x3.5, work x2.8", "🔥 5 hot scenes a day",
+                        "+4⚡ a day, 5 wheel spins", "A free wake-up once a week"],
+        "per_month": "/ mo",
+        "coupon": "🎟 Your −{n}% discount, {h}h left",
+        "sale": "🔥 Sale: SUPER PRO and ELITE −{n}%",
+    },
+}
+
+
+def at(user, key, **kw):
+    lang = "ru" if user.get("lang", "ru") == "ru" else "en"
+    text = APP_TEXTS[lang].get(key, APP_TEXTS["ru"][key])
+    return text.format(**kw) if kw and isinstance(text, str) else text
+
+
+def app_avatar(user):
+    female = (user.get("gender") or "female") == "female"
+    if user.get("world") == "anime":
+        return "🌸" if female else "⚔️"
+    return "👩🏻" if female else "👨🏻"
+
+
+def app_unstick(user):
+    pending = user.get("app_pending")
+    if not pending:
+        return
+    try:
+        age = (datetime.now() - datetime.fromisoformat(pending)).total_seconds()
+    except (ValueError, TypeError):
+        age = APP_PENDING_STALE_SECONDS + 1
+    if age > APP_PENDING_STALE_SECONDS:
+        user["app_pending"] = None
+        save_data(user_data)
+
+
+def app_sub_offers(user):
+    methods_cache = {}
+    offers = []
+    for payload, title, perks, emoji in (("subscribe_pro", "PRO", "perks_pro", "🔥"),
+                                         ("subscribe_super", "SUPER PRO", "perks_super", "✨"),
+                                         ("subscribe_elite", "ELITE", "perks_elite", "💎")):
+        methods = methods_cache.setdefault(payload, available_payment_methods(payload))
+        offers.append({"payload": payload, "title": title, "emoji": emoji, "perks": at(user, perks),
+                       "stars": product_stars(payload, user), "stars_label": price_label(payload, user),
+                       "rub": product_rub(payload, user) if "platega" in methods else None})
+    return offers
+
+
+def serialize_app_state(user):
+    app_unstick(user)
+    _reset_daily_quota_if_needed(user)
+    lang = user.get("lang", "ru")
+    history = [m for m in user.get("history", [])[-APP_HISTORY_SHOWN:] if m.get("role") in ("user", "assistant")]
+    level = get_intimacy_level(user)
+    sub_level = get_subscription_level(user)
+    expiry = user["subscription"].get("expires_at") if sub_level else None
+    illness = user.get("illness")
+    notices = user.pop("app_notices", None) or []
+    if notices:
+        save_data(user_data)
+    coupon = None
+    if coupon_active(user):
+        left = max(1, round((datetime.fromisoformat(user["coupon"]["until"]) - datetime.now()).total_seconds() / 3600))
+        coupon = at(user, "coupon", n=int(user["coupon"]["discount"] * 100), h=left)
+    ui = {k: v for k, v in APP_TEXTS["ru" if lang == "ru" else "en"].items() if isinstance(v, str)}
+    return {
+        "messages": [{"role": m["role"], "text": m["content"]} for m in history],
+        "pending": bool(user.get("app_pending")),
+        "notices": notices,
+        "can_reroll": bool(history and history[-1]["role"] == "assistant" and len(history) >= 2
+                           and history[-2]["role"] == "user"),
+        "character": {
+            "avatar": app_avatar(user),
+            "title": at(user, "char_female" if (user.get("gender") or "female") == "female" else "char_male"),
+            "subtitle": f"{world_display_name(user.get('world') or 'realism', user).capitalize()} · "
+                        f"{style_display_label(get_display_style(user), user)}",
+        },
+        "stats": {
+            "energy": int(round(user.get("energy", ENERGY_MAX))), "energy_max": ENERGY_MAX,
+            "satiety": int(round(user.get("satiety", SATIETY_MAX))), "water": int(round(user.get("water", WATER_MAX))),
+            "mood": int(round(user.get("mood", 0))), "mood_emoji": mood_emoji(user.get("mood", 0)),
+            "bucks": user.get("bucks", 0), "energizers": user.get("energizers", 0),
+            "scenes": intim_scenes_available(user),
+            "level": level, "xp": get_xp_progress(user), "xp_cost": get_xp_cost(level),
+        },
+        "asleep": is_asleep(user),
+        "wake": {"energizers": user.get("energizers", 0), "elite": elite_free_wake_available(user),
+                 "price": product_stars("wake_now", user)},
+        "illness": f"{ILLNESSES[illness]['emoji']} {ILLNESSES[illness].get(lang, ILLNESSES[illness]['ru'])}" if illness else None,
+        "subscription": {"level": sub_level,
+                         "title": {"pro": "🔥 PRO", "super_pro": "✨ SUPER PRO", "elite": "💎 ELITE"}.get(sub_level),
+                         "until": datetime.fromisoformat(expiry).strftime("%d.%m.%Y") if expiry else None},
+        "offers": app_sub_offers(user),
+        "upgrade": {"stars": product_stars("upgrade_to_super", user), "stars_label": price_label("upgrade_to_super", user),
+                    "rub": product_rub("upgrade_to_super", user) if "platega" in available_payment_methods("upgrade_to_super") else None}
+                   if sub_level == "pro" else None,
+        "sale": at(user, "sale", n=int(SUB_SALE_DISCOUNT * 100)) if sub_sale_active() else None,
+        "coupon": coupon,
+        "ui": ui,
+    }
+
+
+def _app_reply(user, ok=True, error=None):
+    return web.json_response({"ok": ok, "error": error, "state": serialize_app_state(user)})
+
+
+async def app_generate(user_id, user):
+    """Ответ персонажа в фоне: страница сразу показывает отправленное сообщение и «печатает…»."""
+    try:
+        await ai_chat_answer(user)
+    except Exception as e:
+        logging.warning(f"app chat: {e}")
+        user.setdefault("app_notices", []).append(at(user, "gen_error"))
+    finally:
+        user["app_pending"] = None
+        save_data(user_data)
+
+
+async def api_app_state_handler(request):
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    return _app_reply(user)
+
+
+async def api_app_send_handler(request):
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    app_unstick(user)
+    text = (body.get("text") or "").strip()
+    if not text:
+        return _app_reply(user, False, None)
+    if len(text) > APP_MESSAGE_MAX_LEN:
+        return _app_reply(user, False, at(user, "too_long", n=APP_MESSAGE_MAX_LEN))
+    if user.get("app_pending"):
+        return _app_reply(user, False, at(user, "wait_reply"))
+    if is_asleep(user):
+        return _app_reply(user, False, None)
+    if ensure_valid_style(user):
+        user["style"] = "warm"  # подписка кончилась -- молча возвращаем бесплатный стиль (в чате для этого есть клавиатура)
+    user["editing_message"] = False
+    applied = apply_user_text(user, text)
+    if applied["notices"]:
+        user.setdefault("app_notices", []).extend(applied["notices"])
+    if applied["quarrel"]:
+        save_data(user_data)
+        return _app_reply(user)
+    user["app_pending"] = datetime.now().isoformat()
+    save_data(user_data)
+    asyncio.create_task(app_generate(user_id, user))
+    return _app_reply(user)
+
+
+async def api_app_reroll_handler(request):
+    """«Другой ответ»: убираем последний ответ персонажа и просим ИИ ответить заново (тратит энергию, как обычно)."""
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    app_unstick(user)
+    history = user.get("history", [])
+    if user.get("app_pending") or is_asleep(user) or len(history) < 2 or history[-1].get("role") != "assistant" \
+            or history[-2].get("role") != "user":
+        return _app_reply(user, False, None)
+    history.pop()
+    user["app_pending"] = datetime.now().isoformat()
+    save_data(user_data)
+    asyncio.create_task(app_generate(user_id, user))
+    return _app_reply(user)
+
+
+async def api_app_wake_handler(request):
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    method = body.get("method")
+    if method == "energizer":
+        if not use_energizer(user):
+            return _app_reply(user, False, get_text(user, "not_enough_energizers"))
+    elif method == "elite":
+        if not elite_free_wake_available(user):
+            return _app_reply(user, False, get_text(user, "elite_free_wake_used_alert"))
+        now = local_now()
+        user["elite_free_wake_week"] = f"{now.isocalendar()[0]}-W{now.isocalendar()[1]}"
+        user["energy"] = ENERGY_MAX
+        user["sleep_until"] = None
+        save_data(user_data)
+    else:
+        return _app_reply(user, False, None)
+    return web.json_response({"ok": True, "toast": at(user, "wake_done"), "state": serialize_app_state(user)})
+
+
+async def api_app_invoice_handler(request):
+    """Счёт за подписку / пробуждение / сцену прямо из приложения: звёздами (openInvoice) или картой (Platega)."""
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    payload, method = body.get("payload"), body.get("method") or "stars"
+    if payload not in APP_INVOICE_PAYLOADS or method not in available_payment_methods(payload) \
+            or method not in ("stars", "platega"):
+        return web.json_response({"ok": False, "error": "Bad request"})
+    blocked = payment_blocked_reason(user, payload)
+    if blocked:
+        return web.json_response({"ok": False, "error": blocked})
+    title, description, label = product_invoice_texts(user, payload)
+    try:
+        if method == "stars":
+            invoice_url = await bot.create_invoice_link(title=title, description=description, payload=payload,
+                                                        provider_token="", currency="XTR",
+                                                        prices=[LabeledPrice(label=label, amount=product_stars(payload, user))])
+            return web.json_response({"ok": True, "invoice_url": invoice_url})
+        invoice_id, url = await create_platega_invoice(user, user_id, payload, description)
+        add_pending_payment(user, "platega", invoice_id, payload,
+                            coupon=coupon_active(user) and product_stars(payload, user) < product_stars(payload))
+        return web.json_response({"ok": True, "url": url})
+    except Exception as e:
+        logging.error(f"app invoice ({payload}, {method}) для {user_id}: {e}")
+        return web.json_response({"ok": False, "error": get_text(user, "webapp_shop_invoice_error")})
+
+
+async def api_app_hot_handler(request):
+    """Горячие сцены остаются в чате (там длинные тексты и выбор сценария) -- присылаем меню туда."""
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    if user.get("illness"):
+        return web.json_response({"ok": False, "error": get_text(user, "intim_blocked_illness")})
+    await show_intim_menu(user_id, user)
+    return web.json_response({"ok": True})
+
+
+async def app_page_handler(request):
+    return web.Response(text=APP_PAGE_HTML, content_type="text/html")
+
+# Нативная кнопка «Назад» Telegram на внутренних страницах (магазин, колесо, игры, работа, гайд) --
+# возвращает в главное приложение /app, так что всё выглядит как одно мини-приложение.
+APP_BACK_SNIPPET = r"""<script>
+(function () {
+  function go() { location.href = "/app" + location.hash; }
+  var tries = 0;
+  function setup() {
+    var t = window.Telegram && window.Telegram.WebApp;
+    if (!t || !t.BackButton || !t.initData) { if (++tries < 40) setTimeout(setup, 150); return; }
+    try { t.BackButton.show(); t.BackButton.onClick(go); } catch (e) {}
+  }
+  if (!window.Telegram) { var sc = document.createElement("script"); sc.src = "/tg-sdk.js"; sc.onload = setup; document.head.appendChild(sc); }
+  setup();
+})();
+</script>"""
+
+
+def with_app_back(html):
+    i = html.rfind("</body>")
+    return html[:i] + APP_BACK_SNIPPET + html[i:] if i >= 0 else html + APP_BACK_SNIPPET
+
+
+
+# Главная страница приложения -- статичная, всё состояние через /api/app/*.
+APP_PAGE_HTML = r'''<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Role Duel</title>
+<script>
+  window.__tgSdkSettled = false;
+  window.__tgSdkOnSettle = function () { window.__tgSdkSettled = true; if (window.__tgTryBoot) window.__tgTryBoot(); };
+</script>
+<script src="/tg-sdk.js" async onload="window.__tgSdkOnSettle()" onerror="window.__tgSdkOnSettle()"></script>
+<style>
+  :root {
+    --bg: #0d0e1a; --bg2: #14162a; --card: #1b1e36; --card2: #232746; --line: rgba(255,255,255,.07);
+    --fg: #f3f3fb; --hint: #9a9cb8; --accent: #8b5cf6; --accent2: #ec4899; --ok: #22c55e; --warn: #f59e0b; --bad: #ef4444;
+    --grad: linear-gradient(135deg, #8b5cf6, #ec4899);
+    --nav-h: 64px; --safe-b: env(safe-area-inset-bottom, 0px);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif; overflow: hidden; }
+  button { font-family: inherit; cursor: pointer; }
+  #root { position: fixed; inset: 0; display: flex; flex-direction: column; }
+  #bgfx { position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background: radial-gradient(600px 420px at 85% -10%, rgba(236,72,153,.16), transparent 60%),
+                radial-gradient(520px 420px at -10% 30%, rgba(139,92,246,.16), transparent 60%); }
+
+  /* ---- header ---- */
+  #head { position: relative; z-index: 2; display: flex; align-items: center; gap: 12px; padding: 10px 14px 8px;
+    background: rgba(13,14,26,.82); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+  .ava { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-size: 24px; flex: none;
+    background: radial-gradient(circle at 30% 25%, #3b2a6e, #1b1e36); box-shadow: 0 0 0 2px #0d0e1a, 0 0 0 4px rgba(139,92,246,.7); position: relative; }
+  .ava .dot { position: absolute; right: 0; bottom: 1px; width: 11px; height: 11px; border-radius: 50%; background: var(--ok); border: 2px solid var(--bg); }
+  .ava.sleep .dot { background: #64748b; }
+  #head .who { flex: 1; min-width: 0; }
+  #head .name { font-weight: 800; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #head .status { font-size: 12.5px; color: var(--hint); margin-top: 1px; }
+  #head .status.typing { color: #c4b5fd; }
+  .chips { display: flex; gap: 6px; }
+  .chip { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 800; padding: 6px 9px; border-radius: 12px;
+    background: var(--card); border: 1px solid var(--line); white-space: nowrap; }
+  #ebar { height: 3px; background: rgba(255,255,255,.06); position: relative; z-index: 2; }
+  #ebar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #22c55e, #a3e635); transition: width .6s ease; }
+  #ebar.low i { background: linear-gradient(90deg, #ef4444, #f59e0b); }
+
+  /* ---- views ---- */
+  #views { flex: 1; min-height: 0; position: relative; z-index: 1; }
+  .view { position: absolute; inset: 0; display: none; flex-direction: column; }
+  .view.on { display: flex; }
+
+  /* ---- chat ---- */
+  #msgs { flex: 1; overflow-y: auto; padding: 14px 12px 8px; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+  .row { display: flex; margin: 3px 0; }
+  .row.me { justify-content: flex-end; }
+  .bub { max-width: 82%; padding: 9px 12px 9px; border-radius: 18px; font-size: 15px; line-height: 1.42; white-space: pre-wrap; word-wrap: break-word;
+    animation: bub-in .22s ease both; }
+  .row.ai .bub { background: var(--card); border: 1px solid var(--line); border-bottom-left-radius: 6px; }
+  .row.me .bub { background: var(--grad); border-bottom-right-radius: 6px; box-shadow: 0 6px 18px rgba(139,92,246,.25); }
+  .row.gap { margin-top: 10px; }
+  .bub em { color: #c4b5fd; font-style: italic; }
+  .row.me .bub em { color: #fde7f3; }
+  @keyframes bub-in { from { opacity: 0; transform: translateY(6px) scale(.98); } to { opacity: 1; transform: none; } }
+  .sys { text-align: center; margin: 10px 0; }
+  .sys span { display: inline-block; font-size: 12.5px; color: #e9d5ff; background: rgba(139,92,246,.16); border: 1px solid rgba(139,92,246,.3);
+    padding: 6px 11px; border-radius: 12px; max-width: 90%; white-space: pre-wrap; }
+  .typing-bub { display: inline-flex; gap: 4px; padding: 13px 14px; }
+  .typing-bub i { width: 7px; height: 7px; border-radius: 50%; background: #a5a7c8; animation: blink 1.2s infinite ease-in-out; }
+  .typing-bub i:nth-child(2) { animation-delay: .15s; } .typing-bub i:nth-child(3) { animation-delay: .3s; }
+  @keyframes blink { 0%, 80%, 100% { opacity: .25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
+  .reroll { margin: 4px 0 2px 4px; border: none; background: transparent; color: var(--hint); font-size: 12.5px; font-weight: 700; padding: 4px 6px; }
+  .empty { text-align: center; color: var(--hint); margin-top: 30vh; font-size: 15px; }
+
+  #composer { display: flex; align-items: flex-end; gap: 8px; padding: 8px 10px 10px; background: rgba(13,14,26,.9);
+    border-top: 1px solid var(--line); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  #input { flex: 1; resize: none; max-height: 120px; min-height: 42px; border-radius: 21px; border: 1px solid var(--line); background: var(--card);
+    color: var(--fg); font-size: 15.5px; padding: 10px 14px; outline: none; font-family: inherit; line-height: 1.35; }
+  #input:focus { border-color: rgba(139,92,246,.6); }
+  #send { width: 42px; height: 42px; flex: none; border-radius: 50%; border: none; background: var(--grad); color: #fff; font-size: 18px;
+    display: grid; place-items: center; box-shadow: 0 6px 16px rgba(236,72,153,.3); transition: transform .1s, opacity .2s; }
+  #send:active { transform: scale(.92); } #send:disabled { opacity: .4; }
+  #sleep { display: none; padding: 12px; background: rgba(13,14,26,.92); border-top: 1px solid var(--line); }
+  #sleep .t { font-weight: 800; margin-bottom: 2px; } #sleep .s { color: var(--hint); font-size: 13px; margin-bottom: 10px; }
+  .btn { display: block; width: 100%; border: none; border-radius: 14px; padding: 13px; font-size: 15px; font-weight: 800; color: #fff;
+    background: var(--grad); margin-top: 8px; }
+  .btn.ghost { background: var(--card2); border: 1px solid var(--line); }
+  .btn:active { transform: scale(.98); } .btn:disabled { opacity: .5; }
+
+  /* ---- profile ---- */
+  #view-profile { overflow-y: auto; padding: 14px 14px 20px; -webkit-overflow-scrolling: touch; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 16px; margin-bottom: 12px; }
+  .hero { text-align: center; background: linear-gradient(160deg, rgba(139,92,246,.28), rgba(236,72,153,.14) 55%, var(--card)); }
+  .hero .ava { width: 84px; height: 84px; font-size: 44px; margin: 4px auto 10px; }
+  .hero .ttl { font-size: 20px; font-weight: 900; } .hero .sub { color: var(--hint); font-size: 13px; margin-top: 3px; }
+  .lvl { display: inline-block; margin-top: 10px; font-weight: 800; font-size: 13px; padding: 5px 11px; border-radius: 999px; background: rgba(0,0,0,.25); }
+  .xpbar { height: 8px; border-radius: 99px; background: rgba(0,0,0,.3); margin: 10px 4px 4px; overflow: hidden; }
+  .xpbar i { display: block; height: 100%; background: var(--grad); border-radius: 99px; transition: width .6s; }
+  .xptxt { font-size: 12px; color: var(--hint); }
+  h4 { margin: 0 0 12px; font-size: 15px; }
+  .stat { margin-bottom: 11px; } .stat:last-child { margin-bottom: 0; }
+  .stat .l { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; } .stat .l b { font-weight: 800; }
+  .bar { height: 7px; border-radius: 99px; background: rgba(255,255,255,.07); overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 99px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+  .mini { background: var(--card2); border-radius: 14px; padding: 10px 6px; text-align: center; }
+  .mini b { display: block; font-size: 17px; } .mini span { font-size: 11.5px; color: var(--hint); }
+  .sick { margin-top: 10px; font-size: 13px; color: #fecaca; background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3); padding: 8px 10px; border-radius: 12px; }
+  .banner { font-size: 13px; font-weight: 700; padding: 9px 11px; border-radius: 12px; margin-bottom: 10px; background: rgba(245,158,11,.13); border: 1px solid rgba(245,158,11,.35); }
+  .subcur { display: flex; justify-content: space-between; align-items: center; font-size: 14px; margin-bottom: 12px; }
+  .subcur b { font-size: 15px; } .subcur span { color: var(--hint); font-size: 12.5px; }
+  .tier { border-radius: 18px; padding: 14px; margin-bottom: 10px; border: 1px solid var(--line); background: var(--card2); position: relative; overflow: hidden; }
+  .tier.super { background: linear-gradient(150deg, rgba(139,92,246,.35), rgba(236,72,153,.18) 60%, var(--card2)); border-color: rgba(167,139,250,.5); }
+  .tier.elite { background: linear-gradient(150deg, rgba(234,179,8,.25), rgba(250,204,21,.08) 60%, var(--card2)); border-color: rgba(250,204,21,.45); }
+  .tier .tt { font-size: 17px; font-weight: 900; } .tier ul { margin: 8px 0 4px; padding-left: 18px; font-size: 13px; color: #d4d4e8; line-height: 1.5; }
+  .tier .pay { display: flex; gap: 8px; } .tier .pay .btn { margin-top: 8px; padding: 11px 8px; font-size: 14.5px; }
+  .tier .tag { position: absolute; top: 12px; right: 12px; font-size: 11px; font-weight: 900; padding: 4px 8px; border-radius: 99px; background: var(--grad); }
+  .note { color: var(--hint); font-size: 12.5px; text-align: center; margin-top: 6px; }
+
+  /* ---- nav ---- */
+  #nav { position: relative; z-index: 2; display: flex; height: calc(var(--nav-h) + var(--safe-b)); padding-bottom: var(--safe-b);
+    background: rgba(13,14,26,.94); border-top: 1px solid var(--line); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  #nav button { flex: 1; border: none; background: none; color: var(--hint); display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px; font-size: 10.5px; font-weight: 700; position: relative; }
+  #nav button .ic { font-size: 21px; line-height: 1; filter: grayscale(.6); opacity: .8; transition: transform .15s; }
+  #nav button.on { color: #fff; } #nav button.on .ic { filter: none; opacity: 1; transform: translateY(-1px) scale(1.1); }
+  #nav button.on::before { content: ""; position: absolute; top: 0; width: 26px; height: 3px; border-radius: 0 0 4px 4px; background: var(--grad); }
+  #toast { position: fixed; left: 50%; top: 70px; transform: translateX(-50%) translateY(-10px); opacity: 0; z-index: 9; background: #2b2f55;
+    border: 1px solid rgba(167,139,250,.4); padding: 10px 14px; border-radius: 14px; font-size: 14px; font-weight: 700; max-width: 88%;
+    text-align: center; transition: all .25s; pointer-events: none; white-space: pre-wrap; }
+  #toast.on { opacity: 1; transform: translateX(-50%); }
+  #full { display: none; position: fixed; inset: 0; z-index: 10; background: var(--bg); padding: 40px 24px; text-align: center; color: var(--hint);
+    white-space: pre-wrap; font-size: 15px; line-height: 1.5; }
+  #full .big { font-size: 46px; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+<div id="bgfx"></div>
+<div id="root">
+  <div id="head">
+    <div class="ava" id="h-ava"><span id="h-ava-e">💬</span><i class="dot"></i></div>
+    <div class="who"><div class="name" id="h-name">…</div><div class="status" id="h-status"></div></div>
+    <div class="chips"><span class="chip" id="h-bucks">💵 0</span><span class="chip" id="h-en">⚡ 0</span></div>
+  </div>
+  <div id="ebar"><i></i></div>
+  <div id="views">
+    <div class="view on" id="view-chat">
+      <div id="msgs"></div>
+      <div id="sleep"></div>
+      <div id="composer">
+        <textarea id="input" rows="1"></textarea>
+        <button id="send" type="button" aria-label="send">➤</button>
+      </div>
+    </div>
+    <div class="view" id="view-profile"></div>
+  </div>
+  <nav id="nav"></nav>
+</div>
+<div id="toast"></div>
+<div id="full"></div>
+<script>
+(function () {
+  var booted = false;
+  function boot() {
+  if (booted) return;
+  booted = true;
+  var tg = (window.Telegram && window.Telegram.WebApp) || null;
+  function safe(fn) { try { return fn(); } catch (e) {} }
+  if (tg) {
+    safe(function () { tg.ready(); }); safe(function () { tg.expand(); });
+    safe(function () { tg.setHeaderColor("#0d0e1a"); }); safe(function () { tg.setBackgroundColor("#0d0e1a"); });
+    safe(function () { tg.disableVerticalSwipes(); });
+    safe(function () { tg.BackButton.hide(); });
+  }
+  var state = null, tab = "chat", sending = false, pollTimer = null, lastCount = -1, lastPending = false;
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function haptic(k) { if (!tg || !tg.HapticFeedback) return; safe(function () {
+    if (k === "select") tg.HapticFeedback.selectionChanged(); else if (k === "success" || k === "error") tg.HapticFeedback.notificationOccurred(k);
+    else tg.HapticFeedback.impactOccurred(k || "light"); }); }
+
+  function initData() { return tg ? tg.initData : ""; }
+  function api(path, body) {
+    var controller = new AbortController();
+    var tid = setTimeout(function () { controller.abort(); }, 30000);
+    var opts = { method: body ? "POST" : "GET", headers: { "X-Telegram-Init-Data": initData(), "Content-Type": "application/json" }, signal: controller.signal };
+    if (body) opts.body = JSON.stringify(body);
+    return fetch(path, opts).then(function (r) { clearTimeout(tid); return r.json(); }, function (e) { clearTimeout(tid); throw e; });
+  }
+  var toastT = null;
+  function toast(text) { var t = $("toast"); t.textContent = text; t.classList.add("on"); clearTimeout(toastT);
+    toastT = setTimeout(function () { t.classList.remove("on"); }, 2600); }
+  function full(text, icon) { var f = $("full"); f.style.display = "block"; f.innerHTML = "";
+    f.appendChild(el("div", "big", icon || "💬")); f.appendChild(el("div", null, text)); }
+
+  // *действие* -> курсив; остальной текст как есть (без HTML)
+  function richText(node, text) {
+    var parts = String(text).split(/(\*[^*\n]+\*)/g);
+    parts.forEach(function (p) {
+      if (/^\*[^*\n]+\*$/.test(p)) node.appendChild(el("em", null, p.slice(1, -1)));
+      else if (p) node.appendChild(document.createTextNode(p.replace(/\*\*/g, "")));
+    });
+  }
+
+  // ---- навигация ----
+  var TABS = [["chat", "💬"], ["games", "🎮", "/play"], ["shop", "🛍", "/shop"], ["spin", "🎰", "/spin"], ["work", "💼", "/work"], ["profile", "👤"]];
+  function renderNav() {
+    var nav = $("nav"); nav.innerHTML = "";
+    TABS.forEach(function (t) {
+      var b = el("button", t[0] === tab ? "on" : "");
+      b.appendChild(el("span", "ic", t[1])); b.appendChild(el("span", null, state.ui["tab_" + t[0]]));
+      b.onclick = function () {
+        haptic("select");
+        if (t[2]) { location.href = t[2] + location.hash; return; }
+        tab = t[0]; try { sessionStorage.setItem("rd_tab", tab); } catch (e) {}
+        render();
+        if (tab === "chat") scrollBottom(true);
+      };
+      nav.appendChild(b);
+    });
+  }
+
+  // ---- шапка ----
+  function renderHead() {
+    var s = state, c = s.character;
+    $("h-ava-e").textContent = c.avatar;
+    $("h-ava").classList.toggle("sleep", s.asleep);
+    $("h-name").textContent = c.title;
+    var st = $("h-status");
+    st.className = "status" + (s.pending ? " typing" : "");
+    st.textContent = s.pending ? s.ui.typing : (s.asleep ? s.ui.asleep : (s.illness ? s.illness + " · " + s.ui.sick : s.ui.online));
+    $("h-bucks").textContent = "💵 " + s.stats.bucks;
+    $("h-en").textContent = "⚡ " + s.stats.energy;
+    var pct = Math.max(0, Math.min(100, Math.round(s.stats.energy / s.stats.energy_max * 100)));
+    $("ebar").firstChild.style.width = pct + "%";
+    $("ebar").classList.toggle("low", pct < 30);
+  }
+
+  // ---- чат ----
+  function nearBottom() { var m = $("msgs"); return m.scrollHeight - m.scrollTop - m.clientHeight < 140; }
+  function scrollBottom(force) { var m = $("msgs"); if (force || nearBottom()) requestAnimationFrame(function () { m.scrollTop = m.scrollHeight; }); }
+  function renderChat() {
+    var s = state, box = $("msgs");
+    var stick = nearBottom() || lastCount < 0;
+    box.innerHTML = "";
+    if (!s.messages.length && !s.pending) box.appendChild(el("div", "empty", s.ui.empty));
+    var prev = null;
+    s.messages.forEach(function (m, i) {
+      if (m.role === "assistant" && /^💢/.test(m.text)) { var sy = el("div", "sys"); sy.appendChild(el("span", null, m.text)); box.appendChild(sy); prev = null; return; }
+      var row = el("div", "row " + (m.role === "user" ? "me" : "ai") + (prev && prev !== m.role ? " gap" : ""));
+      var b = el("div", "bub"); richText(b, m.text); row.appendChild(b); box.appendChild(row);
+      prev = m.role;
+    });
+    if (s.pending) { var r = el("div", "row ai gap"); var t = el("div", "bub typing-bub"); t.innerHTML = "<i></i><i></i><i></i>"; r.appendChild(t); box.appendChild(r); }
+    else if (s.can_reroll && !s.asleep) { var rr = el("button", "reroll", s.ui.reroll); rr.onclick = reroll; box.appendChild(rr); }
+    if (stick || s.messages.length !== lastCount) scrollBottom(true);
+    lastCount = s.messages.length;
+    // сон: вместо поля ввода -- способы разбудить
+    var sl = $("sleep"), comp = $("composer");
+    if (s.asleep) {
+      comp.style.display = "none"; sl.style.display = "block"; sl.innerHTML = "";
+      sl.appendChild(el("div", "t", s.ui.asleep_title)); sl.appendChild(el("div", "s", s.ui.asleep_text));
+      if (s.wake.elite) { var e1 = el("button", "btn", s.ui.wake_elite); e1.onclick = function () { wake("elite"); }; sl.appendChild(e1); }
+      if (s.wake.energizers > 0) { var e2 = el("button", "btn", s.ui.wake_energizer.replace("{n}", s.wake.energizers)); e2.onclick = function () { wake("energizer"); }; sl.appendChild(e2); }
+      var e3 = el("button", "btn ghost", s.ui.wake_now.replace("{price}", s.wake.price)); e3.onclick = function () { pay("wake_now", "stars"); }; sl.appendChild(e3);
+    } else { comp.style.display = "flex"; sl.style.display = "none"; }
+    $("send").disabled = s.pending || sending;
+    $("input").placeholder = s.ui.placeholder;
+  }
+
+  function send() {
+    var inp = $("input"), text = inp.value.trim();
+    if (!text || sending || state.pending) return;
+    sending = true; haptic("light");
+    // сразу показываем своё сообщение и «печатает…», не дожидаясь сервера
+    state.messages.push({ role: "user", text: text }); state.pending = true; state.can_reroll = false;
+    inp.value = ""; autosize(); renderChat(); renderHead(); scrollBottom(true);
+    api("/api/app/send", { text: text }).then(function (res) {
+      sending = false;
+      if (res.state) state = res.state;
+      if (!res.ok && res.error) { toast(res.error); if (!res.state || !res.state.pending) inp.value = text; }
+      render(); schedulePoll();
+    }).catch(function () { sending = false; inp.value = text; toast("Network error"); load(); });
+  }
+  function reroll() {
+    if (state.pending) return;
+    haptic("light");
+    api("/api/app/reroll", {}).then(function (res) { if (res.state) state = res.state; render(); scrollBottom(true); schedulePoll(); });
+  }
+  function wake(method) {
+    api("/api/app/wake", { method: method }).then(function (res) {
+      if (res.state) state = res.state;
+      if (res.ok) { haptic("success"); toast(res.toast || ""); } else if (res.error) toast(res.error);
+      render();
+    });
+  }
+
+  // ---- оплата: звёзды через openInvoice, карта через ссылку Platega ----
+  function pay(payload, method) {
+    haptic("medium");
+    api("/api/app/invoice", { payload: payload, method: method }).then(function (res) {
+      if (!res.ok) { toast(res.error || "Error"); return; }
+      if (res.url) { safe(function () { tg.openLink(res.url); }); return; }
+      if (!tg || !tg.openInvoice) { location.href = res.invoice_url; return; }
+      tg.openInvoice(res.invoice_url, function (status) {
+        if (status === "paid" || status === "pending") { haptic("success"); toast(state.ui.paid_wait); pollFor(10); }
+      });
+    }).catch(function () { toast("Network error"); });
+  }
+  function pollFor(n) { if (n <= 0) return; setTimeout(function () { load(true).then(function () { pollFor(n - 1); }); }, 900); }
+
+  // ---- профиль ----
+  function statRow(label, val, max, color, suffix) {
+    var d = el("div", "stat"), l = el("div", "l");
+    l.appendChild(el("span", null, label)); l.appendChild(el("b", null, val + (suffix || "")));
+    var bar = el("div", "bar"), i = el("i"); i.style.width = Math.max(0, Math.min(100, val / max * 100)) + "%"; i.style.background = color;
+    bar.appendChild(i); d.appendChild(l); d.appendChild(bar); return d;
+  }
+  function renderProfile() {
+    var s = state, ui = s.ui, st = s.stats, v = $("view-profile");
+    v.innerHTML = "";
+    var hero = el("div", "card hero");
+    var ava = el("div", "ava"); ava.appendChild(el("span", null, s.character.avatar)); hero.appendChild(ava);
+    hero.appendChild(el("div", "ttl", s.character.title)); hero.appendChild(el("div", "sub", s.character.subtitle));
+    hero.appendChild(el("div", "lvl", "❤️ " + ui.level.replace("{n}", st.level)));
+    var xb = el("div", "xpbar"), xi = el("i"); xi.style.width = Math.min(100, st.xp / st.xp_cost * 100) + "%"; xb.appendChild(xi); hero.appendChild(xb);
+    hero.appendChild(el("div", "xptxt", ui.xp.replace("{p}", st.xp).replace("{c}", st.xp_cost)));
+    v.appendChild(hero);
+
+    var sc = el("div", "card"); sc.appendChild(el("h4", null, ui.stats_title));
+    sc.appendChild(statRow("⚡ " + ui.energy, st.energy, st.energy_max, "linear-gradient(90deg,#22c55e,#a3e635)", " / " + st.energy_max));
+    sc.appendChild(statRow("🍽 " + ui.satiety, st.satiety, 100, "linear-gradient(90deg,#f59e0b,#fbbf24)"));
+    sc.appendChild(statRow("💧 " + ui.water, st.water, 100, "linear-gradient(90deg,#0ea5e9,#38bdf8)"));
+    sc.appendChild(statRow(st.mood_emoji + " " + ui.mood, Math.max(0, st.mood + 100) / 2 | 0, 100, "var(--grad)"));
+    var g = el("div", "grid3");
+    [[st.bucks, "💵 " + ui.bucks], [st.energizers, "⚡ " + ui.energizers], [st.scenes, "🔥 " + ui.scenes]].forEach(function (x) {
+      var m = el("div", "mini"); m.appendChild(el("b", null, x[0])); m.appendChild(el("span", null, x[1])); g.appendChild(m); });
+    sc.appendChild(g);
+    if (s.illness) sc.appendChild(el("div", "sick", s.illness));
+    v.appendChild(sc);
+
+    var sub = el("div", "card"); sub.appendChild(el("h4", null, ui.sub_title));
+    if (s.sale) sub.appendChild(el("div", "banner", s.sale));
+    if (s.coupon) sub.appendChild(el("div", "banner", s.coupon));
+    var cur = el("div", "subcur"); cur.appendChild(el("b", null, s.subscription.title || ui.sub_none));
+    if (s.subscription.until) cur.appendChild(el("span", null, ui.sub_until.replace("{date}", s.subscription.until)));
+    sub.appendChild(cur);
+    if (s.upgrade) {
+      var up = el("div", "tier super"); up.appendChild(el("div", "tt", ui.upgrade));
+      up.appendChild(payRow("upgrade_to_super", s.upgrade)); sub.appendChild(up);
+    }
+    if (s.subscription.level) sub.appendChild(el("div", "note", ui.sub_active_note));
+    else s.offers.forEach(function (o) {
+      var t = el("div", "tier" + (o.payload === "subscribe_super" ? " super" : o.payload === "subscribe_elite" ? " elite" : ""));
+      if (o.payload === "subscribe_super") t.appendChild(el("span", "tag", "TOP"));
+      t.appendChild(el("div", "tt", o.emoji + " " + o.title));
+      var ul = el("ul"); o.perks.forEach(function (p) { ul.appendChild(el("li", null, p)); }); t.appendChild(ul);
+      t.appendChild(payRow(o.payload, o)); sub.appendChild(t);
+    });
+    v.appendChild(sub);
+
+    var more = el("div", "card");
+    var hot = el("button", "btn", ui.hot_btn);
+    hot.onclick = function () { api("/api/app/hot", {}).then(function (res) {
+      if (res.ok) { haptic("success"); safe(function () { tg.close(); }); } else toast(res.error || "Error"); }); };
+    more.appendChild(hot); more.appendChild(el("div", "note", ui.hot_note));
+    var guide = el("button", "btn ghost", ui.guide_btn);
+    guide.onclick = function () { location.href = "/guide?lang=" + (document.documentElement.lang || "ru") + location.hash; };
+    more.appendChild(guide);
+    var chat = el("button", "btn ghost", ui.chat_btn); chat.onclick = function () { safe(function () { tg.close(); }); };
+    more.appendChild(chat);
+    v.appendChild(more);
+  }
+  function payRow(payload, o) {
+    var row = el("div", "pay");
+    var b1 = el("button", "btn", state.ui.buy_stars.replace("{price}", o.stars_label) + (payload === "upgrade_to_super" ? "" : " " + state.ui.per_month));
+    b1.onclick = function () { pay(payload, "stars"); }; row.appendChild(b1);
+    if (o.rub) { var b2 = el("button", "btn ghost", state.ui.buy_card.replace("{price}", o.rub)); b2.onclick = function () { pay(payload, "platega"); }; row.appendChild(b2); }
+    return row;
+  }
+
+  function render() {
+    renderHead(); renderNav();
+    $("view-chat").classList.toggle("on", tab === "chat");
+    $("view-profile").classList.toggle("on", tab === "profile");
+    if (tab === "chat") renderChat(); else renderProfile();
+    if (state.notices && state.notices.length) { toast(state.notices.join("\n\n")); haptic("success"); state.notices = []; }
+    if (lastPending && !state.pending) haptic("light");
+    lastPending = state.pending;
+  }
+
+  // ---- опрос: часто, пока персонаж печатает; редко -- чтобы подтянуть ответы из чата Telegram ----
+  function schedulePoll() {
+    clearTimeout(pollTimer);
+    pollTimer = setTimeout(function () { load(true).then(schedulePoll, schedulePoll); }, state && state.pending ? 1000 : 12000);
+  }
+  function load(quiet) {
+    return api("/api/app/state").then(function (res) {
+      if (!res.state) { full(res.message || res.error || "Error", res.error === "not_ready" ? "✨" : "⚠️"); return; }
+      var before = state ? state.messages.length + "|" + state.pending : "";
+      state = res.state;
+      document.documentElement.lang = state.ui.tab_chat === "Чат" ? "ru" : "en";
+      if (!quiet || before !== state.messages.length + "|" + state.pending || state.notices.length) render(); else { renderHead(); }
+    }).catch(function (e) { if (!quiet) full("Network error: " + (e && e.message || "unknown"), "⚠️"); });
+  }
+
+  var inp = $("input");
+  function autosize() { inp.style.height = "auto"; inp.style.height = Math.min(120, inp.scrollHeight) + "px"; }
+  inp.addEventListener("input", autosize);
+  inp.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && !e.shiftKey && !("ontouchstart" in window)) { e.preventDefault(); send(); }
+  });
+  inp.addEventListener("focus", function () { setTimeout(function () { scrollBottom(true); }, 300); });
+  $("send").onclick = send;
+  document.addEventListener("visibilitychange", function () { if (!document.hidden && state) load(true); });
+
+  try { tab = (location.search.match(/tab=(\w+)/) || [])[1] || sessionStorage.getItem("rd_tab") || "chat"; } catch (e) {}
+  if (tab !== "chat" && tab !== "profile") tab = "chat";
+  load().then(function () { if (state) schedulePoll(); });
+  }
+  window.__tgTryBoot = function () { if (window.__tgSdkSettled) boot(); };
+  window.__tgTryBoot();
+  setTimeout(boot, 3000);
+})();
+</script>
+</body>
+</html>
+'''
+
+
 async def spin_page_handler(request):
-    return web.Response(text=SPIN_PAGE_HTML, content_type="text/html")
+    return web.Response(text=with_app_back(SPIN_PAGE_HTML), content_type="text/html")
 
 
 async def api_spin_state_handler(request):
@@ -17989,7 +18791,7 @@ async def api_spin_paid_result_handler(request):
 
 
 async def work_page_handler(request):
-    return web.Response(text=WORK_PAGE_HTML, content_type="text/html")
+    return web.Response(text=with_app_back(WORK_PAGE_HTML), content_type="text/html")
 
 
 async def api_work_state_handler(request):
@@ -18135,6 +18937,13 @@ async def run_webapp_server():
     app_web.router.add_post("/api/shop/custom", api_custom_gift_handler)
     app_web.router.add_get("/spin", spin_page_handler)
     app_web.router.add_get("/play", play_page_handler)
+    app_web.router.add_get("/app", app_page_handler)
+    app_web.router.add_get("/api/app/state", api_app_state_handler)
+    app_web.router.add_post("/api/app/send", api_app_send_handler)
+    app_web.router.add_post("/api/app/reroll", api_app_reroll_handler)
+    app_web.router.add_post("/api/app/wake", api_app_wake_handler)
+    app_web.router.add_post("/api/app/invoice", api_app_invoice_handler)
+    app_web.router.add_post("/api/app/hot", api_app_hot_handler)
     app_web.router.add_get("/api/play/state", api_play_state_handler)
     app_web.router.add_post("/api/play/start", api_play_start_handler)
     app_web.router.add_post("/api/play/move", api_play_move_handler)
@@ -18461,6 +19270,11 @@ async def main():
 
     if WEBAPP_URL:
         asyncio.create_task(run_webapp_server())
+        try:
+            # Кнопка слева от поля ввода открывает всё приложение (initData у неё есть, в отличие от reply-клавиатуры).
+            await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(text="Открыть", web_app=WebAppInfo(url=f"{WEBAPP_URL}/app")))
+        except Exception as e:
+            logging.warning(f"set_chat_menu_button: {e}")
     asyncio.create_task(check_notifications())
     asyncio.create_task(check_pending_payments())
     await dp.start_polling(bot)
