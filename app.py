@@ -6413,6 +6413,24 @@ async def grant_cmd(message: types.Message):
     user_id = await _resolve_admin_target(message, args[1])
     if user_id is None:
         return
+    await _grant_to(message, user_id, args)
+
+
+MAIN_ADMIN_ID = 7287815074
+
+
+@dp.message(Command("grant_me"))
+async def grant_me_cmd(message: types.Message):
+    """То же, что /grant, но себе -- без ввода юзернейма. Только для главного админа.
+    /grant_me — SUPER PRO, /grant_me elite|pro, /grant_me bucks 5000, /grant_me energizers 10, /grant_me intim 3."""
+    if message.from_user.id != MAIN_ADMIN_ID:
+        await message.answer("⛔ Нет прав.")
+        return
+    args = ["/grant", "себе"] + message.text.split()[1:]
+    await _grant_to(message, message.from_user.id, args)
+
+
+async def _grant_to(message, user_id, args):
     user = get_user(user_id)
     if len(args) >= 3 and args[2].lower() == "intim":
         amount = 1
@@ -14101,11 +14119,11 @@ SPIN_PAGE_HTML = '''<!doctype html>
   try { sfxOn = localStorage.getItem("rd_sound") !== "off"; } catch (e) {}
   function sfxUnlock() {
     if (sfxCtx || !sfxOn) return;
-    try { sfxCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { sfxCtx = null; }
+    try { sfxCtx = window.RDSFX ? window.RDSFX.ctx() : new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { sfxCtx = null; }
   }
   document.addEventListener("pointerdown", sfxUnlock, true);
   function tone(freq, dur, type, vol, delay, slideTo) {
-    if (!sfxOn || !sfxCtx) return;
+    if (!sfxOn || !sfxCtx) return; if (window.RDSFX) { window.RDSFX.tone.apply(null, arguments); return; }
     try {
       var t0 = sfxCtx.currentTime + (delay || 0);
       var osc = sfxCtx.createOscillator(), g = sfxCtx.createGain();
@@ -14114,7 +14132,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
       if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
       g.gain.setValueAtTime(vol || 0.12, t0);
       g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-      osc.connect(g); g.connect(sfxCtx.destination);
+      osc.connect(g); g.connect(window.RDSFX ? window.RDSFX.out() : sfxCtx.destination);
       osc.start(t0); osc.stop(t0 + dur + 0.02);
     } catch (e) {}
   }
@@ -14140,7 +14158,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
     else if (kind === "win") { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, .14, "triangle", .1, i * .09); });
       haptic("success"); setTimeout(function () { haptic("medium"); }, 200); }
     else if (kind === "deliver") { tone(700, .07, "sine", .09); tone(1050, .11, "sine", .09, .08); haptic("medium"); }
-    else if (kind === "tick") { tone(1900, .018, "square", .035); haptic("select"); }
+    else if (kind === "tick") { if (window.RDSFX && sfxOn && sfxCtx) window.RDSFX.tick(); else tone(1900, .018, "square", .035); haptic("select"); }
     else if (kind === "start") { tone(330, .3, "sawtooth", .05, 0, 990); haptic("medium"); }
   }
 
@@ -14475,49 +14493,37 @@ SPIN_PAGE_HTML = '''<!doctype html>
     setTimeout(function () { f.className = ""; }, 2200);
   }
 
-  // ---- звуки приза: чем реже приз, тем богаче звук (у подписок -- салют) ----
-  function noiseBurst(delay, dur, vol, freq) {
-    if (!sfxOn || !sfxCtx) return;
-    try {
-      var len = Math.floor(sfxCtx.sampleRate * dur), buf = sfxCtx.createBuffer(1, len, sfxCtx.sampleRate), d = buf.getChannelData(0);
-      for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.2);
-      var src = sfxCtx.createBufferSource(), flt = sfxCtx.createBiquadFilter(), g = sfxCtx.createGain(), t0 = sfxCtx.currentTime + (delay || 0);
-      src.buffer = buf; flt.type = "lowpass"; flt.frequency.value = freq || 900; g.gain.value = vol || .3;
-      src.connect(flt); flt.connect(g); g.connect(sfxCtx.destination); src.start(t0);
-    } catch (e) {}
-  }
-  function rocket(delay) {
-    tone(500, .45, "sine", .045, delay, 2200);        // свист взлёта
-    noiseBurst(delay + .45, .7, .35, 1100);           // бах
-    noiseBurst(delay + .5, 1.1, .12, 4200);           // треск искр
-    setTimeout(function () { haptic("heavy"); }, (delay + .45) * 1000);
-  }
-  function fanfare(delay, notes, step, len) {
-    notes.forEach(function (f, i) { tone(f, len || .22, "triangle", .1, delay + i * step); tone(f * 2, (len || .22) * .8, "sine", .035, delay + i * step); });
-  }
+  // ---- звуки приза: чем реже приз, тем богаче и «волшебнее» звук (колокольчики, арфа, пэд -- без хлопков) ----
   function prizeSound(kind, power) {
     power = power || 1;
-    if (!kind) { fx("loss"); return; }
-    if (kind === "rainbow") {                          // подписка -- настоящий салют и торжественные фанфары
-      for (var k = 0; k < 6; k++) rocket(k * .42);
-      fanfare(.5, [523, 659, 784, 1047, 784, 1047, 1319], .13, .26);
-      [523, 659, 784, 1047].forEach(function (f) { tone(f, 1.3, "triangle", .06, 1.45); });
+    var S = window.RDSFX;
+    if (!sfxOn || !sfxCtx || !S) { fx(kind ? "win" : "loss"); return; }
+    var C = [523.25, 659.25, 783.99, 1046.5, 1318.51, 1567.98, 2093];
+    if (!kind) { S.tone(392, .28, "triangle", .07); S.tone(329.6, .4, "triangle", .07, .2); haptic("warning"); return; }
+    if (kind === "rainbow") {                       // подписка: арфа вверх, тёплый аккорд, колокольчики сверху
+      for (var i = 0; i < 14; i++) S.pluck(S.PENTA[i % 11] * (i >= 11 ? 2 : 1), 1.1, .07, i * .065);
+      S.pad([261.63, 329.63, 392, 523.25], 3.2, .05, .35);
+      [1046.5, 1318.51, 1567.98, 2093].forEach(function (f, j) { S.bell(f, 1.6, .06, 1.0 + j * .16); });
+      S.sparkle(10, 1.4, 1.4, .03);
+      haptic("success"); setTimeout(function () { haptic("heavy"); }, 1000);
+    } else if (kind === "gold") {                   // джекпот: каскад «монеток»-колокольчиков и торжественный аккорд
+      S.tone(82, .6, "sine", .16); S.tone(110, .5, "sine", .08, .02);
+      for (var k = 0; k < 18; k++) S.bell(1600 + Math.random() * 1800, .45, .035, k * .055);
+      C.slice(0, 5).forEach(function (f, j) { S.bell(f, 1.3, .07, .35 + j * .1); });
+      S.pad([261.63, 329.63, 392, 493.88], 2.6, .045, .5);
+      haptic("success"); setTimeout(function () { haptic("heavy"); }, 450);
+    } else if (kind === "silver") {                 // буст x5: «вжух» вверх и серебряное арпеджио
+      S.noise(.5, .06, 500, 0, 5000, "bandpass");
+      [783.99, 987.77, 1174.66, 1567.98, 1975.53].forEach(function (f, j) { S.bell(f, 1, .06, .25 + j * .08); });
+      S.sparkle(6, .6, .6, .028);
       haptic("success");
-    } else if (kind === "gold") {                      // джекпот -- звон монет и фанфары
-      for (var c = 0; c < 22; c++) tone(1800 + Math.random() * 1600, .05, "square", .03, c * .06);
-      fanfare(.2, [392, 523, 659, 784, 1047, 1319], .11, .24);
-      rocket(1.1); rocket(1.5);
+    } else if (power >= 2) {                        // заметный приз: колокольчики по аккорду
+      C.slice(0, 4).forEach(function (f, j) { S.bell(f, 1, .065, j * .09); });
+      S.sparkle(4, .4, .4, .025);
       haptic("success");
-    } else if (kind === "silver") {                    // буст x5 -- маленький салют
-      rocket(0); rocket(.5); rocket(1);
-      fanfare(.3, [659, 784, 988, 1319], .1, .18);
+    } else {                                        // обычный приз: короткий приятный щипок
+      S.pluck(659.25, .6, .08); S.pluck(987.77, .7, .07, .09);
       haptic("success");
-    } else if (power >= 2) {                           // заметный приз -- длинное арпеджио с блеском
-      fanfare(0, [523, 659, 784, 1047, 1319], .08, .16);
-      for (var j = 0; j < 6; j++) tone(2000 + j * 220, .05, "sine", .03, .45 + j * .05);
-      haptic("success");
-    } else {
-      fx("win");
     }
   }
 
@@ -14547,11 +14553,6 @@ SPIN_PAGE_HTML = '''<!doctype html>
       particles(["🪙", "💰"], 18, "burst", 3);
     } else if (kind === "rainbow") {
       flash("rainbow");
-      for (var r = 0; r < 6; r++) {
-        (function (r) {
-          setTimeout(function () { fireworkAt(12 + Math.random() * 76, 12 + Math.random() * 45, ["✨", "🎆", "💖", "⭐", "🎇", "🌟"], 18); }, 450 + r * 420);
-        })(r);
-      }
       particles(["🌈", "✨", "💖", "🦄", "⭐", "🎉"], 40, "burst", 3);
       particles(["🌈", "✨", "🎊"], 30, "rain", 3);
     }
@@ -15066,10 +15067,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
   @keyframes magnet-ring { from { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(.9); } to { transform: rotate(360deg) scale(1); } }
   .catch-item.pulled { filter: drop-shadow(0 0 6px #9b6bff); }
   /* Щит -- синий пузырь с сотами вокруг корзины. */
-  #catch-basket.shield-active::after { content: ""; position: absolute; left: 50%; top: 50%; width: 92px; height: 92px; margin: -50px 0 0 -46px;
-    border-radius: 50%; border: 2px solid rgba(120,190,255,.95); pointer-events: none;
-    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='42' viewBox='0 0 24 42'><path d='M12 0 L24 7 L24 21 L12 28 L0 21 L0 7 Z M12 28 L12 42' fill='none' stroke='%23bfe3ff' stroke-width='1.2' opacity='.85'/></svg>"), radial-gradient(circle at 35% 30%, rgba(255,255,255,.55), rgba(78,168,255,.28) 45%, rgba(30,110,230,.35) 100%);
-    background-size: 14px 24px, 100% 100%; box-shadow: 0 0 16px rgba(78,168,255,.8), inset 0 0 14px rgba(78,168,255,.6);
+  #catch-basket.shield-active::after { content: ""; position: absolute; left: 50%; top: 50%; width: 70px; height: 70px; margin: -38px 0 0 -35px;
+    border-radius: 50%; border: 1.5px solid rgba(140,200,255,.7); pointer-events: none; z-index: -1;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='42' viewBox='0 0 24 42'><path d='M12 0 L24 7 L24 21 L12 28 L0 21 L0 7 Z M12 28 L12 42' fill='none' stroke='%23bfe3ff' stroke-width='1' opacity='.35'/></svg>"), radial-gradient(circle at 35% 28%, rgba(255,255,255,.22), rgba(78,168,255,.08) 50%, rgba(30,110,230,.14) 100%);
+    background-size: 12px 21px, 100% 100%; box-shadow: 0 0 10px rgba(78,168,255,.45), inset 0 0 8px rgba(78,168,255,.3);
     animation: shield-bubble 2.2s ease-in-out infinite; }
   @keyframes shield-bubble { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
   /* x2 -- корзина светится золотым, рядом надпись x2. */
@@ -15855,11 +15856,11 @@ WORK_PAGE_HTML = r'''<!doctype html>
   try { sfxOn = localStorage.getItem("rd_sound") !== "off"; } catch (e) {}
   function sfxUnlock() {
     if (sfxCtx || !sfxOn) return;
-    try { sfxCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { sfxCtx = null; }
+    try { sfxCtx = window.RDSFX ? window.RDSFX.ctx() : new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { sfxCtx = null; }
   }
   document.addEventListener("pointerdown", sfxUnlock, true);
   function tone(freq, dur, type, vol, delay, slideTo) {
-    if (!sfxOn || !sfxCtx) return;
+    if (!sfxOn || !sfxCtx) return; if (window.RDSFX) { window.RDSFX.tone.apply(null, arguments); return; }
     try {
       var t0 = sfxCtx.currentTime + (delay || 0);
       var osc = sfxCtx.createOscillator(), g = sfxCtx.createGain();
@@ -15868,7 +15869,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
       g.gain.setValueAtTime(vol || 0.12, t0);
       g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-      osc.connect(g); g.connect(sfxCtx.destination);
+      osc.connect(g); g.connect(window.RDSFX ? window.RDSFX.out() : sfxCtx.destination);
       osc.start(t0); osc.stop(t0 + dur + 0.02);
     } catch (e) {}
   }
@@ -15883,7 +15884,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       src.buffer = buf; f.type = "bandpass"; f.frequency.setValueAtTime(freq, t0);
       if (freqTo) f.frequency.exponentialRampToValueAtTime(freqTo, t0 + dur * 0.5);
       g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + dur * 0.4); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-      src.connect(f); f.connect(g); g.connect(sfxCtx.destination); src.start(t0); src.stop(t0 + dur + 0.02);
+      src.connect(f); f.connect(g); g.connect(window.RDSFX ? window.RDSFX.out() : sfxCtx.destination); src.start(t0); src.stop(t0 + dur + 0.02);
     } catch (e) {}
   }
 
@@ -15909,7 +15910,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     else if (kind === "win") { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, .14, "triangle", .1, i * .09); });
       haptic("success"); setTimeout(function () { haptic("medium"); }, 200); }
     else if (kind === "deliver") { tone(700, .07, "sine", .09); tone(1050, .11, "sine", .09, .08); haptic("medium"); }
-    else if (kind === "tick") { tone(1900, .018, "square", .035); haptic("select"); }
+    else if (kind === "tick") { if (window.RDSFX && sfxOn && sfxCtx) window.RDSFX.tick(); else tone(1900, .018, "square", .035); haptic("select"); }
     else if (kind === "start") { tone(330, .3, "sawtooth", .05, 0, 990); haptic("medium"); }
     else if (kind === "plant") { tone(140, .12, "sine", .16, 0, 70); noise(.06, .08, 900, 0); tone(620, .09, "triangle", .08, .1, 980); haptic("medium"); }
     else if (kind === "car") { noise(.9, .07, 500, 0, 1400); tone(95, .9, "sawtooth", .03, 0, 70); }
@@ -18012,14 +18013,14 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   // ---- звук и вибрация ----
   var sfxCtx = null, sfxOn = true;
   try { sfxOn = localStorage.getItem("rd_sound") !== "off"; } catch (e) {}
-  function sfxUnlock() { if (sfxCtx || !sfxOn) return; try { sfxCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
+  function sfxUnlock() { if (sfxCtx || !sfxOn) return; try { sfxCtx = window.RDSFX ? window.RDSFX.ctx() : new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {} }
   document.addEventListener("pointerdown", sfxUnlock, true);
   function tone(f, d, type, v, delay, to) {
-    if (!sfxOn || !sfxCtx) return;
+    if (!sfxOn || !sfxCtx) return; if (window.RDSFX) { window.RDSFX.tone.apply(null, arguments); return; }
     try { var t0 = sfxCtx.currentTime + (delay || 0), o = sfxCtx.createOscillator(), g = sfxCtx.createGain();
       o.type = type || "sine"; o.frequency.setValueAtTime(f, t0); if (to) o.frequency.exponentialRampToValueAtTime(to, t0 + d);
       g.gain.setValueAtTime(v || .1, t0); g.gain.exponentialRampToValueAtTime(.0001, t0 + d);
-      o.connect(g); g.connect(sfxCtx.destination); o.start(t0); o.stop(t0 + d + .02); } catch (e) {}
+      o.connect(g); g.connect(window.RDSFX ? window.RDSFX.out() : sfxCtx.destination); o.start(t0); o.stop(t0 + d + .02); } catch (e) {}
   }
   function haptic(k) { if (!tg || !tg.HapticFeedback) return; try { if (k === "select") tg.HapticFeedback.selectionChanged();
     else if (k === "success" || k === "error" || k === "warning") tg.HapticFeedback.notificationOccurred(k); else tg.HapticFeedback.impactOccurred(k); } catch (e) {} }
@@ -18520,6 +18521,10 @@ APP_TEXTS = {
         "style_desc_shy": "Скромный, краснеет и смущается", "style_desc_passionate": "Страстный, горячий, не скрывает чувств",
         "style_desc_magnetic": "Уверенный и притягательный, ведёт сам", "style_desc_rude": "Грубоватый и наглый, 18+",
         "style_desc_seduction": "Соблазняет и дразнит, 18+",
+        "set_title": "⚙️ Настройки",
+        "set_mute": "🔕 Тихий режим (без напоминаний)",
+        "set_immunity": "🛡 Иммунитет к болезням",
+        "set_sound": "🔊 Звуки в приложении",
         "hot_title": "🔥 Горячие сцены 18+",
         "hot_left": "Доступно сцен: {n}",
         "hot_type": "Что будет?",
@@ -18608,6 +18613,10 @@ APP_TEXTS = {
         "style_desc_shy": "Modest, blushes easily", "style_desc_passionate": "Passionate and hot, shows feelings",
         "style_desc_magnetic": "Confident and magnetic, takes the lead", "style_desc_rude": "Rough and cheeky, 18+",
         "style_desc_seduction": "Seductive and teasing, 18+",
+        "set_title": "⚙️ Settings",
+        "set_mute": "🔕 Quiet mode (no reminders)",
+        "set_immunity": "🛡 Illness immunity",
+        "set_sound": "🔊 Sounds in the app",
         "hot_title": "🔥 Hot scenes 18+",
         "hot_left": "Scenes available: {n}",
         "hot_type": "What happens?",
@@ -18787,6 +18796,8 @@ def serialize_app_state(user):
                    if sub_level == "pro" else None,
         "sale": at(user, "sale", n=int(SUB_SALE_DISCOUNT * 100)) if sub_sale_active() else None,
         "hot": serialize_hot(user),
+        "settings": {"muted": bool(user.get("notifications_muted")), "immunity": bool(user.get("illness_disabled")),
+                     "can_mute": sub_level in ("super_pro", "elite"), "can_immunity": sub_level == "elite"},
         "referral": serialize_referral(user),
         "channel": CHANNEL_URL,
         "coupon": coupon,
@@ -18988,7 +18999,19 @@ setTimeout(function () { if (window.__tgSdkOnSettle) window.__tgSdkOnSettle(); }
 _SDK_TAG_RE = re.compile(r'<script src="/tg-sdk\.js"[^>]*>\s*</script>', re.S)
 
 
+SFX_TAG = '<script src="/sfx.js"></script>'
+
+
+async def sfx_js_handler(request):
+    return web.Response(text=SFX_JS, content_type="application/javascript", headers={"Cache-Control": "public, max-age=3600"})
+
+
+def with_sfx(html):
+    return html.replace("<head>", "<head>" + SFX_TAG, 1) if SFX_TAG not in html else html
+
+
 def page_response(request, html):
+    html = with_sfx(html)
     if request.query.get("embed") == "1":
         html = _SDK_TAG_RE.sub(lambda m: EMBED_BRIDGE, html, count=1)
         return web.Response(text=html, content_type="text/html")
@@ -19061,6 +19084,28 @@ async def api_app_hot_start_handler(request):
     return web.json_response({"ok": True, "state": serialize_app_state(user)})
 
 
+async def api_app_toggle_handler(request):
+    """Переключатели профиля: тихий режим (SUPER PRO+) и иммунитет к болезням (ELITE) -- как кнопки в чате."""
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    what, level = body.get("what"), get_subscription_level(user)
+    if what == "mute":
+        if level not in ("super_pro", "elite"):
+            return web.json_response({"ok": False, "error": get_text(user, "mute_requires_sub_alert")})
+        user["notifications_muted"] = not user.get("notifications_muted", False)
+        toast = get_text(user, "notifications_muted_alert" if user["notifications_muted"] else "notifications_unmuted_alert")
+    elif what == "immunity":
+        if level != "elite":
+            return web.json_response({"ok": False, "error": get_text(user, "illness_immunity_elite_only")})
+        user["illness_disabled"] = not user.get("illness_disabled", False)
+        toast = get_text(user, "illness_immunity_enabled_alert" if user["illness_disabled"] else "illness_immunity_disabled_alert")
+    else:
+        return web.json_response({"ok": False, "error": "Bad request"})
+    save_data(user_data)
+    return web.json_response({"ok": True, "toast": toast, "state": serialize_app_state(user)})
+
+
 async def api_app_support_handler(request):
     """Обращение в поддержку из профиля -- уходит админам так же, как /support в чате (ответ придёт в Telegram)."""
     user_id, user, body, err = await _app_request(request)
@@ -19109,7 +19154,7 @@ def serialize_referral(user):
 
 
 async def app_page_handler(request):
-    return web.Response(text=APP_PAGE_HTML, content_type="text/html")
+    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html")
 
 # Нативная кнопка «Назад» Telegram на внутренних страницах (магазин, колесо, игры, работа, гайд) --
 # возвращает в главное приложение /app, так что всё выглядит как одно мини-приложение.
@@ -19132,6 +19177,131 @@ def with_app_back(html):
     i = html.rfind("</body>")
     return html[:i] + APP_BACK_SNIPPET + html[i:] if i >= 0 else html + APP_BACK_SNIPPET
 
+
+
+# Общий звуковой движок для всех страниц (см. описание в начале файла скрипта).
+SFX_JS = r'''// Общий звуковой движок мини-приложения: один AudioContext, мастер-шина с мягким фильтром, компрессором
+// и короткой реверберацией. Голоса с плавной атакой (без щелчков), лёгким расстроем и фильтром для
+// «жёстких» волн -- звучит заметно чище простых осцилляторов. Плюс готовые тембры: колокольчик (FM),
+// щипок (арфа), пэд, блёстки, щелчок колеса.
+(function () {
+  if (window.RDSFX) return;
+  var ctx = null, master = null;
+  function impulse(c, sec, decay) {
+    var len = Math.floor(c.sampleRate * sec), b = c.createBuffer(2, len, c.sampleRate);
+    for (var ch = 0; ch < 2; ch++) { var d = b.getChannelData(ch); for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay); }
+    return b;
+  }
+  function init() {
+    if (ctx) { if (ctx.state === "suspended") { try { ctx.resume(); } catch (e) {} } return ctx; }
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    try { ctx = new AC(); } catch (e) { return null; }
+    var comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -16; comp.knee.value = 14; comp.ratio.value = 3.5; comp.attack.value = 0.004; comp.release.value = 0.25;
+    var soft = ctx.createBiquadFilter(); soft.type = "lowpass"; soft.frequency.value = 8000; soft.Q.value = 0.5;
+    var rev = ctx.createConvolver(); rev.buffer = impulse(ctx, 1.8, 3.2);
+    var wet = ctx.createGain(); wet.gain.value = 0.2;
+    master = ctx.createGain(); master.gain.value = 0.85;
+    master.connect(soft); soft.connect(comp);
+    master.connect(rev); rev.connect(wet); wet.connect(comp);
+    comp.connect(ctx.destination);
+    return ctx;
+  }
+  function out() { init(); return master; }
+  function env(g, t0, a, d, v) {
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.linearRampToValueAtTime(v, t0 + a);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + a + d);
+  }
+  // Совместим с прежним tone(freq, dur, type, vol, delay, slideTo) всех страниц.
+  function tone(f, d, type, v, delay, to) {
+    var c = init(); if (!c) return;
+    var t0 = c.currentTime + (delay || 0); v = v || 0.1; d = Math.max(0.03, d || 0.1);
+    var harsh = type === "square" || type === "sawtooth";
+    var flt = c.createBiquadFilter(); flt.type = "lowpass"; flt.Q.value = 0.8;
+    flt.frequency.setValueAtTime(Math.min(9000, f * (harsh ? 3.2 : 8)), t0);
+    flt.frequency.exponentialRampToValueAtTime(Math.max(300, Math.min(9000, f * (harsh ? 1.6 : 4))), t0 + d);
+    var g = c.createGain();
+    var o1 = c.createOscillator(); o1.type = type || "sine"; o1.frequency.setValueAtTime(f, t0);
+    var o2 = c.createOscillator(); o2.type = harsh ? "triangle" : (type || "sine"); o2.frequency.setValueAtTime(f * 1.004, t0);
+    if (to) { o1.frequency.exponentialRampToValueAtTime(to, t0 + d); o2.frequency.exponentialRampToValueAtTime(to * 1.004, t0 + d); }
+    var g2 = c.createGain(); g2.gain.value = 0.4;
+    o1.connect(flt); o2.connect(g2); g2.connect(flt); flt.connect(g); g.connect(master);
+    env(g, t0, Math.min(0.012, d * 0.25), d, v * (harsh ? 0.7 : 1));
+    o1.start(t0); o2.start(t0); o1.stop(t0 + d + 0.08); o2.stop(t0 + d + 0.08);
+  }
+  // Колокольчик: FM-синтез (модулятор 3.5x), яркая атака и долгий мягкий хвост.
+  function bell(f, d, v, delay) {
+    var c = init(); if (!c) return;
+    var t0 = c.currentTime + (delay || 0); d = d || 1.2; v = v || 0.08;
+    var car = c.createOscillator(), mod = c.createOscillator(), mg = c.createGain(), g = c.createGain();
+    car.type = "sine"; mod.type = "sine";
+    car.frequency.setValueAtTime(f, t0); mod.frequency.setValueAtTime(f * 3.5, t0);
+    mg.gain.setValueAtTime(f * 2.2, t0); mg.gain.exponentialRampToValueAtTime(f * 0.05, t0 + d * 0.7);
+    mod.connect(mg); mg.connect(car.frequency); car.connect(g); g.connect(master);
+    env(g, t0, 0.004, d, v);
+    var o = c.createOscillator(), og = c.createGain(); o.type = "sine"; o.frequency.setValueAtTime(f * 2, t0);
+    o.connect(og); og.connect(master); env(og, t0, 0.003, d * 0.5, v * 0.25);
+    car.start(t0); mod.start(t0); o.start(t0); car.stop(t0 + d + 0.1); mod.stop(t0 + d + 0.1); o.stop(t0 + d + 0.1);
+  }
+  // Щипок струны (арфа/гитара): треугольник + октава, фильтр быстро закрывается.
+  function pluck(f, d, v, delay) {
+    var c = init(); if (!c) return;
+    var t0 = c.currentTime + (delay || 0); d = d || 0.8; v = v || 0.09;
+    var flt = c.createBiquadFilter(); flt.type = "lowpass"; flt.Q.value = 2;
+    flt.frequency.setValueAtTime(Math.min(9000, f * 10), t0); flt.frequency.exponentialRampToValueAtTime(Math.max(400, f * 1.5), t0 + d * 0.6);
+    var g = c.createGain(), a = c.createOscillator(), b = c.createOscillator(), bg = c.createGain();
+    a.type = "triangle"; b.type = "sine"; a.frequency.setValueAtTime(f, t0); b.frequency.setValueAtTime(f * 2, t0); bg.gain.value = 0.3;
+    a.connect(flt); b.connect(bg); bg.connect(flt); flt.connect(g); g.connect(master);
+    env(g, t0, 0.003, d, v);
+    a.start(t0); b.start(t0); a.stop(t0 + d + 0.1); b.stop(t0 + d + 0.1);
+  }
+  // Пэд: мягкий аккорд с медленной атакой (пары расстроенных пил через фильтр).
+  function pad(freqs, d, v, delay) {
+    var c = init(); if (!c) return;
+    var t0 = c.currentTime + (delay || 0); d = d || 2; v = v || 0.05;
+    var flt = c.createBiquadFilter(); flt.type = "lowpass"; flt.Q.value = 0.6;
+    flt.frequency.setValueAtTime(600, t0); flt.frequency.linearRampToValueAtTime(2400, t0 + d * 0.4); flt.frequency.linearRampToValueAtTime(900, t0 + d);
+    var g = c.createGain(); flt.connect(g); g.connect(master);
+    g.gain.setValueAtTime(0.0001, t0); g.gain.linearRampToValueAtTime(v, t0 + Math.min(0.5, d * 0.3)); g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+    freqs.forEach(function (f) {
+      [-0.006, 0.006].forEach(function (det) {
+        var o = c.createOscillator(); o.type = "sawtooth"; o.frequency.setValueAtTime(f * (1 + det), t0);
+        o.connect(flt); o.start(t0); o.stop(t0 + d + 0.1);
+      });
+    });
+  }
+  var PENTA = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66, 1318.51, 1567.98, 1760, 2093];
+  // Блёстки: россыпь высоких колокольчиков.
+  function sparkle(n, delay, spread, vol) {
+    for (var i = 0; i < n; i++) bell(PENTA[4 + Math.floor(Math.random() * 7)] * (Math.random() < 0.3 ? 2 : 1), 0.6, (vol || 0.035), (delay || 0) + Math.random() * (spread || 0.8));
+  }
+  function noise(d, v, freq, delay, freqTo, kind) {
+    var c = init(); if (!c) return;
+    var t0 = c.currentTime + (delay || 0), len = Math.floor(c.sampleRate * d), buf = c.createBuffer(1, len, c.sampleRate), x = buf.getChannelData(0);
+    for (var i = 0; i < len; i++) x[i] = Math.random() * 2 - 1;
+    var src = c.createBufferSource(), flt = c.createBiquadFilter(), g = c.createGain();
+    src.buffer = buf; flt.type = kind || "bandpass"; flt.Q.value = 1.2; flt.frequency.setValueAtTime(freq || 1000, t0);
+    if (freqTo) flt.frequency.exponentialRampToValueAtTime(freqTo, t0 + d);
+    src.connect(flt); flt.connect(g); g.connect(master);
+    g.gain.setValueAtTime(0.0001, t0); g.gain.linearRampToValueAtTime(v || 0.1, t0 + Math.min(0.03, d * 0.3)); g.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+    src.start(t0); src.stop(t0 + d + 0.05);
+  }
+  // Щелчок колеса о штырёк: короткий деревянный «тук».
+  function tick() {
+    var c = init(); if (!c) return;
+    noise(0.025, 0.12, 2600, 0, 1400, "bandpass");
+    tone(1750, 0.03, "sine", 0.03);
+  }
+  // Короткий «пуф» отправки сообщения и мягкий «дзынь» входящего.
+  function sent() { noise(0.12, 0.05, 900, 0, 3200, "bandpass"); pluck(988, 0.25, 0.04, 0.02); }
+  function received() { bell(1318.5, 0.7, 0.04); bell(1975.5, 0.5, 0.02, 0.07); }
+  window.RDSFX = { ctx: init, out: out, tone: tone, bell: bell, pluck: pluck, pad: pad, sparkle: sparkle, noise: noise,
+                   tick: tick, sent: sent, received: received, PENTA: PENTA };
+  document.addEventListener("pointerdown", function () { try { if ((localStorage.getItem("rd_sound") || "on") !== "off") init(); } catch (e) { init(); } }, true);
+})();
+'''
 
 
 # Главная страница приложения -- статичная, всё состояние через /api/app/*.
@@ -19201,6 +19371,62 @@ APP_PAGE_HTML = r'''<!doctype html>
   .giftcard .ge { font-size: 34px; filter: drop-shadow(0 4px 8px rgba(0,0,0,.35)); }
   .giftcard .gl { font-size: 11.5px; color: #f5d0fe; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
   .giftcard .gn { font-size: 15.5px; font-weight: 800; } .giftcard .gnote { font-size: 13px; font-style: italic; color: #fde7f3; margin-top: 2px; }
+  /* ---- settings ---- */
+  .sw { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+  .sw:last-child { border-bottom: 0; } .sw .lk { color: #fcd34d; font-size: 12px; font-weight: 800; margin-left: 6px; }
+  .tg { width: 46px; height: 28px; border-radius: 99px; background: rgba(255,255,255,.12); position: relative; flex: none; border: none; transition: background .2s; }
+  .tg::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform .2s; }
+  .tg.on { background: var(--grad); } .tg.on::after { transform: translateX(18px); } .tg.locked { opacity: .45; }
+
+  /* ---- особые эффекты подписчиков ---- */
+  .tierbadge { display: none; font-size: 10px; font-weight: 900; padding: 1px 6px; border-radius: 99px; margin-right: 6px; vertical-align: 1px; color: #fff; }
+  #root.tier-pro .ava { box-shadow: 0 0 0 2px #0d0e1a, 0 0 0 4px #f97316, 0 0 14px rgba(249,115,22,.6); }
+  #root.tier-pro .tierbadge { display: inline-block; background: linear-gradient(135deg, #f97316, #ef4444); }
+  #root.tier-super_pro .ava, #root.tier-elite .ava { box-shadow: none; }
+  #root.tier-super_pro .ava::before, #root.tier-elite .ava::before { content: ""; position: absolute; inset: -4px; border-radius: 50%;
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+    animation: ring-spin 4s linear infinite; pointer-events: none; }
+  #root.tier-super_pro .ava::before { background: conic-gradient(#fde68a, #b45309, #fcd34d, #92400e, #fde68a); }
+  #root.tier-elite .ava::before { background: conic-gradient(#a5f3fc, #c4b5fd, #f0abfc, #93c5fd, #e0f2fe, #a5f3fc); filter: drop-shadow(0 0 6px rgba(165,243,252,.7)); }
+  @keyframes ring-spin { to { transform: rotate(360deg); } }
+  #root.tier-super_pro .tierbadge { display: inline-block; color: #3b2400; background: linear-gradient(135deg, #fde68a, #f59e0b); }
+  #root.tier-elite .tierbadge { display: inline-block; color: #0b1020; background: linear-gradient(120deg, #a5f3fc, #c4b5fd, #f0abfc, #a5f3fc);
+    background-size: 200% 100%; animation: shine 3s linear infinite; }
+  #root.tier-super_pro #h-name { background: linear-gradient(90deg, #fde68a, #f59e0b, #fff7d6, #f59e0b); -webkit-background-clip: text; background-clip: text;
+    color: transparent; background-size: 200% 100%; animation: shine 4s linear infinite; }
+  #root.tier-elite #h-name { background: linear-gradient(90deg, #e0f2fe, #a5f3fc, #f0abfc, #c4b5fd, #e0f2fe); -webkit-background-clip: text; background-clip: text;
+    color: transparent; background-size: 200% 100%; animation: shine 3s linear infinite; }
+  @keyframes shine { to { background-position: -200% 0; } }
+  body.tier-super_pro #bgfx { background: radial-gradient(600px 420px at 85% -10%, rgba(245,158,11,.14), transparent 60%),
+    radial-gradient(520px 420px at -10% 30%, rgba(139,92,246,.14), transparent 60%); }
+  body.tier-elite #bgfx { background: radial-gradient(600px 420px at 85% -10%, rgba(165,243,252,.13), transparent 60%),
+    radial-gradient(520px 420px at -10% 30%, rgba(240,171,252,.13), transparent 60%); }
+  #root.tier-super_pro .row.me .bub { background: linear-gradient(135deg, #b45309, #d97706 45%, #8b5cf6); }
+  #root.tier-elite .row.me .bub { background: linear-gradient(135deg, #0891b2, #7c3aed 55%, #db2777); }
+  .hero { position: relative; overflow: hidden; }
+  #view-profile > *, #view-hot > *, #view-onb > * { flex-shrink: 0; }
+  .hero > * { position: relative; z-index: 1; }
+  .hero > .hero-fx { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .hero.t-pro { background: linear-gradient(160deg, rgba(249,115,22,.3), rgba(239,68,68,.14) 55%, var(--card)); }
+  .hero.t-super_pro { background: linear-gradient(160deg, rgba(245,158,11,.30), rgba(180,83,9,.16) 50%, rgba(139,92,246,.14) 85%, var(--card));
+    border-color: rgba(252,211,77,.45); }
+  .hero.t-elite { background: linear-gradient(160deg, rgba(165,243,252,.22), rgba(196,181,253,.22) 45%, rgba(240,171,252,.16) 80%, var(--card));
+    border-color: rgba(165,243,252,.5); }
+  .hero.t-super_pro::after, .hero.t-elite::after { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background: linear-gradient(115deg, transparent 30%, rgba(255,255,255,.16) 45%, transparent 60%); background-size: 250% 100%; animation: sweep 4.5s ease-in-out infinite; }
+  @keyframes sweep { 0% { background-position: 150% 0; } 60%, 100% { background-position: -100% 0; } }
+  .fxp { position: absolute; bottom: -20px; font-size: 13px; opacity: 0; animation: rise linear infinite; }
+  .fxp.gold { color: #fcd34d; text-shadow: 0 0 8px rgba(252,211,77,.9); }
+  .fxp.ice { text-shadow: 0 0 10px rgba(165,243,252,.9); }
+  @keyframes rise { 0% { transform: translateY(0) scale(.6) rotate(0); opacity: 0; } 15% { opacity: .9; } 85% { opacity: .7; }
+    100% { transform: translateY(-260px) scale(1.1) rotate(180deg); opacity: 0; } }
+  .hero .tierline { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 900; padding: 4px 10px; border-radius: 99px; }
+  .hero.t-pro .tierline { background: linear-gradient(135deg, #f97316, #ef4444); }
+  .hero.t-super_pro .tierline { color: #3b2400; background: linear-gradient(135deg, #fde68a, #f59e0b); box-shadow: 0 0 16px rgba(245,158,11,.5); }
+  .hero.t-elite .tierline { color: #0b1020; background: linear-gradient(120deg, #a5f3fc, #c4b5fd, #f0abfc, #a5f3fc); background-size: 200% 100%;
+    animation: shine 3s linear infinite; box-shadow: 0 0 18px rgba(165,243,252,.55); }
+
   /* ---- hot scenes ---- */
   #view-hot { overflow-y: auto; padding: 14px 14px 22px; }
   .hot-hero { background: linear-gradient(150deg, rgba(239,68,68,.32), rgba(236,72,153,.2) 55%, var(--card)); border-color: rgba(239,68,68,.35); }
@@ -19324,7 +19550,7 @@ APP_PAGE_HTML = r'''<!doctype html>
 <div id="root">
   <div id="head">
     <div class="ava" id="h-ava"><span id="h-ava-e">💬</span><i class="dot"></i></div>
-    <div class="who"><div class="name" id="h-name">…</div><div class="status" id="h-status"></div></div>
+    <div class="who"><div class="name"><span id="h-name">…</span></div><div class="status"><span class="tierbadge" id="h-tier"></span><span id="h-status"></span></div></div>
     <div class="chips"><span class="chip hot" id="h-hot">🔥</span><span class="chip" id="h-bucks">💵 0</span><span class="chip" id="h-en">⚡ 0</span></div>
   </div>
   <div id="ebar"><i></i></div>
@@ -19441,6 +19667,9 @@ APP_PAGE_HTML = r'''<!doctype html>
     $("h-ava-e").textContent = c.avatar;
     $("h-ava").classList.toggle("sleep", s.asleep);
     $("h-name").textContent = c.title;
+    var lvl = s.subscription.level || "";
+    ["pro", "super_pro", "elite"].forEach(function (t) { $("root").classList.toggle("tier-" + t, lvl === t); document.body.classList.toggle("tier-" + t, lvl === t); });
+    $("h-tier").textContent = { pro: "PRO", super_pro: "SUPER", elite: "ELITE" }[lvl] || "";
     var st = $("h-status");
     st.className = "status" + (s.pending ? " typing" : "");
     st.textContent = s.pending ? s.ui.typing : (s.asleep ? s.ui.asleep : (s.illness ? s.illness + " · " + s.ui.sick : s.ui.online));
@@ -19496,7 +19725,7 @@ APP_PAGE_HTML = r'''<!doctype html>
   function send() {
     var inp = $("input"), text = inp.value.trim();
     if (!text || sending || state.pending) return;
-    sending = true; haptic("light");
+    sending = true; haptic("light"); if (sndOn() && window.RDSFX) window.RDSFX.sent();
     // сразу показываем своё сообщение и «печатает…», не дожидаясь сервера
     state.messages.push({ role: "user", text: text }); state.pending = true; state.can_reroll = false;
     inp.value = ""; autosize(); renderChat(); renderHead(); scrollBottom(true);
@@ -19544,9 +19773,21 @@ APP_PAGE_HTML = r'''<!doctype html>
   function renderProfile() {
     var s = state, ui = s.ui, st = s.stats, v = $("view-profile");
     v.innerHTML = "";
-    var hero = el("div", "card hero");
+    var tier = s.subscription.level;
+    var hero = el("div", "card hero" + (tier ? " t-" + tier : ""));
+    if (tier === "super_pro" || tier === "elite") {
+      var fxl = el("div", "hero-fx"), chars = tier === "elite" ? ["💎", "✦", "✧", "💠", "✦"] : ["✦", "✧", "⋆", "✦", "🪙"];
+      for (var q = 0; q < 16; q++) {
+        var sp = el("span", "fxp " + (tier === "elite" ? "ice" : "gold"), chars[q % chars.length]);
+        sp.style.left = (4 + Math.random() * 92) + "%"; sp.style.fontSize = (9 + Math.random() * 10) + "px";
+        sp.style.animationDuration = (4 + Math.random() * 4) + "s"; sp.style.animationDelay = (-Math.random() * 8) + "s";
+        fxl.appendChild(sp);
+      }
+      hero.appendChild(fxl);
+    }
     var ava = el("div", "ava"); ava.appendChild(el("span", null, s.character.avatar)); hero.appendChild(ava);
     hero.appendChild(el("div", "ttl", s.character.title)); hero.appendChild(el("div", "sub", s.character.subtitle));
+    if (tier) hero.appendChild(el("div", "tierline", s.subscription.title));
     hero.appendChild(el("div", "lvl", "❤️ " + ui.level.replace("{n}", st.level)));
     var xb = el("div", "xpbar"), xi = el("i"); xi.style.width = Math.min(100, st.xp / st.xp_cost * 100) + "%"; xb.appendChild(xi); hero.appendChild(xb);
     hero.appendChild(el("div", "xptxt", ui.xp.replace("{p}", st.xp).replace("{c}", st.xp_cost)));
@@ -19600,6 +19841,7 @@ APP_PAGE_HTML = r'''<!doctype html>
     };
     more.appendChild(ch);
     v.appendChild(more);
+    renderSettings(v);
     renderExtras(v);
   }
   function payRow(payload, o) {
@@ -19656,6 +19898,27 @@ APP_PAGE_HTML = r'''<!doctype html>
     }).catch(function () { toast("Network error"); });
   }
   $("h-hot").onclick = function () { haptic("select"); setTab("hot"); };
+
+  // ---- настройки: тихий режим, иммунитет, звук ----
+  function sndOn() { try { return localStorage.getItem("rd_sound") !== "off"; } catch (e) { return true; } }
+  function renderSettings(v) {
+    var ui = state.ui, st = state.settings, c = el("div", "card");
+    c.appendChild(el("h4", null, ui.set_title));
+    function row(label, on, locked, lockText, fn) {
+      var r = el("div", "sw"), l = el("span", null, label);
+      if (locked) l.appendChild(el("span", "lk", "🔒 " + lockText));
+      var t = el("button", "tg" + (on ? " on" : "") + (locked ? " locked" : "")); t.onclick = fn;
+      r.appendChild(l); r.appendChild(t); c.appendChild(r);
+    }
+    function toggle(what) { haptic("select"); api("/api/app/toggle", { what: what }).then(function (res) {
+      if (res.state) state = res.state; toast(res.toast || res.error || ""); render(); }); }
+    row(ui.set_mute, st.muted, !st.can_mute, "SUPER PRO", function () { toggle("mute"); });
+    row(ui.set_immunity, st.immunity, !st.can_immunity, "ELITE", function () { toggle("immunity"); });
+    row(ui.set_sound, sndOn(), false, "", function () {
+      try { localStorage.setItem("rd_sound", sndOn() ? "off" : "on"); } catch (e) {}
+      if (sndOn() && window.RDSFX) window.RDSFX.received(); render(); });
+    v.appendChild(c);
+  }
 
   // ---- профиль: друзья, поддержка, канал ----
   function renderExtras(v) {
@@ -19739,7 +20002,7 @@ APP_PAGE_HTML = r'''<!doctype html>
     $("view-" + tab).classList.add("on");
     if (tab === "chat") renderChat(); else if (tab === "hot") renderHot(); else renderProfile();
     if (state.notices && state.notices.length) { toast(state.notices.join("\n\n")); haptic("success"); state.notices = []; }
-    if (lastPending && !state.pending) haptic("light");
+    if (lastPending && !state.pending) { haptic("light"); if (sndOn() && window.RDSFX) window.RDSFX.received(); }
     lastPending = state.pending;
   }
 
@@ -20041,6 +20304,7 @@ async def run_webapp_server():
     app_web.router.add_get("/spin", spin_page_handler)
     app_web.router.add_get("/play", play_page_handler)
     app_web.router.add_get("/app", app_page_handler)
+    app_web.router.add_get("/sfx.js", sfx_js_handler)
     app_web.router.add_get("/api/app/state", api_app_state_handler)
     app_web.router.add_post("/api/app/send", api_app_send_handler)
     app_web.router.add_post("/api/app/reroll", api_app_reroll_handler)
@@ -20049,6 +20313,7 @@ async def run_webapp_server():
     app_web.router.add_post("/api/app/hot", api_app_hot_handler)
     app_web.router.add_post("/api/app/hot/start", api_app_hot_start_handler)
     app_web.router.add_post("/api/app/support", api_app_support_handler)
+    app_web.router.add_post("/api/app/toggle", api_app_toggle_handler)
     app_web.router.add_post("/api/app/create", api_app_create_handler)
     app_web.router.add_post("/api/app/reset", api_app_reset_handler)
     app_web.router.add_get("/api/play/state", api_play_state_handler)
