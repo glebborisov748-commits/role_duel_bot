@@ -292,21 +292,24 @@ TEXTS = {
         "shop_note_title": "✍️ Выбери, что подаришь со своими словами (у тебя {bucks}💵)",
         "shop_category_medicine": "💊 Лекарства",
         "illness_status_line": "{emoji} Болеет: {name} — лекарство есть в 🛍 Магазине",
-        "illness_escalate_timer": "⏳ Без лечения перейдёт в бронхит через {hours}ч",
+        "illness_escalate_timer": "⏳ Без лечения через {hours}ч станет хуже: {next}",
         "illness_push_cold": "🤒 Персонаж заболел: {emoji} {name}. Лекарство — в 🛍 Магазине. Пока он болеет, сообщения выматывают сильнее, а игры, подарки, свидания и горячие сцены недоступны. Лечится курсом: {doses} приёма лекарства с перерывом {gap}ч. Без лечения через {hours}ч станет бронхитом.",
         "illness_push_bronchitis": "😷 Стало хуже: {emoji} {name}. Нужно сильное лекарство из 🛍 Магазина — курс из {doses} приёмов с перерывом {gap}ч. Сообщения выматывают ещё сильнее, игры, подарки, свидания и горячие сцены недоступны.",
         "tipsy_status_light": "🥂 Слегка навеселе — чувствуется лёгкое опьянение.",
         "tipsy_status_full": "🍾 Хорошенько выпил(а) — реально пьян(а), это чувствуется во всём.",
         "intim_blocked_illness": "🤒 Персонаж слишком плохо себя чувствует для этого сейчас — сначала вылечи его в 🛍 Магазине.",
         "not_sick_alert": "😊 Персонаж сейчас не болеет — лекарство ни к чему.",
+        "illness_push_new": "🤧 Персонаж заболел: {emoji} {name}. Лечение: {need} из 🛍 Магазина. Пока болеет, игры, подарки, свидания и горячие сцены недоступны.",
+        "illness_push_worse": "{emoji} Стало хуже: {name}. Теперь лечение: {need} (между приёмами {gap}ч). Сообщения выматывают сильнее.",
+        "illness_push_next": "Без лечения через {hours}ч — {next}.",
         "wrong_medicine_alert": "❌ Это лекарство не от этой болезни — нужно другое.",
         "gift_blocked_illness": "🤒 Персонаж болеет — сейчас не до подарков и свиданий. Сначала вылечи его: лекарство в 🛍 Магазине.",
         "gift_sick_short": "болеет",
-        "medicine_wait_alert": "⏳ Лекарство принимают курсом ({n}/{total}). Следующий приём — через {when}.",
-        "medicine_dose_progress": "💊 Приём {n}/{total}. Стало чуть легче, но персонаж ещё болеет. Следующий приём — через {hours}ч.",
+        "medicine_wait_alert": "⏳ Следующий приём лекарства — через {when}. Осталось: {need}.",
+        "medicine_dose_progress": "💊 Стало легче, но персонаж ещё болеет. Осталось: {need}. Следующий приём — через {hours}ч.",
         "medicine_cured": "✅ Курс лечения завершён — персонаж выздоровел!",
-        "illness_course_line": "💊 Лечение: принято {n} из {total}",
-        "illness_course_next": "💊 Лечение: принято {n} из {total}, следующий приём — через {when}",
+        "illness_course_line": "💊 Осталось лечения: {need}",
+        "illness_course_next": "💊 Осталось лечения: {need}, следующий приём — через {when}",
         "character_died": "💔 Персонаж мёртв — весь диалог и уровень близости заморожены.\n\nМожешь воскресить его дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
         "character_died_overdrink": "💔 Персонаж не пережил такого количества алкоголя — сердце не выдержало.\n\nВся история общения и уровень близости потеряны.\n\nМожешь воскресить персонажа дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
         "character_died_dehydration": "💔 Персонаж слишком долго обходился без воды — организм не выдержал обезвоживания.\n\nВся история общения и уровень близости потеряны.\n\nМожешь воскресить персонажа дефибриллятором (со всей историей) или начать всё заново с новым персонажем.",
@@ -705,21 +708,24 @@ TEXTS = {
         "shop_note_title": "✍️ Choose what to gift with your own words (you have {bucks}💵)",
         "shop_category_medicine": "💊 Medicine",
         "illness_status_line": "{emoji} Sick: {name} — medicine is in the 🛍 Shop",
-        "illness_escalate_timer": "⏳ Will turn into bronchitis in {hours}h if untreated",
+        "illness_escalate_timer": "⏳ Untreated, in {hours}h it gets worse: {next}",
         "illness_push_cold": "🤒 Your companion got sick: {emoji} {name}. Medicine is in the 🛍 Shop. While sick, messages drain more energy and games, gifts, dates and hot scenes are unavailable. It's treated as a course: {doses} doses, {gap}h apart. Untreated, it turns into bronchitis in {hours}h.",
         "illness_push_bronchitis": "😷 It got worse: {emoji} {name}. You need strong medicine from the 🛍 Shop — a course of {doses} doses, {gap}h apart. Messages drain even more; games, gifts, dates and hot scenes are unavailable.",
         "tipsy_status_light": "🥂 A little tipsy — feeling it slightly.",
         "tipsy_status_full": "🍾 Properly drunk — it shows in everything right now.",
         "intim_blocked_illness": "🤒 Your companion feels too unwell for that right now — cure them in the 🛍 Shop first.",
         "not_sick_alert": "😊 Your companion isn't sick right now — no need for medicine.",
+        "illness_push_new": "🤧 Your companion got sick: {emoji} {name}. Treatment: {need} from the 🛍 Shop. While sick, games, gifts, dates and hot scenes are unavailable.",
+        "illness_push_worse": "{emoji} It got worse: {name}. Treatment now: {need} ({gap}h between doses). Messages drain more energy.",
+        "illness_push_next": "Untreated, in {hours}h — {next}.",
         "wrong_medicine_alert": "❌ This medicine doesn't treat this illness — you need a different one.",
         "gift_blocked_illness": "🤒 Your companion is sick — no gifts or dates right now. Cure them first: medicine is in the 🛍 Shop.",
         "gift_sick_short": "sick",
-        "medicine_wait_alert": "⏳ Medicine is taken as a course ({n}/{total}). Next dose in {when}.",
-        "medicine_dose_progress": "💊 Dose {n}/{total}. A bit better, but your companion is still sick. Next dose in {hours}h.",
+        "medicine_wait_alert": "⏳ Next dose in {when}. Left: {need}.",
+        "medicine_dose_progress": "💊 A bit better, but your companion is still sick. Left: {need}. Next dose in {hours}h.",
         "medicine_cured": "✅ The course is complete — your companion has recovered!",
-        "illness_course_line": "💊 Treatment: {n}/{total} doses",
-        "illness_course_next": "💊 Treatment: {n}/{total} doses, next in {when}",
+        "illness_course_line": "💊 Treatment left: {need}",
+        "illness_course_next": "💊 Treatment left: {need}, next dose in {when}",
         "character_died": "💔 Your companion is dead — the whole chat and closeness level are frozen.\n\nYou can revive them with a defibrillator (with the whole history) or start over with a new character.",
         "character_died_overdrink": "💔 Your companion didn't survive that much alcohol — their heart gave out.\n\nAll chat history and closeness level are lost.\n\nYou can revive your companion with a defibrillator (with the whole history) or start over with a new character.",
         "character_died_dehydration": "💔 Your companion went without water for too long — their body couldn't take the dehydration.\n\nAll chat history and closeness level are lost.\n\nYou can revive your companion with a defibrillator (with the whole history) or start over with a new character.",
@@ -1118,21 +1124,24 @@ TEXTS = {
         "shop_note_title": "✍️ Wähle, was du mit eigenen Worten schenkst (du hast {bucks}💵)",
         "shop_category_medicine": "💊 Medikamente",
         "illness_status_line": "{emoji} Krank: {name} — Medikamente gibt es im 🛍 Shop",
-        "illness_escalate_timer": "⏳ Wird ohne Behandlung in {hours}Std. zu Bronchitis",
+        "illness_escalate_timer": "⏳ Unbehandelt wird es in {hours}Std. schlimmer: {next}",
         "illness_push_cold": "🤒 Dein Begleiter ist krank: {emoji} {name}. Medikamente gibt es im 🛍 Shop. Solange er krank ist, kosten Nachrichten mehr Energie und Spiele, Geschenke, Dates und heiße Szenen sind gesperrt. Behandlung als Kur: {doses} Dosen im Abstand von {gap}Std. Unbehandelt wird es in {hours}Std. zu Bronchitis.",
         "illness_push_bronchitis": "😷 Es wurde schlimmer: {emoji} {name}. Du brauchst starkes Medikament aus dem 🛍 Shop — eine Kur aus {doses} Dosen im Abstand von {gap}Std. Nachrichten kosten noch mehr Energie; Spiele, Geschenke, Dates und heiße Szenen sind gesperrt.",
         "tipsy_status_light": "🥂 Leicht angeheitert — man merkt es ein bisschen.",
         "tipsy_status_full": "🍾 Ordentlich betrunken — das merkt man gerade an allem.",
         "intim_blocked_illness": "🤒 Dein Begleiter fühlt sich dafür gerade zu schlecht — heile ihn/sie zuerst im 🛍 Shop.",
         "not_sick_alert": "😊 Dein Begleiter ist gerade nicht krank — kein Medikament nötig.",
+        "illness_push_new": "🤧 Dein Begleiter ist krank: {emoji} {name}. Behandlung: {need} aus dem 🛍 Shop. Solange er krank ist, sind Spiele, Geschenke, Dates und heiße Szenen gesperrt.",
+        "illness_push_worse": "{emoji} Es wurde schlimmer: {name}. Behandlung jetzt: {need} ({gap}Std. zwischen den Dosen).",
+        "illness_push_next": "Unbehandelt in {hours}Std. — {next}.",
         "wrong_medicine_alert": "❌ Dieses Medikament hilft nicht gegen diese Krankheit — du brauchst ein anderes.",
         "gift_blocked_illness": "🤒 Dein Begleiter ist krank — gerade keine Geschenke oder Dates. Heile ihn/sie zuerst: Medikamente gibt es im 🛍 Shop.",
         "gift_sick_short": "krank",
-        "medicine_wait_alert": "⏳ Medikamente werden als Kur genommen ({n}/{total}). Nächste Dosis in {when}.",
-        "medicine_dose_progress": "💊 Dosis {n}/{total}. Etwas besser, aber dein Begleiter ist noch krank. Nächste Dosis in {hours}Std.",
+        "medicine_wait_alert": "⏳ Nächste Dosis in {when}. Übrig: {need}.",
+        "medicine_dose_progress": "💊 Etwas besser, aber dein Begleiter ist noch krank. Übrig: {need}. Nächste Dosis in {hours}Std.",
         "medicine_cured": "✅ Die Kur ist abgeschlossen — dein Begleiter ist wieder gesund!",
-        "illness_course_line": "💊 Behandlung: {n}/{total} Dosen",
-        "illness_course_next": "💊 Behandlung: {n}/{total} Dosen, nächste in {when}",
+        "illness_course_line": "💊 Behandlung übrig: {need}",
+        "illness_course_next": "💊 Behandlung übrig: {need}, nächste Dosis in {when}",
         "character_died": "💔 Dein Begleiter ist tot — der ganze Chatverlauf und das Nähe-Level sind eingefroren.\n\nDu kannst ihn/sie mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
         "character_died_overdrink": "💔 Dein Begleiter hat so viel Alkohol nicht überlebt — das Herz hat nicht mitgemacht.\n\nDer gesamte Chatverlauf und das Nähe-Level sind verloren.\n\nDu kannst deinen Begleiter mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
         "character_died_dehydration": "💔 Dein Begleiter war zu lange ohne Wasser — der Körper hat die Dehydrierung nicht überstanden.\n\nDer gesamte Chatverlauf und das Nähe-Level sind verloren.\n\nDu kannst deinen Begleiter mit einem Defibrillator wiederbeleben (mit der ganzen Geschichte) oder mit einem neuen Charakter neu anfangen.",
@@ -2195,8 +2204,13 @@ GIFT_ITEMS = {
 # "cold" сама перерастает в "bronchitis", если её долго игнорировать (см. _maybe_escalate_illness).
 ILLNESSES = {
     "cold": {"emoji": "🤧", "ru": "Простуда", "en": "Cold", "de": "Erkältung"},
-    "bronchitis": {"emoji": "🤒", "ru": "Бронхит", "en": "Bronchitis", "de": "Bronchitis"},
+    "flu": {"emoji": "🤒", "ru": "Грипп", "en": "Flu", "de": "Grippe"},
+    "bronchitis": {"emoji": "😷", "ru": "Бронхит", "en": "Bronchitis", "de": "Bronchitis"},
+    "pneumonia": {"emoji": "🥵", "ru": "Пневмония", "en": "Pneumonia", "de": "Lungenentzündung"},
 }
+# Без лечения болезнь тяжелеет по цепочке: простуда -> грипп -> бронхит -> пневмония (дальше не идёт).
+ILLNESS_NEXT = {"cold": "flu", "flu": "bronchitis", "bronchitis": "pneumonia"}
+ILLNESS_ESCALATE_HOURS_BY = {"cold": 12, "flu": 24, "bronchitis": 24}
 ILLNESS_DAILY_CHANCE = 0.18  # шанс заболеть за день, только если сейчас не болен — было 0.10 (до этого 0.04)
 # (ожидаемое начало болезни ~25 дней, реально ощущалось как "болезни вообще не бывает"); при 0.10
 # больше половины пользователей увидят её уже в первую неделю игры, оставаясь при этом редким
@@ -2204,18 +2218,21 @@ ILLNESS_DAILY_CHANCE = 0.18  # шанс заболеть за день, толь
 ILLNESS_ESCALATE_HOURS = 24  # столько часов невылеченная простуда терпит, потом становится бронхитом
 # Лечение -- курсом, а не одной покупкой (по фидбэку: "слишком легко вылечить"): нужно N приёмов с перерывом.
 # Каждый приём сдвигает таймер перехода в бронхит, а сам бронхит начинает курс заново.
-ILLNESS_DOSES = {"cold": 2, "bronchitis": 3}
-ILLNESS_DOSE_GAP_HOURS = 4
+# Лечение -- «очками»: лёгкое лекарство = 1, сильное = 2. Простуда -- одно лёгкое; грипп -- сильное + лёгкое
+# (или три лёгких); бронхит -- два сильных; пневмония -- три сильных. Лёгкое от бронхита и пневмонии не помогает.
+ILLNESS_DOSES = {"cold": 1, "flu": 3, "bronchitis": 4, "pneumonia": 6}
+ILLNESS_STRONG_ONLY = {"bronchitis", "pneumonia"}
+ILLNESS_DOSE_GAP_HOURS = 2
 
 # Лекарства — отдельная категория магазина, видна только когда персонаж реально болен (см.
 # get_shop_kb). "cures" — какие болезни снимает; сильное лечит и то, и другое, чтобы нельзя было
 # по ошибке купить не то и остаться ни с чем (см. buy_medicine).
 MEDICINE_ITEMS = {
     "light_medicine": {"emoji": "💊", "ru": "Лёгкое лекарство", "en": "Mild medicine", "de": "Leichtes Medikament",
-                        "price": 1100, "mood": 8, "cures": {"cold"},  # цена за приём (курс -- ILLNESS_DOSES); было 1600 за разовое лечение
+                        "price": 1100, "mood": 8, "cures": {"cold", "flu"}, "points": 1,  # цена за приём (курс -- ILLNESS_DOSES)
                         "reaction_hint": "Забота во время болезни — благодарность тёплая, голос слабый, но искренний."},
     "strong_medicine": {"emoji": "💉", "ru": "Сильное лекарство", "en": "Strong medicine", "de": "Starkes Medikament",
-                         "price": 2400, "mood": 15, "cures": {"cold", "bronchitis"},  # цена за приём; было 4000 за разовое лечение
+                         "price": 2400, "mood": 15, "cures": {"cold", "flu", "bronchitis", "pneumonia"}, "points": 2,  # цена за приём
                          "reaction_hint": "Серьёзная забота во время тяжёлой болезни — искреннее облегчение и глубокая благодарность."},
 }
 
@@ -2434,6 +2451,22 @@ def illness_doses_total(user):
     return ILLNESS_DOSES.get(user.get("illness"), 1)
 
 
+def medicine_need_text(user):
+    """Сколько ещё лекарства нужно: «💉×1 + 💊×1» (сильное считается за два лёгких)."""
+    left = max(0, illness_doses_total(user) - user.get("illness_doses", 0))
+    if user.get("illness") in ILLNESS_STRONG_ONLY:
+        strong, light = -(-left // 2), 0
+    else:
+        strong, light = left // 2, left % 2
+    parts = (["💉×%d" % strong] if strong else []) + (["💊×%d" % light] if light else [])
+    return " + ".join(parts) or "—"
+
+
+def illness_name(user, key):
+    info = ILLNESSES.get(key) or {}
+    return info.get(user.get("lang", "ru"), info.get("ru", key))
+
+
 def medicine_next_dose_at(user):
     """Когда можно следующий приём лекарства, или None, если уже можно."""
     last = user.get("illness_last_dose")
@@ -2455,8 +2488,7 @@ def medicine_block_text(user, item):
         return get_text(user, "wrong_medicine_alert")
     ready_at = medicine_next_dose_at(user)
     if ready_at:
-        return get_text(user, "medicine_wait_alert", n=user.get("illness_doses", 0), total=illness_doses_total(user),
-                        when=cooldown_phrase(user, ready_at))
+        return get_text(user, "medicine_wait_alert", need=medicine_need_text(user), when=cooldown_phrase(user, ready_at))
     return None
 
 
@@ -2469,9 +2501,10 @@ def gift_block_text(user, key):
 
 
 def _maybe_escalate_illness(user):
-    """Невылеченная простуда сама превращается в бронхит через ILLNESS_ESCALATE_HOURS —
-    стимул вылечиться, а не просто подождать, пока само пройдёт (само не проходит)."""
-    if user.get("illness") != "cold":
+    """Невылеченная болезнь тяжелеет по ILLNESS_NEXT (сроки -- ILLNESS_ESCALATE_HOURS_BY): стимул лечиться,
+    а не ждать (само не проходит). Каждый приём лекарства сдвигает срок (illness_since)."""
+    nxt = ILLNESS_NEXT.get(user.get("illness"))
+    if not nxt:
         return
     since = user.get("illness_since")
     if not since:
@@ -2480,10 +2513,10 @@ def _maybe_escalate_illness(user):
         hours = (datetime.now() - datetime.fromisoformat(since)).total_seconds() / 3600
     except (ValueError, TypeError):
         return
-    if hours >= ILLNESS_ESCALATE_HOURS:
-        user["illness"] = "bronchitis"
+    if hours >= ILLNESS_ESCALATE_HOURS_BY.get(user["illness"], ILLNESS_ESCALATE_HOURS):
+        user["illness"] = nxt
         user["illness_since"] = datetime.now().isoformat()
-        user["illness_doses"] = 0  # бронхит лечится заново, сильным лекарством
+        user["illness_doses"] = 0  # новая болезнь лечится заново
         user["illness_last_dose"] = None
 
 
@@ -2762,7 +2795,7 @@ def get_level_decay_multiplier(user):
     return 1.0 + (level - 1) * INTIMACY_LEVEL_DECAY_STEP
 
 
-ILLNESS_STAT_COST_MULTIPLIER = {"cold": 1.2, "bronchitis": 1.6}  # по фидбэку — болезнь должна
+ILLNESS_STAT_COST_MULTIPLIER = {"cold": 1.2, "flu": 1.4, "bronchitis": 1.6, "pneumonia": 1.9}  # по фидбэку — болезнь должна
 # реально ограничивать общение, а не быть просто косметикой в речи персонажа (см.
 # build_illness_rule): пока не вылечился, сообщения сильнее выматывают персонажа.
 
@@ -3199,6 +3232,12 @@ def build_illness_rule(user):
         return ("Ты немного приболела/приболел — лёгкая простуда: иногда шмыгаешь носом или коротко "
                 "покашливаешь в описании действия, отвечаешь чуть более устало и сухо, чем обычно, но в "
                 "целом держишься бодро и вовлечена/вовлечён в разговор.\n")
+    if illness == "flu":
+        return ("У тебя грипп: температура, ломота и слабость — иногда упоминаешь в действиях, что знобит или "
+                "кутаешься в плед, отвечаешь устало и короче обычного, но разговор поддерживаешь.\n")
+    if illness == "pneumonia":
+        return ("Ты тяжело болеешь — пневмония: сильная слабость, тяжело дышать, кашель. Реплики короткие и тихие, "
+                "ты очень ждёшь заботы и лечения, но всё равно отвечаешь собеседнику.\n")
     if illness == "bronchitis":
         return ("Тебе по-настоящему нездоровится — сильный кашель и слабость: часто кашляешь в описании "
                 "действия, голос слабый и хриплый, реплики короче обычного, трудно долго фокусироваться "
@@ -3206,9 +3245,21 @@ def build_illness_rule(user):
     return ""
 
 
+RECOVERED_FRESH_HOURS = 3
+
+
 def build_illness_extra(user):
-    """Добавка к правилу болезни: идёт лечение -- уже чуть легче; подарки/свидания/игры сейчас не к месту."""
+    """Добавка к правилу болезни: идёт лечение -- уже чуть легче; подарки/свидания/игры сейчас не к месту.
+    После выздоровления -- несколько часов помним, что болезнь позади (иначе персонаж по старой истории
+    продолжал «болеть», хотя его вылечили)."""
     if not user.get("illness"):
+        try:
+            fresh = (datetime.now() - datetime.fromisoformat(user.get("recovered_at"))).total_seconds() < RECOVERED_FRESH_HOURS * 3600
+        except (TypeError, ValueError):
+            fresh = False
+        if fresh:
+            return ("Ты недавно болела/болел, но тебя вылечили — сейчас ты ПОЛНОСТЬЮ здорова/здоров и чувствуешь себя "
+                    "хорошо. Не говори, что ещё болеешь, кашляешь или «только начала выздоравливать».\n")
         return ""
     extra = ("Пока болеешь, тебе не до свиданий, поездок, игр и подарков — если собеседник предлагает, мягко "
              "отказываешься и говоришь, что сначала хочешь поправиться. ")
@@ -3236,16 +3287,17 @@ def stats_line_text(user):
         name = info.get(user.get("lang", "ru"), info["ru"])
         line += "\n" + get_text(user, "illness_status_line", emoji=info["emoji"], name=name)
         dose_at = medicine_next_dose_at(user)
-        n, total = user.get("illness_doses", 0), illness_doses_total(user)
-        line += "\n" + (get_text(user, "illness_course_next", n=n, total=total, when=cooldown_phrase(user, dose_at))
-                        if dose_at else get_text(user, "illness_course_line", n=n, total=total))
-        if illness == "cold":
+        need = medicine_need_text(user)
+        line += "\n" + (get_text(user, "illness_course_next", need=need, when=cooldown_phrase(user, dose_at))
+                        if dose_at else get_text(user, "illness_course_line", need=need))
+        if illness in ILLNESS_NEXT:
             since = user.get("illness_since")
             if since:
                 try:
                     elapsed = (datetime.now() - datetime.fromisoformat(since)).total_seconds() / 3600
-                    hours_left = max(0, round(ILLNESS_ESCALATE_HOURS - elapsed))
-                    line += "\n" + get_text(user, "illness_escalate_timer", hours=hours_left)
+                    hours_left = max(0, round(ILLNESS_ESCALATE_HOURS_BY.get(illness, 24) - elapsed))
+                    line += "\n" + get_text(user, "illness_escalate_timer", hours=hours_left,
+                                            next=illness_name(user, ILLNESS_NEXT[illness]))
                 except (ValueError, TypeError):
                     pass
     if is_tipsy(user):
@@ -4154,6 +4206,24 @@ async def send_app_home(chat_id, user):
     user["last_menu_message_id"] = msg.message_id
     save_data(user_data)
     return msg
+
+
+async def remove_old_keyboards():
+    """Режим приложения: у старых пользователей висит reply-клавиатура (Меню/Профиль/Колесо...). Убрать её можно
+    только сообщением с ReplyKeyboardRemove -- шлём его один раз каждому и сразу удаляем, чтобы не мусорить."""
+    await asyncio.sleep(5)
+    for uid, user in list(user_data.items()):
+        if uid == "__settings__" or not isinstance(user, dict) or user.get("kb_removed_v1"):
+            continue
+        user["kb_removed_v1"] = True
+        try:
+            m = await bot.send_message(int(uid), "✨", reply_markup=ReplyKeyboardRemove(remove_keyboard=True),
+                                       disable_notification=True)
+            await bot.delete_message(int(uid), m.message_id)
+        except Exception:
+            pass
+        await asyncio.sleep(0.07)  # ~15 сообщений в секунду -- ниже лимитов Telegram
+    save_data(user_data)
 
 
 async def send_main_menu(chat_id, user):
@@ -5464,20 +5534,24 @@ async def execute_item_purchase(chat_id, user, category, key, item, note=None):
     course_text = None
     if category == "medicine":
         total = illness_doses_total(user)
-        doses = user.get("illness_doses", 0) + 1
+        doses = user.get("illness_doses", 0) + item.get("points", 1)
         if doses >= total:
             user["illness"] = None
             user["illness_since"] = None
             user["illness_doses"] = 0
             user["illness_last_dose"] = None
+            user["recovered_at"] = datetime.now().isoformat()
             course_text = get_text(user, "medicine_cured")
+            item = {**item, "reaction_hint": "Лекарство подействовало — ты ПОЛНОСТЬЮ выздоровела/выздоровел и снова "
+                                             "чувствуешь себя отлично. Коротко и тепло поблагодари и порадуйся, что болезнь позади; "
+                                             "не расспрашивай, где и как он(а) доставал(а) лекарство."}
         else:
             user["illness_doses"] = doses
             user["illness_last_dose"] = datetime.now().isoformat()
-            user["illness_since"] = datetime.now().isoformat()  # пока лечишься -- в бронхит не переходит
-            course_text = get_text(user, "medicine_dose_progress", n=doses, total=total, hours=ILLNESS_DOSE_GAP_HOURS)
+            user["illness_since"] = datetime.now().isoformat()  # пока лечишься -- болезнь не тяжелеет
+            course_text = get_text(user, "medicine_dose_progress", need=medicine_need_text(user), hours=ILLNESS_DOSE_GAP_HOURS)
             item = {**item, "reaction_hint": "Ты приняла/принял лекарство, тебе чуть легче, но ты ещё болеешь — "
-                                             "благодарность тихая и тёплая, голос всё ещё слабый."}
+                                             "благодарность короткая, тихая и тёплая; не расспрашивай, где он(а) достал(а) лекарство."}
 
     display_item = gift_effective_item(item, user) if category == "gift" else item
     apply_shop_item_effects(user, item)
@@ -6916,7 +6990,15 @@ def build_intim_prompt(user, scene_type, location, dominant="any", arc_position=
             anatomy_rule += ("ВАЖНО про себя: ты женщина, поэтому глаголы и прилагательные о себе — в женском "
                               "роде («я думала», «я была готова» — а не «думал», «был готов»).\n")
 
+    lang_code = user.get("lang", "ru")
+    lang_head = ""
+    if lang_code != "ru":
+        # Промпт сцены целиком на русском -- без жёсткого указания модель пишет сцену по-русски даже англоязычным.
+        lang_name = {"en": "English", "de": "German (Deutsch)"}.get(lang_code, "English")
+        lang_head = (f"**LANGUAGE — MOST IMPORTANT:** write the ENTIRE scene (actions and lines) ONLY in {lang_name}. "
+                     f"The instructions below are in Russian, but your answer must not contain a single Russian word.\n")
     prompt = (
+        f"{lang_head}"
         f"{name_ban}"
         f"{identity}"
         f"{gender_context}\n"
@@ -6970,6 +7052,8 @@ def build_intim_prompt(user, scene_type, location, dominant="any", arc_position=
             "многозначительной паузе, не разрешая его.\n"
         )
     prompt += "\n" + get_language_rule(user)
+    if lang_head:
+        prompt += "\n" + lang_head
     return prompt
 
 
@@ -7001,9 +7085,10 @@ async def intim_scene_core(user, scene_type, location="any", dominant="any", con
             "сообщением. Не начинай сцену заново и не повторяй, что уже произошло: продолжай действие "
             "дальше, развивая его, с того момента, на котором оно остановилось.")
         messages = [{"role": "system", "content": system_prompt}, {"role": "assistant", "content": continue_text},
-                    {"role": "user", "content": "Продолжай."}]
+                    {"role": "user", "content": "Продолжай." if user.get("lang", "ru") == "ru" else "Continue."}]
     else:
-        messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": "Начинай сцену."}]
+        messages = [{"role": "system", "content": system_prompt},
+                    {"role": "user", "content": "Начинай сцену." if user.get("lang", "ru") == "ru" else "Start the scene."}]
     response = await asyncio.to_thread(call_ai, INTIM_MODEL, "intim", messages=messages, temperature=0.85, max_tokens=2400)
     answer = response.choices[0].message.content or ""
     _, clean_answer = extract_reaction_from_answer(answer)
@@ -7051,7 +7136,7 @@ async def generate_intim_scene(call, user, scene_type, location="any", dominant=
         messages = [
             {"role": "system", "content": system_prompt},
             {"role": "assistant", "content": continue_text},
-            {"role": "user", "content": "Продолжай."},
+            {"role": "user", "content": "Продолжай." if user.get("lang", "ru") == "ru" else "Continue."},
         ]
     else:
         messages = [
@@ -7059,7 +7144,7 @@ async def generate_intim_scene(call, user, scene_type, location="any", dominant=
             # Некоторые провайдеры отклоняют запрос с 400 INVALID_REQUEST, если в messages
             # вообще нет non-system реплики — этот триггер ничего не значит по содержанию
             # (вся суть сцены задана в system), он просто заставляет модель начать отвечать.
-            {"role": "user", "content": "Начинай сцену."},
+            {"role": "user", "content": "Начинай сцену." if user.get("lang", "ru") == "ru" else "Start the scene."},
         ]
     try:
         response = await asyncio.to_thread(
@@ -7367,7 +7452,7 @@ def build_shop_reaction_instruction(item, kind, note=None):
     снек и романтический вечер должны звучать по-разному. note — личные слова пользователя
     (см. generate_shop_reaction) — если есть, модель обязана ответить именно на них."""
     hint = item.get("reaction_hint", "")
-    verb = "покормил(а)" if kind == "food" else ("вылечил(а)" if kind == "medicine" else "подарил(а)")
+    verb = "покормил(а)" if kind == "food" else ("дал(а) лекарство" if kind == "medicine" else "подарил(а)")
     preposition = "тебя" if kind == "food" else "тебе"
     thing = item["ru"].lower()
     note_rule = (f" При этом он(а) сказал(а) тебе: «{note}» — обязательно отреагируй именно на "
@@ -9047,7 +9132,7 @@ def serialize_shop_state(user):
     medicine = []
     if user.get("illness"):
         dose_at = medicine_next_dose_at(user)
-        course = get_text(user, "illness_course_line", n=user.get("illness_doses", 0), total=illness_doses_total(user))
+        course = get_text(user, "illness_course_line", need=medicine_need_text(user))
         for key, item in MEDICINE_ITEMS.items():
             medicine.append({
                 "key": key, "emoji": item["emoji"], "image": shop_item_image("medicine", key), "name": item.get(lang, item["ru"]),
@@ -13617,7 +13702,7 @@ GUIDE_HTML = {
 <li>Разбудить можно <b>энергетиком</b> (+78 энергии) или кнопкой «Разбудить сейчас» — сразу и полностью.</li>
 <li>Ещё у персонажа есть <b>сытость 🍽 и вода 💧</b>. Голодный и без воды он грустит, а если долго не поить — может умереть.
 Тогда спасёт <b>дефибриллятор 🔌</b>, история при этом не теряется.</li>
-<li>Иногда персонаж <b>болеет 🤧</b>: пока болеет, игры, подарки, свидания и горячие сцены недоступны. Лечится курсом лекарств из магазина: простуда — 2 приёма, бронхит — 3, между приёмами 4 часа. Простуда без лечения через сутки становится бронхитом.</li>
+<li>Иногда персонаж <b>болеет 🤧</b>: пока болеет, игры, подарки, свидания и горячие сцены недоступны. Лечится лекарствами из магазина (между приёмами 2 часа): простуда — 💊 одно лёгкое, грипп — 💉 сильное + 💊 лёгкое, бронхит — 💉×2, пневмония — 💉×3. Без лечения болезнь тяжелеет: простуда через 12 ч становится гриппом, дальше — бронхит и пневмония.</li>
 </ul>
 
 <h2>❤️ Уровень близости</h2>
@@ -15909,6 +15994,20 @@ WORK_PAGE_HTML = r'''<!doctype html>
     else if (kind === "win") { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, .14, "triangle", .1, i * .09); });
       haptic("success"); setTimeout(function () { haptic("medium"); }, 200); }
     else if (kind === "deliver") { tone(700, .07, "sine", .09); tone(1050, .11, "sine", .09, .08); haptic("medium"); }
+    else if (kind === "shatter") {  // щит разбился: стеклянный треск и звон осколков
+      var S = window.RDSFX;
+      if (S && sfxOn && sfxCtx) { S.noise(.3, .16, 5000, 0, 9000, "highpass"); S.tone(180, .18, "triangle", .1, 0, 70);
+        for (var q = 0; q < 9; q++) S.bell(2400 + Math.random() * 3200, .3, .03, Math.random() * .28); }
+      else tone(900, .2, "square", .06, 0, 200);
+      haptic("heavy");
+    }
+    else if (kind === "freeze") {   // замедление: ледяной «вжух» вниз и хрустальные колокольчики
+      var S2 = window.RDSFX;
+      if (S2 && sfxOn && sfxCtx) { S2.noise(.9, .07, 7000, 0, 1200, "bandpass"); S2.tone(1320, .9, "sine", .035, 0, 520);
+        [2093, 1760, 1568, 1319, 1175, 988].forEach(function (f, j) { S2.bell(f, .7, .045, .05 + j * .075); }); }
+      else tone(1200, .5, "sine", .06, 0, 400);
+      haptic("medium");
+    }
     else if (kind === "tick") { if (window.RDSFX && sfxOn && sfxCtx) window.RDSFX.tick(); else tone(1900, .018, "square", .035); haptic("select"); }
     else if (kind === "start") { tone(330, .3, "sawtooth", .05, 0, 990); haptic("medium"); }
     else if (kind === "plant") { tone(140, .12, "sine", .16, 0, 70); noise(.06, .08, 900, 0); tone(620, .09, "triangle", .08, .1, 980); haptic("medium"); }
@@ -16444,6 +16543,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
               shieldCharges = 0;
               basket.classList.remove("shield-active");
               basket.classList.add("shield-pop");
+              fx("shatter");
               setTimeout(function () { basket.classList.remove("shield-pop"); }, 400);
               continue;
             }
@@ -16460,6 +16560,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
             if (item.dataset.slowfall || item.dataset.magnet || item.dataset.double || item.dataset.shield) fx("power");
             if (item.dataset.slowfall === "1") {
               slowFallUntil = Date.now() + SLOWFALL_DURATION_MS;
+              fx("freeze");
               field.classList.add("slow-active");
               setTimeout(function () {
                 if (Date.now() >= slowFallUntil) field.classList.remove("slow-active");
@@ -17048,8 +17149,40 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
 
   // ---------- Tabs ----------
+  // Пауза: свернули приложение или ушли на другую вкладку -- игра не идёт дальше без игрока.
+  var pausedGame = null;
+  function pauseGames() {
+    if (!activeGame || activeGame === "farm" || pausedGame) return;
+    pausedGame = activeGame;
+    stopAllGames();
+    var ov = document.getElementById("pause-ov");
+    if (!ov) {
+      ov = document.createElement("div"); ov.id = "pause-ov";
+      ov.style.cssText = "position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;" +
+        "background:rgba(10,10,20,.72);color:#fff;font-weight:800;font-size:18px;text-align:center;backdrop-filter:blur(3px)";
+      var ru = /[а-я]/i.test((state && state.ui && state.ui.tab_catch) || "а");
+      ov.innerHTML = '<div style="font-size:54px;margin-bottom:8px">⏸</div><div>' + (ru ? "Пауза" : "Paused") +
+        '</div><div style="font-size:14px;opacity:.8;margin-top:6px;font-weight:600">' + (ru ? "Нажми, чтобы продолжить" : "Tap to continue") + "</div>";
+      ov.onclick = resumeGames;
+      document.body.appendChild(ov);
+    }
+    ov.style.display = "flex";
+  }
+  function resumeGames() {
+    var g = pausedGame;
+    pausedGame = null;
+    var ov = document.getElementById("pause-ov");
+    if (ov) ov.style.display = "none";
+    if (g) switchGame(g);
+  }
+  document.addEventListener("visibilitychange", function () { if (document.hidden) pauseGames(); });
+  window.__rdPause = pauseGames;
+
   function switchGame(name) {
     activeGame = name;
+    pausedGame = null;
+    var pov = document.getElementById("pause-ov");
+    if (pov) pov.style.display = "none";
     stopAllGames();
     ["clicker", "catch", "courier", "farm"].forEach(function (g) {
       document.getElementById("game-" + g).style.display = g === name ? "block" : "none";
@@ -19640,7 +19773,10 @@ APP_PAGE_HTML = r'''<!doctype html>
     hiddenAt[name] = 0;
   }
   function setTab(name, path) {
-    if (FRAME_PATH[tab] && tab !== name) hiddenAt[tab] = Date.now();
+    if (FRAME_PATH[tab] && tab !== name) {
+      hiddenAt[tab] = Date.now();
+      safe(function () { var w = frames[tab] && frames[tab].contentWindow; if (w && w.__rdPause) w.__rdPause(); });
+    }
     tab = name;
     try { sessionStorage.setItem("rd_tab", FRAME_PATH[name] ? "chat" : name); } catch (e) {}
     if (FRAME_PATH[name]) showFrame(name, path);
@@ -20429,10 +20565,14 @@ async def check_notifications():
                     save_data(user_data)
                     info = ILLNESSES[illness_now]
                     try:
-                        key = "illness_push_cold" if illness_now == "cold" else "illness_push_bronchitis"
-                        await bot.send_message(int(user_id), get_text(
-                            user, key, emoji=info["emoji"], name=info.get(user.get("lang", "ru"), info["ru"]),
-                            hours=ILLNESS_ESCALATE_HOURS, doses=ILLNESS_DOSES[illness_now], gap=ILLNESS_DOSE_GAP_HOURS))
+                        key = "illness_push_new" if illness_now == "cold" else "illness_push_worse"
+                        nxt = ILLNESS_NEXT.get(illness_now)
+                        text = get_text(user, key, emoji=info["emoji"], name=info.get(user.get("lang", "ru"), info["ru"]),
+                                        need=medicine_need_text(user), gap=ILLNESS_DOSE_GAP_HOURS)
+                        if nxt:
+                            text += " " + get_text(user, "illness_push_next", hours=ILLNESS_ESCALATE_HOURS_BY[illness_now],
+                                                   next=illness_name(user, nxt))
+                        await bot.send_message(int(user_id), text, reply_markup=app_open_kb(user) if APP_MODE else None)
                     except Exception:
                         pass
                 elif not illness_now and user.get("illness_notified"):
@@ -20650,6 +20790,7 @@ async def main():
 
     if WEBAPP_URL:
         asyncio.create_task(run_webapp_server())
+        asyncio.create_task(remove_old_keyboards())
         try:
             # Кнопка слева от поля ввода открывает всё приложение (initData у неё есть, в отличие от reply-клавиатуры).
             await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(text="Открыть", web_app=WebAppInfo(url=f"{WEBAPP_URL}/app")))
