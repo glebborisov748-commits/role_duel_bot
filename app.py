@@ -3464,13 +3464,48 @@ ENGAGEMENT_RULE = (
     "не вызывай чувство вины, не обижайся демонстративно и не уговаривай собеседника остаться.\n")
 
 
+
+# Внешность персонажа: готовые портреты (assets/avatar_<мир>_<пол><n>.jpg) и их описание -- описание уходит в промпт,
+# чтобы персонаж упоминал свою внешность в действиях («убираю рыжие волосы за ухо»), а портрет -- в аватар.
+LOOKS = {
+    "real_f1": {"world": "realism", "gender": "female", "ru": "длинные волнистые тёмно-каштановые волосы, карие глаза, маленькие серьги-кольца, тёмный свитер", "en": "long wavy dark-brown hair, brown eyes, small hoop earrings, a dark sweater", "label": "🤎", "label_ru": "Брюнетка", "label_en": "Brunette"},
+    "real_f2": {"world": "realism", "gender": "female", "ru": "светлые волосы, собранные в небрежный пучок, серо-голубые глаза, уютный кремовый вязаный свитер", "en": "blonde hair in a messy bun, grey-blue eyes, a cosy cream knit sweater", "label": "💛", "label_ru": "Блондинка", "label_en": "Blonde"},
+    "real_f3": {"world": "realism", "gender": "female", "ru": "длинные чёрные волосы, большие беспроводные наушники, тёмное худи", "en": "long black hair, big wireless headphones, a dark hoodie", "label": "🖤", "label_ru": "С наушниками", "label_en": "Headphones"},
+    "real_f4": {"world": "realism", "gender": "female", "ru": "длинные рыжие волосы, веснушки, зелёно-карие глаза, тёмная водолазка", "en": "long red hair, freckles, hazel eyes, a dark turtleneck", "label": "🧡", "label_ru": "Рыжая", "label_en": "Redhead"},
+    "real_m1": {"world": "realism", "gender": "male", "ru": "тёмные кудрявые волосы, карие глаза, тёмное худи", "en": "dark curly hair, brown eyes, a dark hoodie", "label": "🖤", "label_ru": "Кудрявый", "label_en": "Curly"},
+    "real_m2": {"world": "realism", "gender": "male", "ru": "русые волосы под чёрной кепкой, серо-зелёные глаза, серое худи", "en": "light-brown hair under a black cap, grey-green eyes, a grey hoodie", "label": "🧢", "label_ru": "В кепке", "label_en": "Cap"},
+    "real_m3": {"world": "realism", "gender": "male", "ru": "чёрные кудрявые волосы, очки в тонкой оправе, чёрная водолазка", "en": "black curly hair, thin-framed glasses, a black turtleneck", "label": "👓", "label_ru": "В очках", "label_en": "Glasses"},
+    "real_m4": {"world": "realism", "gender": "male", "ru": "светлые взъерошенные волосы, голубые глаза, сиреневое худи", "en": "messy blond hair, blue eyes, a lilac hoodie", "label": "💛", "label_ru": "Блондин", "label_en": "Blond"},
+    "anime_f1": {"world": "anime", "gender": "female", "ru": "длинные прямые чёрные волосы с чёлкой, фиалковые глаза, тёмная одежда", "en": "long straight black hair with bangs, violet eyes, dark clothes", "label": "🖤", "label_ru": "Брюнетка с чёлкой", "label_en": "Black bangs"},
+    "anime_f2": {"world": "anime", "gender": "female", "ru": "розовые волосы в небрежном пучке с заколкой, сиреневые глаза, светлый кардиган", "en": "pink hair in a messy bun with a hairclip, lilac eyes, a light cardigan", "label": "🩷", "label_ru": "Розовые волосы", "label_en": "Pink hair"},
+    "anime_f3": {"world": "anime", "gender": "female", "ru": "длинные чёрные волосы, чёрная кепка, тёмное худи", "en": "long black hair, a black cap, a dark hoodie", "label": "🧢", "label_ru": "В кепке", "label_en": "Cap"},
+    "anime_f4": {"world": "anime", "gender": "female", "ru": "длинные платиновые волосы, серые глаза, тёмный свитер с открытыми плечами", "en": "long platinum hair, grey eyes, a dark off-shoulder sweater", "label": "🤍", "label_ru": "Платиновая", "label_en": "Platinum"},
+    "anime_m1": {"world": "anime", "gender": "male", "ru": "чёрные растрёпанные волосы, наушники на шее, чёрное худи", "en": "messy black hair, headphones around the neck, a black hoodie", "label": "🎧", "label_ru": "С наушниками", "label_en": "Headphones"},
+    "anime_m2": {"world": "anime", "gender": "male", "ru": "светлые пшеничные волосы, мягкий взгляд, белое худи", "en": "light wheat-blond hair, a soft gaze, a white hoodie", "label": "💛", "label_ru": "Блондин", "label_en": "Blond"},
+    "anime_m3": {"world": "anime", "gender": "male", "ru": "тёмные волосы, серьга в ухе, чёрная куртка", "en": "dark hair, an earring, a black jacket", "label": "🖤", "label_ru": "С серьгой", "label_en": "Earring"},
+    "anime_m4": {"world": "anime", "gender": "male", "ru": "серебристо-белые волосы, серые глаза, чёрное худи", "en": "silver-white hair, grey eyes, a black hoodie", "label": "🤍", "label_ru": "Седой", "label_en": "Silver"},
+}
+
+
+def look_rule(user):
+    look = LOOKS.get(user.get("look") or "")
+    if not look:
+        return ""
+    return (f"**ТВОЯ ВНЕШНОСТЬ:** {look['ru']}. Иногда естественно упоминай детали внешности в действиях (волосы, одежда, "
+            "аксессуары), не в каждом сообщении и не одними и теми же словами.\n")
+
+
+def look_image(user):
+    return f"/assets/avatar_{user['look']}.jpg" if user.get("look") in LOOKS else None
+
+
 def build_prompt(user):
     no_explicit_rule = get_content_rule(get_display_style(user))
 
     char_name = (user.get("char_name") or "").strip()
     if user.get("custom_character"):
         return (
-            (f"Тебя зовут {char_name}. " if char_name else "") +
+            (f"Тебя зовут {char_name}. " if char_name else "") + look_rule(user) +
             f"Ты — {user['custom_character']}. Полностью вживись в эту личность и её характер: если "
             f"персонаж узнаваем (из фильма, игры, аниме, книги и т.п.), веди себя как он — с его "
             f"характерными чертами, манерой речи и взглядами, а не обезличенно и уклончиво. Можешь "
@@ -3530,6 +3565,7 @@ def build_prompt(user):
     )
     if char_name:
         rules = rules.replace("Не используй имена собеседника и своё имя.", "Не используй имя собеседника.")
+    name_ban = name_ban + look_rule(user)
     intimacy_rule = build_intimacy_rule(user)
     mood_rule = build_mood_rule(user)
     energy_rule = build_energy_rule(user)
@@ -7005,6 +7041,7 @@ def build_intim_prompt(user, scene_type, location, dominant="any", arc_position=
         name_ban = (f"Тебя зовут {char_name} — это твоё имя, можешь так себя называть. "
                     + name_ban.replace("**ВАЖНЕЙШЕЕ ПРАВИЛО:** Ты НИКОГДА не называешь себя по имени, не представляешься, не говоришь "
                                        "«меня зовут», не используешь своё имя. ", ""))
+    name_ban = name_ban + look_rule(user)
     lang_code = user.get("lang", "ru")
     lang_head = ""
     if lang_code != "ru":
@@ -18668,6 +18705,9 @@ APP_TEXTS = {
         "avatar_btn": "🖼 Изменить аватарку",
         "avatar_remove": "Убрать аватарку",
         "avatar_done": "Аватарка обновлена ✨",
+        "ob_look": "Как выглядит?",
+        "look_btn": "👤 Внешность",
+        "look_title": "Выбери внешность",
         "ob_title": "Создай своего персонажа",
         "ob_world": "Какой мир?", "ob_gender": "Кто твой персонаж?", "ob_style": "Какой характер?", "ob_scene": "Как вы общаетесь?",
         "ob_custom": "🎭 Свой персонаж (SUPER PRO)", "ob_custom_hint": "Опиши внешность, характер, историю — персонаж будет именно таким. Можно оставить пустым.",
@@ -18772,6 +18812,9 @@ APP_TEXTS = {
         "avatar_btn": "🖼 Change avatar",
         "avatar_remove": "Remove avatar",
         "avatar_done": "Avatar updated ✨",
+        "ob_look": "What do they look like?",
+        "look_btn": "👤 Appearance",
+        "look_title": "Pick an appearance",
         "ob_title": "Create your companion",
         "ob_world": "Which world?", "ob_gender": "Who is your companion?", "ob_style": "What personality?", "ob_scene": "How do you talk?",
         "ob_custom": "🎭 Your own character (SUPER PRO)", "ob_custom_hint": "Describe looks, personality, backstory — the companion will be exactly like that. Can be left empty.",
@@ -18879,6 +18922,8 @@ def serialize_onboarding(user):
             "scenes": [{"key": "phone", "label": get_text(user, "scene_phone"), "desc": at(user, "ob_phone")},
                        {"key": "live", "label": get_text(user, "scene_live"), "desc": at(user, "ob_live")}],
             "can_custom": sub in ("super_pro", "elite"), "custom_min": CUSTOM_CHARACTER_MIN_LEN, "name_max": CHAR_NAME_MAX,
+            "looks": [{"key": k, "world": v["world"], "gender": v["gender"], "img": f"/assets/avatar_{k}.jpg",
+                       "label": v["label_ru"] if lang == "ru" else v["label_en"]} for k, v in LOOKS.items()],
             "lang": lang}
 
 
@@ -18942,7 +18987,11 @@ def serialize_app_state(user):
                            and history[-2]["role"] == "user"),
         "character": {
             "avatar": app_avatar(user),
-            "avatar_url": f"/avatars/{user['avatar']}" if user.get("avatar") else None,
+            "avatar_url": f"/avatars/{user['avatar']}" if user.get("avatar") else look_image(user),
+            "look": user.get("look"),
+            "custom_photo": bool(user.get("avatar")),
+            "looks": [{"key": k, "img": f"/assets/avatar_{k}.jpg", "label": v["label_ru"] if lang == "ru" else v["label_en"]}
+                      for k, v in LOOKS.items() if v["world"] == (user.get("world") or "realism") and v["gender"] == (user.get("gender") or "female")],
             "name": user.get("char_name"),
             "can_avatar": sub_level in ("super_pro", "elite"),
             "title": user.get("char_name") or at(user, "char_female" if (user.get("gender") or "female") == "female" else "char_male"),
@@ -19161,6 +19210,19 @@ async def avatar_file_handler(request):
     return web.FileResponse(path, headers={"Cache-Control": "public, max-age=31536000"})
 
 
+async def api_app_look_handler(request):
+    """Сменить внешность (портрет + описание) на одну из подходящих к миру и полу персонажа."""
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    look = body.get("look")
+    if look not in LOOKS or LOOKS[look]["world"] != user.get("world") or LOOKS[look]["gender"] != user.get("gender"):
+        return web.json_response({"ok": False, "error": "Bad request"})
+    user["look"] = look
+    save_data(user_data)
+    return web.json_response({"ok": True, "state": serialize_app_state(user)})
+
+
 async def api_app_rename_handler(request):
     user_id, user, body, err = await _play_request(request)
     if err:
@@ -19211,6 +19273,8 @@ async def api_app_create_handler(request):
     # Свой пол больше не спрашиваем: собеседник -- противоположного пола к выбранному персонажу.
     user["user_gender"] = "male" if gender == "female" else "female"
     user["char_name"] = clean_char_name(body.get("name"))
+    look = body.get("look")
+    user["look"] = look if look in LOOKS and LOOKS[look]["world"] == world and LOOKS[look]["gender"] == gender else None
     if body.get("avatar") and get_subscription_level(user) in ("super_pro", "elite"):
         error = save_avatar(user, body.get("avatar"))
         if error:
@@ -19778,6 +19842,26 @@ APP_PAGE_HTML = r'''<!doctype html>
   .hero-btns { display: flex; gap: 8px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
   .hero-btns button { border: 1px solid var(--line); background: rgba(0,0,0,.22); color: var(--fg); border-radius: 99px; padding: 7px 12px; font-size: 13px; font-weight: 700; }
 
+  /* ---- иконки и внешность ---- */
+  .ii { width: 1.25em; height: 1.25em; object-fit: contain; vertical-align: -0.28em; filter: drop-shadow(0 2px 3px rgba(0,0,0,.35)); }
+  #nav button .ic img { width: 26px; height: 26px; object-fit: contain; display: block; filter: grayscale(.85) brightness(.85); opacity: .7; transition: all .2s ease; }
+  #nav button.on .ic img { filter: drop-shadow(0 0 8px rgba(196,181,253,.55)); opacity: 1; }
+  #nav button .ic { filter: none !important; opacity: 1 !important; }
+  .chip .ii { margin-right: 2px; }
+  .looks { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .look { border: 2px solid var(--line); background: var(--card); border-radius: 20px; padding: 10px 8px 9px; color: var(--fg); text-align: center;
+    transition: border-color .15s, transform .12s, box-shadow .2s; }
+  .look img { width: 100%; aspect-ratio: 1; border-radius: 50%; object-fit: cover; display: block; box-shadow: 0 8px 18px rgba(0,0,0,.4); }
+  .look span { display: block; margin-top: 7px; font-size: 13.5px; font-weight: 700; }
+  .look.on { border-color: #a78bfa; box-shadow: 0 0 0 3px rgba(167,139,250,.25), 0 10px 24px rgba(139,92,246,.3);
+    background: linear-gradient(150deg, rgba(139,92,246,.28), rgba(236,72,153,.12) 70%, var(--card)); }
+  .look:active { transform: scale(.97); }
+  #sheet { position: fixed; inset: 0; z-index: 20; background: rgba(5,6,14,.7); display: none; align-items: flex-end; backdrop-filter: blur(4px); }
+  #sheet.on { display: flex; }
+  #sheet .box { width: 100%; max-height: 82vh; overflow-y: auto; background: #14162a; border-radius: 24px 24px 0 0; padding: 18px 16px calc(20px + var(--safe-b));
+    border-top: 1px solid var(--line); animation: sheet-up .28s cubic-bezier(.2,.9,.2,1) both; }
+  @keyframes sheet-up { from { transform: translateY(100%); } to { transform: none; } }
+
   /* ---- settings ---- */
   .sw { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
   .sw:last-child { border-bottom: 0; } .sw .lk { color: #fcd34d; font-size: 12px; font-weight: 800; margin-left: 6px; }
@@ -19981,6 +20065,7 @@ APP_PAGE_HTML = r'''<!doctype html>
   <nav id="nav"></nav>
 </div>
 <div id="toast"></div>
+<div id="sheet"><div class="box" id="sheet-box"></div></div>
 <div id="full"></div>
 <script>
 (function () {
@@ -20029,7 +20114,8 @@ APP_PAGE_HTML = r'''<!doctype html>
   }
 
   // ---- навигация ----
-  var TABS = [["chat", "💬"], ["games", "🎮", "/play"], ["shop", "🛍", "/shop"], ["spin", "🎰", "/spin"], ["work", "💼", "/work"], ["profile", "👤"]];
+  var TABS = [["chat", "💬", null, "nav_chat"], ["games", "🎮", "/play", "nav_games"], ["shop", "🛍", "/shop", "nav_shop"],
+              ["spin", "🎰", "/spin", "nav_wheel"], ["work", "💼", "/work", "nav_work"], ["profile", "👤", null, "nav_profile"]];
   var FRAME_PATH = { games: "/play", shop: "/shop", spin: "/spin", work: "/work" };
   var frames = {}, hiddenAt = {};
   // Раздел грузится один раз во вкладку (iframe) и дальше просто показывается -- без нового мини-приложения.
@@ -20065,7 +20151,7 @@ APP_PAGE_HTML = r'''<!doctype html>
     var nav = $("nav"); nav.innerHTML = "";
     TABS.forEach(function (t) {
       var b = el("button", t[0] === tab ? "on" : "");
-      b.appendChild(el("span", "ic", t[1])); b.appendChild(el("span", null, state.ui["tab_" + t[0]]));
+      var ic = el("span", "ic"); ic.appendChild(icon(t[3], t[1], "")); b.appendChild(ic); b.appendChild(el("span", null, state.ui["tab_" + t[0]]));
       b.onclick = function () { haptic("select"); setTab(t[0]); };
       nav.appendChild(b);
     });
@@ -20084,9 +20170,9 @@ APP_PAGE_HTML = r'''<!doctype html>
     var st = $("h-status");
     st.className = "status" + (s.pending ? " typing" : "");
     st.textContent = s.pending ? s.ui.typing : (s.asleep ? s.ui.asleep : (s.illness ? s.illness + " · " + s.ui.sick : s.ui.online));
-    $("h-bucks").textContent = "💵 " + s.stats.bucks;
-    $("h-hot").textContent = "🔥 " + s.hot.available;
-    $("h-en").textContent = "⚡ " + s.stats.energy;
+    withIcon($("h-bucks"), "icon_bucks", "💵", s.stats.bucks);
+    withIcon($("h-hot"), "icon_hot", "🔥", s.hot.available);
+    withIcon($("h-en"), "icon_energy", "⚡", s.stats.energy);
     var pct = Math.max(0, Math.min(100, Math.round(s.stats.energy / s.stats.energy_max * 100)));
     $("ebar").firstChild.style.width = pct + "%";
     $("ebar").classList.toggle("low", pct < 30);
@@ -20175,9 +20261,10 @@ APP_PAGE_HTML = r'''<!doctype html>
   function pollFor(n) { if (n <= 0) return; setTimeout(function () { load(true).then(function () { pollFor(n - 1); }); }, 900); }
 
   // ---- профиль ----
-  function statRow(label, val, max, color, suffix) {
-    var d = el("div", "stat"), l = el("div", "l");
-    l.appendChild(el("span", null, label)); l.appendChild(el("b", null, val + (suffix || "")));
+  function statRow(label, val, max, color, suffix, ic) {
+    var d = el("div", "stat"), l = el("div", "l"), lab = el("span");
+    if (ic) { lab.appendChild(icon(ic[0], ic[1])); lab.appendChild(document.createTextNode(" " + label)); } else lab.textContent = label;
+    l.appendChild(lab); l.appendChild(el("b", null, val + (suffix || "")));
     var bar = el("div", "bar"), i = el("i"); i.style.width = Math.max(0, Math.min(100, val / max * 100)) + "%"; i.style.background = color;
     bar.appendChild(i); d.appendChild(l); d.appendChild(bar); return d;
   }
@@ -20209,6 +20296,21 @@ APP_PAGE_HTML = r'''<!doctype html>
       row.appendChild(inp); row.appendChild(ok); hero.insertBefore(row, hb2.nextSibling); inp.focus();
     };
     hb2.appendChild(rn);
+    if (s.character.looks && s.character.looks.length) {
+      var lk = el("button", null, ui.look_btn);
+      lk.onclick = function () {
+        var box = $("sheet-box"); box.innerHTML = ""; box.appendChild(el("h4", null, ui.look_title));
+        var g2 = el("div", "looks");
+        s.character.looks.forEach(function (L) {
+          var b = el("button", "look" + (s.character.look === L.key ? " on" : "")), im = document.createElement("img"); im.src = L.img;
+          b.appendChild(im); b.appendChild(el("span", null, L.label));
+          b.onclick = function () { api("/api/app/look", { look: L.key }).then(function (res) { if (res.state) state = res.state; $("sheet").classList.remove("on"); haptic("success"); render(); }); };
+          g2.appendChild(b);
+        });
+        box.appendChild(g2); $("sheet").classList.add("on");
+      };
+      hb2.appendChild(lk);
+    }
     var av = el("button", null, ui.avatar_btn);
     av.onclick = function () {
       if (!s.character.can_avatar) { toast(ui.avatar_locked); haptic("error"); return; }
@@ -20216,7 +20318,7 @@ APP_PAGE_HTML = r'''<!doctype html>
         if (res.state) state = res.state; if (res.ok) { toast(ui.avatar_done); haptic("success"); } else toast(res.error || "Error"); render(); }); });
     };
     hb2.appendChild(av);
-    if (s.character.avatar_url) { var rm = el("button", null, ui.avatar_remove);
+    if (s.character.custom_photo) { var rm = el("button", null, ui.avatar_remove);
       rm.onclick = function () { api("/api/app/avatar", { remove: true }).then(function (res) { if (res.state) state = res.state; render(); }); }; hb2.appendChild(rm); }
     hero.appendChild(hb2);
     hero.appendChild(el("div", "lvl", "❤️ " + ui.level.replace("{n}", st.level)));
@@ -20225,13 +20327,14 @@ APP_PAGE_HTML = r'''<!doctype html>
     v.appendChild(hero);
 
     var sc = el("div", "card"); sc.appendChild(el("h4", null, ui.stats_title));
-    sc.appendChild(statRow("⚡ " + ui.energy, st.energy, st.energy_max, "linear-gradient(90deg,#22c55e,#a3e635)", " / " + st.energy_max));
-    sc.appendChild(statRow("🍽 " + ui.satiety, st.satiety, 100, "linear-gradient(90deg,#f59e0b,#fbbf24)"));
-    sc.appendChild(statRow("💧 " + ui.water, st.water, 100, "linear-gradient(90deg,#0ea5e9,#38bdf8)"));
-    sc.appendChild(statRow(st.mood_emoji + " " + ui.mood, Math.max(0, st.mood + 100) / 2 | 0, 100, "var(--grad)"));
+    sc.appendChild(statRow(ui.energy, st.energy, st.energy_max, "linear-gradient(90deg,#22c55e,#a3e635)", " / " + st.energy_max, ["icon_energy", "⚡"]));
+    sc.appendChild(statRow(ui.satiety, st.satiety, 100, "linear-gradient(90deg,#f59e0b,#fbbf24)", "", ["icon_food", "🍽"]));
+    sc.appendChild(statRow(ui.water, st.water, 100, "linear-gradient(90deg,#0ea5e9,#38bdf8)", "", ["icon_water", "💧"]));
+    sc.appendChild(statRow(ui.mood, Math.max(0, st.mood + 100) / 2 | 0, 100, "var(--grad)", "", ["icon_heart", "❤️"]));
     var g = el("div", "grid3");
-    [[st.bucks, "💵 " + ui.bucks], [st.energizers, "⚡ " + ui.energizers], [st.scenes, "🔥 " + ui.scenes]].forEach(function (x) {
-      var m = el("div", "mini"); m.appendChild(el("b", null, x[0])); m.appendChild(el("span", null, x[1])); g.appendChild(m); });
+    [[st.bucks, ui.bucks, "icon_bucks", "💵"], [st.energizers, ui.energizers, "icon_energy", "⚡"], [st.scenes, ui.scenes, "icon_hot", "🔥"]].forEach(function (x) {
+      var m = el("div", "mini"), big = icon(x[2], x[3]); big.style.cssText = "width:30px;height:30px;display:block;margin:0 auto 4px";
+      m.appendChild(big); m.appendChild(el("b", null, x[0])); m.appendChild(el("span", null, x[1])); g.appendChild(m); });
     sc.appendChild(g);
     if (s.illness) sc.appendChild(el("div", "sick", s.illness));
     v.appendChild(sc);
@@ -20282,6 +20385,14 @@ APP_PAGE_HTML = r'''<!doctype html>
     if (o.rub) { var b2 = el("button", "btn ghost", state.ui.buy_card.replace("{price}", o.rub)); b2.onclick = function () { pay(payload, "platega"); }; row.appendChild(b2); }
     return row;
   }
+
+  // ---- иконки: нарисованные картинки из assets, а если не загрузилась -- эмодзи ----
+  function icon(name, emoji, cls) {
+    var im = document.createElement("img"); im.className = cls || "ii"; im.alt = emoji; im.src = "/assets/" + name + ".webp";
+    im.onerror = function () { var sp = document.createElement("span"); sp.textContent = emoji; if (im.parentNode) im.parentNode.replaceChild(sp, im); };
+    return im;
+  }
+  function withIcon(node, name, emoji, text) { node.innerHTML = ""; node.appendChild(icon(name, emoji)); node.appendChild(document.createTextNode(" " + text)); return node; }
 
   // ---- аватар: фото персонажа (SUPER PRO / ELITE) ----
   function setAvatar(node, url) {
@@ -20406,13 +20517,15 @@ APP_PAGE_HTML = r'''<!doctype html>
     var c = el("div", "card"); c.appendChild(ch); v.appendChild(c);
   }
 
+  $("sheet").onclick = function (e) { if (e.target.id === "sheet") $("sheet").classList.remove("on"); };
+
   var ob = {}, obStep = 0;
   function renderOnb() {
     var o = state.onboarding, ui = state.ui, v = $("view-onb");
     if (!ob.gender) ob.gender = o.default_gender;
     v.innerHTML = "";
     var top = el("div", "ob-top"); top.appendChild(el("div", "big", "✨")); top.appendChild(el("h2", null, ui.ob_title));
-    var dots = el("div", "ob-dots"); for (var i = 0; i < 3; i++) dots.appendChild(el("i", i <= obStep ? "on" : ""));
+    var dots = el("div", "ob-dots"); for (var i = 0; i < 4; i++) dots.appendChild(el("i", i <= obStep ? "on" : ""));
     top.appendChild(dots); v.appendChild(top);
     function opt(item, key, cls) {
       var b = el("button", "opt" + (ob[key] === item.key ? " on" : "") + (item.locked ? " locked" : "") + (cls ? " " + cls : ""));
@@ -20420,41 +20533,55 @@ APP_PAGE_HTML = r'''<!doctype html>
       b.appendChild(el("b", null, item.label)); if (item.desc) b.appendChild(el("span", null, item.desc));
       b.onclick = function () {
         if (item.locked) { toast(ui.ob_locked.replace("{tier}", item.locked)); haptic("error"); return; }
+        if ((key === "world" || key === "gender") && ob[key] !== item.key) ob.look = null;
         ob[key] = item.key; haptic("select"); renderOnb();
       };
       return b;
     }
-    var step = [["world", o.worlds, ui.ob_world], ["gender", o.genders, ui.ob_gender], ["style", o.styles, ui.ob_style]][obStep];
+    var looks = (o.looks || []).filter(function (L) { return L.world === ob.world && L.gender === ob.gender; });
+    var step = [["world", o.worlds, ui.ob_world], ["gender", o.genders, ui.ob_gender], ["look", looks, ui.ob_look], ["style", o.styles, ui.ob_style]][obStep];
     v.appendChild(el("div", "ob-q", step[2]));
-    var wrap = el("div", step[0] === "gender" ? "opts2" : "");
-    step[1].forEach(function (it) { wrap.appendChild(opt(it, step[0])); });
-    v.appendChild(wrap);
-    if (obStep === 1) {
+    if (step[0] === "look") {
+      var lw = el("div", "looks");
+      looks.forEach(function (L) {
+        var b = el("button", "look" + (ob.look === L.key ? " on" : "")), im = document.createElement("img"); im.src = L.img;
+        b.appendChild(im); b.appendChild(el("span", null, L.label));
+        b.onclick = function () { ob.look = L.key; ob.avatar = null; haptic("select"); renderOnb(); };
+        lw.appendChild(b);
+      });
+      v.appendChild(lw);
+    } else {
+      var wrap = el("div", step[0] === "gender" ? "opts2" : "");
+      step[1].forEach(function (it) { wrap.appendChild(opt(it, step[0])); });
+      v.appendChild(wrap);
+    }
+    if (obStep === 2) {
       v.appendChild(el("div", "ob-q", ui.ob_name));
       var ni = el("input", "ob-in"); ni.maxLength = o.name_max || 24; ni.placeholder = ui.ob_name_hint; ni.value = ob.name || "";
       ni.oninput = function () { ob.name = ni.value; }; v.appendChild(ni);
       if (o.can_custom) {
         v.appendChild(el("div", "ob-q", ui.ob_avatar));
         var row = el("div", "ob-av"), pv = el("div", "ava"); pv.appendChild(el("span", null, ob.gender === "male" ? "👨🏻" : "👩🏻"));
-        setAvatar(pv, ob.avatar || null);
+        var lk0 = looks.filter(function (L) { return L.key === ob.look; })[0];
+        setAvatar(pv, ob.avatar || (lk0 && lk0.img) || null);
         var pb = el("button", "btn ghost", ob.avatar ? ui.ob_avatar_change : ui.ob_avatar_pick);
         pb.onclick = function () { pickImage(function (data) { ob.avatar = data; renderOnb(); }); };
         row.appendChild(pv); row.appendChild(pb); v.appendChild(row);
       }
     }
-    if (obStep === 2 && o.can_custom) {
+    if (obStep === 3 && o.can_custom) {
       v.appendChild(el("div", "ob-q", ui.ob_custom));
       var ta = el("textarea"); ta.id = "ob-custom"; ta.placeholder = ui.ob_custom_hint; ta.value = ob.custom || "";
       ta.oninput = function () { ob.custom = ta.value; }; v.appendChild(ta);
     }
     var nav = el("div", "ob-nav");
     if (obStep > 0) { var bk = el("button", "btn ghost", ui.ob_back); bk.onclick = function () { obStep--; renderOnb(); }; nav.appendChild(bk); }
-    var last = obStep === 2, nx = el("button", "btn", last ? ui.ob_done : ui.ob_next);
+    var last = obStep === 3, nx = el("button", "btn", last ? ui.ob_done : ui.ob_next);
     nx.disabled = !ob[step[0]];
     nx.onclick = function () {
       if (!last) { obStep++; haptic("light"); renderOnb(); v.scrollTop = 0; return; }
       nx.disabled = true;
-      api("/api/app/create", { world: ob.world, gender: ob.gender, style: ob.style, custom: ob.custom || "", name: ob.name || "", avatar: ob.avatar || null }).then(function (res) {
+      api("/api/app/create", { world: ob.world, gender: ob.gender, look: ob.look, style: ob.style, custom: ob.custom || "", name: ob.name || "", avatar: ob.avatar || null }).then(function (res) {
         if (!res.ok) { nx.disabled = false; toast(res.error || "Error"); haptic("error"); return; }
         haptic("success"); state = res.state; tab = "chat"; render(); schedulePoll();
       }).catch(function () { nx.disabled = false; toast("Network error"); });
@@ -20787,6 +20914,7 @@ async def run_webapp_server():
     app_web.router.add_post("/api/app/support", api_app_support_handler)
     app_web.router.add_post("/api/app/toggle", api_app_toggle_handler)
     app_web.router.add_post("/api/app/rename", api_app_rename_handler)
+    app_web.router.add_post("/api/app/look", api_app_look_handler)
     app_web.router.add_post("/api/app/avatar", api_app_avatar_handler)
     app_web.router.add_get("/avatars/{name}", avatar_file_handler)
     app_web.router.add_post("/api/app/create", api_app_create_handler)
