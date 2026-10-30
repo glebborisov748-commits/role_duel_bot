@@ -29,6 +29,10 @@ TEXTS = {
     "ru": {
         "main_menu": "📋 Главное меню",
         "open_app_btn": "📱 Открыть приложение",
+        "app_new_message": "💬 Персонаж написал тебе — ответ ждёт в приложении",
+        "app_redirect": "💬 Общение теперь в приложении — ответ персонажа уже пишется там 👇",
+        "app_create_character": "✨ Почти готово! Создай своего персонажа в приложении — выбери мир, характер и как вы общаетесь 👇",
+        "app_create_btn": "✨ Создать персонажа",
         "my_profile": "👤 Мой профиль",
         "spin_wheel": "🎰 Колесо фортуны",
         "our_channel": "📢 Наш канал",
@@ -330,7 +334,7 @@ TEXTS = {
         "webapp_bought_toast": "✅ Куплено! Ответ персонажа — в чате.",
         "webapp_shop_invoice_error": "Не удалось создать счёт. Попробуй ещё раз.",
         "webapp_custom_gift_placeholder": "Что подаришь?",
-        "webapp_open_chat_hint": "Ответ персонажа появится в чате с ботом",
+        "webapp_open_chat_hint": "Ответ персонажа появится в чате",
         "webapp_character_not_ready": "Сначала создай персонажа в чате с ботом.",
         "webapp_loading": "Загрузка…",
         "webapp_spin_btn": "Крутить",
@@ -437,6 +441,10 @@ TEXTS = {
     "en": {
         "main_menu": "📋 Main menu",
         "open_app_btn": "📱 Open the app",
+        "app_new_message": "💬 Your companion wrote to you — the reply is waiting in the app",
+        "app_redirect": "💬 Chatting now happens in the app — your companion is already replying there 👇",
+        "app_create_character": "✨ Almost done! Create your companion in the app — pick a world, a personality and how you talk 👇",
+        "app_create_btn": "✨ Create companion",
         "my_profile": "👤 My profile",
         "spin_wheel": "🎰 Spin wheel",
         "our_channel": "📢 Our channel",
@@ -738,7 +746,7 @@ TEXTS = {
         "webapp_bought_toast": "✅ Purchased! Your companion's reaction is in the chat.",
         "webapp_shop_invoice_error": "Could not create the invoice. Please try again.",
         "webapp_custom_gift_placeholder": "What will you gift?",
-        "webapp_open_chat_hint": "Your companion's reaction will appear in the chat with the bot",
+        "webapp_open_chat_hint": "Your companion's reaction will appear in the chat",
         "webapp_character_not_ready": "Create a character in the chat with the bot first.",
         "webapp_loading": "Loading…",
         "webapp_spin_btn": "Spin",
@@ -845,6 +853,10 @@ TEXTS = {
     "de": {
         "main_menu": "📋 Hauptmenü",
         "open_app_btn": "📱 App öffnen",
+        "app_new_message": "💬 Dein Begleiter hat dir geschrieben — die Antwort wartet in der App",
+        "app_redirect": "💬 Gechattet wird jetzt in der App — dein Begleiter antwortet dort schon 👇",
+        "app_create_character": "✨ Fast fertig! Erstelle deinen Begleiter in der App — wähle Welt, Charakter und wie ihr schreibt 👇",
+        "app_create_btn": "✨ Begleiter erstellen",
         "my_profile": "👤 Mein Profil",
         "spin_wheel": "🎰 Glücksrad",
         "our_channel": "📢 Unser Kanal",
@@ -1146,7 +1158,7 @@ TEXTS = {
         "webapp_bought_toast": "✅ Gekauft! Die Reaktion deines Begleiters steht im Chat.",
         "webapp_shop_invoice_error": "Rechnung konnte nicht erstellt werden. Bitte versuche es erneut.",
         "webapp_custom_gift_placeholder": "Was schenkst du?",
-        "webapp_open_chat_hint": "Die Reaktion deines Begleiters erscheint im Chat mit dem Bot",
+        "webapp_open_chat_hint": "Die Reaktion deines Begleiters erscheint im Chat",
         "webapp_character_not_ready": "Erstelle zuerst einen Charakter im Chat mit dem Bot.",
         "webapp_loading": "Lädt…",
         "webapp_spin_btn": "Drehen",
@@ -1286,6 +1298,9 @@ if not BOT_TOKEN or not PROVOD_API_KEY:
 # меняет в поведении бота, пока хостинг не даст реальный публичный HTTPS-адрес и его не пропишут
 # сюда через переменную окружения. См. run_webapp_server/get_profile_keyboard.
 WEBAPP_URL = os.getenv("WEBAPP_URL", "").rstrip("/")
+# Режим «весь бот в мини-приложении»: персонаж пишет только в приложение (/app), а в чат Telegram
+# приходят лишь короткие уведомления с кнопкой «Открыть». Без WEBAPP_URL всё работает по-старому, в чате.
+APP_MODE = bool(WEBAPP_URL)
 WEBAPP_PORT = int(os.getenv("WEBAPP_PORT") or os.getenv("PORT") or 8080)
 
 client = OpenAI(api_key=PROVOD_API_KEY, base_url="https://api.provod.ai/v1")
@@ -1391,6 +1406,9 @@ def call_ai(explicit_model, cache_key, **kwargs):
     умолчанию) и одной повторной попыткой — если провайдер вдруг снял именно эту модель
     с каталога (как уже случилось с deepseek/deepseek-chat), или если запрос просто не
     успел за отведённое время (транзиентная задержка на стороне провайдера)."""
+    if kwargs.get("messages"):
+        # В истории бывают служебные поля для мини-приложения (реакция, карточка подарка) -- в ИИ только роль и текст.
+        kwargs["messages"] = [{"role": m["role"], "content": m["content"]} for m in kwargs["messages"]]
     response = _call_ai_raw(explicit_model, cache_key, **kwargs)
     # Защита от «каши из языков»: DeepSeek Flash иногда вставляет посреди русского ответа иероглифы или
     # целые английские фразы (по фидбэку). Тогда пробуем ещё раз чуть «холоднее», а если снова --
@@ -3670,6 +3688,14 @@ async def proceed_flow(user_id: int, chat_id: int):
         await bot.send_message(chat_id, get_text(user, "agreement_intro"), reply_markup=get_agreement_kb(user))
         return
 
+    if APP_MODE and not user["personality_ready"]:
+        # Регистрация закончена здесь, персонажа создаём уже в приложении (мир, пол, стиль, обстановка).
+        if not user.get("user_gender"):
+            await bot.send_message(chat_id, get_text(user, "choose_gender"), reply_markup=get_user_gender_kb(user))
+            return
+        await bot.send_message(chat_id, get_text(user, "app_create_character"), reply_markup=app_open_kb(user, "app_create_btn"))
+        return
+
     if not user.get("world"):
         await bot.send_message(chat_id, get_text(user, "choose_world"), reply_markup=get_world_kb(user), parse_mode="Markdown")
         return
@@ -3859,6 +3885,10 @@ async def choose_user_gender(call: types.CallbackQuery):
     user["user_gender"] = user_gender
     user["gender"] = "female" if user_gender == "male" else "male"
     save_data(user_data)
+    if APP_MODE and not user.get("switching_personality") and not user["personality_ready"]:
+        await call.message.edit_text(get_text(user, "app_create_character"), reply_markup=app_open_kb(user, "app_create_btn"))
+        await call.answer()
+        return
     await call.message.edit_text(get_text(user, "choose_style"), reply_markup=get_style_kb(user), parse_mode="Markdown")
     await call.answer()
 
@@ -4226,7 +4256,10 @@ async def create_personality_callback(call: types.CallbackQuery):
     user["history"] = []
     save_data(user_data)
     await safe_delete(call.message)
-    await call.message.answer(get_text(user, "choose_world"), reply_markup=get_world_kb(user), parse_mode="Markdown")
+    if APP_MODE:
+        await call.message.answer(get_text(user, "app_create_character"), reply_markup=app_open_kb(user, "app_create_btn"))
+    else:
+        await call.message.answer(get_text(user, "choose_world"), reply_markup=get_world_kb(user), parse_mode="Markdown")
     await call.answer()
 
 
@@ -4684,9 +4717,9 @@ async def grant_gift_xp(chat_id, user, amount):
         if new_level > old_level:
             congrats = get_level_congratulation(user, new_level)
             if congrats:
-                await bot.send_message(chat_id, congrats, reply_markup=get_full_kb(user))
+                await app_notify(chat_id, user, congrats, reply_markup=get_full_kb(user))
             if new_level == INTIM_LEVEL_REWARD:
-                await bot.send_message(chat_id, get_text(user, "intim_free_level"), reply_markup=get_full_kb(user))
+                await app_notify(chat_id, user, get_text(user, "intim_free_level"), reply_markup=get_full_kb(user))
     save_data(user_data)
 
 
@@ -5228,7 +5261,7 @@ async def maybe_send_feed_nudge(chat_id, user):
             pass
     user["last_feed_nudge"] = datetime.now().isoformat()
     save_data(user_data)
-    await bot.send_message(chat_id, get_text(user, "hungry_nudge"), reply_markup=get_feed_nudge_kb(user))
+    await app_notify(chat_id, user, get_text(user, "hungry_nudge"), reply_markup=get_feed_nudge_kb(user))
 
 
 ENERGY_NUDGE_THRESHOLD = 45  # тот же порог (30% бака), что и у сонной интонации в build_energy_rule
@@ -5250,7 +5283,7 @@ async def maybe_send_energy_nudge(chat_id, user):
             pass
     user["last_energy_nudge"] = datetime.now().isoformat()
     save_data(user_data)
-    await bot.send_message(chat_id, get_text(user, "low_energy_nudge"), reply_markup=get_energy_nudge_kb(user))
+    await app_notify(chat_id, user, get_text(user, "low_energy_nudge"), reply_markup=get_energy_nudge_kb(user))
 
 
 @dp.callback_query(lambda c: c.data == "profile_shop")
@@ -5421,9 +5454,9 @@ async def execute_item_purchase(chat_id, user, category, key, item, note=None):
     save_data(user_data)
     if item.get("xp"):
         await grant_gift_xp(chat_id, user, item["xp"])
-    await bot.send_message(chat_id, get_text(user, "item_bought", effects=format_item_effects(item, user)))
+    await app_notify(chat_id, user, get_text(user, "item_bought", effects=format_item_effects(item, user)))
     if course_text:
-        await bot.send_message(chat_id, course_text)
+        await app_notify(chat_id, user, course_text)
     # Еда/вода без личной записки — рутинная забота без давления на диалог (по фидбэку: кормить
     # нужно можно было просто так, без того что это обязывает к ответу или намекает, что персонаж
     # "ждал" еды) -- никакой реакции ИИ вообще. Если записка есть, или это подарок/лекарство,
@@ -7044,6 +7077,55 @@ def extract_reaction_from_answer(text):
 MAX_MESSAGE_LEN = 4000  # запас от лимита Telegram в 4096 символов
 
 
+APP_SEEN_ONLINE_SECONDS = 45  # приложение опрашивает сервер каждые ~12 с -- если видели недавно, оно открыто
+
+
+def app_open_kb(user, text_key="open_app_btn"):
+    return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(
+        text=get_text(user, text_key), web_app=WebAppInfo(url=f"{WEBAPP_URL}/app"), style="success")]])
+
+
+def app_is_open(user):
+    try:
+        return (datetime.now() - datetime.fromisoformat(user.get("app_seen"))).total_seconds() < APP_SEEN_ONLINE_SECONDS
+    except (TypeError, ValueError):
+        return False
+
+
+async def app_push(chat_id, user):
+    """Короткое уведомление в Telegram «персонаж написал» -- не чаще одного, пока человек не заглянет в приложение."""
+    if app_is_open(user):
+        return
+    pushed, seen = user.get("app_push_at"), user.get("app_seen")
+    if pushed and (not seen or seen < pushed):
+        return
+    user["app_push_at"] = datetime.now().isoformat()
+    save_data(user_data)
+    try:
+        await bot.send_message(chat_id, get_text(user, "app_new_message"), reply_markup=app_open_kb(user))
+    except Exception:
+        pass
+
+
+async def deliver_character_text(chat_id, user, text, **kwargs):
+    """Реплика персонажа: в режиме приложения она уже лежит в истории (её покажет /app) -- в Telegram
+    только уведомление; иначе, как раньше, отправляем текстом в чат."""
+    if APP_MODE:
+        await app_push(chat_id, user)
+        return None
+    return await send_long_to_chat(chat_id, text, **kwargs)
+
+
+async def app_notify(chat_id, user, text, reply_markup=None):
+    """Системное сообщение (покупка, новый уровень и т.п.): в режиме приложения -- всплывашка в /app."""
+    if APP_MODE:
+        user.setdefault("app_notices", []).append(text)
+        user["app_notices"] = user["app_notices"][-6:]
+        save_data(user_data)
+        return None
+    return await bot.send_message(chat_id, text, reply_markup=reply_markup)
+
+
 async def send_long_to_chat(chat_id, text, **kwargs):
     """Если ответ ИИ длиннее лимита Telegram, отправляем несколькими сообщениями,
     вместо падения с ошибкой 'message is too long'."""
@@ -7131,6 +7213,8 @@ async def ai_chat_answer(user):
     answer = response.choices[0].message.content or ""
     reaction, clean_answer = extract_reaction_from_answer(answer)
     clean_answer = (clean_answer or "").strip() or "…"
+    if reaction and user["history"] and user["history"][-1].get("role") == "user":
+        user["history"][-1]["reaction"] = reaction  # в приложении -- эмодзи-реакция персонажа на твоё сообщение
     user["history"].append({"role": "assistant", "content": clean_answer})
     limit = get_history_limit(user)
     if len(user["history"]) > limit:
@@ -7176,6 +7260,8 @@ async def generate_and_reply(message: types.Message, user):
 
 
 async def _keep_typing(chat_id):
+    if APP_MODE or not chat_id:
+        return  # персонаж печатает в приложении -- там свой индикатор
     try:
         while True:
             await bot.send_chat_action(chat_id, "typing")
@@ -7245,14 +7331,19 @@ async def generate_shop_reaction(chat_id, user, item, kind, note=None):
     finally:
         typing_task.cancel()
 
-    _, clean_answer = extract_reaction_from_answer(answer)
-    user["history"].append({"role": "user", "content": action_text})
+    reaction, clean_answer = extract_reaction_from_answer(answer)
+    lang = user.get("lang", "ru")
+    card = {"kind": kind, "emoji": item.get("emoji", "🎁"), "name": item.get(lang, item.get("ru", "")), "note": note}
+    entry = {"role": "user", "content": action_text, "card": card}
+    if reaction:
+        entry["reaction"] = reaction
+    user["history"].append(entry)
     user["history"].append({"role": "assistant", "content": clean_answer})
     limit = get_history_limit(user)
     if len(user["history"]) > limit:
         user["history"] = user["history"][-limit:]
     save_data(user_data)
-    await send_long_to_chat(chat_id, clean_answer)
+    await deliver_character_text(chat_id, user, clean_answer)
 
 
 # ============================================================
@@ -7345,7 +7436,7 @@ async def generate_first_message(chat_id, user):
         return
     user["history"].append({"role": "assistant", "content": clean})
     save_data(user_data)
-    await send_long_to_chat(chat_id, clean)
+    await deliver_character_text(chat_id, user, clean)
 
 
 async def generate_event_opening(chat_id, user, event):
@@ -7371,7 +7462,7 @@ async def generate_event_opening(chat_id, user, event):
     if len(user["history"]) > limit:
         user["history"] = user["history"][-limit:]
     save_data(user_data)
-    await send_long_to_chat(chat_id, clean_answer, reply_markup=get_full_kb(user))
+    await deliver_character_text(chat_id, user, clean_answer, reply_markup=get_full_kb(user))
 
 
 # ============================================================
@@ -7422,6 +7513,13 @@ GAME_TEXTS = {
         "play_need_super": '💎 Игра на раздевание доступна с подпиской SUPER PRO или ELITE — без ограничений. Оформить: профиль → «👑 Оформить подписку».',
         "play_start": '▶️ Играть',
         "play_free": 'бесплатно',
+        "play_cities_title": '🏙 Города', "play_cities_desc": 'Называете города по очереди на последнюю букву. Победа — +30 XP.',
+        "play_tod_title": '🤫 Правда или действие', "play_tod_desc": '4 раунда откровенностей по очереди: ты отвечаешь персонажу, потом он тебе. +30 XP.',
+        "play_movie_title": '🎬 Кино вместе', "play_movie_desc": 'Выбираете фильм и смотрите вдвоём — персонаж реагирует на каждую сцену. +40 XP.',
+        "play_movie_btn": '🍿 Выбрать фильм · {price}💵',
+        "play_talk_placeholder": 'Напиши…', "play_surrender": '🏳️ Сдаюсь',
+        "play_letter": 'Тебе на «{l}»', "play_round": 'Раунд {n} из {t}', "play_scene": 'Сцена {n} из {t}',
+        "play_talk_over": 'Партия окончена',
         "play_bj_title": '🃏 Блэкджек',
         "play_bj_desc": 'Персонаж — крупье. Набери ближе к 21, чем он, и не перебери. Выигрыш x2, блэкджек x2.5.',
         "play_bj_bet": 'Ставка {bet}💵',
@@ -7543,6 +7641,13 @@ GAME_TEXTS = {
         "play_need_super": '💎 The strip game comes with SUPER PRO or ELITE — unlimited. Get it: profile → «👑 Subscribe».',
         "play_start": '▶️ Play',
         "play_free": 'free',
+        "play_cities_title": '🏙 Cities', "play_cities_desc": 'Take turns naming cities starting with the last letter. A win gives +30 XP.',
+        "play_tod_title": '🤫 Truth or dare', "play_tod_desc": '4 rounds of honesty: you answer your companion, then they answer you. +30 XP.',
+        "play_movie_title": '🎬 Movie together', "play_movie_desc": 'Pick a film and watch it together — your companion reacts to every scene. +40 XP.',
+        "play_movie_btn": '🍿 Pick a film · {price}💵',
+        "play_talk_placeholder": 'Type…', "play_surrender": '🏳️ I give up',
+        "play_letter": 'Your letter: «{l}»', "play_round": 'Round {n} of {t}', "play_scene": 'Scene {n} of {t}',
+        "play_talk_over": 'Game over',
         "play_bj_title": '🃏 Blackjack',
         "play_bj_desc": 'Your companion is the dealer. Get closer to 21 than them without going over. A win pays x2, blackjack x2.5.',
         "play_bj_bet": 'Bet {bet}💵',
@@ -7729,7 +7834,7 @@ def buy_exchange(user, key):
 
 def play_link_kb(user, game="rps"):
     return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(
-        text=gt(user, "play_open_btn"), web_app=WebAppInfo(url=f"{WEBAPP_URL}/play?game={game}"), style="success")]])
+        text=gt(user, "play_open_btn"), web_app=WebAppInfo(url=f"{WEBAPP_URL}/app?tab=games&game={game}"), style="success")]])
 
 
 async def start_game(chat_id, user, key):
@@ -7739,6 +7844,10 @@ async def start_game(chat_id, user, key):
     error = games_gate_error(user)
     if error:
         return error
+    if WEBAPP_URL:
+        # Все игры теперь в мини-приложении (там анимации, звук и мини-чат партии).
+        await bot.send_message(chat_id, gt(user, "play_open_text"), reply_markup=play_link_kb(user, key))
+        return None
     if key == "rps" and WEBAPP_URL:
         # КНБ теперь в мини-приложении (/play): там анимация, звук и режим на раздевание; оплата -- внутри.
         await bot.send_message(chat_id, gt(user, "play_open_text"), reply_markup=play_link_kb(user))
@@ -8664,7 +8773,7 @@ async def handle_message(message: types.Message):
         return
 
     # 12. Реакция на сообщение пользователя (SUPER PRO)
-    if get_subscription_level(user) in ("super_pro", "elite"):
+    if get_subscription_level(user) in ("super_pro", "elite") and not APP_MODE:
         reaction = get_reaction(message.text)
         if reaction:
             try:
@@ -8675,8 +8784,31 @@ async def handle_message(message: types.Message):
             except Exception:
                 pass
 
-    # 13. Генерация и отправка ответа ИИ
+    # 13. Генерация и отправка ответа ИИ. В режиме приложения ответ пишется туда, а здесь -- кнопка «Открыть».
+    if APP_MODE:
+        user["app_pending"] = datetime.now().isoformat()
+        save_data(user_data)
+        asyncio.create_task(app_generate(message.chat.id, user))
+        await send_app_redirect(message.chat.id, user)
+        return
     await generate_and_reply(message, user)
+
+
+async def send_app_redirect(chat_id, user):
+    """Подсказка «общение теперь в приложении»: прошлую такую убираем, чтобы чат не захламлялся."""
+    old = user.get("app_redirect_msg_id")
+    if old:
+        try:
+            await bot.delete_message(chat_id, old)
+        except Exception:
+            pass
+    try:
+        sent = await bot.send_message(chat_id, get_text(user, "app_redirect"), reply_markup=app_open_kb(user))
+        user["app_redirect_msg_id"] = sent.message_id
+    except Exception:
+        user["app_redirect_msg_id"] = None
+    user["app_push_at"] = datetime.now().isoformat()
+    save_data(user_data)
 
 
 # ============================================================
@@ -8797,7 +8929,7 @@ def serialize_shop_state(user):
             categories.append({"key": shop_category, "name": get_text(user, SHOP_CATEGORY_TEXT_KEY[shop_category]), "items": items})
 
     game_items = [{
-        "key": key, "category": "play" if key in ("rps", "bj") else "game", "image": shop_item_image("game", key), "emoji": offer["emoji"],
+        "key": key, "category": "play", "image": shop_item_image("game", key), "emoji": offer["emoji"],
         "name": game_offer_name(user, key), "price": offer["price"],
         "price_label": game_price_label(user, key),
         "effects": gt(user, "game_desc_" + key), "ready_in": None, "refuse": False,
@@ -12783,7 +12915,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
       buyBtn.textContent = (item.category === "game" || item.category === "play") ? s.ui.play_btn : (item.category === "event" ? s.ui.start_btn : s.ui.webapp_buy_btn);
       if (busyKeys[itemKey]) buyBtn.disabled = true;
       buyBtn.onclick = item.category === "play"
-        ? function () { window.location.href = "/play?game=" + item.key + window.location.hash; }  // игры -- своё мини-приложение
+        ? function () { if (window.__rdNav) window.__rdNav("/play?game=" + item.key); else window.location.href = "/play?game=" + item.key + window.location.hash; }
         : function () { buy(item.category, item.key, noteBox ? noteBox.value : ""); };
       footer.appendChild(buyBtn);
     }
@@ -12885,7 +13017,7 @@ SHOP_PAGE_HTML = '''<!doctype html>
         safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
         if (res.close) {
           // Игра/сюжет уже начались в чате -- закрываем магазин, чтобы сразу оказаться там.
-          setTimeout(function () { safe(function () { tg.close(); }); }, 250);
+          setTimeout(function () { if (window.__rdNav) window.__rdNav("chat"); else safe(function () { tg.close(); }); }, 250);
         } else {
           safe(function () { tg.showPopup({message: res.toast || state.ui.webapp_bought_toast}); });
         }
@@ -13047,7 +13179,7 @@ async def asset_image_handler(request):
 
 
 async def shop_page_handler(request):
-    return web.Response(text=with_app_back(SHOP_PAGE_HTML), content_type="text/html")
+    return page_response(request, SHOP_PAGE_HTML)
 
 
 async def telegram_sdk_handler(request):
@@ -13158,7 +13290,7 @@ async def api_custom_gift_handler(request):
     if not ok:
         return web.json_response({"ok": False, "error": error_text, "state": serialize_shop_state(user)})
     await grant_gift_xp(user_id, user, custom_item["xp"])
-    await bot.send_message(user_id, get_text(user, "item_bought", effects=format_item_effects(custom_item, user)))
+    await app_notify(user_id, user, get_text(user, "item_bought", effects=format_item_effects(custom_item, user)))
     if not is_asleep(user):
         await generate_shop_reaction(user_id, user, custom_item, "gift")
     return web.json_response({"ok": True, "state": serialize_shop_state(user)})
@@ -17010,6 +17142,9 @@ def serialize_play_state(user):
     lang = "ru" if user.get("lang", "ru") == "ru" else "en"
     play = user.get("play")
     game = None
+    if play and play.get("mode") in PLAY_TALK_MODES:
+        game = serialize_talk(user, play)
+        play = None
     if play and play.get("mode") == "bj":
         hidden = play["phase"] == "turn"
         dealer = [list(play["dealer"][0]), None] if hidden else [list(c) for c in play["dealer"]]
@@ -17033,6 +17168,7 @@ def serialize_play_state(user):
                 "her_removed": len(play.get("her_removed", [])), "mine_removed": len(play.get("mine_removed", []))}
     ui = {k: gt(user, k) for k in GAME_TEXTS["ru"] if k.startswith("play_") and isinstance(GAME_TEXTS["ru"][k], str)}
     return {"bucks": user.get("bucks", 0), "price": PLAY_RPS_PRICE, "wins": PLAY_RPS_WINS, "bj_bets": BJ_BETS,
+            "movie_price": GAME_OFFERS["movie"]["price"], "tod_labels": {"truth": gt(user, "tod_truth"), "dare": gt(user, "tod_dare")},
             "strip_allowed": play_strip_allowed(user), "strip_subscribed": play_strip_subscribed(user),
             "char_gender": user.get("gender") or "female",
             "rps_names": gt(user, "rps_names"), "game": game, "ui": ui}
@@ -17082,10 +17218,18 @@ async def api_play_start_handler(request):
     if err:
         return err
     mode = body.get("mode")
-    if mode not in ("rps", "strip", "bj"):
+    if mode not in ("rps", "strip", "bj") + PLAY_TALK_MODES:
         return _play_reply(user, False, "Bad request")
     if mode == "bj":
         return await play_bj_start(user_id, user, body)
+    if mode in PLAY_TALK_MODES:
+        user["game"] = None
+        error = games_gate_error(user)
+        if error:
+            return _play_reply(user, False, error)
+        user["play"] = play_talk_start(user, mode)
+        save_data(user_data)
+        return _play_reply(user)
     if user.get("game"):
         user["game"] = None  # чатовая партия, если висела, не мешает
     error = games_gate_error(user)
@@ -17349,6 +17493,214 @@ async def api_play_remove_handler(request):
     return _play_reply(user)
 
 
+# ---------- Разговорные игры в мини-приложении: Города, Правда или действие, Кино ----------
+# Те же правила, что были в чате, только реплики персонажа и ходы игрока живут в мини-чате партии (play["talk"]),
+# а ответ ИИ пишется в фоне (play_run_bg) -- страница показывает «печатает…».
+PLAY_TALK_MODES = ("cities", "tod", "movie")
+PLAY_TALK_SHOWN = 40
+
+
+def talk_add(play, who, text):
+    if text:
+        play.setdefault("talk", []).append({"who": who, "text": text})
+        play["talk"] = play["talk"][-PLAY_TALK_SHOWN:]
+
+
+def play_talk_start(user, mode):
+    play = {"mode": mode, "talk": [], "busy": False, "result": None, "log": []}
+    if mode == "cities":
+        play.update(phase="input", c_used=[], c_last=None, moves=0, started=datetime.now().isoformat())
+        talk_add(play, "sys", gt(user, "cities_start"))
+    elif mode == "tod":
+        play.update(phase="pick", round=0)
+        talk_add(play, "sys", gt(user, "tod_start", rounds=TOD_ROUNDS))
+    else:
+        play.update(phase="genre", beat=0, genre=None)
+        talk_add(play, "sys", gt(user, "movie_pick", price=GAME_OFFERS["movie"]["price"], bucks=user.get("bucks", 0)))
+    return play
+
+
+async def play_talk_finish(user_id, user, play, result, xp=0, text_key=None, **kw):
+    """Конец разговорной партии: итог в мини-чат и XP (xp подставляется и в текст итога)."""
+    play["phase"] = "over"
+    play["result"] = result
+    if text_key:
+        talk_add(play, "sys", gt(user, text_key, xp=xp, **kw))
+    save_data(user_data)
+    if xp:
+        await grant_gift_xp(user_id, user, xp)
+
+
+def serialize_talk(user, play):
+    letter = city_last_letter(play["c_last"]).upper() if play.get("mode") == "cities" and play.get("c_last") else None
+    return {"mode": play["mode"], "phase": play["phase"], "talk": play.get("talk", []), "busy": bool(play.get("busy")),
+            "result": play.get("result"), "letter": letter, "round": play.get("round", 0) + 1, "rounds": TOD_ROUNDS,
+            "beat": play.get("beat", 0), "beats": MOVIE_BEATS, "genres": gt(user, "movie_genres"),
+            "reacts": gt(user, "movie_react"), "price": GAME_OFFERS["movie"]["price"]}
+
+
+async def play_cities_text(user_id, user, play, text):
+    norm = city_norm(text)
+    city = CITY_BY_NORM.get(norm)
+    need = city_last_letter(play["c_last"]) if play.get("c_last") else None
+    if not city:
+        return gt(user, "cities_unknown", letter=need.upper() if need else "—")
+    if need and city_first_letter(city) != need:
+        return gt(user, "cities_wrong_letter", letter=need.upper())
+    if city in play["c_used"]:
+        return gt(user, "cities_used")
+    talk_add(play, "me", city)
+    play["moves"] = play.get("moves", 0) + 1
+    try:
+        too_long = (datetime.now() - datetime.fromisoformat(play["started"])).total_seconds() > CITIES_MAX_MINUTES * 60
+    except (KeyError, ValueError, TypeError):
+        too_long = True
+    if play["moves"] > CITIES_MAX_MOVES or too_long:
+        await play_talk_finish(user_id, user, play, "draw", text_key="cities_timeup")
+        return None
+    play["c_used"].append(city)
+    letter = city_last_letter(city)
+    options = [c for c in CITY_LIST if c not in play["c_used"] and city_first_letter(c) == letter]
+    if not options:
+        talk_add(play, "ai", gt(user, "cities_stuck", letter=letter.upper()))
+        await play_talk_finish(user_id, user, play, "win", xp=CITIES_XP, text_key="cities_win", prize=CITIES_PRIZE)
+        return None
+    mine = random.choice(options)
+    play["c_used"].append(mine)
+    play["c_last"] = mine
+    next_letter = city_last_letter(mine)
+    instr = (f"Вы играете в города. Собеседник назвал «{city}». Ты называешь город «{mine}» — обязательно назови именно его, "
+             f"в конце реплики. Следующий город собеседнику нужен на букву «{next_letter.upper()}». Реагируй в своём стиле: "
+             "смейся, подначивай, радуйся.")
+
+    async def job():
+        line = await game_ai_line(user_id, user, instr, tail=play_tail(play))
+        play_log(play, line)
+        talk_add(play, "ai", (line + "\n\n" if line else "") + f"🏙 {mine} — {gt(user, 'cities_your_letter', letter=next_letter.upper())}")
+    play_run_bg(user_id, user, play, job)
+    return None
+
+
+async def play_tod_pick(user_id, user, play, kind):
+    if play["phase"] != "pick" or kind not in ("truth", "dare"):
+        return None
+    play["phase"] = "answer"
+    play["kind"] = kind
+    talk_add(play, "me", gt(user, "tod_truth" if kind == "truth" else "tod_dare"))
+    if kind == "truth":
+        task, word = "Задай ему один личный, тёплый, чуть смущающий вопрос (правда); не пошлый, не про деньги и не про здоровье.", "правду"
+    else:
+        task, word = ("Придумай одно безобидное весёлое задание, которое можно выполнить прямо в чате (описать, написать, придумать, "
+                      "изобразить словами); без нарушений правил и без пошлости."), "действие"
+
+    async def job():
+        line = await game_ai_line(user_id, user, f"Игра «правда или действие». Собеседник выбрал {word}. {task} Только один вопрос или задание.",
+                                  tail=play_tail(play))
+        line = line or random.choice(gt(user, "tod_fallback_truth" if kind == "truth" else "tod_fallback_dare"))
+        play_log(play, line)
+        talk_add(play, "ai", line)
+        talk_add(play, "sys", gt(user, "tod_answer_hint"))
+    play_run_bg(user_id, user, play, job)
+    return None
+
+
+async def play_tod_text(user_id, user, play, text):
+    phase = play["phase"]
+    if phase == "pick":
+        return gt(user, "tod_use_buttons")
+    text = text[:400]
+    talk_add(play, "me", text)
+    if phase == "answer":
+        ai_kind = random.choice(["truth", "dare"])
+        play["ai_kind"] = ai_kind
+        play["phase"] = "ask"
+
+        async def job():
+            line = await game_ai_line(user_id, user, f"Игра «правда или действие». Собеседник ответил/выполнил: «{text}». Отреагируй в образе "
+                                                      "(смех, удивление, смущение, поддержка), без осуждения.", tail=play_tail(play))
+            play_log(play, line)
+            talk_add(play, "ai", line)
+            talk_add(play, "sys", gt(user, "tod_ai_turn", kind=gt(user, f"tod_kind_{ai_kind}"), what=gt(user, f"tod_what_{ai_kind}")))
+        play_run_bg(user_id, user, play, job)
+    elif phase == "ask":
+        play["phase"] = "pick"
+        if play.get("ai_kind") == "truth":
+            instr = (f"Игра «правда или действие». Ты выбрала правду, собеседник спросил: «{text}». Ответь честно и по-настоящему в образе, "
+                     "от первого лица; если вопрос слишком грубый — мягко уйди от ответа с шуткой.")
+        else:
+            instr = (f"Игра «правда или действие». Ты выбрала действие, собеседник придумал: «{text}». Выполни это словами в образе "
+                     "(опиши, что делаешь); если задание слишком грубое или нарушает правила — отшутись и предложи смягчить.")
+
+        async def job():
+            line = await game_ai_line(user_id, user, instr, tail=play_tail(play))
+            play_log(play, line)
+            talk_add(play, "ai", line)
+            play["round"] = play.get("round", 0) + 1
+            if play["round"] >= TOD_ROUNDS:
+                await play_talk_finish(user_id, user, play, "win", text_key="tod_finished", xp=TOD_XP)
+            else:
+                talk_add(play, "sys", gt(user, "tod_pick_prompt", n=play["round"] + 1, total=TOD_ROUNDS))
+        play_run_bg(user_id, user, play, job)
+    return None
+
+
+async def play_movie_beat(user_id, user, play, reaction):
+    play["beat"] = play.get("beat", 0) + 1
+    last = play["beat"] >= MOVIE_BEATS
+    plot = MOVIE_PLOTS[play["genre"]]
+    reaction_text = {"start": "Вы только сели смотреть, фильм начинается", "cry": "собеседник расчувствовался и плачет",
+                     "laugh": "собеседник смеётся", "hug": "собеседник прижался к тебе", "comment": "собеседник что-то шепчет про фильм"}[reaction]
+    instruction = (f"Вы вдвоём смотрите кино (сцена {play['beat']} из {MOVIE_BEATS}): {plot}. {reaction_text}. "
+                   "Коротко опиши, что происходит на экране, и свою живую реакцию (плачешь, смеёшься, пугаешься, прижимаешься)"
+                   + (". Это финал фильма — завершай историю тёплой репликой после титров." if last else ". Оставь интригу для следующей сцены."))
+
+    async def job():
+        line = await game_ai_line(user_id, user, instruction, tail=play_tail(play))
+        play_log(play, line)
+        talk_add(play, "ai", line or "…")
+        if last:
+            await play_talk_finish(user_id, user, play, "win", text_key="movie_done", xp=MOVIE_XP)
+    play_run_bg(user_id, user, play, job)
+
+
+async def api_play_talk_handler(request):
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    play = user.get("play")
+    action, value = body.get("action"), body.get("value")
+    if not play or play.get("mode") not in PLAY_TALK_MODES or play.get("phase") == "over":
+        return _play_reply(user, False, None)
+    if action == "end":
+        await play_talk_finish(user_id, user, play, "lose" if play["mode"] == "cities" else "stop",
+                               text_key="cities_lose" if play["mode"] == "cities" else None)
+        return _play_reply(user)
+    if play.get("busy"):
+        return _play_reply(user, False, gt(user, "tod_wait"))
+    error = None
+    if play["mode"] == "cities" and action == "text":
+        error = await play_cities_text(user_id, user, play, (value or "").strip()[:60])
+    elif play["mode"] == "tod" and action == "pick":
+        error = await play_tod_pick(user_id, user, play, value)
+    elif play["mode"] == "tod" and action == "text" and (value or "").strip():
+        error = await play_tod_text(user_id, user, play, value.strip())
+    elif play["mode"] == "movie" and action == "genre" and play["phase"] == "genre" and value in MOVIE_PLOTS:
+        if pay_for_game(user, "movie") is None:
+            price = GAME_OFFERS["movie"]["price"]
+            return _play_reply(user, False, get_text(user, "not_enough_bucks", n=price - user.get("bucks", 0)))
+        play["genre"] = value
+        play["phase"] = "react"
+        talk_add(play, "me", gt(user, "movie_genres")[value])
+        await play_movie_beat(user_id, user, play, "start")
+    elif play["mode"] == "movie" and action == "react" and play["phase"] == "react" and value in ("cry", "laugh", "hug", "comment"):
+        talk_add(play, "me", gt(user, "movie_react")[value])
+        await play_movie_beat(user_id, user, play, value)
+    else:
+        return _play_reply(user, False, None)
+    save_data(user_data)
+    return _play_reply(user, error is None, error)
+
+
 async def play_bj_start(user_id, user, body):
     try:
         bet = int(body.get("bet"))
@@ -17421,7 +17773,7 @@ async def api_play_quit_handler(request):
 
 
 async def play_page_handler(request):
-    return web.Response(text=with_app_back(PLAY_PAGE_HTML), content_type="text/html")
+    return page_response(request, PLAY_PAGE_HTML)
 
 
 # Страница игр -- статичная, всё состояние через /api/play/* (как у колеса и магазина).
@@ -17505,6 +17857,25 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   #bj-bet { color: var(--hint); font-weight: 700; font-size: 13px; }
   #bj-actions { display: flex; gap: 10px; margin-top: 8px; }
   #bj-actions .btn { flex: 1; }
+  #talkv { display: none; }
+  .talk-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+  .talk-head b { font-size: 17px; } .talk-head span { color: var(--hint); font-size: 13px; font-weight: 700; }
+  #talk-log { max-height: 52vh; min-height: 160px; overflow-y: auto; padding: 2px 0 6px; }
+  .tm { display: flex; margin: 5px 0; } .tm.me { justify-content: flex-end; }
+  .tm .b { max-width: 84%; padding: 8px 11px; border-radius: 16px; font-size: 14.5px; line-height: 1.4; white-space: pre-wrap; text-align: left; }
+  .tm.ai .b { background: rgba(127,127,127,.16); border-bottom-left-radius: 5px; }
+  .tm.me .b { background: linear-gradient(135deg, #8b5cf6, #ec4899); color: #fff; border-bottom-right-radius: 5px; }
+  .tm.sys { justify-content: center; } .tm.sys .b { background: rgba(139,92,246,.14); color: var(--fg); font-size: 13px; border-radius: 12px; text-align: center; }
+  .tm .b em { opacity: .8; }
+  .dots { display: inline-flex; gap: 4px; } .dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--hint); animation: dt 1.2s infinite; }
+  .dots i:nth-child(2) { animation-delay: .15s; } .dots i:nth-child(3) { animation-delay: .3s; }
+  @keyframes dt { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+  #talk-ctrl { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; } #talk-ctrl .btn { flex: 1 1 40%; padding: 11px 6px; font-size: 14.5px; }
+  .talk-input { display: flex; gap: 8px; margin-top: 10px; }
+  .talk-input input { flex: 1; border-radius: 14px; border: 1px solid rgba(127,127,127,.3); background: rgba(127,127,127,.12); color: var(--fg);
+    font-size: 16px; padding: 11px 13px; outline: none; }
+  .talk-input button { width: 46px; border: none; border-radius: 14px; background: linear-gradient(135deg, #8b5cf6, #ec4899); color: #fff; font-size: 18px; }
+  .talk-card { background: linear-gradient(150deg, rgba(14,165,233,.16), rgba(139,92,246,.10) 60%, var(--card)); }
   #full-screen-msg { display: none; padding: 30px 10px; text-align: center; color: var(--hint); white-space: pre-wrap; }
 </style>
 </head>
@@ -17532,6 +17903,13 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     </div>
     <div id="my-wardrobe" class="wardrobe card" style="display:none"></div>
     <button class="btn secondary" id="quit-btn"></button>
+  </div>
+  <div id="talkv">
+    <div class="card"><div class="talk-head"><b id="talk-title"></b><span id="talk-sub"></span></div>
+      <div id="talk-log"></div><div id="talk-ctrl"></div>
+      <div class="talk-input" id="talk-input"><input id="talk-text" autocomplete="off"><button id="talk-send" type="button">➤</button></div>
+    </div>
+    <button class="btn secondary" id="talk-quit"></button>
   </div>
   <div id="full-screen-msg"></div>
 <script>
@@ -17618,7 +17996,76 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     bj.appendChild(el("p", null, ui.play_bj_choose));
     bj.appendChild(betButtons());
     menu.appendChild(bj);
+    [["cities", ui.play_cities_title, ui.play_cities_desc, ui.play_start + " · " + ui.play_free],
+     ["tod", ui.play_tod_title, ui.play_tod_desc, ui.play_start + " · " + ui.play_free],
+     ["movie", ui.play_movie_title, ui.play_movie_desc, ui.play_movie_btn.replace("{price}", s.movie_price)]].forEach(function (g) {
+      var c = el("div", "card talk-card " + g[0] + "-card");
+      c.appendChild(el("h3", null, g[1])); c.appendChild(el("p", null, g[2]));
+      var b = el("button", "btn", g[3]); b.onclick = function () { start(g[0]); }; c.appendChild(b);
+      menu.appendChild(c);
+    });
   }
+
+  // ---- разговорные игры: мини-чат партии ----
+  var TALK = { cities: 1, tod: 1, movie: 1 };
+  function talkRich(node, text) {
+    String(text).split(/(\*[^*\n]+\*)/g).forEach(function (p) {
+      if (/^\*[^*\n]+\*$/.test(p)) node.appendChild(el("em", null, p.slice(1, -1))); else if (p) node.appendChild(document.createTextNode(p));
+    });
+  }
+  function talkSend(action, value) {
+    if (busy) return;
+    busy = true;
+    api("/api/play/talk", { action: action, value: value }).then(function (res) {
+      busy = false;
+      if (res.state) state = res.state;
+      if (!res.ok && res.error) safe(function () { tg.showAlert(res.error); });
+      render();
+      if (state.game && state.game.busy) pollBusy();
+      if (state.game && state.game.phase === "over") fx(state.game.result === "win" ? "big" : "draw");
+    }).catch(function () { busy = false; render(); });
+  }
+  function renderTalk() {
+    var s = state, g = s.game, ui = s.ui;
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("arena").style.display = "none";
+    document.getElementById("talkv").style.display = "block";
+    document.getElementById("talk-title").textContent = ui["play_" + g.mode + "_title"];
+    var sub = "";
+    if (g.mode === "cities" && g.letter && g.phase !== "over") sub = ui.play_letter.replace("{l}", g.letter);
+    if (g.mode === "tod" && g.phase !== "over") sub = ui.play_round.replace("{n}", Math.min(g.round, g.rounds)).replace("{t}", g.rounds);
+    if (g.mode === "movie" && g.beat) sub = ui.play_scene.replace("{n}", g.beat).replace("{t}", g.beats);
+    document.getElementById("talk-sub").textContent = sub;
+    var log = document.getElementById("talk-log");
+    log.innerHTML = "";
+    g.talk.forEach(function (m) { var r = el("div", "tm " + m.who), b = el("div", "b"); talkRich(b, m.text); r.appendChild(b); log.appendChild(r); });
+    if (g.busy) { var r = el("div", "tm ai"), b = el("div", "b"); b.innerHTML = '<span class="dots"><i></i><i></i><i></i></span>'; r.appendChild(b); log.appendChild(r); }
+    log.scrollTop = log.scrollHeight;
+    var ctrl = document.getElementById("talk-ctrl"); ctrl.innerHTML = "";
+    function btn(text, cls, fn) { var b = el("button", "btn" + (cls ? " " + cls : ""), text); b.disabled = g.busy || busy; b.onclick = fn; ctrl.appendChild(b); }
+    var canType = false;
+    if (g.phase === "over") {
+      btn(ui.play_again, "", function () { api("/api/play/start", { mode: g.mode }).then(function (res) { if (res.state) state = res.state;
+        if (!res.ok && res.error) safe(function () { tg.showAlert(res.error); }); render(); }); });
+      btn(ui.play_to_chat, "secondary", function () { if (window.__rdNav) window.__rdNav("chat"); else safe(function () { tg.close(); }); });
+    } else if (g.mode === "cities") { canType = true; btn(ui.play_surrender, "secondary", function () { talkSend("end"); }); }
+    else if (g.mode === "tod") {
+      if (g.phase === "pick") { btn(s.tod_labels.truth, "", function () { talkSend("pick", "truth"); }); btn(s.tod_labels.dare, "", function () { talkSend("pick", "dare"); }); }
+      else canType = true;
+    } else if (g.mode === "movie") {
+      var opts = g.phase === "genre" ? g.genres : g.reacts;
+      Object.keys(opts).forEach(function (k) { btn(opts[k], "", function () { talkSend(g.phase === "genre" ? "genre" : "react", k); }); });
+    }
+    var inp = document.getElementById("talk-input");
+    inp.style.display = canType ? "flex" : "none";
+    var t = document.getElementById("talk-text"); t.placeholder = ui.play_talk_placeholder; t.disabled = g.busy;
+    document.getElementById("talk-send").disabled = g.busy;
+    var q = document.getElementById("talk-quit"); q.textContent = ui.play_quit; q.style.display = g.phase === "over" ? "none" : "block";
+  }
+  function talkSubmit() { var t = document.getElementById("talk-text"), v = t.value.trim(); if (!v) return; t.value = ""; fx("draw"); talkSend("text", v); }
+  document.getElementById("talk-send").onclick = talkSubmit;
+  document.getElementById("talk-text").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); talkSubmit(); } });
+  document.getElementById("talk-quit").onclick = function () { api("/api/play/quit", {}).then(function (res) { if (res.state) state = res.state; render(); }); };
 
   function betButtons() {
     var row = el("div", "bets");
@@ -17792,6 +18239,8 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   function render() {
     document.getElementById("title").textContent = state.ui.play_title;
     document.getElementById("bucks").textContent = "💵 " + state.bucks;
+    document.getElementById("talkv").style.display = "none";
+    if (state.game && TALK[state.game.mode]) { renderTalk(); return; }
     if (state.game && state.game.mode === "bj") { document.getElementById("menu").style.display = "none";
       document.getElementById("arena").style.display = "block"; renderBj(); }
     else if (state.game) { document.getElementById("bj").style.display = "none"; document.getElementById("bj-actions").style.display = "none";
@@ -17877,7 +18326,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
 
   document.getElementById("quit-btn").onclick = function () { api("/api/play/quit", {}).then(function (res) { if (res.state) state = res.state; render(); }); };
   document.getElementById("again-btn").onclick = function () { api("/api/play/quit", {}).then(function (res) { if (res.state) state = res.state; render(); }); };
-  document.getElementById("chat-btn").onclick = function () { safe(function () { tg.close(); }); };
+  document.getElementById("chat-btn").onclick = function () { if (window.__rdNav) window.__rdNav("chat"); else safe(function () { tg.close(); }); };
 
   function load() {
     api("/api/play/state").then(function (res) {
@@ -17890,6 +18339,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
       render();
       if (state.game && state.game.busy) pollBusy();
       var want = (location.search.match(/game=(\w+)/) || [])[1];
+      if ({ cities: 1, tod: 1, movie: 1 }[want] && (!state.game || state.game.mode !== want)) start(want);
       var target = !state.game && { strip: ".strip-card", bj: ".bj-card" }[want];
       if (target && document.querySelector(target)) document.querySelector(target).scrollIntoView();
     }).catch(function (e) { showFullScreen("Network error: " + (e && e.message || "unknown")); });
@@ -17963,6 +18413,20 @@ APP_TEXTS = {
         "per_month": "/ мес",
         "coupon": "🎟 Твоя скидка −{n}% ещё {h} ч",
         "sale": "🔥 Распродажа: SUPER PRO и ELITE −{n}%",
+        "ob_title": "Создай своего персонажа",
+        "ob_world": "Какой мир?", "ob_gender": "Кто твой персонаж?", "ob_style": "Какой характер?", "ob_scene": "Как вы общаетесь?",
+        "ob_custom": "🎭 Свой персонаж (SUPER PRO)", "ob_custom_hint": "Опиши внешность, характер, историю — персонаж будет именно таким. Можно оставить пустым.",
+        "ob_next": "Дальше", "ob_back": "Назад", "ob_done": "✨ Создать персонажа", "ob_locked": "🔒 {tier}",
+        "ob_female": "👩 Девушка", "ob_male": "👨 Парень",
+        "ob_realism": "Современный город, работа, друзья, реальная жизнь", "ob_anime": "Яркий аниме-мир: школы, клубы, магия и романтика",
+        "ob_phone": "Переписываетесь в телефоне", "ob_live": "Вы рядом, живая встреча",
+        "ob_custom_short": "Слишком коротко — опиши хотя бы в {n} символов или оставь пустым.",
+        "style_desc_warm": "Заботливый и ласковый, с ним спокойно", "style_desc_daring": "С огоньком, вызовом и подколками",
+        "style_desc_shy": "Скромный, краснеет и смущается", "style_desc_passionate": "Страстный, горячий, не скрывает чувств",
+        "style_desc_magnetic": "Уверенный и притягательный, ведёт сам", "style_desc_rude": "Грубоватый и наглый, 18+",
+        "style_desc_seduction": "Соблазняет и дразнит, 18+",
+        "card_gift": "Ты подарил(а)", "card_food": "Ты угостил(а)", "card_medicine": "Ты дал(а) лекарство",
+        "change_char": "🔁 Создать нового персонажа", "change_char_confirm": "Создать нового персонажа? Переписка с текущим будет удалена.",
     },
     "en": {
         "tab_chat": "Chat", "tab_games": "Games", "tab_shop": "Shop", "tab_spin": "Wheel", "tab_work": "Work",
@@ -18007,6 +18471,20 @@ APP_TEXTS = {
         "per_month": "/ mo",
         "coupon": "🎟 Your −{n}% discount, {h}h left",
         "sale": "🔥 Sale: SUPER PRO and ELITE −{n}%",
+        "ob_title": "Create your companion",
+        "ob_world": "Which world?", "ob_gender": "Who is your companion?", "ob_style": "What personality?", "ob_scene": "How do you talk?",
+        "ob_custom": "🎭 Your own character (SUPER PRO)", "ob_custom_hint": "Describe looks, personality, backstory — the companion will be exactly like that. Can be left empty.",
+        "ob_next": "Next", "ob_back": "Back", "ob_done": "✨ Create companion", "ob_locked": "🔒 {tier}",
+        "ob_female": "👩 Girl", "ob_male": "👨 Guy",
+        "ob_realism": "A modern city, work, friends, real life", "ob_anime": "A bright anime world: schools, clubs, magic and romance",
+        "ob_phone": "You text on the phone", "ob_live": "You're together in person",
+        "ob_custom_short": "Too short — write at least {n} characters or leave it empty.",
+        "style_desc_warm": "Caring and tender, calm to be around", "style_desc_daring": "Bold, fiery, loves to tease",
+        "style_desc_shy": "Modest, blushes easily", "style_desc_passionate": "Passionate and hot, shows feelings",
+        "style_desc_magnetic": "Confident and magnetic, takes the lead", "style_desc_rude": "Rough and cheeky, 18+",
+        "style_desc_seduction": "Seductive and teasing, 18+",
+        "card_gift": "You gave a gift", "card_food": "You treated them to", "card_medicine": "You gave medicine",
+        "change_char": "🔁 Create a new companion", "change_char_confirm": "Create a new companion? The chat with the current one will be deleted.",
     },
 }
 
@@ -18022,6 +18500,51 @@ def app_avatar(user):
     if user.get("world") == "anime":
         return "🌸" if female else "⚔️"
     return "👩🏻" if female else "👨🏻"
+
+
+def app_request_user(init_data):
+    """Как resolve_webapp_user, но пускает и без созданного персонажа -- его создают прямо в приложении."""
+    parsed = validate_webapp_init_data(init_data)
+    if not parsed or not (parsed.get("user") or {}).get("id"):
+        return None, None, {"ok": False, "error": "auth", "message": "Invalid Telegram signature"}
+    user_id = int(parsed["user"]["id"])
+    user = get_user(user_id)
+    if maintenance_mode and user_id not in ADMIN_IDS:
+        return None, None, {"ok": False, "error": "maintenance", "message": get_text(user, "maintenance")}
+    if not (user["verified"] and user["agreement_accepted"] and user.get("user_gender")):
+        return None, None, {"ok": False, "error": "not_ready", "message": get_text(user, "webapp_character_not_ready")}
+    if user.get("dead"):
+        return None, None, {"ok": False, "error": "dead", "message": get_text(user, "character_died")}
+    return user_id, user, None
+
+
+async def _app_request(request):
+    user_id, user, error = app_request_user(request.headers.get("X-Telegram-Init-Data", ""))
+    if error:
+        return None, None, None, web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    try:
+        body = await request.json()
+    except Exception:
+        body = {}
+    return user_id, user, body if isinstance(body, dict) else {}, None
+
+
+def serialize_onboarding(user):
+    lang = user.get("lang", "ru")
+    sub = get_subscription_level(user)
+    styles = []
+    for key in STYLES:
+        tier = None if is_style_unlocked(key, user) else ("SUPER PRO" if key in SUPER_PRO_STYLE_KEYS else "PRO")
+        styles.append({"key": key, "label": style_display_label(key, user), "desc": at(user, "style_desc_" + key), "locked": tier})
+    return {"worlds": [{"key": "realism", "label": get_text(user, "realism"), "desc": at(user, "ob_realism")},
+                       {"key": "anime", "label": get_text(user, "anime"), "desc": at(user, "ob_anime")}],
+            "genders": [{"key": "female", "label": at(user, "ob_female")}, {"key": "male", "label": at(user, "ob_male")}],
+            "default_gender": "female" if user.get("user_gender") != "female" else "male",
+            "styles": styles,
+            "scenes": [{"key": "phone", "label": get_text(user, "scene_phone"), "desc": at(user, "ob_phone")},
+                       {"key": "live", "label": get_text(user, "scene_live"), "desc": at(user, "ob_live")}],
+            "can_custom": sub in ("super_pro", "elite"), "custom_min": CUSTOM_CHARACTER_MIN_LEN,
+            "lang": lang}
 
 
 def app_unstick(user):
@@ -18051,6 +18574,10 @@ def app_sub_offers(user):
 
 
 def serialize_app_state(user):
+    user["app_seen"] = datetime.now().isoformat()
+    if not user.get("personality_ready"):
+        ui = {k: v for k, v in APP_TEXTS["ru" if user.get("lang", "ru") == "ru" else "en"].items() if isinstance(v, str)}
+        return {"onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
     app_unstick(user)
     _reset_daily_quota_if_needed(user)
     lang = user.get("lang", "ru")
@@ -18068,7 +18595,9 @@ def serialize_app_state(user):
         coupon = at(user, "coupon", n=int(user["coupon"]["discount"] * 100), h=left)
     ui = {k: v for k, v in APP_TEXTS["ru" if lang == "ru" else "en"].items() if isinstance(v, str)}
     return {
-        "messages": [{"role": m["role"], "text": m["content"]} for m in history],
+        "messages": [{"role": m["role"], "text": m["content"], "reaction": m.get("reaction"), "card": m.get("card")}
+                     for m in history],
+        "onboarding": None,
         "pending": bool(user.get("app_pending")),
         "notices": notices,
         "can_reroll": bool(history and history[-1]["role"] == "assistant" and len(history) >= 2
@@ -18121,7 +18650,7 @@ async def app_generate(user_id, user):
 
 
 async def api_app_state_handler(request):
-    user_id, user, body, err = await _play_request(request)
+    user_id, user, body, err = await _app_request(request)
     if err:
         return err
     return _app_reply(user)
@@ -18233,6 +18762,73 @@ async def api_app_hot_handler(request):
     return web.json_response({"ok": True})
 
 
+async def api_app_create_handler(request):
+    """Создание персонажа в приложении: мир, пол персонажа, стиль, обстановка и (SUPER PRO) своё описание."""
+    user_id, user, body, err = await _app_request(request)
+    if err:
+        return err
+    world, gender, style, scene = body.get("world"), body.get("gender"), body.get("style"), body.get("scene")
+    if world not in WORLDS or gender not in ("female", "male") or style not in STYLES or scene not in ("phone", "live"):
+        return web.json_response({"ok": False, "error": "Bad request"})
+    if not is_style_unlocked(style, user):
+        label = style_display_label(style, user, with_emoji=False)
+        tier = "SUPER PRO" if style in SUPER_PRO_STYLE_KEYS else "PRO/SUPER PRO"
+        return web.json_response({"ok": False, "error": get_text(user, "style_locked_alert", label=label, tier=tier)})
+    custom = (body.get("custom") or "").strip()
+    if custom and get_subscription_level(user) not in ("super_pro", "elite"):
+        custom = ""
+    if custom and len(custom) < CUSTOM_CHARACTER_MIN_LEN:
+        return web.json_response({"ok": False, "error": at(user, "ob_custom_short", n=CUSTOM_CHARACTER_MIN_LEN)})
+    user.update(world=world, gender=gender, style=style, scene=scene, custom_character=custom[:2000] or None,
+                personality_ready=True, history=[], creating_character=False, switching_personality=False,
+                last_activity=datetime.now().isoformat())
+    user["app_pending"] = datetime.now().isoformat()
+    save_data(user_data)
+
+    async def first():
+        try:
+            await generate_first_message(user_id, user)
+        finally:
+            user["app_pending"] = None
+            save_data(user_data)
+    asyncio.create_task(first())
+    return web.json_response({"ok": True, "state": serialize_app_state(user)})
+
+
+async def api_app_reset_handler(request):
+    """«Создать нового персонажа» из профиля -- как кнопка смены персонажа в меню: история удаляется."""
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    user["personality_ready"] = False
+    user["custom_character"] = None
+    user["history"] = []
+    user["app_pending"] = None
+    save_data(user_data)
+    return web.json_response({"ok": True, "state": serialize_app_state(user)})
+
+
+# Страницы разделов внутри приложения: /app грузит их во вкладки (iframe, ?embed=1). Там нет своего SDK --
+# берём объект Telegram у родительского окна (тот же origin), так что оплата, вибрация и initData работают.
+EMBED_BRIDGE = r"""<script>
+window.__rdEmbedded = true;
+try { if (window.parent !== window && window.parent.Telegram && window.parent.Telegram.WebApp) window.Telegram = window.parent.Telegram; } catch (e) {}
+window.__rdNav = function (path) { try { window.parent.rdOpenTab(path); } catch (e) { location.href = path; } };
+setTimeout(function () { if (window.__tgSdkOnSettle) window.__tgSdkOnSettle(); }, 0);
+</script>
+<style>:root { --tg-theme-bg-color: #0d0e1a; --tg-theme-secondary-bg-color: #1b1e36; --tg-theme-text-color: #f3f3fb;
+  --tg-theme-hint-color: #9a9cb8; --tg-theme-button-color: #8b5cf6; --tg-theme-button-text-color: #ffffff;
+  --tg-theme-link-color: #c4b5fd; --tg-theme-section-bg-color: #1b1e36; } html, body { background: #0d0e1a; }</style>"""
+_SDK_TAG_RE = re.compile(r'<script src="/tg-sdk\.js"[^>]*>\s*</script>', re.S)
+
+
+def page_response(request, html):
+    if request.query.get("embed") == "1":
+        html = _SDK_TAG_RE.sub(lambda m: EMBED_BRIDGE, html, count=1)
+        return web.Response(text=html, content_type="text/html")
+    return web.Response(text=with_app_back(html), content_type="text/html")
+
+
 async def app_page_handler(request):
     return web.Response(text=APP_PAGE_HTML, content_type="text/html")
 
@@ -18276,13 +18872,14 @@ APP_PAGE_HTML = r'''<!doctype html>
     --bg: #0d0e1a; --bg2: #14162a; --card: #1b1e36; --card2: #232746; --line: rgba(255,255,255,.07);
     --fg: #f3f3fb; --hint: #9a9cb8; --accent: #8b5cf6; --accent2: #ec4899; --ok: #22c55e; --warn: #f59e0b; --bad: #ef4444;
     --grad: linear-gradient(135deg, #8b5cf6, #ec4899);
-    --nav-h: 64px; --safe-b: env(safe-area-inset-bottom, 0px);
+    --nav-h: 64px; --safe-b: var(--tg-safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg);
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif; overflow: hidden; }
   button { font-family: inherit; cursor: pointer; }
-  #root { position: fixed; inset: 0; display: flex; flex-direction: column; }
+  #root { position: fixed; inset: 0; display: flex; flex-direction: column;
+    padding-top: calc(var(--tg-safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px)); }
   #bgfx { position: fixed; inset: 0; pointer-events: none; z-index: 0;
     background: radial-gradient(600px 420px at 85% -10%, rgba(236,72,153,.16), transparent 60%),
                 radial-gradient(520px 420px at -10% 30%, rgba(139,92,246,.16), transparent 60%); }
@@ -18309,6 +18906,37 @@ APP_PAGE_HTML = r'''<!doctype html>
   #views { flex: 1; min-height: 0; position: relative; z-index: 1; }
   .view { position: absolute; inset: 0; display: none; flex-direction: column; }
   .view.on { display: flex; }
+  .view.frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: var(--bg); }
+  .frame-load { position: absolute; inset: 0; display: grid; place-items: center; color: var(--hint); font-size: 14px; }
+  #root.framed #head, #root.framed #ebar, #root.onb #head, #root.onb #ebar, #root.onb #nav { display: none; }
+  .row.react-row { margin-bottom: 14px; }
+  .bw { position: relative; max-width: 82%; display: flex; }
+  .row.me .bw { justify-content: flex-end; }
+  .bw .bub { max-width: 100%; }
+  .react { position: absolute; bottom: -12px; left: -6px; font-size: 14px; line-height: 1; padding: 3px 5px; border-radius: 12px;
+    background: var(--card2); border: 1px solid var(--line); animation: pop-in .35s cubic-bezier(.2,1.6,.4,1) both; }
+  @keyframes pop-in { from { transform: scale(0); } to { transform: scale(1); } }
+  .giftcard { display: flex; gap: 12px; align-items: center; padding: 11px 14px; border-radius: 18px; border-bottom-right-radius: 6px;
+    background: linear-gradient(135deg, rgba(236,72,153,.28), rgba(139,92,246,.28)); border: 1px solid rgba(236,72,153,.5);
+    box-shadow: 0 8px 22px rgba(236,72,153,.18); animation: bub-in .3s ease both; }
+  .giftcard .ge { font-size: 34px; filter: drop-shadow(0 4px 8px rgba(0,0,0,.35)); }
+  .giftcard .gl { font-size: 11.5px; color: #f5d0fe; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
+  .giftcard .gn { font-size: 15.5px; font-weight: 800; } .giftcard .gnote { font-size: 13px; font-style: italic; color: #fde7f3; margin-top: 2px; }
+  /* ---- onboarding ---- */
+  #view-onb { overflow-y: auto; padding: 18px 16px 24px; }
+  .ob-top { text-align: center; margin: 6px 0 16px; } .ob-top .big { font-size: 40px; } .ob-top h2 { margin: 6px 0 2px; font-size: 22px; }
+  .ob-dots { display: flex; justify-content: center; gap: 6px; margin-top: 10px; } .ob-dots i { width: 22px; height: 4px; border-radius: 4px; background: var(--card2); }
+  .ob-dots i.on { background: var(--grad); }
+  .ob-q { font-size: 17px; font-weight: 800; margin: 4px 0 12px; }
+  .opt { display: block; width: 100%; text-align: left; border: 2px solid var(--line); background: var(--card); color: var(--fg); border-radius: 18px;
+    padding: 14px 15px; margin-bottom: 10px; transition: border-color .15s, transform .1s; }
+  .opt b { display: block; font-size: 16px; } .opt span { display: block; color: var(--hint); font-size: 13px; margin-top: 3px; }
+  .opt.on { border-color: #a78bfa; background: linear-gradient(150deg, rgba(139,92,246,.3), rgba(236,72,153,.14) 70%, var(--card)); }
+  .opt:active { transform: scale(.98); } .opt.locked { opacity: .55; } .opt .lk { float: right; font-size: 12px; font-weight: 800; color: #fcd34d; }
+  .opts2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .opts2 .opt { margin: 0; text-align: center; }
+  #ob-custom { width: 100%; min-height: 110px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); color: var(--fg);
+    padding: 12px; font-size: 15px; font-family: inherit; outline: none; resize: vertical; }
+  .ob-nav { display: flex; gap: 10px; margin-top: 14px; } .ob-nav .btn { margin: 0; }
 
   /* ---- chat ---- */
   #msgs { flex: 1; overflow-y: auto; padding: 14px 12px 8px; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
@@ -18413,6 +19041,11 @@ APP_PAGE_HTML = r'''<!doctype html>
       </div>
     </div>
     <div class="view" id="view-profile"></div>
+    <div class="view frame" id="view-games"></div>
+    <div class="view frame" id="view-shop"></div>
+    <div class="view frame" id="view-spin"></div>
+    <div class="view frame" id="view-work"></div>
+    <div class="view" id="view-onb"></div>
   </div>
   <nav id="nav"></nav>
 </div>
@@ -18431,6 +19064,8 @@ APP_PAGE_HTML = r'''<!doctype html>
     safe(function () { tg.setHeaderColor("#0d0e1a"); }); safe(function () { tg.setBackgroundColor("#0d0e1a"); });
     safe(function () { tg.disableVerticalSwipes(); });
     safe(function () { tg.BackButton.hide(); });
+    // Сразу на весь экран, как у больших мини-приложений (Telegram 8.0+, на телефонах)
+    safe(function () { if (/ios|android/.test(tg.platform) && tg.isVersionAtLeast && tg.isVersionAtLeast("8.0") && !tg.isFullscreen) tg.requestFullscreen(); });
   }
   var state = null, tab = "chat", sending = false, pollTimer = null, lastCount = -1, lastPending = false;
   var $ = function (id) { return document.getElementById(id); };
@@ -18464,18 +19099,40 @@ APP_PAGE_HTML = r'''<!doctype html>
 
   // ---- навигация ----
   var TABS = [["chat", "💬"], ["games", "🎮", "/play"], ["shop", "🛍", "/shop"], ["spin", "🎰", "/spin"], ["work", "💼", "/work"], ["profile", "👤"]];
+  var FRAME_PATH = { games: "/play", shop: "/shop", spin: "/spin", work: "/work" };
+  var frames = {}, hiddenAt = {};
+  // Раздел грузится один раз во вкладку (iframe) и дальше просто показывается -- без нового мини-приложения.
+  function showFrame(name, path) {
+    var view = $("view-" + name), src = (path || FRAME_PATH[name]);
+    src += (src.indexOf("?") >= 0 ? "&" : "?") + "embed=1" + location.hash;
+    var f = frames[name];
+    var stale = hiddenAt[name] && Date.now() - hiddenAt[name] > 20000;
+    if (!f || (path && f.getAttribute("data-path") !== path)) {
+      view.innerHTML = ""; view.appendChild(el("div", "frame-load", "…"));
+      f = document.createElement("iframe"); f.src = src; f.setAttribute("data-path", path || FRAME_PATH[name]);
+      view.appendChild(f); frames[name] = f;
+    } else if (stale) { safe(function () { f.contentWindow.location.reload(); }); }
+    hiddenAt[name] = 0;
+  }
+  function setTab(name, path) {
+    if (FRAME_PATH[tab] && tab !== name) hiddenAt[tab] = Date.now();
+    tab = name;
+    try { sessionStorage.setItem("rd_tab", FRAME_PATH[name] ? "chat" : name); } catch (e) {}
+    if (FRAME_PATH[name]) showFrame(name, path);
+    render();
+    if (name === "chat") { scrollBottom(true); load(true); }
+  }
+  window.rdOpenTab = function (path) {
+    if (path === "chat" || path === "profile") { setTab(path); return; }
+    var base = String(path).split("?")[0];
+    for (var k in FRAME_PATH) if (FRAME_PATH[k] === base) { setTab(k, path.indexOf("?") >= 0 ? path : null); return; }
+  };
   function renderNav() {
     var nav = $("nav"); nav.innerHTML = "";
     TABS.forEach(function (t) {
       var b = el("button", t[0] === tab ? "on" : "");
       b.appendChild(el("span", "ic", t[1])); b.appendChild(el("span", null, state.ui["tab_" + t[0]]));
-      b.onclick = function () {
-        haptic("select");
-        if (t[2]) { location.href = t[2] + location.hash; return; }
-        tab = t[0]; try { sessionStorage.setItem("rd_tab", tab); } catch (e) {}
-        render();
-        if (tab === "chat") scrollBottom(true);
-      };
+      b.onclick = function () { haptic("select"); setTab(t[0]); };
       nav.appendChild(b);
     });
   }
@@ -18507,8 +19164,17 @@ APP_PAGE_HTML = r'''<!doctype html>
     var prev = null;
     s.messages.forEach(function (m, i) {
       if (m.role === "assistant" && /^💢/.test(m.text)) { var sy = el("div", "sys"); sy.appendChild(el("span", null, m.text)); box.appendChild(sy); prev = null; return; }
-      var row = el("div", "row " + (m.role === "user" ? "me" : "ai") + (prev && prev !== m.role ? " gap" : ""));
-      var b = el("div", "bub"); richText(b, m.text); row.appendChild(b); box.appendChild(row);
+      var row = el("div", "row " + (m.role === "user" ? "me" : "ai") + (prev && prev !== m.role ? " gap" : "") + (m.reaction ? " react-row" : ""));
+      var w = el("div", "bw"), b;
+      if (m.card) {
+        b = el("div", "giftcard"); b.appendChild(el("div", "ge", m.card.emoji));
+        var gt = el("div"); gt.appendChild(el("div", "gl", s.ui["card_" + m.card.kind] || s.ui.card_gift)); gt.appendChild(el("div", "gn", m.card.name));
+        if (m.card.note) gt.appendChild(el("div", "gnote", "«" + m.card.note + "»"));
+        b.appendChild(gt);
+      } else { b = el("div", "bub"); richText(b, m.text); }
+      w.appendChild(b);
+      if (m.reaction) w.appendChild(el("span", "react", m.reaction));
+      row.appendChild(w); box.appendChild(row);
       prev = m.role;
     });
     if (s.pending) { var r = el("div", "row ai gap"); var t = el("div", "bub typing-bub"); t.innerHTML = "<i></i><i></i><i></i>"; r.appendChild(t); box.appendChild(r); }
@@ -18627,8 +19293,12 @@ APP_PAGE_HTML = r'''<!doctype html>
     var guide = el("button", "btn ghost", ui.guide_btn);
     guide.onclick = function () { location.href = "/guide?lang=" + (document.documentElement.lang || "ru") + location.hash; };
     more.appendChild(guide);
-    var chat = el("button", "btn ghost", ui.chat_btn); chat.onclick = function () { safe(function () { tg.close(); }); };
-    more.appendChild(chat);
+    var ch = el("button", "btn ghost", ui.change_char);
+    ch.onclick = function () {
+      var go = function (ok) { if (!ok) return; api("/api/app/reset", {}).then(function (res) { if (res.state) state = res.state; obStep = 0; ob = {}; render(); }); };
+      if (tg && tg.showConfirm) safe(function () { tg.showConfirm(ui.change_char_confirm, go); }); else go(confirm(ui.change_char_confirm));
+    };
+    more.appendChild(ch);
     v.appendChild(more);
   }
   function payRow(payload, o) {
@@ -18639,10 +19309,58 @@ APP_PAGE_HTML = r'''<!doctype html>
     return row;
   }
 
+  var ob = {}, obStep = 0;
+  function renderOnb() {
+    var o = state.onboarding, ui = state.ui, v = $("view-onb");
+    if (!ob.gender) ob.gender = o.default_gender;
+    v.innerHTML = "";
+    var top = el("div", "ob-top"); top.appendChild(el("div", "big", "✨")); top.appendChild(el("h2", null, ui.ob_title));
+    var dots = el("div", "ob-dots"); for (var i = 0; i < 4; i++) dots.appendChild(el("i", i <= obStep ? "on" : ""));
+    top.appendChild(dots); v.appendChild(top);
+    function opt(item, key, cls) {
+      var b = el("button", "opt" + (ob[key] === item.key ? " on" : "") + (item.locked ? " locked" : "") + (cls ? " " + cls : ""));
+      if (item.locked) b.appendChild(el("span", "lk", ui.ob_locked.replace("{tier}", item.locked)));
+      b.appendChild(el("b", null, item.label)); if (item.desc) b.appendChild(el("span", null, item.desc));
+      b.onclick = function () {
+        if (item.locked) { toast(ui.ob_locked.replace("{tier}", item.locked)); haptic("error"); return; }
+        ob[key] = item.key; haptic("select"); renderOnb();
+      };
+      return b;
+    }
+    var step = [["world", o.worlds, ui.ob_world], ["gender", o.genders, ui.ob_gender], ["style", o.styles, ui.ob_style], ["scene", o.scenes, ui.ob_scene]][obStep];
+    v.appendChild(el("div", "ob-q", step[2]));
+    var wrap = el("div", step[0] === "gender" ? "opts2" : "");
+    step[1].forEach(function (it) { wrap.appendChild(opt(it, step[0])); });
+    v.appendChild(wrap);
+    if (obStep === 3 && o.can_custom) {
+      v.appendChild(el("div", "ob-q", ui.ob_custom));
+      var ta = el("textarea"); ta.id = "ob-custom"; ta.placeholder = ui.ob_custom_hint; ta.value = ob.custom || "";
+      ta.oninput = function () { ob.custom = ta.value; }; v.appendChild(ta);
+    }
+    var nav = el("div", "ob-nav");
+    if (obStep > 0) { var bk = el("button", "btn ghost", ui.ob_back); bk.onclick = function () { obStep--; renderOnb(); }; nav.appendChild(bk); }
+    var last = obStep === 3, nx = el("button", "btn", last ? ui.ob_done : ui.ob_next);
+    nx.disabled = !ob[step[0]];
+    nx.onclick = function () {
+      if (!last) { obStep++; haptic("light"); renderOnb(); v.scrollTop = 0; return; }
+      nx.disabled = true;
+      api("/api/app/create", { world: ob.world, gender: ob.gender, style: ob.style, scene: ob.scene, custom: ob.custom || "" }).then(function (res) {
+        if (!res.ok) { nx.disabled = false; toast(res.error || "Error"); haptic("error"); return; }
+        haptic("success"); state = res.state; tab = "chat"; render(); schedulePoll();
+      }).catch(function () { nx.disabled = false; toast("Network error"); });
+    };
+    nav.appendChild(nx); v.appendChild(nav);
+  }
+
   function render() {
+    var root = $("root");
+    root.classList.toggle("onb", !!state.onboarding);
+    ["chat", "profile", "games", "shop", "spin", "work", "onb"].forEach(function (n) { $("view-" + n).classList.remove("on"); });
+    if (state.onboarding) { $("view-onb").classList.add("on"); renderOnb(); return; }
+    root.classList.toggle("framed", !!FRAME_PATH[tab]);
+    if (FRAME_PATH[tab]) { renderNav(); $("view-" + tab).classList.add("on"); renderHead(); return; }
     renderHead(); renderNav();
-    $("view-chat").classList.toggle("on", tab === "chat");
-    $("view-profile").classList.toggle("on", tab === "profile");
+    $("view-" + tab).classList.add("on");
     if (tab === "chat") renderChat(); else renderProfile();
     if (state.notices && state.notices.length) { toast(state.notices.join("\n\n")); haptic("success"); state.notices = []; }
     if (lastPending && !state.pending) haptic("light");
@@ -18652,6 +19370,7 @@ APP_PAGE_HTML = r'''<!doctype html>
   // ---- опрос: часто, пока персонаж печатает; редко -- чтобы подтянуть ответы из чата Telegram ----
   function schedulePoll() {
     clearTimeout(pollTimer);
+    if (state && state.onboarding) return;
     pollTimer = setTimeout(function () { load(true).then(schedulePoll, schedulePoll); }, state && state.pending ? 1000 : 12000);
   }
   function load(quiet) {
@@ -18660,7 +19379,9 @@ APP_PAGE_HTML = r'''<!doctype html>
       var before = state ? state.messages.length + "|" + state.pending : "";
       state = res.state;
       document.documentElement.lang = state.ui.tab_chat === "Чат" ? "ru" : "en";
-      if (!quiet || before !== state.messages.length + "|" + state.pending || state.notices.length) render(); else { renderHead(); }
+      if (state.onboarding) { if (!quiet) render(); return; }
+      if (!quiet || before !== state.messages.length + "|" + state.pending || state.notices.length) { if (!FRAME_PATH[tab]) render(); else if (state.notices.length) { toast(state.notices.join("\n\n")); state.notices = []; } }
+      else if (!FRAME_PATH[tab]) renderHead();
     }).catch(function (e) { if (!quiet) full("Network error: " + (e && e.message || "unknown"), "⚠️"); });
   }
 
@@ -18674,9 +19395,14 @@ APP_PAGE_HTML = r'''<!doctype html>
   $("send").onclick = send;
   document.addEventListener("visibilitychange", function () { if (!document.hidden && state) load(true); });
 
-  try { tab = (location.search.match(/tab=(\w+)/) || [])[1] || sessionStorage.getItem("rd_tab") || "chat"; } catch (e) {}
-  if (tab !== "chat" && tab !== "profile") tab = "chat";
-  load().then(function () { if (state) schedulePoll(); });
+  var startTab = "chat", startGame = (location.search.match(/[?&]game=(\w+)/) || [])[1];
+  try { startTab = (location.search.match(/tab=(\w+)/) || [])[1] || sessionStorage.getItem("rd_tab") || "chat"; } catch (e) {}
+  load().then(function () {
+    if (!state) return;
+    if (!state.onboarding && FRAME_PATH[startTab]) setTab(startTab, startTab === "games" && startGame ? "/play?game=" + startGame : null);
+    else if (!state.onboarding && startTab === "profile") setTab("profile");
+    schedulePoll();
+  });
   }
   window.__tgTryBoot = function () { if (window.__tgSdkSettled) boot(); };
   window.__tgTryBoot();
@@ -18689,7 +19415,7 @@ APP_PAGE_HTML = r'''<!doctype html>
 
 
 async def spin_page_handler(request):
-    return web.Response(text=with_app_back(SPIN_PAGE_HTML), content_type="text/html")
+    return page_response(request, SPIN_PAGE_HTML)
 
 
 async def api_spin_state_handler(request):
@@ -18791,7 +19517,7 @@ async def api_spin_paid_result_handler(request):
 
 
 async def work_page_handler(request):
-    return web.Response(text=with_app_back(WORK_PAGE_HTML), content_type="text/html")
+    return page_response(request, WORK_PAGE_HTML)
 
 
 async def api_work_state_handler(request):
@@ -18944,12 +19670,15 @@ async def run_webapp_server():
     app_web.router.add_post("/api/app/wake", api_app_wake_handler)
     app_web.router.add_post("/api/app/invoice", api_app_invoice_handler)
     app_web.router.add_post("/api/app/hot", api_app_hot_handler)
+    app_web.router.add_post("/api/app/create", api_app_create_handler)
+    app_web.router.add_post("/api/app/reset", api_app_reset_handler)
     app_web.router.add_get("/api/play/state", api_play_state_handler)
     app_web.router.add_post("/api/play/start", api_play_start_handler)
     app_web.router.add_post("/api/play/move", api_play_move_handler)
     app_web.router.add_post("/api/play/remove", api_play_remove_handler)
     app_web.router.add_post("/api/play/quit", api_play_quit_handler)
     app_web.router.add_post("/api/play/bj", api_play_bj_handler)
+    app_web.router.add_post("/api/play/talk", api_play_talk_handler)
     app_web.router.add_get("/api/spin/state", api_spin_state_handler)
     app_web.router.add_post("/api/spin/free", api_spin_free_handler)
     app_web.router.add_post("/api/spin/paid/invoice", api_spin_paid_invoice_handler)
@@ -19093,7 +19822,13 @@ async def check_notifications():
                         save_data(user_data)
                         try:
                             gender = user.get("gender", "female")
-                            await bot.send_message(int(user_id), random.choice(get_text(user, f"miss_you_{gender}")))
+                            miss = random.choice(get_text(user, f"miss_you_{gender}"))
+                            if APP_MODE and user.get("personality_ready"):
+                                user["history"].append({"role": "assistant", "content": miss})
+                                save_data(user_data)
+                                await app_push(int(user_id), user)
+                            else:
+                                await bot.send_message(int(user_id), miss)
                         except Exception:
                             pass
                         continue  # только в тике, где реально отправили — иначе глушит ежедневный прокрут
