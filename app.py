@@ -3329,9 +3329,11 @@ def build_setting_rule(user):
             "упоминай. Описывай обычные действия при личной встрече (жесты, взгляды, прикосновения, "
             "обстановку вокруг), и держись одного места, пока вы сами не перейдёте в другое.\n")
     return (
-        "**ГДЕ ВЫ:** вы общаетесь в переписке (телефон/мессенджер) — можно упоминать экран, телефон, "
-        "сообщения. Если собеседник сам прямо говорит, что вы физически рядом или встретились, поверь "
-        "ему и веди сцену как встречу вживую, без разговоров про экран.\n")
+        "**ГДЕ ВЫ:** вы переписываетесь, но сам формат переписки НЕ обыгрывай: не упоминай телефон, экран, "
+        "сообщения, «печатаю», «уткнулась в телефон», «смотрю на экран», «перечитываю твоё сообщение» и т.п. "
+        "В *действиях* описывай себя, свои эмоции, позу и обстановку вокруг (что делаешь, где сидишь, что "
+        "чувствуешь) — живо и каждый раз по-разному, не повторяя одни и те же жесты вроде «смотрю внимательно». "
+        "Если собеседник сам говорит, что вы рядом или встретились, — веди сцену как встречу вживую.\n")
 
 
 # Сюжетные события за баксы: покупка запускает общую историю на несколько часов -- персонаж открывает
@@ -3699,10 +3701,7 @@ async def proceed_flow(user_id: int, chat_id: int):
         return
 
     if APP_MODE and not user["personality_ready"]:
-        # Регистрация закончена здесь, персонажа создаём уже в приложении (мир, пол, стиль, обстановка).
-        if not user.get("user_gender"):
-            await bot.send_message(chat_id, get_text(user, "choose_gender"), reply_markup=get_user_gender_kb(user))
-            return
+        # Регистрация закончена здесь, персонажа (мир, пол, характер) создаём уже в приложении.
         await bot.send_message(chat_id, get_text(user, "app_create_character"), reply_markup=app_open_kb(user, "app_create_btn"))
         return
 
@@ -18675,7 +18674,7 @@ def app_request_user(init_data):
     user = get_user(user_id)
     if maintenance_mode and user_id not in ADMIN_IDS:
         return None, None, {"ok": False, "error": "maintenance", "message": get_text(user, "maintenance")}
-    if not (user["verified"] and user["agreement_accepted"] and user.get("user_gender")):
+    if not (user["verified"] and user["agreement_accepted"]):
         return None, None, {"ok": False, "error": "not_ready", "message": get_text(user, "webapp_character_not_ready")}
     if user.get("dead"):
         return None, None, {"ok": False, "error": "dead", "message": get_text(user, "character_died")}
@@ -18942,8 +18941,8 @@ async def api_app_create_handler(request):
     user_id, user, body, err = await _app_request(request)
     if err:
         return err
-    world, gender, style, scene = body.get("world"), body.get("gender"), body.get("style"), body.get("scene")
-    if world not in WORLDS or gender not in ("female", "male") or style not in STYLES or scene not in ("phone", "live"):
+    world, gender, style, scene = body.get("world"), body.get("gender"), body.get("style"), "phone"
+    if world not in WORLDS or gender not in ("female", "male") or style not in STYLES:
         return web.json_response({"ok": False, "error": "Bad request"})
     if not is_style_unlocked(style, user):
         label = style_display_label(style, user, with_emoji=False)
@@ -18954,6 +18953,8 @@ async def api_app_create_handler(request):
         custom = ""
     if custom and len(custom) < CUSTOM_CHARACTER_MIN_LEN:
         return web.json_response({"ok": False, "error": at(user, "ob_custom_short", n=CUSTOM_CHARACTER_MIN_LEN)})
+    # Свой пол больше не спрашиваем: собеседник -- противоположного пола к выбранному персонажу.
+    user["user_gender"] = "male" if gender == "female" else "female"
     user.update(world=world, gender=gender, style=style, scene=scene, custom_character=custom[:2000] or None,
                 personality_ready=True, history=[], creating_character=False, switching_personality=False,
                 last_activity=datetime.now().isoformat())
@@ -19954,7 +19955,7 @@ APP_PAGE_HTML = r'''<!doctype html>
     if (!ob.gender) ob.gender = o.default_gender;
     v.innerHTML = "";
     var top = el("div", "ob-top"); top.appendChild(el("div", "big", "✨")); top.appendChild(el("h2", null, ui.ob_title));
-    var dots = el("div", "ob-dots"); for (var i = 0; i < 4; i++) dots.appendChild(el("i", i <= obStep ? "on" : ""));
+    var dots = el("div", "ob-dots"); for (var i = 0; i < 3; i++) dots.appendChild(el("i", i <= obStep ? "on" : ""));
     top.appendChild(dots); v.appendChild(top);
     function opt(item, key, cls) {
       var b = el("button", "opt" + (ob[key] === item.key ? " on" : "") + (item.locked ? " locked" : "") + (cls ? " " + cls : ""));
@@ -19966,24 +19967,24 @@ APP_PAGE_HTML = r'''<!doctype html>
       };
       return b;
     }
-    var step = [["world", o.worlds, ui.ob_world], ["gender", o.genders, ui.ob_gender], ["style", o.styles, ui.ob_style], ["scene", o.scenes, ui.ob_scene]][obStep];
+    var step = [["world", o.worlds, ui.ob_world], ["gender", o.genders, ui.ob_gender], ["style", o.styles, ui.ob_style]][obStep];
     v.appendChild(el("div", "ob-q", step[2]));
     var wrap = el("div", step[0] === "gender" ? "opts2" : "");
     step[1].forEach(function (it) { wrap.appendChild(opt(it, step[0])); });
     v.appendChild(wrap);
-    if (obStep === 3 && o.can_custom) {
+    if (obStep === 2 && o.can_custom) {
       v.appendChild(el("div", "ob-q", ui.ob_custom));
       var ta = el("textarea"); ta.id = "ob-custom"; ta.placeholder = ui.ob_custom_hint; ta.value = ob.custom || "";
       ta.oninput = function () { ob.custom = ta.value; }; v.appendChild(ta);
     }
     var nav = el("div", "ob-nav");
     if (obStep > 0) { var bk = el("button", "btn ghost", ui.ob_back); bk.onclick = function () { obStep--; renderOnb(); }; nav.appendChild(bk); }
-    var last = obStep === 3, nx = el("button", "btn", last ? ui.ob_done : ui.ob_next);
+    var last = obStep === 2, nx = el("button", "btn", last ? ui.ob_done : ui.ob_next);
     nx.disabled = !ob[step[0]];
     nx.onclick = function () {
       if (!last) { obStep++; haptic("light"); renderOnb(); v.scrollTop = 0; return; }
       nx.disabled = true;
-      api("/api/app/create", { world: ob.world, gender: ob.gender, style: ob.style, scene: ob.scene, custom: ob.custom || "" }).then(function (res) {
+      api("/api/app/create", { world: ob.world, gender: ob.gender, style: ob.style, custom: ob.custom || "" }).then(function (res) {
         if (!res.ok) { nx.disabled = false; toast(res.error || "Error"); haptic("error"); return; }
         haptic("success"); state = res.state; tab = "chat"; render(); schedulePoll();
       }).catch(function () { nx.disabled = false; toast("Network error"); });
