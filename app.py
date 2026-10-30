@@ -19271,8 +19271,141 @@ def with_sfx(html):
     return html.replace("<head>", "<head>" + SFX_TAG, 1) if SFX_TAG not in html else html
 
 
+# Общая «премиум»-тема разделов (магазин, колесо, работа, игры) -- подключается последней в <head>, поверх их стилей.
+APP_THEME_CSS = r'''/* Единая «премиум»-тема разделов приложения (магазин, колесо, работа, игры): как чат и профиль --
+   тёмный фон с медленным сиянием, стеклянные карточки, светящиеся кнопки с бликом, плавные анимации. */
+:root { --rd-bg: #0d0e1a; --rd-card: rgba(27, 30, 54, .72); --rd-card2: rgba(35, 39, 70, .85); --rd-line: rgba(255, 255, 255, .08);
+  --rd-fg: #f3f3fb; --rd-hint: #9a9cb8; --rd-grad: linear-gradient(135deg, #8b5cf6, #ec4899); --rd-glow: 0 8px 24px rgba(139, 92, 246, .35); }
+html, body { background: var(--rd-bg) !important; color: var(--rd-fg) !important;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif !important; }
+body { position: relative; }
+body::before { content: ""; position: fixed; inset: -20%; z-index: -1; pointer-events: none;
+  background: radial-gradient(520px 380px at 80% 0%, rgba(236, 72, 153, .16), transparent 60%),
+              radial-gradient(520px 420px at 0% 35%, rgba(139, 92, 246, .18), transparent 60%),
+              radial-gradient(480px 360px at 70% 95%, rgba(56, 189, 248, .10), transparent 60%);
+  animation: rd-aurora 18s ease-in-out infinite alternate; }
+@keyframes rd-aurora { 0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-3%, 2%) scale(1.06); } 100% { transform: translate(3%, -2%) scale(1.02); } }
+@keyframes rd-in { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes rd-shine { 0% { transform: translateX(-120%) skewX(-20deg); } 55%, 100% { transform: translateX(260%) skewX(-20deg); } }
+@keyframes rd-pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, .0), var(--rd-glow); } 50% { box-shadow: 0 0 0 6px rgba(236, 72, 153, .12), var(--rd-glow); } }
+
+/* ---- заголовки ---- */
+#title { color: #fff !important; text-shadow: 0 0 18px rgba(196, 181, 253, .45), 0 0 2px rgba(255, 255, 255, .3) !important; letter-spacing: .01em; }
+
+/* ---- стеклянные карточки ---- */
+.card, .game-panel, #prize-list, #bj, .wardrobe, #coupon-note, .coupon-note {
+  background: var(--rd-card) !important; border: 1px solid var(--rd-line) !important; border-radius: 20px !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .05) !important;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: var(--rd-fg) !important; }
+.card { animation: rd-in .38s cubic-bezier(.2, .8, .2, 1) both; transition: transform .18s ease, box-shadow .25s ease, border-color .25s ease; }
+.card:active { transform: scale(.985); }
+#items .card:nth-child(2) { animation-delay: .04s; } #items .card:nth-child(3) { animation-delay: .08s; }
+#items .card:nth-child(4) { animation-delay: .12s; } #items .card:nth-child(n+5) { animation-delay: .16s; }
+.strip-card { background: linear-gradient(150deg, rgba(229, 57, 53, .30), rgba(216, 27, 96, .16) 60%, var(--rd-card)) !important; border-color: rgba(251, 113, 133, .35) !important; }
+.bj-card { background: linear-gradient(150deg, rgba(34, 197, 94, .22), rgba(20, 184, 166, .12) 60%, var(--rd-card)) !important; border-color: rgba(74, 222, 128, .3) !important; }
+.talk-card { background: linear-gradient(150deg, rgba(56, 189, 248, .18), rgba(139, 92, 246, .12) 60%, var(--rd-card)) !important; border-color: rgba(125, 211, 252, .28) !important; }
+.card-deal { border-color: rgba(251, 146, 60, .55) !important; box-shadow: 0 0 0 1px rgba(251, 146, 60, .25), 0 12px 30px rgba(249, 115, 22, .18) !important; }
+.card-energizer { border-color: rgba(129, 140, 248, .5) !important; box-shadow: 0 0 22px rgba(99, 102, 241, .25), 0 12px 30px rgba(0, 0, 0, .35) !important; }
+.card-locked { opacity: .55; filter: saturate(.6); }
+.card-name, .card h3 { color: var(--rd-fg) !important; }
+.card-effects, .card p, #footer-hint, #spin-hint, .badge, #catch-hint, #courier-hint, #clicker-hint { color: var(--rd-hint) !important; }
+.card-img { filter: drop-shadow(0 10px 18px rgba(0, 0, 0, .45)); transition: transform .3s ease; }
+.card:hover .card-img { transform: translateY(-2px) scale(1.03); }
+
+/* ---- кнопки: градиент, свечение, бегущий блик ---- */
+.btn, .buy-btn, .action-btn, .bets .btn {
+  position: relative; overflow: hidden; border: none !important; color: #fff !important; font-weight: 800 !important;
+  background: var(--rd-grad) !important; border-radius: 14px !important; box-shadow: var(--rd-glow) !important;
+  transition: transform .12s ease, filter .2s ease, box-shadow .25s ease, opacity .2s ease !important; }
+.btn::after, .buy-btn::after, .action-btn::after { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 40%; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .28), transparent); animation: rd-shine 3.6s ease-in-out infinite; }
+.btn:active, .buy-btn:active, .action-btn:active, .move:active, .tab:active, .tab-btn:active { transform: scale(.95) !important; filter: brightness(1.1); }
+.btn:disabled, .buy-btn:disabled, .action-btn:disabled { opacity: .45 !important; box-shadow: none !important; filter: grayscale(.3); }
+.btn:disabled::after, .buy-btn:disabled::after, .action-btn:disabled::after { display: none; }
+.btn.secondary, .action-btn.secondary, .buy-btn.buy-btn-card {
+  background: var(--rd-card2) !important; border: 1px solid var(--rd-line) !important; box-shadow: 0 6px 16px rgba(0, 0, 0, .25) !important; }
+.btn.secondary::after, .action-btn.secondary::after, .buy-btn.buy-btn-card::after { opacity: .5; }
+#actions .action-btn:not(.secondary):not(:disabled) { animation: rd-pulse 2.4s ease-in-out infinite; }
+
+/* ---- вкладки ---- */
+#tabs { gap: 8px !important; }
+.tab, .tab-btn { background: var(--rd-card) !important; color: var(--rd-hint) !important; border: 1px solid var(--rd-line) !important;
+  border-radius: 999px !important; font-weight: 700 !important; transition: all .2s ease !important; box-shadow: none !important; }
+.tab.active, .tab-btn.active { background: var(--rd-grad) !important; color: #fff !important; border-color: transparent !important;
+  box-shadow: 0 6px 18px rgba(236, 72, 153, .35) !important; }
+.tab-energizer { border-color: rgba(129, 140, 248, .45) !important; }
+.tab-energizer.active { background: linear-gradient(135deg, #6366f1, #8b5cf6) !important; box-shadow: 0 6px 18px rgba(99, 102, 241, .45) !important; }
+
+/* ---- верхние панели и значки ---- */
+#stats, #topbar, #top { background: rgba(13, 14, 26, .78) !important; border-bottom: 1px solid var(--rd-line) !important;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); color: var(--rd-fg) !important; }
+#balance, #bucks { font-weight: 800; text-shadow: 0 0 12px rgba(74, 222, 128, .35); }
+#sound-toggle { background: var(--rd-card2) !important; border: 1px solid var(--rd-line) !important; color: var(--rd-fg) !important; border-radius: 12px !important; }
+#multiplier-badge { background: linear-gradient(135deg, #f59e0b, #ef4444) !important; color: #fff !important; box-shadow: 0 0 14px rgba(245, 158, 11, .5); }
+.save-badge { box-shadow: 0 0 12px rgba(34, 197, 94, .45); }
+.price { color: var(--rd-fg) !important; font-weight: 800; }
+
+/* ---- колесо: светящийся обод, указатель и центр ---- */
+#wheel-rim { box-shadow: 0 0 0 3px rgba(255, 255, 255, .06), 0 0 30px rgba(139, 92, 246, .55), 0 0 70px rgba(236, 72, 153, .25) !important;
+  animation: rd-rim 4s ease-in-out infinite; }
+@keyframes rd-rim { 0%, 100% { filter: drop-shadow(0 0 10px rgba(139, 92, 246, .4)); } 50% { filter: drop-shadow(0 0 22px rgba(236, 72, 153, .55)); } }
+#pointer { filter: drop-shadow(0 0 10px rgba(253, 224, 71, .8)) drop-shadow(0 4px 6px rgba(0, 0, 0, .5)); }
+#hub { box-shadow: 0 0 18px rgba(253, 224, 71, .55), inset 0 2px 6px rgba(255, 255, 255, .4) !important; }
+#result-banner { border-radius: 18px !important; border: 1px solid rgba(255, 255, 255, .12) !important; backdrop-filter: blur(10px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .35), 0 0 30px rgba(139, 92, 246, .25) !important; animation: rd-in .4s cubic-bezier(.2, 1.4, .4, 1) both; }
+#prize-list-items > * { border-color: var(--rd-line) !important; }
+
+/* ---- работа ---- */
+#catch-field { background: radial-gradient(120% 80% at 50% 0%, #1e1b4b 0%, #111327 55%, #0b0c18 100%) !important;
+  border: 1px solid var(--rd-line) !important; box-shadow: inset 0 0 40px rgba(139, 92, 246, .18), 0 12px 30px rgba(0, 0, 0, .35) !important; }
+.gain-popup { text-shadow: 0 0 10px rgba(74, 222, 128, .8); }
+.hacker-key { transition: transform .1s ease, box-shadow .2s ease !important; }
+.hacker-key:active { transform: scale(.92); }
+
+/* ---- ферма и курьер ---- */
+.farm-plot { background: linear-gradient(180deg, #1e1b4b 0%, #312e81 22%, #4c1d95 42%, #7c4a2a 42%, #5b3a1f 100%) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06), 0 8px 18px rgba(0, 0, 0, .35); }
+.farm-plot::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 42%; pointer-events: none;
+  background: radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.8), transparent 60%), radial-gradient(1.5px 1.5px at 70% 18%, rgba(255,255,255,.7), transparent 60%),
+              radial-gradient(1.5px 1.5px at 45% 60%, rgba(255,255,255,.5), transparent 60%), radial-gradient(18px 18px at 82% 30%, rgba(253,224,71,.35), transparent 70%); }
+.farm-plot-empty { color: #e9d5ff; opacity: .8 !important; }
+.farm-buy-slot-btn, #courier-up, #courier-down { background: var(--rd-grad) !important; color: #fff !important; box-shadow: var(--rd-glow) !important;
+  border: none !important; transition: transform .12s ease !important; }
+.farm-buy-slot-btn:active, #courier-up:active, #courier-down:active, #courier-stop-btn:active { transform: scale(.93); }
+#courier-stop-btn { background: linear-gradient(135deg, #ef4444, #f97316) !important; box-shadow: 0 8px 22px rgba(239, 68, 68, .45) !important; border: none !important; }
+#courier-road { border-radius: 16px; overflow: hidden; box-shadow: 0 12px 28px rgba(0, 0, 0, .4), 0 0 0 1px rgba(255, 255, 255, .06); }
+
+/* ---- игры ---- */
+.move { background: var(--rd-card2) !important; border: 1px solid var(--rd-line) !important; color: var(--rd-fg) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .3) !important; transition: transform .12s ease, box-shadow .2s ease, border-color .2s ease !important; }
+.move:not(:disabled):hover { border-color: rgba(236, 72, 153, .5) !important; box-shadow: 0 0 18px rgba(236, 72, 153, .3) !important; }
+#hands .hand { filter: drop-shadow(0 10px 16px rgba(0, 0, 0, .45)); }
+#outcome.win { text-shadow: 0 0 14px rgba(46, 204, 113, .7); } #outcome.lose { text-shadow: 0 0 14px rgba(255, 107, 107, .6); }
+#line, .tm.ai .b { background: var(--rd-card2) !important; border: 1px solid var(--rd-line); }
+.tm.me .b { box-shadow: 0 6px 16px rgba(139, 92, 246, .3); }
+.pc { box-shadow: 0 8px 18px rgba(0, 0, 0, .45), 0 0 0 1px rgba(255, 255, 255, .6) inset !important; }
+.chip { background: var(--rd-card2) !important; border: 1px solid var(--rd-line) !important; color: var(--rd-fg) !important; }
+.chip.pickable { border-color: transparent !important; }
+.bj-val { background: var(--rd-card2) !important; border: 1px solid var(--rd-line); }
+
+/* ---- поля ввода ---- */
+input, textarea { background: var(--rd-card2) !important; color: var(--rd-fg) !important; border: 1px solid var(--rd-line) !important; }
+input:focus, textarea:focus { border-color: rgba(139, 92, 246, .6) !important; box-shadow: 0 0 0 3px rgba(139, 92, 246, .15); }
+
+/* ---- полоса прокрутки ---- */
+::-webkit-scrollbar { width: 0; height: 0; }
+'''
+APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css">'
+
+
+async def theme_css_handler(request):
+    return web.Response(text=APP_THEME_CSS, content_type="text/css", headers={"Cache-Control": "public, max-age=600"})
+
+
 def page_response(request, html):
     html = with_sfx(html)
+    if APP_THEME_TAG not in html:
+        html = html.replace("</head>", APP_THEME_TAG + "</head>", 1)
     if request.query.get("embed") == "1":
         html = _SDK_TAG_RE.sub(lambda m: EMBED_BRIDGE, html, count=1)
         return web.Response(text=html, content_type="text/html")
@@ -20643,6 +20776,7 @@ async def run_webapp_server():
     app_web.router.add_get("/play", play_page_handler)
     app_web.router.add_get("/app", app_page_handler)
     app_web.router.add_get("/sfx.js", sfx_js_handler)
+    app_web.router.add_get("/theme.css", theme_css_handler)
     app_web.router.add_get("/api/app/state", api_app_state_handler)
     app_web.router.add_post("/api/app/send", api_app_send_handler)
     app_web.router.add_post("/api/app/reroll", api_app_reroll_handler)
