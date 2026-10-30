@@ -15,7 +15,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from aiogram.types import (
     InlineKeyboardMarkup, InlineKeyboardButton, LabeledPrice,
-    ReplyKeyboardMarkup, KeyboardButton, BotCommand, FSInputFile, WebAppInfo, MenuButtonWebApp
+    ReplyKeyboardMarkup, KeyboardButton, BotCommand, FSInputFile, WebAppInfo, MenuButtonWebApp, ReplyKeyboardRemove
 )
 from aiohttp import web
 import httpx
@@ -29,6 +29,7 @@ TEXTS = {
     "ru": {
         "main_menu": "📋 Главное меню",
         "open_app_btn": "📱 Открыть приложение",
+        "app_home": "✨ Твой персонаж ждёт тебя в приложении — там чат, игры, горячие сцены, магазин, колесо и работа.\n\nЖми «Открыть приложение» 👇",
         "app_new_message": "💬 Персонаж написал тебе — ответ ждёт в приложении",
         "app_redirect": "💬 Общение теперь в приложении — ответ персонажа уже пишется там 👇",
         "app_create_character": "✨ Почти готово! Создай своего персонажа в приложении — выбери мир, характер и как вы общаетесь 👇",
@@ -441,6 +442,7 @@ TEXTS = {
     "en": {
         "main_menu": "📋 Main menu",
         "open_app_btn": "📱 Open the app",
+        "app_home": "✨ Your companion is waiting for you in the app — chat, games, hot scenes, shop, wheel and work are all there.\n\nTap «Open the app» 👇",
         "app_new_message": "💬 Your companion wrote to you — the reply is waiting in the app",
         "app_redirect": "💬 Chatting now happens in the app — your companion is already replying there 👇",
         "app_create_character": "✨ Almost done! Create your companion in the app — pick a world, a personality and how you talk 👇",
@@ -853,6 +855,7 @@ TEXTS = {
     "de": {
         "main_menu": "📋 Hauptmenü",
         "open_app_btn": "📱 App öffnen",
+        "app_home": "✨ Dein Begleiter wartet in der App auf dich — Chat, Spiele, heiße Szenen, Shop, Glücksrad und Arbeit.\n\nTippe auf «App öffnen» 👇",
         "app_new_message": "💬 Dein Begleiter hat dir geschrieben — die Antwort wartet in der App",
         "app_redirect": "💬 Gechattet wird jetzt in der App — dein Begleiter antwortet dort schon 👇",
         "app_create_character": "✨ Fast fertig! Erstelle deinen Begleiter in der App — wähle Welt, Charakter und wie ihr schreibt 👇",
@@ -3574,11 +3577,18 @@ def get_style_kb(user):
 
 def get_channel_kb(user):
     return InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text=get_text(user, "channel"), url="https://t.me/duel_dev_channel", style="primary")]
+        [InlineKeyboardButton(text=get_text(user, "channel"), url=CHANNEL_URL, style="primary")]
     ])
 
 
 def get_full_kb(user):
+    if APP_MODE:
+        # Всё теперь в приложении -- старую клавиатуру (Магазин/Колесо/Работа...) убираем.
+        return ReplyKeyboardRemove(remove_keyboard=True)
+    return _legacy_full_kb(user)
+
+
+def _legacy_full_kb(user):
     # "Редактировать" убрана совсем — то же самое теперь доступно через нативный жест
     # редактирования сообщения в самом Телеграме (см. handle_edited_message), отдельная кнопка
     # для этого больше не нужна. На её месте теперь "Наш канал" (было выше), а на месте "Наш
@@ -3708,7 +3718,8 @@ async def proceed_flow(user_id: int, chat_id: int):
         await bot.send_message(chat_id, get_text(user, "choose_style"), reply_markup=get_style_kb(user), parse_mode="Markdown")
         return
 
-    await bot.send_message(chat_id, get_text(user, "welcome"), reply_markup=get_full_kb(user))
+    if not APP_MODE:
+        await bot.send_message(chat_id, get_text(user, "welcome"), reply_markup=get_full_kb(user))
     await send_main_menu(chat_id, user)
 
 
@@ -4124,7 +4135,31 @@ async def help_cmd(message: types.Message):
 # ============================================================
 #  ГЛАВНОЕ МЕНЮ И ПРОФИЛЬ
 # ============================================================
+async def send_app_home(chat_id, user):
+    """Стартовый экран в режиме приложения: приветствие и две кнопки -- открыть приложение и наш канал."""
+    if user.get("last_menu_message_id"):
+        try:
+            await bot.delete_message(chat_id, user["last_menu_message_id"])
+        except Exception:
+            pass
+    try:  # убираем старую reply-клавиатуру, если она ещё висит у пользователя
+        tmp = await bot.send_message(chat_id, "✨", reply_markup=ReplyKeyboardRemove(remove_keyboard=True))
+        await bot.delete_message(chat_id, tmp.message_id)
+    except Exception:
+        pass
+    kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text=get_text(user, "open_app_btn"), web_app=WebAppInfo(url=f"{WEBAPP_URL}/app"), style="success")],
+        [InlineKeyboardButton(text=get_text(user, "our_channel"), url=CHANNEL_URL, style="primary")],
+    ])
+    msg = await bot.send_message(chat_id, get_text(user, "app_home"), reply_markup=kb)
+    user["last_menu_message_id"] = msg.message_id
+    save_data(user_data)
+    return msg
+
+
 async def send_main_menu(chat_id, user):
+    if APP_MODE:
+        return await send_app_home(chat_id, user)
     if user.get("last_menu_message_id"):
         try:
             await bot.delete_message(chat_id, user["last_menu_message_id"])
@@ -4251,6 +4286,10 @@ async def ask_create_personality(message: types.Message):
 @dp.callback_query(lambda c: c.data == "create_personality")
 async def create_personality_callback(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
+    if is_asleep(user) and user.get("personality_ready"):
+        # Иначе это обход сна: новый персонаж сразу писал бы, хотя энергия на нуле.
+        await call.answer(at(user, "asleep_no_new"), show_alert=True)
+        return
     user["personality_ready"] = False
     user["custom_character"] = None
     user["history"] = []
@@ -6926,6 +6965,41 @@ def trim_to_last_sentence(text):
     return text[:cut + 1]
 
 
+async def intim_scene_core(user, scene_type, location="any", dominant="any", continue_text=None, arc_position=None):
+    """Генерация сцены без отправки: возвращает словарь last_hot_scene (текст, тип, место, кто ведёт, позиция в дуге).
+    Исключение ИИ пробрасывается. Общая для чата (generate_intim_scene) и мини-приложения (api_app_hot_*)."""
+    if arc_position is None:
+        arc_progress = user.get("intim_arc_progress", 0)
+        arc_position = (arc_progress % INTIM_ARC_LENGTH) + 1
+        user["intim_arc_progress"] = arc_progress + 1
+    if scene_type == "random":
+        pool = [key for key in INTIM_SCENES if key != "random" and location in intim_compatible_locations(key)]
+        scene_type = random.choice(pool)
+    if location == "any":
+        location = random.choice([k for k in intim_compatible_locations(scene_type) if k != "any"])
+    system_prompt = build_intim_prompt(user, scene_type, location, dominant, arc_position=arc_position)
+    if continue_text:
+        system_prompt += (
+            "\n**ПРОДОЛЖЕНИЕ:** Это продолжение уже идущей сцены — предыдущая часть дана следующим "
+            "сообщением. Не начинай сцену заново и не повторяй, что уже произошло: продолжай действие "
+            "дальше, развивая его, с того момента, на котором оно остановилось.")
+        messages = [{"role": "system", "content": system_prompt}, {"role": "assistant", "content": continue_text},
+                    {"role": "user", "content": "Продолжай."}]
+    else:
+        messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": "Начинай сцену."}]
+    response = await asyncio.to_thread(call_ai, INTIM_MODEL, "intim", messages=messages, temperature=0.85, max_tokens=2400)
+    answer = response.choices[0].message.content or ""
+    _, clean_answer = extract_reaction_from_answer(answer)
+    if response.choices[0].finish_reason == "length":
+        clean_answer = trim_to_last_sentence(clean_answer)
+    scene = {"text": clean_answer, "scene_type": scene_type, "location": location, "dominant": dominant,
+             "arc_position": arc_position, "parts": ((user.get("last_hot_scene") or {}).get("parts", 1) + 1) if continue_text else 1}
+    user["last_activity"] = datetime.now().isoformat()
+    user["last_hot_scene"] = scene
+    save_data(user_data)
+    return scene
+
+
 async def generate_intim_scene(call, user, scene_type, location="any", dominant="any", free=False, continue_text=None, arc_position=None):
     """Возвращает True, если сцена сгенерирована и отправлена. Намеренно не читает и не
     пишет в user["history"]: сцена — самостоятельный эпизод без всякой связи с обычным чатом
@@ -7415,6 +7489,8 @@ async def start_story_event(chat_id, user, key):
 async def generate_first_message(chat_id, user):
     """Сразу после создания персонажа он сам пишет первым -- чтобы человек не остался перед пустым чатом."""
     await asyncio.sleep(2)  # пусть сначала придут меню и памятка
+    if is_asleep(user):
+        return  # спящий персонаж первым не пишет
     system_prompt = build_prompt(user) + (
         "\n**ПЕРВОЕ СООБЩЕНИЕ:** собеседник только что тебя выбрал, вы ещё не общались. Напиши первым(ой): живо, в образе и "
         "в текущей обстановке, с эмоцией и маленькой деталью о себе (чем занят(а) прямо сейчас, что на душе). 2-4 предложения, "
@@ -7513,6 +7589,7 @@ GAME_TEXTS = {
         "play_need_super": '💎 Игра на раздевание доступна с подпиской SUPER PRO или ELITE — без ограничений. Оформить: профиль → «👑 Оформить подписку».',
         "play_start": '▶️ Играть',
         "play_free": 'бесплатно',
+        "play_bj_talk_on": '💬 Персонаж комментирует (тратит энергию)', "play_bj_talk_off": '🤐 Играть молча',
         "play_cities_title": '🏙 Города', "play_cities_desc": 'Называете города по очереди на последнюю букву. Победа — +30 XP.',
         "play_tod_title": '🤫 Правда или действие', "play_tod_desc": '4 раунда откровенностей по очереди: ты отвечаешь персонажу, потом он тебе. +30 XP.',
         "play_movie_title": '🎬 Кино вместе', "play_movie_desc": 'Выбираете фильм и смотрите вдвоём — персонаж реагирует на каждую сцену. +40 XP.',
@@ -7641,6 +7718,7 @@ GAME_TEXTS = {
         "play_need_super": '💎 The strip game comes with SUPER PRO or ELITE — unlimited. Get it: profile → «👑 Subscribe».',
         "play_start": '▶️ Play',
         "play_free": 'free',
+        "play_bj_talk_on": '💬 Companion comments (uses energy)', "play_bj_talk_off": '🤐 Play quietly',
         "play_cities_title": '🏙 Cities', "play_cities_desc": 'Take turns naming cities starting with the last letter. A win gives +30 XP.',
         "play_tod_title": '🤫 Truth or dare', "play_tod_desc": '4 rounds of honesty: you answer your companion, then they answer you. +30 XP.',
         "play_movie_title": '🎬 Movie together', "play_movie_desc": 'Pick a film and watch it together — your companion reacts to every scene. +40 XP.',
@@ -8938,7 +9016,8 @@ def serialize_shop_state(user):
         "key": "strip", "category": "play", "image": None, "emoji": "🔥", "name": gt(user, "play_strip_title"), "price": 0,
         "price_label": gt(user, "play_strip_cost"), "effects": gt(user, "play_strip_desc"),
         "ready_in": None, "refuse": False})
-    categories.append({"key": "games", "name": gt(user, "shop_cat_games"), "items": game_items})
+    if not APP_MODE:  # в приложении игры -- отдельная вкладка, в магазине их не дублируем
+        categories.append({"key": "games", "name": gt(user, "shop_cat_games"), "items": game_items})
     ex_key = exchange_today()
     ex_offer = BUCKS_EXCHANGE[ex_key]
     categories.append({"key": "exchange", "name": gt(user, "shop_cat_exchange"), "items": [{
@@ -17168,6 +17247,7 @@ def serialize_play_state(user):
                 "her_removed": len(play.get("her_removed", [])), "mine_removed": len(play.get("mine_removed", []))}
     ui = {k: gt(user, k) for k in GAME_TEXTS["ru"] if k.startswith("play_") and isinstance(GAME_TEXTS["ru"][k], str)}
     return {"bucks": user.get("bucks", 0), "price": PLAY_RPS_PRICE, "wins": PLAY_RPS_WINS, "bj_bets": BJ_BETS,
+            "bj_talk": bool(user.get("bj_talk")),
             "movie_price": GAME_OFFERS["movie"]["price"], "tod_labels": {"truth": gt(user, "tod_truth"), "dare": gt(user, "tod_dare")},
             "strip_allowed": play_strip_allowed(user), "strip_subscribed": play_strip_subscribed(user),
             "char_gender": user.get("gender") or "female",
@@ -17712,8 +17792,11 @@ async def play_bj_start(user_id, user, body):
         return _play_reply(user, False, None)  # раунд уже идёт -- двойной тап не списывает вторую ставку
     if user.get("game"):
         user["game"] = None
+    if "talk" in body:
+        user["bj_talk"] = bool(body.get("talk"))
     error = games_gate_error(user)
-    if error:
+    # Без комментариев блэкджек -- просто карты: ни сон, ни дневной лимит реплик персонажа ему не мешают.
+    if error and not (not user.get("bj_talk") and error in (gt(user, "asleep"), gt(user, "daily_limit"))):
         return _play_reply(user, False, error)
     if not spend_bucks(user, bet):
         return _play_reply(user, False, get_text(user, "not_enough_bucks", n=bet - user.get("bucks", 0)))
@@ -17735,6 +17818,8 @@ async def play_bj_settle(user_id, user):
     play["result"] = outcome
     play["result_text"] = bj_result_text(user, outcome, play["bet"], payout)
     pv, dv = bj_value(play["player"]), bj_value(play["dealer"])
+    if not user.get("bj_talk"):
+        return  # играем молча -- реплика персонажа (и трата его энергии) только по желанию
     instr = (f"Вы играете в блэкджек, ты — крупье. Итог ЭТОГО раунда: {BJ_AI_FACTS[outcome]}. У собеседника {pv}, у тебя {dv}, "
              f"ставка {play['bet']}. Не путай с прошлыми раундами. Прокомментируй в образе: подколи, порадуйся или предложи ещё раунд.")
 
@@ -17993,6 +18078,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     var bj = el("div", "card bj-card");
     bj.appendChild(el("h3", null, ui.play_bj_title));
     bj.appendChild(el("p", null, ui.play_bj_desc));
+    bj.appendChild(talkToggle());
     bj.appendChild(el("p", null, ui.play_bj_choose));
     bj.appendChild(betButtons());
     menu.appendChild(bj);
@@ -18067,6 +18153,14 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   document.getElementById("talk-text").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); talkSubmit(); } });
   document.getElementById("talk-quit").onclick = function () { api("/api/play/quit", {}).then(function (res) { if (res.state) state = res.state; render(); }); };
 
+  function talkToggle() {
+    var b = el("button", "btn secondary", state.bj_talk ? ui_().play_bj_talk_on : ui_().play_bj_talk_off);
+    b.style.marginBottom = "10px"; b.style.fontSize = "14px"; b.style.padding = "10px";
+    b.onclick = function () { state.bj_talk = !state.bj_talk; fx("draw"); render(); };
+    return b;
+  }
+  function ui_() { return state.ui; }
+
   function betButtons() {
     var row = el("div", "bets");
     state.bj_bets.forEach(function (b) {
@@ -18137,6 +18231,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     } else {
       prompt.textContent = ui.play_bj_again;
       acts.style.display = "block";
+      acts.appendChild(talkToggle());
       acts.appendChild(betButtons());
     }
     document.getElementById("quit-btn").style.display = "block";
@@ -18146,7 +18241,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     if (busy) return;
     busy = true;
     bjShown = { player: 0, dealer: 0 };
-    api("/api/play/start", { mode: "bj", bet: bet }).then(function (res) {
+    api("/api/play/start", { mode: "bj", bet: bet, talk: !!state.bj_talk }).then(function (res) {
       busy = false;
       if (res.state) state = res.state;
       if (!res.ok && res.error) safe(function () { tg.showAlert(res.error); });
@@ -18425,6 +18520,36 @@ APP_TEXTS = {
         "style_desc_shy": "Скромный, краснеет и смущается", "style_desc_passionate": "Страстный, горячий, не скрывает чувств",
         "style_desc_magnetic": "Уверенный и притягательный, ведёт сам", "style_desc_rude": "Грубоватый и наглый, 18+",
         "style_desc_seduction": "Соблазняет и дразнит, 18+",
+        "hot_title": "🔥 Горячие сцены 18+",
+        "hot_left": "Доступно сцен: {n}",
+        "hot_type": "Что будет?",
+        "hot_place": "Где?",
+        "hot_lead": "Кто ведёт?",
+        "hot_go": "🔥 Начать сцену",
+        "hot_continue": "▶️ Продолжить сцену",
+        "hot_new": "✨ Новая сцена",
+        "hot_writing": "Персонаж пишет сцену… это займёт до минуты",
+        "hot_buy": "🔥 Купить сцену · {price}⭐",
+        "hot_none": "Сцены закончились — их дают подписки, колесо и уровень близости, или можно купить.",
+        "hot_sick": "🤒 Персонаж болеет — сначала вылечи его в магазине.",
+        "hot_last": "Последняя сцена",
+        "hot_chip": "🔥",
+        "more_title": "Ещё",
+        "ref_title": "👥 Пригласи друга",
+        "ref_copy": "📋 Скопировать ссылку",
+        "ref_share": "📤 Поделиться",
+        "ref_copied": "Ссылка скопирована",
+        "ref_stats": "Пришло друзей: {n} · получено {b}💵 и {e}⚡",
+        "ref_text": "За каждого друга: +{bucks}💵, +{en}⚡ и {sc} горячая сцена. Друг получит {friend}💵 на старт.",
+        "ref_share_text": "Заходи — тут ИИ-персонаж, который правда общается 💬",
+        "support_title": "🛟 Поддержка",
+        "support_hint": "Опиши проблему или вопрос — ответ придёт в чат с ботом.",
+        "support_send": "Отправить",
+        "support_short": "Напиши чуть подробнее 🙂",
+        "channel_btn": "📢 Наш канал",
+        "bj_talk_on": "💬 Комментарии персонажа: вкл",
+        "bj_talk_off": "🤐 Без комментариев",
+        "asleep_no_new": "😴 Персонаж спит — сначала разбуди его, потом можно создать нового.",
         "card_gift": "Ты подарил(а)", "card_food": "Ты угостил(а)", "card_medicine": "Ты дал(а) лекарство",
         "change_char": "🔁 Создать нового персонажа", "change_char_confirm": "Создать нового персонажа? Переписка с текущим будет удалена.",
     },
@@ -18483,6 +18608,36 @@ APP_TEXTS = {
         "style_desc_shy": "Modest, blushes easily", "style_desc_passionate": "Passionate and hot, shows feelings",
         "style_desc_magnetic": "Confident and magnetic, takes the lead", "style_desc_rude": "Rough and cheeky, 18+",
         "style_desc_seduction": "Seductive and teasing, 18+",
+        "hot_title": "🔥 Hot scenes 18+",
+        "hot_left": "Scenes available: {n}",
+        "hot_type": "What happens?",
+        "hot_place": "Where?",
+        "hot_lead": "Who leads?",
+        "hot_go": "🔥 Start the scene",
+        "hot_continue": "▶️ Continue the scene",
+        "hot_new": "✨ New scene",
+        "hot_writing": "Your companion is writing the scene… up to a minute",
+        "hot_buy": "🔥 Buy a scene · {price}⭐",
+        "hot_none": "No scenes left — they come with subscriptions, the wheel and closeness levels, or you can buy one.",
+        "hot_sick": "🤒 Your companion is sick — cure them in the shop first.",
+        "hot_last": "Last scene",
+        "hot_chip": "🔥",
+        "more_title": "More",
+        "ref_title": "👥 Invite a friend",
+        "ref_copy": "📋 Copy link",
+        "ref_share": "📤 Share",
+        "ref_copied": "Link copied",
+        "ref_stats": "Friends joined: {n} · earned {b}💵 and {e}⚡",
+        "ref_text": "For every friend: +{bucks}💵, +{en}⚡ and {sc} hot scene. Your friend gets {friend}💵 to start.",
+        "ref_share_text": "Come chat with an AI companion that really talks 💬",
+        "support_title": "🛟 Support",
+        "support_hint": "Describe the problem or question — the answer comes to the bot chat.",
+        "support_send": "Send",
+        "support_short": "Please write a bit more 🙂",
+        "channel_btn": "📢 Our channel",
+        "bj_talk_on": "💬 Companion comments: on",
+        "bj_talk_off": "🤐 No comments",
+        "asleep_no_new": "😴 Your companion is asleep — wake them first, then you can create a new one.",
         "card_gift": "You gave a gift", "card_food": "You treated them to", "card_medicine": "You gave medicine",
         "change_char": "🔁 Create a new companion", "change_char_confirm": "Create a new companion? The chat with the current one will be deleted.",
     },
@@ -18573,6 +18728,9 @@ def app_sub_offers(user):
     return offers
 
 
+CHANNEL_URL = "https://t.me/duel_dev_channel"
+
+
 def serialize_app_state(user):
     user["app_seen"] = datetime.now().isoformat()
     if not user.get("personality_ready"):
@@ -18628,6 +18786,9 @@ def serialize_app_state(user):
                     "rub": product_rub("upgrade_to_super", user) if "platega" in available_payment_methods("upgrade_to_super") else None}
                    if sub_level == "pro" else None,
         "sale": at(user, "sale", n=int(SUB_SALE_DISCOUNT * 100)) if sub_sale_active() else None,
+        "hot": serialize_hot(user),
+        "referral": serialize_referral(user),
+        "channel": CHANNEL_URL,
         "coupon": coupon,
         "ui": ui,
     }
@@ -18653,6 +18814,9 @@ async def api_app_state_handler(request):
     user_id, user, body, err = await _app_request(request)
     if err:
         return err
+    await bot_username()
+    if not user.get("referral_code"):
+        user["referral_code"] = str(user_id)
     return _app_reply(user)
 
 
@@ -18800,6 +18964,8 @@ async def api_app_reset_handler(request):
     user_id, user, body, err = await _play_request(request)
     if err:
         return err
+    if is_asleep(user):
+        return web.json_response({"ok": False, "error": at(user, "asleep_no_new")})
     user["personality_ready"] = False
     user["custom_character"] = None
     user["history"] = []
@@ -18827,6 +18993,119 @@ def page_response(request, html):
         html = _SDK_TAG_RE.sub(lambda m: EMBED_BRIDGE, html, count=1)
         return web.Response(text=html, content_type="text/html")
     return web.Response(text=with_app_back(html), content_type="text/html")
+
+
+def serialize_hot(user):
+    """Раздел «Горячие сцены» в приложении: что доступно, варианты выбора и последняя сцена."""
+    last = user.get("last_hot_scene")
+    try:
+        if user.get("hot_pending") and (datetime.now() - datetime.fromisoformat(user["hot_pending"])).total_seconds() > 300:
+            user["hot_pending"] = None
+    except (TypeError, ValueError):
+        user["hot_pending"] = None
+    def opts(mapping, keys):
+        return [{"key": k, "label": intim_option_label(mapping, k, user)} for k in keys]
+    return {
+        "available": intim_scenes_available(user),
+        "allowed": bool(user.get("verified") and user.get("agreement_accepted")) and not user.get("illness"),
+        "sick": bool(user.get("illness")),
+        "pending": bool(user.get("hot_pending")),
+        "types": opts(INTIM_SCENES, list(INTIM_SCENES)),
+        "locations": {t: opts(INTIM_LOCATIONS, intim_compatible_locations(t)) for t in INTIM_SCENES},
+        "dominants": opts(INTIM_DOMINANTS, list(INTIM_DOMINANTS)),
+        "price": price_label("intim_scene", user),
+        "last": {"text": last["text"], "parts": last.get("parts", 1),
+                 "footer": get_text(user, "intim_scene_footer", scene=intim_option_label(INTIM_SCENES, last["scene_type"], user),
+                                    place=intim_option_label(INTIM_LOCATIONS, last["location"], user))} if last else None,
+    }
+
+
+async def app_hot_generate(user_id, user, kind, **kw):
+    try:
+        await intim_scene_core(user, **kw)
+    except Exception as e:
+        logging.warning(f"app hot scene: {e}")
+        refund_intim_scene(user, kind)
+        user.setdefault("app_notices", []).append(at(user, "gen_error"))
+    finally:
+        user["hot_pending"] = None
+        save_data(user_data)
+
+
+async def api_app_hot_start_handler(request):
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    if user.get("illness"):
+        return web.json_response({"ok": False, "error": get_text(user, "intim_blocked_illness")})
+    if user.get("hot_pending"):
+        return web.json_response({"ok": False, "error": at(user, "wait_reply")})
+    cont = bool(body.get("continue"))
+    last = user.get("last_hot_scene")
+    if cont:
+        if not last:
+            return web.json_response({"ok": False, "error": "Bad request"})
+        kw = {"scene_type": last["scene_type"], "location": last["location"], "dominant": last["dominant"],
+              "continue_text": last["text"], "arc_position": last.get("arc_position", 1)}
+    else:
+        t, loc, dom = body.get("type"), body.get("location") or "any", body.get("dominant") or "any"
+        if t not in INTIM_SCENES or loc not in intim_compatible_locations(t) or dom not in INTIM_DOMINANTS:
+            return web.json_response({"ok": False, "error": "Bad request"})
+        kw = {"scene_type": t, "location": loc, "dominant": dom}
+    kind = consume_intim_scene(user)
+    if kind is None:
+        return web.json_response({"ok": False, "error": get_text(user, "intim_none"), "need_buy": True})
+    user["hot_pending"] = datetime.now().isoformat()
+    save_data(user_data)
+    asyncio.create_task(app_hot_generate(user_id, user, kind, **kw))
+    return web.json_response({"ok": True, "state": serialize_app_state(user)})
+
+
+async def api_app_support_handler(request):
+    """Обращение в поддержку из профиля -- уходит админам так же, как /support в чате (ответ придёт в Telegram)."""
+    user_id, user, body, err = await _app_request(request)
+    if err:
+        return err
+    text = (body.get("text") or "").strip()[:3000]
+    if len(text) < 3:
+        return web.json_response({"ok": False, "error": at(user, "support_short")})
+    header = (f"📩 Обращение #{user_id} (@{user.get('username') or '—'}) из приложения\n"
+              f"Подписка: {get_subscription_level(user) or 'нет'}\n\n{text}\n\n"
+              f"↩️ Ответь reply на это сообщение — ответ уйдёт пользователю.")
+    delivered = 0
+    threads = _support_threads()
+    for admin_id in SUPPORT_ADMIN_IDS:
+        try:
+            sent = await bot.send_message(admin_id, header)
+            threads[f"{admin_id}:{sent.message_id}"] = user_id
+            delivered += 1
+        except Exception as e:
+            logging.warning(f"support (app): не доставлено админу {admin_id}: {e}")
+    while len(threads) > SUPPORT_THREADS_LIMIT:
+        threads.pop(next(iter(threads)))
+    save_data(user_data)
+    return web.json_response({"ok": bool(delivered), "toast": get_text(user, "support_sent" if delivered else "support_failed")})
+
+
+_BOT_USERNAME = {"v": None}
+
+
+async def bot_username():
+    if not _BOT_USERNAME["v"]:
+        try:
+            _BOT_USERNAME["v"] = (await bot.get_me()).username
+        except Exception:
+            return None
+    return _BOT_USERNAME["v"]
+
+
+def serialize_referral(user):
+    name = _BOT_USERNAME["v"]
+    count = user.get("referral_count", 0)
+    return {"link": f"https://t.me/{name}?start=ref_{user['referral_code']}" if name and user.get("referral_code") else None, "count": count,
+            "earned_bucks": count * REFERRAL_INVITER_BUCKS, "earned_energizers": count * REFERRAL_INVITER_ENERGIZERS,
+            "text": at(user, "ref_text", bucks=REFERRAL_INVITER_BUCKS, en=REFERRAL_INVITER_ENERGIZERS, sc=REFERRAL_INVITER_SCENES,
+                       friend=REFERRAL_INVITEE_BUCKS)}
 
 
 async def app_page_handler(request):
@@ -18922,6 +19201,24 @@ APP_PAGE_HTML = r'''<!doctype html>
   .giftcard .ge { font-size: 34px; filter: drop-shadow(0 4px 8px rgba(0,0,0,.35)); }
   .giftcard .gl { font-size: 11.5px; color: #f5d0fe; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
   .giftcard .gn { font-size: 15.5px; font-weight: 800; } .giftcard .gnote { font-size: 13px; font-style: italic; color: #fde7f3; margin-top: 2px; }
+  /* ---- hot scenes ---- */
+  #view-hot { overflow-y: auto; padding: 14px 14px 22px; }
+  .hot-hero { background: linear-gradient(150deg, rgba(239,68,68,.32), rgba(236,72,153,.2) 55%, var(--card)); border-color: rgba(239,68,68,.35); }
+  .hot-hero .t { font-size: 19px; font-weight: 900; } .hot-hero .s { color: #fecdd3; font-size: 13.5px; margin-top: 3px; }
+  .hgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .hopt { border: 2px solid var(--line); background: var(--card2); color: var(--fg); border-radius: 14px; padding: 11px 8px; font-size: 14px; font-weight: 700; }
+  .hopt.on { border-color: #fb7185; background: linear-gradient(150deg, rgba(239,68,68,.35), rgba(236,72,153,.2)); }
+  .hq { font-weight: 800; margin: 14px 0 8px; }
+  .scene { white-space: pre-wrap; font-size: 15px; line-height: 1.5; }
+  .scene em { color: #fda4af; font-style: italic; }
+  .scene-foot { color: var(--hint); font-size: 12.5px; margin-top: 10px; white-space: pre-wrap; }
+  .writing { text-align: center; color: #fecdd3; padding: 26px 10px; } .writing .big { font-size: 40px; animation: pulse 1.2s infinite; }
+  @keyframes pulse { 50% { transform: scale(1.15); } }
+  .chip.hot { background: linear-gradient(135deg, rgba(239,68,68,.35), rgba(236,72,153,.3)); border-color: rgba(251,113,133,.5); cursor: pointer; }
+  .reflink { font-size: 12.5px; color: #c4b5fd; word-break: break-all; background: var(--card2); border-radius: 12px; padding: 9px 10px; margin: 8px 0 2px; }
+  .row2 { display: flex; gap: 8px; } .row2 .btn { margin-top: 8px; padding: 11px 8px; font-size: 14.5px; }
+  #sup-text { width: 100%; min-height: 90px; border-radius: 14px; border: 1px solid var(--line); background: var(--card2); color: var(--fg);
+    padding: 11px; font-size: 15px; font-family: inherit; outline: none; resize: vertical; margin-top: 6px; }
   /* ---- onboarding ---- */
   #view-onb { overflow-y: auto; padding: 18px 16px 24px; }
   .ob-top { text-align: center; margin: 6px 0 16px; } .ob-top .big { font-size: 40px; } .ob-top h2 { margin: 6px 0 2px; font-size: 22px; }
@@ -19028,7 +19325,7 @@ APP_PAGE_HTML = r'''<!doctype html>
   <div id="head">
     <div class="ava" id="h-ava"><span id="h-ava-e">💬</span><i class="dot"></i></div>
     <div class="who"><div class="name" id="h-name">…</div><div class="status" id="h-status"></div></div>
-    <div class="chips"><span class="chip" id="h-bucks">💵 0</span><span class="chip" id="h-en">⚡ 0</span></div>
+    <div class="chips"><span class="chip hot" id="h-hot">🔥</span><span class="chip" id="h-bucks">💵 0</span><span class="chip" id="h-en">⚡ 0</span></div>
   </div>
   <div id="ebar"><i></i></div>
   <div id="views">
@@ -19046,6 +19343,7 @@ APP_PAGE_HTML = r'''<!doctype html>
     <div class="view frame" id="view-spin"></div>
     <div class="view frame" id="view-work"></div>
     <div class="view" id="view-onb"></div>
+    <div class="view" id="view-hot"></div>
   </div>
   <nav id="nav"></nav>
 </div>
@@ -19147,6 +19445,7 @@ APP_PAGE_HTML = r'''<!doctype html>
     st.className = "status" + (s.pending ? " typing" : "");
     st.textContent = s.pending ? s.ui.typing : (s.asleep ? s.ui.asleep : (s.illness ? s.illness + " · " + s.ui.sick : s.ui.online));
     $("h-bucks").textContent = "💵 " + s.stats.bucks;
+    $("h-hot").textContent = "🔥 " + s.hot.available;
     $("h-en").textContent = "⚡ " + s.stats.energy;
     var pct = Math.max(0, Math.min(100, Math.round(s.stats.energy / s.stats.energy_max * 100)));
     $("ebar").firstChild.style.width = pct + "%";
@@ -19286,20 +19585,22 @@ APP_PAGE_HTML = r'''<!doctype html>
     v.appendChild(sub);
 
     var more = el("div", "card");
-    var hot = el("button", "btn", ui.hot_btn);
-    hot.onclick = function () { api("/api/app/hot", {}).then(function (res) {
-      if (res.ok) { haptic("success"); safe(function () { tg.close(); }); } else toast(res.error || "Error"); }); };
-    more.appendChild(hot); more.appendChild(el("div", "note", ui.hot_note));
+    var hb = el("button", "btn", ui.hot_btn);
+    hb.onclick = function () { setTab("hot"); };
+    more.appendChild(hb);
     var guide = el("button", "btn ghost", ui.guide_btn);
     guide.onclick = function () { location.href = "/guide?lang=" + (document.documentElement.lang || "ru") + location.hash; };
     more.appendChild(guide);
     var ch = el("button", "btn ghost", ui.change_char);
     ch.onclick = function () {
-      var go = function (ok) { if (!ok) return; api("/api/app/reset", {}).then(function (res) { if (res.state) state = res.state; obStep = 0; ob = {}; render(); }); };
+      var go = function (ok) { if (!ok) return; api("/api/app/reset", {}).then(function (res) {
+        if (!res.ok) { toast(res.error || "Error"); haptic("error"); return; }
+        if (res.state) state = res.state; obStep = 0; ob = {}; render(); }); };
       if (tg && tg.showConfirm) safe(function () { tg.showConfirm(ui.change_char_confirm, go); }); else go(confirm(ui.change_char_confirm));
     };
     more.appendChild(ch);
     v.appendChild(more);
+    renderExtras(v);
   }
   function payRow(payload, o) {
     var row = el("div", "pay");
@@ -19307,6 +19608,81 @@ APP_PAGE_HTML = r'''<!doctype html>
     b1.onclick = function () { pay(payload, "stars"); }; row.appendChild(b1);
     if (o.rub) { var b2 = el("button", "btn ghost", state.ui.buy_card.replace("{price}", o.rub)); b2.onclick = function () { pay(payload, "platega"); }; row.appendChild(b2); }
     return row;
+  }
+
+  // ---- горячие сцены ----
+  var hot = { type: null, location: "any", dominant: "any" };
+  function renderHot() {
+    var h = state.hot, ui = state.ui, v = $("view-hot");
+    v.innerHTML = "";
+    var hero = el("div", "card hot-hero"); hero.appendChild(el("div", "t", ui.hot_title));
+    hero.appendChild(el("div", "s", ui.hot_left.replace("{n}", h.available))); v.appendChild(hero);
+    if (h.pending) {
+      var w = el("div", "card writing"); w.appendChild(el("div", "big", "🔥")); w.appendChild(el("div", null, ui.hot_writing)); v.appendChild(w); return;
+    }
+    if (h.sick) { v.appendChild(el("div", "card sick", ui.hot_sick)); return; }
+    if (h.last) {
+      var sc = el("div", "card"); sc.appendChild(el("h4", null, ui.hot_last + (h.last.parts > 1 ? " · " + h.last.parts : "")));
+      var t = el("div", "scene"); richText(t, h.last.text); sc.appendChild(t);
+      sc.appendChild(el("div", "scene-foot", h.last.footer));
+      if (h.available > 0) { var c = el("button", "btn", ui.hot_continue); c.onclick = function () { hotStart(true); }; sc.appendChild(c); }
+      v.appendChild(sc);
+    }
+    var pick = el("div", "card"); pick.appendChild(el("h4", null, h.last ? ui.hot_new : ui.hot_type));
+    if (h.available <= 0) {
+      pick.appendChild(el("div", "note", ui.hot_none));
+      var buy = el("button", "btn", ui.hot_buy.replace("{price}", h.price)); buy.onclick = function () { pay("intim_scene", "stars"); };
+      pick.appendChild(buy); v.appendChild(pick); return;
+    }
+    function grid(items, key, title) {
+      if (title) pick.appendChild(el("div", "hq", title));
+      var g = el("div", "hgrid");
+      items.forEach(function (it) { var b = el("button", "hopt" + (hot[key] === it.key ? " on" : ""), it.label);
+        b.onclick = function () { hot[key] = it.key; if (key === "type") hot.location = "any"; haptic("select"); renderHot(); }; g.appendChild(b); });
+      pick.appendChild(g);
+    }
+    grid(h.types, "type", h.last ? ui.hot_type : null);
+    if (hot.type) { grid(h.locations[hot.type] || [], "location", ui.hot_place); grid(h.dominants, "dominant", ui.hot_lead); }
+    var go = el("button", "btn", ui.hot_go); go.disabled = !hot.type; go.onclick = function () { hotStart(false); };
+    pick.appendChild(go); v.appendChild(pick);
+  }
+  function hotStart(cont) {
+    haptic("medium");
+    var body = cont ? { "continue": true } : { type: hot.type, location: hot.location, dominant: hot.dominant };
+    api("/api/app/hot/start", body).then(function (res) {
+      if (res.state) state = res.state;
+      if (!res.ok) { toast(res.error || "Error"); if (res.need_buy) pay("intim_scene", "stars"); }
+      render(); $("view-hot").scrollTop = 0; schedulePoll();
+    }).catch(function () { toast("Network error"); });
+  }
+  $("h-hot").onclick = function () { haptic("select"); setTab("hot"); };
+
+  // ---- профиль: друзья, поддержка, канал ----
+  function renderExtras(v) {
+    var ui = state.ui, r = state.referral;
+    var ref = el("div", "card"); ref.appendChild(el("h4", null, ui.ref_title)); ref.appendChild(el("div", "note", r.text));
+    if (r.link) {
+      ref.appendChild(el("div", "reflink", r.link));
+      var row = el("div", "row2");
+      var cp = el("button", "btn ghost", ui.ref_copy);
+      cp.onclick = function () { safe(function () { navigator.clipboard.writeText(r.link); }); haptic("success"); toast(ui.ref_copied); };
+      var sh = el("button", "btn", ui.ref_share);
+      sh.onclick = function () { var u = "https://t.me/share/url?url=" + encodeURIComponent(r.link) + "&text=" + encodeURIComponent(ui.ref_share_text);
+        if (tg && tg.openTelegramLink) safe(function () { tg.openTelegramLink(u); }); else window.open(u); };
+      row.appendChild(cp); row.appendChild(sh); ref.appendChild(row);
+    }
+    ref.appendChild(el("div", "note", ui.ref_stats.replace("{n}", r.count).replace("{b}", r.earned_bucks).replace("{e}", r.earned_energizers)));
+    v.appendChild(ref);
+    var sup = el("div", "card"); sup.appendChild(el("h4", null, ui.support_title)); sup.appendChild(el("div", "note", ui.support_hint));
+    var ta = el("textarea"); ta.id = "sup-text"; sup.appendChild(ta);
+    var sb = el("button", "btn ghost", ui.support_send);
+    sb.onclick = function () { var t = ta.value.trim(); if (!t) return; sb.disabled = true;
+      api("/api/app/support", { text: t }).then(function (res) { sb.disabled = false; toast(res.toast || res.error || "");
+        if (res.ok) { ta.value = ""; haptic("success"); } }).catch(function () { sb.disabled = false; }); };
+    sup.appendChild(sb); v.appendChild(sup);
+    var ch = el("button", "btn ghost", ui.channel_btn);
+    ch.onclick = function () { if (tg && tg.openTelegramLink) safe(function () { tg.openTelegramLink(state.channel); }); else window.open(state.channel); };
+    var c = el("div", "card"); c.appendChild(ch); v.appendChild(c);
   }
 
   var ob = {}, obStep = 0;
@@ -19355,13 +19731,13 @@ APP_PAGE_HTML = r'''<!doctype html>
   function render() {
     var root = $("root");
     root.classList.toggle("onb", !!state.onboarding);
-    ["chat", "profile", "games", "shop", "spin", "work", "onb"].forEach(function (n) { $("view-" + n).classList.remove("on"); });
+    ["chat", "profile", "games", "shop", "spin", "work", "onb", "hot"].forEach(function (n) { $("view-" + n).classList.remove("on"); });
     if (state.onboarding) { $("view-onb").classList.add("on"); renderOnb(); return; }
     root.classList.toggle("framed", !!FRAME_PATH[tab]);
     if (FRAME_PATH[tab]) { renderNav(); $("view-" + tab).classList.add("on"); renderHead(); return; }
     renderHead(); renderNav();
     $("view-" + tab).classList.add("on");
-    if (tab === "chat") renderChat(); else renderProfile();
+    if (tab === "chat") renderChat(); else if (tab === "hot") renderHot(); else renderProfile();
     if (state.notices && state.notices.length) { toast(state.notices.join("\n\n")); haptic("success"); state.notices = []; }
     if (lastPending && !state.pending) haptic("light");
     lastPending = state.pending;
@@ -19371,16 +19747,17 @@ APP_PAGE_HTML = r'''<!doctype html>
   function schedulePoll() {
     clearTimeout(pollTimer);
     if (state && state.onboarding) return;
-    pollTimer = setTimeout(function () { load(true).then(schedulePoll, schedulePoll); }, state && state.pending ? 1000 : 12000);
+    var fast = state && (state.pending || (state.hot && state.hot.pending));
+    pollTimer = setTimeout(function () { load(true).then(schedulePoll, schedulePoll); }, fast ? 1500 : 12000);
   }
   function load(quiet) {
     return api("/api/app/state").then(function (res) {
       if (!res.state) { full(res.message || res.error || "Error", res.error === "not_ready" ? "✨" : "⚠️"); return; }
-      var before = state ? state.messages.length + "|" + state.pending : "";
+      var before = state ? state.messages.length + "|" + state.pending + "|" + (state.hot && state.hot.pending) : "";
       state = res.state;
       document.documentElement.lang = state.ui.tab_chat === "Чат" ? "ru" : "en";
       if (state.onboarding) { if (!quiet) render(); return; }
-      if (!quiet || before !== state.messages.length + "|" + state.pending || state.notices.length) { if (!FRAME_PATH[tab]) render(); else if (state.notices.length) { toast(state.notices.join("\n\n")); state.notices = []; } }
+      if (!quiet || before !== state.messages.length + "|" + state.pending + "|" + (state.hot && state.hot.pending) || state.notices.length) { if (!FRAME_PATH[tab]) render(); else if (state.notices.length) { toast(state.notices.join("\n\n")); state.notices = []; } }
       else if (!FRAME_PATH[tab]) renderHead();
     }).catch(function (e) { if (!quiet) full("Network error: " + (e && e.message || "unknown"), "⚠️"); });
   }
@@ -19670,6 +20047,8 @@ async def run_webapp_server():
     app_web.router.add_post("/api/app/wake", api_app_wake_handler)
     app_web.router.add_post("/api/app/invoice", api_app_invoice_handler)
     app_web.router.add_post("/api/app/hot", api_app_hot_handler)
+    app_web.router.add_post("/api/app/hot/start", api_app_hot_start_handler)
+    app_web.router.add_post("/api/app/support", api_app_support_handler)
     app_web.router.add_post("/api/app/create", api_app_create_handler)
     app_web.router.add_post("/api/app/reset", api_app_reset_handler)
     app_web.router.add_get("/api/play/state", api_play_state_handler)
