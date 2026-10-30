@@ -4,6 +4,8 @@ import hashlib
 import hmac
 import math
 import os
+import base64
+import secrets
 import json
 import logging
 import random
@@ -3465,8 +3467,10 @@ ENGAGEMENT_RULE = (
 def build_prompt(user):
     no_explicit_rule = get_content_rule(get_display_style(user))
 
+    char_name = (user.get("char_name") or "").strip()
     if user.get("custom_character"):
         return (
+            (f"Тебя зовут {char_name}. " if char_name else "") +
             f"Ты — {user['custom_character']}. Полностью вживись в эту личность и её характер: если "
             f"персонаж узнаваем (из фильма, игры, аниме, книги и т.п.), веди себя как он — с его "
             f"характерными чертами, манерой речи и взглядами, а не обезличенно и уклончиво. Можешь "
@@ -3497,6 +3501,10 @@ def build_prompt(user):
         "человека, а не на предмет рядом с ним (пример ошибки: «перевожу взгляд с окна на него» — "
         "правильно «...на тебя»).\n"
     )
+    if char_name:
+        # Имя дал сам пользователь при создании -- его можно и нужно использовать, запрет только на имя собеседника.
+        name_ban = (f"**ТВОЁ ИМЯ:** тебя зовут {char_name}. Это твоё имя — откликайся на него и иногда называй себя "
+                    "так, когда это естественно. " + name_ban.split("Ты также ", 1)[1].replace("НИКОГДА не спрашиваешь", "Ты НИКОГДА не спрашиваешь", 1))
     rules = (
         "**ФОРМАТИРОВАНИЕ:** Каждое действие в *звёздочках* с новой строки, затем реплика с новой строки. "
         "Между действием и репликой – пустая строка.\n"
@@ -3520,6 +3528,8 @@ def build_prompt(user):
         "засчитывается как неправильный по формату.\n"
         f"{no_explicit_rule}"
     )
+    if char_name:
+        rules = rules.replace("Не используй имена собеседника и своё имя.", "Не используй имя собеседника.")
     intimacy_rule = build_intimacy_rule(user)
     mood_rule = build_mood_rule(user)
     energy_rule = build_energy_rule(user)
@@ -6990,6 +7000,11 @@ def build_intim_prompt(user, scene_type, location, dominant="any", arc_position=
             anatomy_rule += ("ВАЖНО про себя: ты женщина, поэтому глаголы и прилагательные о себе — в женском "
                               "роде («я думала», «я была готова» — а не «думал», «был готов»).\n")
 
+    char_name = (user.get("char_name") or "").strip()
+    if char_name:
+        name_ban = (f"Тебя зовут {char_name} — это твоё имя, можешь так себя называть. "
+                    + name_ban.replace("**ВАЖНЕЙШЕЕ ПРАВИЛО:** Ты НИКОГДА не называешь себя по имени, не представляешься, не говоришь "
+                                       "«меня зовут», не используешь своё имя. ", ""))
     lang_code = user.get("lang", "ru")
     lang_head = ""
     if lang_code != "ru":
@@ -18641,6 +18656,18 @@ APP_TEXTS = {
         "per_month": "/ мес",
         "coupon": "🎟 Твоя скидка −{n}% ещё {h} ч",
         "sale": "🔥 Распродажа: SUPER PRO и ELITE −{n}%",
+        "ob_name": "Как зовут персонажа?",
+        "ob_name_hint": "Например, Аня — можно оставить пустым",
+        "ob_avatar": "🖼 Аватарка (SUPER PRO)",
+        "ob_avatar_pick": "📷 Загрузить фото",
+        "ob_avatar_change": "🔄 Другое фото",
+        "avatar_too_big": "Картинка слишком большая — выбери другую.",
+        "avatar_locked": "🖼 Своя аватарка — с подпиской SUPER PRO или ELITE.",
+        "rename_btn": "✏️ Изменить имя",
+        "rename_prompt": "Как зовут персонажа?",
+        "avatar_btn": "🖼 Изменить аватарку",
+        "avatar_remove": "Убрать аватарку",
+        "avatar_done": "Аватарка обновлена ✨",
         "ob_title": "Создай своего персонажа",
         "ob_world": "Какой мир?", "ob_gender": "Кто твой персонаж?", "ob_style": "Какой характер?", "ob_scene": "Как вы общаетесь?",
         "ob_custom": "🎭 Свой персонаж (SUPER PRO)", "ob_custom_hint": "Опиши внешность, характер, историю — персонаж будет именно таким. Можно оставить пустым.",
@@ -18733,6 +18760,18 @@ APP_TEXTS = {
         "per_month": "/ mo",
         "coupon": "🎟 Your −{n}% discount, {h}h left",
         "sale": "🔥 Sale: SUPER PRO and ELITE −{n}%",
+        "ob_name": "What's your companion's name?",
+        "ob_name_hint": "E.g. Anna — can be left empty",
+        "ob_avatar": "🖼 Avatar (SUPER PRO)",
+        "ob_avatar_pick": "📷 Upload a photo",
+        "ob_avatar_change": "🔄 Another photo",
+        "avatar_too_big": "The picture is too large — pick another one.",
+        "avatar_locked": "🖼 A custom avatar comes with SUPER PRO or ELITE.",
+        "rename_btn": "✏️ Change name",
+        "rename_prompt": "What's your companion's name?",
+        "avatar_btn": "🖼 Change avatar",
+        "avatar_remove": "Remove avatar",
+        "avatar_done": "Avatar updated ✨",
         "ob_title": "Create your companion",
         "ob_world": "Which world?", "ob_gender": "Who is your companion?", "ob_style": "What personality?", "ob_scene": "How do you talk?",
         "ob_custom": "🎭 Your own character (SUPER PRO)", "ob_custom_hint": "Describe looks, personality, backstory — the companion will be exactly like that. Can be left empty.",
@@ -18839,7 +18878,7 @@ def serialize_onboarding(user):
             "styles": styles,
             "scenes": [{"key": "phone", "label": get_text(user, "scene_phone"), "desc": at(user, "ob_phone")},
                        {"key": "live", "label": get_text(user, "scene_live"), "desc": at(user, "ob_live")}],
-            "can_custom": sub in ("super_pro", "elite"), "custom_min": CUSTOM_CHARACTER_MIN_LEN,
+            "can_custom": sub in ("super_pro", "elite"), "custom_min": CUSTOM_CHARACTER_MIN_LEN, "name_max": CHAR_NAME_MAX,
             "lang": lang}
 
 
@@ -18903,7 +18942,10 @@ def serialize_app_state(user):
                            and history[-2]["role"] == "user"),
         "character": {
             "avatar": app_avatar(user),
-            "title": at(user, "char_female" if (user.get("gender") or "female") == "female" else "char_male"),
+            "avatar_url": f"/avatars/{user['avatar']}" if user.get("avatar") else None,
+            "name": user.get("char_name"),
+            "can_avatar": sub_level in ("super_pro", "elite"),
+            "title": user.get("char_name") or at(user, "char_female" if (user.get("gender") or "female") == "female" else "char_male"),
             "subtitle": f"{world_display_name(user.get('world') or 'realism', user).capitalize()} · "
                         f"{style_display_label(get_display_style(user), user)}",
         },
@@ -19069,6 +19111,86 @@ async def api_app_hot_handler(request):
     return web.json_response({"ok": True})
 
 
+CHAR_NAME_MAX = 24
+AVATAR_MAX_BYTES = 450 * 1024
+AVATAR_DIR = os.path.join(DATA_DIR, "avatars")
+
+
+def clean_char_name(raw):
+    name = re.sub(r"[\s]+", " ", (raw or "")).strip()
+    name = re.sub(r"[^\w \-'ёЁ]", "", name)[:CHAR_NAME_MAX].strip()
+    return name or None
+
+
+def save_avatar(user, data_url):
+    """Аватар персонажа (SUPER PRO / ELITE): картинку уже ужала страница (до 512px JPEG), здесь проверяем и кладём на диск.
+    Имя файла случайное -- по нему ссылка, без id пользователя. Возвращает текст ошибки или None."""
+    m = re.match(r"^data:image/(jpeg|png|webp);base64,(.+)$", data_url or "", re.S)
+    if not m:
+        return "Bad image"
+    try:
+        raw = base64.b64decode(m.group(2), validate=True)
+    except Exception:
+        return "Bad image"
+    if len(raw) > AVATAR_MAX_BYTES:
+        return at(user, "avatar_too_big")
+    if not (raw[:3] == b"\xff\xd8\xff" or raw[:8] == b"\x89PNG\r\n\x1a\n" or raw[8:12] == b"WEBP"):
+        return "Bad image"
+    os.makedirs(AVATAR_DIR, exist_ok=True)
+    old = user.get("avatar")
+    token = secrets.token_hex(12)
+    ext = {"jpeg": "jpg", "png": "png", "webp": "webp"}[m.group(1)]
+    with open(os.path.join(AVATAR_DIR, f"{token}.{ext}"), "wb") as f:
+        f.write(raw)
+    user["avatar"] = f"{token}.{ext}"
+    if old:
+        try:
+            os.remove(os.path.join(AVATAR_DIR, os.path.basename(old)))
+        except OSError:
+            pass
+    return None
+
+
+async def avatar_file_handler(request):
+    name = os.path.basename(request.match_info.get("name", ""))
+    if not re.match(r"^[0-9a-f]{24}\.(jpg|png|webp)$", name):
+        raise web.HTTPNotFound()
+    path = os.path.join(AVATAR_DIR, name)
+    if not os.path.exists(path):
+        raise web.HTTPNotFound()
+    return web.FileResponse(path, headers={"Cache-Control": "public, max-age=31536000"})
+
+
+async def api_app_rename_handler(request):
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    user["char_name"] = clean_char_name(body.get("name"))
+    save_data(user_data)
+    return web.json_response({"ok": True, "state": serialize_app_state(user)})
+
+
+async def api_app_avatar_handler(request):
+    user_id, user, body, err = await _play_request(request)
+    if err:
+        return err
+    if get_subscription_level(user) not in ("super_pro", "elite"):
+        return web.json_response({"ok": False, "error": at(user, "avatar_locked")})
+    if body.get("remove"):
+        old = user.pop("avatar", None)
+        if old:
+            try:
+                os.remove(os.path.join(AVATAR_DIR, os.path.basename(old)))
+            except OSError:
+                pass
+    else:
+        error = save_avatar(user, body.get("image"))
+        if error:
+            return web.json_response({"ok": False, "error": error})
+    save_data(user_data)
+    return web.json_response({"ok": True, "state": serialize_app_state(user)})
+
+
 async def api_app_create_handler(request):
     """Создание персонажа в приложении: мир, пол персонажа, стиль, обстановка и (SUPER PRO) своё описание."""
     user_id, user, body, err = await _app_request(request)
@@ -19088,6 +19210,11 @@ async def api_app_create_handler(request):
         return web.json_response({"ok": False, "error": at(user, "ob_custom_short", n=CUSTOM_CHARACTER_MIN_LEN)})
     # Свой пол больше не спрашиваем: собеседник -- противоположного пола к выбранному персонажу.
     user["user_gender"] = "male" if gender == "female" else "female"
+    user["char_name"] = clean_char_name(body.get("name"))
+    if body.get("avatar") and get_subscription_level(user) in ("super_pro", "elite"):
+        error = save_avatar(user, body.get("avatar"))
+        if error:
+            return web.json_response({"ok": False, "error": error})
     user.update(world=world, gender=gender, style=style, scene=scene, custom_character=custom[:2000] or None,
                 personality_ready=True, history=[], creating_character=False, switching_personality=False,
                 last_activity=datetime.now().isoformat())
@@ -19505,6 +19632,19 @@ APP_PAGE_HTML = r'''<!doctype html>
   .giftcard .ge { font-size: 34px; filter: drop-shadow(0 4px 8px rgba(0,0,0,.35)); }
   .giftcard .gl { font-size: 11.5px; color: #f5d0fe; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
   .giftcard .gn { font-size: 15.5px; font-weight: 800; } .giftcard .gnote { font-size: 13px; font-style: italic; color: #fde7f3; margin-top: 2px; }
+  /* ---- аватар персонажа ---- */
+  .ava.photo { background-size: cover !important; background-position: center !important; }
+  .ava.photo > span { visibility: hidden; }
+  .ob-in { width: 100%; border-radius: 14px; border: 1px solid var(--line); background: var(--card); color: var(--fg); font-size: 16px;
+    padding: 12px 14px; outline: none; font-family: inherit; }
+  .ob-in:focus { border-color: rgba(139,92,246,.6); }
+  .ob-av { display: flex; align-items: center; gap: 14px; margin-top: 6px; }
+  .ob-av .ava { width: 64px; height: 64px; font-size: 30px; }
+  .ob-av .btn { margin: 0; flex: 1; }
+  .name-edit { display: flex; gap: 8px; margin-top: 10px; } .name-edit .ob-in { flex: 1; } .name-edit .btn { width: auto; margin: 0; padding: 0 16px; }
+  .hero-btns { display: flex; gap: 8px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+  .hero-btns button { border: 1px solid var(--line); background: rgba(0,0,0,.22); color: var(--fg); border-radius: 99px; padding: 7px 12px; font-size: 13px; font-weight: 700; }
+
   /* ---- settings ---- */
   .sw { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
   .sw:last-child { border-bottom: 0; } .sw .lk { color: #fcd34d; font-size: 12px; font-weight: 800; margin-left: 6px; }
@@ -19802,6 +19942,7 @@ APP_PAGE_HTML = r'''<!doctype html>
   function renderHead() {
     var s = state, c = s.character;
     $("h-ava-e").textContent = c.avatar;
+    setAvatar($("h-ava"), c.avatar_url);
     $("h-ava").classList.toggle("sleep", s.asleep);
     $("h-name").textContent = c.title;
     var lvl = s.subscription.level || "";
@@ -19922,9 +20063,29 @@ APP_PAGE_HTML = r'''<!doctype html>
       }
       hero.appendChild(fxl);
     }
-    var ava = el("div", "ava"); ava.appendChild(el("span", null, s.character.avatar)); hero.appendChild(ava);
+    var ava = el("div", "ava"); ava.appendChild(el("span", null, s.character.avatar)); setAvatar(ava, s.character.avatar_url); hero.appendChild(ava);
     hero.appendChild(el("div", "ttl", s.character.title)); hero.appendChild(el("div", "sub", s.character.subtitle));
     if (tier) hero.appendChild(el("div", "tierline", s.subscription.title));
+    var hb2 = el("div", "hero-btns");
+    var rn = el("button", null, ui.rename_btn);
+    rn.onclick = function () {
+      if (hero.querySelector(".name-edit")) return;
+      var row = el("div", "name-edit"), inp = el("input", "ob-in"); inp.maxLength = 24; inp.value = s.character.name || ""; inp.placeholder = ui.ob_name_hint;
+      var ok = el("button", "btn", "✓");
+      ok.onclick = function () { api("/api/app/rename", { name: inp.value }).then(function (res) { if (res.state) state = res.state; haptic("success"); render(); }); };
+      row.appendChild(inp); row.appendChild(ok); hero.insertBefore(row, hb2.nextSibling); inp.focus();
+    };
+    hb2.appendChild(rn);
+    var av = el("button", null, ui.avatar_btn);
+    av.onclick = function () {
+      if (!s.character.can_avatar) { toast(ui.avatar_locked); haptic("error"); return; }
+      pickImage(function (data) { api("/api/app/avatar", { image: data }).then(function (res) {
+        if (res.state) state = res.state; if (res.ok) { toast(ui.avatar_done); haptic("success"); } else toast(res.error || "Error"); render(); }); });
+    };
+    hb2.appendChild(av);
+    if (s.character.avatar_url) { var rm = el("button", null, ui.avatar_remove);
+      rm.onclick = function () { api("/api/app/avatar", { remove: true }).then(function (res) { if (res.state) state = res.state; render(); }); }; hb2.appendChild(rm); }
+    hero.appendChild(hb2);
     hero.appendChild(el("div", "lvl", "❤️ " + ui.level.replace("{n}", st.level)));
     var xb = el("div", "xpbar"), xi = el("i"); xi.style.width = Math.min(100, st.xp / st.xp_cost * 100) + "%"; xb.appendChild(xi); hero.appendChild(xb);
     hero.appendChild(el("div", "xptxt", ui.xp.replace("{p}", st.xp).replace("{c}", st.xp_cost)));
@@ -19987,6 +20148,33 @@ APP_PAGE_HTML = r'''<!doctype html>
     b1.onclick = function () { pay(payload, "stars"); }; row.appendChild(b1);
     if (o.rub) { var b2 = el("button", "btn ghost", state.ui.buy_card.replace("{price}", o.rub)); b2.onclick = function () { pay(payload, "platega"); }; row.appendChild(b2); }
     return row;
+  }
+
+  // ---- аватар: фото персонажа (SUPER PRO / ELITE) ----
+  function setAvatar(node, url) {
+    if (url) { node.classList.add("photo"); node.style.backgroundImage = "url('" + url + "')"; }
+    else { node.classList.remove("photo"); node.style.backgroundImage = ""; }
+  }
+  // Фото ужимаем прямо на телефоне: квадрат 512px, JPEG -- на сервер уходит ~50-150 КБ.
+  function pickImage(cb) {
+    var inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*";
+    inp.onchange = function () {
+      var f = inp.files && inp.files[0]; if (!f) return;
+      var rd = new FileReader();
+      rd.onload = function () {
+        var img = new Image();
+        img.onload = function () {
+          var side = Math.min(img.width, img.height), size = Math.min(512, side), c = document.createElement("canvas");
+          c.width = c.height = size;
+          c.getContext("2d").drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, size, size);
+          cb(c.toDataURL("image/jpeg", 0.85));
+        };
+        img.onerror = function () { toast("Bad image"); };
+        img.src = rd.result;
+      };
+      rd.readAsDataURL(f);
+    };
+    inp.click();
   }
 
   // ---- горячие сцены ----
@@ -20108,6 +20296,19 @@ APP_PAGE_HTML = r'''<!doctype html>
     var wrap = el("div", step[0] === "gender" ? "opts2" : "");
     step[1].forEach(function (it) { wrap.appendChild(opt(it, step[0])); });
     v.appendChild(wrap);
+    if (obStep === 1) {
+      v.appendChild(el("div", "ob-q", ui.ob_name));
+      var ni = el("input", "ob-in"); ni.maxLength = o.name_max || 24; ni.placeholder = ui.ob_name_hint; ni.value = ob.name || "";
+      ni.oninput = function () { ob.name = ni.value; }; v.appendChild(ni);
+      if (o.can_custom) {
+        v.appendChild(el("div", "ob-q", ui.ob_avatar));
+        var row = el("div", "ob-av"), pv = el("div", "ava"); pv.appendChild(el("span", null, ob.gender === "male" ? "👨🏻" : "👩🏻"));
+        setAvatar(pv, ob.avatar || null);
+        var pb = el("button", "btn ghost", ob.avatar ? ui.ob_avatar_change : ui.ob_avatar_pick);
+        pb.onclick = function () { pickImage(function (data) { ob.avatar = data; renderOnb(); }); };
+        row.appendChild(pv); row.appendChild(pb); v.appendChild(row);
+      }
+    }
     if (obStep === 2 && o.can_custom) {
       v.appendChild(el("div", "ob-q", ui.ob_custom));
       var ta = el("textarea"); ta.id = "ob-custom"; ta.placeholder = ui.ob_custom_hint; ta.value = ob.custom || "";
@@ -20120,7 +20321,7 @@ APP_PAGE_HTML = r'''<!doctype html>
     nx.onclick = function () {
       if (!last) { obStep++; haptic("light"); renderOnb(); v.scrollTop = 0; return; }
       nx.disabled = true;
-      api("/api/app/create", { world: ob.world, gender: ob.gender, style: ob.style, custom: ob.custom || "" }).then(function (res) {
+      api("/api/app/create", { world: ob.world, gender: ob.gender, style: ob.style, custom: ob.custom || "", name: ob.name || "", avatar: ob.avatar || null }).then(function (res) {
         if (!res.ok) { nx.disabled = false; toast(res.error || "Error"); haptic("error"); return; }
         haptic("success"); state = res.state; tab = "chat"; render(); schedulePoll();
       }).catch(function () { nx.disabled = false; toast("Network error"); });
@@ -20451,6 +20652,9 @@ async def run_webapp_server():
     app_web.router.add_post("/api/app/hot/start", api_app_hot_start_handler)
     app_web.router.add_post("/api/app/support", api_app_support_handler)
     app_web.router.add_post("/api/app/toggle", api_app_toggle_handler)
+    app_web.router.add_post("/api/app/rename", api_app_rename_handler)
+    app_web.router.add_post("/api/app/avatar", api_app_avatar_handler)
+    app_web.router.add_get("/avatars/{name}", avatar_file_handler)
     app_web.router.add_post("/api/app/create", api_app_create_handler)
     app_web.router.add_post("/api/app/reset", api_app_reset_handler)
     app_web.router.add_get("/api/play/state", api_play_state_handler)
