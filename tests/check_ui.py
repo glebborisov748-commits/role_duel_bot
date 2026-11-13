@@ -39,7 +39,14 @@ with sync_playwright() as p:
     page=browser.new_page(viewport={'width':390,'height':844},device_scale_factor=1,has_touch=True,is_mobile=True)
     errors=[];page.on('pageerror',lambda err: errors.append(str(err)))
     page.route('**/*',route)
+    state['reply_choices']=['Привет!','Как прошёл день?','Расскажи о себе.','Что тебе интересно?']
     page.goto('https://roleduel.test/app');page.get_by_text('Привет, как прошёл твой день?',exact=True).wait_for()
+    assert page.locator('.rd-choice').count()==4
+    page.locator('.rd-choice').first.click()
+    assert page.locator('#input').input_value()=='Привет!'
+    assert not any(path=='/api/app/send' for path,body in requests)
+    page.get_by_role('button',name='Написать своё',exact=True).click()
+    assert page.locator('#input').input_value()==''
     bubble=page.get_by_text('Привет, как прошёл твой день?',exact=True)
     box=bubble.bounding_box();page.mouse.move(box['x']+10,box['y']+10);page.mouse.down();page.wait_for_timeout(600);page.mouse.up()
     page.get_by_role('button',name='Редактировать',exact=True).click()
