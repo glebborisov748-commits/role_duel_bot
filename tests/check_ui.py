@@ -57,10 +57,15 @@ with sync_playwright() as p:
     page.get_by_role('button',name=ui['guide_btn'],exact=True).click()
     page.locator('iframe.rd-guide').wait_for()
     page.get_by_role('button',name='Показать, что где находится',exact=True).click()
+    for step in range(11):
+        assert page.locator('.rd-tour .note').inner_text() == f'{step + 1} / 12'
+        page.locator('.rd-tour').get_by_role('button',name='Далее',exact=True).click()
+    page.locator('.rd-tour').get_by_role('button',name='Назад',exact=True).click()
+    assert page.locator('.rd-tour .note').inner_text() == '11 / 12'
     page.get_by_role('button',name='Пропустить',exact=True).click()
     page.locator('#nav button').nth(5).click()
     page.locator('select').first.select_option('en')
-    page.get_by_text('Conversation mode',exact=True).wait_for()
+    page.locator('label').filter(has_text='Conversation mode').wait_for()
     page.locator('select').nth(1).select_option('live')
     page.wait_for_timeout(100)
     assert state['settings']['scene']=='live'

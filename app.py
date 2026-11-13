@@ -4045,7 +4045,7 @@ async def choose_scene(call: types.CallbackQuery):
         # Разовая памятка новичку: что откуда берётся и куда идти, если что-то не понятно.
         # Флаг отдельный от personality_ready — пересоздание/смена персонажа (reset_character
         # тоже проходит этот же путь) не должны показывать её повторно.
-        asyncio.create_task(generate_first_message(call.message.chat.id, user))
+        award_referral(user)
         if not user.get("onboarding_shown"):
             user["onboarding_shown"] = True
             save_data(user_data)
@@ -7669,33 +7669,8 @@ async def start_story_event(chat_id, user, key):
 
 
 async def generate_first_message(chat_id, user):
-    """Сразу после создания персонажа он сам пишет первым -- чтобы человек не остался перед пустым чатом."""
+    """Registration rewards remain; the user starts the conversation."""
     award_referral(user)
-    await asyncio.sleep(2)  # пусть сначала придут меню и памятка
-    if is_asleep(user):
-        return  # спящий персонаж первым не пишет
-    system_prompt = build_prompt(user) + (
-        "\n**ПЕРВОЕ СООБЩЕНИЕ:** собеседник только что тебя выбрал, вы ещё не общались. Напиши первым(ой): живо, в образе и "
-        "в текущей обстановке, с эмоцией и маленькой деталью о себе (чем занят(а) прямо сейчас, что на душе). 2-4 предложения, "
-        "без шаблонного «привет, я ...». Закончи личным вопросом или небольшой просьбой, на которую хочется ответить.\n")
-    typing_task = asyncio.create_task(_keep_typing(chat_id))
-    try:
-        response = await asyncio.to_thread(
-            call_ai, AI_MODEL, "ai",
-            messages=[{"role": "system", "content": system_prompt}, {"role": "user", "content": "*собеседник открыл чат*"}],
-            temperature=0.95, max_tokens=1200)
-        answer = response.choices[0].message.content or ""
-    except Exception as e:
-        logging.warning(f"generate_first_message: {e}")
-        return
-    finally:
-        typing_task.cancel()
-    _, clean = extract_reaction_from_answer(answer)
-    if not (clean or "").strip():
-        return
-    user["history"].append({"role": "assistant", "content": clean})
-    save_data(user_data)
-    await deliver_character_text(chat_id, user, clean)
 
 
 async def generate_event_opening(chat_id, user, event):
@@ -14059,7 +14034,7 @@ SPIN_PAGE_HTML = r'''<!doctype html>
     border-radius: 50%;
     overflow: hidden;
     box-shadow: inset 0 0 0 3px rgba(0,0,0,.25);
-    transition: transform 4s cubic-bezier(0.12, 0.67, 0.1, 1);
+    transition: transform 4s cubic-bezier(0.10, 0.60, 0.08, 1);
   }
   .peg {
     position: absolute;
@@ -14311,9 +14286,9 @@ SPIN_PAGE_HTML = r'''<!doctype html>
   function haptic(kind) {
     if (!tg || !tg.HapticFeedback) return;
     try {
-      if (kind === "select") tg.HapticFeedback.selectionChanged();
+      if (kind === "select") tg.HapticFeedback.impactOccurred("medium");
       else if (kind === "success" || kind === "error" || kind === "warning") tg.HapticFeedback.notificationOccurred(kind);
-      else tg.HapticFeedback.impactOccurred(kind);
+      else tg.HapticFeedback.impactOccurred(kind === "light" || kind === "select" ? "medium" : kind);
     } catch (e) {}
   }
   function fx(kind) {
@@ -14324,12 +14299,12 @@ SPIN_PAGE_HTML = r'''<!doctype html>
     else if (kind === "key") { tone(660, .035, "square", .04); haptic("select"); }
     else if (kind === "good") { tone(988, .06, "sine", .09); haptic("light"); }
     else if (kind === "wire") { tone(523, .05, "square", .06); tone(784, .08, "square", .06, .05); haptic("medium"); }
-    else if (kind === "lane") { tone(300, .06, "sine", .06, 0, 460); haptic("select"); }
+    else if (kind === "lane") { haptic("medium"); }
     else if (kind === "drop") { tone(1300, .14, "sine", .09, 0, 320); haptic("light"); }
     else if (kind === "power") { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, .08, "square", .06, i * .06); }); haptic("heavy"); }
     else if (kind === "win") { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, .14, "triangle", .1, i * .09); });
       haptic("success"); setTimeout(function () { haptic("medium"); }, 200); }
-    else if (kind === "deliver") { tone(700, .07, "sine", .09); tone(1050, .11, "sine", .09, .08); haptic("medium"); }
+    else if (kind === "deliver") { tone(740, .09, "sine", .05); tone(1110, .15, "sine", .04, .09); haptic("heavy"); }
     else if (kind === "tick") { if (window.RDSFX && sfxOn && sfxCtx) window.RDSFX.tick(); else tone(1900, .018, "square", .035); haptic("select"); }
     else if (kind === "start") { tone(330, .3, "sawtooth", .05, 0, 990); haptic("medium"); }
   }
@@ -14347,7 +14322,7 @@ SPIN_PAGE_HTML = r'''<!doctype html>
   })();
 
   var currentRotation = 0;
-  var colors = ["#21182e", "#342040", "#251b3e", "#412139", "#191925", "#2e2546"];
+  var colors = ["#ff6b6b", "#4ecdc4", "#ffd93d", "#6c5ce7", "#1dd1a1", "#feca57"];
 
   function initData() { return tg ? tg.initData : ""; }
 
@@ -14445,10 +14420,12 @@ SPIN_PAGE_HTML = r'''<!doctype html>
     var baseOffset = (360 - targetMid) % 360;
     var currentMod = ((currentRotation % 360) + 360) % 360;
     var deltaToBase = ((baseOffset - currentMod) % 360 + 360) % 360;
-    var extraSpins = 5;
+    var extraSpins = 7 + Math.floor(Math.random() * 3);
     currentRotation += extraSpins * 360 + deltaToBase;
     var wheel = document.getElementById("wheel");
     wheel.style.transform = "rotate(" + currentRotation + "deg)";
+    var wrap = document.getElementById('wheel-wrap') || wheel.parentElement;
+    wrap.animate([{filter:'drop-shadow(0 0 5px #a78bfa)'},{filter:'drop-shadow(0 0 25px #f472b6)'},{filter:'drop-shadow(0 0 8px #a78bfa)'}],{duration:4000});
     startWheelTicks(wheel, n);
   }
 
@@ -15890,7 +15867,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   // Картинки из /assets (см. bot assets/*.png): пока не загрузились или файла нет -- остаётся эмодзи.
   // «Работа» полностью на эмодзи (картинки не подошли по стилю). Файлы лежат в assets/ -- чтобы вернуть,
   // добавь ключи (courier_*, person_*, catch_*, crop_*, farm_*) в этот список.
-  var SPRITE_KEYS = ["person_coffee", "catch_bomb", "catch_slow", "courier_light", "catch_bighazard", "courier_rider", "catch_double", "person_point", "catch_coins", "person_arms", "person_wave", "courier_parcel", "catch_magnet", "courier_obstacle", "catch_shield", "catch_bills", "farm_drop"];
+  var SPRITE_KEYS = [];
   var PERSON_KEYS = ["person_wave", "person_coffee", "person_arms", "person_point"];
   var SPRITES = {};
   function setSprite(el, key, fallbackText) {
@@ -16063,14 +16040,17 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function haptic(kind) {
     if (!tg || !tg.HapticFeedback) return;
     try {
-      if (kind === "select") tg.HapticFeedback.selectionChanged();
+      if (kind === "select") tg.HapticFeedback.impactOccurred("medium");
       else if (kind === "success" || kind === "error" || kind === "warning") tg.HapticFeedback.notificationOccurred(kind);
-      else tg.HapticFeedback.impactOccurred(kind);
+      else tg.HapticFeedback.impactOccurred(kind === "light" || kind === "select" ? "medium" : kind);
     } catch (e) {}
   }
   function fx(kind) {
     if (kind === 'explosion' || kind === 'impact' || kind === 'drop' || kind === 'harvest') {
-      if (window.RDSFX && sfxOn) window.RDSFX.care(kind);
+      if (kind === 'explosion') { noise(.24,.10,220,0,65); tone(65,.22,'sine',.10,0,32); }
+      else if (kind === 'impact') { noise(.08,.07,400); tone(110,.10,'triangle',.07,0,55); }
+      else if (kind === 'harvest') { tone(660,.10,'sine',.05); tone(880,.16,'sine',.04,.08); }
+      else { tone(950,.10,'sine',.04,0,450); }
       haptic(kind === 'explosion' || kind === 'impact' ? 'heavy' : 'light');
     }
     else if (kind === "coin") { tone(880, .07, "square", .05); tone(1320, .1, "square", .05, .06); haptic("light"); }
@@ -16080,12 +16060,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
     else if (kind === "key") { tone(660, .035, "square", .04); haptic("select"); }
     else if (kind === "good") { tone(988, .06, "sine", .09); haptic("light"); }
     else if (kind === "wire") { tone(523, .05, "square", .06); tone(784, .08, "square", .06, .05); haptic("medium"); }
-    else if (kind === "lane") { tone(300, .06, "sine", .06, 0, 460); haptic("select"); }
+    else if (kind === "lane") { haptic("medium"); }
     else if (kind === "drop") { tone(1300, .14, "sine", .09, 0, 320); haptic("light"); }
     else if (kind === "power") { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, .08, "square", .06, i * .06); }); haptic("heavy"); }
     else if (kind === "win") { [523, 659, 784, 1047].forEach(function (f, i) { tone(f, .14, "triangle", .1, i * .09); });
       haptic("success"); setTimeout(function () { haptic("medium"); }, 200); }
-    else if (kind === "deliver") { tone(700, .07, "sine", .09); tone(1050, .11, "sine", .09, .08); haptic("medium"); }
+    else if (kind === "deliver") { tone(740, .09, "sine", .05); tone(1110, .15, "sine", .04, .09); haptic("heavy"); }
     else if (kind === "shatter") {  // щит разбился: стеклянный треск и звон осколков
       var S = window.RDSFX;
       if (S && sfxOn && sfxCtx) { S.noise(.3, .16, 5000, 0, 9000, "highpass"); S.tone(180, .18, "triangle", .1, 0, 70);
@@ -19335,16 +19315,9 @@ async def api_app_create_handler(request):
                 personality_ready=True, history=[], relationship={}, creating_character=False, switching_personality=False,
                 last_activity=datetime.now().isoformat())
     award_referral(user)
-    user["app_pending"] = datetime.now().isoformat()
+    user["app_pending"] = None
     save_data(user_data)
 
-    async def first():
-        try:
-            await generate_first_message(user_id, user)
-        finally:
-            user["app_pending"] = None
-            save_data(user_data)
-    asyncio.create_task(first())
     return web.json_response({"ok": True, "state": serialize_app_state(user)})
 
 
@@ -19539,7 +19512,18 @@ input:focus, textarea:focus { border-color: rgba(139, 92, 246, .6) !important; b
 .rd-impact { position:absolute; width:14px;height:14px;border:3px solid #f0abfc;border-radius:50%;pointer-events:none;animation:rd-impact .6s ease-out forwards;z-index:30; }
 @keyframes rd-impact { to{transform:scale(8);opacity:0} }
 .rd-currency { width:1.25em;height:1.25em;object-fit:contain;vertical-align:middle;display:inline-block; }
-@media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important; } }
+@media (prefers-reduced-motion:reduce) { body::before,.rd-fx,.rd-impact,.card,.hero-fx,.rd-ring { animation:none !important;transition:none !important; } }
+/* Shared controls, including navigation, game controls and modal buttons. */
+:is(button,input[type=button],input[type=submit],a.btn,#rd-control-theme):not(#rd-native-control) {
+  background:linear-gradient(#0c0b13,#0c0b13) padding-box,linear-gradient(125deg,#9d6aff,#f063cc) border-box !important;
+  border:1px solid transparent !important; color:#e2b5ff !important;
+  text-shadow:0 0 10px #c779ff80; box-shadow:0 0 10px #a855f729 !important;
+}
+button:disabled { opacity:.45; text-shadow:none; }
+button.on,button.active,button[aria-pressed=true] { color:#ffc2eb !important;box-shadow:0 0 16px #df60d565,inset 0 0 12px #a855f722 !important; }
+button:focus-visible { outline:2px solid #f0abfc;outline-offset:3px; }
+button span,button b { color:inherit; }
+
 '''
 APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css">'
 
@@ -20185,8 +20169,19 @@ APP_PAGE_HTML = r'''<!doctype html>
 .rd-impact { position:absolute; width:14px;height:14px;border:3px solid #f0abfc;border-radius:50%;pointer-events:none;animation:rd-impact .6s ease-out forwards;z-index:30; }
 @keyframes rd-impact { to{transform:scale(8);opacity:0} }
 .rd-currency { width:1.25em;height:1.25em;object-fit:contain;vertical-align:middle;display:inline-block; }
-@media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important; } }
+@media (prefers-reduced-motion:reduce) { body::before,.rd-fx,.rd-impact,.card,.hero-fx,.rd-ring { animation:none !important;transition:none !important; } }
 
+
+/* Shared controls, including navigation, game controls and modal buttons. */
+:is(button,input[type=button],input[type=submit],a.btn,#rd-control-theme):not(#rd-native-control) {
+  background:linear-gradient(#0c0b13,#0c0b13) padding-box,linear-gradient(125deg,#9d6aff,#f063cc) border-box !important;
+  border:1px solid transparent !important; color:#e2b5ff !important;
+  text-shadow:0 0 10px #c779ff80; box-shadow:0 0 10px #a855f729 !important;
+}
+button:disabled { opacity:.45; text-shadow:none; }
+button.on,button.active,button[aria-pressed=true] { color:#ffc2eb !important;box-shadow:0 0 16px #df60d565,inset 0 0 12px #a855f722 !important; }
+button:focus-visible { outline:2px solid #f0abfc;outline-offset:3px; }
+button span,button b { color:inherit; }
 </style>
 </head>
 <body>
@@ -20543,7 +20538,15 @@ APP_PAGE_HTML = r'''<!doctype html>
       ['#composer', tr('Переписка', 'Chat'), tr('Напиши сообщение. Зажми своё сообщение для правки, чужое — для реакции.', 'Send a message. Hold your message to edit, or a character reply to react.')],
       ['#nav button:nth-child(3)', tr('Магазин', 'Shop'), tr('Здесь можно накормить и напоить персонажа или выбрать подарок.', 'Food, drinks and gifts for your character live here.')],
       ['#nav button:nth-child(5)', tr('Работа и ферма', 'Work and farm'), tr('Зарабатывай баксы и собирай урожай.', 'Earn bucks and harvest crops.')],
-      ['#nav button:nth-child(6)', tr('Профиль и настройки', 'Profile and settings'), tr('Отношения, преимущества подписки, язык, режим общения и справка.', 'Relationships, subscription benefits, language, chat mode and help.')]
+      ['#nav button:nth-child(2)', tr('Игры', 'Games'), tr('Выбери игру и прочитай её правила перед началом.', 'Choose a game and read its rules before starting.')],
+      ['#nav button:nth-child(4)', tr('Колесо фортуны', 'Fortune wheel'), tr('Проверь доступные прокрутки и список призов. Размер сектора не равен шансу выигрыша.', 'Check available spins and prizes. Sector size does not represent winning odds.')],
+      ['#nav button:nth-child(6)', tr('Профиль и настройки', 'Profile and settings'), tr('Отношения, преимущества подписки, язык, режим общения и справка.', 'Relationships, subscription benefits, language, chat mode and help.')],
+      ['#view-profile .hero', tr('Твой персонаж', 'Your character'), tr('Здесь меняются имя и внешность. Ниже — энергия, сытость, вода и настроение.', 'Change the name and appearance here. Energy, food, water and mood are shown below.'), 'profile'],
+      ['#view-profile .rd-pack', tr('Баксы и покупки', 'Bucks and purchases'), tr('Сравни количество баксов и цену в Stars. Оплата открывается отдельно — обучение ничего не покупает.', 'Compare bucks and Stars prices. Payment opens separately; this tour makes no purchases.'), 'profile'],
+      ['#view-profile select', tr('Язык', 'Language'), tr('Переключай интерфейс между русским и английским.', 'Switch the interface between Russian and English.'), 'profile'],
+      ['#view-profile .rd-field:has(select option[value=live])', tr('Режим общения', 'Conversation mode'), tr('Это поле выбирает переписку без действий или ролевую историю с действиями. Начни разговор сам — персонаж дождётся тебя.', 'This field chooses messages without actions or a roleplay story. Start the conversation when ready; your character will wait.'), 'profile'],
+      ['#nav button:nth-child(6)', tr('Справка всегда рядом', 'Help is always nearby'), tr('Открой справку в профиле, чтобы прочитать правила и повторить это обучение.', 'Open help in your profile to read the rules or replay this tour.')]
+
     ];
     function position() {
       var target = document.querySelector(targets[index][0]) || $('head'), rect = target.getBoundingClientRect();
@@ -20552,13 +20555,17 @@ APP_PAGE_HTML = r'''<!doctype html>
     }
     function close() {
       overlay.remove(); tourOpen = false; window.removeEventListener('resize', position);
-      updateSetting({tour_seen: true});
+      setTab('chat'); updateSetting({tour_seen: true});
     }
     function show() {
+      setTab(targets[index][3] || 'chat');
+      var focusTarget = document.querySelector(targets[index][0]);
+      if (focusTarget) focusTarget.scrollIntoView({block:'center'});
       panel.innerHTML = ''; panel.appendChild(el('div', 'note', (index + 1) + ' / ' + targets.length));
       panel.appendChild(el('h3', null, targets[index][1])); panel.appendChild(el('p', null, targets[index][2]));
       var next = el('button', 'btn', index === targets.length - 1 ? tr('Понятно', 'Done') : tr('Далее', 'Next'));
       next.onclick = function () { if (++index === targets.length) close(); else show(); }; panel.appendChild(next);
+      if (index > 0) { var back = el('button','btn ghost',tr('Назад','Back')); back.onclick=function(){index--;show();};panel.appendChild(back); }
       var skip = el('button', 'btn ghost', tr('Пропустить', 'Skip')); skip.onclick = close; panel.appendChild(skip); position(); next.focus();
     }
     overlay.onkeydown = function (event) { if (event.key === 'Escape') close(); };
