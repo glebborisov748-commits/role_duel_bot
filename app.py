@@ -1847,7 +1847,7 @@ SUPER_PRO_STYLES = {
         "adult": True,
         "emoji": "😤",
         "description": "Ты холодный и грубый: отвечаешь резко, свысока, часто раздражённо, вставляешь в реплики мат "
-                       "и грубые словечки («блин», «нахрен», «отвали» и подобные — без крайностей, но заметно). Ты не "
+                       "и грубые словечки («блядь», «нахуй», «охренел», «придурок» — в большинстве реплик по контексту, без однообразия; без угроз и дискриминации, просьбу остановиться уважаешь). Ты не "
                        "церемонишься и не смягчаешь тон, даже когда собеседник пишет что-то приятное. За этой "
                        "резкостью где-то глубоко прячется забота, но ты скорее съязвишь или огрызнёшься, чем "
                        "покажешь это прямо."
@@ -3521,7 +3521,7 @@ def build_prompt(user):
             f"самого собеседника называй «тебя/тебе», а НЕ «него/неё» (пример ошибки: «перевожу взгляд с "
             f"окна на него» — правильно «...на тебя»). "
             f"Ты всегда отвечаешь как настоящий человек, с эмоциями, сомнениями и чувствами. "
-            f"В каждой реплике используй минимум 1 эмодзи, органично вписанный по смыслу фразы.\n"
+            f"Пиши коротко, 1–3 предложения, живой разговорный сленг по ситуации; эмодзи необязательны.\n"
             f"{no_explicit_rule}"
             # своему персонажу тоже нужно указание языка, иначе модель отвечает наугад
             f"\n{get_language_rule(user)}"
@@ -3553,9 +3553,9 @@ def build_prompt(user):
         "(флирт), (приветствие), (вопрос). Это служебный тег для системы, а не часть истории — слово ВСЕГДА "
         "остаётся русским из этого списка, даже если весь остальной ответ на другом языке. Пиши его голыми "
         "скобками, без звёздочек и любого другого форматирования вокруг, точно последними символами ответа.\n"
-        "**СТРУКТУРА ОТВЕТА:** Чередуй действие и реплику. Первым идёт действие, затем реплика. Минимум 2 пары "
-        "(действие + реплика).\n"
-        "**ОБЪЁМ:** Пиши развёрнуто (3–5 предложений на реплику).\n"
+        "**ОБЪЁМ:** Обычно 1–3 коротких предложения. Одно короткое действие только в ролевом режиме. "
+        "Без простыней; подробнее только по прямой просьбе. Живая молодёжная речь, уместный сленг, "
+        "без канцелярита и одинаковых вопросов в конце.\n"
         "**ЗАПРЕТЫ:** Не используй имена собеседника и своё имя. Не повторяй одни и те же жесты чаще раза в 5 "
         "сообщений. Избегай шаблонов, не ставь многоточия, не обрывай мысли на середине.\n"
         "**СТИЛЬ:** Обращайся на «ты», давай живые, эмоциональные ответы с чувствами и лёгкой романтикой.\n"
@@ -3563,9 +3563,7 @@ def build_prompt(user):
         "мысли. Реагируй на то, ЧТО именно написал собеседник, а не общими фразами, которые подошли бы к любому "
         "сообщению. Разная длина и ритм реплик — короткая фраза иногда живее длинного абзаца. Можешь сама "
         "сменить тему, что-то спросить в ответ, отреагировать неожиданно — не будь предсказуемой.\n"
-        "**ЭМОДЗИ:** В каждой реплике используй минимум 1 эмодзи (обычно 1–2), органично "
-        "вписанный по смыслу фразы, а не просто приклеенный в конец, — без этого ответ "
-        "засчитывается как неправильный по формату.\n"
+        "**ЭМОДЗИ:** Один уместный эмодзи иногда; можно вовсе без него.\n"
         f"{no_explicit_rule}"
     )
     if char_name:
@@ -7462,7 +7460,7 @@ async def ai_chat_answer(user):
         call_ai, AI_MODEL, "ai",
         messages=[{"role": "system", "content": system_prompt}] + user["history"],
         temperature=0.9,
-        max_tokens=1000
+        max_tokens=450
     )
     answer = response.choices[0].message.content or ""
     reaction, clean_answer = extract_reaction_from_answer(answer)
@@ -7471,6 +7469,9 @@ async def ai_chat_answer(user):
         reaction = None
     if reaction and user["history"] and user["history"][-1].get("role") == "user":
         user["history"][-1]["reaction"] = reaction  # в приложении -- эмодзи-реакция персонажа на твоё сообщение
+    if reaction and user.get('app_pending'):
+        save_data(user_data)
+        await asyncio.sleep(1.6)
     user["history"].append({"role": "assistant", "content": clean_answer})
     limit = get_history_limit(user)
     if len(user["history"]) > limit:
@@ -13255,7 +13256,7 @@ SHOP_PAGE_HTML = r'''<!doctype html>
         if (category === 'food' && window.RDSFX) {
           var drinks = ['water','sparkling_water','coconut_water','beer','fine_wine'];
           var drink = drinks.indexOf(key) >= 0;
-          window.RDSFX.care(drink ? 'drink' : 'eat');
+          window.RDSFX.care(drink ? 'drink' : 'eat', key);
           window.RDSFX.effect(drink ? '💧' : '🍽', innerWidth/2, innerHeight/2);
         }
         safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
@@ -13410,8 +13411,18 @@ def shop_item_image(category, key):
     for ext in ("png", "webp", "jpg"):
         name = f"{category}_{key}.{ext}"
         if os.path.isfile(os.path.join(ASSETS_DIR, name)):
-            return f"/assets/{name}"
+            return f"/assets/{name}?v=20261113b"
     return None
+
+
+async def audio_sample_handler(request):
+    name = request.match_info.get('name', '')
+    if not re.fullmatch(r'[a-z]+\.wav', name):
+        raise web.HTTPNotFound()
+    path = os.path.join(ASSETS_DIR, 'audio', name)
+    if not os.path.isfile(path):
+        raise web.HTTPNotFound()
+    return web.FileResponse(path, headers={'Cache-Control':'public, max-age=86400'})
 
 
 async def asset_image_handler(request):
@@ -14292,6 +14303,11 @@ SPIN_PAGE_HTML = r'''<!doctype html>
     } catch (e) {}
   }
   function fx(kind) {
+    if (window.RDSFX && window.RDSFX.sample) {
+      if(sfxOn) window.RDSFX.sample(({coin:'deliver',good:'key',wire:'key',lane:'key',over:'loss',harvest:'deliver',power:'win',shatter:'impact',car:'start',rocket:'start',plant:'drop',silver:'win',gold:'win',rainbow:'win'})[kind] || kind);
+      haptic(kind==='over'||kind==='impact'||kind==='explosion'?'heavy':kind==='win'?'success':'medium');return;
+    }
+
     if (kind === "coin") { tone(880, .07, "square", .05); tone(1320, .1, "square", .05, .06); haptic("light"); }
     else if (kind === "loss") { tone(220, .22, "sawtooth", .07, 0, 110); haptic("warning"); }
     else if (kind === "over") { tone(392, .16, "triangle", .12); tone(311, .16, "triangle", .12, .15); tone(196, .38, "triangle", .12, .3);
@@ -14644,6 +14660,7 @@ SPIN_PAGE_HTML = r'''<!doctype html>
 
   // ---- звуки приза: чем реже приз, тем богаче и «волшебнее» звук (колокольчики, арфа, пэд -- без хлопков) ----
   function prizeSound(kind, power) {
+    if(window.RDSFX && window.RDSFX.sample){if(sfxOn)window.RDSFX.sample(kind?'win':'loss');return;}
     power = power || 1;
     var S = window.RDSFX;
     if (!sfxOn || !sfxCtx || !S) { fx(kind ? "win" : "loss"); return; }
@@ -16046,6 +16063,11 @@ WORK_PAGE_HTML = r'''<!doctype html>
     } catch (e) {}
   }
   function fx(kind) {
+    if (window.RDSFX && window.RDSFX.sample) {
+      if(sfxOn) window.RDSFX.sample(({coin:'deliver',good:'key',wire:'key',lane:'key',over:'loss',harvest:'deliver',power:'win',shatter:'impact',car:'start',rocket:'start',plant:'drop',silver:'win',gold:'win',rainbow:'win'})[kind] || kind);
+      haptic(kind==='over'||kind==='impact'||kind==='explosion'?'heavy':kind==='win'?'success':'medium');return;
+    }
+
     if (kind === 'explosion' || kind === 'impact' || kind === 'drop' || kind === 'harvest') {
       if (kind === 'explosion') { noise(.24,.10,220,0,65); tone(65,.22,'sine',.10,0,32); }
       else if (kind === 'impact') { noise(.08,.07,400); tone(110,.10,'triangle',.07,0,55); }
@@ -18891,8 +18913,149 @@ APP_TEXTS = {
 }
 
 
+APP_TEXTS['de'] = {**APP_TEXTS['en'], **{'tab_chat': 'Chat',
+ 'tab_games': 'Spiele',
+ 'tab_shop': 'Shop',
+ 'tab_spin': 'Glücksrad',
+ 'tab_work': 'Arbeit',
+ 'tab_profile': 'Profil',
+ 'online': 'online',
+ 'typing': 'schreibt…',
+ 'asleep': 'schläft 😴',
+ 'sick': 'krank',
+ 'placeholder': 'Nachricht…',
+ 'send': 'Senden',
+ 'empty': 'Sag Hallo 💬',
+ 'reroll': '🔄 Andere Antwort',
+ 'asleep_title': '😴 Keine Energie — schläft',
+ 'asleep_text': 'Mit einem Energizer wecken oder warten.',
+ 'wake_energizer': '⚡ Wecken (noch {n})',
+ 'wake_elite': '💎 Kostenlos wecken (wöchentlich)',
+ 'wake_now': '⭐ Jetzt wecken · {price}⭐',
+ 'wake_done': '☀️ Wieder wach!',
+ 'wait_reply': 'Warte auf die Antwort 🙂',
+ 'too_long': 'Maximal {n} Zeichen.',
+ 'gen_error': '⚠️ Antwort fehlgeschlagen. Erneut versuchen.',
+ 'level': 'Nähe-Level {n}',
+ 'stats_title': 'Zustand',
+ 'energy': 'Energie',
+ 'satiety': 'Sättigung',
+ 'water': 'Wasser',
+ 'mood': 'Stimmung',
+ 'bucks': 'Bucks',
+ 'energizers': 'Energizer',
+ 'scenes': 'Szenen',
+ 'sub_title': 'Abonnement',
+ 'sub_none': 'Kein Abonnement',
+ 'sub_until': 'bis {date}',
+ 'sub_active_note': 'Ein Abo ist bereits aktiv.',
+ 'upgrade': '⬆️ Auf SUPER PRO upgraden',
+ 'hot_btn': '🔥 Szene',
+ 'hot_note': 'Öffnet sich im Bot-Chat',
+ 'guide_btn': '📖 Hilfe',
+ 'chat_btn': '💬 Telegram-Chat',
+ 'paid_wait': 'Zahlung erhalten…',
+ 'char_female': 'Deine Begleiterin',
+ 'char_male': 'Dein Begleiter',
+ 'per_month': '/ Monat',
+ 'coupon': '🎟 −{n}%, noch {h} Std.',
+ 'sale': '🔥 SUPER PRO und ELITE −{n}%',
+ 'ob_name': 'Wie heißt dein Charakter?',
+ 'ob_name_hint': 'Zum Beispiel Anna — optional',
+ 'ob_avatar': '🖼 Avatar (SUPER PRO)',
+ 'ob_avatar_pick': '📷 Foto hochladen',
+ 'ob_avatar_change': '🔄 Anderes Foto',
+ 'avatar_too_big': 'Bild zu groß. Wähle ein anderes.',
+ 'avatar_locked': '🖼 Eigener Avatar mit SUPER PRO oder ELITE.',
+ 'rename_btn': '✏️ Namen ändern',
+ 'rename_prompt': 'Wie heißt dein Charakter?',
+ 'avatar_btn': '🖼 Avatar ändern',
+ 'avatar_remove': 'Avatar entfernen',
+ 'avatar_done': 'Avatar aktualisiert ✨',
+ 'ob_look': 'Wie sieht dein Charakter aus?',
+ 'look_btn': '👤 Aussehen',
+ 'look_title': 'Aussehen wählen',
+ 'ob_title': 'Erstelle deinen Charakter',
+ 'ob_world': 'Welche Welt?',
+ 'ob_gender': 'Wer ist dein Charakter?',
+ 'ob_style': 'Welche Persönlichkeit?',
+ 'ob_scene': 'Wie unterhaltet ihr euch?',
+ 'ob_custom': '🎭 Eigener Charakter (SUPER PRO)',
+ 'ob_custom_hint': 'Aussehen, Charakter, Geschichte — optional.',
+ 'ob_next': 'Weiter',
+ 'ob_back': 'Zurück',
+ 'ob_done': '✨ Charakter erstellen',
+ 'ob_female': '👩 Frau',
+ 'ob_male': '👨 Mann',
+ 'ob_realism': 'Moderne Stadt, Arbeit und Alltag',
+ 'ob_anime': 'Anime-Welt: Magie und Romantik',
+ 'ob_phone': 'Ihr schreibt euch',
+ 'ob_live': 'Ihr seid zusammen vor Ort',
+ 'ob_custom_short': 'Mindestens {n} Zeichen oder leer lassen.',
+ 'style_desc_warm': 'Sanft und fürsorglich',
+ 'style_desc_daring': 'Frech und selbstbewusst',
+ 'style_desc_shy': 'Schüchtern und zurückhaltend',
+ 'style_desc_passionate': 'Leidenschaftlich und emotional',
+ 'style_desc_magnetic': 'Selbstbewusst und charismatisch',
+ 'style_desc_rude': 'Rau und direkt, 18+',
+ 'style_desc_seduction': 'Verführerisch, 18+',
+ 'set_title': '⚙️ Einstellungen',
+ 'set_mute': '🔕 Ruhemodus',
+ 'set_immunity': '🛡 Immunität',
+ 'set_sound': '🔊 Töne',
+ 'hot_title': '🔥 Szenen 18+',
+ 'hot_left': 'Verfügbare Szenen: {n}',
+ 'hot_type': 'Was passiert?',
+ 'hot_place': 'Wo?',
+ 'hot_lead': 'Wer führt?',
+ 'hot_go': '🔥 Szene starten',
+ 'hot_continue': '▶️ Fortsetzen',
+ 'hot_new': '✨ Neue Szene',
+ 'hot_writing': 'Szene wird geschrieben…',
+ 'hot_buy': '🔥 Szene kaufen · {price}⭐',
+ 'hot_none': 'Keine Szenen verfügbar.',
+ 'hot_sick': '🤒 Zuerst im Shop heilen.',
+ 'hot_last': 'Letzte Szene',
+ 'more_title': 'Mehr',
+ 'ref_title': '👥 Freunde einladen',
+ 'ref_copy': '📋 Link kopieren',
+ 'ref_share': '📤 Teilen',
+ 'ref_copied': 'Link kopiert',
+ 'ref_stats': 'Freunde: {n} · {b}💵 und {e}⚡ erhalten',
+ 'ref_text': 'Pro Freund: {bucks}💵, {en}⚡ und {sc} Szenen. Dein Freund erhält {friend}💵.',
+ 'ref_share_text': 'Chatte mit einem KI-Charakter 💬',
+ 'support_title': '🛟 Support',
+ 'support_hint': 'Beschreibe dein Anliegen. Die Antwort kommt im Bot-Chat.',
+ 'support_send': 'Senden',
+ 'support_short': 'Schreib bitte etwas mehr 🙂',
+ 'channel_btn': '📢 Unser Kanal',
+ 'bj_talk_on': '💬 Kommentare: an',
+ 'bj_talk_off': '🤐 Kommentare: aus',
+ 'asleep_no_new': '😴 Zuerst deinen Charakter wecken.',
+ 'card_gift': 'Du hast etwas geschenkt',
+ 'card_food': 'Du hast etwas angeboten',
+ 'card_medicine': 'Du hast Medizin gegeben',
+ 'change_char': '🔁 Neuen Charakter erstellen',
+ 'change_char_confirm': 'Neuen Charakter erstellen? Der aktuelle Chat wird gelöscht.',
+ 'perks_pro': ['Weitere Persönlichkeiten',
+               '40 Nachrichten Gedächtnis',
+               'XP ×1,8 · Arbeit ×1,5',
+               'Täglich +2⚡',
+               '2 kostenlose Drehungen pro Tag'],
+ 'perks_super': ['Alle Persönlichkeiten, auch Rau 18+',
+                 '60 Nachrichten · XP ×2,5 · Arbeit ×2',
+                 'Eigener Charakter',
+                 'Weitere Spiele',
+                 'Täglich +3⚡ · 3 Drehungen'],
+ 'perks_elite': ['Alles aus SUPER PRO',
+                 '80 Nachrichten · XP ×3,5 · Arbeit ×2,8',
+                 '5 Szenen pro Tag',
+                 'Täglich +4⚡ · 5 Drehungen',
+                 'Einmal pro Woche kostenlos wecken']}}
+
 def at(user, key, **kw):
-    lang = "ru" if user.get("lang", "ru") == "ru" else "en"
+    lang = user.get("lang", "ru")
+    if lang not in APP_TEXTS: lang = "en"
     text = APP_TEXTS[lang].get(key, APP_TEXTS["ru"][key])
     return text.format(**kw) if kw and isinstance(text, str) else text
 
@@ -18943,8 +19106,8 @@ def serialize_onboarding(user):
             "genders": [{"key": "female", "label": at(user, "ob_female")}, {"key": "male", "label": at(user, "ob_male")}],
             "default_gender": "female" if user.get("user_gender") != "female" else "male",
             "styles": styles,
-            "scenes": [{"key": "phone", "label": "Переписка" if lang == "ru" else "Messages", "desc": "Без описаний действий" if lang == "ru" else "Without action descriptions"},
-                       {"key": "live", "label": "Ролеплей" if lang == "ru" else "Roleplay", "desc": "С описаниями действий" if lang == "ru" else "With action descriptions"}],
+            "scenes": [{"key": "phone", "label": {"ru":"Переписка","de":"Nachrichten"}.get(lang,"Messages"), "desc": {"ru":"Без описаний действий","de":"Ohne Handlungsbeschreibungen"}.get(lang,"Without action descriptions")},
+                       {"key": "live", "label": {"ru":"Ролеплей","de":"Rollenspiel"}.get(lang,"Roleplay"), "desc": {"ru":"С описаниями действий","de":"Mit Handlungsbeschreibungen"}.get(lang,"With action descriptions")}],
             "can_custom": sub in ("super_pro", "elite"), "custom_min": CUSTOM_CHARACTER_MIN_LEN, "name_max": CHAR_NAME_MAX,
             "looks": [{"key": k, "world": v["world"], "gender": v["gender"], "img": f"/assets/avatar_{k}.jpg",
                        "label": v["label_ru"] if lang == "ru" else v["label_en"]} for k, v in LOOKS.items()],
@@ -18983,7 +19146,7 @@ CHANNEL_URL = "https://t.me/duel_dev_channel"
 def serialize_app_state(user):
     user["app_seen"] = datetime.now().isoformat()
     if not user.get("personality_ready"):
-        ui = {k: v for k, v in APP_TEXTS["ru" if user.get("lang", "ru") == "ru" else "en"].items() if isinstance(v, str)}
+        ui = {k: v for k, v in APP_TEXTS.get(user.get("lang", "ru"), APP_TEXTS["en"]).items() if isinstance(v, str)}
         return {"onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
     app_unstick(user)
     _reset_daily_quota_if_needed(user)
@@ -19001,7 +19164,7 @@ def serialize_app_state(user):
     if coupon_active(user):
         left = max(1, round((datetime.fromisoformat(user["coupon"]["until"]) - datetime.now()).total_seconds() / 3600))
         coupon = at(user, "coupon", n=int(user["coupon"]["discount"] * 100), h=left)
-    ui = {k: v for k, v in APP_TEXTS["ru" if lang == "ru" else "en"].items() if isinstance(v, str)}
+    ui = {k: v for k, v in APP_TEXTS.get(lang, APP_TEXTS["en"]).items() if isinstance(v, str)}
     return {
         "messages": [{"id": m["id"], "role": m["role"], "text": m["content"], "reaction": m.get("reaction"), "user_reaction": m.get("user_reaction"), "edited": bool(m.get("edited")), "card": m.get("card")}
                      for m in history],
@@ -19075,6 +19238,8 @@ def serialize_reply_choices(user):
     if user.get('app_pending') or is_asleep(user):
         return []
     if not user.get('history'):
+        if user.get('lang') == 'de':
+            return ['Hey! Wie läuft dein Tag?', 'Erzähl mir etwas Unerwartetes über dich.', 'Was würdest du mir gern zeigen?', 'Was interessiert dich gerade?']
         if user.get('lang', 'ru') == 'ru':
             return ['Привет! Как проходит твой день?', 'Расскажи о себе что-нибудь неожиданное.',
                     'Как устроен твой мир?' if user.get('world') == 'anime' else 'Какое место тебе хотелось бы показать мне?',
@@ -19101,7 +19266,7 @@ def parse_reply_choices(raw):
 
 async def generate_reply_choices(user, key):
     """Optional suggestions never delay the character or mutate conversation history."""
-    lang = 'Russian' if user.get('lang', 'ru') == 'ru' else 'English'
+    lang = {'ru':'Russian','de':'German'}.get(user.get('lang'),'English')
     history = [{'role': m['role'], 'content': str(m.get('content', ''))[:2000]}
                for m in user.get('history', [])[-16:] if m.get('role') in ('user', 'assistant')]
     instruction = (
@@ -19426,7 +19591,7 @@ setTimeout(function () { if (window.__tgSdkOnSettle) window.__tgSdkOnSettle(); }
 _SDK_TAG_RE = re.compile(r'<script src="/tg-sdk\.js"[^>]*>\s*</script>', re.S)
 
 
-SFX_TAG = '<script src="/sfx.js"></script>'
+SFX_TAG = '<script src="/sfx.js?v=20261113c"></script>'
 
 
 async def sfx_js_handler(request):
@@ -19562,11 +19727,7 @@ input:focus, textarea:focus { border-color: rgba(139, 92, 246, .6) !important; b
 ::-webkit-scrollbar { width: 0; height: 0; }
 
 /* RoleDuel: dark surfaces with a restrained violet/pink edge. */
-.btn, .buy-btn, .action-btn, .farm-action-btn, .farm-buy-slot-btn, .bets .btn, #send {
-  background: linear-gradient(#101018, #101018) padding-box, linear-gradient(125deg,#8b5cf6,#ec4899) border-box !important;
-  border: 1px solid transparent !important; color:#faf5ff !important;
-  box-shadow:0 0 12px #a855f730,inset 0 0 10px #ec48990b !important;
-}
+.btn, #send { background:linear-gradient(135deg,#633a94,#ab4d8c);color:#fbeaff; }
 .btn::after,.buy-btn::after,.action-btn::after { animation:none !important; opacity:.12; }
 .btn:disabled,.buy-btn:disabled { opacity:.45; box-shadow:none !important; }
 .rd-field { display:block; margin:14px 0; font-size:14px; }
@@ -19589,19 +19750,19 @@ input:focus, textarea:focus { border-color: rgba(139, 92, 246, .6) !important; b
 @keyframes rd-impact { to{transform:scale(8);opacity:0} }
 .rd-currency { width:1.25em;height:1.25em;object-fit:contain;vertical-align:middle;display:inline-block; }
 @media (prefers-reduced-motion:reduce) { body::before,.rd-fx,.rd-impact,.card,.hero-fx,.rd-ring { animation:none !important;transition:none !important; } }
-/* Shared controls, including navigation, game controls and modal buttons. */
-:is(button,input[type=button],input[type=submit],a.btn,#rd-control-theme):not(#rd-native-control) {
-  background:linear-gradient(#0c0b13,#0c0b13) padding-box,linear-gradient(125deg,#9d6aff,#f063cc) border-box !important;
-  border:1px solid transparent !important; color:#e2b5ff !important;
-  text-shadow:0 0 10px #c779ff80; box-shadow:0 0 10px #a855f729 !important;
-}
-button:disabled { opacity:.45; text-shadow:none; }
-button.on,button.active,button[aria-pressed=true] { color:#ffc2eb !important;box-shadow:0 0 16px #df60d565,inset 0 0 12px #a855f722 !important; }
-button:focus-visible { outline:2px solid #f0abfc;outline-offset:3px; }
-button span,button b { color:inherit; }
+/* Section-specific controls and visible press feedback. */
+button:active {transform:translateY(2px) scale(.95) !important;filter:brightness(1.35) !important;}
+button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
+.btn,.buy-btn,.action-btn {box-shadow:0 0 15px #bb70ff45 !important;}
+#nav button {background:none !important;border:0 !important;box-shadow:none !important;text-shadow:none !important;border-radius:0 !important;color:var(--hint) !important;}
+#nav button.on {color:#e4b4ff !important;}
+#hacker-keyboard button,#hacker-keys button,.hacker-key {background:linear-gradient(#313d41,#182429) !important;border:1px solid #638c82 !important;border-bottom:4px solid #0a1417 !important;border-radius:6px !important;color:#a3ffd0 !important;box-shadow:0 3px 0 #071011,0 0 9px #54e5b826 !important;font-family:monospace;font-weight:700;}
+#courier-up,#courier-down {background:linear-gradient(135deg,#184c65,#206e83) !important;color:#c7f4ff !important;border:1px solid #65ccd3 !important;}
+.farm-action-btn,.farm-buy-slot-btn {background:linear-gradient(135deg,#19462f,#2f6950) !important;color:#c3ffd5 !important;border:1px solid #70c68f !important;}
+#actions .action-btn {background:linear-gradient(135deg,#542968,#9b4377) !important;color:#ffe1ef !important;border:1px solid #eaa2ce !important;}
 
 '''
-APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css">'
+APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261113c">'
 
 
 async def theme_css_handler(request):
@@ -19908,7 +20069,16 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
     node.style.position='fixed';node.style.left=(r.left+r.width/2)+'px';node.style.top=(r.top+r.height/2)+'px';
     document.body.appendChild(node);setTimeout(function(){node.remove();},650);
   }
-  function care(kind) {
+  var sampleBuffers={};
+  function sample(kind) {
+    if(!enabled())return;
+    var c=init();if(!c)return;
+    function play(buffer){if(!enabled())return;var src=c.createBufferSource(),g=c.createGain();src.buffer=buffer;g.gain.value=.65;src.connect(g);g.connect(c.destination);src.start();}
+    if(sampleBuffers[kind]){play(sampleBuffers[kind]);return;}
+    fetch('/assets/audio/'+kind+'.wav').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){return c.decodeAudioData(b);}).then(function(b){sampleBuffers[kind]=b;play(b);}).catch(function(){});
+  }
+  function care(kind, item) {
+    sample(kind==='drink'?(item==='sparkling_water'||item==='beer'?'soda':'water'):(kind==='eat'?(item==='chips'||item==='pizza'?'crunch':'eat'):kind));return;
     if (!enabled()) return;
     if (kind === 'explosion') { noise(.45,.18,450,0,70,'lowpass');tone(95,.35,'sine',.15,0,32); }
     else if (kind === 'impact') { noise(.18,.13,1600,0,220);tone(120,.2,'triangle',.12,0,40); }
@@ -19917,7 +20087,7 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
     else if (kind === 'harvest') { [660,880,1320].forEach(function(f,i){pluck(f,.4,.05,i*.07);}); }
   }
   window.addEventListener('storage',function(){if(master) master.gain.value=enabled()?.85:0;});
-  window.RDSFX = { care:care, effect:effect, impact:impact, ctx: init, out: out, tone: tone, bell: bell, pluck: pluck, pad: pad, sparkle: sparkle, noise: noise,
+  window.RDSFX = { sample:sample, care:care, effect:effect, impact:impact, ctx: init, out: out, tone: tone, bell: bell, pluck: pluck, pad: pad, sparkle: sparkle, noise: noise,
                    tick: tick, sent: sent, received: received, PENTA: PENTA };
 
   var currencyScheduled = false;
@@ -20219,11 +20389,7 @@ APP_PAGE_HTML = r'''<!doctype html>
     white-space: pre-wrap; font-size: 15px; line-height: 1.5; }
   #full .big { font-size: 46px; margin-bottom: 14px; }
 /* RoleDuel: dark surfaces with a restrained violet/pink edge. */
-.btn, .buy-btn, .action-btn, .farm-action-btn, .farm-buy-slot-btn, .bets .btn, #send {
-  background: linear-gradient(#101018, #101018) padding-box, linear-gradient(125deg,#8b5cf6,#ec4899) border-box !important;
-  border: 1px solid transparent !important; color:#faf5ff !important;
-  box-shadow:0 0 12px #a855f730,inset 0 0 10px #ec48990b !important;
-}
+.btn, #send { background:linear-gradient(135deg,#633a94,#ab4d8c);color:#fbeaff; }
 .btn::after,.buy-btn::after,.action-btn::after { animation:none !important; opacity:.12; }
 .btn:disabled,.buy-btn:disabled { opacity:.45; box-shadow:none !important; }
 .rd-field { display:block; margin:14px 0; font-size:14px; }
@@ -20248,16 +20414,16 @@ APP_PAGE_HTML = r'''<!doctype html>
 @media (prefers-reduced-motion:reduce) { body::before,.rd-fx,.rd-impact,.card,.hero-fx,.rd-ring { animation:none !important;transition:none !important; } }
 
 
-/* Shared controls, including navigation, game controls and modal buttons. */
-:is(button,input[type=button],input[type=submit],a.btn,#rd-control-theme):not(#rd-native-control) {
-  background:linear-gradient(#0c0b13,#0c0b13) padding-box,linear-gradient(125deg,#9d6aff,#f063cc) border-box !important;
-  border:1px solid transparent !important; color:#e2b5ff !important;
-  text-shadow:0 0 10px #c779ff80; box-shadow:0 0 10px #a855f729 !important;
-}
-button:disabled { opacity:.45; text-shadow:none; }
-button.on,button.active,button[aria-pressed=true] { color:#ffc2eb !important;box-shadow:0 0 16px #df60d565,inset 0 0 12px #a855f722 !important; }
-button:focus-visible { outline:2px solid #f0abfc;outline-offset:3px; }
-button span,button b { color:inherit; }
+/* Section-specific controls and visible press feedback. */
+button:active {transform:translateY(2px) scale(.95) !important;filter:brightness(1.35) !important;}
+button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
+.btn,.buy-btn,.action-btn {box-shadow:0 0 15px #bb70ff45 !important;}
+#nav button {background:none !important;border:0 !important;box-shadow:none !important;text-shadow:none !important;border-radius:0 !important;color:var(--hint) !important;}
+#nav button.on {color:#e4b4ff !important;}
+#hacker-keyboard button,#hacker-keys button,.hacker-key {background:linear-gradient(#313d41,#182429) !important;border:1px solid #638c82 !important;border-bottom:4px solid #0a1417 !important;border-radius:6px !important;color:#a3ffd0 !important;box-shadow:0 3px 0 #071011,0 0 9px #54e5b826 !important;font-family:monospace;font-weight:700;}
+#courier-up,#courier-down {background:linear-gradient(135deg,#184c65,#206e83) !important;color:#c7f4ff !important;border:1px solid #65ccd3 !important;}
+.farm-action-btn,.farm-buy-slot-btn {background:linear-gradient(135deg,#19462f,#2f6950) !important;color:#c3ffd5 !important;border:1px solid #70c68f !important;}
+#actions .action-btn {background:linear-gradient(135deg,#542968,#9b4377) !important;color:#ffe1ef !important;border:1px solid #eaa2ce !important;}
 
 #reply-choices { padding:10px; border-top:1px solid #a855f733; background:#10101c; max-height:36vh; overflow-y:auto; }
 #reply-choices[hidden] { display:none; }
@@ -20266,6 +20432,18 @@ button span,button b { color:inherit; }
 .rd-choice { padding:9px 10px;border-radius:13px;text-align:left;font:inherit;font-size:13px;line-height:1.35; }
 .rd-own { margin-top:7px;padding:7px 12px;border-radius:12px;font:inherit;font-size:13px; }
 #reply-choices p { margin:7px 0 0;font-size:11px;color:#a5a0b7; }
+
+#message-menu {position:fixed;inset:0;z-index:40;background:#06061255;backdrop-filter:blur(3px);}
+#message-menu[hidden] {display:none;}
+#message-menu-box {position:absolute;width:min(280px,calc(100vw - 24px));max-height:70vh;overflow:auto;background:#211c31;border:1px solid #bf8ce955;border-radius:18px;padding:10px;box-shadow:0 12px 50px #0008;animation:context-pop .17s ease-out;transform-origin:right center;}
+@keyframes context-pop {from{opacity:0;transform:translateX(16px) scale(.9)}to{opacity:1;transform:none}}
+#message-menu-box .btn {margin:4px 0;padding:10px;border-radius:12px;}
+#message-menu-box h4 {display:none;}
+#message-menu-box .rd-reactions {flex-wrap:nowrap;gap:3px;}
+#message-menu-box .rd-reactions .btn {font-size:22px;padding:6px;}
+.bub {position:relative;}
+.bub:has(.react),.bub:has(.rd-user-react) {padding-bottom:24px;}
+.bub .react,.bub .rd-user-react {position:absolute;bottom:3px;left:9px;right:auto;font-size:13px;padding:2px 6px;line-height:1;background:#5c436a;border:0;border-radius:10px;margin:0;min-height:0;box-shadow:none;}
 </style>
 </head>
 <body>
@@ -20299,6 +20477,7 @@ button span,button b { color:inherit; }
 </div>
 <div id="toast"></div>
 <div id="sheet"><div class="box" id="sheet-box"></div></div>
+<div id="message-menu" hidden><div id="message-menu-box"></div></div>
 <div id="full"></div>
 <script>
 (function () {
@@ -20454,8 +20633,8 @@ button span,button b { color:inherit; }
       bindMessageMenu(b, m);
       w.appendChild(b);
       if (m.edited) w.appendChild(el("div", "rd-edited", tr("изменено", "edited")));
-      if (m.user_reaction) { var ur = el("button", "rd-user-react", m.user_reaction); ur.onclick = function () { messageAction(m, "react", {emoji: m.user_reaction}); }; w.appendChild(ur); }
-      if (m.reaction) w.appendChild(el("span", "react", m.reaction));
+      if (m.user_reaction) { var ur = el("button", "rd-user-react", m.user_reaction); ur.onclick = function () { messageAction(m, "react", {emoji: m.user_reaction}); }; b.appendChild(ur); }
+      if (m.reaction) b.appendChild(el("span", "react", m.reaction));
       row.appendChild(w); box.appendChild(row);
       prev = m.role;
     });
@@ -20526,7 +20705,8 @@ button span,button b { color:inherit; }
     var bar = el("div", "bar"), i = el("i"); i.style.width = Math.max(0, Math.min(100, val / max * 100)) + "%"; i.style.background = color;
     bar.appendChild(i); d.appendChild(l); d.appendChild(bar); return d;
   }
-  function tr(ru, en) { return state && state.settings && state.settings.lang === 'ru' || state && state.onboarding && state.onboarding.lang === 'ru' ? ru : en; }
+  var DE_TEXT = {"Message": "Nachricht", "Edit": "Bearbeiten", "Save": "Speichern", "Delete": "Löschen", "Cancel": "Abbrechen", "Message options": "Nachrichtenoptionen", "Delete this message and everything after it?": "Diese Nachricht und den gesamten folgenden Verlauf löschen?", "Character replies will be kept.": "Antworten bleiben erhalten.", "Reply suggestions": "Antwortvorschläge", "What will you say?": "Was antwortest du?", "How shall we start?": "Wie beginnen wir?", "Write my own": "Selbst schreiben", "Choose a line, edit if you like, then send.": "Auswählen, bearbeiten und senden.", "Close help": "Hilfe schließen", "Show me around": "Einführung zeigen", "Back": "Zurück", "Next": "Weiter", "Done": "Fertig", "Skip": "Überspringen", "Language": "Sprache", "Conversation mode": "Gesprächsmodus", "Messages": "Nachrichten", "Roleplay": "Rollenspiel", "Relationships": "Beziehung", "Trust": "Vertrauen", "Respect": "Respekt", "Get bucks": "Bucks kaufen", "Bucks are an in-game currency.": "Bucks sind Spielwährung.", "Save ": "Spare ", "Subscriber quick job": "Tagesauftrag", "Collect reward": "Belohnung abholen", "Go to work": "Zur Arbeit", "Collected today": "Heute abgeholt", "Your subscription": "Dein Abonnement", "edited": "bearbeitet", "Connection lost. Please retry.": "Keine Verbindung. Erneut versuchen.", "RoleDuel help": "RoleDuel-Hilfe", "Could not save. Please retry.": "Speichern fehlgeschlagen. Erneut versuchen.", "Wait for the reply": "Warte auf die Antwort", "Complete 3 work actions to collect ": "Erledige 3 Arbeitsaktionen für ", " bucks. Once a day.": " Bucks. Einmal täglich.", "Your character and balance": "Charakter und Guthaben", "See your character status, energy and bucks here.": "Hier siehst du Zustand, Energie und Bucks.", "Chat": "Chat", "Send a message. Hold your message to edit, or a character reply to react.": "Nachricht senden. Kurz gedrückt halten zum Bearbeiten oder Reagieren.", "Shop": "Shop", "Food, drinks and gifts for your character live here.": "Hier findest du Essen, Getränke und Geschenke.", "Work and farm": "Arbeit und Farm", "Earn bucks and harvest crops.": "Verdiene Bucks und ernte Pflanzen.", "Games": "Spiele", "Choose a game and read its rules before starting.": "Wähle ein Spiel und lies zuerst die Regeln.", "Fortune wheel": "Glücksrad", "Check available spins and prizes. Sector size does not represent winning odds.": "Prüfe Drehungen und Preise. Sektorgröße ist keine Gewinnchance.", "Profile and settings": "Profil und Einstellungen", "Relationships, subscription benefits, language, chat mode and help.": "Beziehung, Abo-Vorteile, Sprache, Gesprächsmodus und Hilfe.", "Your character": "Dein Charakter", "Change the name and appearance here. Energy, food, water and mood are shown below.": "Ändere Namen und Aussehen. Darunter stehen Energie, Hunger, Wasser und Stimmung.", "Bucks and purchases": "Bucks und Käufe", "Compare bucks and Stars prices. Payment opens separately; this tour makes no purchases.": "Vergleiche Bucks und Stars. Die Einführung kauft nichts.", "Switch between Russian, English and German.": "Wähle Russisch, Englisch oder Deutsch.", "This field chooses messages without actions or a roleplay story. Start the conversation when ready; your character will wait.": "Wähle Nachrichten oder Rollenspiel. Dein Charakter wartet auf deine erste Nachricht.", "Help is always nearby": "Hilfe ist immer erreichbar", "Open help in your profile to read the rules or replay this tour.": "Öffne die Hilfe im Profil für Regeln oder die Einführung."};
+  function tr(ru,en) { var lang=state && ((state.settings && state.settings.lang)||(state.onboarding && state.onboarding.lang));return lang==='ru'?ru:(lang==='de'?(DE_TEXT[en]||en):en); }
   function updateSetting(body) {
     return api('/api/app/settings', body).then(function (res) {
       if (!res.ok) { toast(res.error || 'Error'); return; }
@@ -20536,9 +20716,9 @@ button span,button b { color:inherit; }
     }).catch(function () { toast(tr('Нет соединения. Попробуй ещё раз.', 'Connection lost. Please retry.')); });
   }
   function languageSelect(parent) {
-    var label = el('label', 'rd-field', 'Язык / Language');
+    var label = el('label', 'rd-field', 'Язык / Language / Sprache');
     var select = el('select', 'ob-in');
-    [['ru', 'Русский'], ['en', 'English']].forEach(function (pair) {
+    [['ru', 'Русский'], ['en', 'English'], ['de', 'Deutsch']].forEach(function (pair) {
       var option = el('option', null, pair[1]); option.value = pair[0]; select.appendChild(option);
     });
     select.value = state.settings ? state.settings.lang : state.onboarding.lang;
@@ -20561,12 +20741,15 @@ button span,button b { color:inherit; }
     var body = Object.assign({id: m.id, action: action}, extra || {});
     return api('/api/app/message', body).then(function (res) {
       if (!res.ok) { toast(res.error || 'Error'); return; }
-      state = res.state; $('sheet').classList.remove('on'); render();
+      state = res.state; closeMessageMenu(); render();
     }).catch(function () { toast(tr('Не удалось сохранить. Попробуй ещё раз.', 'Could not save. Please retry.')); });
   }
-  function messageMenu(m) {
+  function closeMessageMenu() { $('message-menu').hidden=true; }
+  $('message-menu').onclick=function(e){if(e.target===$('message-menu'))closeMessageMenu();};
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMessageMenu();});
+  function messageMenu(m, anchor) {
     if (state.pending) { toast(tr('Дождись ответа персонажа', 'Wait for the reply')); return; }
-    var box = $('sheet-box'); box.innerHTML = '';
+    var box = $('message-menu-box'); box.innerHTML = '';
     box.appendChild(el('h4', null, tr('Сообщение', 'Message')));
     if (m.role === 'user' && !m.card) {
       var edit = el('button', 'btn', tr('Редактировать', 'Edit'));
@@ -20581,8 +20764,8 @@ button span,button b { color:inherit; }
       var del = el('button', 'btn ghost', tr('Удалить', 'Delete'));
       del.onclick = function () {
         var done = function (ok) { if (ok) messageAction(m, 'delete'); };
-        if (tg && tg.showConfirm) tg.showConfirm(tr('Удалить это сообщение?', 'Delete this message?'), done);
-        else done(confirm(tr('Удалить это сообщение?', 'Delete this message?')));
+        if (tg && tg.showConfirm) tg.showConfirm(tr('Удалить сообщение и всю переписку после него?', 'Delete this message and everything after it?'), done);
+        else done(confirm(tr('Удалить сообщение и всю переписку после него?', 'Delete this message and everything after it?')));
       };
       box.appendChild(del);
     } else if (m.role === 'assistant') {
@@ -20593,8 +20776,12 @@ button span,button b { color:inherit; }
       }); box.appendChild(reactions);
     }
     var close = el('button', 'btn ghost', tr('Отмена', 'Cancel'));
-    close.onclick = function () { $('sheet').classList.remove('on'); }; box.appendChild(close);
-    $('sheet').classList.add('on'); haptic('medium');
+    close.onclick = function () { closeMessageMenu(); }; box.appendChild(close);
+    var menu=$('message-menu');menu.hidden=false;
+    var rect=anchor.getBoundingClientRect();
+    box.style.top=Math.max(8,Math.min(innerHeight-box.offsetHeight-12,rect.top))+'px';
+    box.style.left=Math.max(8,Math.min(innerWidth-box.offsetWidth-8,rect.left+(m.role==='user'?-24:24)))+'px';
+    haptic('medium');
   }
   function bindMessageMenu(b, m) {
     var timer = null, startX = 0, startY = 0;
@@ -20603,12 +20790,12 @@ button span,button b { color:inherit; }
     b.onpointerdown = function (event) {
       if (event.button && event.button !== 0) return;
       startX = event.clientX; startY = event.clientY; stop();
-      timer = setTimeout(function () { timer = null; messageMenu(m); }, 550);
+      timer = setTimeout(function () { timer = null; messageMenu(m, b); }, 280);
     };
     b.onpointermove = function (event) { if (Math.abs(startX - event.clientX) + Math.abs(startY - event.clientY) > 12) stop(); };
     b.onpointerup = b.onpointercancel = b.onpointerleave = stop;
-    b.oncontextmenu = function (event) { event.preventDefault(); stop(); messageMenu(m); };
-    b.onkeydown = function (event) { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); messageMenu(m); } };
+    b.oncontextmenu = function (event) { event.preventDefault(); stop(); messageMenu(m, b); };
+    b.onkeydown = function (event) { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); messageMenu(m, b); } };
   }
   function renderEconomy(v) {
     var card = el('div', 'card'); card.appendChild(el('h4', null, tr('Пополнить баксы', 'Get bucks')));
@@ -20650,7 +20837,7 @@ button span,button b { color:inherit; }
       ['#nav button:nth-child(6)', tr('Профиль и настройки', 'Profile and settings'), tr('Отношения, преимущества подписки, язык, режим общения и справка.', 'Relationships, subscription benefits, language, chat mode and help.')],
       ['#view-profile .hero', tr('Твой персонаж', 'Your character'), tr('Здесь меняются имя и внешность. Ниже — энергия, сытость, вода и настроение.', 'Change the name and appearance here. Energy, food, water and mood are shown below.'), 'profile'],
       ['#view-profile .rd-pack', tr('Баксы и покупки', 'Bucks and purchases'), tr('Сравни количество баксов и цену в Stars. Оплата открывается отдельно — обучение ничего не покупает.', 'Compare bucks and Stars prices. Payment opens separately; this tour makes no purchases.'), 'profile'],
-      ['#view-profile select', tr('Язык', 'Language'), tr('Переключай интерфейс между русским и английским.', 'Switch the interface between Russian and English.'), 'profile'],
+      ['#view-profile select', tr('Язык', 'Language'), tr('Переключай интерфейс между русским, английским и немецким.', 'Switch between Russian, English and German.'), 'profile'],
       ['#view-profile .rd-field:has(select option[value=live])', tr('Режим общения', 'Conversation mode'), tr('Это поле выбирает переписку без действий или ролевую историю с действиями. Начни разговор сам — персонаж дождётся тебя.', 'This field chooses messages without actions or a roleplay story. Start the conversation when ready; your character will wait.'), 'profile'],
       ['#nav button:nth-child(6)', tr('Справка всегда рядом', 'Help is always nearby'), tr('Открой справку в профиле, чтобы прочитать правила и повторить это обучение.', 'Open help in your profile to read the rules or replay this tour.')]
 
@@ -21042,7 +21229,7 @@ button span,button b { color:inherit; }
       if (!res.state) { full(res.message || res.error || "Error", res.error === "not_ready" ? "✨" : "⚠️"); return; }
       var before = state ? JSON.stringify([state.messages, state.reply_choices]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) : "";
       state = res.state;
-      document.documentElement.lang = state.ui.tab_chat === "Чат" ? "ru" : "en";
+      document.documentElement.lang = (state.settings && state.settings.lang) || (state.onboarding && state.onboarding.lang) || 'ru';
       if (state.onboarding) { if (!quiet) render(); return; }
       if (!quiet || before !== JSON.stringify([state.messages, state.reply_choices]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) || state.notices.length) { if (!FRAME_PATH[tab]) render(); else if (state.notices.length) { toast(state.notices.join("\n\n")); state.notices = []; } }
       else if (!FRAME_PATH[tab]) renderHead();
@@ -21318,6 +21505,7 @@ async def run_webapp_server():
         app_web.router.add_get("/" + SITE_VERIFY_FILE_NAME, site_verify_file_handler)
     app_web.router.add_get("/tg-sdk.js", telegram_sdk_handler)
     app_web.router.add_get("/shop", shop_page_handler)
+    app_web.router.add_get("/assets/audio/{name}", audio_sample_handler)
     app_web.router.add_get("/assets/{name}", asset_image_handler)
     app_web.router.add_get("/api/state", api_state_handler)
     app_web.router.add_post("/api/buy", api_buy_handler)
@@ -21774,7 +21962,11 @@ async def api_app_message_handler(request):
         message["user_reaction"] = None if message.get("user_reaction") == emoji else emoji
     elif action in ("edit", "delete") and message.get("role") == "user" and not message.get("card"):
         if action == "delete":
-            user["history"].remove(message)
+            index = user['history'].index(message)
+            del user['history'][index:]
+            user['reply_choices'] = {}
+            user['location'] = 'unknown'
+            user.pop('last_user_message', None)
         else:
             text = body.get("text")
             if not isinstance(text, str) or not text.strip() or len(text) > APP_MESSAGE_MAX_LEN:

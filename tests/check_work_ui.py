@@ -3,7 +3,7 @@ import json
 import sys
 from pathlib import Path
 from playwright.sync_api import sync_playwright
-from ui_fixture import constants
+from ui_fixture import constants, ROOT
 state = json.loads(Path(sys.argv[1] if len(sys.argv)>1 else '/tmp/rd-work.json').read_text())
 with sync_playwright() as p:
     browser = p.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
@@ -14,7 +14,10 @@ with sync_playwright() as p:
         def route(r):
             path=r.request.url.split('roleduel.test')[-1].split('?')[0]
             if path=='/work':
-                return r.fulfill(content_type='text/html',body=constants['WORK_PAGE_HTML'].replace('<head>','<head><link rel="stylesheet" href="/theme.css">',1))
+                return r.fulfill(content_type='text/html',body=constants['WORK_PAGE_HTML'].replace('<head>','<head><link rel="stylesheet" href="/theme.css"><script src="/sfx.js"></script>',1))
+            if path=='/sfx.js':return r.fulfill(content_type='application/javascript',body=constants['SFX_JS'])
+            if path.startswith('/assets/audio/'):
+                return r.fulfill(path=str(ROOT/path.lstrip('/')))
             if path=='/theme.css':return r.fulfill(content_type='text/css',body=constants['APP_THEME_CSS'])
             if path=='/tg-sdk.js':return r.fulfill(content_type='application/javascript',body='window.__tgSdkSettled=true;window.Telegram={WebApp:{initData:"fixture",ready(){},expand(){},HapticFeedback:{impactOccurred(){},selectionChanged(){},notificationOccurred(){}}}};')
             if path=='/api/work/hit':hits.append(r.request.post_data_json)

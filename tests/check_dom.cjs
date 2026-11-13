@@ -24,7 +24,7 @@ function start(){
     if(path==='/api/app/message'){
      const m=state.messages.find(m=>m.id===body.id);assert(m);
      if(body.action==='edit')Object.assign(m,{text:body.text,edited:true});
-     if(body.action==='delete')state.messages.splice(state.messages.indexOf(m),1);
+     if(body.action==='delete')state.messages.splice(state.messages.indexOf(m));
      if(body.action==='react')m.user_reaction=m.user_reaction===body.emoji?null:body.emoji;
     }
     return {json:async()=>({ok:true,state:JSON.parse(JSON.stringify(state))})};
@@ -37,7 +37,7 @@ function button(d,text){const b=[...d.querySelectorAll('button')].find(b=>b.text
  const dom=start(),w=dom.window,d=w.document;await pause();await pause();
  assert(d.querySelectorAll('#msgs .bub').length===2,'chat rendered');
  d.querySelector('#msgs .bub').dispatchEvent(new w.MouseEvent('contextmenu',{bubbles:true,cancelable:true}));
- button(d,'Редактировать').click();d.querySelector('#sheet-box textarea').value='Новый текст';button(d,'Сохранить').click();await pause();
+ button(d,'Редактировать').click();d.querySelector('#message-menu-box textarea').value='Новый текст';button(d,'Сохранить').click();await pause();
  assert(d.querySelector('#msgs').textContent.includes('Новый текст'));assert(d.querySelector('.rd-edited'));
  d.querySelectorAll('#msgs .bub')[1].dispatchEvent(new w.MouseEvent('contextmenu',{bubbles:true,cancelable:true}));button(d,'❤️').click();await pause();
  assert.equal(d.querySelector('.rd-user-react').textContent,'❤️');
@@ -50,7 +50,7 @@ function button(d,text){const b=[...d.querySelectorAll('button')].find(b=>b.text
  const language=d.querySelector('select');language.value='en';language.dispatchEvent(new w.Event('change'));await pause();
  assert(d.querySelector('#view-profile').textContent.includes('Conversation mode'));
  const mode=d.querySelectorAll('select')[1];mode.value='live';mode.dispatchEvent(new w.Event('change'));await pause();assert.equal(state.settings.scene,'live');
- d.querySelectorAll('#nav button')[0].click();await pause();d.querySelector('#msgs .bub').dispatchEvent(new w.MouseEvent('contextmenu',{bubbles:true,cancelable:true}));button(d,'Delete').click();await pause();assert.equal(state.messages.length,1);
+ d.querySelectorAll('#nav button')[0].click();await pause();d.querySelector('#msgs .bub').dispatchEvent(new w.MouseEvent('contextmenu',{bubbles:true,cancelable:true}));button(d,'Delete').click();await pause();assert.equal(state.messages.length,0);
  assert.deepEqual(errors,[]);
  state.onboarding={lang:'ru',default_gender:'female',worlds:[{key:'realism',label:'Мир'}],genders:[{key:'female',label:'Девушка'}],styles:[{key:'warm',label:'Тёплый'}],scenes:[{key:'phone',label:'Переписка'},{key:'live',label:'Ролеплей'}],looks:[{key:'test',world:'realism',gender:'female',img:'/assets/avatar_real_f1.jpg',label:'Портрет'}],can_custom:false};
  state.ui=fixture.constants.APP_TEXTS.ru;

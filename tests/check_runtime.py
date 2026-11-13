@@ -41,3 +41,12 @@ async def check():
 
 asyncio.run(check())
 print('Real import, state serialization and duplicate Stars delivery passed; no network requests')
+
+fresh = app.get_user(99887766)
+assert fresh['subscription'] == {'active': False, 'expires_at': None, 'level': None}
+assert app.get_subscription_level(fresh) is None
+u['lang'] = 'de'
+assert app.serialize_app_state(u)['ui']['tab_spin'] == 'Glücksrad'
+assert app.at(u, 'sub_none') == 'Kein Abonnement'
+assert app.serialize_onboarding(u)['scenes'][0]['label'] == 'Nachrichten'
+print('Fresh accounts have no subscription; German state and onboarding passed')

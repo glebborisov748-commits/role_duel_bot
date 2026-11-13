@@ -29,7 +29,7 @@ def route(req):
         if url=='/api/app/message':
             m=next(m for m in state['messages'] if m['id']==body['id'])
             if body['action']=='edit': m.update(text=body['text'],edited=True)
-            if body['action']=='delete': state['messages'].remove(m)
+            if body['action']=='delete': del state['messages'][state['messages'].index(m):]
             if body['action']=='react': m['user_reaction']=None if m.get('user_reaction')==body['emoji'] else body['emoji']
         return req.fulfill(content_type='application/json',body=json.dumps({'ok':True,'state':state},ensure_ascii=False))
     return req.fulfill(status=404,body='')
@@ -48,13 +48,13 @@ with sync_playwright() as p:
     page.get_by_role('button',name='Написать своё',exact=True).click()
     assert page.locator('#input').input_value()==''
     bubble=page.get_by_text('Привет, как прошёл твой день?',exact=True)
-    box=bubble.bounding_box();page.mouse.move(box['x']+10,box['y']+10);page.mouse.down();page.wait_for_timeout(600);page.mouse.up()
+    box=bubble.bounding_box();page.mouse.move(box['x']+10,box['y']+10);page.mouse.down();page.wait_for_timeout(340);page.mouse.up()
     page.get_by_role('button',name='Редактировать',exact=True).click()
-    page.locator('#sheet-box textarea').fill('Отредактированное сообщение')
+    page.locator('#message-menu-box textarea').fill('Отредактированное сообщение')
     page.get_by_role('button',name='Сохранить',exact=True).click()
     page.get_by_text('Отредактированное сообщение',exact=True).wait_for()
     page.get_by_text('Привет! Рада тебя видеть.',exact=True).dispatch_event('contextmenu')
-    page.locator('#sheet-box').get_by_role('button',name='❤️',exact=True).click()
+    page.locator('#message-menu-box').get_by_role('button',name='❤️',exact=True).click()
     page.locator('.rd-user-react').wait_for()
     page.locator('#nav button').nth(5).click()
     page.get_by_text('Пополнить баксы',exact=True).wait_for()
@@ -76,6 +76,10 @@ with sync_playwright() as p:
     page.locator('select').nth(1).select_option('live')
     page.wait_for_timeout(100)
     assert state['settings']['scene']=='live'
+    page.locator('select').first.select_option('de')
+    page.locator('label').filter(has_text='Gesprächsmodus').wait_for()
+    assert page.locator('#nav').inner_text().find('Glücksrad') >= 0
+    assert page.locator('#nav button').first.evaluate("e=>getComputedStyle(e).borderTopWidth")=='0px'
     assert not errors,errors
     print('Mobile UI: hold/edit, reactions, profile/perks, currency packs, embedded help, tour and language/mode passed')
     browser.close()

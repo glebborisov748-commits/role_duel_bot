@@ -122,7 +122,8 @@ class CoreTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(user['history'][1]['user_reaction'])
         await self.request_for(user, {'id': 'u', 'action': 'delete'})
         await self.ns['api_app_message_handler'](None)
-        self.assertEqual([m['id'] for m in user['history']], ['a'])
+        self.assertEqual(user['history'], [])
+        self.assertEqual(user['reply_choices'], {})
 
     async def test_generation_blocks_history_mutation(self):
         user = {'app_pending': 'now', 'history': [{'id': 'u', 'role': 'user', 'content': 'old'}]}
@@ -156,6 +157,20 @@ class CoreTests(unittest.IsolatedAsyncioTestCase):
         prizes = literal('SPIN_PRIZES')
         chance = sum(p['weight'] for p in prizes if p['type'] == 'energizers') / sum(p['weight'] for p in prizes)
         self.assertLess(chance, .02)
+
+    async def test_delete_discards_later_context(self):
+        user = {'history': [
+            {'id':'old','role':'assistant','content':'Earlier'},
+            {'id':'u','role':'user','content':'secret'},
+            {'id':'a','role':'assistant','content':'I remember secret'},
+            {'id':'u2','role':'user','content':'Continue'},
+            {'id':'a2','role':'assistant','content':'Still secret'}],
+            'reply_choices': {'items':['secret']}, 'location':'secret place'}
+        await self.request_for(user, {'id':'u','action':'delete'})
+        await self.ns['api_app_message_handler'](None)
+        self.assertEqual([m['id'] for m in user['history']],['old'])
+        self.assertEqual(user['reply_choices'],{})
+        self.assertEqual(user['location'],'unknown')
 
 
 if __name__ == '__main__':

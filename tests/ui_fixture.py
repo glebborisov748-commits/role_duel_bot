@@ -9,6 +9,9 @@ for node in tree.body:
     if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name):
         try: constants[node.targets[0].id] = ast.literal_eval(node.value)
         except (ValueError, TypeError): pass
+for node in tree.body:
+    if isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Subscript) and getattr(node.targets[0].value, 'id', '') == 'APP_TEXTS':
+        constants['APP_TEXTS']['de'] = {**constants['APP_TEXTS']['en'], **ast.literal_eval(node.value.values[1])}
 ui = constants['APP_TEXTS']['ru']
 state = {
     'onboarding': None, 'pending': False, 'notices': [], 'can_reroll': True,
