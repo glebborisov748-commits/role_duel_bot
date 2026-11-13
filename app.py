@@ -130,7 +130,7 @@ TEXTS = {
         "webapp_spin_prizes_title": "🎁 Доступные призы:",
         "spin_prizes": "🔥 **Что можно выиграть:**\n• 100–250 XP\n• 550–1200💵 баксов\n• 🎟 Доп. прокрут\n• 🍱 100 еды + 100 воды\n• 🔥 Горячие сцены\n• ⚡x5 буст заработка на 10 минут (редко)\n• 2–4⚡ энергетика (редко)\n• 💰 10 000💵 ДЖЕКПОТ, 🔥 PRO, ✨ SUPER PRO (крайне редко)\n🍀 Удача (24ч за ⭐, у ELITE всегда) повышает шансы на редкое",
         "spin_choose": "Выбери вариант:",
-        "spin_nothing": "😢 Ничего... В следующий раз повезёт!",        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+{inviter_bucks}💵, +{inviter_energizers}⚡ и 🔥 горячая сцена** тебе, ему — **+{invitee_bucks}💵, 🔥 горячая сцена и 🎟 доп. прокрут**!\n\n📊 Приглашено друзей: **{count}**\n💵 Заработано баксов: **{earned_bucks}**\n⚡ Заработано энергетиков: **{earned_energizers}**",
+        "spin_nothing": "😢 Ничего... В следующий раз повезёт!",        "referral": "👥 **Твоя реферальная ссылка:**\n`{link}`\n\n🎁 За каждого друга, который зарегистрируется по ссылке, — **+{inviter_bucks}💵, +{inviter_energizers}⚡ и {inviter_scenes} сцены** тебе, ему — **+{invitee_bucks}💵**!\n\n📊 Приглашено друзей: **{count}**\n💵 Заработано баксов: **{earned_bucks}**\n⚡ Заработано энергетиков: **{earned_energizers}**",
         "choose_lang_label": "🌍 Выбери язык:",
         "welcome_back_female": "Ой, тебя так долго не было! Я уже успела соскучиться 🥺💕",
         "welcome_back_male": "Ой, тебя так долго не было! Я уже успел соскучиться 🥺💕",
@@ -546,7 +546,7 @@ TEXTS = {
         "webapp_spin_prizes_title": "🎁 Available prizes:",
         "spin_prizes": "🔥 **What you can win:**\n• 100–250 XP\n• 550–1200💵 bucks\n• 🎟 Extra spin\n• 🍱 100 food + 100 water\n• 🔥 Hot scenes\n• ⚡x5 earnings boost for 10 minutes (rare)\n• 2–4⚡ energizers (rare)\n• 💰 10,000💵 JACKPOT, 🔥 PRO, ✨ SUPER PRO (extremely rare)\n🍀 Luck (24h for ⭐, always on for ELITE) boosts the odds of rare prizes",
         "spin_choose": "Choose an option:",
-        "spin_nothing": "😢 Nothing... Better luck next time!",        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+{inviter_bucks}💵, +{inviter_energizers}⚡ and a 🔥 hot scene** for you, and **+{invitee_bucks}💵, a 🔥 hot scene and a 🎟 extra spin** for them!\n\n📊 Friends invited: **{count}**\n💵 Bucks earned: **{earned_bucks}**\n⚡ Energizers earned: **{earned_energizers}**",
+        "spin_nothing": "😢 Nothing... Better luck next time!",        "referral": "👥 **Your referral link:**\n`{link}`\n\n🎁 For every friend who signs up with your link — **+{inviter_bucks}💵, +{inviter_energizers}⚡ and {inviter_scenes} scenes** for you, and **+{invitee_bucks}💵** for them!\n\n📊 Friends invited: **{count}**\n💵 Bucks earned: **{earned_bucks}**\n⚡ Energizers earned: **{earned_energizers}**",
         "choose_lang_label": "🌍 Choose language:",
         "welcome_back_female": "Oh, you've been gone so long! I already missed you 🥺💕",
         "welcome_back_male": "Oh, you've been gone so long! I already missed you 🥺💕",
@@ -962,7 +962,7 @@ TEXTS = {
         "webapp_spin_prizes_title": "🎁 Verfügbare Preise:",
         "spin_prizes": "🔥 **Das kannst du gewinnen:**\n• 100–250 XP\n• 550–1200💵 Bucks\n• 🎟 Extra-Dreh\n• 🍱 100 Essen + 100 Wasser\n• 🔥 Heiße Szenen\n• ⚡x5 Verdienst-Boost für 10 Minuten (selten)\n• 2–4⚡ Energydrinks (selten)\n• 💰 10.000💵 JACKPOT, 🔥 PRO, ✨ SUPER PRO (extrem selten)\n🍀 Glück (24 Std. für ⭐, bei ELITE immer) erhöht die Chancen auf Seltenes",
         "spin_choose": "Wähle eine Option:",
-        "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+{inviter_bucks}💵, +{inviter_energizers}⚡ und eine 🔥 heiße Szene** für dich und **+{invitee_bucks}💵, eine 🔥 heiße Szene und ein 🎟 Extra-Dreh** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💵 Verdiente Bucks: **{earned_bucks}**\n⚡ Verdiente Energydrinks: **{earned_energizers}**",
+        "spin_nothing": "😢 Nichts... Beim nächsten Mal klappt es!",        "referral": "👥 **Dein Einladungslink:**\n`{link}`\n\n🎁 Für jeden Freund, der sich über deinen Link anmeldet: **+{inviter_bucks}💵, +{inviter_energizers}⚡ und {inviter_scenes} Szenen** für dich und **+{invitee_bucks}💵** für ihn!\n\n📊 Eingeladene Freunde: **{count}**\n💵 Verdiente Bucks: **{earned_bucks}**\n⚡ Verdiente Energydrinks: **{earned_energizers}**",
         "choose_lang_label": "🌍 Sprache wählen:",
         "welcome_back_female": "Oh, du warst so lange weg! Ich habe dich schon vermisst 🥺💕",
         "welcome_back_male": "Oh, du warst so lange weg! Ich habe dich schon vermisst 🥺💕",
@@ -2940,6 +2940,11 @@ def credit_work_bucks(user, base_amount):
     """Общая точка начисления для любого заработка на работе — применяет подписочный множитель
     (см. work_earnings_multiplier) и возвращает фактически начисленную сумму. Не сохраняет сама —
     вызывающий код сохраняет вместе с остальными изменениями этого же действия."""
+    today = local_today().isoformat()
+    if user.get('subscriber_task_progress_day') != today:
+        user.update(subscriber_task_progress_day=today, subscriber_task_hits=0)
+    if base_amount > 0:
+        user['subscriber_task_hits'] = min(3, user.get('subscriber_task_hits', 0) + 1)
     amount = round(base_amount * work_earnings_multiplier(user))
     user["bucks"] = user.get("bucks", 0) + amount
     return amount
@@ -3599,6 +3604,14 @@ def build_prompt(user):
     prompt += "\n" + get_language_rule(user)
 
     prompt += build_consistency_rules(user)
+    relation = relationship_state(user)
+    prompt += (f"\nДоверие: {relation['trust']}/100. Уважение: {relation['respect']}/100. "
+               "Показывай постепенное знакомство, помни доступные детали переписки. "
+               "Не обещай любовь за подарки или подписку, не упрекай за отсутствие. ")
+    if user.get("scene", "phone") == "phone":
+        prompt += "Это переписка: только прямые реплики, без звёздочек, ремарок и описаний действий. "
+    else:
+        prompt += "Это ролевая история: допустимы короткие описания обычных действий между звёздочками. "
 
     return prompt
 
@@ -3778,6 +3791,8 @@ async def proceed_flow(user_id: int, chat_id: int):
     общий "призрачный" профиль при переходе между шагами регистрации."""
     user = get_user(user_id)
 
+    if user.get("personality_ready"):
+        award_referral(user)
     if not user.get("lang"):
         await bot.send_message(chat_id, TEXTS["ru"]["choose_lang"], reply_markup=get_lang_kb(), parse_mode="Markdown")
         return
@@ -3832,37 +3847,21 @@ async def start_cmd(message: types.Message):
     # Реферальная ссылка — разбираем только из настоящего /start-сообщения пользователя,
     # а не из переиспользованного message бота (как было раньше).
     args = message.text.split() if message.text else []
+    is_new_arrival = not user.get("first_seen") and not user.get("personality_ready")
     if not user.get("first_seen"):
         user["first_seen"] = datetime.now().isoformat()
         # Метка рекламы: t.me/<бот>?start=telega1 -> source="telega1" (запоминаем только первую), см. /stats.
         if len(args) > 1:
             user["source"] = "ref" if args[1].startswith("ref_") else re.sub(r"[^a-zA-Z0-9_-]", "", args[1])[:32] or None
         save_data(user_data)
-    if len(args) > 1 and args[1].startswith("ref_"):
-        referrer_id = args[1].split("_", 1)[1]
-        if str(message.from_user.id) != referrer_id and not user.get("referred_by"):
-            referrer = get_user(referrer_id)
-            referrer["bucks"] = referrer.get("bucks", 0) + REFERRAL_INVITER_BUCKS
-            referrer["energizers"] = referrer.get("energizers", 0) + REFERRAL_INVITER_ENERGIZERS
-            referrer["intim_scenes"] = referrer.get("intim_scenes", 0) + REFERRAL_INVITER_SCENES
-            referrer["referral_count"] = referrer.get("referral_count", 0) + 1
-            user["bucks"] = user.get("bucks", 0) + REFERRAL_INVITEE_BUCKS
-            user["intim_scenes"] = user.get("intim_scenes", 0) + REFERRAL_INVITEE_SCENES
-            user["bonus_spins"] = user.get("bonus_spins", 0) + REFERRAL_INVITEE_SPINS
+    if is_new_arrival and len(args) > 1 and args[1].startswith("ref_"):
+        referrer_id = args[1][4:]
+        referrer = user_data.get(referrer_id)
+        if referrer_id.isdigit() and referrer_id != str(message.from_user.id) and isinstance(referrer, dict) \
+                and referrer.get("personality_ready") and not user.get("referred_by"):
             user["referred_by"] = referrer_id
+            user["referral_pending"] = True
             save_data(user_data)
-            # Язык ещё не выбран на этом шаге (выбор языка идёт дальше в proceed_flow),
-            # поэтому сообщение о бонусе показываем сразу на двух языках. Числа/валюты тут
-            # должны совпадать с тем, что реально выдаётся выше — раньше текст остался старым
-            # ("+5/+10 сообщений") уже после того, как награду поменяли на баксы/энергетики.
-            await message.answer(
-                f"🎉 Ты пришёл по реферальной ссылке! Тебе +{REFERRAL_INVITEE_BUCKS}💵, +{REFERRAL_INVITEE_SCENES} горячая сцена "
-                f"и +{REFERRAL_INVITEE_SPINS} доп. прокрут колеса, другу — +{REFERRAL_INVITER_BUCKS}💵, "
-                f"+{REFERRAL_INVITER_ENERGIZERS}⚡ и +{REFERRAL_INVITER_SCENES} горячая сцена!\n"
-                f"🎉 You joined via a referral link! You get +{REFERRAL_INVITEE_BUCKS}💵, +{REFERRAL_INVITEE_SCENES} hot scene "
-                f"and +{REFERRAL_INVITEE_SPINS} extra spin, your friend gets +{REFERRAL_INVITER_BUCKS}💵, "
-                f"+{REFERRAL_INVITER_ENERGIZERS}⚡ and +{REFERRAL_INVITER_SCENES} hot scene!"
-            )
 
     await proceed_flow(message.from_user.id, message.chat.id)
 
@@ -4668,8 +4667,8 @@ SPIN_PRIZES = [
     {"name": "250 XP", "name_en": "250 XP", "name_de": "250 XP", "value": 250, "type": "xp", "weight": 1.5, "wheel_label": "250 XP", "fx": "spark", "fx_power": 2},
     {"name": "🔥 1 горячая сцена", "name_en": "🔥 1 hot scene", "name_de": "🔥 1 heiße Szene", "value": 1, "type": "intim_scenes", "weight": 3, "wheel_label": "🔥", "fx": "hearts", "fx_power": 1},
     {"name": "🔥🔥 2 горячие сцены", "name_en": "🔥🔥 2 hot scenes", "name_de": "🔥🔥 2 heiße Szenen", "value": 2, "type": "intim_scenes", "weight": 1.5, "wheel_label": "🔥🔥", "fx": "hearts", "fx_power": 2},
-    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 2, "wheel_label": "2⚡", "fx": "bolts", "fx_power": 1},
-    {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 0.5, "wheel_label": "4⚡", "fx": "bolts", "fx_power": 2},
+    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 0.7, "wheel_label": "2⚡", "fx": "bolts", "fx_power": 1},
+    {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 0.15, "wheel_label": "4⚡", "fx": "bolts", "fx_power": 2},
     {"name": "🎟 +1 доп. прокрут", "name_en": "🎟 +1 extra spin", "name_de": "🎟 +1 Extra-Dreh", "value": 1, "type": "extra_spin", "weight": 6, "wheel_label": "🎟+1", "fx": "spark", "fx_power": 2},
     {"name": "🍱 100 еды + 100 воды", "name_en": "🍱 100 food + 100 water", "name_de": "🍱 100 Essen + 100 Wasser", "value": 0, "type": "care_package", "weight": 5, "wheel_label": "🍱+100", "fx": "spark", "fx_power": 2},
     {"name": "⚡x5 буст заработка на 10 минут", "name_en": "⚡x5 earnings boost for 10 minutes", "name_de": "⚡x5 Verdienst-Boost für 10 Minuten", "value": 0, "type": "work_boost", "weight": 3.5, "wheel_label": "⚡x5", "fx": "silver", "fx_power": 3},
@@ -4814,8 +4813,8 @@ async def referral_menu(call: types.CallbackQuery):
     bot_username = (await bot.get_me()).username
     link = f"https://t.me/{bot_username}?start=ref_{user['referral_code']}"
     count = user.get("referral_count", 0)
-    await call.message.answer(get_text(user, "referral", link=link, count=count, earned_bucks=count * REFERRAL_INVITER_BUCKS, earned_energizers=count * REFERRAL_INVITER_ENERGIZERS,
-                                       inviter_bucks=REFERRAL_INVITER_BUCKS, inviter_energizers=REFERRAL_INVITER_ENERGIZERS,
+    await call.message.answer(get_text(user, "referral", link=link, count=count, earned_bucks=user.get("referral_earned_bucks", count * 300), earned_energizers=user.get("referral_earned_energizers", count * 2),
+                                       inviter_bucks=REFERRAL_INVITER_BUCKS, inviter_energizers=REFERRAL_INVITER_ENERGIZERS, inviter_scenes=REFERRAL_INVITER_SCENES,
                                        invitee_bucks=REFERRAL_INVITEE_BUCKS), parse_mode="Markdown")
     await call.answer()
 
@@ -5193,6 +5192,8 @@ def regular_stars(payload):
 
 
 def product_discount(payload, user=None):
+    if payload in BUCKS_PACKS:
+        return 0
     discount = SUB_SALE_DISCOUNT if payload in SUB_SALE_PRODUCTS and sub_sale_active() else 0
     if coupon_active(user):
         discount = max(discount, user["coupon"]["discount"])
@@ -5239,10 +5240,9 @@ def sales_lines(user):
 
 
 def energizer_pack_saving(key, user=None):
-    """Честная выгода: насколько штука в этой пачке сейчас дешевле обычной цены штуки в самой маленькой
-    пачке (пн-чт, ENERGIZER_LIST_STARS) -- учитывает и размер пачки, и распродажу выходных, и купон."""
+    """Постоянная выгода объёма по обычным ценам, без акций и купонов."""
     base = ENERGIZER_LIST_STARS["energizer_2"] / ENERGIZER_PACKS["energizer_2"]["amount"]
-    now = product_stars(key, user) / ENERGIZER_PACKS[key]["amount"]
+    now = ENERGIZER_LIST_STARS[key] / ENERGIZER_PACKS[key]["amount"]
     return max(0, int(round((1 - now / base) * 100)))
 
 
@@ -5796,7 +5796,12 @@ PAYMENT_TIMEOUT_MINUTES = 60  # через сколько снимаем нео�
 #     stars посчитаны от неё и округлены ВНИЗ до красивого числа;
 #   - горячая сцена, бандлы, платная прокрутка, разбудить сейчас — явно попросили звёзды
 #     оставить/вернуть как есть, так что здесь наоборот: якорь stars, rub/usd посчитаны от них.
+BUCKS_PACKS = {"bucks_5000": 5000, "bucks_15000": 15000, "bucks_50000": 50000}
+
 PRODUCTS = {
+    "bucks_5000": {"stars": 10},
+    "bucks_15000": {"stars": 18},
+    "bucks_50000": {"stars": 35},
     "subscribe_pro": {"stars": 220, "usd": 3.1, "rub": 260},
     "subscribe_super": {"stars": 500, "usd": 7.1, "rub": 600},
     "subscribe_elite": {"stars": 1000, "usd": 14.2, "rub": 1200},
@@ -5873,6 +5878,8 @@ def platega_restricted_products():
 
 
 def available_payment_methods(payload=None):
+    if payload in BUCKS_PACKS:
+        return ["stars"] if is_method_enabled("stars") else []
     methods = [m for m in ("stars", "platega", "crypto", "lava") if is_method_enabled(m)]
     if payload in LAVA_RESTRICTED_PRODUCTS:
         methods = [m for m in methods if m != "lava"]
@@ -5883,6 +5890,10 @@ def available_payment_methods(payload=None):
 
 def product_invoice_texts(user, payload):
     """Заголовок, описание и подпись строки счёта для товара."""
+    if payload in BUCKS_PACKS:
+        amount = BUCKS_PACKS[payload]
+        title = f"{amount:,} " + ("баксов" if user.get("lang") == "ru" else "bucks")
+        return title, title, title
     if payload == "subscribe_pro":
         return (get_text(user, "invoice_pro_title"), get_text(user, "invoice_pro_desc"),
                 get_text(user, "invoice_pro_label"))
@@ -6091,12 +6102,12 @@ FIRST_SUBSCRIPTION_BONUS_ENERGIZERS = 3  # по фидбэку "хотелось
 FIRST_SUBSCRIPTION_BONUS_SCENES = 1
 
 # Реферальные награды (по фидбэку: раньше было много энергетиков и мало баксов).
-REFERRAL_INVITER_BUCKS = 300
-REFERRAL_INVITER_ENERGIZERS = 2
-REFERRAL_INVITER_SCENES = 1
-REFERRAL_INVITEE_BUCKS = 500
-REFERRAL_INVITEE_SCENES = 1
-REFERRAL_INVITEE_SPINS = 1  # разовый бонусный прокрут, не сгорает с дневным лимитом (bonus_spins)
+REFERRAL_INVITER_BUCKS = 2000
+REFERRAL_INVITER_ENERGIZERS = 1
+REFERRAL_INVITER_SCENES = 2
+REFERRAL_INVITEE_BUCKS = 1500
+REFERRAL_INVITEE_SCENES = 0
+REFERRAL_INVITEE_SPINS = 0  # разовый бонусный прокрут, не сгорает с дневным лимитом (bonus_spins)
 
 
 def grant_first_subscription_bonus(user):
@@ -6113,7 +6124,10 @@ async def grant_product(user, payload, chat_id):
     Раньше эта логика жила прямо в payment_success и работала только для Stars."""
     user["has_purchased"] = True
 
-    if payload in ENERGIZER_PACKS:
+    if payload in BUCKS_PACKS:
+        user["bucks"] = user.get("bucks", 0) + BUCKS_PACKS[payload]
+        save_data(user_data)
+    elif payload in ENERGIZER_PACKS:
         # Покупается только из Shop Mini App через openInvoice (см. api_shop_energizer_invoice_handler) —
         # как и spin_paid_webapp, не дублируем отдельным сообщением в чат: обновлённый баланс
         # и так виден прямо в магазине после обновления состояния.
@@ -6373,7 +6387,8 @@ async def pay_with_method(call: types.CallbackQuery):
 
 @dp.pre_checkout_query()
 async def pre_checkout(query: types.PreCheckoutQuery):
-    await bot.answer_pre_checkout_query(query.id, ok=True)
+    valid = query.invoice_payload in PRODUCTS and query.currency == "XTR"
+    await bot.answer_pre_checkout_query(query.id, ok=valid, error_message=None if valid else "Invalid invoice")
 
 
 @dp.message(lambda m: m.successful_payment)
@@ -6381,6 +6396,15 @@ async def payment_success(message: types.Message):
     user = get_user(message.from_user.id)
     payment = message.successful_payment
     payload = payment.invoice_payload
+    charge = payment.telegram_payment_charge_id
+    charges = user.setdefault("processed_star_charges", [])
+    if charge in charges:
+        return
+    if payload not in PRODUCTS or payment.currency != "XTR":
+        logging.error("Unexpected successful payment payload/currency for user %s", message.from_user.id)
+        return
+    # No awaits between recording a charge and granting the product's durable balance.
+    charges.append(charge)
     # Купон тратим только если счёт и правда был со скидкой купона (сумма ниже цены без купона).
     if coupon_active(user) and payload in PRODUCTS and payment.total_amount < product_stars(payload):
         user["coupon"] = None
@@ -7419,6 +7443,8 @@ def apply_user_text(user, text):
     if new_loc and new_loc != user.get("location"):
         user["location"] = new_loc
 
+    update_relationship(user, text, negative)
+
     # Сохранение истории
     user["history"].append({"role": "user", "content": text})
     limit = get_history_limit(user)
@@ -7441,6 +7467,8 @@ async def ai_chat_answer(user):
     answer = response.choices[0].message.content or ""
     reaction, clean_answer = extract_reaction_from_answer(answer)
     clean_answer = (clean_answer or "").strip() or "…"
+    if reaction and random.random() > 0.2:
+        reaction = None
     if reaction and user["history"] and user["history"][-1].get("role") == "user":
         user["history"][-1]["reaction"] = reaction  # в приложении -- эмодзи-реакция персонажа на твоё сообщение
     user["history"].append({"role": "assistant", "content": clean_answer})
@@ -7642,6 +7670,7 @@ async def start_story_event(chat_id, user, key):
 
 async def generate_first_message(chat_id, user):
     """Сразу после создания персонажа он сам пишет первым -- чтобы человек не остался перед пустым чатом."""
+    award_referral(user)
     await asyncio.sleep(2)  # пусть сначала придут меню и памятка
     if is_asleep(user):
         return  # спящий персонаж первым не пишет
@@ -9204,7 +9233,7 @@ def serialize_shop_state(user):
     energizer_packs = [
         {"key": key, "amount": pack["amount"], "emoji": pack["emoji"], "image": f"/assets/{key}.png",
          "name": get_text(user, "invoice_energizer_title", amount=pack["amount"]),
-         "stars": product_stars(key, user), "saving": energizer_pack_saving(key, user),
+         "stars": product_stars(key, user), "old_stars": ENERGIZER_LIST_STARS[key], "saving": energizer_pack_saving(key, user),
          "rub": product_rub(key, user) if "platega" in available_payment_methods(key) else None,
          "restore_hint": get_text(user, "energizer_restore_hint", amount=ENERGIZER_RESTORE_AMOUNT)}
         for key, pack in ENERGIZER_PACKS.items()
@@ -12703,7 +12732,7 @@ TELEGRAM_WEBAPP_SDK_JS = r'''// WebView
 '''
 
 
-SHOP_PAGE_HTML = '''<!doctype html>
+SHOP_PAGE_HTML = r'''<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -13104,7 +13133,8 @@ SHOP_PAGE_HTML = '''<!doctype html>
       footer.classList.add("footer-col");
       var priceRow = document.createElement("div");
       priceRow.className = "price-row";
-      starsPrice.textContent = item.stars + "⭐";
+      if (item.old_stars > item.stars) { var old = document.createElement('del');old.textContent=item.old_stars+'⭐ ';starsPrice.appendChild(old); }
+      starsPrice.appendChild(document.createTextNode(item.stars + '⭐'));
       priceRow.appendChild(starsPrice);
       if (item.saving > 0) {
         var save = document.createElement("span");
@@ -13247,6 +13277,12 @@ SHOP_PAGE_HTML = '''<!doctype html>
       delete busyKeys[itemKey];
       if (res.state) state = res.state;
       if (res.ok) {
+        if (category === 'food' && window.RDSFX) {
+          var drinks = ['water','sparkling_water','coconut_water','beer','fine_wine'];
+          var drink = drinks.indexOf(key) >= 0;
+          window.RDSFX.care(drink ? 'drink' : 'eat');
+          window.RDSFX.effect(drink ? '💧' : '🍽', innerWidth/2, innerHeight/2);
+        }
         safe(function () { tg.HapticFeedback.notificationOccurred("success"); });
         if (res.close) {
           // Игра/сюжет уже начались в чате -- закрываем магазин, чтобы сразу оказаться там.
@@ -13357,14 +13393,14 @@ SHOP_PAGE_HTML = '''<!doctype html>
   function load() {
     api("/api/state").then(function (res) {
       if (!res.ok) {
-        var extra = res.error === "auth" ? "\\n\\n" + diag() : "";
+        var extra = res.error === "auth" ? "\n\n" + diag() : "";
         showFullScreen((res.message || res.error || "Error") + extra);
         return;
       }
       state = res.state;
       render();
     }).catch(function (e) {
-      showFullScreen("Network error: " + (e && (e.name === "AbortError" ? "timeout" : e.message) || "unknown") + "\\n\\n" + diag());
+      showFullScreen("Network error: " + (e && (e.name === "AbortError" ? "timeout" : e.message) || "unknown") + "\n\n" + diag());
     });
   }
 
@@ -13941,7 +13977,7 @@ async def perform_webapp_spin(user, user_id):
 
 # Как и SHOP_PAGE_HTML — полностью статичная страница, вся персонализация через /api/spin/*
 # (initData в URL-фрагменте на сервер не попадает, см. комментарий у SHOP_PAGE_HTML).
-SPIN_PAGE_HTML = '''<!doctype html>
+SPIN_PAGE_HTML = r'''<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -14311,7 +14347,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
   })();
 
   var currentRotation = 0;
-  var colors = ["#ff6b6b", "#4ecdc4", "#ffd93d", "#6c5ce7", "#1dd1a1", "#feca57"];
+  var colors = ["#21182e", "#342040", "#251b3e", "#412139", "#191925", "#2e2546"];
 
   function initData() { return tg ? tg.initData : ""; }
 
@@ -14368,7 +14404,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
     // от одного и того же 0deg, поэтому засветка приходится точно на границу цветов.
     var colorLayer = "conic-gradient(" + stops.join(", ") + ")";
     var dividerWidth = Math.min(1.6, sliceAngle * 0.12);
-    var dividerLayer = "repeating-conic-gradient(rgba(255,255,255,.55) 0deg " + dividerWidth + "deg, "
+    var dividerLayer = "repeating-conic-gradient(rgba(232,121,249,.23) 0deg " + dividerWidth + "deg, "
       + "transparent " + dividerWidth + "deg " + sliceAngle + "deg)";
     wheel.style.background = dividerLayer + ", " + colorLayer;
     for (var j = 0; j < n; j++) {
@@ -14832,7 +14868,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
   function load() {
     api("/api/spin/state").then(function (res) {
       if (!res.ok) {
-        var extra = res.error === "auth" ? "\\n\\n" + diag() : "";
+        var extra = res.error === "auth" ? "\n\n" + diag() : "";
         showFullScreen((res.message || res.error || "Error") + extra);
         return;
       }
@@ -14847,7 +14883,7 @@ SPIN_PAGE_HTML = '''<!doctype html>
         }
       }).catch(function () {});
     }).catch(function (e) {
-      showFullScreen("Network error: " + (e && (e.name === "AbortError" ? "timeout" : e.message) || "unknown") + "\\n\\n" + diag());
+      showFullScreen("Network error: " + (e && (e.name === "AbortError" ? "timeout" : e.message) || "unknown") + "\n\n" + diag());
     });
   }
 
@@ -15854,7 +15890,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   // Картинки из /assets (см. bot assets/*.png): пока не загрузились или файла нет -- остаётся эмодзи.
   // «Работа» полностью на эмодзи (картинки не подошли по стилю). Файлы лежат в assets/ -- чтобы вернуть,
   // добавь ключи (courier_*, person_*, catch_*, crop_*, farm_*) в этот список.
-  var SPRITE_KEYS = [];
+  var SPRITE_KEYS = ["person_coffee", "catch_bomb", "catch_slow", "courier_light", "catch_bighazard", "courier_rider", "catch_double", "person_point", "catch_coins", "person_arms", "person_wave", "courier_parcel", "catch_magnet", "courier_obstacle", "catch_shield", "catch_bills", "farm_drop"];
   var PERSON_KEYS = ["person_wave", "person_coffee", "person_arms", "person_point"];
   var SPRITES = {};
   function setSprite(el, key, fallbackText) {
@@ -16033,7 +16069,11 @@ WORK_PAGE_HTML = r'''<!doctype html>
     } catch (e) {}
   }
   function fx(kind) {
-    if (kind === "coin") { tone(880, .07, "square", .05); tone(1320, .1, "square", .05, .06); haptic("light"); }
+    if (kind === 'explosion' || kind === 'impact' || kind === 'drop' || kind === 'harvest') {
+      if (window.RDSFX && sfxOn) window.RDSFX.care(kind);
+      haptic(kind === 'explosion' || kind === 'impact' ? 'heavy' : 'light');
+    }
+    else if (kind === "coin") { tone(880, .07, "square", .05); tone(1320, .1, "square", .05, .06); haptic("light"); }
     else if (kind === "loss") { tone(220, .22, "sawtooth", .07, 0, 110); haptic("warning"); }
     else if (kind === "over") { tone(392, .16, "triangle", .12); tone(311, .16, "triangle", .12, .15); tone(196, .38, "triangle", .12, .3);
       haptic("error"); setTimeout(function () { haptic("heavy"); }, 260); }
@@ -16589,6 +16629,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
             // Бомба и большие угрозы -- никакого registerHit, деньги за это НЕ платятся, плюс
             // штрафная блокировка (см. registerPenalty через triggerDebuff).
             item.classList.add("exploded");
+            fx('explosion');
+            if (window.RDSFX) window.RDSFX.impact(item);
             (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 300); })(item);
             if (shieldCharges > 0) {
               // щит поглотил взрыв -- игра продолжается
@@ -16850,7 +16892,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
           }
           // не в своей полосе -- доставка просто пропущена, упущенная награда без штрафа
         } else if (inLane) {
-          el.classList.add("hit-flash");
+          el.classList.add("hit-flash"); fx('impact');
+          if (window.RDSFX) window.RDSFX.impact(rider);
           courierGameOver();
         }
       }
@@ -17005,7 +17048,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   // запроса на РАЗНЫЕ слоты не могут друг другу что-то перезаписать).
   function farmAction(action, slot, extra) {
     if (farmInFlight[slot]) return;
-    if (action === "harvest") fx("win");
+
     farmInFlight[slot] = true;
     var payload = extra ? Object.assign({ slot: slot }, extra) : { slot: slot };
     api("/api/work/farm/" + action, {
@@ -17016,6 +17059,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
       farmInFlight[slot] = false;
       if (res.ok && res.state) {
         state = res.state;
+        if (action === 'harvest') { fx('harvest'); if (window.RDSFX) { var plot = document.querySelectorAll('.farm-plot')[slot]; window.RDSFX.effect('✦', plot ? plot.getBoundingClientRect().left+plot.offsetWidth/2 : innerWidth/2, plot ? plot.getBoundingClientRect().top+plot.offsetHeight/2 : innerHeight/2); } }
+        if (action === 'water') { fx('drop'); if (window.RDSFX) { var target = document.querySelectorAll('.farm-plot')[slot]; if (target) window.RDSFX.impact(target); } }
         setBalance(state.bucks);
         renderFarm();
       }
@@ -17036,7 +17081,6 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (plant) plant.classList.add("watered");
     var badge = plot.querySelector(".farm-thirsty-badge");
     if (badge) badge.remove();
-    fx("drop");
     setTimeout(function () { farmAction("water", slot); }, 550);
   }
 
@@ -18647,7 +18691,7 @@ APP_HISTORY_SHOWN = 80
 APP_MESSAGE_MAX_LEN = 2000
 APP_PENDING_STALE_SECONDS = 120
 APP_SUB_PAYLOADS = ("subscribe_pro", "subscribe_super", "subscribe_elite", "upgrade_to_super")
-APP_INVOICE_PAYLOADS = APP_SUB_PAYLOADS + ("wake_now", "intim_scene", "defibrillator")
+APP_INVOICE_PAYLOADS = APP_SUB_PAYLOADS + ("wake_now", "intim_scene", "defibrillator") + tuple(BUCKS_PACKS)
 
 APP_TEXTS = {
     "ru": {
@@ -18744,7 +18788,7 @@ APP_TEXTS = {
         "ref_share": "📤 Поделиться",
         "ref_copied": "Ссылка скопирована",
         "ref_stats": "Пришло друзей: {n} · получено {b}💵 и {e}⚡",
-        "ref_text": "За каждого друга: +{bucks}💵, +{en}⚡ и {sc} горячая сцена. Друг получит {friend}💵 на старт.",
+        "ref_text": "За каждого друга: +{bucks}💵, +{en}⚡ и сцен: {sc}. Друг получит {friend}💵 на старт.",
         "ref_share_text": "Заходи — тут ИИ-персонаж, который правда общается 💬",
         "support_title": "🛟 Поддержка",
         "support_hint": "Опиши проблему или вопрос — ответ придёт в чат с ботом.",
@@ -18851,7 +18895,7 @@ APP_TEXTS = {
         "ref_share": "📤 Share",
         "ref_copied": "Link copied",
         "ref_stats": "Friends joined: {n} · earned {b}💵 and {e}⚡",
-        "ref_text": "For every friend: +{bucks}💵, +{en}⚡ and {sc} hot scene. Your friend gets {friend}💵 to start.",
+        "ref_text": "For every friend: +{bucks}💵, +{en}⚡ and {sc} scenes. Your friend gets {friend}💵 to start.",
         "ref_share_text": "Come chat with an AI companion that really talks 💬",
         "support_title": "🛟 Support",
         "support_hint": "Describe the problem or question — the answer comes to the bot chat.",
@@ -18919,8 +18963,8 @@ def serialize_onboarding(user):
             "genders": [{"key": "female", "label": at(user, "ob_female")}, {"key": "male", "label": at(user, "ob_male")}],
             "default_gender": "female" if user.get("user_gender") != "female" else "male",
             "styles": styles,
-            "scenes": [{"key": "phone", "label": get_text(user, "scene_phone"), "desc": at(user, "ob_phone")},
-                       {"key": "live", "label": get_text(user, "scene_live"), "desc": at(user, "ob_live")}],
+            "scenes": [{"key": "phone", "label": "Переписка" if lang == "ru" else "Messages", "desc": "Без описаний действий" if lang == "ru" else "Without action descriptions"},
+                       {"key": "live", "label": "Ролеплей" if lang == "ru" else "Roleplay", "desc": "С описаниями действий" if lang == "ru" else "With action descriptions"}],
             "can_custom": sub in ("super_pro", "elite"), "custom_min": CUSTOM_CHARACTER_MIN_LEN, "name_max": CHAR_NAME_MAX,
             "looks": [{"key": k, "world": v["world"], "gender": v["gender"], "img": f"/assets/avatar_{k}.jpg",
                        "label": v["label_ru"] if lang == "ru" else v["label_en"]} for k, v in LOOKS.items()],
@@ -18964,6 +19008,7 @@ def serialize_app_state(user):
     app_unstick(user)
     _reset_daily_quota_if_needed(user)
     lang = user.get("lang", "ru")
+    ensure_message_ids(user)
     history = [m for m in user.get("history", [])[-APP_HISTORY_SHOWN:] if m.get("role") in ("user", "assistant")]
     level = get_intimacy_level(user)
     sub_level = get_subscription_level(user)
@@ -18978,7 +19023,7 @@ def serialize_app_state(user):
         coupon = at(user, "coupon", n=int(user["coupon"]["discount"] * 100), h=left)
     ui = {k: v for k, v in APP_TEXTS["ru" if lang == "ru" else "en"].items() if isinstance(v, str)}
     return {
-        "messages": [{"role": m["role"], "text": m["content"], "reaction": m.get("reaction"), "card": m.get("card")}
+        "messages": [{"id": m["id"], "role": m["role"], "text": m["content"], "reaction": m.get("reaction"), "user_reaction": m.get("user_reaction"), "edited": bool(m.get("edited")), "card": m.get("card")}
                      for m in history],
         "onboarding": None,
         "pending": bool(user.get("app_pending")),
@@ -19013,13 +19058,18 @@ def serialize_app_state(user):
         "subscription": {"level": sub_level,
                          "title": {"pro": "🔥 PRO", "super_pro": "✨ SUPER PRO", "elite": "💎 ELITE"}.get(sub_level),
                          "until": datetime.fromisoformat(expiry).strftime("%d.%m.%Y") if expiry else None},
+        "relationship": relationship_state(user),
+        "bucks_packs": [{"payload": key, "amount": amount, "stars": PRODUCTS[key]["stars"],
+                          "saving": round((1 - PRODUCTS[key]["stars"] / amount / (10 / 5000)) * 100)}
+                         for key, amount in BUCKS_PACKS.items()],
+        "subscriber_task": subscriber_task_state(user),
         "offers": app_sub_offers(user),
         "upgrade": {"stars": product_stars("upgrade_to_super", user), "stars_label": price_label("upgrade_to_super", user),
                     "rub": product_rub("upgrade_to_super", user) if "platega" in available_payment_methods("upgrade_to_super") else None}
                    if sub_level == "pro" else None,
         "sale": at(user, "sale", n=int(SUB_SALE_DISCOUNT * 100)) if sub_sale_active() else None,
         "hot": serialize_hot(user),
-        "settings": {"muted": bool(user.get("notifications_muted")), "immunity": bool(user.get("illness_disabled")),
+        "settings": {"lang": lang, "scene": user.get("scene", "phone"), "tour_seen": bool(user.get("tour_seen")), "muted": bool(user.get("notifications_muted")), "immunity": bool(user.get("illness_disabled")),
                      "can_mute": sub_level in ("super_pro", "elite"), "can_immunity": sub_level == "elite"},
         "referral": serialize_referral(user),
         "channel": CHANNEL_URL,
@@ -19258,7 +19308,9 @@ async def api_app_create_handler(request):
     user_id, user, body, err = await _app_request(request)
     if err:
         return err
-    world, gender, style, scene = body.get("world"), body.get("gender"), body.get("style"), "phone"
+    world, gender, style, scene = body.get("world"), body.get("gender"), body.get("style"), body.get("scene", "phone")
+    if scene not in ("phone", "live"):
+        return web.json_response({"ok": False, "error": "Bad scene"})
     if world not in WORLDS or gender not in ("female", "male") or style not in STYLES:
         return web.json_response({"ok": False, "error": "Bad request"})
     if not is_style_unlocked(style, user):
@@ -19280,8 +19332,9 @@ async def api_app_create_handler(request):
         if error:
             return web.json_response({"ok": False, "error": error})
     user.update(world=world, gender=gender, style=style, scene=scene, custom_character=custom[:2000] or None,
-                personality_ready=True, history=[], creating_character=False, switching_personality=False,
+                personality_ready=True, history=[], relationship={}, creating_character=False, switching_personality=False,
                 last_activity=datetime.now().isoformat())
+    award_referral(user)
     user["app_pending"] = datetime.now().isoformat()
     save_data(user_data)
 
@@ -19458,6 +19511,35 @@ input:focus, textarea:focus { border-color: rgba(139, 92, 246, .6) !important; b
 
 /* ---- полоса прокрутки ---- */
 ::-webkit-scrollbar { width: 0; height: 0; }
+
+/* RoleDuel: dark surfaces with a restrained violet/pink edge. */
+.btn, .buy-btn, .action-btn, .farm-action-btn, .farm-buy-slot-btn, .bets .btn, #send {
+  background: linear-gradient(#101018, #101018) padding-box, linear-gradient(125deg,#8b5cf6,#ec4899) border-box !important;
+  border: 1px solid transparent !important; color:#faf5ff !important;
+  box-shadow:0 0 12px #a855f730,inset 0 0 10px #ec48990b !important;
+}
+.btn::after,.buy-btn::after,.action-btn::after { animation:none !important; opacity:.12; }
+.btn:disabled,.buy-btn:disabled { opacity:.45; box-shadow:none !important; }
+.rd-field { display:block; margin:14px 0; font-size:14px; }
+.rd-field select { display:block; width:100%; margin-top:8px; color:#f3f3fb; background:#14121f; }
+.rd-pack { display:flex; align-items:center; gap:9px; margin:12px 0; flex-wrap:wrap; }
+.rd-pack .btn { margin-left:auto; width:auto; }
+.rd-pack .tag { position:static; }
+.rd-reactions { display:flex; gap:6px; flex-wrap:wrap; }
+.rd-reactions .btn { width:auto; font-size:25px; }
+.rd-guide { display:block; width:100%; height:60vh; border:0; border-radius:14px; margin-top:12px; }
+.rd-user-react { cursor:pointer; font-size:15px; padding:2px 7px; border:1px solid #bd7aff; border-radius:14px; background:#211330; color:white; }
+.rd-edited { font-size:10px; opacity:.55; text-align:right; margin:3px 5px; }
+.rd-tour { position:fixed; inset:0; z-index:10000; overflow:hidden; }
+.rd-ring { position:absolute; border:2px solid #e879f9; border-radius:28px; box-shadow:0 0 0 9999px #07050ddb,0 0 22px #d946ef; pointer-events:none; transition:all .2s; }
+.rd-tour-panel { position:absolute; left:16px; right:16px; max-width:430px; margin:0 auto; background:#15111f !important; padding:20px; }
+.rd-tour-panel p { line-height:1.5; }.rd-tour-panel .btn { margin-top:10px; }
+.rd-fx { position:fixed; pointer-events:none; z-index:9999; font-size:44px; transform:translate(-50%,-50%); animation:rd-effect .85s ease-out forwards; }
+@keyframes rd-effect { 0%{opacity:0;transform:translate(-50%,-20%) scale(.4)} 25%{opacity:1;transform:translate(-50%,-70%) scale(1.15)} 100%{opacity:0;transform:translate(-50%,-180%) scale(.8)} }
+.rd-impact { position:absolute; width:14px;height:14px;border:3px solid #f0abfc;border-radius:50%;pointer-events:none;animation:rd-impact .6s ease-out forwards;z-index:30; }
+@keyframes rd-impact { to{transform:scale(8);opacity:0} }
+.rd-currency { width:1.25em;height:1.25em;object-fit:contain;vertical-align:middle;display:inline-block; }
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important; } }
 '''
 APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css">'
 
@@ -19606,7 +19688,7 @@ def serialize_referral(user):
     name = _BOT_USERNAME["v"]
     count = user.get("referral_count", 0)
     return {"link": f"https://t.me/{name}?start=ref_{user['referral_code']}" if name and user.get("referral_code") else None, "count": count,
-            "earned_bucks": count * REFERRAL_INVITER_BUCKS, "earned_energizers": count * REFERRAL_INVITER_ENERGIZERS,
+            "earned_bucks": user.get("referral_earned_bucks", count * 300), "earned_energizers": user.get("referral_earned_energizers", count * 2),
             "text": at(user, "ref_text", bucks=REFERRAL_INVITER_BUCKS, en=REFERRAL_INVITER_ENERGIZERS, sc=REFERRAL_INVITER_SCENES,
                        friend=REFERRAL_INVITEE_BUCKS)}
 
@@ -19650,7 +19732,9 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
     for (var ch = 0; ch < 2; ch++) { var d = b.getChannelData(ch); for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay); }
     return b;
   }
+  function enabled() { try { return localStorage.getItem('rd_sound') !== 'off'; } catch(e) { return true; } }
   function init() {
+    if (master) master.gain.value = enabled() ? .85 : 0;
     if (ctx) { if (ctx.state === "suspended") { try { ctx.resume(); } catch (e) {} } return ctx; }
     var AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return null;
@@ -19660,7 +19744,7 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
     var soft = ctx.createBiquadFilter(); soft.type = "lowpass"; soft.frequency.value = 8000; soft.Q.value = 0.5;
     var rev = ctx.createConvolver(); rev.buffer = impulse(ctx, 1.8, 3.2);
     var wet = ctx.createGain(); wet.gain.value = 0.2;
-    master = ctx.createGain(); master.gain.value = 0.85;
+    master = ctx.createGain(); master.gain.value = enabled() ? .85 : 0;
     master.connect(soft); soft.connect(comp);
     master.connect(rev); rev.connect(wet); wet.connect(comp);
     comp.connect(ctx.destination);
@@ -19755,8 +19839,48 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
   // Короткий «пуф» отправки сообщения и мягкий «дзынь» входящего.
   function sent() { noise(0.12, 0.05, 900, 0, 3200, "bandpass"); pluck(988, 0.25, 0.04, 0.02); }
   function received() { bell(1318.5, 0.7, 0.04); bell(1975.5, 0.5, 0.02, 0.07); }
-  window.RDSFX = { ctx: init, out: out, tone: tone, bell: bell, pluck: pluck, pad: pad, sparkle: sparkle, noise: noise,
+  function effect(symbol, x, y) {
+    var node = document.createElement('div'); node.className='rd-fx'; node.textContent=symbol;
+    node.style.left=x+'px'; node.style.top=y+'px'; document.body.appendChild(node);setTimeout(function(){node.remove();},900);
+  }
+  function impact(target) {
+    var r=target.getBoundingClientRect(), node=document.createElement('div');node.className='rd-impact';
+    node.style.position='fixed';node.style.left=(r.left+r.width/2)+'px';node.style.top=(r.top+r.height/2)+'px';
+    document.body.appendChild(node);setTimeout(function(){node.remove();},650);
+  }
+  function care(kind) {
+    if (!enabled()) return;
+    if (kind === 'explosion') { noise(.45,.18,450,0,70,'lowpass');tone(95,.35,'sine',.15,0,32); }
+    else if (kind === 'impact') { noise(.18,.13,1600,0,220);tone(120,.2,'triangle',.12,0,40); }
+    else if (kind === 'drop' || kind === 'drink') { tone(880,.13,'sine',.07,0,1900);tone(520,.17,'sine',.06,.12,240); if(kind==='drink') tone(720,.18,'sine',.05,.3,300); }
+    else if (kind === 'eat') { noise(.09,.06,1800);noise(.08,.045,1200,.15);pluck(660,.25,.035,.3); }
+    else if (kind === 'harvest') { [660,880,1320].forEach(function(f,i){pluck(f,.4,.05,i*.07);}); }
+  }
+  window.addEventListener('storage',function(){if(master) master.gain.value=enabled()?.85:0;});
+  window.RDSFX = { care:care, effect:effect, impact:impact, ctx: init, out: out, tone: tone, bell: bell, pluck: pluck, pad: pad, sparkle: sparkle, noise: noise,
                    tick: tick, sent: sent, received: received, PENTA: PENTA };
+
+  var currencyScheduled = false;
+  function currencyIcons() {
+    currencyScheduled = false;
+    if (!document.body) return;
+    var nodes=[], walk=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+    while(walk.nextNode()) {
+      var node=walk.currentNode, parent=node.parentElement;
+      if(node.nodeValue.indexOf('💵')>=0 && parent && !parent.closest('script,style,textarea,input,.bub,.giftcard,[contenteditable]')) nodes.push(node);
+    }
+    nodes.forEach(function(node){
+      var frag=document.createDocumentFragment(), pieces=node.nodeValue.split('💵');
+      pieces.forEach(function(text,i){
+        if(i){var im=document.createElement('img');im.className='rd-currency';im.src='/assets/icon_bucks.webp';im.alt='bucks';frag.appendChild(im);}
+        frag.appendChild(document.createTextNode(text));
+      });node.replaceWith(frag);
+    });
+  }
+  function scheduleCurrency(){if(!currencyScheduled){currencyScheduled=true;requestAnimationFrame(currencyIcons);}}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){new MutationObserver(scheduleCurrency).observe(document.body,{subtree:true,childList:true,characterData:true});scheduleCurrency();});
+  else {new MutationObserver(scheduleCurrency).observe(document.body,{subtree:true,childList:true,characterData:true});scheduleCurrency();}
+
   document.addEventListener("pointerdown", function () { try { if ((localStorage.getItem("rd_sound") || "on") !== "off") init(); } catch (e) { init(); } }, true);
 })();
 '''
@@ -20034,6 +20158,35 @@ APP_PAGE_HTML = r'''<!doctype html>
   #full { display: none; position: fixed; inset: 0; z-index: 10; background: var(--bg); padding: 40px 24px; text-align: center; color: var(--hint);
     white-space: pre-wrap; font-size: 15px; line-height: 1.5; }
   #full .big { font-size: 46px; margin-bottom: 14px; }
+/* RoleDuel: dark surfaces with a restrained violet/pink edge. */
+.btn, .buy-btn, .action-btn, .farm-action-btn, .farm-buy-slot-btn, .bets .btn, #send {
+  background: linear-gradient(#101018, #101018) padding-box, linear-gradient(125deg,#8b5cf6,#ec4899) border-box !important;
+  border: 1px solid transparent !important; color:#faf5ff !important;
+  box-shadow:0 0 12px #a855f730,inset 0 0 10px #ec48990b !important;
+}
+.btn::after,.buy-btn::after,.action-btn::after { animation:none !important; opacity:.12; }
+.btn:disabled,.buy-btn:disabled { opacity:.45; box-shadow:none !important; }
+.rd-field { display:block; margin:14px 0; font-size:14px; }
+.rd-field select { display:block; width:100%; margin-top:8px; color:#f3f3fb; background:#14121f; }
+.rd-pack { display:flex; align-items:center; gap:9px; margin:12px 0; flex-wrap:wrap; }
+.rd-pack .btn { margin-left:auto; width:auto; }
+.rd-pack .tag { position:static; }
+.rd-reactions { display:flex; gap:6px; flex-wrap:wrap; }
+.rd-reactions .btn { width:auto; font-size:25px; }
+.rd-guide { display:block; width:100%; height:60vh; border:0; border-radius:14px; margin-top:12px; }
+.rd-user-react { cursor:pointer; font-size:15px; padding:2px 7px; border:1px solid #bd7aff; border-radius:14px; background:#211330; color:white; }
+.rd-edited { font-size:10px; opacity:.55; text-align:right; margin:3px 5px; }
+.rd-tour { position:fixed; inset:0; z-index:10000; overflow:hidden; }
+.rd-ring { position:absolute; border:2px solid #e879f9; border-radius:28px; box-shadow:0 0 0 9999px #07050ddb,0 0 22px #d946ef; pointer-events:none; transition:all .2s; }
+.rd-tour-panel { position:absolute; left:16px; right:16px; max-width:430px; margin:0 auto; background:#15111f !important; padding:20px; }
+.rd-tour-panel p { line-height:1.5; }.rd-tour-panel .btn { margin-top:10px; }
+.rd-fx { position:fixed; pointer-events:none; z-index:9999; font-size:44px; transform:translate(-50%,-50%); animation:rd-effect .85s ease-out forwards; }
+@keyframes rd-effect { 0%{opacity:0;transform:translate(-50%,-20%) scale(.4)} 25%{opacity:1;transform:translate(-50%,-70%) scale(1.15)} 100%{opacity:0;transform:translate(-50%,-180%) scale(.8)} }
+.rd-impact { position:absolute; width:14px;height:14px;border:3px solid #f0abfc;border-radius:50%;pointer-events:none;animation:rd-impact .6s ease-out forwards;z-index:30; }
+@keyframes rd-impact { to{transform:scale(8);opacity:0} }
+.rd-currency { width:1.25em;height:1.25em;object-fit:contain;vertical-align:middle;display:inline-block; }
+@media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important; } }
+
 </style>
 </head>
 <body>
@@ -20197,7 +20350,10 @@ APP_PAGE_HTML = r'''<!doctype html>
         if (m.card.note) gt.appendChild(el("div", "gnote", "«" + m.card.note + "»"));
         b.appendChild(gt);
       } else { b = el("div", "bub"); richText(b, m.text); }
+      bindMessageMenu(b, m);
       w.appendChild(b);
+      if (m.edited) w.appendChild(el("div", "rd-edited", tr("изменено", "edited")));
+      if (m.user_reaction) { var ur = el("button", "rd-user-react", m.user_reaction); ur.onclick = function () { messageAction(m, "react", {emoji: m.user_reaction}); }; w.appendChild(ur); }
       if (m.reaction) w.appendChild(el("span", "react", m.reaction));
       row.appendChild(w); box.appendChild(row);
       prev = m.role;
@@ -20268,6 +20424,147 @@ APP_PAGE_HTML = r'''<!doctype html>
     var bar = el("div", "bar"), i = el("i"); i.style.width = Math.max(0, Math.min(100, val / max * 100)) + "%"; i.style.background = color;
     bar.appendChild(i); d.appendChild(l); d.appendChild(bar); return d;
   }
+  function tr(ru, en) { return state && state.settings && state.settings.lang === 'ru' || state && state.onboarding && state.onboarding.lang === 'ru' ? ru : en; }
+  function updateSetting(body) {
+    return api('/api/app/settings', body).then(function (res) {
+      if (!res.ok) { toast(res.error || 'Error'); return; }
+      state = res.state;
+      Object.keys(frames).forEach(function (key) { frames[key].remove(); delete frames[key]; });
+      render();
+    }).catch(function () { toast(tr('Нет соединения. Попробуй ещё раз.', 'Connection lost. Please retry.')); });
+  }
+  function languageSelect(parent) {
+    var label = el('label', 'rd-field', 'Язык / Language');
+    var select = el('select', 'ob-in');
+    [['ru', 'Русский'], ['en', 'English']].forEach(function (pair) {
+      var option = el('option', null, pair[1]); option.value = pair[0]; select.appendChild(option);
+    });
+    select.value = state.settings ? state.settings.lang : state.onboarding.lang;
+    select.onchange = function () { updateSetting({lang: select.value}); };
+    label.appendChild(select); parent.appendChild(label);
+  }
+  function showGuide() {
+    var box = $('sheet-box'); box.innerHTML = '';
+    var close = el('button', 'btn ghost', tr('Закрыть справку', 'Close help'));
+    close.onclick = function () { $('sheet').classList.remove('on'); };
+    box.appendChild(close);
+    var tour = el('button', 'btn', tr('Показать, что где находится', 'Show me around'));
+    tour.onclick = function () { $('sheet').classList.remove('on'); startTour(); };
+    box.appendChild(tour);
+    var frame = el('iframe', 'rd-guide'); frame.title = tr('Справка RoleDuel', 'RoleDuel help');
+    frame.src = '/guide?embed=1&lang=' + state.settings.lang + location.hash;
+    box.appendChild(frame); $('sheet').classList.add('on');
+  }
+  function messageAction(m, action, extra) {
+    var body = Object.assign({id: m.id, action: action}, extra || {});
+    return api('/api/app/message', body).then(function (res) {
+      if (!res.ok) { toast(res.error || 'Error'); return; }
+      state = res.state; $('sheet').classList.remove('on'); render();
+    }).catch(function () { toast(tr('Не удалось сохранить. Попробуй ещё раз.', 'Could not save. Please retry.')); });
+  }
+  function messageMenu(m) {
+    if (state.pending) { toast(tr('Дождись ответа персонажа', 'Wait for the reply')); return; }
+    var box = $('sheet-box'); box.innerHTML = '';
+    box.appendChild(el('h4', null, tr('Сообщение', 'Message')));
+    if (m.role === 'user' && !m.card) {
+      var edit = el('button', 'btn', tr('Редактировать', 'Edit'));
+      edit.onclick = function () {
+        box.innerHTML = ''; var input = el('textarea', 'ob-in'); input.maxLength = 2000; input.value = m.text; box.appendChild(input);
+        box.appendChild(el('p', 'note', tr('Ответы персонажа останутся прежними.', 'Character replies will be kept.')));
+        var save = el('button', 'btn', tr('Сохранить', 'Save'));
+        save.onclick = function () { if (input.value.trim()) { save.disabled = true; messageAction(m, 'edit', {text: input.value.trim()}).finally(function () { save.disabled = false; }); } };
+        box.appendChild(save); input.focus();
+      };
+      box.appendChild(edit);
+      var del = el('button', 'btn ghost', tr('Удалить', 'Delete'));
+      del.onclick = function () {
+        var done = function (ok) { if (ok) messageAction(m, 'delete'); };
+        if (tg && tg.showConfirm) tg.showConfirm(tr('Удалить это сообщение?', 'Delete this message?'), done);
+        else done(confirm(tr('Удалить это сообщение?', 'Delete this message?')));
+      };
+      box.appendChild(del);
+    } else if (m.role === 'assistant') {
+      var reactions = el('div', 'rd-reactions');
+      ['❤️', '👍', '😂', '😮', '😢', '👎'].forEach(function (emoji) {
+        var button = el('button', 'btn ghost', emoji); button.setAttribute('aria-label', emoji);
+        button.onclick = function () { messageAction(m, 'react', {emoji: emoji}); }; reactions.appendChild(button);
+      }); box.appendChild(reactions);
+    }
+    var close = el('button', 'btn ghost', tr('Отмена', 'Cancel'));
+    close.onclick = function () { $('sheet').classList.remove('on'); }; box.appendChild(close);
+    $('sheet').classList.add('on'); haptic('medium');
+  }
+  function bindMessageMenu(b, m) {
+    var timer = null, startX = 0, startY = 0;
+    function stop() { clearTimeout(timer); timer = null; }
+    b.tabIndex = 0; b.setAttribute('aria-label', tr('Меню сообщения', 'Message options'));
+    b.onpointerdown = function (event) {
+      if (event.button && event.button !== 0) return;
+      startX = event.clientX; startY = event.clientY; stop();
+      timer = setTimeout(function () { timer = null; messageMenu(m); }, 550);
+    };
+    b.onpointermove = function (event) { if (Math.abs(startX - event.clientX) + Math.abs(startY - event.clientY) > 12) stop(); };
+    b.onpointerup = b.onpointercancel = b.onpointerleave = stop;
+    b.oncontextmenu = function (event) { event.preventDefault(); stop(); messageMenu(m); };
+    b.onkeydown = function (event) { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); messageMenu(m); } };
+  }
+  function renderEconomy(v) {
+    var card = el('div', 'card'); card.appendChild(el('h4', null, tr('Пополнить баксы', 'Get bucks')));
+    card.appendChild(el('p', 'note', tr('Баксы — внутриигровая валюта.', 'Bucks are an in-game currency.')));
+    state.bucks_packs.forEach(function (pack) {
+      var row = el('div', 'rd-pack'); row.appendChild(icon('icon_bucks', '💵'));
+      row.appendChild(el('b', null, pack.amount.toLocaleString()));
+      if (pack.saving) row.appendChild(el('span', 'tag', tr('Выгода ', 'Save ') + pack.saving + '%'));
+      var buy = el('button', 'btn', pack.stars + ' ⭐'); buy.onclick = function () { pay(pack.payload, 'stars'); };
+      row.appendChild(buy); card.appendChild(row);
+    });
+    v.appendChild(card);
+    var task = state.subscriber_task;
+    if (task && task.reward) {
+      var daily = el('div', 'card'); daily.appendChild(el('h4', null, tr('Быстрый заказ подписчика', 'Subscriber quick job')));
+      daily.appendChild(el('p', null, tr('Выполни 3 действия на работе и забери ', 'Complete 3 work actions to collect ') + task.reward.toLocaleString() + tr(' баксов. Раз в день.', ' bucks. Once a day.')));
+      var button = el('button', 'btn', task.ready ? (task.progress >= 3 ? tr('Забрать награду', 'Collect reward') : tr('На работу', 'Go to work') + ' · ' + task.progress + '/3') : tr('Сегодня получено', 'Collected today'));
+      button.disabled = !task.ready;
+      button.onclick = function () {
+        if (task.progress < 3) { setTab('work'); return; }
+        button.disabled = true;
+        api('/api/app/task', {}).then(function (res) { if (res.state) state = res.state; if (!res.ok) toast(res.error); render(); }).catch(function () { button.disabled = false; });
+      }; daily.appendChild(button); v.appendChild(daily);
+    }
+  }
+  var tourStarted = false, tourOpen = false;
+  function startTour() {
+    if (tourOpen) return;
+    tourOpen = true; tourStarted = true; setTab('chat');
+    var overlay = el('div', 'rd-tour'), ring = el('div', 'rd-ring'), panel = el('div', 'rd-tour-panel card');
+    overlay.appendChild(ring); overlay.appendChild(panel); document.body.appendChild(overlay);
+    var index = 0, targets = [
+      ['#head', tr('Твой персонаж и баланс', 'Your character and balance'), tr('Здесь видны состояние персонажа, энергия и баксы.', 'See your character status, energy and bucks here.')],
+      ['#composer', tr('Переписка', 'Chat'), tr('Напиши сообщение. Зажми своё сообщение для правки, чужое — для реакции.', 'Send a message. Hold your message to edit, or a character reply to react.')],
+      ['#nav button:nth-child(3)', tr('Магазин', 'Shop'), tr('Здесь можно накормить и напоить персонажа или выбрать подарок.', 'Food, drinks and gifts for your character live here.')],
+      ['#nav button:nth-child(5)', tr('Работа и ферма', 'Work and farm'), tr('Зарабатывай баксы и собирай урожай.', 'Earn bucks and harvest crops.')],
+      ['#nav button:nth-child(6)', tr('Профиль и настройки', 'Profile and settings'), tr('Отношения, преимущества подписки, язык, режим общения и справка.', 'Relationships, subscription benefits, language, chat mode and help.')]
+    ];
+    function position() {
+      var target = document.querySelector(targets[index][0]) || $('head'), rect = target.getBoundingClientRect();
+      ring.style.cssText = 'left:' + Math.max(4, rect.left - 5) + 'px;top:' + Math.max(4, rect.top - 5) + 'px;width:' + Math.min(innerWidth - 8, rect.width + 10) + 'px;height:' + (rect.height + 10) + 'px';
+      panel.style.top = rect.top > innerHeight / 2 ? '18%' : '38%';
+    }
+    function close() {
+      overlay.remove(); tourOpen = false; window.removeEventListener('resize', position);
+      updateSetting({tour_seen: true});
+    }
+    function show() {
+      panel.innerHTML = ''; panel.appendChild(el('div', 'note', (index + 1) + ' / ' + targets.length));
+      panel.appendChild(el('h3', null, targets[index][1])); panel.appendChild(el('p', null, targets[index][2]));
+      var next = el('button', 'btn', index === targets.length - 1 ? tr('Понятно', 'Done') : tr('Далее', 'Next'));
+      next.onclick = function () { if (++index === targets.length) close(); else show(); }; panel.appendChild(next);
+      var skip = el('button', 'btn ghost', tr('Пропустить', 'Skip')); skip.onclick = close; panel.appendChild(skip); position(); next.focus();
+    }
+    overlay.onkeydown = function (event) { if (event.key === 'Escape') close(); };
+    window.addEventListener('resize', position); show();
+  }
+
   function renderProfile() {
     var s = state, ui = s.ui, st = s.stats, v = $("view-profile");
     v.innerHTML = "";
@@ -20338,11 +20635,20 @@ APP_PAGE_HTML = r'''<!doctype html>
     sc.appendChild(g);
     if (s.illness) sc.appendChild(el("div", "sick", s.illness));
     v.appendChild(sc);
+    if (s.relationship) {
+      var rel = el('div', 'card'); rel.appendChild(el('h4', null, s.relationship.stage));
+      rel.appendChild(statRow(tr('Доверие','Trust'), s.relationship.trust, 100, 'var(--grad)', ' / 100', ['icon_heart','❤️']));
+      rel.appendChild(statRow(tr('Уважение','Respect'), s.relationship.respect, 100, 'var(--grad)', ' / 100', ['icon_star','⭐']));
+      rel.appendChild(el('p','note',tr('Развиваются постепенно в содержательном общении. Подарки и покупки не заменяют доверие.','Grow gradually through meaningful conversation. Gifts and purchases do not replace trust.'))); v.appendChild(rel);
+    }
+    renderEconomy(v);
 
     var sub = el("div", "card"); sub.appendChild(el("h4", null, ui.sub_title));
     if (s.sale) sub.appendChild(el("div", "banner", s.sale));
     if (s.coupon) sub.appendChild(el("div", "banner", s.coupon));
     var cur = el("div", "subcur"); cur.appendChild(el("b", null, s.subscription.title || ui.sub_none));
+    var currentOffer = s.offers.filter(function (o) { return o.payload === ({pro:'subscribe_pro',super_pro:'subscribe_super',elite:'subscribe_elite'}[tier]); })[0];
+    if (currentOffer) { var perks = el('ul'); currentOffer.perks.forEach(function (text) { perks.appendChild(el('li', null, text)); }); sub.appendChild(perks); }
     if (s.subscription.until) cur.appendChild(el("span", null, ui.sub_until.replace("{date}", s.subscription.until)));
     sub.appendChild(cur);
     if (s.upgrade) {
@@ -20364,7 +20670,7 @@ APP_PAGE_HTML = r'''<!doctype html>
     hb.onclick = function () { setTab("hot"); };
     more.appendChild(hb);
     var guide = el("button", "btn ghost", ui.guide_btn);
-    guide.onclick = function () { location.href = "/guide?lang=" + (document.documentElement.lang || "ru") + location.hash; };
+    guide.onclick = showGuide;
     more.appendChild(guide);
     var ch = el("button", "btn ghost", ui.change_char);
     ch.onclick = function () {
@@ -20473,6 +20779,10 @@ APP_PAGE_HTML = r'''<!doctype html>
   function renderSettings(v) {
     var ui = state.ui, st = state.settings, c = el("div", "card");
     c.appendChild(el("h4", null, ui.set_title));
+    languageSelect(c);
+    var modeLabel = el('label','rd-field', tr('Режим общения','Conversation mode')), mode = el('select','ob-in');
+    [['phone',tr('Переписка без действий','Messages without actions')],['live',tr('Ролеплей с действиями','Roleplay with actions')]].forEach(function (p) { var o = el('option',null,p[1]); o.value=p[0];mode.appendChild(o); });
+    mode.value=st.scene; mode.onchange=function () { updateSetting({scene:mode.value}); };modeLabel.appendChild(mode);c.appendChild(modeLabel);
     function row(label, on, locked, lockText, fn) {
       var r = el("div", "sw"), l = el("span", null, label);
       if (locked) l.appendChild(el("span", "lk", "🔒 " + lockText));
@@ -20524,8 +20834,9 @@ APP_PAGE_HTML = r'''<!doctype html>
     var o = state.onboarding, ui = state.ui, v = $("view-onb");
     if (!ob.gender) ob.gender = o.default_gender;
     v.innerHTML = "";
+    languageSelect(v);
     var top = el("div", "ob-top"); top.appendChild(el("div", "big", "✨")); top.appendChild(el("h2", null, ui.ob_title));
-    var dots = el("div", "ob-dots"); for (var i = 0; i < 4; i++) dots.appendChild(el("i", i <= obStep ? "on" : ""));
+    var dots = el("div", "ob-dots"); for (var i = 0; i < 5; i++) dots.appendChild(el("i", i <= obStep ? "on" : ""));
     top.appendChild(dots); v.appendChild(top);
     function opt(item, key, cls) {
       var b = el("button", "opt" + (ob[key] === item.key ? " on" : "") + (item.locked ? " locked" : "") + (cls ? " " + cls : ""));
@@ -20539,7 +20850,7 @@ APP_PAGE_HTML = r'''<!doctype html>
       return b;
     }
     var looks = (o.looks || []).filter(function (L) { return L.world === ob.world && L.gender === ob.gender; });
-    var step = [["world", o.worlds, ui.ob_world], ["gender", o.genders, ui.ob_gender], ["look", looks, ui.ob_look], ["style", o.styles, ui.ob_style]][obStep];
+    var step = [["world", o.worlds, ui.ob_world], ["gender", o.genders, ui.ob_gender], ["look", looks, ui.ob_look], ["style", o.styles, ui.ob_style], ["scene", o.scenes, tr("Как будем общаться?", "How shall we chat?")]][obStep];
     v.appendChild(el("div", "ob-q", step[2]));
     if (step[0] === "look") {
       var lw = el("div", "looks");
@@ -20576,12 +20887,12 @@ APP_PAGE_HTML = r'''<!doctype html>
     }
     var nav = el("div", "ob-nav");
     if (obStep > 0) { var bk = el("button", "btn ghost", ui.ob_back); bk.onclick = function () { obStep--; renderOnb(); }; nav.appendChild(bk); }
-    var last = obStep === 3, nx = el("button", "btn", last ? ui.ob_done : ui.ob_next);
+    var last = obStep === 4, nx = el("button", "btn", last ? ui.ob_done : ui.ob_next);
     nx.disabled = !ob[step[0]];
     nx.onclick = function () {
       if (!last) { obStep++; haptic("light"); renderOnb(); v.scrollTop = 0; return; }
       nx.disabled = true;
-      api("/api/app/create", { world: ob.world, gender: ob.gender, look: ob.look, style: ob.style, custom: ob.custom || "", name: ob.name || "", avatar: ob.avatar || null }).then(function (res) {
+      api("/api/app/create", { world: ob.world, gender: ob.gender, look: ob.look, style: ob.style, scene: ob.scene, custom: ob.custom || "", name: ob.name || "", avatar: ob.avatar || null }).then(function (res) {
         if (!res.ok) { nx.disabled = false; toast(res.error || "Error"); haptic("error"); return; }
         haptic("success"); state = res.state; tab = "chat"; render(); schedulePoll();
       }).catch(function () { nx.disabled = false; toast("Network error"); });
@@ -20602,6 +20913,7 @@ APP_PAGE_HTML = r'''<!doctype html>
     if (state.notices && state.notices.length) { toast(state.notices.join("\n\n")); haptic("success"); state.notices = []; }
     if (lastPending && !state.pending) { haptic("light"); if (sndOn() && window.RDSFX) window.RDSFX.received(); }
     lastPending = state.pending;
+    if (!tourStarted && !state.settings.tour_seen) { tourStarted = true; setTimeout(startTour, 700); }
   }
 
   // ---- опрос: часто, пока персонаж печатает; редко -- чтобы подтянуть ответы из чата Telegram ----
@@ -20614,11 +20926,11 @@ APP_PAGE_HTML = r'''<!doctype html>
   function load(quiet) {
     return api("/api/app/state").then(function (res) {
       if (!res.state) { full(res.message || res.error || "Error", res.error === "not_ready" ? "✨" : "⚠️"); return; }
-      var before = state ? state.messages.length + "|" + state.pending + "|" + (state.hot && state.hot.pending) : "";
+      var before = state ? JSON.stringify(state.messages) + "|" + state.pending + "|" + (state.hot && state.hot.pending) : "";
       state = res.state;
       document.documentElement.lang = state.ui.tab_chat === "Чат" ? "ru" : "en";
       if (state.onboarding) { if (!quiet) render(); return; }
-      if (!quiet || before !== state.messages.length + "|" + state.pending + "|" + (state.hot && state.hot.pending) || state.notices.length) { if (!FRAME_PATH[tab]) render(); else if (state.notices.length) { toast(state.notices.join("\n\n")); state.notices = []; } }
+      if (!quiet || before !== JSON.stringify(state.messages) + "|" + state.pending + "|" + (state.hot && state.hot.pending) || state.notices.length) { if (!FRAME_PATH[tab]) render(); else if (state.notices.length) { toast(state.notices.join("\n\n")); state.notices = []; } }
       else if (!FRAME_PATH[tab]) renderHead();
     }).catch(function (e) { if (!quiet) full("Network error: " + (e && e.message || "unknown"), "⚠️"); });
   }
@@ -20906,6 +21218,9 @@ async def run_webapp_server():
     app_web.router.add_get("/theme.css", theme_css_handler)
     app_web.router.add_get("/api/app/state", api_app_state_handler)
     app_web.router.add_post("/api/app/send", api_app_send_handler)
+    app_web.router.add_post("/api/app/message", api_app_message_handler)
+    app_web.router.add_post("/api/app/settings", api_app_settings_handler)
+    app_web.router.add_post("/api/app/task", api_app_task_handler)
     app_web.router.add_post("/api/app/reroll", api_app_reroll_handler)
     app_web.router.add_post("/api/app/wake", api_app_wake_handler)
     app_web.router.add_post("/api/app/invoice", api_app_invoice_handler)
@@ -21228,6 +21543,135 @@ async def check_notifications():
 # ============================================================
 #  ЗАПУСК
 # ============================================================
+def award_referral(user):
+    """One durable reward after a new invitee completes registration."""
+    if not user.get("referral_pending") or not user.get("personality_ready"):
+        return False
+    inviter = user_data.get(str(user.get("referred_by")))
+    if not isinstance(inviter, dict) or not inviter.get("personality_ready"):
+        return False
+    old_count = inviter.get("referral_count", 0)
+    inviter["referral_earned_bucks"] = inviter.get("referral_earned_bucks", old_count * 300) + REFERRAL_INVITER_BUCKS
+    inviter["referral_earned_energizers"] = inviter.get("referral_earned_energizers", old_count * 2) + REFERRAL_INVITER_ENERGIZERS
+    inviter["bucks"] = inviter.get("bucks", 0) + REFERRAL_INVITER_BUCKS
+    inviter["energizers"] = inviter.get("energizers", 0) + REFERRAL_INVITER_ENERGIZERS
+    inviter["intim_scenes"] = inviter.get("intim_scenes", 0) + REFERRAL_INVITER_SCENES
+    inviter["referral_count"] = inviter.get("referral_count", 0) + 1
+    user["bucks"] = user.get("bucks", 0) + REFERRAL_INVITEE_BUCKS
+    user["referral_pending"] = False
+    user["referral_rewarded_at"] = datetime.now().isoformat()
+    save_data(user_data)
+    return True
+
+
+def ensure_message_ids(user):
+    changed = False
+    for message in user.get("history", []):
+        if not message.get("id"):
+            message["id"] = secrets.token_hex(12)
+            changed = True
+    if changed:
+        save_data(user_data)
+
+
+def relationship_state(user):
+    rel = user.get("relationship") or {}
+    trust = max(0, min(100, int(rel.get("trust", 0))))
+    respect = max(0, min(100, int(rel.get("respect", 0))))
+    stage = 0 if trust < 15 else 1 if trust < 40 else 2 if trust < 70 else 3
+    ru = user.get("lang", "ru") == "ru"
+    names = ["Знакомство", "Взаимный интерес", "Доверие", "Близкая связь"] if ru else ["Getting acquainted", "Mutual interest", "Trust", "Close bond"]
+    return {"trust": trust, "respect": respect, "stage": names[stage]}
+
+
+def update_relationship(user, text, negative):
+    # A daily cap and cooldown prevent farming a relationship by sending many tiny messages.
+    rel = user.setdefault("relationship", {})
+    today = local_today().isoformat()
+    if rel.get("day") != today:
+        rel.update(day=today, gains=0)
+    if negative or len(set(text.lower().split())) < 4 or rel.get("gains", 0) >= 5:
+        return
+    now = datetime.now().timestamp()
+    if now - rel.get("last_gain", 0) < 600:
+        return
+    for key in ("trust", "respect"):
+        rel[key] = min(100, rel.get(key, 0) + 1)
+    rel.update(last_gain=now, gains=rel.get("gains", 0) + 1)
+
+
+SUBSCRIBER_TASK_REWARDS = {"pro": 500, "super_pro": 1000, "elite": 1500}
+
+
+def subscriber_task_state(user):
+    tier = get_subscription_level(user)
+    today = local_today().isoformat()
+    ready = tier in SUBSCRIBER_TASK_REWARDS and user.get("subscriber_task_day") != today
+    return {"reward": SUBSCRIBER_TASK_REWARDS.get(tier, 0), "ready": ready,
+            "progress": min(3, user.get("subscriber_task_hits", 0)) if user.get("subscriber_task_progress_day") == today else 0}
+
+
+async def api_app_task_handler(request):
+    _, user, body, err = await _play_request(request)
+    if err:
+        return err
+    task = subscriber_task_state(user)
+    if not task["ready"] or task["progress"] < 3:
+        return _app_reply(user, False, "Complete three work actions today")
+    user["bucks"] = user.get("bucks", 0) + task["reward"]
+    user["subscriber_task_day"] = local_today().isoformat()
+    save_data(user_data)
+    return _app_reply(user)
+
+
+async def api_app_settings_handler(request):
+    _, user, body, err = await _app_request(request)
+    if err:
+        return err
+    if "lang" in body:
+        if body["lang"] not in LANG_BUTTONS:
+            return _app_reply(user, False, "Unsupported language")
+        user["lang"] = body["lang"]
+    if "scene" in body:
+        if body["scene"] not in ("phone", "live"):
+            return _app_reply(user, False, "Unsupported mode")
+        user["scene"] = body["scene"]
+    if body.get("tour_seen") is True:
+        user["tour_seen"] = True
+    save_data(user_data)
+    return _app_reply(user)
+
+
+async def api_app_message_handler(request):
+    _, user, body, err = await _play_request(request)
+    if err:
+        return err
+    app_unstick(user)
+    if user.get("app_pending"):
+        return _app_reply(user, False, "Wait for the current reply")
+    message = next((m for m in user.get("history", []) if m.get("id") == body.get("id")), None)
+    action = body.get("action")
+    if not message:
+        return _app_reply(user, False, "Message no longer available")
+    if action == "react" and message.get("role") == "assistant":
+        emoji = body.get("emoji")
+        if emoji not in ("❤️", "👍", "😂", "😮", "😢", "👎"):
+            return _app_reply(user, False, "Unsupported reaction")
+        message["user_reaction"] = None if message.get("user_reaction") == emoji else emoji
+    elif action in ("edit", "delete") and message.get("role") == "user" and not message.get("card"):
+        if action == "delete":
+            user["history"].remove(message)
+        else:
+            text = body.get("text")
+            if not isinstance(text, str) or not text.strip() or len(text) > APP_MESSAGE_MAX_LEN:
+                return _app_reply(user, False, "Invalid message")
+            message.update(content=text.strip(), edited=True)
+    else:
+        return _app_reply(user, False, "Action not allowed")
+    save_data(user_data)
+    return _app_reply(user)
+
+
 async def main():
     print("🚀 Role Duel запущен!")
     print(f"🧠 Модель: {AI_MODEL or resolve_model('ai')} | интим-сцены: {INTIM_MODEL or resolve_model('intim')}")
@@ -21243,15 +21687,9 @@ async def main():
     # через кнопку "Магазин" (в т.ч. Mini App), а /work тоже не то, что нужно тыкать часто.
     # Сами команды при этом продолжают работать, если их набрать руками — просто не подсказываются.
     await bot.set_my_commands([
-        BotCommand(command="start", description="Регистрация / главное меню"),
-        BotCommand(command="help", description="Список команд"),
-        BotCommand(command="games", description="Развлечения с персонажем"),
-        BotCommand(command="support", description="Связаться с поддержкой"),
-        BotCommand(command="language", description="Сменить язык"),
-        BotCommand(command="hot", description="Горячая сцена с персонажем"),
-        BotCommand(command="reset_character", description="Сбросить кастомного персонажа"),
-        BotCommand(command="switch_personality", description="Сменить мир/пол (SUPER PRO+)"),
-        BotCommand(command="switch_style", description="Сменить стиль (SUPER PRO+)"),
+        BotCommand(command="start", description="Открыть приложение"),
+        BotCommand(command="help", description="Справка"),
+        BotCommand(command="support", description="Поддержка"),
     ])
 
     if WEBAPP_URL:
