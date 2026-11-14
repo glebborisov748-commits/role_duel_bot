@@ -50,3 +50,12 @@ assert app.serialize_app_state(u)['ui']['tab_spin'] == 'Glücksrad'
 assert app.at(u, 'sub_none') == 'Kein Abonnement'
 assert app.serialize_onboarding(u)['scenes'][0]['label'] == 'Nachrichten'
 print('Fresh accounts have no subscription; German state and onboarding passed')
+
+u['scene']='phone'
+prompt=app.build_prompt(u)
+assert 'Каждое действие в *звёздочках*' not in prompt
+assert app.conversation_mode_rule(u) in prompt
+u['custom_character']='A friendly neighbour who enjoys books.'
+assert app.build_prompt(u).endswith(app.conversation_mode_rule(u))
+assert app.clean_chat_reply('2*3*5',u)=='2*3*5'
+print('Phone mode is applied to ordinary and custom companions')

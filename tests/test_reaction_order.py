@@ -15,7 +15,7 @@ class ReactionOrderTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(user['history'][-1]['role'],'user')
             self.assertEqual(user['history'][-1]['reaction'],'😊')
         ns=dict(asyncio=types.SimpleNamespace(to_thread=thread,sleep=delay),build_prompt=lambda u:'prompt',
-                call_ai=None,AI_MODEL='test',extract_reaction_from_answer=lambda t:('😊','Hi'),
+                clean_chat_reply=lambda text,user:text,call_ai=None,AI_MODEL='test',extract_reaction_from_answer=lambda t:('😊','Hi'),
                 random=types.SimpleNamespace(random=lambda:0),save_data=lambda d:snapshots.append(copy.deepcopy(user)),
                 user_data={},get_history_limit=lambda u:20,datetime=__import__('datetime').datetime,
                 apply_activity_stat_cost=lambda *a:None,ENERGY_COST_MESSAGE=1,SATIETY_COST_MESSAGE=1,WATER_COST_MESSAGE=1)

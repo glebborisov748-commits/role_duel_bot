@@ -1,18 +1,5 @@
 # Sound bank
 
-Original procedural sound effects created for RoleDuel, 24 kHz mono PCM WAV.
-These are synthesized effects, not recordings of people eating or drinking.
+Recorded/licensed effects for work, wheel, eating and drinking. Sources and CC0 licenses are documented in SOURCES.md and LICENSE-Kenney-*.txt. The carbonated drink layers recorded drinking with an original soft synthesized fizz.
 
-- key: dry keyboard switch
-- tick: mechanical wheel detent
-- start: short ratchet
-- win/deliver: short confirmation
-- impact/explosion/loss: muted transient
-- water: liquid glugs
-- soda: liquid glugs with fizz
-- eat/crunch: three crunchy bites
-- drop: liquid droplet
-
-No external samples, voices or third-party audio licenses. Mute remains controlled
-by rd_sound. Food selection selects the corresponding sound, with soda for
-sparkling water and beer and plain liquid for other drinks.
+Mono 24 kHz PCM WAV. Playback follows rd_sound, preloads on interaction, deduplicates downloads and limits overlapping voices.

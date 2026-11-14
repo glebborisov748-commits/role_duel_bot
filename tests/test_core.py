@@ -46,13 +46,12 @@ class CoreTests(unittest.IsolatedAsyncioTestCase):
                        save_data=lambda d: self.saved.append(copy.deepcopy(d)), user_data={},
                        REFERRAL_INVITER_BUCKS=2000, REFERRAL_INVITER_ENERGIZERS=1,
                        REFERRAL_INVITER_SCENES=2, REFERRAL_INVITEE_BUCKS=1500,
-                       SUBSCRIBER_TASK_REWARDS=literal('SUBSCRIBER_TASK_REWARDS'),
                        LANG_BUTTONS={'ru': '', 'en': '', 'de': ''},
                        APP_MESSAGE_MAX_LEN=2000,
                        app_unstick=lambda u: None,
                        _app_reply=lambda u, ok=True, error=None: dict(ok=ok, error=error, state=copy.deepcopy(u)))
         load_functions({'award_referral', 'ensure_message_ids', 'relationship_state', 'update_relationship',
-                        'subscriber_task_state', 'api_app_task_handler', 'api_app_message_handler',
+                        'api_app_message_handler',
                         'api_app_settings_handler', 'energizer_pack_saving'}, self.ns)
 
     def test_referral_only_after_registration_and_only_once(self):
@@ -110,6 +109,27 @@ class CoreTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse((await self.ns['api_app_message_handler'](None))['ok'])
         self.assertEqual(user['history'][0]['content'], 'reply')
 
+    async def test_premium_reaction_requires_subscription(self):
+        user={'history':[{'id':'a','role':'assistant','content':'Hi'}]}
+        await self.request_for(user, {'id':'a','action':'react','emoji':'💖'})
+        self.ns['at']=lambda u,k:k
+        self.assertFalse((await self.ns['api_app_message_handler'](None))['ok'])
+        self.assertNotIn('user_reaction',user['history'][0])
+        for tier in ('pro','super_pro','elite'):
+            user['tier']=tier
+            await self.ns['api_app_message_handler'](None)
+            self.assertEqual(user['history'][0]['user_reaction'],'💖')
+            self.assertTrue(user['history'][0]['reaction_animated'])
+            await self.ns['api_app_message_handler'](None)
+            self.assertIsNone(user['history'][0]['user_reaction'])
+
+    async def test_expired_subscription_can_remove_old_premium_reaction(self):
+        user={'history':[{'id':'a','role':'assistant','content':'Hi','user_reaction':'💖','reaction_animated':True}]}
+        self.ns['at']=lambda u,k:k
+        await self.request_for(user,{'id':'a','action':'react','emoji':'💖'})
+        self.assertTrue((await self.ns['api_app_message_handler'](None))['ok'])
+        self.assertIsNone(user['history'][0]['user_reaction'])
+
     async def test_edit_delete_and_reaction_toggle(self):
         user = {'history': [{'id': 'u', 'role': 'user', 'content': 'old'}, {'id': 'a', 'role': 'assistant', 'content': 'reply'}]}
         await self.request_for(user, {'id': 'u', 'action': 'edit', 'text': 'new'})
@@ -131,14 +151,6 @@ class CoreTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse((await self.ns['api_app_message_handler'](None))['ok'])
         self.assertEqual(len(user['history']), 1)
 
-    async def test_daily_task_cannot_be_claimed_twice_or_without_work(self):
-        user = {'tier': 'pro'}
-        await self.request_for(user, {})
-        self.assertFalse((await self.ns['api_app_task_handler'](None))['ok'])
-        user.update(subscriber_task_hits=3, subscriber_task_progress_day='2026-11-13')
-        self.assertTrue((await self.ns['api_app_task_handler'](None))['ok'])
-        self.assertFalse((await self.ns['api_app_task_handler'](None))['ok'])
-        self.assertEqual(user['bucks'], 500)
 
     async def test_settings_validation(self):
         user = {'lang': 'ru', 'scene': 'phone'}

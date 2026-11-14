@@ -25,6 +25,7 @@ with sync_playwright() as p:
             if path.startswith('/api/'):
                 return r.fulfill(content_type='application/json',body=json.dumps({'ok':True,'state':state,'awarded':10,'lost':100,'seconds':1}))
             return r.fulfill(status=404,body='')
+        page.add_init_script("const interval=window.setInterval;window.setInterval=function(f,n){return [600,900,4000].includes(n)?0:interval.apply(this,arguments);};")
         page.route('**/*',route)
         page.goto('https://roleduel.test/work')
         page.locator('#tab-courier').click()
@@ -33,7 +34,8 @@ with sync_playwright() as p:
         def traffic(cls, emoji):
             page.evaluate('''([cls,emoji])=>{document.querySelectorAll('.courier-obstacle,.courier-recipient,.courier-car').forEach(e=>e.remove());let e=document.createElement('div');e.className=cls;e.dataset.lane='1';e.textContent=emoji;e.style.top='135px';e.style.animationDuration='0.8s';e.onanimationend=()=>e.remove();document.querySelector('#courier-road').append(e);}''',[cls,emoji])
         traffic('courier-recipient','🧑')
-        page.wait_for_function("document.querySelector('#courier-progress-fill').style.width !== '0%'")
+        page.wait_for_timeout(900)
+        assert page.locator("#courier-progress").count()==0
         page.wait_for_timeout(250)
         assert any(x['game']=='courier' for x in hits),hits
         traffic('courier-obstacle','🚧')
@@ -45,6 +47,16 @@ with sync_playwright() as p:
         page.evaluate('''()=>{document.querySelectorAll('.catch-item').forEach(e=>e.remove());let e=document.createElement('div');e.className='catch-item';e.textContent='💵';e.style.left='50%';e.style.animationDuration='1s';document.querySelector('#catch-field').append(e);}''')
         page.wait_for_timeout(1300)
         assert any(x['game']=='catch' for x in hits),hits
+        paid_catches=sum(x['game']=='catch' for x in hits)
+        page.evaluate('''()=>{document.querySelectorAll('.catch-item').forEach(e=>e.remove());let e=document.createElement('div');e.className='catch-item';e.textContent='🧲';e.dataset.magnet='1';e.style.left='50%';e.style.animationDuration='1s';document.querySelector('#catch-field').append(e);}''')
+        page.wait_for_timeout(1100)
+        assert sum(x['game']=='catch' for x in hits)==paid_catches,'Powerups must not award bucks'
+        page.evaluate('''()=>{window.blastPoint=null;let original=window.RDSFX.burst;window.RDSFX.burst=function(x,y){window.blastPoint={x,y};original(x,y);};document.querySelectorAll('.catch-item').forEach(e=>e.remove());let e=document.createElement('div');e.className='catch-item bomb';e.textContent='💣';e.dataset.bomb='1';e.style.left='50%';e.style.animationDuration='1s';document.querySelector('#catch-field').append(e);}''')
+        page.locator('#gameover.shown').wait_for()
+        blast=page.evaluate('window.blastPoint')
+        basket=page.locator('#catch-basket').bounding_box()
+        assert blast and abs(blast['y']-(basket['y']+basket['height']/2))<65,(blast,basket)
+        assert page.locator('.rd-impact').count()==0
         assert not errors,errors
         print('Courier delivery and collision passed:',motion)
         page.close()

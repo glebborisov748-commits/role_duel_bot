@@ -1,4 +1,5 @@
 import asyncio
+import daily_quests
 import html as html_lib
 import hashlib
 import hmac
@@ -2427,12 +2428,13 @@ def spin_free_label(user):
 
 
 def consume_free_spin(user):
-    """Списывает одно бесплатное вращение — сначала бонусные (см. приз "extra_spin" в
+    """Списывает одно бесплатное вращение — сначала дневные, затем бонусные (см. приз "extra_spin" в
     SPIN_PRIZES), они не привязаны к дневной квоте и не сбрасываются вместе с ней."""
-    if user.get("bonus_spins", 0) > 0:
-        user["bonus_spins"] -= 1
-    else:
-        user["free_spins_used"] = user.get("free_spins_used", 0) + 1
+    _reset_daily_quota_if_needed(user)
+    if user.get('free_spins_used',0) < free_spins_allowed(user):
+        user['free_spins_used'] = user.get('free_spins_used',0)+1
+    elif user.get('bonus_spins',0) > 0:
+        user['bonus_spins'] -= 1
 
 
 def _maybe_get_sick(user):
@@ -2527,7 +2529,7 @@ def _maybe_escalate_illness(user):
 # зависит только то, какой сейчас календарный день.
 try:
     from zoneinfo import ZoneInfo
-    BOT_TZ = ZoneInfo(os.getenv("BOT_TZ", "Europe/Moscow"))
+    BOT_TZ = ZoneInfo("Europe/Moscow")
 except Exception:  # нет базы часовых поясов на хостинге -- фиксированный UTC+3
     from datetime import timezone as _tz
     BOT_TZ = _tz(timedelta(hours=3))
@@ -2940,11 +2942,6 @@ def credit_work_bucks(user, base_amount):
     """Общая точка начисления для любого заработка на работе — применяет подписочный множитель
     (см. work_earnings_multiplier) и возвращает фактически начисленную сумму. Не сохраняет сама —
     вызывающий код сохраняет вместе с остальными изменениями этого же действия."""
-    today = local_today().isoformat()
-    if user.get('subscriber_task_progress_day') != today:
-        user.update(subscriber_task_progress_day=today, subscriber_task_hits=0)
-    if base_amount > 0:
-        user['subscriber_task_hits'] = min(3, user.get('subscriber_task_hits', 0) + 1)
     amount = round(base_amount * work_earnings_multiplier(user))
     user["bucks"] = user.get("bucks", 0) + amount
     return amount
@@ -3002,6 +2999,8 @@ def register_work_hit(user, game, tip=False):
     if work_double_active(user):
         base *= 2
     amount = credit_work_bucks(user, base)
+    if amount > 0:
+        quest_event(user, {'courier':'courier','catch':'catch','hacker_combo':'hack'}.get(game, game))
     save_data(user_data)
     return amount
 
@@ -3089,6 +3088,7 @@ def farm_plant(user, slot, crop_key):
     plots = farm_plots_raw(user)
     if plots[slot]:
         return False
+    quest_event(user, "plant")
     plots[slot] = {
         "crop": crop_key, "planted_at": datetime.now().isoformat(),
         "watered_slots": 0, "ready_notified": False,
@@ -3103,6 +3103,7 @@ def farm_water(user, slot):
     snaps = farm_state(user)
     if not snaps[slot] or not snaps[slot]["can_water"]:
         return False
+    quest_event(user, "water")
     user["farm_plots"][slot]["watered_slots"] = snaps[slot]["watered_slots"] + 1
     save_data(user_data)
     return True
@@ -3114,6 +3115,7 @@ def farm_harvest(user, slot):
     snaps = farm_state(user)
     if not snaps[slot] or not snaps[slot]["ready"]:
         return None
+    quest_event(user, "harvest")
     payout = credit_work_bucks(user, snaps[slot]["payout_preview"])
     user["farm_plots"][slot] = None
     save_data(user_data)
@@ -3496,6 +3498,8 @@ def look_rule(user):
     look = LOOKS.get(user.get("look") or "")
     if not look:
         return ""
+    if user.get('scene','phone') == 'phone':
+        return f"Твоя внешность: {look['ru']}. Это справка; не описывай жесты и действия.\n"
     return (f"**ТВОЯ ВНЕШНОСТЬ:** {look['ru']}. Иногда естественно упоминай детали внешности в действиях (волосы, одежда, "
             "аксессуары), не в каждом сообщении и не одними и теми же словами.\n")
 
@@ -3504,13 +3508,28 @@ def look_image(user):
     return f"/assets/avatar_{user['look']}.jpg" if user.get("look") in LOOKS else None
 
 
+def conversation_mode_rule(user):
+    if user.get('scene','phone') == 'phone':
+        return ('Это текстовая переписка: только произнесённые реплики. Никаких описаний действий, '
+                'жестов, мимики, обстановки, звёздочек или сценических ремарок. ')
+    return 'Это ролевая история: допустимо одно короткое действие в звёздочках. '
+
+
+def clean_chat_reply(text, user):
+    if user.get('scene','phone') != 'phone':
+        return text
+    text = re.sub(r'(?<!\w)\*[^*]+\*', '', text)
+    text = re.sub(r'(?m)^\s*\((?:улыба|сме|вздыха|смотр|пожима|кива|smil|laugh|sigh)[^)]*\)\s*', '', text, flags=re.I)
+    return re.sub(r'\n{3,}', '\n\n', text).strip() or '…'
+
+
 def build_prompt(user):
     no_explicit_rule = get_content_rule(get_display_style(user))
 
     char_name = (user.get("char_name") or "").strip()
     if user.get("custom_character"):
         return (
-            (f"Тебя зовут {char_name}. " if char_name else "") + look_rule(user) +
+            (f"Тебя зовут {char_name}. " if char_name else "") + look_rule(user) + conversation_mode_rule(user) +
             f"Ты — {user['custom_character']}. Полностью вживись в эту личность и её характер: если "
             f"персонаж узнаваем (из фильма, игры, аниме, книги и т.п.), веди себя как он — с его "
             f"характерными чертами, манерой речи и взглядами, а не обезличенно и уклончиво. Можешь "
@@ -3525,7 +3544,7 @@ def build_prompt(user):
             f"{no_explicit_rule}"
             # своему персонажу тоже нужно указание языка, иначе модель отвечает наугад
             f"\n{get_language_rule(user)}"
-            f"{build_consistency_rules(user)}"
+            f"{build_consistency_rules(user)}" + conversation_mode_rule(user)
         )
 
     world_desc = WORLDS[user["world"]]
@@ -3546,8 +3565,7 @@ def build_prompt(user):
         name_ban = (f"**ТВОЁ ИМЯ:** тебя зовут {char_name}. Это твоё имя — откликайся на него и иногда называй себя "
                     "так, когда это естественно. " + name_ban.split("Ты также ", 1)[1].replace("НИКОГДА не спрашиваешь", "Ты НИКОГДА не спрашиваешь", 1))
     rules = (
-        "**ФОРМАТИРОВАНИЕ:** Каждое действие в *звёздочках* с новой строки, затем реплика с новой строки. "
-        "Между действием и репликой – пустая строка.\n"
+
         "**РЕАКЦИЯ НА СООБЩЕНИЕ:** В самом конце ответа, после завершения всей фразы, напиши в скобках одну "
         "из эмоций: (смех), (радость), (любовь), (удивление), (грусть), (злость), (поддержка), (интрига), "
         "(флирт), (приветствие), (вопрос). Это служебный тег для системы, а не часть истории — слово ВСЕГДА "
@@ -3602,14 +3620,13 @@ def build_prompt(user):
     prompt += "\n" + get_language_rule(user)
 
     prompt += build_consistency_rules(user)
+    if user.get("scene", "phone") == "phone":
+        prompt = re.sub(r"В \*действиях\*.*?(?=\n|$)", "", prompt)
     relation = relationship_state(user)
     prompt += (f"\nДоверие: {relation['trust']}/100. Уважение: {relation['respect']}/100. "
                "Показывай постепенное знакомство, помни доступные детали переписки. "
                "Не обещай любовь за подарки или подписку, не упрекай за отсутствие. ")
-    if user.get("scene", "phone") == "phone":
-        prompt += "Это переписка: только прямые реплики, без звёздочек, ремарок и описаний действий. "
-    else:
-        prompt += "Это ролевая история: допустимы короткие описания обычных действий между звёздочками. "
+    prompt += conversation_mode_rule(user)
 
     return prompt
 
@@ -6557,6 +6574,31 @@ async def grant_cmd(message: types.Message):
     await _grant_to(message, user_id, args)
 
 
+@dp.message(Command('givebucks'))
+async def givebucks_cmd(message: types.Message):
+    if message.from_user.id not in ADMIN_IDS:
+        await message.answer('⛔ Нет прав.')
+        return
+    args = (message.text or '').split()
+    if len(args) != 3:
+        await message.answer('/givebucks ID_или_@username количество\nНапример: /givebucks @username 5000')
+        return
+    try:
+        amount = int(args[2])
+        if amount <= 0:
+            raise ValueError()
+    except ValueError:
+        await message.answer('❌ Количество должно быть положительным целым числом.')
+        return
+    user_id = await _resolve_admin_target(message, args[1])
+    if user_id is None:
+        return
+    if user_id <= 0:
+        await message.answer('❌ Нужен ID пользователя, не группы.')
+        return
+    await _grant_to(message, user_id, ['/grant',args[1],'bucks',str(amount)])
+
+
 MAIN_ADMIN_ID = 7287815074
 
 
@@ -6572,12 +6614,18 @@ async def grant_me_cmd(message: types.Message):
 
 
 async def _grant_to(message, user_id, args):
+    if len(args)>=3 and args[2].lower() not in ('intim','energizers','bucks','pro','super','super_pro','elite'):
+        await message.answer('❌ Неизвестный тип награды. /grant — справка.')
+        return
     user = get_user(user_id)
     if len(args) >= 3 and args[2].lower() == "intim":
         amount = 1
         if len(args) >= 4:
             try:
-                amount = max(1, int(args[3]))
+                amount = int(args[3])
+                if amount <= 0:
+                    await message.answer('❌ Количество должно быть положительным.')
+                    return
             except ValueError:
                 await message.answer("❌ Количество сцен должно быть числом.")
                 return
@@ -6591,7 +6639,10 @@ async def _grant_to(message, user_id, args):
         amount = 1
         if len(args) >= 4:
             try:
-                amount = max(1, int(args[3]))
+                amount = int(args[3])
+                if amount <= 0:
+                    await message.answer('❌ Количество должно быть положительным.')
+                    return
             except ValueError:
                 await message.answer("❌ Количество должно быть числом.")
                 return
@@ -7442,6 +7493,7 @@ def apply_user_text(user, text):
         user["location"] = new_loc
 
     update_relationship(user, text, negative)
+    quest_chat(user, text)
 
     # Сохранение истории
     user["history"].append({"role": "user", "content": text})
@@ -7464,7 +7516,7 @@ async def ai_chat_answer(user):
     )
     answer = response.choices[0].message.content or ""
     reaction, clean_answer = extract_reaction_from_answer(answer)
-    clean_answer = (clean_answer or "").strip() or "…"
+    clean_answer = clean_chat_reply((clean_answer or "").strip(), user)
     if reaction and random.random() > 0.2:
         reaction = None
     if reaction and user["history"] and user["history"][-1].get("role") == "user":
@@ -13911,6 +13963,8 @@ def serialize_spin_state(user):
     в этом списке однозначно определяет, на какой сектор колеса анимация должна "приехать"
     (см. api_spin_free_handler/SPIN_PAGE_HTML)."""
     return {
+        "server_day":local_today().isoformat(),
+        "reset_at":daily_reset_timestamp(),
         "free_left": free_spins_left(user),
         "free_total": free_spins_allowed(user),
         "bucks": user.get("bucks", 0),
@@ -14295,6 +14349,7 @@ SPIN_PAGE_HTML = r'''<!doctype html>
     } catch (e) {}
   }
   function haptic(kind) {
+    if(window.RDSFX&&window.RDSFX.feedback){window.RDSFX.feedback(kind);return;}
     if (!tg || !tg.HapticFeedback) return;
     try {
       if (kind === "select") tg.HapticFeedback.impactOccurred("medium");
@@ -14304,8 +14359,8 @@ SPIN_PAGE_HTML = r'''<!doctype html>
   }
   function fx(kind) {
     if (window.RDSFX && window.RDSFX.sample) {
-      if(sfxOn) window.RDSFX.sample(({coin:'deliver',good:'key',wire:'key',lane:'key',over:'loss',harvest:'deliver',power:'win',shatter:'impact',car:'start',rocket:'start',plant:'drop',silver:'win',gold:'win',rainbow:'win'})[kind] || kind);
-      haptic(kind==='over'||kind==='impact'||kind==='explosion'?'heavy':kind==='win'?'success':'medium');return;
+      if(sfxOn) window.RDSFX.sample(({coin:'deliver',good:'key',wire:'key',lane:'key',over:'loss',harvest:'deliver',power:'win',shatter:'shatter',car:'start',rocket:'start',plant:'drop',silver:'win',gold:'win',rainbow:'win'})[kind] || kind);
+      haptic(kind);return;
     }
 
     if (kind === "coin") { tone(880, .07, "square", .05); tone(1320, .1, "square", .05, .06); haptic("light"); }
@@ -14881,6 +14936,7 @@ SPIN_PAGE_HTML = r'''<!doctype html>
     });
   }
 
+  setInterval(function(){if(state && state.reset_at && Date.now()>=state.reset_at*1000 && !spinning)load();},1000);
   load();
   }
 
@@ -15653,7 +15709,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   <div id="game-courier" class="game-panel">
     <div id="courier-hint"></div>
-    <div id="courier-progress"><div id="courier-progress-fill"></div></div>
+
     <div id="courier-road">
       <div class="courier-tree-zone" id="courier-tree-top"></div>
       <div class="courier-lane" data-lane="0"></div>
@@ -15700,7 +15756,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
 
   var state = null;
-  var activeGame = /[?&]tab=farm\b/.test(location.search) ? "farm" : "clicker"; // пуш "урожай созрел" открывает сразу ферму
+  var requestedGame=new URLSearchParams(location.search).get("game");
+  var activeGame = ["clicker","catch","courier","farm"].indexOf(requestedGame)>=0?requestedGame:(/[?&]tab=farm\b/.test(location.search)?"farm":"clicker"); // пуш "урожай созрел" открывает сразу ферму
   var catchSpawnInterval = null;
   var catchRafId = null;
   var courierRafId = null;
@@ -15861,7 +15918,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     registerHit("hacker_combo", terminal ? terminal.offsetWidth / 2 : 0, 0, terminal, false, function (awarded) {
       var fb = document.getElementById("clicker-feedback");
       if (!fb || !awarded) return;
-      var text = state.ui.hack_success.replace("{amount}", String(awarded));
+      var text = "";
       fb.textContent = text;
       fb.className = "success";
       setTimeout(function () { if (fb.textContent === text) { fb.textContent = ""; fb.className = ""; } }, 3000);
@@ -16055,6 +16112,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
 
   function haptic(kind) {
+    if(window.RDSFX&&window.RDSFX.feedback){window.RDSFX.feedback(kind);return;}
     if (!tg || !tg.HapticFeedback) return;
     try {
       if (kind === "select") tg.HapticFeedback.impactOccurred("medium");
@@ -16064,8 +16122,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
   function fx(kind) {
     if (window.RDSFX && window.RDSFX.sample) {
-      if(sfxOn) window.RDSFX.sample(({coin:'deliver',good:'key',wire:'key',lane:'key',over:'loss',harvest:'deliver',power:'win',shatter:'impact',car:'start',rocket:'start',plant:'drop',silver:'win',gold:'win',rainbow:'win'})[kind] || kind);
-      haptic(kind==='over'||kind==='impact'||kind==='explosion'?'heavy':kind==='win'?'success':'medium');return;
+      if(sfxOn) window.RDSFX.sample(({coin:'deliver',good:'key',wire:'key',lane:'key',over:'loss',harvest:'deliver',power:'win',shatter:'shatter',car:'start',rocket:'start',plant:'drop',silver:'win',gold:'win',rainbow:'win'})[kind] || kind);
+      haptic(kind);return;
     }
 
     if (kind === 'explosion' || kind === 'impact' || kind === 'drop' || kind === 'harvest') {
@@ -16630,9 +16688,9 @@ WORK_PAGE_HTML = r'''<!doctype html>
           if (item.dataset.bomb === "1" || isBig) {
             // Бомба и большие угрозы -- никакого registerHit, деньги за это НЕ платятся, плюс
             // штрафная блокировка (см. registerPenalty через triggerDebuff).
+            if (window.RDSFX) window.RDSFX.burst(r.left+r.width/2, r.top+r.height/2);
             item.classList.add("exploded");
             fx('explosion');
-            if (window.RDSFX) window.RDSFX.impact(item);
             (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 300); })(item);
             if (shieldCharges > 0) {
               // щит поглотил взрыв -- игра продолжается
@@ -16651,8 +16709,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
           } else {
             item.classList.add("caught");
             (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 160); })(item);
-            registerHit("catch", basket.offsetLeft + basket.offsetWidth / 2, basket.offsetTop,
-              document.getElementById("catch-field"));
+            if (!item.dataset.slowfall && !item.dataset.magnet && !item.dataset.double && !item.dataset.shield) {
+              registerHit("catch", basket.offsetLeft + basket.offsetWidth / 2, basket.offsetTop,
+                document.getElementById("catch-field"));
+            }
             if (item.dataset.slowfall || item.dataset.magnet || item.dataset.double || item.dataset.shield) fx("power");
             if (item.dataset.slowfall === "1") {
               slowFallUntil = Date.now() + SLOWFALL_DURATION_MS;
@@ -16760,7 +16820,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     var rider = document.getElementById("courier-rider");
     var feedback = document.getElementById("courier-feedback");
     if (feedback) {
-      var text = state.ui.courier_arrived;
+      var text = "";
       feedback.textContent = text;
       feedback.className = "arrived";
       setTimeout(function () {
@@ -18023,11 +18083,9 @@ async def play_bj_start(user_id, user, body):
         return _play_reply(user, False, None)  # раунд уже идёт -- двойной тап не списывает вторую ставку
     if user.get("game"):
         user["game"] = None
-    if "talk" in body:
-        user["bj_talk"] = bool(body.get("talk"))
+    user['bj_talk'] = True
     error = games_gate_error(user)
-    # Без комментариев блэкджек -- просто карты: ни сон, ни дневной лимит реплик персонажа ему не мешают.
-    if error and not (not user.get("bj_talk") and error in (gt(user, "asleep"), gt(user, "daily_limit"))):
+    if error:
         return _play_reply(user, False, error)
     if not spend_bucks(user, bet):
         return _play_reply(user, False, get_text(user, "not_enough_bucks", n=bet - user.get("bucks", 0)))
@@ -18049,8 +18107,7 @@ async def play_bj_settle(user_id, user):
     play["result"] = outcome
     play["result_text"] = bj_result_text(user, outcome, play["bet"], payout)
     pv, dv = bj_value(play["player"]), bj_value(play["dealer"])
-    if not user.get("bj_talk"):
-        return  # играем молча -- реплика персонажа (и трата его энергии) только по желанию
+    user["bj_talk"] = True
     instr = (f"Вы играете в блэкджек, ты — крупье. Итог ЭТОГО раунда: {BJ_AI_FACTS[outcome]}. У собеседника {pv}, у тебя {dv}, "
              f"ставка {play['bet']}. Не путай с прошлыми раундами. Прокомментируй в образе: подколи, порадуйся или предложи ещё раунд.")
 
@@ -18252,7 +18309,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
       g.gain.setValueAtTime(v || .1, t0); g.gain.exponentialRampToValueAtTime(.0001, t0 + d);
       o.connect(g); g.connect(window.RDSFX ? window.RDSFX.out() : sfxCtx.destination); o.start(t0); o.stop(t0 + d + .02); } catch (e) {}
   }
-  function haptic(k) { if (!tg || !tg.HapticFeedback) return; try { if (k === "select") tg.HapticFeedback.selectionChanged();
+  function haptic(k) { if(window.RDSFX&&window.RDSFX.feedback){window.RDSFX.feedback(k);return;} if (!tg || !tg.HapticFeedback) return; try { if (k === "select") tg.HapticFeedback.selectionChanged();
     else if (k === "success" || k === "error" || k === "warning") tg.HapticFeedback.notificationOccurred(k); else tg.HapticFeedback.impactOccurred(k); } catch (e) {} }
   function fx(k) {
     if (k === "shake") { tone(220, .06, "square", .05); haptic("light"); }
@@ -18309,7 +18366,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     var bj = el("div", "card bj-card");
     bj.appendChild(el("h3", null, ui.play_bj_title));
     bj.appendChild(el("p", null, ui.play_bj_desc));
-    bj.appendChild(talkToggle());
+
     bj.appendChild(el("p", null, ui.play_bj_choose));
     bj.appendChild(betButtons());
     menu.appendChild(bj);
@@ -18384,12 +18441,6 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   document.getElementById("talk-text").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); talkSubmit(); } });
   document.getElementById("talk-quit").onclick = function () { api("/api/play/quit", {}).then(function (res) { if (res.state) state = res.state; render(); }); };
 
-  function talkToggle() {
-    var b = el("button", "btn secondary", state.bj_talk ? ui_().play_bj_talk_on : ui_().play_bj_talk_off);
-    b.style.marginBottom = "10px"; b.style.fontSize = "14px"; b.style.padding = "10px";
-    b.onclick = function () { state.bj_talk = !state.bj_talk; fx("draw"); render(); };
-    return b;
-  }
   function ui_() { return state.ui; }
 
   function betButtons() {
@@ -18462,7 +18513,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     } else {
       prompt.textContent = ui.play_bj_again;
       acts.style.display = "block";
-      acts.appendChild(talkToggle());
+
       acts.appendChild(betButtons());
     }
     document.getElementById("quit-btn").style.display = "block";
@@ -18472,7 +18523,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     if (busy) return;
     busy = true;
     bjShown = { player: 0, dealer: 0 };
-    api("/api/play/start", { mode: "bj", bet: bet, talk: !!state.bj_talk }).then(function (res) {
+    api("/api/play/start", { mode: "bj", bet: bet, talk: true }).then(function (res) {
       busy = false;
       if (res.state) state = res.state;
       if (!res.ok && res.error) safe(function () { tg.showAlert(res.error); });
@@ -19053,6 +19104,12 @@ APP_TEXTS['de'] = {**APP_TEXTS['en'], **{'tab_chat': 'Chat',
                  'Täglich +4⚡ · 5 Drehungen',
                  'Einmal pro Woche kostenlos wecken']}}
 
+APP_TEXTS['ru'].update({'quest_expired': 'Начался новый день. Задания обновлены.', 'quest_not_ready': 'Задание ещё не выполнено или награда уже получена.', 'premium_reaction': 'Эта реакция доступна по подписке.', 'quest_energy_full': 'Сначала потрать немного энергии — награда сохранится.', 'asleep_title': '😴 Персонаж отдыхает', 'asleep_text': 'Работа и задания доступны. Выполняй их и получай бесплатные награды.'})
+
+APP_TEXTS['en'].update({'quest_expired': 'A new day has started. Quests refreshed.', 'quest_not_ready': 'Quest incomplete or reward already collected.', 'premium_reaction': 'This reaction requires a subscription.', 'quest_energy_full': 'Use some energy first. Your reward will wait.', 'asleep_title': '😴 Your companion is resting', 'asleep_text': 'Work and quests are still available. Complete them for free rewards.'})
+
+APP_TEXTS['de'].update({'quest_expired': 'Ein neuer Tag hat begonnen. Aufgaben aktualisiert.', 'quest_not_ready': 'Aufgabe noch offen oder Belohnung bereits abgeholt.', 'premium_reaction': 'Diese Reaktion erfordert ein Abo.', 'quest_energy_full': 'Verbrauche zuerst etwas Energie. Die Belohnung bleibt.', 'asleep_title': '😴 Dein Charakter ruht sich aus', 'asleep_text': 'Arbeit und Aufgaben sind weiter verfügbar. Verdiene kostenlose Belohnungen.'})
+
 def at(user, key, **kw):
     lang = user.get("lang", "ru")
     if lang not in APP_TEXTS: lang = "en"
@@ -19166,7 +19223,7 @@ def serialize_app_state(user):
         coupon = at(user, "coupon", n=int(user["coupon"]["discount"] * 100), h=left)
     ui = {k: v for k, v in APP_TEXTS.get(lang, APP_TEXTS["en"]).items() if isinstance(v, str)}
     return {
-        "messages": [{"id": m["id"], "role": m["role"], "text": m["content"], "reaction": m.get("reaction"), "user_reaction": m.get("user_reaction"), "edited": bool(m.get("edited")), "card": m.get("card")}
+        "messages": [{"id": m["id"], "role": m["role"], "text": m["content"], "reaction": m.get("reaction"), "user_reaction": m.get("user_reaction"), "reaction_animated": bool(m.get("reaction_animated")), "edited": bool(m.get("edited")), "card": m.get("card")}
                      for m in history],
         "onboarding": None,
         "reply_choices": serialize_reply_choices(user),
@@ -19206,7 +19263,9 @@ def serialize_app_state(user):
         "bucks_packs": [{"payload": key, "amount": amount, "stars": PRODUCTS[key]["stars"],
                           "saving": round((1 - PRODUCTS[key]["stars"] / amount / (10 / 5000)) * 100)}
                          for key, amount in BUCKS_PACKS.items()],
-        "subscriber_task": subscriber_task_state(user),
+        "quests": daily_quest_state(user),
+        "server_day": local_today().isoformat(),
+        "animated_reactions": get_subscription_level(user) in ("pro","super_pro","elite"),
         "offers": app_sub_offers(user),
         "upgrade": {"stars": product_stars("upgrade_to_super", user), "stars_label": price_label("upgrade_to_super", user),
                     "rub": product_rub("upgrade_to_super", user) if "platega" in available_payment_methods("upgrade_to_super") else None}
@@ -19591,7 +19650,7 @@ setTimeout(function () { if (window.__tgSdkOnSettle) window.__tgSdkOnSettle(); }
 _SDK_TAG_RE = re.compile(r'<script src="/tg-sdk\.js"[^>]*>\s*</script>', re.S)
 
 
-SFX_TAG = '<script src="/sfx.js?v=20261113c"></script>'
+SFX_TAG = '<script src="/sfx.js?v=20261114"></script>'
 
 
 async def sfx_js_handler(request):
@@ -19728,7 +19787,7 @@ input:focus, textarea:focus { border-color: rgba(139, 92, 246, .6) !important; b
 
 /* RoleDuel: dark surfaces with a restrained violet/pink edge. */
 .btn, #send { background:linear-gradient(135deg,#633a94,#ab4d8c);color:#fbeaff; }
-.btn::after,.buy-btn::after,.action-btn::after { animation:none !important; opacity:.12; }
+.btn::after,.buy-btn::after,.action-btn::after { animation:rd-shine 4.5s ease-in-out infinite; opacity:.32; }
 .btn:disabled,.buy-btn:disabled { opacity:.45; box-shadow:none !important; }
 .rd-field { display:block; margin:14px 0; font-size:14px; }
 .rd-field select { display:block; width:100%; margin-top:8px; color:#f3f3fb; background:#14121f; }
@@ -19761,8 +19820,17 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
 .farm-action-btn,.farm-buy-slot-btn {background:linear-gradient(135deg,#19462f,#2f6950) !important;color:#c3ffd5 !important;border:1px solid #70c68f !important;}
 #actions .action-btn {background:linear-gradient(135deg,#542968,#9b4377) !important;color:#ffe1ef !important;border:1px solid #eaa2ce !important;}
 
+@keyframes rd-shine {0%{transform:translateX(-120%) skewX(-20deg)}55%,100%{transform:translateX(360%) skewX(-20deg)}}
+.rd-tour-panel{overflow:auto;}.rd-tour-panel p{margin:10px 0;font-size:14px;}.rd-tour-footer{display:flex;gap:12px;}.rd-tour-footer .btn{flex:1;padding:7px;background:transparent!important;box-shadow:none!important;border:0!important;font-size:12px;}
+.rd-quest{padding:14px 0;border-top:1px solid #ffffff12;}.rd-quest-info{margin:7px 0;font-size:13px;color:#c5bbd5;}.rd-quest progress{width:100%;height:6px;accent-color:#c084fc;}.rd-quests>.note{text-align:left;font-size:11px;}
+.rd-premium{animation:rd-reaction 1.1s ease-in-out 2;}.rd-premium-picker{margin-top:8px;}.rd-premium-picker .locked{opacity:.45;}
+@keyframes rd-reaction{0%,100%{transform:scale(1)}35%{transform:scale(1.45) rotate(-12deg);filter:drop-shadow(0 0 7px #e879f9)}65%{transform:scale(1.2) rotate(8deg)}}
+.rd-spark{position:fixed;pointer-events:none;z-index:9999;width:6px;height:6px;border-radius:2px;background:#ffc884;animation:rd-burst .42s ease-out forwards;}
+@keyframes rd-burst{to{transform:translate(var(--dx),var(--dy)) rotate(160deg) scale(.2);opacity:0}}
+@media(prefers-reduced-motion:reduce){.btn::after,.buy-btn::after,.action-btn::after,.rd-premium,.rd-spark{animation:none!important;}}
+
 '''
-APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261113c">'
+APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261114">'
 
 
 async def theme_css_handler(request):
@@ -20069,25 +20137,40 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
     node.style.position='fixed';node.style.left=(r.left+r.width/2)+'px';node.style.top=(r.top+r.height/2)+'px';
     document.body.appendChild(node);setTimeout(function(){node.remove();},650);
   }
-  var sampleBuffers={};
-  function sample(kind) {
-    if(!enabled())return;
-    var c=init();if(!c)return;
-    function play(buffer){if(!enabled())return;var src=c.createBufferSource(),g=c.createGain();src.buffer=buffer;g.gain.value=.65;src.connect(g);g.connect(c.destination);src.start();}
-    if(sampleBuffers[kind]){play(sampleBuffers[kind]);return;}
-    fetch('/assets/audio/'+kind+'.wav').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){return c.decodeAudioData(b);}).then(function(b){sampleBuffers[kind]=b;play(b);}).catch(function(){});
+  function burst(x,y){for(var i=0;i<12;i++){var n=document.createElement('i'),angle=i*Math.PI/6,dist=18+Math.random()*28;n.className='rd-spark';n.style.left=x+'px';n.style.top=y+'px';n.style.setProperty('--dx',Math.cos(angle)*dist+'px');n.style.setProperty('--dy',Math.sin(angle)*dist+'px');document.body.appendChild(n);setTimeout(function(n){n.remove();},450,n);}}
+  var feedbackTimer=[],lastFeedback=0;
+  function feedback(kind){
+    var t=window.Telegram&&window.Telegram.WebApp,h=t&&t.HapticFeedback;if(!h)return;
+    if(Date.now()-lastFeedback<65)return;lastFeedback=Date.now();feedbackTimer.forEach(clearTimeout);feedbackTimer=[];
+    var motifs={select:[[0,'light']],light:[[0,'light']],medium:[[0,'medium']],heavy:[[0,'heavy']],tick:[[0,'light']],key:[[0,'light']],coin:[[0,'light'],[55,'soft']],deliver:[[0,'soft'],[65,'medium']],win:[[0,'light'],[75,'medium'],[170,'rigid']],reward:[[0,'light'],[80,'soft'],[170,'medium'],[280,'success']],success:[[0,'light'],[90,'success']],error:[[0,'rigid'],[100,'error']],over:[[0,'heavy'],[90,'rigid']],explosion:[[0,'heavy'],[100,'rigid']],impact:[[0,'rigid']],lane:[[0,'soft']]};
+    (motifs[kind]||[[0,'light']]).forEach(function(step){feedbackTimer.push(setTimeout(function(){try{if(['success','error','warning'].indexOf(step[1])>=0)h.notificationOccurred(step[1]);else h.impactOccurred(step[1]);}catch(e){}},step[0]));});
   }
-  function care(kind, item) {
-    sample(kind==='drink'?(item==='sparkling_water'||item==='beer'?'soda':'water'):(kind==='eat'?(item==='chips'||item==='pizza'?'crunch':'eat'):kind));return;
-    if (!enabled()) return;
-    if (kind === 'explosion') { noise(.45,.18,450,0,70,'lowpass');tone(95,.35,'sine',.15,0,32); }
-    else if (kind === 'impact') { noise(.18,.13,1600,0,220);tone(120,.2,'triangle',.12,0,40); }
-    else if (kind === 'drop' || kind === 'drink') { tone(880,.13,'sine',.07,0,1900);tone(520,.17,'sine',.06,.12,240); if(kind==='drink') tone(720,.18,'sine',.05,.3,300); }
-    else if (kind === 'eat') { noise(.09,.06,1800);noise(.08,.045,1200,.15);pluck(660,.25,.035,.3); }
-    else if (kind === 'harvest') { [660,880,1320].forEach(function(f,i){pluck(f,.4,.05,i*.07);}); }
+  var sampleBuffers={},sampleLoads={},sampleVoices=[],lastSample={};
+  var sampleNames=['key','tick','start','win','deliver','loss','drop','freeze','impact','explosion','shatter','water','soda','eat','crunch'];
+  function loadSample(kind){
+    if(sampleBuffers[kind])return Promise.resolve(sampleBuffers[kind]);
+    if(sampleLoads[kind])return sampleLoads[kind];
+    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261114').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
+    return sampleLoads[kind];
+  }
+  function sample(kind){
+    if(!enabled()||sampleNames.indexOf(kind)<0)return;
+    var now=Date.now(),gap=kind==='tick'?55:90;
+    if(now-(lastSample[kind]||0)<gap)return;lastSample[kind]=now;
+    var requested=now;
+    loadSample(kind).then(function(buffer){
+      if(!buffer||!enabled()||Date.now()-requested>300)return;
+      var c=init();if(!c)return;var src=c.createBufferSource(),g=c.createGain();src.buffer=buffer;g.gain.value=kind==='tick'?.25:.5;src.connect(g);g.connect(c.destination);
+      if(sampleVoices.length>=4){try{sampleVoices.shift().stop();}catch(e){}}
+      sampleVoices.push(src);src.onended=function(){sampleVoices=sampleVoices.filter(function(v){return v!==src;});};src.start();
+    });
+  }
+  document.addEventListener('pointerdown',function(){if(enabled())sampleNames.forEach(loadSample);},{once:true,capture:true});
+  function care(kind,item) {
+    sample(kind==='drink'?(item==='sparkling_water'||item==='beer'?'soda':'water'):(kind==='eat'?(item==='snack'||item==='breakfast'?'crunch':'eat'):kind));
   }
   window.addEventListener('storage',function(){if(master) master.gain.value=enabled()?.85:0;});
-  window.RDSFX = { sample:sample, care:care, effect:effect, impact:impact, ctx: init, out: out, tone: tone, bell: bell, pluck: pluck, pad: pad, sparkle: sparkle, noise: noise,
+  window.RDSFX = { burst:burst, feedback:feedback, sample:sample, care:care, effect:effect, impact:impact, ctx: init, out: out, tone: tone, bell: bell, pluck: pluck, pad: pad, sparkle: sparkle, noise: noise,
                    tick: tick, sent: sent, received: received, PENTA: PENTA };
 
   var currencyScheduled = false;
@@ -20159,9 +20242,6 @@ APP_PAGE_HTML = r'''<!doctype html>
   .chips { display: flex; gap: 6px; }
   .chip { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 800; padding: 6px 9px; border-radius: 12px;
     background: var(--card); border: 1px solid var(--line); white-space: nowrap; }
-  #ebar { height: 3px; background: rgba(255,255,255,.06); position: relative; z-index: 2; }
-  #ebar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #22c55e, #a3e635); transition: width .6s ease; }
-  #ebar.low i { background: linear-gradient(90deg, #ef4444, #f59e0b); }
 
   /* ---- views ---- */
   #views { flex: 1; min-height: 0; position: relative; z-index: 1; }
@@ -20169,7 +20249,7 @@ APP_PAGE_HTML = r'''<!doctype html>
   .view.on { display: flex; }
   .view.frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: var(--bg); }
   .frame-load { position: absolute; inset: 0; display: grid; place-items: center; color: var(--hint); font-size: 14px; }
-  #root.framed #head, #root.framed #ebar, #root.onb #head, #root.onb #ebar, #root.onb #nav { display: none; }
+  #root.framed #head, #root.onb #head, #root.onb #nav { display: none; }
   .row.react-row { margin-bottom: 14px; }
   .bw { position: relative; max-width: 82%; display: flex; }
   .row.me .bw { justify-content: flex-end; }
@@ -20390,7 +20470,7 @@ APP_PAGE_HTML = r'''<!doctype html>
   #full .big { font-size: 46px; margin-bottom: 14px; }
 /* RoleDuel: dark surfaces with a restrained violet/pink edge. */
 .btn, #send { background:linear-gradient(135deg,#633a94,#ab4d8c);color:#fbeaff; }
-.btn::after,.buy-btn::after,.action-btn::after { animation:none !important; opacity:.12; }
+.btn::after,.buy-btn::after,.action-btn::after { animation:rd-shine 4.5s ease-in-out infinite; opacity:.32; }
 .btn:disabled,.buy-btn:disabled { opacity:.45; box-shadow:none !important; }
 .rd-field { display:block; margin:14px 0; font-size:14px; }
 .rd-field select { display:block; width:100%; margin-top:8px; color:#f3f3fb; background:#14121f; }
@@ -20444,6 +20524,16 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
 .bub {position:relative;}
 .bub:has(.react),.bub:has(.rd-user-react) {padding-bottom:24px;}
 .bub .react,.bub .rd-user-react {position:absolute;bottom:3px;left:9px;right:auto;font-size:13px;padding:2px 6px;line-height:1;background:#5c436a;border:0;border-radius:10px;margin:0;min-height:0;box-shadow:none;}
+
+@keyframes rd-shine {0%{transform:translateX(-120%) skewX(-20deg)}55%,100%{transform:translateX(360%) skewX(-20deg)}}
+.rd-tour-panel{overflow:auto;}.rd-tour-panel p{margin:10px 0;font-size:14px;}.rd-tour-footer{display:flex;gap:12px;}.rd-tour-footer .btn{flex:1;padding:7px;background:transparent!important;box-shadow:none!important;border:0!important;font-size:12px;}
+.rd-quest{padding:14px 0;border-top:1px solid #ffffff12;}.rd-quest-info{margin:7px 0;font-size:13px;color:#c5bbd5;}.rd-quest progress{width:100%;height:6px;accent-color:#c084fc;}.rd-quests>.note{text-align:left;font-size:11px;}
+.rd-premium{animation:rd-reaction 1.1s ease-in-out 2;}.rd-premium-picker{margin-top:8px;}.rd-premium-picker .locked{opacity:.45;}
+@keyframes rd-reaction{0%,100%{transform:scale(1)}35%{transform:scale(1.45) rotate(-12deg);filter:drop-shadow(0 0 7px #e879f9)}65%{transform:scale(1.2) rotate(8deg)}}
+.rd-spark{position:fixed;pointer-events:none;z-index:9999;width:6px;height:6px;border-radius:2px;background:#ffc884;animation:rd-burst .42s ease-out forwards;}
+@keyframes rd-burst{to{transform:translate(var(--dx),var(--dy)) rotate(160deg) scale(.2);opacity:0}}
+@media(prefers-reduced-motion:reduce){.btn::after,.buy-btn::after,.action-btn::after,.rd-premium,.rd-spark{animation:none!important;}}
+.giftcard {-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
 </style>
 </head>
 <body>
@@ -20454,7 +20544,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
     <div class="who"><div class="name"><span id="h-name">…</span></div><div class="status"><span class="tierbadge" id="h-tier"></span><span id="h-status"></span></div></div>
     <div class="chips"><span class="chip hot" id="h-hot">🔥</span><span class="chip" id="h-bucks">💵 0</span><span class="chip" id="h-en">⚡ 0</span></div>
   </div>
-  <div id="ebar"><i></i></div>
+
   <div id="views">
     <div class="view on" id="view-chat">
       <div id="msgs"></div>
@@ -20498,7 +20588,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
   var state = null, tab = "chat", sending = false, pollTimer = null, lastCount = -1, lastPending = false;
   var $ = function (id) { return document.getElementById(id); };
   function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
-  function haptic(k) { if (!tg || !tg.HapticFeedback) return; safe(function () {
+  function haptic(k) { if(window.RDSFX&&window.RDSFX.feedback){window.RDSFX.feedback(k);return;} if (!tg || !tg.HapticFeedback) return; safe(function () {
     if (k === "select") tg.HapticFeedback.selectionChanged(); else if (k === "success" || k === "error") tg.HapticFeedback.notificationOccurred(k);
     else tg.HapticFeedback.impactOccurred(k || "light"); }); }
 
@@ -20585,9 +20675,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
     withIcon($("h-bucks"), "icon_bucks", "💵", s.stats.bucks);
     withIcon($("h-hot"), "icon_hot", "🔥", s.hot.available);
     withIcon($("h-en"), "icon_energy", "⚡", s.stats.energy);
-    var pct = Math.max(0, Math.min(100, Math.round(s.stats.energy / s.stats.energy_max * 100)));
-    $("ebar").firstChild.style.width = pct + "%";
-    $("ebar").classList.toggle("low", pct < 30);
+
   }
 
   // ---- чат ----
@@ -20625,15 +20713,15 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
       var row = el("div", "row " + (m.role === "user" ? "me" : "ai") + (prev && prev !== m.role ? " gap" : "") + (m.reaction ? " react-row" : ""));
       var w = el("div", "bw"), b;
       if (m.card) {
-        b = el("div", "giftcard"); b.appendChild(el("div", "ge", m.card.emoji));
+        b = el("div", "giftcard"); b.oncontextmenu=function(e){e.preventDefault();}; b.appendChild(el("div", "ge", m.card.emoji));
         var gt = el("div"); gt.appendChild(el("div", "gl", s.ui["card_" + m.card.kind] || s.ui.card_gift)); gt.appendChild(el("div", "gn", m.card.name));
         if (m.card.note) gt.appendChild(el("div", "gnote", "«" + m.card.note + "»"));
         b.appendChild(gt);
       } else { b = el("div", "bub"); richText(b, m.text); }
-      bindMessageMenu(b, m);
+      if (!m.card) bindMessageMenu(b, m);
       w.appendChild(b);
       if (m.edited) w.appendChild(el("div", "rd-edited", tr("изменено", "edited")));
-      if (m.user_reaction) { var ur = el("button", "rd-user-react", m.user_reaction); ur.onclick = function () { messageAction(m, "react", {emoji: m.user_reaction}); }; b.appendChild(ur); }
+      if (m.user_reaction) { var ur = el("button", "rd-user-react"+(m.reaction_animated?" rd-premium":""), m.user_reaction); ur.onclick = function () { messageAction(m, "react", {emoji: m.user_reaction}); }; b.appendChild(ur); }
       if (m.reaction) b.appendChild(el("span", "react", m.reaction));
       row.appendChild(w); box.appendChild(row);
       prev = m.role;
@@ -20647,6 +20735,8 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
     if (s.asleep) {
       comp.style.display = "none"; sl.style.display = "block"; sl.innerHTML = "";
       sl.appendChild(el("div", "t", s.ui.asleep_title)); sl.appendChild(el("div", "s", s.ui.asleep_text));
+      var work=el('button','btn ghost',tr('На работу','Go to work','Zur Arbeit'));work.onclick=function(){setTab('work');};sl.appendChild(work);
+      var quests=el('button','btn ghost',tr('Бесплатные награды','Free rewards','Kostenlose Belohnungen'));quests.onclick=function(){setTab('profile');requestAnimationFrame(function(){var q=$('daily-quests');if(q)q.scrollIntoView({block:'start'});});};sl.appendChild(quests);
       if (s.wake.elite) { var e1 = el("button", "btn", s.ui.wake_elite); e1.onclick = function () { wake("elite"); }; sl.appendChild(e1); }
       if (s.wake.energizers > 0) { var e2 = el("button", "btn", s.ui.wake_energizer.replace("{n}", s.wake.energizers)); e2.onclick = function () { wake("energizer"); }; sl.appendChild(e2); }
       var e3 = el("button", "btn ghost", s.ui.wake_now.replace("{price}", s.wake.price)); e3.onclick = function () { pay("wake_now", "stars"); }; sl.appendChild(e3);
@@ -20706,7 +20796,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
     bar.appendChild(i); d.appendChild(l); d.appendChild(bar); return d;
   }
   var DE_TEXT = {"Message": "Nachricht", "Edit": "Bearbeiten", "Save": "Speichern", "Delete": "Löschen", "Cancel": "Abbrechen", "Message options": "Nachrichtenoptionen", "Delete this message and everything after it?": "Diese Nachricht und den gesamten folgenden Verlauf löschen?", "Character replies will be kept.": "Antworten bleiben erhalten.", "Reply suggestions": "Antwortvorschläge", "What will you say?": "Was antwortest du?", "How shall we start?": "Wie beginnen wir?", "Write my own": "Selbst schreiben", "Choose a line, edit if you like, then send.": "Auswählen, bearbeiten und senden.", "Close help": "Hilfe schließen", "Show me around": "Einführung zeigen", "Back": "Zurück", "Next": "Weiter", "Done": "Fertig", "Skip": "Überspringen", "Language": "Sprache", "Conversation mode": "Gesprächsmodus", "Messages": "Nachrichten", "Roleplay": "Rollenspiel", "Relationships": "Beziehung", "Trust": "Vertrauen", "Respect": "Respekt", "Get bucks": "Bucks kaufen", "Bucks are an in-game currency.": "Bucks sind Spielwährung.", "Save ": "Spare ", "Subscriber quick job": "Tagesauftrag", "Collect reward": "Belohnung abholen", "Go to work": "Zur Arbeit", "Collected today": "Heute abgeholt", "Your subscription": "Dein Abonnement", "edited": "bearbeitet", "Connection lost. Please retry.": "Keine Verbindung. Erneut versuchen.", "RoleDuel help": "RoleDuel-Hilfe", "Could not save. Please retry.": "Speichern fehlgeschlagen. Erneut versuchen.", "Wait for the reply": "Warte auf die Antwort", "Complete 3 work actions to collect ": "Erledige 3 Arbeitsaktionen für ", " bucks. Once a day.": " Bucks. Einmal täglich.", "Your character and balance": "Charakter und Guthaben", "See your character status, energy and bucks here.": "Hier siehst du Zustand, Energie und Bucks.", "Chat": "Chat", "Send a message. Hold your message to edit, or a character reply to react.": "Nachricht senden. Kurz gedrückt halten zum Bearbeiten oder Reagieren.", "Shop": "Shop", "Food, drinks and gifts for your character live here.": "Hier findest du Essen, Getränke und Geschenke.", "Work and farm": "Arbeit und Farm", "Earn bucks and harvest crops.": "Verdiene Bucks und ernte Pflanzen.", "Games": "Spiele", "Choose a game and read its rules before starting.": "Wähle ein Spiel und lies zuerst die Regeln.", "Fortune wheel": "Glücksrad", "Check available spins and prizes. Sector size does not represent winning odds.": "Prüfe Drehungen und Preise. Sektorgröße ist keine Gewinnchance.", "Profile and settings": "Profil und Einstellungen", "Relationships, subscription benefits, language, chat mode and help.": "Beziehung, Abo-Vorteile, Sprache, Gesprächsmodus und Hilfe.", "Your character": "Dein Charakter", "Change the name and appearance here. Energy, food, water and mood are shown below.": "Ändere Namen und Aussehen. Darunter stehen Energie, Hunger, Wasser und Stimmung.", "Bucks and purchases": "Bucks und Käufe", "Compare bucks and Stars prices. Payment opens separately; this tour makes no purchases.": "Vergleiche Bucks und Stars. Die Einführung kauft nichts.", "Switch between Russian, English and German.": "Wähle Russisch, Englisch oder Deutsch.", "This field chooses messages without actions or a roleplay story. Start the conversation when ready; your character will wait.": "Wähle Nachrichten oder Rollenspiel. Dein Charakter wartet auf deine erste Nachricht.", "Help is always nearby": "Hilfe ist immer erreichbar", "Open help in your profile to read the rules or replay this tour.": "Öffne die Hilfe im Profil für Regeln oder die Einführung."};
-  function tr(ru,en) { var lang=state && ((state.settings && state.settings.lang)||(state.onboarding && state.onboarding.lang));return lang==='ru'?ru:(lang==='de'?(DE_TEXT[en]||en):en); }
+  function tr(ru,en,de) { var lang=state && ((state.settings && state.settings.lang)||(state.onboarding && state.onboarding.lang));return lang==='ru'?ru:(lang==='de'?(de||DE_TEXT[en]||en):en); }
   function updateSetting(body) {
     return api('/api/app/settings', body).then(function (res) {
       if (!res.ok) { toast(res.error || 'Error'); return; }
@@ -20744,10 +20834,25 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
       state = res.state; closeMessageMenu(); render();
     }).catch(function () { toast(tr('Не удалось сохранить. Попробуй ещё раз.', 'Could not save. Please retry.')); });
   }
+  var menuAnchor=null,menuPoint=null,menuMessage=null;
+  function placeMessageMenu(){
+    if($('message-menu').hidden||!menuAnchor||!menuAnchor.isConnected)return;
+    var box=$('message-menu-box');
+    var rect=menuAnchor.getBoundingClientRect(), vv=window.visualViewport;
+    var top=(vv?vv.offsetTop:0)+Math.max(8,((tg&&tg.contentSafeAreaInset&&tg.contentSafeAreaInset.top)||0)+((tg&&tg.safeAreaInset&&tg.safeAreaInset.top)||0));
+    var bottom=(vv?vv.offsetTop+vv.height:innerHeight)-Math.max(12,(tg&&tg.contentSafeAreaInset&&tg.contentSafeAreaInset.bottom)||0);
+    box.style.maxHeight=Math.max(120,bottom-top-16)+'px';
+    var y=menuPoint && menuPoint.y>top ? menuPoint.y : Math.min(bottom-120,Math.max(top,rect.bottom));
+    box.style.top=Math.max(top,Math.min(bottom-box.offsetHeight,y+12))+'px';
+    box.style.left=Math.max(8,Math.min(innerWidth-box.offsetWidth-8,rect.left+(menuMessage&&menuMessage.role==='user'?-24:24)))+'px';
+  }
+  window.addEventListener('resize',placeMessageMenu);
+  if(window.visualViewport){window.visualViewport.addEventListener('resize',placeMessageMenu);window.visualViewport.addEventListener('scroll',placeMessageMenu);}
   function closeMessageMenu() { $('message-menu').hidden=true; }
   $('message-menu').onclick=function(e){if(e.target===$('message-menu'))closeMessageMenu();};
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeMessageMenu();});
-  function messageMenu(m, anchor) {
+  function messageMenu(m, anchor, point) {
+    if (m.card) return;
     if (state.pending) { toast(tr('Дождись ответа персонажа', 'Wait for the reply')); return; }
     var box = $('message-menu-box'); box.innerHTML = '';
     box.appendChild(el('h4', null, tr('Сообщение', 'Message')));
@@ -20758,7 +20863,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
         box.appendChild(el('p', 'note', tr('Ответы персонажа останутся прежними.', 'Character replies will be kept.')));
         var save = el('button', 'btn', tr('Сохранить', 'Save'));
         save.onclick = function () { if (input.value.trim()) { save.disabled = true; messageAction(m, 'edit', {text: input.value.trim()}).finally(function () { save.disabled = false; }); } };
-        box.appendChild(save); input.focus();
+        box.appendChild(save); input.focus(); requestAnimationFrame(placeMessageMenu);
       };
       box.appendChild(edit);
       var del = el('button', 'btn ghost', tr('Удалить', 'Delete'));
@@ -20774,13 +20879,18 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
         var button = el('button', 'btn ghost', emoji); button.setAttribute('aria-label', emoji);
         button.onclick = function () { messageAction(m, 'react', {emoji: emoji}); }; reactions.appendChild(button);
       }); box.appendChild(reactions);
+      var premium=el('div','rd-reactions rd-premium-picker');
+      ['💖','✨','🔥','🎉'].forEach(function(emoji){
+        var b=el('button','btn ghost',emoji);b.title='PRO';b.setAttribute('aria-label',emoji+' PRO');
+        b.classList.toggle('locked',!state.animated_reactions);
+        b.onclick=function(){if(state.animated_reactions)messageAction(m,'react',{emoji:emoji});else toast(tr('Анимированные реакции — с подпиской','Animated reactions come with a subscription','Animierte Reaktionen gibt es mit Abo'));};
+        premium.appendChild(b);
+      });box.appendChild(premium);
     }
     var close = el('button', 'btn ghost', tr('Отмена', 'Cancel'));
     close.onclick = function () { closeMessageMenu(); }; box.appendChild(close);
     var menu=$('message-menu');menu.hidden=false;
-    var rect=anchor.getBoundingClientRect();
-    box.style.top=Math.max(8,Math.min(innerHeight-box.offsetHeight-12,rect.top))+'px';
-    box.style.left=Math.max(8,Math.min(innerWidth-box.offsetWidth-8,rect.left+(m.role==='user'?-24:24)))+'px';
+    menuAnchor=anchor;menuPoint=point;menuMessage=m;placeMessageMenu();
     haptic('medium');
   }
   function bindMessageMenu(b, m) {
@@ -20790,11 +20900,11 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
     b.onpointerdown = function (event) {
       if (event.button && event.button !== 0) return;
       startX = event.clientX; startY = event.clientY; stop();
-      timer = setTimeout(function () { timer = null; messageMenu(m, b); }, 280);
+      timer = setTimeout(function () { timer = null; messageMenu(m, b, {x:startX,y:startY}); }, 280);
     };
     b.onpointermove = function (event) { if (Math.abs(startX - event.clientX) + Math.abs(startY - event.clientY) > 12) stop(); };
     b.onpointerup = b.onpointercancel = b.onpointerleave = stop;
-    b.oncontextmenu = function (event) { event.preventDefault(); stop(); messageMenu(m, b); };
+    b.oncontextmenu = function (event) { event.preventDefault(); stop(); messageMenu(m, b, {x:event.clientX,y:event.clientY}); };
     b.onkeydown = function (event) { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); messageMenu(m, b); } };
   }
   function renderEconomy(v) {
@@ -20808,22 +20918,34 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
       row.appendChild(buy); card.appendChild(row);
     });
     v.appendChild(card);
-    var task = state.subscriber_task;
-    if (task && task.reward) {
-      var daily = el('div', 'card'); daily.appendChild(el('h4', null, tr('Быстрый заказ подписчика', 'Subscriber quick job')));
-      daily.appendChild(el('p', null, tr('Выполни 3 действия на работе и забери ', 'Complete 3 work actions to collect ') + task.reward.toLocaleString() + tr(' баксов. Раз в день.', ' bucks. Once a day.')));
-      var button = el('button', 'btn', task.ready ? (task.progress >= 3 ? tr('Забрать награду', 'Collect reward') : tr('На работу', 'Go to work') + ' · ' + task.progress + '/3') : tr('Сегодня получено', 'Collected today'));
-      button.disabled = !task.ready;
-      button.onclick = function () {
-        if (task.progress < 3) { setTab('work'); return; }
-        button.disabled = true;
-        api('/api/app/task', {}).then(function (res) { if (res.state) state = res.state; if (!res.ok) toast(res.error); render(); }).catch(function () { button.disabled = false; });
-      }; daily.appendChild(button); v.appendChild(daily);
-    }
+    renderQuests(v);
+  }
+  function renderQuests(v) {
+    var stateQuests=state.quests;if(!stateQuests)return;
+    var card=el('div','card rd-quests');card.id='daily-quests';
+    card.appendChild(el('h4',null,tr('Задания дня','Daily quests','Tagesaufgaben')));
+    card.appendChild(el('p','note',tr('Два задания · обновление в 00:00 МСК','Two quests · reset at 00:00 Moscow','Zwei Aufgaben · Neustart um 00:00 Moskauer Zeit')));
+    stateQuests.items.forEach(function(q){
+      var row=el('div','rd-quest');row.appendChild(el('b',null,q.title));
+      var units={bucks:'💵',energy:'⚡',energizers:'🔋',scenes:'🔥'};
+      var label=q.reward.amount+' '+units[q.reward.kind];
+      if(q.reward.kind==='bucks'&&stateQuests.bucks_multiplier===2)label+=' ×2';
+      if(q.reward.kind==='energy')label+=' '+tr('энергии','energy','Energie');
+      if(q.reward.kind==='energizers')label+=' '+tr('энергетик','energizer','Energizer');
+      var sub=el('div','rd-quest-info',q.progress+'/'+q.target+' · '+label);row.appendChild(sub);
+      var bar=el('progress');bar.max=q.target;bar.value=q.progress;bar.setAttribute('aria-label',q.title);row.appendChild(bar);
+      var ready=q.progress>=q.target,button=el('button','btn',q.claimed?tr('Получено','Collected','Abgeholt'):ready?tr('Забрать','Collect','Abholen'):tr('Выполнить','Go','Los'));
+      button.disabled=!!q.claimed;
+      button.onclick=function(){
+        if(!ready){if(q.event==='chat'){setTab('chat');$('input').focus();}else{setTab('work','/work?game='+({courier:'courier',catch:'catch',hack:'clicker',plant:'farm',water:'farm',harvest:'farm'}[q.event]||'clicker'));}return;}
+        button.disabled=true;api('/api/app/task',{id:q.id,day:stateQuests.day}).then(function(res){if(res.state)state=res.state;if(res.ok)haptic('reward');else toast(res.error||'Error');render();}).catch(function(){button.disabled=false;});
+      };row.appendChild(button);card.appendChild(row);
+    });v.appendChild(card);
   }
   var tourStarted = false, tourOpen = false;
   function startTour() {
     if (tourOpen) return;
+    if(document.activeElement && document.activeElement.blur)document.activeElement.blur();
     tourOpen = true; tourStarted = true; setTab('chat');
     var overlay = el('div', 'rd-tour'), ring = el('div', 'rd-ring'), panel = el('div', 'rd-tour-panel card');
     overlay.appendChild(ring); overlay.appendChild(panel); document.body.appendChild(overlay);
@@ -20835,8 +20957,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
       ['#nav button:nth-child(2)', tr('Игры', 'Games'), tr('Выбери игру и прочитай её правила перед началом.', 'Choose a game and read its rules before starting.')],
       ['#nav button:nth-child(4)', tr('Колесо фортуны', 'Fortune wheel'), tr('Проверь доступные прокрутки и список призов. Размер сектора не равен шансу выигрыша.', 'Check available spins and prizes. Sector size does not represent winning odds.')],
       ['#nav button:nth-child(6)', tr('Профиль и настройки', 'Profile and settings'), tr('Отношения, преимущества подписки, язык, режим общения и справка.', 'Relationships, subscription benefits, language, chat mode and help.')],
-      ['#view-profile .hero', tr('Твой персонаж', 'Your character'), tr('Здесь меняются имя и внешность. Ниже — энергия, сытость, вода и настроение.', 'Change the name and appearance here. Energy, food, water and mood are shown below.'), 'profile'],
-      ['#view-profile .rd-pack', tr('Баксы и покупки', 'Bucks and purchases'), tr('Сравни количество баксов и цену в Stars. Оплата открывается отдельно — обучение ничего не покупает.', 'Compare bucks and Stars prices. Payment opens separately; this tour makes no purchases.'), 'profile'],
+      ['#view-profile .hero .hero-btns', tr('Имя и внешность', 'Name and appearance', 'Name und Aussehen'), tr('Здесь можно изменить имя и внешность.', 'Change the name and appearance here.', 'Hier änderst du Namen und Aussehen.'), 'profile'],
       ['#view-profile select', tr('Язык', 'Language'), tr('Переключай интерфейс между русским, английским и немецким.', 'Switch between Russian, English and German.'), 'profile'],
       ['#view-profile .rd-field:has(select option[value=live])', tr('Режим общения', 'Conversation mode'), tr('Это поле выбирает переписку без действий или ролевую историю с действиями. Начни разговор сам — персонаж дождётся тебя.', 'This field chooses messages without actions or a roleplay story. Start the conversation when ready; your character will wait.'), 'profile'],
       ['#nav button:nth-child(6)', tr('Справка всегда рядом', 'Help is always nearby'), tr('Открой справку в профиле, чтобы прочитать правила и повторить это обучение.', 'Open help in your profile to read the rules or replay this tour.')]
@@ -20845,7 +20966,12 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
     function position() {
       var target = document.querySelector(targets[index][0]) || $('head'), rect = target.getBoundingClientRect();
       ring.style.cssText = 'left:' + Math.max(4, rect.left - 5) + 'px;top:' + Math.max(4, rect.top - 5) + 'px;width:' + Math.min(innerWidth - 8, rect.width + 10) + 'px;height:' + (rect.height + 10) + 'px';
-      panel.style.top = rect.top > innerHeight / 2 ? '18%' : '38%';
+      var gap=14, height=panel.offsetHeight, top=rect.bottom+gap;
+      if(top+height>innerHeight-12)top=rect.top-height-gap;
+      if(top<12){top=innerHeight-height-12;}
+      panel.style.top=Math.max(12,top)+'px';
+      panel.style.maxHeight=(innerHeight-24)+'px';
+
     }
     function close() {
       overlay.remove(); tourOpen = false; window.removeEventListener('resize', position);
@@ -20859,8 +20985,9 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
       panel.appendChild(el('h3', null, targets[index][1])); panel.appendChild(el('p', null, targets[index][2]));
       var next = el('button', 'btn', index === targets.length - 1 ? tr('Понятно', 'Done') : tr('Далее', 'Next'));
       next.onclick = function () { if (++index === targets.length) close(); else show(); }; panel.appendChild(next);
-      if (index > 0) { var back = el('button','btn ghost',tr('Назад','Back')); back.onclick=function(){index--;show();};panel.appendChild(back); }
-      var skip = el('button', 'btn ghost', tr('Пропустить', 'Skip')); skip.onclick = close; panel.appendChild(skip); position(); next.focus();
+      var footer=el('div','rd-tour-footer');panel.appendChild(footer);
+      if (index > 0) { var back = el('button','btn ghost',tr('Назад','Back')); back.onclick=function(){index--;show();};footer.appendChild(back); }
+      var skip = el('button', 'btn ghost', tr('Пропустить', 'Skip')); skip.onclick = close; footer.appendChild(skip); requestAnimationFrame(position); next.focus();
     }
     overlay.onkeydown = function (event) { if (event.key === 'Escape') close(); };
     window.addEventListener('resize', position); show();
@@ -21227,15 +21354,17 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
   function load(quiet) {
     return api("/api/app/state").then(function (res) {
       if (!res.state) { full(res.message || res.error || "Error", res.error === "not_ready" ? "✨" : "⚠️"); return; }
-      var before = state ? JSON.stringify([state.messages, state.reply_choices]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) : "";
+      var before = state ? JSON.stringify([state.messages, state.reply_choices,state.quests,state.server_day]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) : "";
       state = res.state;
       document.documentElement.lang = (state.settings && state.settings.lang) || (state.onboarding && state.onboarding.lang) || 'ru';
       if (state.onboarding) { if (!quiet) render(); return; }
-      if (!quiet || before !== JSON.stringify([state.messages, state.reply_choices]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) || state.notices.length) { if (!FRAME_PATH[tab]) render(); else if (state.notices.length) { toast(state.notices.join("\n\n")); state.notices = []; } }
+      if (!quiet || before !== JSON.stringify([state.messages, state.reply_choices,state.quests,state.server_day]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) || state.notices.length) { if (!FRAME_PATH[tab]) render(); else if (state.notices.length) { toast(state.notices.join("\n\n")); state.notices = []; } }
       else if (!FRAME_PATH[tab]) renderHead();
     }).catch(function (e) { if (!quiet) full("Network error: " + (e && e.message || "unknown"), "⚠️"); });
   }
 
+  var resettingDay=false;
+  setInterval(function(){if(!resettingDay&&state&&state.quests&&Date.now()>=state.quests.reset_at*1000){resettingDay=true;load(true).finally(function(){resettingDay=false;});}},1000);
   var inp = $("input");
   function autosize() { inp.style.height = "auto"; inp.style.height = Math.min(120, inp.scrollHeight) + "px"; }
   inp.addEventListener("input", autosize);
@@ -21902,26 +22031,64 @@ def update_relationship(user, text, negative):
     rel.update(last_gain=now, gains=rel.get("gains", 0) + 1)
 
 
-SUBSCRIBER_TASK_REWARDS = {"pro": 500, "super_pro": 1000, "elite": 1500}
+def daily_reset_timestamp():
+    tomorrow = local_now().date() + timedelta(days=1)
+    return int(datetime.combine(tomorrow, datetime.min.time()).replace(tzinfo=BOT_TZ).timestamp())
 
 
-def subscriber_task_state(user):
-    tier = get_subscription_level(user)
-    today = local_today().isoformat()
-    ready = tier in SUBSCRIBER_TASK_REWARDS and user.get("subscriber_task_day") != today
-    return {"reward": SUBSCRIBER_TASK_REWARDS.get(tier, 0), "ready": ready,
-            "progress": min(3, user.get("subscriber_task_hits", 0)) if user.get("subscriber_task_progress_day") == today else 0}
+def ensure_quests(user):
+    # Late arrivals never receive farming missions they cannot finish before midnight.
+    changed = daily_quests.ensure(user, local_today().isoformat(), allow_farm=local_now().hour < 16)
+    return changed
+
+
+def quest_event(user, event, amount=1):
+    ensure_quests(user)
+    daily_quests.record(user, event, amount)
+
+
+def quest_chat(user, text):
+    if len(set(text.lower().split())) < 4:
+        return
+    now = datetime.now().timestamp()
+    digest = hashlib.sha256(text.strip().casefold().encode()).hexdigest()
+    if digest == user.get('quest_chat_hash') or now-user.get('quest_chat_at', 0) < 20:
+        return
+    user.update(quest_chat_hash=digest, quest_chat_at=now)
+    quest_event(user, 'chat')
+
+
+def daily_quest_state(user):
+    if ensure_quests(user):
+        save_data(user_data)
+    return {'day':local_today().isoformat(), 'reset_at':daily_reset_timestamp(),
+            'bucks_multiplier':2 if has_active_subscription(user) else 1,
+            'items':daily_quests.snapshot(user, user.get('lang','ru'), has_active_subscription(user))}
 
 
 async def api_app_task_handler(request):
     _, user, body, err = await _play_request(request)
     if err:
         return err
-    task = subscriber_task_state(user)
-    if not task["ready"] or task["progress"] < 3:
-        return _app_reply(user, False, "Complete three work actions today")
-    user["bucks"] = user.get("bucks", 0) + task["reward"]
-    user["subscriber_task_day"] = local_today().isoformat()
+    ensure_quests(user)
+    if body.get('day') != local_today().isoformat():
+        return _app_reply(user, False, at(user, 'quest_expired'))
+    pending = next((i for i in user['daily_quests']['items'] if i['id'] == body.get('id')), None)
+    if pending and not pending['claimed']:
+        definition = daily_quests.BY_ID[pending['id']]
+        if definition[3] == 'energy' and user.get('energy',0) + definition[4] > ENERGY_MAX:
+            return _app_reply(user, False, at(user,'quest_energy_full'))
+    reward = daily_quests.take(user, body['day'], body.get('id'), has_active_subscription(user))
+    if reward is None:
+        return _app_reply(user, False, at(user, 'quest_not_ready'))
+    kind, amount = reward
+    if kind == 'energy':
+        user['energy'] = min(ENERGY_MAX, user.get('energy',0)+amount)
+        if user['energy'] > 0:
+            user['sleep_until'] = None
+    else:
+        field = {'bucks':'bucks','scenes':'intim_scenes','energizers':'energizers'}[kind]
+        user[field] = user.get(field,0)+amount
     save_data(user_data)
     return _app_reply(user)
 
@@ -21955,11 +22122,17 @@ async def api_app_message_handler(request):
     action = body.get("action")
     if not message:
         return _app_reply(user, False, "Message no longer available")
-    if action == "react" and message.get("role") == "assistant":
+    if action == "react" and message.get("role") == "assistant" and not message.get("card"):
         emoji = body.get("emoji")
-        if emoji not in ("❤️", "👍", "😂", "😮", "😢", "👎"):
-            return _app_reply(user, False, "Unsupported reaction")
-        message["user_reaction"] = None if message.get("user_reaction") == emoji else emoji
+        basic = ('❤️','👍','😂','😮','😢','👎')
+        premium = ('💖','✨','🔥','🎉')
+        if emoji not in basic + premium:
+            return _app_reply(user, False, 'Unsupported reaction')
+        if emoji in premium and message.get('user_reaction') != emoji and get_subscription_level(user) not in ('pro','super_pro','elite'):
+            return _app_reply(user, False, at(user, 'premium_reaction'))
+        message['user_reaction'] = None if message.get('user_reaction') == emoji else emoji
+        message['reaction_animated'] = bool(message['user_reaction'] in premium)
+
     elif action in ("edit", "delete") and message.get("role") == "user" and not message.get("card"):
         if action == "delete":
             index = user['history'].index(message)

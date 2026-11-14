@@ -18,7 +18,7 @@ def route(req):
         return req.fulfill(content_type='application/javascript',body='window.Telegram={WebApp:{initData:"fixture",platform:"web",ready(){},expand(){},setHeaderColor(){},setBackgroundColor(){},disableVerticalSwipes(){},BackButton:{hide(){}},showConfirm(t,cb){cb(true)},HapticFeedback:{selectionChanged(){},notificationOccurred(){},impactOccurred(){}}}};')
     if url=='/sfx.js': return req.fulfill(content_type='application/javascript',body=constants['SFX_JS'])
     if url=='/theme.css': return req.fulfill(content_type='text/css',body=constants['APP_THEME_CSS'])
-    if url=='/app': return req.fulfill(content_type='text/html',body=constants['APP_PAGE_HTML'].replace('<head>','<head><script src="/sfx.js"></script>',1))
+    if url=='/app': return req.fulfill(content_type='text/html',body=constants['APP_PAGE_HTML'].replace('<head>','<head><script src="/sfx.js"></script><link rel="stylesheet" href="/theme.css">',1))
     if url=='/guide': return req.fulfill(content_type='text/html',body='<h1>Справка</h1>')
     if url.startswith('/api/'):
         body=req.request.post_data_json if req.request.method=='POST' else {}
@@ -64,11 +64,11 @@ with sync_playwright() as p:
     page.get_by_role('button',name=ui['guide_btn'],exact=True).click()
     page.locator('iframe.rd-guide').wait_for()
     page.get_by_role('button',name='Показать, что где находится',exact=True).click()
-    for step in range(11):
-        assert page.locator('.rd-tour .note').inner_text() == f'{step + 1} / 12'
+    for step in range(10):
+        assert page.locator('.rd-tour .note').inner_text() == f'{step + 1} / 11'
         page.locator('.rd-tour').get_by_role('button',name='Далее',exact=True).click()
     page.locator('.rd-tour').get_by_role('button',name='Назад',exact=True).click()
-    assert page.locator('.rd-tour .note').inner_text() == '11 / 12'
+    assert page.locator('.rd-tour .note').inner_text() == '10 / 11'
     page.get_by_role('button',name='Пропустить',exact=True).click()
     page.locator('#nav button').nth(5).click()
     page.locator('select').first.select_option('en')
