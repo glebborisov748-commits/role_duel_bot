@@ -12,7 +12,7 @@ class PhotoFlowTests(unittest.IsolatedAsyncioTestCase):
         async def thread(*args, **kwargs):
             return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=plan))])
         ns=dict(asyncio=asyncio,datetime=datetime,json=__import__('json'),
-                LOOKS={},get_intimacy_level=lambda u:1,AI_MODEL='mock',call_ai=lambda:None,
+                ENERGY_MAX=150,LOOKS={},get_intimacy_level=lambda u:1,AI_MODEL='mock',call_ai=lambda:None,
                 PHOTO_ENERGY_COST=40,photo_generation=photo_generation,
                 save_data=lambda d:None,user_data={},logging=__import__('logging'))
         load_functions({'app_photo_generate'},ns)
