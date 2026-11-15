@@ -1,3 +1,7 @@
+import time
+import copy
+import online_games
+import online_ui
 import photo_generation
 import asyncio
 import daily_quests
@@ -366,7 +370,7 @@ TEXTS = {
         "work_tab_catch": "📦 Заказ",
         "work_tab_rhythm": "🚴 Курьер",
         "work_tab_farm": "🌽 Ферма",
-        "work_clicker_hint": "Каждый раз новый замок: введи код по порядку, соедини провода с гнёздами того же цвета или вскрой отмычкой — жми, когда она в зелёной зоне. Ошибка — игра окончена.",
+        "work_clicker_hint": "Каждый раз новый замок: введи код по порядку, соедини провода с гнёздами того же цвета или вскрой замок: лёгкое натяжение, поиск упирающегося пина и аккуратный подъём. Не дави силой — отмычка может сломаться.",
         "work_catch_hint": "Веди корзину из стороны в сторону, лови предметы и не лови бомбы 💣! Улитка 🐌 замедлит падение, магнит 🧲 притянет, 💰 удвоит деньги на несколько секунд, щит 🛡️ спасёт от одной бомбы.",
         "work_rhythm_hint": "▲▼ — смена полосы. Люди 🙋 ждут на обочине: проезжай мимо них по крайней полосе. На красной стоп-линии жми 🛑, когда она у самого колеса.",
         "work_courier_arrived": "🏠 Доставлено!",
@@ -782,7 +786,7 @@ TEXTS = {
         "work_tab_catch": "📦 Delivery",
         "work_tab_rhythm": "🚴 Courier",
         "work_tab_farm": "🌽 Farm",
-        "work_clicker_hint": "A new lock every time: enter the code in order, connect the wires to sockets of the same color, or pick the lock — tap when the pick is in the green zone. One mistake — game over.",
+        "work_clicker_hint": "A new lock every time: enter the code in order, connect the wires to sockets of the same color, or pick the lock: apply light tension, find the binding pin and lift gently. Too much force can break the pick.",
         "work_catch_hint": "Drag the basket side to side, catch the items, and dodge the bombs 💣! A snail 🐌 slows the fall, a magnet 🧲 pulls items in, 💰 doubles your money for a few seconds, a shield 🛡️ saves you from one bomb.",
         "work_rhythm_hint": "▲▼ — change lanes. People 🙋 wait on the roadside: pass them in the outer lane. At a red stop line, tap 🛑 right as it reaches your wheel.",
         "work_courier_arrived": "🏠 Delivered!",
@@ -1198,7 +1202,7 @@ TEXTS = {
         "work_tab_catch": "📦 Lieferung",
         "work_tab_rhythm": "🚴 Kurier",
         "work_tab_farm": "🌽 Farm",
-        "work_clicker_hint": "Jedes Mal ein neues Schloss: gib den Code ein, verbinde die Kabel mit gleichfarbigen Buchsen oder knack das Schloss — tippe, wenn der Dietrich im grünen Bereich ist. Ein Fehler — Spiel vorbei.",
+        "work_clicker_hint": "Jedes Mal ein neues Schloss: gib den Code ein, verbinde die Kabel mit gleichfarbigen Buchsen oder knack das Schloss: leicht spannen, klemmenden Stift finden und vorsichtig anheben. Zu viel Kraft kann den Dietrich brechen.",
         "work_catch_hint": "Zieh den Korb hin und her, fang die Gegenstände und weich den Bomben 💣 aus! Eine Schnecke 🐌 verlangsamt den Fall, ein Magnet 🧲 zieht an, 💰 verdoppelt kurz dein Geld, ein Schild 🛡️ rettet dich vor einer Bombe.",
         "work_rhythm_hint": "▲▼ — Spur wechseln. Leute 🙋 warten am Straßenrand: fahr auf der äußeren Spur an ihnen vorbei. An einer roten Haltelinie tippe 🛑, wenn sie dein Rad erreicht.",
         "work_courier_arrived": "🏠 Geliefert!",
@@ -3894,6 +3898,12 @@ async def start_cmd(message: types.Message):
             user["referral_pending"] = True
             save_data(user_data)
 
+    if len(args)>1 and re.fullmatch(r'match_[0-9A-F]{8}',args[1]):
+        user['online_invite']=args[1][6:]
+        save_data(user_data)
+        if user.get('verified') and user.get('agreement_accepted') and user.get('personality_ready') and WEBAPP_URL:
+            await message.answer('🎮 '+user['online_invite'],reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='🎮 Играть / Play',web_app=WebAppInfo(url=WEBAPP_URL+'/online?invite='+user['online_invite']))]]))
+            return
     await proceed_flow(message.from_user.id, message.chat.id)
 
 
@@ -7789,7 +7799,7 @@ async def generate_event_opening(chat_id, user, event):
 
 
 # ============================================================
-#  ИГРЫ ВМЕСТЕ С ПЕРСОНАЖЕМ (за баксы): Города, Блэкджек, Кино
+#  ИГРЫ ВМЕСТЕ С ПЕРСОНАЖЕМ (за баксы): Города, Кино и онлайн-игры
 # ============================================================
 # Все три идут прямо в чате (кнопки + обычные сообщения), чтобы персонаж говорил в своём стиле, а не
 # просто "играл". Правила -- в коде (ИИ плохо следит за правилами), ИИ только оформляет реплику
@@ -7816,10 +7826,8 @@ GAME_TEXTS = {
                               "Придумай нам смешное парное прозвище!", "Расскажи анекдот — посмотрим, рассмешишь ли 😄",
                               "Опиши своё идеальное свидание со мной одним сообщением 🌙"],
         "tod_finished": "🎭 Игра закончилась. +{xp} XP за откровенный вечер.",
-        "bj_btn": "🃏 Блэкджек",
         "movie_btn": "🎬 Кино",
         "shop_cat_games": "🎮 Развлечения",
-        "bj_price": "от 100💵",
         "game_desc_cities": "Играете в города, победа — +30 XP",
         "game_desc_tod": "4 раунда откровенностей по очереди, +30 XP",
         "game_desc_bj": "Карты против персонажа на баксы",
@@ -7836,7 +7844,6 @@ GAME_TEXTS = {
         "play_need_super": '💎 Игра на раздевание доступна с подпиской SUPER PRO или ELITE — без ограничений. Оформить: профиль → «👑 Оформить подписку».',
         "play_start": '▶️ Играть',
         "play_free": 'бесплатно',
-        "play_bj_talk_on": '💬 Персонаж комментирует (тратит энергию)', "play_bj_talk_off": '🤐 Играть молча',
         "play_cities_title": '🏙 Города', "play_cities_desc": 'Называете города по очереди на последнюю букву. Победа — +30 XP.',
         "play_tod_title": '🤫 Правда или действие', "play_tod_desc": '4 раунда откровенностей по очереди: ты отвечаешь персонажу, потом он тебе. +30 XP.',
         "play_movie_title": '🎬 Кино вместе', "play_movie_desc": 'Выбираете фильм и смотрите вдвоём — персонаж реагирует на каждую сцену. +40 XP.',
@@ -7844,16 +7851,6 @@ GAME_TEXTS = {
         "play_talk_placeholder": 'Напиши…', "play_surrender": '🏳️ Сдаюсь',
         "play_letter": 'Тебе на «{l}»', "play_round": 'Раунд {n} из {t}', "play_scene": 'Сцена {n} из {t}',
         "play_talk_over": 'Партия окончена',
-        "play_bj_title": '🃏 Блэкджек',
-        "play_bj_desc": 'Персонаж — крупье. Набери ближе к 21, чем он, и не перебери. Выигрыш x2, блэкджек x2.5.',
-        "play_bj_bet": 'Ставка {bet}💵',
-        "play_bj_dealer": 'Персонаж (крупье)',
-        "play_bj_you": 'Ты',
-        "play_bj_hit": '➕ Ещё карту',
-        "play_bj_stand": '✋ Хватит',
-        "play_bj_again": 'Ещё раунд — выбери ставку:',
-        "play_bj_choose": 'Выбери ставку:',
-        "play_fallback_bj": ['Ещё раунд? Самое интересное только начинается 😏', 'Карты сегодня на чьей-то стороне 😉 Продолжим?', 'Ну что, рискнёшь ещё? 🃏'],
         "play_she_took": '😏 Персонаж выбрал, что снимешь ты: {item}',
         "play_fallback_take": ['Хм… дай-ка подумать 😏 Мой выбор: {item}. Снимай.', 'Мой раунд! {item} — долой… только медленно 😉', 'Ну что… уговор есть уговор: {item} 🔥'],
         "play_her": 'Персонаж',
@@ -7913,12 +7910,12 @@ GAME_TEXTS = {
         "daily_limit": "На сегодня лимит игр с репликами персонажа исчерпан — возвращайся завтра.",
         "cities_timeup": "⏱ Время партии вышло — ничья.",
         "cities_stuck": "У меня закончились города на «{letter}» — ты победил(а)!",
-        "bj_menu": "🃏 Блэкджек. Выбери ставку:\n💵 У тебя: {bucks}",
-        "bj_state": "🃏 БЛЭКДЖЕК · ставка {bet}💵\n\n🧑 Ты: {player}  →  {pv}\n🤖 Я (крупье): {dealer}  →  {dv}+?\n\nБерёшь ещё карту или хватит?",
-        "bj_hit": "➕ Ещё", "bj_stand": "✋ Хватит",
-        "bj_end": "🃏 Итог раунда\n\n🧑 Ты: {player}  →  {pv}\n🤖 Я (крупье): {dealer}  →  {dv}\n\n{result}",
-        "bj_win": "🎉 Ты выиграл(а): +{amount}💵", "bj_blackjack": "🃏 Блэкджек! +{amount}💵",
-        "bj_lose": "💸 Проигрыш: −{amount}💵", "bj_push": "🤝 Ничья, ставка возвращена.",
+
+
+
+
+
+
         "movie_pick": "🎬 Что смотрим вместе? Сеанс — {price}💵.\n💵 У тебя: {bucks}",
         "movie_genres": {"romance": "💞 Мелодрама", "comedy": "😂 Комедия", "horror": "👻 Ужастик", "drama": "😢 Драма"},
         "movie_react": {"cry": "😭 Поплакать", "laugh": "😂 Посмеяться", "hug": "🤗 Прижаться", "comment": "💬 Обсудить"},
@@ -7945,10 +7942,8 @@ GAME_TEXTS = {
                               "Come up with a funny couple nickname for us!", "Tell me a joke — let's see if you can make me laugh 😄",
                               "Describe your perfect date with me in one message 🌙"],
         "tod_finished": "🎭 Game over. +{xp} XP for an honest evening.",
-        "bj_btn": "🃏 Blackjack",
         "movie_btn": "🎬 Movie",
         "shop_cat_games": "🎮 Entertainment",
-        "bj_price": "from 100💵",
         "game_desc_cities": "Play cities, a win gives +30 XP",
         "game_desc_tod": "4 rounds of taking turns opening up, +30 XP",
         "game_desc_bj": "Cards against your companion for bucks",
@@ -7965,7 +7960,6 @@ GAME_TEXTS = {
         "play_need_super": '💎 The strip game comes with SUPER PRO or ELITE — unlimited. Get it: profile → «👑 Subscribe».',
         "play_start": '▶️ Play',
         "play_free": 'free',
-        "play_bj_talk_on": '💬 Companion comments (uses energy)', "play_bj_talk_off": '🤐 Play quietly',
         "play_cities_title": '🏙 Cities', "play_cities_desc": 'Take turns naming cities starting with the last letter. A win gives +30 XP.',
         "play_tod_title": '🤫 Truth or dare', "play_tod_desc": '4 rounds of honesty: you answer your companion, then they answer you. +30 XP.',
         "play_movie_title": '🎬 Movie together', "play_movie_desc": 'Pick a film and watch it together — your companion reacts to every scene. +40 XP.',
@@ -7973,16 +7967,6 @@ GAME_TEXTS = {
         "play_talk_placeholder": 'Type…', "play_surrender": '🏳️ I give up',
         "play_letter": 'Your letter: «{l}»', "play_round": 'Round {n} of {t}', "play_scene": 'Scene {n} of {t}',
         "play_talk_over": 'Game over',
-        "play_bj_title": '🃏 Blackjack',
-        "play_bj_desc": 'Your companion is the dealer. Get closer to 21 than them without going over. A win pays x2, blackjack x2.5.',
-        "play_bj_bet": 'Bet {bet}💵',
-        "play_bj_dealer": 'Companion (dealer)',
-        "play_bj_you": 'You',
-        "play_bj_hit": '➕ Hit',
-        "play_bj_stand": '✋ Stand',
-        "play_bj_again": 'Another round — pick a bet:',
-        "play_bj_choose": 'Pick a bet:',
-        "play_fallback_bj": ["Another round? I'm just warming up 😏", 'The cards are on someone\'s side tonight 😉 Shall we go on?', 'So, risking it again? 🃏'],
         "play_she_took": '😏 Your companion picked what you take off: {item}',
         "play_fallback_take": ['Hmm… let me think 😏 Take off the {item}.', 'My round! Let\'s start with the {item}… slowly 😉', 'Well, loser… the {item} goes 🔥'],
         "play_her": 'Companion',
@@ -8042,12 +8026,12 @@ GAME_TEXTS = {
         "daily_limit": "Today's limit of games with character lines is used up — come back tomorrow.",
         "cities_timeup": "⏱ Time is up — a draw.",
         "cities_stuck": "I'm out of cities for «{letter}» — you win!",
-        "bj_menu": "🃏 Blackjack. Choose your bet:\n💵 You have: {bucks}",
-        "bj_state": "🃏 BLACKJACK · bet {bet}💵\n\n🧑 You: {player}  →  {pv}\n🤖 Me (dealer): {dealer}  →  {dv}+?\n\nHit or stand?",
-        "bj_hit": "➕ Hit", "bj_stand": "✋ Stand",
-        "bj_end": "🃏 Round result\n\n🧑 You: {player}  →  {pv}\n🤖 Me (dealer): {dealer}  →  {dv}\n\n{result}",
-        "bj_win": "🎉 You won: +{amount}💵", "bj_blackjack": "🃏 Blackjack! +{amount}💵",
-        "bj_lose": "💸 You lost: −{amount}💵", "bj_push": "🤝 Push, bet returned.",
+
+
+
+
+
+
         "movie_pick": "🎬 What do we watch together? A screening is {price}💵.\n💵 You have: {bucks}",
         "movie_genres": {"romance": "💞 Romance", "comedy": "😂 Comedy", "horror": "👻 Horror", "drama": "😢 Drama"},
         "movie_react": {"cry": "😭 Cry", "laugh": "😂 Laugh", "hug": "🤗 Cuddle up", "comment": "💬 Talk about it"},
@@ -8066,12 +8050,11 @@ def gt(user, key, **kw):
 CITIES_PRIZE = 0     # без денег: награда -- только XP (по фидбэку)
 CITIES_XP = 30
 # Развлечения покупаются в магазине (вкладка «🎮 Развлечения») и стартуют сразу, без билетов. price=0 у
-# блэкджека: там платишь ставкой. Оставшиеся старые билеты (game_tickets) засчитываются как оплата.
+# Оставшиеся старые билеты (game_tickets) засчитываются как оплата.
 GAME_OFFERS = {
-    # Развлечения бесплатные (по фидбэку: "чтобы было реалистично") -- кроме кино и блэкджека (там ставки).
+    # Развлечения бесплатные (по фидбэку: "чтобы было реалистично") -- кроме кино.
     "cities": {"emoji": "🏙", "ru": "Города", "en": "Cities", "price": 0},
     "tod": {"emoji": "🤫", "ru": "Правда или действие", "en": "Truth or dare", "price": 0},
-    "bj": {"emoji": "🃏", "ru": "Блэкджек", "en": "Blackjack", "price": 0},
     "movie": {"emoji": "🎬", "ru": "Кино вместе", "en": "Movie together", "price": 2250},  # кино -- за баксы
     "rps": {"emoji": "✊", "ru": "Камень, ножницы, бумага", "en": "Rock, paper, scissors", "price": 0},
 }
@@ -8088,8 +8071,6 @@ def game_offer_name(user, key):
 
 def game_price_label(user, key):
     price = GAME_OFFERS[key]["price"]
-    if key == "bj":
-        return gt(user, "bj_price")
     return f"{price}💵" if price else gt(user, "play_free")
 
 
@@ -8177,12 +8158,6 @@ async def start_game(chat_id, user, key):
         # КНБ теперь в мини-приложении (/play): там анимация, звук и режим на раздевание; оплата -- внутри.
         await bot.send_message(chat_id, gt(user, "play_open_text"), reply_markup=play_link_kb(user))
         return None
-    if key == "bj":
-        if WEBAPP_URL:
-            await bot.send_message(chat_id, gt(user, "play_open_text"), reply_markup=play_link_kb(user, "bj"))
-        else:
-            await send_bj_bets(chat_id, user)
-        return None
     if key == "movie":
         await send_movie_genres(chat_id, user)
         return None
@@ -8209,7 +8184,6 @@ async def start_game(chat_id, user, key):
     return None
 MOVIE_XP = 40
 MOVIE_BEATS = 4
-BJ_BETS = [100, 500, 1000, 5000]
 
 CITIES = """Абакан|Абу-Даби|Авиньон|Адана|Аддис-Абеба|Аден|Азов|Актау|Актобе|Албукерке|Александрия|Алжир|Алма-Ата|Алматы|Амстердам|Анадырь|Анапа|Ангарск|Анкара|Антананариву|Антверпен|Апатиты|Арзамас|Армавир|Архангельск|Асуан|Асунсьон|Астана|Астрахань|Асуан|Афины|Ашхабад|Аккра|Ахен|Баку|Бангкок|Барнаул|Барселона|Бейрут|Белград|Белгород|Берлин|Берн|Бишкек|Благовещенск|Богота|Болонья|Бордо|Бостон|Братск|Брест|Брисбен|Брно|Брюссель|Брянск|Будапешт|Бухарест|Бухара|Буэнос-Айрес|Бердянск|Варшава|Вашингтон|Ванкувер|Вена|Венеция|Верона|Видное|Вильнюс|Винница|Владивосток|Владикавказ|Владимир|Волгоград|Волжский|Вологда|Воркута|Воронеж|Выборг|Вязьма|Гаага|Гавана|Гданьск|Генуя|Гент|Глазго|Гомель|Гонконг|Гранада|Грозный|Гродно|Гамбург|Гётеборг|Гуанчжоу|Дакар|Дамаск|Дели|Денвер|Детройт|Дижон|Дмитров|Днепр|Донецк|Дортмунд|Дубай|Дублин|Дубна|Дрезден|Душанбе|Дюссельдорф|Евпатория|Екатеринбург|Елец|Ереван|Ейск|Енисейск|Женева|Жуковский|Житомир|Железногорск|Загреб|Запорожье|Зеленоград|Златоуст|Зальцбург|Зурих|Иваново|Ижевск|Измир|Иерусалим|Иркутск|Исламабад|Ишимбай|Инсбрук|Йошкар-Ола|Йорк|Казань|Калининград|Калуга|Каир|Кабул|Канберра|Каракас|Кардифф|Кемерово|Киев|Киото|Кингстон|Киров|Кишинёв|Коломна|Кострома|Краснодар|Красноярск|Краков|Куала-Лумпур|Курск|Кутаиси|Кёльн|Кисловодск|Лаппеенранта|Лиссабон|Лима|Липецк|Лион|Лондон|Лос-Анджелес|Луганск|Лозанна|Львов|Люксембург|Магадан|Магнитогорск|Мадрид|Майами|Манила|Мапуту|Марсель|Махачкала|Милан|Минск|Мирный|Монако|Монреаль|Москва|Мурманск|Мюнхен|Мытищи|Набережные Челны|Нальчик|Нарьян-Мар|Находка|Нижневартовск|Нижний Новгород|Нижний Тагил|Нью-Йорк|Новосибирск|Новороссийск|Ницца|Нюрнберг|Одесса|Омск|Орёл|Оренбург|Осло|Оттава|Орск|Охотск|Осака|Остин|Паттайя|Париж|Пекин|Пенза|Пермь|Петрозаводск|Подольск|Прага|Псков|Пятигорск|Пльзень|Рабат|Ростов-на-Дону|Рим|Рига|Рио-де-Жанейро|Ровно|Рязань|Рыбинск|Реймс|Ржев|Саратов|Самара|Санкт-Петербург|Сантьяго|Сараево|Севастополь|Сеул|Симферополь|Сингапур|Смоленск|Сочи|София|Ставрополь|Стамбул|Стокгольм|Сургут|Сыктывкар|Сидней|Сиэтл|Таллин|Тамбов|Ташкент|Тбилиси|Тверь|Тегеран|Токио|Томск|Торонто|Тула|Тюмень|Тирана|Тель-Авив|Улан-Удэ|Ульяновск|Уфа|Ухта|Ужгород|Урюпинск|Фергана|Флоренция|Франкфурт|Фуджейра|Фрязино|Фивы|Хабаровск|Ханты-Мансийск|Харбин|Харьков|Хельсинки|Хиросима|Хьюстон|Хургада|Хайфа|Цюрих|Цхинвал|Цзинань|Цетине|Чебоксары|Челябинск|Череповец|Чикаго|Чита|Чернигов|Чехов|Чанчунь|Шанхай|Шарм-эль-Шейх|Шахты|Шимкент|Шымкент|Шэньчжэнь|Шуя|Щёлково|Щучинск|Щецин|Электросталь|Эдинбург|Элиста|Энгельс|Эр-Рияд|Эссен|Эдмонтон|Юрмала|Южно-Сахалинск|Юнусабад|Юрга|Ялта|Якутск|Ярославль|Яффа|Янгон"""
 CITY_LIST = sorted({c.strip() for c in CITIES.split("|") if c.strip()})
@@ -8307,7 +8281,7 @@ def games_gate_error(user):
     """Текст причины, по которой играть сейчас нельзя, или None."""
     if not user.get("personality_ready"):
         return gt(user, "need_char")
-    if user.get("game") and (game_is_stale(user["game"]) or user["game"].get("type") != "bj"):
+    if user.get("game") and game_is_stale(user["game"]):
         # брошенная или незаконченная партия (вход не возвращаем) -- новая игра просто заменяет её,
         # иначе застрявшее кино блокировало все остальные развлечения (баг из фидбэка)
         user["game"] = None
@@ -8341,7 +8315,7 @@ def cities_kb(user):
     return InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=gt(user, "cities_surrender"), callback_data="cities_surrender")]])
 
 
-@dp.callback_query(lambda c: c.data in ("game_cities", "game_tod", "game_bj", "game_movie", "game_rps"))
+@dp.callback_query(lambda c: c.data in ("game_cities", "game_tod", "game_movie", "game_rps"))
 async def game_start_cb(call: types.CallbackQuery):
     user = get_user(call.from_user.id)
     error = await start_game(call.message.chat.id, user, call.data[len("game_"):])
@@ -8623,146 +8597,6 @@ async def rps_cb(call: types.CallbackQuery):
         await bot.send_message(chat_id, text, reply_markup=rps_kb(user))
     finally:
         game["busy"] = False
-
-
-# ---------- Блэкджек ----------
-SUITS = ["♠", "♥", "♦", "♣"]
-RANKS = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
-
-
-def bj_value(hand):
-    total, aces = 0, 0
-    for rank, _ in hand:
-        if rank == "A":
-            total += 11
-            aces += 1
-        elif rank in ("J", "Q", "K"):
-            total += 10
-        else:
-            total += int(rank)
-    while total > 21 and aces:
-        total -= 10
-        aces -= 1
-    return total
-
-
-def bj_show(hand, hide_second=False):
-    if hide_second:
-        return f"[{hand[0][0]}{hand[0][1]}] [🂠]"
-    return " ".join(f"[{r}{s}]" for r, s in hand)
-
-
-def bj_draw(game):
-    return game["deck"].pop()
-
-
-def bj_kb(user):
-    return InlineKeyboardMarkup(inline_keyboard=[[
-        InlineKeyboardButton(text=gt(user, "bj_hit"), callback_data="bj_hit", style="success"),
-        InlineKeyboardButton(text=gt(user, "bj_stand"), callback_data="bj_stand", style="primary")]])
-
-
-async def send_bj_bets(chat_id, user):
-    rows = [[InlineKeyboardButton(text=f"{b}💵", callback_data=f"bj_bet_{b}") for b in BJ_BETS[:2]],
-            [InlineKeyboardButton(text=f"{b}💵", callback_data=f"bj_bet_{b}") for b in BJ_BETS[2:]]]
-    await bot.send_message(chat_id, gt(user, "bj_menu", bucks=user.get("bucks", 0)), reply_markup=InlineKeyboardMarkup(inline_keyboard=rows))
-
-
-@dp.callback_query(lambda c: c.data.startswith("bj_bet_"))
-async def bj_bet_cb(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    bet = int(call.data[len("bj_bet_"):])
-    error = games_gate_error(user)
-    if error or bet not in BJ_BETS:
-        await call.answer(error or "", show_alert=bool(error))
-        return
-    if not spend_bucks(user, bet):
-        await call.answer(get_text(user, "not_enough_bucks", n=bet - user.get("bucks", 0)), show_alert=True)
-        return
-    game = bj_new_hand(bet)
-    game_touch(game)
-    user["game"] = game
-    save_data(user_data)
-    await safe_delete(call.message)
-    await call.answer()
-    if bj_value(game["player"]) == 21:
-        await bj_finish(call.message.chat.id, user)
-        return
-    await bot.send_message(call.message.chat.id, gt(user, "bj_state", player=bj_show(game["player"]), pv=bj_value(game["player"]),
-                                                  dealer=bj_show(game["dealer"], hide_second=True), dv=bj_value(game["dealer"][:1]), bet=bet), reply_markup=bj_kb(user))
-
-
-def bj_new_hand(bet):
-    deck = [(r, s) for r in RANKS for s in SUITS]
-    random.shuffle(deck)
-    game = {"type": "bj", "bet": bet, "deck": deck, "player": [], "dealer": []}
-    game["player"] = [bj_draw(game), bj_draw(game)]
-    game["dealer"] = [bj_draw(game), bj_draw(game)]
-    return game
-
-
-def bj_settle(game):
-    """Добор крупье и расчёт -- общий для чата и мини-приложения. Возвращает (исход, выплата)."""
-    while bj_value(game["dealer"]) < 17 and bj_value(game["player"]) <= 21:
-        game["dealer"].append(bj_draw(game))
-    pv, dv, bet = bj_value(game["player"]), bj_value(game["dealer"]), game["bet"]
-    natural = pv == 21 and len(game["player"]) == 2
-    if pv > 21:
-        return "lose", 0
-    if natural and not (dv == 21 and len(game["dealer"]) == 2):
-        return "blackjack", int(bet * 2.5)
-    if dv > 21 or pv > dv:
-        return "win", bet * 2
-    if pv == dv:
-        return "push", bet
-    return "lose", 0
-
-
-def bj_result_text(user, outcome, bet, payout):
-    return {"lose": gt(user, "bj_lose", amount=bet), "win": gt(user, "bj_win", amount=bet),
-            "blackjack": gt(user, "bj_blackjack", amount=payout - bet), "push": gt(user, "bj_push")}[outcome]
-
-
-BJ_AI_FACTS = {"lose": "ты выиграл(а) этот раунд — собеседник проиграл ставку", "win": "собеседник выиграл раунд — ты проиграл(а)",
-               "blackjack": "у собеседника блэкджек — ты в шоке", "push": "ничья"}
-
-
-async def bj_finish(chat_id, user):
-    game = user["game"]
-    outcome, payout = bj_settle(game)
-    pv, dv, bet = bj_value(game["player"]), bj_value(game["dealer"]), game["bet"]
-    user["bucks"] = user.get("bucks", 0) + payout
-    result = bj_result_text(user, outcome, bet, payout)
-    user["game"] = None
-    save_data(user_data)
-    await bot.send_message(chat_id, gt(user, "bj_end", player=bj_show(game["player"]), pv=pv, dealer=bj_show(game["dealer"]),
-                                       dv=dv, result=result), reply_markup=games_menu_kb(user))
-    facts = BJ_AI_FACTS[outcome]
-    line = await game_ai_line(chat_id, user, f"Вы играете в блэкджек. Итог раунда: {facts}. У собеседника {pv}, у тебя {dv}. "
-                                              "Прокомментируй в образе, можно подколоть или предложить ещё раунд.")
-    save_data(user_data)
-    if line:
-        await bot.send_message(chat_id, line)
-
-
-@dp.callback_query(lambda c: c.data in ("bj_hit", "bj_stand"))
-async def bj_action_cb(call: types.CallbackQuery):
-    user = get_user(call.from_user.id)
-    game = user.get("game")
-    if not game or game.get("type") != "bj":
-        await call.answer()
-        return
-    chat_id = call.message.chat.id
-    await safe_delete(call.message)
-    await call.answer()
-    if call.data == "bj_hit":
-        game["player"].append(bj_draw(game))
-        if bj_value(game["player"]) < 21:
-            save_data(user_data)
-            await bot.send_message(chat_id, gt(user, "bj_state", player=bj_show(game["player"]), pv=bj_value(game["player"]),
-                                               dealer=bj_show(game["dealer"], hide_second=True), dv=bj_value(game["dealer"][:1]), bet=game["bet"]), reply_markup=bj_kb(user))
-            return
-    await bj_finish(chat_id, user)
 
 
 # ---------- Кино ----------
@@ -13894,7 +13728,7 @@ GUIDE_HTML = {
 <li><b>⚡ Энергетики</b> — за звёзды, чем больше пачка, тем выгоднее.</li>
 <li><b>🍽 Еда</b> — кормить и поить персонажа.</li>
 <li><b>🎁 Подарки</b> и <b>🌹 Свидания и поездки</b> — поднимают настроение и близость. Персонаж помнит подарки и вспоминает о них.</li>
-<li><b>🎮 Развлечения</b> — играйте вместе прямо в чате: Города, Правда или действие, Блэкджек, Кино вместе, Камень-ножницы-бумага.</li>
+<li><b>🎮 Развлечения</b> — играйте вместе прямо в чате: Города, Правда или действие, Кино вместе, КНБ, Liar’s Dice, 4 в ряд и шахматы. Новые игры поддерживают онлайн и приглашения друзей.</li>
 <li><b>💎 За баксы</b> — каждый день один особый товар (энергетик, дефибриллятор или горячая сцена), купить можно раз в день.</li>
 <li><b>🎁 Свой подарок</b> — придумай подарок сам.</li>
 <li>Каждый день — <b>акции и скидки</b>, они видны в шапке магазина.</li>
@@ -13957,7 +13791,7 @@ Make a mistake and the round ends, some bucks are lost — tap "Retry".</p>
 <ul>
 <li><b>⚡ Energizers</b> — for Stars, bigger packs are better value.</li>
 <li><b>🍽 Food</b>, <b>🎁 Gifts</b>, <b>🌹 Dates & trips</b> — mood and closeness. Your companion remembers gifts.</li>
-<li><b>🎮 Entertainment</b> — play together in the chat: Cities, Truth or dare, Blackjack, Movie together, Rock-paper-scissors.</li>
+<li><b>🎮 Entertainment</b> — play together in the chat: Cities, Truth or dare, Movie together, RPS, Liar’s Dice, Connect Four and chess. New games support online matches and friend invitations.</li>
 <li><b>💎 For bucks</b> — one special item every day, once a day.</li>
 <li>Daily <b>deals and discounts</b> are shown at the top of the shop.</li>
 </ul>
@@ -14399,7 +14233,7 @@ SPIN_PAGE_HTML = r'''<!doctype html>
   }
   function fx(kind) {
     if (window.RDSFX && window.RDSFX.sample) {
-      if(sfxOn) window.RDSFX.sample(({coin:'deliver',good:'key',wire:'key',lane:'key',over:'loss',harvest:'deliver',power:'win',shatter:'shatter',car:'start',rocket:'start',plant:'drop',silver:'win',gold:'win',rainbow:'win'})[kind] || kind);
+      if(sfxOn) (window.RDSFX.game||window.RDSFX.sample)(({coin:'deliver',good:'unlock',wire:'wire',lane:'counter',over:'loss',harvest:'deliver',power:'win',shatter:'shatter',car:'start',rocket:'start',plant:'drop',silver:'win',gold:'win',rainbow:'win'})[kind] || kind);
       haptic(kind);return;
     }
 
@@ -15009,6 +14843,7 @@ def serialize_work_state(user):
     _multiplier = work_earnings_multiplier(user)
     _multiplier_display = str(int(_multiplier)) if _multiplier == int(_multiplier) else str(_multiplier)
     return {
+        "lang": lang,
         "bucks": user.get("bucks", 0),
         "multiplier": _multiplier,
         "hit_bucks": WORK_HIT_BUCKS,
@@ -15229,11 +15064,15 @@ WORK_PAGE_HTML = r'''<!doctype html>
   .lock-pin { width: 14px; height: 34px; border-radius: 4px; background: #2b3245; border: 2px solid #4b5675; transition: all .2s ease; }
   .lock-pin.active { border-color: #f6b93b; box-shadow: 0 0 8px rgba(246,185,59,.7); }
   .lock-pin.set { background: #3dffb0; border-color: #3dffb0; transform: translateY(-8px); box-shadow: 0 0 10px rgba(61,255,176,.7); }
-  #hacker-lock-track { position: relative; height: 36px; border-radius: 10px; background: #1b2030; border: 2px solid #4b5675; overflow: hidden; margin-bottom: 14px; }
-  #hacker-lock-zone { position: absolute; top: 0; height: 100%; background: rgba(61,255,176,.35); border-left: 2px solid #3dffb0; border-right: 2px solid #3dffb0; }
-  #hacker-lock-pick { position: absolute; top: 50%; font-size: 24px; transform: translate(-50%, -50%) rotate(-45deg); }
   #hacker-lock-btn { width: 100%; padding: 12px; border: none; border-radius: 12px; font-size: 16px; font-weight: 800;
     background: #f6b93b; color: #1a1a1a; cursor: pointer; }
+
+  #hacker-lock-pins{position:relative;display:flex;justify-content:space-around;gap:7px;padding:17px 10px;background:linear-gradient(#242936,#10151f);border:5px solid #8e815e;border-radius:20px;min-height:110px}
+  #hacker-lock-pins:after{content:'';position:absolute;left:0;right:0;top:47px;border-top:2px dashed #bda77d;pointer-events:none}
+  .lock-pin{height:76px;width:34px;border:0;border-radius:6px;background:#141a25;position:relative;padding:0;overflow:hidden;color:#e6d9b8;min-height:44px}
+  .lock-pin:before{content:'';position:absolute;left:10px;right:10px;bottom:4px;height:calc(20px + var(--lift,0) * .34px);background:linear-gradient(90deg,#b9ac82,#efe3b9,#938763);border-radius:4px;box-shadow:0 -12px 0 -3px #746c56;transition:height .08s}
+  .lock-pin.active{outline:2px solid #e7c46b;box-shadow:0 0 12px #e7c46b33}.lock-pin.set{background:#214c3c;transform:none;box-shadow:none;color:#b8f3cd}.lock-pin span{position:absolute;left:3px;top:0;font:11px system-ui}
+  #lock-tension,#lock-lift{width:100%;height:40px;accent-color:#d4b96d;touch-action:pan-y}#hacker-lock label{display:block;font-size:13px;color:#d8cba8}#lock-feedback{min-height:44px;font-size:13px;color:#e8d5a2;margin:8px 0}#lock-health{font-size:12px;color:#d1bac6}
   #hacker-wires-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
   .hacker-wire-col { position: absolute; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-around; }
   #hacker-wires-left { left: 0; }
@@ -15734,7 +15573,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       <div id="hacker-code"></div>
       <div id="hacker-keyboard"></div>
       <div id="hacker-wires"><svg id="hacker-wires-svg"></svg><div class="hacker-wire-col" id="hacker-wires-left"></div><div class="hacker-wire-col" id="hacker-wires-right"></div></div>
-      <div id="hacker-lock"><div id="hacker-lock-pins"></div><div id="hacker-lock-track"><div id="hacker-lock-zone"></div><div id="hacker-lock-pick">🗝</div></div><button id="hacker-lock-btn" type="button"></button></div>
+      <div id="hacker-lock"><div id="hacker-lock-pins"></div><p id="lock-feedback" aria-live="polite"></p><label id="lock-tension-label" for="lock-tension"></label><input id="lock-tension" type="range" min="0" max="100" value="0"><label id="lock-lift-label" for="lock-lift"></label><input id="lock-lift" type="range" min="0" max="100" value="0"><p id="lock-health"></p><button id="hacker-lock-btn" type="button"></button></div>
     </div>
     <div id="clicker-feedback"></div>
   </div>
@@ -16162,7 +16001,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
   function fx(kind) {
     if (window.RDSFX && window.RDSFX.sample) {
-      if(sfxOn) window.RDSFX.sample(({coin:'deliver',good:'key',wire:'key',lane:'key',over:'loss',harvest:'deliver',power:'win',shatter:'shatter',car:'start',rocket:'start',plant:'drop',silver:'win',gold:'win',rainbow:'win'})[kind] || kind);
+      if(sfxOn) (window.RDSFX.game||window.RDSFX.sample)(({coin:'deliver',good:'unlock',wire:'wire',lane:'counter',over:'loss',harvest:'deliver',power:'win',shatter:'shatter',car:'start',rocket:'start',plant:'drop',silver:'win',gold:'win',rainbow:'win'})[kind] || kind);
       haptic(kind);return;
     }
 
@@ -16478,78 +16317,57 @@ WORK_PAGE_HTML = r'''<!doctype html>
     }
   }
 
-  // ---- Отмычка: штифты по очереди, жми, когда отмычка в зелёной зоне; каждый следующий быстрее и уже ----
-  var LOCK_PINS_MIN = 3, LOCK_PINS_RANGE = 2;
-  var lockState = null;
-  (function bindLockBtn() {
-    var btn = document.getElementById("hacker-lock-btn");
-    if (btn) btn.addEventListener("pointerdown", function (e) { e.preventDefault(); pressLockpick(); });
-  })();
-
-  function startLockpick() {
-    var lock = document.getElementById("hacker-lock");
-    lock.classList.add("active");
-    document.getElementById("hacker-lock-btn").textContent = state.ui.hack_lock_btn;
-    lockState = { pins: LOCK_PINS_MIN + Math.floor(Math.random() * LOCK_PINS_RANGE), done: 0, pos: 0, dir: 1, raf: null, last: 0 };
-    newLockZone();
+  // Pin tumbler simulation: discover the binding pin, hold light torque, lift to its shear point.
+  var lockState=null;
+  function lockText(ru,en,de){return state.lang==='ru'?ru:(state.lang==='de'?de:en);}
+  function lockSound(kind){if(sfxOn&&window.RDSFX)RDSFX.game(kind);}
+  function lockMessage(text){document.getElementById('lock-feedback').textContent=text;}
+  function startLockpick(){
+    document.getElementById('hacker-lock').classList.add('active');
+    var count=4+Math.floor(Math.random()*2),order=[];for(var i=0;i<count;i++)order.push(i);
+    order=shuffleArray(order);
+    lockState={pins:count,targets:order.map(function(){return 28+Math.floor(Math.random()*48);}),order:order,set:[],selected:0,lifts:Array(count).fill(0),tension:0,health:3,overset:false};
+    document.getElementById('lock-tension').value=0;document.getElementById('lock-lift').value=0;
+    document.getElementById('lock-tension-label').textContent=lockText('Натяжение — лёгкое, не силой','Tension — light pressure, no force','Spannung — leicht, ohne Gewalt');
+    document.getElementById('lock-lift-label').textContent=lockText('Подъём выбранного пина','Lift selected pin','Ausgewählten Stift anheben');
+    document.getElementById('hacker-lock-btn').textContent=lockText('Проверить пин','Probe pin','Stift prüfen');
+    lockMessage(lockText('Выбери пин. Создай лёгкое натяжение, найди упирающийся пин и подними его до щелчка.','Choose a pin. Apply light tension, find the binding pin and lift it to the click.','Wähle einen Stift. Spanne leicht, finde den klemmenden Stift und hebe ihn bis zum Klicken.'));
     renderLockPins();
-    lockState.last = performance.now();
-    lockState.raf = requestAnimationFrame(lockTick);
   }
-  function newLockZone() {
-    var width = Math.max(10, 24 - lockState.done * 4);
-    lockState.zoneW = width;
-    lockState.zoneL = 5 + Math.random() * (90 - width);
-    lockState.speed = 70 + lockState.done * 22; // % ширины в секунду
-    var zone = document.getElementById("hacker-lock-zone");
-    zone.style.left = lockState.zoneL + "%";
-    zone.style.width = width + "%";
+  function renderLockPins(){
+    if(!lockState)return;var box=document.getElementById('hacker-lock-pins');box.innerHTML='';
+    for(var i=0;i<lockState.pins;i++){(function(index){var pin=document.createElement('button');pin.type='button';pin.className='lock-pin'+(lockState.set.indexOf(index)>=0?' set':'')+(lockState.selected===index?' active':'');pin.style.setProperty('--lift',lockState.lifts[index]);pin.setAttribute('aria-label',lockText('Пин ','Pin ','Stift ')+(index+1));var label=document.createElement('span');label.textContent=index+1;pin.appendChild(label);pin.onclick=function(){if(!lockState)return;lockState.selected=index;document.getElementById('lock-lift').value=lockState.lifts[index];renderLockPins();lockFeel();};box.appendChild(pin);})(i);}
+    document.getElementById('lock-health').textContent=lockText('Прочность отмычки: ','Pick durability: ','Haltbarkeit: ')+lockState.health+'/3 · '+lockState.set.length+'/'+lockState.pins;
   }
-  function renderLockPins() {
-    var el = document.getElementById("hacker-lock-pins");
-    el.innerHTML = "";
-    for (var i = 0; i < lockState.pins; i++) {
-      var pin = document.createElement("div");
-      pin.className = "lock-pin" + (i < lockState.done ? " set" : (i === lockState.done ? " active" : ""));
-      el.appendChild(pin);
-    }
+  function stopLockpick(){lockState=null;}
+  function lockFeel(){
+    if(!lockState)return;var st=lockState,pin=st.selected;
+    if(st.overset){lockMessage(lockText('Пин поднят слишком высоко. Полностью отпусти натяжение.','Overset pin. Fully release tension.','Stift zu hoch. Spannung vollständig lösen.'));return;}
+    if(st.set.indexOf(pin)>=0){lockMessage(lockText('Этот пин уже зафиксирован.','This pin is already set.','Dieser Stift sitzt bereits.'));return;}
+    if(st.tension<22){lockMessage(lockText('Натяжения мало — пины возвращаются пружиной.','Not enough tension — the springs push pins back.','Zu wenig Spannung — die Federn drücken die Stifte zurück.'));return;}
+    if(st.tension>62){lockMessage(lockText('Слишком сильное натяжение. Металл скрипит.','Too much tension. The metal is creaking.','Zu viel Spannung. Das Metall knirscht.'));return;}
+    if(pin!==st.order[st.set.length]){lockMessage(lockText('Пин пружинит свободно. Поищи другой, который упирается.','This pin springs freely. Find a binding pin.','Dieser Stift federt frei. Suche einen klemmenden Stift.'));return;}
+    var distance=st.targets[pin]-st.lifts[pin];
+    lockMessage(distance>12?lockText('Этот пин упирается. Аккуратно подними выше.','This pin binds. Lift it gently.','Dieser Stift klemmt. Vorsichtig höher heben.'):distance>5?lockText('Сопротивление ослабевает — почти у линии среза.','Resistance is easing — close to the shear line.','Der Widerstand lässt nach — nahe der Scherlinie.'):distance>=-5?lockText('Тихий щелчок. Можно зафиксировать.','A quiet click. You can set the pin.','Ein leises Klicken. Stift kann gesetzt werden.'):lockText('Слишком высоко — опусти немного.','Too high — lower it a little.','Zu hoch — etwas absenken.'));
   }
-  function lockTick(t) {
-    if (!lockState) return;
-    var dt = (t - lockState.last) / 1000;
-    lockState.last = t;
-    lockState.pos += lockState.dir * lockState.speed * dt;
-    if (lockState.pos >= 100) { lockState.pos = 100; lockState.dir = -1; }
-    if (lockState.pos <= 0) { lockState.pos = 0; lockState.dir = 1; }
-    document.getElementById("hacker-lock-pick").style.left = lockState.pos + "%";
-    lockState.raf = requestAnimationFrame(lockTick);
+  function pressLockpick(){
+    if(!lockState||debuffState.clicker)return;var st=lockState,pin=st.selected;
+    if(st.overset||st.set.indexOf(pin)>=0){lockFeel();return;}
+    if(st.tension>62){st.health--;st.overset=true;lockSound('pinbreak');haptic('heavy');}
+    else if(st.tension<22||pin!==st.order[st.set.length]){lockSound('pin');lockFeel();return;}
+    else if(st.lifts[pin]>st.targets[pin]+8){st.health--;st.overset=true;lockSound('pinbreak');haptic('warning');}
+    else if(Math.abs(st.targets[pin]-st.lifts[pin])<=5){st.set.push(pin);lockSound('pin');haptic('medium');renderLockPins();
+      if(st.set.length===st.pins){lockSound('unlock');stopLockpick();setTimeout(finishHackerCombo,240);return;}
+      lockMessage(lockText('Пин зафиксирован. Найди следующий упирающийся.','Pin set. Find the next binding pin.','Stift sitzt. Finde den nächsten klemmenden Stift.'));return;
+    }else{lockSound('pin');lockFeel();return;}
+    renderLockPins();
+    if(st.health<=0){var btn=document.getElementById('hacker-lock-btn');stopLockpick();triggerDebuff('clicker','clicker-feedback','hacker-lock',btn.offsetLeft+btn.offsetWidth/2,btn.offsetTop,document.getElementById('hacker-terminal'));}
+    else lockFeel();
   }
-  function stopLockpick() {
-    if (lockState && lockState.raf) cancelAnimationFrame(lockState.raf);
-    lockState = null;
-  }
-  function pressLockpick() {
-    if (!lockState || debuffState.clicker) return;
-    var inZone = lockState.pos >= lockState.zoneL && lockState.pos <= lockState.zoneL + lockState.zoneW;
-    var btn = document.getElementById("hacker-lock-btn");
-    if (inZone) {
-      lockState.done++;
-      fx("good");
-      if (lockState.done >= lockState.pins) {
-        renderLockPins();
-        stopLockpick();
-        setTimeout(finishHackerCombo, 200);
-        return;
-      }
-      newLockZone();
-      renderLockPins();
-    } else {
-      fx("key");
-      stopLockpick();
-      triggerDebuff("clicker", "clicker-feedback", "hacker-lock", btn.offsetLeft + btn.offsetWidth / 2, btn.offsetTop,
-        document.getElementById("hacker-terminal"));
-    }
-  }
+  document.getElementById('hacker-lock-btn').onclick=pressLockpick;
+  document.getElementById('lock-tension').oninput=function(){if(!lockState)return;lockState.tension=Number(this.value);if(lockState.tension<8){lockState.set=[];lockState.overset=false;lockState.lifts.fill(0);document.getElementById('lock-lift').value=0;}renderLockPins();lockFeel();};
+  var lastLockProbe=0;
+  document.getElementById('lock-lift').oninput=function(){if(!lockState)return;lockState.lifts[lockState.selected]=Number(this.value);renderLockPins();lockFeel();if(Date.now()-lastLockProbe>180){lastLockProbe=Date.now();lockSound('pin');haptic('select');}};
 
   // ---------- Order (drag basket) ----------
   function fieldPctFromClientX(field, clientX) {
@@ -17459,7 +17277,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
 #  МИНИ-ПРИЛОЖЕНИЕ ИГР (/play): камень-ножницы-бумага и КНБ на раздевание (18+)
 # ============================================================
 # Правила -- на сервере (клиенту не верим ни в выбор персонажа, ни в «что снято»), ИИ только комментирует.
-PLAY_RPS_PRICE = 0  # игры бесплатные (кроме блэкджека)
+PLAY_RPS_PRICE = 0  # игры с персонажем бесплатные
 PLAY_RPS_WINS = 3
 PLAY_RPS_XP = 20
 PLAY_STRIP_XP = 50
@@ -17548,21 +17366,148 @@ def play_self_gender(user):
     return "female" if user.get("user_gender") == "female" else "male"
 
 
+def retire_blackjack(user):
+    """Refund unresolved legacy stakes exactly once and remove retired game state."""
+    changed = False
+    for key, field in (('game','type'),('play','mode')):
+        old = user.get(key)
+        if isinstance(old,dict) and old.get(field) == 'bj':
+            active = key == 'game' or old.get('phase') == 'turn'
+            if active:
+                user['bucks'] = user.get('bucks',0)+max(0,int(old.get('bet',0)))
+            user[key] = None
+            changed = True
+    return changed
+
+
+def online_store():
+    return user_data.setdefault('__settings__',{}).setdefault('online_rooms',{})
+
+
+def online_adult_allowed(user):
+    return bool(user.get('verified') and user.get('agreement_accepted') and get_subscription_level(user) in ('super_pro','elite'))
+
+
+async def expire_online_rooms():
+    """Settle deadlines even when both clients closed the app."""
+    while True:
+        before=None
+        wallets={}
+        store=None
+        try:
+            sync_data()
+            store=online_store()
+            before=copy.deepcopy(store)
+            wallets={uid:user_data[uid].get('bucks',0) for room in store.values() for uid in room['players'] if uid!='bot' and uid in user_data}
+            online_games.expire(store,user_data,time.time())
+            if store!=before:
+                save_data(user_data)
+        except Exception as exc:
+            if before is not None and store is not None:
+                store.clear();store.update(before)
+                for uid,bucks in wallets.items():user_data[uid]['bucks']=bucks
+            logging.error('Online deadline settlement: %s',type(exc).__name__)
+        await asyncio.sleep(3)
+
+
+async def online_page_handler(request):
+    if not _BOT_USERNAME['v']:
+        try:
+            await asyncio.wait_for(bot_username(), timeout=5)
+        except asyncio.TimeoutError:
+            pass
+    return page_response(request, online_ui.PAGE_HTML)
+
+
+async def api_online_handler(request):
+    uid, user, body, err = await _play_request(request)
+    if err:
+        return err
+    uid = str(uid)
+    store = online_store()
+    original = copy.deepcopy(store)
+    affected = {uid} | {p for room in store.values() for p in room['players'] if p != 'bot'}
+    wallets = {p: {k:user_data[p].get(k) for k in ('bucks','online_room','online_invite')} for p in affected if p in user_data}
+    failure = None
+    preview = None
+    try:
+        online_games.expire(store,user_data,time.time())
+        action = body.get('action','state')
+        room = online_games.current(store,user_data,uid)
+        if action == 'state' and room and room['status']=='waiting' and time.time()-room.get('seen',0)>=5:
+            room['seen']=time.time()
+        if action == 'start':
+            game = body.get('game')
+            if game == 'rps18' and (not online_adult_allowed(user) or body.get('adult') is not True):
+                raise online_games.GameError('adult_required')
+            # A queued player whose entitlement expired cannot be matched in 18+ mode.
+            for waiting in list(store.values()):
+                if waiting['status']=='waiting' and waiting['game']=='rps18' and not online_adult_allowed(user_data[waiting['players'][0]]):
+                    online_games.finish(waiting,None,user_data,'cancelled')
+            online_games.start(store,user_data,uid,game,body.get('bet',0),body.get('kind','random'))
+        elif action in ('preview','join'):
+            code = str(body.get('code','')).strip().upper()
+            candidate = store.get(code)
+            if not re.fullmatch('[0-9A-F]{8}',code) or not candidate or candidate['status']!='waiting':
+                raise online_games.GameError('room_unavailable')
+            if action == 'preview':
+                preview = {k:candidate[k] for k in ('game','bet','id')}
+            else:
+                if type(body.get('bet')) is not int or body['bet'] != candidate['bet']:
+                    raise online_games.GameError('invalid_request')
+                if candidate['game']=='rps18' and (body.get('adult') is not True or not online_adult_allowed(user) or not online_adult_allowed(user_data[candidate['players'][0]])):
+                    raise online_games.GameError('adult_required')
+                online_games.join(store,user_data,uid,code)
+                user.pop('online_invite',None)
+        elif action in ('move','leave'):
+            if not room or body.get('room') != room['id']:
+                raise online_games.GameError('not_member')
+            if action == 'leave':
+                online_games.leave(room,user_data,uid)
+            else:
+                move = body.get('move')
+                if not isinstance(move,dict):
+                    raise online_games.GameError('invalid_request')
+                online_games.move(room,user_data,uid,body.get('seq'),move)
+                online_games.bot_turn(room,user_data,time.time())
+        elif action != 'state':
+            raise online_games.GameError('invalid_request')
+    except online_games.GameError as exc:
+        failure = str(exc)
+    except Exception as exc:
+        logging.error('Online game error: %s',type(exc).__name__)
+        failure = 'save_failed'
+        store.clear();store.update(original)
+        for p, fields in wallets.items():
+            for key,value in fields.items():
+                if value is None:user_data[p].pop(key,None)
+                else:user_data[p][key]=value
+    try:
+        if original != store or any(user_data[p].get(k)!=value for p,fields in wallets.items() for k,value in fields.items()):
+            save_data(user_data)
+    except Exception:
+        store.clear();store.update(original)
+        for p,fields in wallets.items():
+            for key,value in fields.items():
+                if value is None:user_data[p].pop(key,None)
+                else:user_data[p][key]=value
+        failure='save_failed'
+    current = online_games.current(store,user_data,uid)
+    return web.json_response({'ok':failure is None,'error':failure,'preview':preview,'state':{
+        'lang':user.get('lang','ru'),'bucks':user.get('bucks',0),'bets':list(online_games.BETS),
+        'adult_allowed':online_adult_allowed(user),'invite':user.get('online_invite'),
+        'bot_username':_BOT_USERNAME['v'],'server_time':time.time(),
+        'room':online_games.view(current,uid)}})
+
+
 def serialize_play_state(user):
+    if retire_blackjack(user):
+        save_data(user_data)
     lang = "ru" if user.get("lang", "ru") == "ru" else "en"
     play = user.get("play")
     game = None
     if play and play.get("mode") in PLAY_TALK_MODES:
         game = serialize_talk(user, play)
-        play = None
-    if play and play.get("mode") == "bj":
-        hidden = play["phase"] == "turn"
-        dealer = [list(play["dealer"][0]), None] if hidden else [list(c) for c in play["dealer"]]
-        game = {"mode": "bj", "phase": play["phase"], "bet": play["bet"], "player": [list(c) for c in play["player"]],
-                "dealer": dealer, "pv": bj_value(play["player"]),
-                "dv": bj_value(play["dealer"][:1] if hidden else play["dealer"]),
-                "result": play.get("result"), "result_text": play.get("result_text"), "line": play.get("line"),
-                "busy": bool(play.get("busy"))}
         play = None
     if play:
         pick = play.get("phase")
@@ -17577,8 +17522,7 @@ def serialize_play_state(user):
                 "mine": items("mine", "pick_me") if play["mode"] == "strip" else [],
                 "her_removed": len(play.get("her_removed", [])), "mine_removed": len(play.get("mine_removed", []))}
     ui = {k: gt(user, k) for k in GAME_TEXTS["ru"] if k.startswith("play_") and isinstance(GAME_TEXTS["ru"][k], str)}
-    return {"bucks": user.get("bucks", 0), "price": PLAY_RPS_PRICE, "wins": PLAY_RPS_WINS, "bj_bets": BJ_BETS,
-            "bj_talk": bool(user.get("bj_talk")),
+    return {"lang": user.get("lang","ru"), "bucks": user.get("bucks", 0), "price": PLAY_RPS_PRICE, "wins": PLAY_RPS_WINS,
             "movie_price": GAME_OFFERS["movie"]["price"], "tod_labels": {"truth": gt(user, "tod_truth"), "dare": gt(user, "tod_dare")},
             "strip_allowed": play_strip_allowed(user), "strip_subscribed": play_strip_subscribed(user),
             "char_gender": user.get("gender") or "female",
@@ -17629,10 +17573,8 @@ async def api_play_start_handler(request):
     if err:
         return err
     mode = body.get("mode")
-    if mode not in ("rps", "strip", "bj") + PLAY_TALK_MODES:
+    if mode not in ("rps", "strip") + PLAY_TALK_MODES:
         return _play_reply(user, False, "Bad request")
-    if mode == "bj":
-        return await play_bj_start(user_id, user, body)
     if mode in PLAY_TALK_MODES:
         user["game"] = None
         error = games_gate_error(user)
@@ -17758,7 +17700,7 @@ async def api_play_move_handler(request):
     choice = body.get("choice")
     if play and play.get("phase") == "pick_me":
         play["phase"] = "move"  # партии со старым ходом "выбери сам" доигрываются по новым правилам
-    if not play or play.get("phase") != "move" or choice not in RPS_KEYS or play.get("busy") or play.get("mode") == "bj":
+    if not play or play.get("phase") != "move" or choice not in RPS_KEYS or play.get("busy"):
         return _play_reply(user, False, None)
     theirs = random.choice(RPS_KEYS)
     beats = {"rock": "scissors", "scissors": "paper", "paper": "rock"}
@@ -18112,70 +18054,6 @@ async def api_play_talk_handler(request):
     return _play_reply(user, error is None, error)
 
 
-async def play_bj_start(user_id, user, body):
-    try:
-        bet = int(body.get("bet"))
-    except (TypeError, ValueError):
-        bet = 0
-    if bet not in BJ_BETS:
-        return _play_reply(user, False, "Bad request")
-    if user.get("play") and user["play"].get("mode") == "bj" and user["play"].get("phase") == "turn":
-        return _play_reply(user, False, None)  # раунд уже идёт -- двойной тап не списывает вторую ставку
-    if user.get("game"):
-        user["game"] = None
-    user['bj_talk'] = True
-    error = games_gate_error(user)
-    if error:
-        return _play_reply(user, False, error)
-    if not spend_bucks(user, bet):
-        return _play_reply(user, False, get_text(user, "not_enough_bucks", n=bet - user.get("bucks", 0)))
-    hand = bj_new_hand(bet)
-    prev_log = (user.get("play") or {}).get("log", []) if (user.get("play") or {}).get("mode") == "bj" else []
-    user["play"] = {"mode": "bj", "phase": "turn", "bet": bet, "deck": hand["deck"], "player": hand["player"],
-                    "dealer": hand["dealer"], "line": None, "result": None, "result_text": None, "busy": False, "log": prev_log}
-    if bj_value(hand["player"]) == 21:
-        await play_bj_settle(user_id, user)
-    save_data(user_data)
-    return _play_reply(user)
-
-
-async def play_bj_settle(user_id, user):
-    play = user["play"]
-    outcome, payout = bj_settle(play)
-    user["bucks"] = user.get("bucks", 0) + payout
-    play["phase"] = "done"
-    play["result"] = outcome
-    play["result_text"] = bj_result_text(user, outcome, play["bet"], payout)
-    pv, dv = bj_value(play["player"]), bj_value(play["dealer"])
-    user["bj_talk"] = True
-    instr = (f"Вы играете в блэкджек, ты — крупье. Итог ЭТОГО раунда: {BJ_AI_FACTS[outcome]}. У собеседника {pv}, у тебя {dv}, "
-             f"ставка {play['bet']}. Не путай с прошлыми раундами. Прокомментируй в образе: подколи, порадуйся или предложи ещё раунд.")
-
-    async def job():
-        line = await game_ai_line(user_id, user, instr, tail=play_tail(play))
-        play_log(play, line)
-        play["line"] = line or random.choice(gt(user, "play_fallback_bj"))
-    play_run_bg(user_id, user, play, job)
-
-
-async def api_play_bj_handler(request):
-    user_id, user, body, err = await _play_request(request)
-    if err:
-        return err
-    play = user.get("play")
-    action = body.get("action")
-    if not play or play.get("mode") != "bj" or play.get("phase") != "turn" or action not in ("hit", "stand"):
-        return _play_reply(user, False, None)
-    if action == "hit":
-        play["player"].append(bj_draw(play))
-        if bj_value(play["player"]) < 21:
-            save_data(user_data)
-            return _play_reply(user)
-    await play_bj_settle(user_id, user)
-    save_data(user_data)
-    return _play_reply(user)
-
-
 async def api_play_quit_handler(request):
     user_id, user, body, err = await _play_request(request)
     if err:
@@ -18255,21 +18133,6 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   #over .row, .bets { display: flex; gap: 8px; }
   .bets { flex-wrap: wrap; }
   .bets .btn { flex: 1 1 40%; padding: 11px 6px; font-size: 15px; }
-  .bj-card { background: linear-gradient(150deg, rgba(46,204,113,.22), rgba(22,160,133,.12) 60%, var(--card)); }
-  #bj { display: none; }
-  .bj-side { margin: 6px 0 10px; }
-  .bj-who { font-size: 13px; color: var(--hint); font-weight: 700; margin-bottom: 6px; }
-  .bj-hand { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; min-height: 84px; }
-  .pc { width: 54px; height: 78px; border-radius: 9px; background: #fff; color: #1b1b1f; display: flex; flex-direction: column; justify-content: space-between;
-    padding: 5px 6px; box-sizing: border-box; font-weight: 900; box-shadow: 0 3px 10px rgba(0,0,0,.35); animation: deal .35s ease both; }
-  .pc .r { font-size: 18px; text-align: left; } .pc .s { font-size: 22px; text-align: right; }
-  .pc.red { color: #d63031; }
-  .pc.back { background: repeating-linear-gradient(45deg, #6c5ce7 0 6px, #5a4bd1 6px 12px); border: 3px solid #fff; }
-  @keyframes deal { from { transform: translateY(-30px) rotate(-8deg); opacity: 0; } to { transform: none; opacity: 1; } }
-  .bj-val { display: inline-block; margin-top: 4px; font-weight: 900; font-size: 15px; background: rgba(127,127,127,.18); border-radius: 10px; padding: 2px 10px; }
-  #bj-bet { color: var(--hint); font-weight: 700; font-size: 13px; }
-  #bj-actions { display: flex; gap: 10px; margin-top: 8px; }
-  #bj-actions .btn { flex: 1; }
   #talkv { display: none; }
   .talk-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
   .talk-head b { font-size: 17px; } .talk-head span { color: var(--hint); font-size: 13px; font-weight: 700; }
@@ -18299,18 +18162,12 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     <div id="her-wardrobe" class="wardrobe card" style="display:none"></div>
     <div class="card">
       <div id="score"></div>
-      <div id="bj">
-        <div id="bj-bet"></div>
-        <div class="bj-side"><div class="bj-who" id="bj-who-dealer"></div><div class="bj-hand" id="bj-dealer"></div><div class="bj-val" id="bj-dv"></div></div>
-        <div class="bj-side"><div class="bj-who" id="bj-who-me"></div><div class="bj-hand" id="bj-player"></div><div class="bj-val" id="bj-pv"></div></div>
-      </div>
       <div id="labels"><span id="lbl-her"></span><span id="lbl-me"></span></div>
       <div id="hands"><span class="hand theirs" id="hand-theirs">✊</span><span class="vs">VS</span><span class="hand mine" id="hand-mine">✊</span></div>
       <div id="outcome"></div>
       <div id="line"></div>
       <div id="prompt"></div>
       <div id="moves"></div>
-      <div id="bj-actions"></div>
       <div id="over"><div class="big" id="over-text"></div>
         <div class="row"><button class="btn" id="again-btn"></button><button class="btn secondary" id="chat-btn"></button></div></div>
     </div>
@@ -18377,6 +18234,8 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   function showFullScreen(text) { ["menu", "arena", "top"].forEach(function (id) { document.getElementById(id).style.display = "none"; });
     var m = document.getElementById("full-screen-msg"); m.style.display = "block"; m.textContent = text; }
 
+  function gameLabel(ru,en,de){return state.lang==='ru'?ru:state.lang==='de'?de:en;}
+  function openOnline(game){var url='/online?game='+encodeURIComponent(game);if(new URLSearchParams(location.search).get('embed')==='1')url+='&embed=1';location.href=url;}
   function renderMenu() {
     var s = state, ui = s.ui, menu = document.getElementById("menu");
     document.getElementById("outcome").textContent = "";
@@ -18403,13 +18262,15 @@ PLAY_PAGE_HTML = r'''<!doctype html>
       st.appendChild(b2);
     }
     menu.appendChild(st);
-    var bj = el("div", "card bj-card");
-    bj.appendChild(el("h3", null, ui.play_bj_title));
-    bj.appendChild(el("p", null, ui.play_bj_desc));
-
-    bj.appendChild(el("p", null, ui.play_bj_choose));
-    bj.appendChild(betButtons());
-    menu.appendChild(bj);
+    [['dice', "🎲 Liar’s Dice"], ['connect4', '🔴 '+gameLabel('4 в ряд','Connect Four','Vier gewinnt')], ['chess','♟ '+gameLabel('Шахматы','Chess','Schach')]].forEach(function(g){
+      var c=el('div','card');c.appendChild(el('h3',null,g[1]));
+      c.appendChild(el('p',null,gameLabel('С персонажем · онлайн · друг · бесплатно или на баксы','With companion · online · friends · free or bucks','Mit Charakter · online · Freunde · kostenlos oder Bucks')));
+      var b=el('button','btn',gameLabel('Играть','Play','Spielen'));b.onclick=function(){openOnline(g[0]);};c.appendChild(b);menu.appendChild(c);
+    });
+    var online=el('div','card');online.appendChild(el('h3',null,gameLabel('🌐 Онлайн · КНБ','🌐 Online · RPS','🌐 Online · Schere, Stein, Papier')));
+    online.appendChild(el('p',null,gameLabel('Поиск соперника или приглашение друга · игровые баксы','Find an opponent or invite a friend · in-game bucks','Gegner suchen oder Freund einladen · Spielwährung')));
+    var normal=el('button','btn',gameLabel('✊ КНБ онлайн','✊ Online RPS','✊ Online spielen'));normal.onclick=function(){openOnline('rps');};online.appendChild(normal);
+    var adult=el('button','btn secondary',gameLabel('✊ КНБ 18+ онлайн','✊ Online RPS 18+','✊ Online 18+'));adult.onclick=function(){openOnline('rps18');};online.appendChild(adult);menu.appendChild(online);
     [["cities", ui.play_cities_title, ui.play_cities_desc, ui.play_start + " · " + ui.play_free],
      ["tod", ui.play_tod_title, ui.play_tod_desc, ui.play_start + " · " + ui.play_free],
      ["movie", ui.play_movie_title, ui.play_movie_desc, ui.play_movie_btn.replace("{price}", s.movie_price)]].forEach(function (g) {
@@ -18483,114 +18344,6 @@ PLAY_PAGE_HTML = r'''<!doctype html>
 
   function ui_() { return state.ui; }
 
-  function betButtons() {
-    var row = el("div", "bets");
-    state.bj_bets.forEach(function (b) {
-      var btn = el("button", "btn", b + "💵");
-      btn.disabled = busy || state.bucks < b;
-      btn.onclick = function () { bjStart(b); };
-      row.appendChild(btn);
-    });
-    return row;
-  }
-
-  function cardEl(c, delay) {
-    if (!c) return el("div", "pc back");
-    var red = c[1] === "♥" || c[1] === "♦";
-    var e = el("div", "pc" + (red ? " red" : ""));
-    e.appendChild(el("div", "r", c[0])); e.appendChild(el("div", "s", c[1]));
-    e.style.animationDelay = (delay || 0) + "s";
-    return e;
-  }
-
-  var bjShown = { player: 0, dealer: 0 };
-  function renderHand(id, cards, key) {
-    var box = document.getElementById(id);
-    box.innerHTML = "";
-    var fresh = 0;
-    cards.forEach(function (c, i) {
-      var isNew = i >= bjShown[key];
-      var e = cardEl(c, isNew ? fresh++ * .18 : 0);
-      if (!isNew) e.style.animation = "none";
-      box.appendChild(e);
-    });
-    for (var i = 0; i < fresh; i++) setTimeout(function () { fx("card"); }, i * 180);
-    bjShown[key] = cards.length;
-  }
-
-  function renderBj() {
-    var s = state, g = s.game, ui = s.ui;
-    ["hands", "labels", "moves", "over", "her-wardrobe", "my-wardrobe"].forEach(function (id) { document.getElementById(id).style.display = "none"; });
-    document.getElementById("score").textContent = "";
-    document.getElementById("bj").style.display = "block";
-    document.getElementById("bj-bet").textContent = ui.play_bj_bet.replace("{bet}", g.bet);
-    document.getElementById("bj-who-dealer").textContent = (s.char_gender === "female" ? "👩 " : "👨 ") + ui.play_bj_dealer;
-    document.getElementById("bj-who-me").textContent = "🙂 " + ui.play_bj_you;
-    // карта крупье, открытая в конце, -- тоже «новая», чтобы перевернулась с анимацией
-    if (g.phase === "done" && bjShown.dealer === 2 && g.dealer.length >= 2) bjShown.dealer = 1;
-    renderHand("bj-dealer", g.dealer, "dealer");
-    renderHand("bj-player", g.player, "player");
-    document.getElementById("bj-dv").textContent = g.dv + (g.phase === "turn" ? " + ?" : "");
-    document.getElementById("bj-pv").textContent = g.pv;
-    var out = document.getElementById("outcome");
-    out.textContent = g.phase === "done" ? g.result_text : "";
-    out.className = g.phase === "done" ? (g.result === "lose" ? "lose" : (g.result === "push" ? "" : "win")) : "";
-    var line = document.getElementById("line");
-    line.className = "";
-    if (g.busy && g.phase === "done") { line.style.display = "block"; line.className = "thinking"; line.textContent = ui.play_thinking; }
-    else if (g.line && g.phase === "done") { line.style.display = "block"; line.textContent = g.line; } else line.style.display = "none";
-    var prompt = document.getElementById("prompt");
-    var acts = document.getElementById("bj-actions");
-    acts.innerHTML = "";
-    if (g.phase === "turn") {
-      prompt.textContent = "";
-      acts.style.display = "flex";
-      var h = el("button", "btn", ui.play_bj_hit), st = el("button", "btn secondary", ui.play_bj_stand);
-      h.disabled = st.disabled = busy;
-      h.onclick = function () { bjAct("hit"); };
-      st.onclick = function () { bjAct("stand"); };
-      acts.appendChild(h); acts.appendChild(st);
-    } else {
-      prompt.textContent = ui.play_bj_again;
-      acts.style.display = "block";
-
-      acts.appendChild(betButtons());
-    }
-    document.getElementById("quit-btn").style.display = "block";
-  }
-
-  function bjStart(bet) {
-    if (busy) return;
-    busy = true;
-    bjShown = { player: 0, dealer: 0 };
-    api("/api/play/start", { mode: "bj", bet: bet, talk: true }).then(function (res) {
-      busy = false;
-      if (res.state) state = res.state;
-      if (!res.ok && res.error) safe(function () { tg.showAlert(res.error); });
-      render();
-      bjAfter();
-    }).catch(function () { busy = false; render(); });
-  }
-
-  function bjAct(action) {
-    if (busy) return;
-    busy = true;
-    document.getElementById("bj-actions").querySelectorAll("button").forEach(function (b) { b.disabled = true; });
-    api("/api/play/bj", { action: action }).then(function (res) {
-      busy = false;
-      if (res.state) state = res.state;
-      render();
-      bjAfter();
-    }).catch(function () { busy = false; render(); });
-  }
-
-  function bjAfter() {
-    var g = state.game;
-    if (g && g.busy) pollBusy();
-    if (!g || g.mode !== "bj" || g.phase !== "done") return;
-    setTimeout(function () { fx(g.result === "lose" ? "lose" : (g.result === "push" ? "draw" : (g.result === "blackjack" ? "big" : "win"))); }, 450);
-  }
-
   function renderWardrobe(boxId, title, items, removed, picking) {
     var box = document.getElementById(boxId);
     box.innerHTML = "";
@@ -18658,9 +18411,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
     document.getElementById("bucks").textContent = "💵 " + state.bucks;
     document.getElementById("talkv").style.display = "none";
     if (state.game && TALK[state.game.mode]) { renderTalk(); return; }
-    if (state.game && state.game.mode === "bj") { document.getElementById("menu").style.display = "none";
-      document.getElementById("arena").style.display = "block"; renderBj(); }
-    else if (state.game) { document.getElementById("bj").style.display = "none"; document.getElementById("bj-actions").style.display = "none";
+    if (state.game) {
       ["hands", "labels"].forEach(function (id) { document.getElementById(id).style.display = ""; }); renderArena(); }
     else renderMenu();
   }
@@ -18757,7 +18508,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
       if (state.game && state.game.busy) pollBusy();
       var want = (location.search.match(/game=(\w+)/) || [])[1];
       if ({ cities: 1, tod: 1, movie: 1 }[want] && (!state.game || state.game.mode !== want)) start(want);
-      var target = !state.game && { strip: ".strip-card", bj: ".bj-card" }[want];
+      var target = !state.game && { strip: ".strip-card" }[want];
       if (target && document.querySelector(target)) document.querySelector(target).scrollIntoView();
     }).catch(function (e) { showFullScreen("Network error: " + (e && e.message || "unknown")); });
   }
@@ -18888,8 +18639,7 @@ APP_TEXTS = {
         "support_send": "Отправить",
         "support_short": "Напиши чуть подробнее 🙂",
         "channel_btn": "📢 Наш канал",
-        "bj_talk_on": "💬 Комментарии персонажа: вкл",
-        "bj_talk_off": "🤐 Без комментариев",
+
         "asleep_no_new": "😴 Персонаж спит — сначала разбуди его, потом можно создать нового.",
         "card_gift": "Ты подарил(а)", "card_food": "Ты угостил(а)", "card_medicine": "Ты дал(а) лекарство",
         "change_char": "🔁 Создать нового персонажа", "change_char_confirm": "Создать нового персонажа? Переписка с текущим будет удалена.",
@@ -18995,8 +18745,7 @@ APP_TEXTS = {
         "support_send": "Send",
         "support_short": "Please write a bit more 🙂",
         "channel_btn": "📢 Our channel",
-        "bj_talk_on": "💬 Companion comments: on",
-        "bj_talk_off": "🤐 No comments",
+
         "asleep_no_new": "😴 Your companion is asleep — wake them first, then you can create a new one.",
         "card_gift": "You gave a gift", "card_food": "You treated them to", "card_medicine": "You gave medicine",
         "change_char": "🔁 Create a new companion", "change_char_confirm": "Create a new companion? The chat with the current one will be deleted.",
@@ -19120,8 +18869,8 @@ APP_TEXTS['de'] = {**APP_TEXTS['en'], **{'tab_chat': 'Chat',
  'support_send': 'Senden',
  'support_short': 'Schreib bitte etwas mehr 🙂',
  'channel_btn': '📢 Unser Kanal',
- 'bj_talk_on': '💬 Kommentare: an',
- 'bj_talk_off': '🤐 Kommentare: aus',
+
+
  'asleep_no_new': '😴 Zuerst deinen Charakter wecken.',
  'card_gift': 'Du hast etwas geschenkt',
  'card_food': 'Du hast etwas angeboten',
@@ -19778,7 +19527,7 @@ setTimeout(function () { if (window.__tgSdkOnSettle) window.__tgSdkOnSettle(); }
 _SDK_TAG_RE = re.compile(r'<script src="/tg-sdk\.js"[^>]*>\s*</script>', re.S)
 
 
-SFX_TAG = '<script src="/sfx.js?v=20261114"></script>'
+SFX_TAG = '<script src="/sfx.js?v=20261116"></script>'
 
 
 async def sfx_js_handler(request):
@@ -19811,7 +19560,7 @@ body::before { content: ""; position: fixed; inset: -20%; z-index: -1; pointer-e
 #title { color: #fff !important; text-shadow: 0 0 18px rgba(196, 181, 253, .45), 0 0 2px rgba(255, 255, 255, .3) !important; letter-spacing: .01em; }
 
 /* ---- стеклянные карточки ---- */
-.card, .game-panel, #prize-list, #bj, .wardrobe, #coupon-note, .coupon-note {
+.card, .game-panel, #prize-list, .wardrobe, #coupon-note, .coupon-note {
   background: var(--rd-card) !important; border: 1px solid var(--rd-line) !important; border-radius: 20px !important;
   box-shadow: 0 12px 30px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .05) !important;
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: var(--rd-fg) !important; }
@@ -19820,7 +19569,6 @@ body::before { content: ""; position: fixed; inset: -20%; z-index: -1; pointer-e
 #items .card:nth-child(2) { animation-delay: .04s; } #items .card:nth-child(3) { animation-delay: .08s; }
 #items .card:nth-child(4) { animation-delay: .12s; } #items .card:nth-child(n+5) { animation-delay: .16s; }
 .strip-card { background: linear-gradient(150deg, rgba(229, 57, 53, .30), rgba(216, 27, 96, .16) 60%, var(--rd-card)) !important; border-color: rgba(251, 113, 133, .35) !important; }
-.bj-card { background: linear-gradient(150deg, rgba(34, 197, 94, .22), rgba(20, 184, 166, .12) 60%, var(--rd-card)) !important; border-color: rgba(74, 222, 128, .3) !important; }
 .talk-card { background: linear-gradient(150deg, rgba(56, 189, 248, .18), rgba(139, 92, 246, .12) 60%, var(--rd-card)) !important; border-color: rgba(125, 211, 252, .28) !important; }
 .card-deal { border-color: rgba(251, 146, 60, .55) !important; box-shadow: 0 0 0 1px rgba(251, 146, 60, .25), 0 12px 30px rgba(249, 115, 22, .18) !important; }
 .card-energizer { border-color: rgba(129, 140, 248, .5) !important; box-shadow: 0 0 22px rgba(99, 102, 241, .25), 0 12px 30px rgba(0, 0, 0, .35) !important; }
@@ -19904,7 +19652,6 @@ body::before { content: ""; position: fixed; inset: -20%; z-index: -1; pointer-e
 .pc { box-shadow: 0 8px 18px rgba(0, 0, 0, .45), 0 0 0 1px rgba(255, 255, 255, .6) inset !important; }
 .chip { background: var(--rd-card2) !important; border: 1px solid var(--rd-line) !important; color: var(--rd-fg) !important; }
 .chip.pickable { border-color: transparent !important; }
-.bj-val { background: var(--rd-card2) !important; border: 1px solid var(--rd-line); }
 
 /* ---- поля ввода ---- */
 input, textarea { background: var(--rd-card2) !important; color: var(--rd-fg) !important; border: 1px solid var(--rd-line) !important; }
@@ -19959,7 +19706,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
 @media(prefers-reduced-motion:reduce){.btn::after,.buy-btn::after,.action-btn::after,.rd-premium,.rd-spark{animation:none!important;}}
 
 '''
-APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261114">'
+APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261116">'
 
 
 async def theme_css_handler(request):
@@ -20275,11 +20022,13 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
     (motifs[kind]||[[0,'light']]).forEach(function(step){feedbackTimer.push(setTimeout(function(){try{if(['success','error','warning'].indexOf(step[1])>=0)h.notificationOccurred(step[1]);else h.impactOccurred(step[1]);}catch(e){}},step[0]));});
   }
   var sampleBuffers={},sampleLoads={},sampleVoices=[],lastSample={};
-  var sampleNames=['key','tick','start','win','deliver','loss','drop','freeze','impact','explosion','shatter','water','soda','eat','crunch'];
+  var sampleNames=['key','tick','start','win','deliver','loss','drop','freeze','impact','explosion','shatter','water','soda','eat','crunch','keya','keyb','keyc','wirea','wireb','wirec','pina','pinb','pinc','pinbreak','unlock','dicea','diceb','dicec','chessa','chessb','chessc','countera','counterb','counterc','match','reveal'];
+  var bankLast={};
+  function gameSound(kind){var banks={key:['keya','keyb','keyc'],wire:['wirea','wireb','wirec'],pin:['pina','pinb','pinc'],chess:['chessa','chessb','chessc'],counter:['countera','counterb','counterc'],dice:['dicea','diceb','dicec']};var options=banks[kind];if(options){var fresh=options.filter(function(x){return x!==bankLast[kind];});var pick=fresh[Math.floor(Math.random()*fresh.length)];bankLast[kind]=pick;sample(pick);}else sample(kind);}
   function loadSample(kind){
     if(sampleBuffers[kind])return Promise.resolve(sampleBuffers[kind]);
     if(sampleLoads[kind])return sampleLoads[kind];
-    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261114').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
+    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261116').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
     return sampleLoads[kind];
   }
   function sample(kind){
@@ -20299,7 +20048,7 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
     sample(kind==='drink'?(item==='sparkling_water'||item==='beer'?'soda':'water'):(kind==='eat'?(item==='snack'||item==='breakfast'?'crunch':'eat'):kind));
   }
   window.addEventListener('storage',function(){if(master) master.gain.value=enabled()?.85:0;});
-  window.RDSFX = { burst:burst, feedback:feedback, sample:sample, care:care, effect:effect, impact:impact, ctx: init, out: out, tone: tone, bell: bell, pluck: pluck, pad: pad, sparkle: sparkle, noise: noise,
+  window.RDSFX = { game:gameSound, burst:burst, feedback:feedback, sample:sample, care:care, effect:effect, impact:impact, ctx: init, out: out, tone: tone, bell: bell, pluck: pluck, pad: pad, sparkle: sparkle, noise: noise,
                    tick: tick, sent: sent, received: received, PENTA: PENTA };
 
   var currencyScheduled = false;
@@ -21777,6 +21526,8 @@ async def run_webapp_server():
     app_web.router.add_post("/api/shop/custom", api_custom_gift_handler)
     app_web.router.add_get("/spin", spin_page_handler)
     app_web.router.add_get("/play", play_page_handler)
+    app_web.router.add_get("/online", online_page_handler)
+    app_web.router.add_post("/api/online", api_online_handler)
     app_web.router.add_get("/app", app_page_handler)
     app_web.router.add_get("/sfx.js", sfx_js_handler)
     app_web.router.add_get("/theme.css", theme_css_handler)
@@ -21804,7 +21555,6 @@ async def run_webapp_server():
     app_web.router.add_post("/api/play/move", api_play_move_handler)
     app_web.router.add_post("/api/play/remove", api_play_remove_handler)
     app_web.router.add_post("/api/play/quit", api_play_quit_handler)
-    app_web.router.add_post("/api/play/bj", api_play_bj_handler)
     app_web.router.add_post("/api/play/talk", api_play_talk_handler)
     app_web.router.add_get("/api/spin/state", api_spin_state_handler)
     app_web.router.add_post("/api/spin/free", api_spin_free_handler)
@@ -22311,6 +22061,9 @@ async def main():
     print(f"🛍 Mini App магазин: {'включён, ' + WEBAPP_URL + '/shop' if WEBAPP_URL else 'выключен (WEBAPP_URL не задан)'}")
     print("✅ БОТ ГОТОВ К РАБОТЕ!")
 
+    for account_id,account in user_data.items():
+        if account_id != '__settings__' and isinstance(account,dict):
+            retire_blackjack(account)
     # Interrupted image jobs never consume the user's energy after a restart.
     for account in user_data.values():
         if isinstance(account, dict) and account.pop('photo_pending', False):
@@ -22337,6 +22090,7 @@ async def main():
             await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(text="Открыть", web_app=WebAppInfo(url=f"{WEBAPP_URL}/app")))
         except Exception as e:
             logging.warning(f"set_chat_menu_button: {e}")
+    asyncio.create_task(expire_online_rooms())
     asyncio.create_task(check_notifications())
     asyncio.create_task(check_pending_payments())
     await dp.start_polling(bot)

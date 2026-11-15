@@ -25,3 +25,9 @@ Converted to mono 24 kHz WAV with reduced gain and short fade. Food and drink so
 Sources: https://opengameart.org/content/202-more-sound-effects and https://opengameart.org/content/7-eating-crunches
 License: https://creativecommons.org/publicdomain/zero/1.0/
 Recordings trimmed, converted to mono 24 kHz and gain reduced.
+
+## 2026-11-16 game sound banks
+
+`key[a-c]`, `pin[a-c]`, `chess[a-c]`, `counter[a-c]`, `dice[a-c]`, `pinbreak`, `unlock`, `match`, `reveal` are edited/layered Kenney Interface Sounds and Impact Sounds (CC0; licenses above). Each event chooses among three recordings without repeating the previous choice. Dice use layered wooden impacts.
+
+`wire[a-c]` are original, deterministic synthesized electrical hiss/crackle, not recordings of real live wires. They are used specifically for connecting cables. Build script: `scripts/build_game_audio.py interface.zip impacts.zip`. Existing food/drink recordings are retained.

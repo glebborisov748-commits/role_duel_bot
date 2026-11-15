@@ -1,15 +1,14 @@
 import unittest
 from test_core import load_functions
 
-class BlackjackGateTests(unittest.IsolatedAsyncioTestCase):
-    async def test_quiet_flag_does_not_bypass_sleep(self):
-        spent=[]
-        user={'sleep_until':'now','bucks':1000,'bj_talk':False}
-        ns={'BJ_BETS':[50],'games_gate_error':lambda u:'asleep' if u.get('sleep_until') else None,
-            '_play_reply':lambda u,ok=True,error=None:{'ok':ok,'error':error},
-            'spend_bucks':lambda u,b:spent.append(b)}
-        load_functions({'play_bj_start'},ns)
-        result=await ns['play_bj_start'](1,user,{'bet':50,'talk':False})
-        self.assertFalse(result['ok']);self.assertEqual(result['error'],'asleep')
-        self.assertEqual(spent,[])
-        self.assertTrue(user['bj_talk'])
+class BlackjackRetirementTests(unittest.TestCase):
+    def test_unresolved_stake_refunded_once(self):
+        ns={};load_functions({'retire_blackjack'},ns)
+        u={'bucks':100,'play':{'mode':'bj','phase':'turn','bet':500}}
+        self.assertTrue(ns['retire_blackjack'](u));self.assertEqual(u['bucks'],600)
+        self.assertFalse(ns['retire_blackjack'](u));self.assertEqual(u['bucks'],600)
+
+    def test_settled_stake_not_refunded(self):
+        ns={};load_functions({'retire_blackjack'},ns)
+        u={'bucks':100,'play':{'mode':'bj','phase':'done','bet':500}}
+        ns['retire_blackjack'](u);self.assertEqual(u['bucks'],100)
