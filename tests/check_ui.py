@@ -59,7 +59,7 @@ with sync_playwright() as p:
     page.locator('#nav button').nth(5).click()
     page.get_by_text('Пополнить баксы',exact=True).wait_for()
     assert page.locator('#view-profile ul').first.inner_text()
-    assert page.get_by_text('Доверие',exact=True).is_visible() or page.get_by_text('Доверие',exact=True).count()
+    assert page.get_by_text('Доверие',exact=True).count() == 0
     page.screenshot(path='/tmp/roleduel-profile.png',full_page=True)
     page.get_by_role('button',name=ui['guide_btn'],exact=True).click()
     page.locator('iframe.rd-guide').wait_for()

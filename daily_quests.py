@@ -16,6 +16,14 @@ CATALOG = (
  ('harvest2','harvest',2,'bucks',400,('Собери урожай с 2 грядок','Harvest 2 plots','Ernte 2 Beete')),
  ('chat4','chat',4,'bucks',200,('Напиши 4 содержательных сообщения','Write 4 meaningful messages','Schreibe 4 gehaltvolle Nachrichten')),
  ('chat8','chat',8,'scenes',1,('Напиши 8 содержательных сообщений','Write 8 meaningful messages','Schreibe 8 gehaltvolle Nachrichten')),
+ ('share1','share',1,'bucks',300,('Поделись ботом с другом','Share the bot with a friend','Teile den Bot mit einem Freund')),
+ ('courier40','courier',40,'bucks',700,('Доставь 40 заказов','Deliver 40 orders','Liefere 40 Bestellungen')),
+ ('hack12','hack',12,'energy',60,('Выполни 12 взломов','Complete 12 hacks','Schaffe 12 Hacks')),
+ ('catch100','catch',100,'scenes',1,('Поймай 100 денежных предметов','Catch 100 money items','Fange 100 Geldobjekte')),
+ ('chat20','chat',20,'bucks',500,('Напиши 20 содержательных сообщений','Write 20 meaningful messages','Schreibe 20 gehaltvolle Nachrichten')),
+ ('plant5','plant',5,'energy',60,('Посади 5 растений','Plant 5 crops','Pflanze 5 Pflanzen')),
+ ('harvest5','harvest',5,'bucks',650,('Собери урожай с 5 грядок','Harvest 5 plots','Ernte 5 Beete')),
+
 )
 BY_ID = {q[0]:q for q in CATALOG}
 

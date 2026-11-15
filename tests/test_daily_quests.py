@@ -65,14 +65,13 @@ class DailyQuestTests(unittest.IsolatedAsyncioTestCase):
             await self.ns['api_app_task_handler'](None)
             self.assertEqual(self.user['energizers'],1)
 
-    async def test_energy_reward_wakes_and_waits_when_full(self):
-        self.force('catch20');self.user.update(energy=140,sleep_until='now')
-        self.assertFalse((await self.ns['api_app_task_handler'](None))['ok'])
-        self.assertFalse(self.user['daily_quests']['items'][0]['claimed'])
-        self.user['energy']=0
+    async def test_energy_reward_overflows_and_wakes(self):
+        self.force('catch20');self.user.update(energy=150,sleep_until='now')
         self.assertTrue((await self.ns['api_app_task_handler'](None))['ok'])
-        self.assertEqual(self.user['energy'],40)
+        self.assertEqual(self.user['energy'],190)
         self.assertIsNone(self.user['sleep_until'])
+        self.assertFalse((await self.ns['api_app_task_handler'](None))['ok'])
+        self.assertEqual(self.user['energy'],190)
 
     async def test_stale_claim_rejected_after_moscow_midnight(self):
         self.force('hack3');self.now=datetime(2026,11,14,23,59)

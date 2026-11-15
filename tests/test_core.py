@@ -1,3 +1,4 @@
+import asyncio
 """Regression checks without bot credentials or network calls.
 
 Load selected functions from the actual application AST, avoiding live Bot startup.
@@ -132,9 +133,19 @@ class CoreTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_edit_delete_and_reaction_toggle(self):
         user = {'history': [{'id': 'u', 'role': 'user', 'content': 'old'}, {'id': 'a', 'role': 'assistant', 'content': 'reply'}]}
-        await self.request_for(user, {'id': 'u', 'action': 'edit', 'text': 'new'})
+        generated=[]
+        async def regenerate(uid, account):
+            generated.append([dict(m) for m in account['history']])
+            account['history'].append({'id':'a','role':'assistant','content':'new reply'})
+            account['app_pending']=None
+        self.ns.update(asyncio=asyncio,app_generate=regenerate)
+        await self.request_for(user, {'id':'u','action':'edit','text':'new'})
         self.assertTrue((await self.ns['api_app_message_handler'](None))['ok'])
+        self.assertEqual(len(user['history']),1)
         self.assertTrue(user['history'][0]['edited'])
+        await asyncio.sleep(0)
+        self.assertEqual(generated[0][0]['content'],'new')
+        self.assertEqual(len(generated[0]),1)
         await self.request_for(user, {'id': 'a', 'action': 'react', 'emoji': '❤️'})
         await self.ns['api_app_message_handler'](None)
         self.assertEqual(user['history'][1]['user_reaction'], '❤️')
