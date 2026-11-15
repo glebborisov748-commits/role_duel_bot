@@ -27,7 +27,8 @@ class ScenePhotoTests(unittest.IsolatedAsyncioTestCase):
     def test_only_allowlisted_background_details_enter_image_prompt(self):
         prompt=scene_photos.portrait_prompt('brown hair','female',json.dumps({'setting':'INJECTED','lighting':'INJECTED','prompt':'INJECTED'}))
         self.assertNotIn('INJECTED',prompt)
-        self.assertIn('fully clothed',prompt)
+        self.assertIn('seductive and revealing outfit',prompt)
+        self.assertNotIn('fully clothed',prompt)
         self.assertIn('simple photo studio',prompt)
         self.assertIn('brown hair',prompt)
 
