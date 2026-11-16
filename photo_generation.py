@@ -17,7 +17,7 @@ async def generate(prompt):
     headers = {'Authorization': 'Bearer ' + token()}
     async with httpx.AsyncClient(timeout=25) as client:
         response = await client.post(BASE_URL + '/image-gen/tasks', headers=headers, json={
-            'modelId': MODEL, 'prompt': prompt, 'negativePrompt': 'nsfw, nude, naked, explicit, child, minor, low quality', 'imageCount': 1})
+            'modelId': MODEL, 'prompt': prompt, 'negativePrompt': 'child, minor, low quality', 'imageCount': 1})
         response.raise_for_status()
         task_id = response.json()['taskId']
         for _ in range(80):

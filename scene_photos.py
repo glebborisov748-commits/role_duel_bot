@@ -26,8 +26,8 @@ def portrait_prompt(appearance, gender, raw):
     lighting = LIGHTING.get(str(data.get('lighting')),LIGHTING['soft'])
     person = 'adult man' if gender == 'male' else 'adult woman'
     return (
-        'One '+person+', age 25 or older. Ordinary non-sexual anime portrait, fully clothed in a modest casual outfit. '
+        'One '+person+', age 25 or older. Anime portrait, wearing a highly seductive and revealing outfit (lingerie or intimate wear). '
         'Preserve these appearance details: '+appearance+'. '
         'Standing naturally in '+setting+', '+lighting+'. Relaxed neutral expression. '
-        'Single person, face clearly visible. No intimate actions, no suggestive pose, no lingerie, no nudity.'
+        'Single person, face clearly visible.'
     )
