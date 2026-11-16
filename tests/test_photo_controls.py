@@ -5,10 +5,10 @@ from test_core import load_functions
 
 class PhotoControlTests(unittest.TestCase):
     def setUp(self):
-        self.ns={'re':re,'save_data':lambda d:None,'user_data':{},'ENERGY_MAX':150,'ENERGIZER_RESTORE_AMOUNT':78}
+        self.ns={'character_behavior_rule':lambda u:'','re':re,'save_data':lambda d:None,'user_data':{},'ENERGY_MAX':150,'ENERGIZER_RESTORE_AMOUNT':78}
         load_functions({'is_photo_request','use_energizer','casual_chat_rule','conversation_mode_rule'},self.ns)
     def test_natural_photo_requests(self):
-        for text in ('Скинь свою фотку','Покажи себя','Покажи как ты выглядишь','Можешь прислать фото в платье?','Можно твоё фото?','Send me a selfie','Zeig dich'):
+        for text in ('Хочу увидеть тебя','Хочу тебя увидеть','Кинь фотку','Скинь свою фотку','Покажи себя','Покажи как ты выглядишь','Можешь прислать фото в платье?','Можно твоё фото?','Send me a selfie','Zeig dich'):
             self.assertTrue(self.ns['is_photo_request'](text),text)
         for text in ('Привет, как дела?','Вчера ты просила скинуть фото','Не присылай фото','Я покажу себя позже'):
             self.assertFalse(self.ns['is_photo_request'](text),text)

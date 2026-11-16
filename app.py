@@ -1,3 +1,4 @@
+import character_options
 import scene_photos
 import time
 import copy
@@ -257,7 +258,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ У вас уже есть подписка.",
         "pro_only_alert": "❌ Только для PRO.",
         "subs_title": "👑 Подписки Role Duel",
-        "subs_body": "🔥 PRO (220⭐/мес)\n👉 База для тех, кто только начинает — очень сбалансированный набор.\n• Стили: ❤️‍🔥 Страстный, ✨ Магнетический\n• Память: 40 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-15%)\n• +2⚡ энергетика каждый день\n• 💼 Заработок на работе x1.5\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (500⭐/мес)\n👉 Для тех, кто хочет побольше разных фишек и возможностей.\n• Все стили + эксклюзивные 😤 Грубый 18+ и 😏 Соблазн 18+\n• Смена стиля без потери истории (/switch_style)\n• Память: 60 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-25%)\n• +3⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n• 🔥 Игра на раздевание 18+ в 🎮 Играх\n\n💎 ELITE 💎 (1000⭐/мес)\n👉 Для тех, кто ООЧЕНЬ много общается.\n• Всё, что есть в SUPER PRO\n• Память: 80 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-40%)\n• +4⚡ энергетика каждый день\n• 💼 Заработок на работе x2.8\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (350⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n🎁 При первой покупке любой подписки — бонус: 300💵 баксов, 3⚡ энергетика и 1 горячая сцена!\n\n⚠️ Подписки НЕ продлеваются автоматически.",
+        "subs_body": "🔥 PRO (220⭐/мес)\n👉 База для тех, кто только начинает — очень сбалансированный набор.\n• 12 характеров: в том числе Игривый, Юморной, Энергичный, Наивный\n• Память: 40 сообщений\n• Бонус XP: x1.8\n• Энергия и сытость персонажа тратятся медленнее (-15%)\n• +2⚡ энергетика каждый день\n• 💼 Заработок на работе x1.5\n• 🎰 2 бесплатные прокрутки колеса в день\n\n✨ SUPER PRO ✨ (500⭐/мес)\n👉 Для тех, кто хочет побольше разных фишек и возможностей.\n• 17 характеров: в том числе Без фильтра, Агрессивный, Циничный и Покорный\n• Смена стиля без потери истории (/switch_style)\n• Память: 60 сообщений\n• Бонус XP: x2.5\n• 🎭 Создание своего уникального персонажа!\n• Энергия и сытость персонажа тратятся ещё медленнее (-25%)\n• +3⚡ энергетика каждый день\n• 💼 Заработок на работе x2\n• 🎰 3 бесплатные прокрутки колеса в день\n• 🔕 Можно отключить уведомления бота\n• 🔥 Игра на раздевание 18+ в 🎮 Играх\n\n💎 ELITE 💎 (1000⭐/мес)\n👉 Для тех, кто ООЧЕНЬ много общается.\n• Всё из SUPER PRO и 20 характеров, включая Интеллектуальный и Невозмутимый\n• Память: 80 сообщений\n• Бонус XP: x3.5\n• Энергия и сытость тратятся минимально (-40%)\n• +4⚡ энергетика каждый день\n• 💼 Заработок на работе x2.8\n• 🎰 5 бесплатных прокруток колеса в день\n• 🔥 5 бесплатных горячих сцен в день\n• 🎁 Раз в неделю — бесплатное мгновенное пробуждение персонажа без энергетика\n\n⬆️ Апгрейд до SUPER PRO (350⭐) — повысьте PRO до SUPER PRO на оставшийся срок.\n\n🎁 При первой покупке любой подписки — бонус: 300💵 баксов, 3⚡ энергетика и 1 горячая сцена!\n\n⚠️ Подписки НЕ продлеваются автоматически.",
         "subs_btn_pro": "🔥 PRO — {price} ⭐/мес · ≈{day}⭐ в день",
         "subs_btn_super": "✨ SUPER PRO ✨ — {price} ⭐/мес · ≈{day}⭐ в день",
         "subs_btn_elite": "💎 ELITE 💎 — {price} ⭐/мес · ≈{day}⭐ в день",
@@ -673,7 +674,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ You already have a subscription.",
         "pro_only_alert": "❌ PRO only.",
         "subs_title": "👑 Role Duel Subscriptions",
-        "subs_body": "🔥 PRO (220⭐ per month)\n👉 The balanced starting point for those just getting to know their companion.\n• Styles: ❤️‍🔥 Passionate, ✨ Magnetic\n• Memory: 40 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-15%)\n• +2⚡ energizers every day\n• 💼 1.5x earnings from work\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (500⭐ per month)\n👉 For those who want a lot more features and options.\n• All styles + exclusive 😤 Rough 18+ and 😏 Temptation 18+\n• Switch styles without losing history (/switch_style)\n• Memory: 60 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-25%)\n• +3⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n• 🔥 Strip game 18+ in 🎮 Games\n\n💎 ELITE 💎 (1000⭐ per month)\n👉 For those who chat A LOT.\n• Everything in SUPER PRO\n• Memory: 80 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-40%)\n• +4⚡ energizers every day\n• 💼 2.8x earnings from work\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (350⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n🎁 Get a bonus on your first subscription purchase: 300💵 bucks, 3⚡ energizers and 1 hot scene!\n\n⚠️ Subscriptions do NOT renew automatically.",
+        "subs_body": "🔥 PRO (220⭐ per month)\n👉 The balanced starting point for those just getting to know their companion.\n• 12 personalities, including Playful, Funny, Energetic and Naive\n• Memory: 40 messages\n• XP bonus: x1.8\n• Your companion's energy and satiety drain slower (-15%)\n• +2⚡ energizers every day\n• 💼 1.5x earnings from work\n• 🎰 2 free spins a day\n\n✨ SUPER PRO ✨ (500⭐ per month)\n👉 For those who want a lot more features and options.\n• 17 personalities, including Unfiltered, Aggressive, Cynical and Accommodating\n• Switch styles without losing history (/switch_style)\n• Memory: 60 messages\n• XP bonus: x2.5\n• 🎭 Create your own unique character!\n• Energy and satiety drain even slower (-25%)\n• +3⚡ energizers every day\n• 💼 2x earnings from work\n• 🎰 3 free spins a day\n• 🔕 Mute the bot's notifications\n• 🔥 Strip game 18+ in 🎮 Games\n\n💎 ELITE 💎 (1000⭐ per month)\n👉 For those who chat A LOT.\n• Everything in SUPER PRO and 20 personalities, including Intellectual and Unflappable\n• Memory: 80 messages\n• XP bonus: x3.5\n• Energy and satiety drain to a minimum (-40%)\n• +4⚡ energizers every day\n• 💼 2.8x earnings from work\n• 🎰 5 free spins a day\n• 🔥 5 free hot scenes a day\n• 🎁 Once a week — a free instant wake-up, no energizer needed\n\n⬆️ Upgrade to SUPER PRO (350⭐) — upgrade PRO to SUPER PRO for the remaining time.\n\n🎁 Get a bonus on your first subscription purchase: 300💵 bucks, 3⚡ energizers and 1 hot scene!\n\n⚠️ Subscriptions do NOT renew automatically.",
         "subs_btn_pro": "🔥 PRO — {price} ⭐/month · ≈{day}⭐ a day",
         "subs_btn_super": "✨ SUPER PRO ✨ — {price} ⭐/month · ≈{day}⭐ a day",
         "subs_btn_elite": "💎 ELITE 💎 — {price} ⭐/month · ≈{day}⭐ a day",
@@ -1089,7 +1090,7 @@ TEXTS = {
         "already_subscribed_alert": "❌ Du hast bereits ein Abo.",
         "pro_only_alert": "❌ Nur für PRO.",
         "subs_title": "👑 Role Duel Abos",
-        "subs_body": "🔥 PRO (220⭐ pro Monat)\n👉 Der ausgewogene Einstieg für alle, die ihren Begleiter gerade erst kennenlernen.\n• Stile: ❤️‍🔥 Leidenschaftlich, ✨ Magnetisch\n• Gedächtnis: 40 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-15%)\n• +2⚡ Energydrinks jeden Tag\n• 💼 1.5x Verdienst bei der Arbeit\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (500⭐ pro Monat)\n👉 Für alle, die viele zusätzliche Features und Möglichkeiten wollen.\n• Alle Stile + exklusiv 😤 Rau 18+ und 😏 Verführung 18+\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-25%)\n• +3⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n• 🔥 Strip-Spiel 18+ in 🎮 Spiele\n\n💎 ELITE 💎 (1000⭐ pro Monat)\n👉 Für alle, die SEHR viel chatten.\n• Alles aus SUPER PRO\n• Gedächtnis: 80 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-40%)\n• +4⚡ Energydrinks jeden Tag\n• 💼 2.8x Verdienst bei der Arbeit\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (350⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n🎁 Bei der ersten Abo-Buchung gibt's einen Bonus: 300💵 Bucks, 3⚡ Energydrinks und 1 heiße Szene!\n\n⚠️ Abos verlängern sich NICHT automatisch.",
+        "subs_body": "🔥 PRO (220⭐ pro Monat)\n👉 Der ausgewogene Einstieg für alle, die ihren Begleiter gerade erst kennenlernen.\n• 12 Charaktere, darunter Verspielt, Humorvoll, Energiegeladen und Naiv\n• Gedächtnis: 40 Nachrichten\n• XP-Bonus: x1.8\n• Energie und Sättigung deines Begleiters sinken langsamer (-15%)\n• +2⚡ Energydrinks jeden Tag\n• 💼 1.5x Verdienst bei der Arbeit\n• 🎰 2 Gratisdrehungen pro Tag\n\n✨ SUPER PRO ✨ (500⭐ pro Monat)\n👉 Für alle, die viele zusätzliche Features und Möglichkeiten wollen.\n• 17 Charaktere, darunter Ungefiltert, Aggressiv, Zynisch und Entgegenkommend\n• Stilwechsel ohne Verlust des Verlaufs (/switch_style)\n• Gedächtnis: 60 Nachrichten\n• XP-Bonus: x2.5\n• 🎭 Eigenen Charakter erstellen!\n• Energie und Sättigung sinken noch langsamer (-25%)\n• +3⚡ Energydrinks jeden Tag\n• 💼 2x Verdienst bei der Arbeit\n• 🎰 3 Gratisdrehungen pro Tag\n• 🔕 Benachrichtigungen des Bots stummschalten\n• 🔥 Strip-Spiel 18+ in 🎮 Spiele\n\n💎 ELITE 💎 (1000⭐ pro Monat)\n👉 Für alle, die SEHR viel chatten.\n• Alles aus SUPER PRO und 20 Charaktere, darunter Intellektuell und Unerschütterlich\n• Gedächtnis: 80 Nachrichten\n• XP-Bonus: x3.5\n• Energie und Sättigung sinken auf ein Minimum (-40%)\n• +4⚡ Energydrinks jeden Tag\n• 💼 2.8x Verdienst bei der Arbeit\n• 🎰 5 Gratisdrehungen pro Tag\n• 🔥 5 kostenlose heiße Szenen pro Tag\n• 🎁 Einmal pro Woche — kostenloses sofortiges Aufwecken, kein Energydrink nötig\n\n⬆️ Upgrade auf SUPER PRO (350⭐) — hebt PRO für die Restlaufzeit auf SUPER PRO an.\n\n🎁 Bei der ersten Abo-Buchung gibt's einen Bonus: 300💵 Bucks, 3⚡ Energydrinks und 1 heiße Szene!\n\n⚠️ Abos verlängern sich NICHT automatisch.",
         "subs_btn_pro": "🔥 PRO — {price} ⭐/Monat · ≈{day}⭐ am Tag",
         "subs_btn_super": "✨ SUPER PRO ✨ — {price} ⭐/Monat · ≈{day}⭐ am Tag",
         "subs_btn_elite": "💎 ELITE 💎 — {price} ⭐/Monat · ≈{day}⭐ am Tag",
@@ -1452,6 +1453,15 @@ def call_ai(explicit_model, cache_key, **kwargs):
             response, text = retry, retry_text
     except Exception as e:
         logging.warning(f"Повтор после смешения языков не удался: {e}")
+    if re.search('[а-яА-ЯёЁ]',text) and LATIN_PHRASE_RE.search(text):
+        try:
+            repaired=_call_ai_raw(explicit_model,cache_key,messages=[{'role':'system','content':'Исправь только случайные иностранные вставки в русском тексте: переведи их на русский. Сохрани смысл, стиль, формат и длину. Ничего не добавляй. Верни только исправленный текст.'},{'role':'user','content':text}],temperature=0.2,max_tokens=kwargs.get('max_tokens',750))
+            fixed=repaired.choices[0].message.content or ''
+            if fixed.strip() and not CJK_RE.search(fixed):text=fixed
+        except Exception as exc:logging.warning('Language repair: %s',type(exc).__name__)
+    if re.search('[а-яА-ЯёЁ]',text):
+        fixes={'actually':'на самом деле','literally':'буквально','honestly':'честно','anyway':'в любом случае','because':'потому что','whatever':'как угодно','sometimes':'иногда','really':'правда','maybe':'может быть','sorry':'извини','instead':'вместо этого'}
+        text=re.sub(r'\b(?:'+ '|'.join(fixes)+r')\b',lambda m:fixes[m.group().lower()],text,flags=re.I)
     response.choices[0].message.content = CJK_RE.sub("", text)
     return response
 
@@ -1466,7 +1476,7 @@ def _language_glitch(text):
         return True
     letters = [ch for ch in text if ch.isalpha()]
     cyr = sum(1 for ch in letters if "а" <= ch.lower() <= "я" or ch.lower() == "ё")
-    return bool(letters) and cyr / len(letters) > 0.5 and bool(LATIN_PHRASE_RE.search(text))
+    return bool(letters) and cyr / len(letters) > 0.5 and bool(LATIN_PHRASE_RE.search(text) or re.search(r'\b(?:actually|literally|honestly|anyway|because|whatever|sometimes|really|maybe|sorry|instead)\b',text,re.I))
 
 
 def _call_ai_raw(explicit_model, cache_key, **kwargs):
@@ -1873,11 +1883,17 @@ SUPER_PRO_STYLES = {
     }
 }
 
-STYLES = {**BASE_STYLES, **PRO_STYLES, **SUPER_PRO_STYLES}
-BASE_STYLE_KEYS = ["warm", "daring", "shy"]
-PRO_STYLE_KEYS = ["passionate", "magnetic"]
-SUPER_PRO_STYLE_KEYS = ["rude", "seduction"]
-PREMIUM_STYLE_KEYS = PRO_STYLE_KEYS + SUPER_PRO_STYLE_KEYS
+BASE_STYLES.update(character_options.FREE)
+PRO_STYLES.update(character_options.PRO)
+SUPER_PRO_STYLES.update(character_options.SUPER)
+SUPER_PRO_STYLES['rude'].update(label='Без фильтра',label_en='Unfiltered',label_de='Ungefiltert',emoji='✦',description=character_options.CANDID)
+ELITE_STYLES=character_options.ELITE
+STYLES = {**BASE_STYLES, **PRO_STYLES, **SUPER_PRO_STYLES,**ELITE_STYLES}
+BASE_STYLE_KEYS=list(BASE_STYLES)
+PRO_STYLE_KEYS=list(PRO_STYLES)
+SUPER_PRO_STYLE_KEYS=list(SUPER_PRO_STYLES)
+ELITE_STYLE_KEYS=list(ELITE_STYLES)
+PREMIUM_STYLE_KEYS = PRO_STYLE_KEYS + SUPER_PRO_STYLE_KEYS + ELITE_STYLE_KEYS
 
 # Как черты стиля конкретно звучат в диалогах интим-сцены — обычное STYLES[...]["description"]
 # писалось для сдержанного повседневного чата и само по себе не даёт такого разброса реплик.
@@ -1927,11 +1943,17 @@ XP_BONUS_TEXT_KEY = {"pro": "xp_bonus_pro", "super_pro": "xp_bonus_super", "elit
 
 
 def is_style_unlocked(style_key, user):
+    if style_key in ELITE_STYLE_KEYS:
+        return get_subscription_level(user)=="elite"
     if style_key in SUPER_PRO_STYLE_KEYS:
         return get_subscription_level(user) in ("super_pro", "elite")
     if style_key in PRO_STYLE_KEYS:
         return get_subscription_level(user) in ("pro", "super_pro", "elite")
-    return True
+    return style_key in BASE_STYLE_KEYS
+
+
+def style_required_tier(key):
+    return "ELITE" if key in ELITE_STYLE_KEYS else "SUPER PRO" if key in SUPER_PRO_STYLE_KEYS else "PRO"
 
 
 def style_display_label(style_key, user, with_emoji=True):
@@ -3516,6 +3538,9 @@ LOOKS = {
 
 
 def look_rule(user):
+    custom=character_options.appearance(user,'ru')
+    if custom:
+        return 'Внешность взрослого персонажа: '+custom+'. '+character_options.traits(user)+'\n'
     look = LOOKS.get(user.get("look") or "")
     if not look:
         return ""
@@ -3525,7 +3550,29 @@ def look_rule(user):
             "аксессуары), не в каждом сообщении и не одними и теми же словами.\n")
 
 
+def migrate_character_appearance(user):
+    if user.get('appearance') or not user.get('personality_ready'):return False
+    old=LOOKS.get(user.get('look'),{}).get('en','').lower()
+    value={k:v for k,v in character_options.DEFAULT.items() if k in ('hair_style','hair_color','skin','eyes','accessory')}
+    for word,color in (('black','black'),('pink','pink'),('platinum','silver'),('silver','silver'),('blond','blonde')):
+        if word in old:value['hair_color']=color;break
+    if 'short' in old:value['hair_style']='short'
+    elif 'long' in old:value['hair_style']='long'
+    elif 'bun' in old:value['hair_style']='ponytail'
+    for color in ('green','blue','grey','violet','brown'):
+        if color+' eyes' in old:value['eyes']=color;break
+    user['appearance']=value
+    request_character_portrait(user)
+    return True
+
+
+def photo_appearance(user):
+    return character_options.appearance(user) or LOOKS.get(user.get('look'),{}).get('en','adult anime character')
+
+
 def look_image(user):
+    if user.get('appearance'):
+        return user.get('portrait_url') or '/assets/portrait_'+('male' if user.get('gender')=='male' else 'female')+'.webp'
     return f"/assets/avatar_{user['look']}.jpg" if user.get("look") in LOOKS else None
 
 
@@ -3535,11 +3582,17 @@ def casual_chat_rule(user):
     return 'Use natural conversational language and familiar short forms occasionally, without forcing slang into every sentence. '
 
 
+def character_behavior_rule(user):
+    style=STYLES.get(get_display_style(user),{})
+    tone=(' Текущий характер: '+style.get('description','')) if user.get('style') in ('rude','aggressive') else ''
+    return character_options.traits(user)+tone+' Язык ответа строго соответствует выбранному языку пользователя, без случайных иностранных вставок. '
+
+
 def conversation_mode_rule(user):
     if user.get('scene','phone') == 'phone':
         return ('Это текстовая переписка: только произнесённые реплики. Никаких описаний действий, '
-                'жестов, мимики, обстановки, звёздочек или сценических ремарок. Вы общаетесь на расстоянии в мессенджере: не утверждай, что собеседник уже видит тебя рядом. Просьба показать себя — это просьба прислать фото. ' + casual_chat_rule(user))
-    return 'Это ролевая история: минимум два подробных действия в звёздочках, связанные с текущей сценой, и живые реплики. Не описывай действия пользователя за него. ' + casual_chat_rule(user)
+                'жестов, мимики, обстановки, звёздочек или сценических ремарок. Вы общаетесь на расстоянии в мессенджере: не утверждай, что собеседник уже видит тебя рядом. Просьба показать себя — это просьба прислать фото. ' + casual_chat_rule(user)+character_behavior_rule(user))
+    return 'Это ролевая история: минимум два подробных действия в звёздочках, связанные с текущей сценой, и живые реплики. Не описывай действия пользователя за него. ' + casual_chat_rule(user)+character_behavior_rule(user)
 
 
 def clean_chat_reply(text, user):
@@ -4057,7 +4110,7 @@ async def choose_style(call: types.CallbackQuery):
         return
     if not is_style_unlocked(style_key, user):
         label = style_display_label(style_key, user, with_emoji=False)
-        required = "SUPER PRO" if style_key in SUPER_PRO_STYLE_KEYS else "PRO/SUPER PRO"
+        required = style_required_tier(style_key)
         await call.answer(get_text(user, "style_locked_alert", label=label, tier=required), show_alert=True)
         return
 
@@ -4137,6 +4190,9 @@ async def switch_style(call: types.CallbackQuery):
         return
     if get_subscription_level(user) not in ("super_pro", "elite"):
         await call.answer(get_text(user, "super_pro_only"), show_alert=True)
+        return
+    if not is_style_unlocked(style,user):
+        await call.answer(get_text(user,'style_unavailable'),show_alert=True)
         return
     user["style"] = style
     save_data(user_data)
@@ -14243,7 +14299,7 @@ SPIN_PAGE_HTML = r'''<!doctype html>
   }
   function fx(kind) {
     if (window.RDSFX && window.RDSFX.sample) {
-      if(sfxOn) (window.RDSFX.game||window.RDSFX.sample)(({coin:'deliver',good:'unlock',wire:'wire',lane:'counter',over:'loss',harvest:'deliver',power:'win',shatter:'shatter',car:'start',rocket:'start',plant:'drop',silver:'win',gold:'win',rainbow:'win'})[kind] || kind);
+      if(sfxOn) (window.RDSFX.game||window.RDSFX.sample)(({coin:'deliver',good:'unlock',wire:'wire',lane:'counter',over:'loss',harvest:'harvest',power:'win',shatter:'shatter',car:'start',rocket:'start',plant:'soil',silver:'win',gold:'win',rainbow:'win'})[kind] || kind);
       haptic(kind);return;
     }
 
@@ -15083,6 +15139,10 @@ WORK_PAGE_HTML = r'''<!doctype html>
   .lock-pin:before{content:'';position:absolute;left:10px;right:10px;bottom:4px;height:calc(20px + var(--lift,0) * .34px);background:linear-gradient(90deg,#b9ac82,#efe3b9,#938763);border-radius:4px;box-shadow:0 -12px 0 -3px #746c56;transition:height .08s}
   .lock-pin.active{outline:2px solid #e7c46b;box-shadow:0 0 12px #e7c46b33}.lock-pin.set{background:#214c3c;transform:none;box-shadow:none;color:#b8f3cd}.lock-pin span{position:absolute;left:3px;top:0;font:11px system-ui}
   #lock-tension,#lock-lift{width:100%;height:40px;accent-color:#d4b96d;touch-action:pan-y}#hacker-lock label{display:block;font-size:13px;color:#d8cba8}#lock-feedback{min-height:44px;font-size:13px;color:#e8d5a2;margin:8px 0}#lock-health{font-size:12px;color:#d1bac6}
+
+  #hacker-lock{width:100%;max-width:330px}#lock-face{position:relative;width:230px;height:230px;max-width:90%;margin:0 auto;touch-action:none;border-radius:50%;outline:none}#lock-cylinder{width:100%;height:100%;object-fit:contain;transform-origin:50% 50%;pointer-events:none}#lock-pick{position:absolute;left:50%;bottom:50%;height:110px;width:5px;border-radius:3px;background:linear-gradient(90deg,#777,#eee,#555);transform-origin:50% 100%;pointer-events:none;box-shadow:0 0 3px #000}#lock-wrench{position:absolute;width:110px;height:9px;left:50%;top:50%;transform-origin:0 50%;background:linear-gradient(#d4b54b,#574932);border-radius:3px;pointer-events:none}#lock-angle{width:100%;height:35px;accent-color:#c3a865}#lock-feedback{min-height:44px}#hacker-lock-btn{touch-action:none;user-select:none}
+  #courier-road{height:min(58vh,490px);min-height:340px;background:repeating-linear-gradient(0deg,transparent 0 26px,#d9d3a955 26px 49px,transparent 49px 80px) 35% 0/2px 80px repeat-y,repeating-linear-gradient(0deg,transparent 0 26px,#d9d3a955 26px 49px,transparent 49px 80px) 65% 0/2px 80px repeat-y,#303342;border-left:13px solid #84715c;border-right:13px solid #84715c;touch-action:none;overflow:hidden;position:relative}#courier-rider{position:absolute!important;width:52px;height:94px;left:50%;top:auto!important;bottom:48px;transform:translateX(-50%)!important;font-size:0!important;transition:left .14s ease;z-index:4}#courier-rider img{width:100%;height:100%;object-fit:contain;pointer-events:none}#courier-controls{display:flex;gap:10px}#courier-updown{display:flex;gap:10px;flex:1}.vertical-traffic{position:absolute;top:-70px;transform:translateX(-50%);width:44px;height:66px;border-radius:11px;z-index:2}.vertical-traffic.obstacle{background:linear-gradient(90deg,#6e4879,#c39ab5,#654276);box-shadow:0 3px 8px #0008;border:2px solid #d8bdca}.vertical-traffic.obstacle:before,.vertical-traffic.obstacle:after{content:'';position:absolute;left:6px;right:6px;height:13px;background:#151b2e;border-radius:4px;top:11px}.vertical-traffic.obstacle:after{top:auto;bottom:10px}.vertical-traffic.delivery{width:56px;height:66px;background:#397b6266;outline:2px dashed #7ae4a7;box-shadow:0 0 18px #68cb7d44}.vertical-traffic.delivery img{width:100%;height:100%;object-fit:contain}.vertical-traffic.delivered{opacity:0;transition:opacity .2s}.vertical-traffic.light{width:100%;height:12px;outline:3px dashed #ff7889;background:#fc657a33}.traffic-red{position:absolute;left:4px;top:-22px;width:19px;height:19px;border-radius:50%;background:#fb526f;box-shadow:0 0 12px #fb526f}.vertical-traffic.light.green{outline-color:#7ee0a5;background:#75db9c22}.vertical-traffic.light.green .traffic-red{background:#7ee0a5;box-shadow:0 0 10px #7ee0a5}#courier-feedback{min-height:25px;text-align:center;color:#bfb0cf}#courier-road .courier-tree-zone,#courier-road .courier-lane{display:none}
+  .catch-item .sprite{width:52px;height:52px;object-fit:contain}.farm-plant .sprite{width:100%;height:100%;object-fit:contain}#catch-basket .sprite{width:70px;height:50px;object-fit:contain}
   #hacker-wires-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
   .hacker-wire-col { position: absolute; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-around; }
   #hacker-wires-left { left: 0; }
@@ -15560,6 +15620,13 @@ WORK_PAGE_HTML = r'''<!doctype html>
     word-break: break-word;
     opacity: .85;
   }
+
+  #hacker-lock{width:100%;max-width:330px}#lock-face{position:relative;width:230px;height:230px;max-width:90%;margin:0 auto;touch-action:none;border-radius:50%;outline:none}#lock-cylinder{width:100%;height:100%;object-fit:contain;transform-origin:50% 50%;pointer-events:none}#lock-pick{position:absolute;left:50%;bottom:50%;height:110px;width:5px;border-radius:3px;background:linear-gradient(90deg,#777,#eee,#555);transform-origin:50% 100%;pointer-events:none;box-shadow:0 0 3px #000}#lock-wrench{position:absolute;width:110px;height:9px;left:50%;top:50%;transform-origin:0 50%;background:linear-gradient(#d4b54b,#574932);border-radius:3px;pointer-events:none}#lock-angle{width:100%;height:35px;accent-color:#c3a865}#lock-feedback{min-height:44px}#hacker-lock-btn{touch-action:none;user-select:none}
+  #courier-road{height:min(58vh,490px);min-height:340px;background:repeating-linear-gradient(0deg,transparent 0 26px,#d9d3a955 26px 49px,transparent 49px 80px) 35% 0/2px 80px repeat-y,repeating-linear-gradient(0deg,transparent 0 26px,#d9d3a955 26px 49px,transparent 49px 80px) 65% 0/2px 80px repeat-y,#303342;border-left:13px solid #84715c;border-right:13px solid #84715c;touch-action:none;overflow:hidden;position:relative}#courier-rider{position:absolute!important;width:52px;height:94px;left:50%;top:auto!important;bottom:48px;transform:translateX(-50%)!important;font-size:0!important;transition:left .14s ease;z-index:4}#courier-rider img{width:100%;height:100%;object-fit:contain;pointer-events:none}#courier-controls{display:flex;gap:10px}#courier-updown{display:flex;gap:10px;flex:1}.vertical-traffic{position:absolute;top:-70px;transform:translateX(-50%);width:44px;height:66px;border-radius:11px;z-index:2}.vertical-traffic.obstacle{background:linear-gradient(90deg,#6e4879,#c39ab5,#654276);box-shadow:0 3px 8px #0008;border:2px solid #d8bdca}.vertical-traffic.obstacle:before,.vertical-traffic.obstacle:after{content:'';position:absolute;left:6px;right:6px;height:13px;background:#151b2e;border-radius:4px;top:11px}.vertical-traffic.obstacle:after{top:auto;bottom:10px}.vertical-traffic.delivery{width:56px;height:66px;background:#397b6266;outline:2px dashed #7ae4a7;box-shadow:0 0 18px #68cb7d44}.vertical-traffic.delivery img{width:100%;height:100%;object-fit:contain}.vertical-traffic.delivered{opacity:0;transition:opacity .2s}.vertical-traffic.light{width:100%;height:12px;outline:3px dashed #ff7889;background:#fc657a33}.traffic-red{position:absolute;left:4px;top:-22px;width:19px;height:19px;border-radius:50%;background:#fb526f;box-shadow:0 0 12px #fb526f}.vertical-traffic.light.green{outline-color:#7ee0a5;background:#75db9c22}.vertical-traffic.light.green .traffic-red{background:#7ee0a5;box-shadow:0 0 10px #7ee0a5}#courier-feedback{min-height:25px;text-align:center;color:#bfb0cf}#courier-road .courier-tree-zone,#courier-road .courier-lane{display:none}
+  .catch-item .sprite{width:52px;height:52px;object-fit:contain}.farm-plant .sprite{width:100%;height:100%;object-fit:contain}#catch-basket .sprite{width:70px;height:50px;object-fit:contain}
+
+#courier-road{background:#2b2e3b!important;background-image:none!important;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}#courier-road:before,#courier-road:after{content:'';position:absolute;top:-80px;bottom:-80px;width:2px;left:35%;pointer-events:none;background:repeating-linear-gradient(0deg,#e6dfbd88 0 25px,transparent 25px 62px);background-position:0 var(--road-scroll,0px);z-index:0}#courier-road:after{left:65%}#courier-rider{width:66px!important;height:116px!important;background:transparent!important;opacity:1!important;isolation:isolate}#courier-rider.stopped{filter:none!important;opacity:1!important;animation:none!important}#courier-rider img{pointer-events:none;user-select:none;transform:none!important;background:transparent!important;filter:drop-shadow(0 4px 3px #0005)}#courier-controls{display:grid!important;grid-template-columns:1fr 1fr;gap:10px;align-items:center;margin:10px 0}#courier-updown{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}#courier-controls button,#courier-controls #courier-stop-btn{font-size:14px!important;line-height:1.2!important;padding:9px 6px!important;width:100%!important;height:46px!important;min-height:46px!important;border-radius:13px!important;box-shadow:0 3px 10px #0003!important;letter-spacing:0!important}#courier-controls #courier-stop-btn{background:linear-gradient(135deg,#7451a2,#b2639a)!important;color:#fff!important;border:1px solid #cda2d366!important}#courier-updown button{background:#233346!important;border:1px solid #647b9766!important;color:#c8d9ef!important}#courier-feedback{font-size:12px!important;color:#c9bdd8!important}#courier-road img::selection{background:transparent}
+#hacker-mode button{font-size:12px;padding:5px 9px;margin-left:8px;border-radius:8px;background:#18322b;color:#b5f4d6;border:1px solid #4e977d}.catch-item.big-hazard .sprite,.catch-item.rocket .sprite{width:100%;height:100%;object-fit:contain}
 </style>
 </head>
 <body>
@@ -15583,7 +15650,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       <div id="hacker-code"></div>
       <div id="hacker-keyboard"></div>
       <div id="hacker-wires"><svg id="hacker-wires-svg"></svg><div class="hacker-wire-col" id="hacker-wires-left"></div><div class="hacker-wire-col" id="hacker-wires-right"></div></div>
-      <div id="hacker-lock"><div id="hacker-lock-pins"></div><p id="lock-feedback" aria-live="polite"></p><label id="lock-tension-label" for="lock-tension"></label><input id="lock-tension" type="range" min="0" max="100" value="0"><label id="lock-lift-label" for="lock-lift"></label><input id="lock-lift" type="range" min="0" max="100" value="0"><p id="lock-health"></p><button id="hacker-lock-btn" type="button"></button></div>
+      <div id="hacker-lock"><div id="lock-face" tabindex="0" role="slider" aria-label="Угол отмычки" aria-valuemin="-80" aria-valuemax="80"><img src="/assets/lock_face.webp" alt="" id="lock-cylinder"><div id="lock-pick"></div><div id="lock-wrench"></div></div><p id="lock-feedback" aria-live="polite"></p><input id="lock-angle" type="range" min="-80" max="80" value="0" aria-label="Угол отмычки"><p id="lock-health"></p><button id="hacker-lock-btn" type="button"></button></div>
     </div>
     <div id="clicker-feedback"></div>
   </div>
@@ -15591,7 +15658,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   <div id="game-catch" class="game-panel">
     <div id="catch-hint"></div>
     <div id="catch-field">
-      <div id="catch-basket">🧺</div>
+      <div id="catch-basket"><img class="sprite" src="/assets/catch_basket.webp" alt=""></div>
     </div>
     <div id="catch-feedback"></div>
   </div>
@@ -15833,17 +15900,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var SPRITE_KEYS = [];
   var PERSON_KEYS = ["person_wave", "person_coffee", "person_arms", "person_point"];
   var SPRITES = {};
-  function setSprite(el, key, fallbackText) {
-    if (SPRITES[key]) {
-      var c = SPRITES[key].cloneNode();
-      c.className = "sprite";
-      c.draggable = false;
-      el.textContent = "";
-      el.appendChild(c);
-    } else {
-      el.textContent = fallbackText;
-    }
-  }
+  function setSprite(el,key,fallbackText){var image=document.createElement('img');image.className='sprite';image.src='/assets/'+key+'.png';image.alt='';image.draggable=false;el.textContent='';el.appendChild(image);}
   var spritesPending = SPRITE_KEYS.length;
   SPRITE_KEYS.forEach(function (k) {
     var img = new Image();
@@ -16011,7 +16068,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
   function fx(kind) {
     if (window.RDSFX && window.RDSFX.sample) {
-      if(sfxOn) (window.RDSFX.game||window.RDSFX.sample)(({coin:'deliver',good:'unlock',wire:'wire',lane:'counter',over:'loss',harvest:'deliver',power:'win',shatter:'shatter',car:'start',rocket:'start',plant:'drop',silver:'win',gold:'win',rainbow:'win'})[kind] || kind);
+      if(sfxOn) (window.RDSFX.game||window.RDSFX.sample)(({coin:'deliver',good:'unlock',wire:'wire',lane:'counter',over:'loss',harvest:'harvest',power:'win',shatter:'shatter',car:'start',rocket:'start',plant:'soil',silver:'win',gold:'win',rainbow:'win'})[kind] || kind);
       haptic(kind);return;
     }
 
@@ -16160,6 +16217,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
 
   function stopAllGames() {
+    courierRun=null;
     stopLockpick();
     if (catchSpawnInterval) { clearInterval(catchSpawnInterval); catchSpawnInterval = null; }
     if (catchRafId) { cancelAnimationFrame(catchRafId); catchRafId = null; }
@@ -16243,13 +16301,16 @@ WORK_PAGE_HTML = r'''<!doctype html>
     return digits;
   }
 
+  var hackerVariant='normal',hackerHidden=false,hackerRound=0;
   function renderHackerCode() {
     var el = document.getElementById("hacker-code");
     el.innerHTML = "";
-    hackerCode.forEach(function (digit, i) {
+    var shown=hackerVariant==='reverse'?hackerCode.slice().reverse():hackerCode;
+    shown.forEach(function (digit, i) {
+      var actual=hackerVariant==='reverse'?hackerCode.length-1-i:i;
       var chip = document.createElement("div");
-      chip.className = "hacker-code-digit" + (i < hackerCodeIndex ? " done" : (i === hackerCodeIndex ? " active" : ""));
-      chip.textContent = String(digit);
+      chip.className = "hacker-code-digit" + (actual < hackerCodeIndex ? " done" : (actual === hackerCodeIndex ? " active" : ""));
+      chip.textContent = hackerHidden&&actual>=hackerCodeIndex?'·':String(digit);
       el.appendChild(chip);
     });
   }
@@ -16257,8 +16318,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function newHackerCode() {
     var length = HACKER_CODE_MIN_LENGTH + Math.floor(Math.random() * HACKER_CODE_RANGE);
     hackerCode = shuffledDigits().slice(0, length);
-    hackerCodeIndex = 0;
+    hackerCodeIndex = 0;hackerRound++;var token=hackerRound;hackerVariant=Math.random()<.3?'memory':Math.random()<.4?'reverse':'normal';hackerHidden=false;
+    if(hackerVariant==='reverse')hackerCode.reverse();
     renderHackerCode();
+    var head=document.getElementById('hacker-mode');head.textContent=hackerVariant==='memory'?(state.lang==='ru'?'Запомни код':state.lang==='de'?'Code merken':'Remember the code'):hackerVariant==='reverse'?(state.lang==='ru'?'Введи справа налево':state.lang==='de'?'Von rechts nach links':'Enter right to left'):state.ui.hack_mode_code;
+    if(hackerVariant==='memory'){var peek=document.createElement('button');peek.type='button';peek.textContent=state.lang==='ru'?'Показать':state.lang==='de'?'Zeigen':'Show';peek.onclick=function(){hackerHidden=false;renderHackerCode();setTimeout(function(){if(token===hackerRound){hackerHidden=true;renderHackerCode();}},2300);};head.appendChild(peek);setTimeout(function(){if(token===hackerRound&&hackerMode==='code'){hackerHidden=true;renderHackerCode();}},3200);}
+
   }
 
   function buildHackerKeyboard() {
@@ -16284,7 +16349,6 @@ WORK_PAGE_HTML = r'''<!doctype html>
     setTimeout(function () { keyEl.classList.remove("pressed"); }, 100);
     if (digit === hackerCode[hackerCodeIndex]) {
       keyEl.classList.add("correct");
-      fx("good");
       setTimeout(function () { keyEl.classList.remove("correct"); }, 300);
       hackerCodeIndex++;
       renderHackerCode();
@@ -16327,57 +16391,33 @@ WORK_PAGE_HTML = r'''<!doctype html>
     }
   }
 
-  // Pin tumbler simulation: discover the binding pin, hold light torque, lift to its shear point.
+  // Front-facing lock: choose a pick angle, hold torque, read how far the cylinder yields.
   var lockState=null;
-  function lockText(ru,en,de){return state.lang==='ru'?ru:(state.lang==='de'?de:en);}
+  function lockText(ru,en,de){return state.lang==='ru'?ru:state.lang==='de'?de:en;}
   function lockSound(kind){if(sfxOn&&window.RDSFX)RDSFX.game(kind);}
   function lockMessage(text){document.getElementById('lock-feedback').textContent=text;}
+  function setPickAngle(value){if(!lockState)return;lockState.angle=Math.max(-80,Math.min(80,value));lockState.strain=0;document.getElementById('lock-angle').value=lockState.angle;document.getElementById('lock-pick').style.transform='translateX(-50%) rotate('+lockState.angle+'deg)';document.getElementById('lock-face').setAttribute('aria-valuenow',Math.round(lockState.angle));}
   function startLockpick(){
-    document.getElementById('hacker-lock').classList.add('active');
-    var count=4+Math.floor(Math.random()*2),order=[];for(var i=0;i<count;i++)order.push(i);
-    order=shuffleArray(order);
-    lockState={pins:count,targets:order.map(function(){return 28+Math.floor(Math.random()*48);}),order:order,set:[],selected:0,lifts:Array(count).fill(0),tension:0,health:3,overset:false};
-    document.getElementById('lock-tension').value=0;document.getElementById('lock-lift').value=0;
-    document.getElementById('lock-tension-label').textContent=lockText('Натяжение — лёгкое, не силой','Tension — light pressure, no force','Spannung — leicht, ohne Gewalt');
-    document.getElementById('lock-lift-label').textContent=lockText('Подъём выбранного пина','Lift selected pin','Ausgewählten Stift anheben');
-    document.getElementById('hacker-lock-btn').textContent=lockText('Проверить пин','Probe pin','Stift prüfen');
-    lockMessage(lockText('Выбери пин. Создай лёгкое натяжение, найди упирающийся пин и подними его до щелчка.','Choose a pin. Apply light tension, find the binding pin and lift it to the click.','Wähle einen Stift. Spanne leicht, finde den klemmenden Stift und hebe ihn bis zum Klicken.'));
-    renderLockPins();
+    document.getElementById('hacker-lock').classList.add('active');lockState={angle:0,target:-58+Math.random()*116,progress:0,strain:0,health:3,turning:false,last:performance.now(),raf:null};
+    setPickAngle(0);document.getElementById('hacker-lock-btn').textContent=lockText('Удерживай, чтобы повернуть','Hold to turn','Zum Drehen halten');
+    lockMessage(lockText('Двигай отмычку по замку, затем удерживай поворот. Чем дальше поворачивается — тем ближе нужный угол.','Move the pick over the lock, then hold to turn. More rotation means a better angle.','Bewege den Dietrich und halte zum Drehen. Mehr Drehung bedeutet einen besseren Winkel.'));lockTick(performance.now());
   }
-  function renderLockPins(){
-    if(!lockState)return;var box=document.getElementById('hacker-lock-pins');box.innerHTML='';
-    for(var i=0;i<lockState.pins;i++){(function(index){var pin=document.createElement('button');pin.type='button';pin.className='lock-pin'+(lockState.set.indexOf(index)>=0?' set':'')+(lockState.selected===index?' active':'');pin.style.setProperty('--lift',lockState.lifts[index]);pin.setAttribute('aria-label',lockText('Пин ','Pin ','Stift ')+(index+1));var label=document.createElement('span');label.textContent=index+1;pin.appendChild(label);pin.onclick=function(){if(!lockState)return;lockState.selected=index;document.getElementById('lock-lift').value=lockState.lifts[index];renderLockPins();lockFeel();};box.appendChild(pin);})(i);}
-    document.getElementById('lock-health').textContent=lockText('Прочность отмычки: ','Pick durability: ','Haltbarkeit: ')+lockState.health+'/3 · '+lockState.set.length+'/'+lockState.pins;
+  function lockTick(now){
+    var st=lockState;if(!st)return;var dt=Math.min(.05,(now-st.last)/1000);st.last=now;
+    if(st.turning){var distance=Math.abs(st.angle-st.target),limit=distance<19?100:Math.max(7,100-(distance-19)*2.8);st.progress=Math.min(limit,st.progress+dt*125);
+      if(distance<19){lockMessage(lockText('Поддаётся — держи!','It is turning — keep holding!','Es dreht sich — weiter halten!'));st.strain=0;}
+      else if(st.progress>=limit){st.strain+=dt;lockMessage(distance<34?lockText('Почти. Чуть измени угол.','Almost. Adjust the angle a little.','Fast. Winkel etwas ändern.'):lockText('Упирается. Отпусти и поищи другой угол.','It binds. Release and try another angle.','Es klemmt. Loslassen und Winkel ändern.'));}
+      if(st.strain>1.6){st.health--;st.strain=0;st.turning=false;lockSound('pinbreak');haptic('warning');if(st.health<=0){stopLockpick();triggerDebuff('clicker','clicker-feedback','hacker-lock',100,100,document.getElementById('hacker-terminal'));return;}}
+      if(st.progress>=100){lockSound('unlock');haptic('success');stopLockpick();setTimeout(finishHackerCombo,180);return;}
+    }else st.progress=Math.max(0,st.progress-dt*160);
+    document.getElementById('lock-cylinder').style.transform='rotate('+(st.progress*.8)+'deg)';document.getElementById('lock-wrench').style.transform='rotate('+(st.progress*.8)+'deg)';document.getElementById('lock-health').textContent=lockText('Отмычки: ','Picks: ','Dietriche: ')+st.health+'/3';st.raf=requestAnimationFrame(lockTick);
   }
-  function stopLockpick(){lockState=null;}
-  function lockFeel(){
-    if(!lockState)return;var st=lockState,pin=st.selected;
-    if(st.overset){lockMessage(lockText('Пин поднят слишком высоко. Полностью отпусти натяжение.','Overset pin. Fully release tension.','Stift zu hoch. Spannung vollständig lösen.'));return;}
-    if(st.set.indexOf(pin)>=0){lockMessage(lockText('Этот пин уже зафиксирован.','This pin is already set.','Dieser Stift sitzt bereits.'));return;}
-    if(st.tension<22){lockMessage(lockText('Натяжения мало — пины возвращаются пружиной.','Not enough tension — the springs push pins back.','Zu wenig Spannung — die Federn drücken die Stifte zurück.'));return;}
-    if(st.tension>62){lockMessage(lockText('Слишком сильное натяжение. Металл скрипит.','Too much tension. The metal is creaking.','Zu viel Spannung. Das Metall knirscht.'));return;}
-    if(pin!==st.order[st.set.length]){lockMessage(lockText('Пин пружинит свободно. Поищи другой, который упирается.','This pin springs freely. Find a binding pin.','Dieser Stift federt frei. Suche einen klemmenden Stift.'));return;}
-    var distance=st.targets[pin]-st.lifts[pin];
-    lockMessage(distance>12?lockText('Этот пин упирается. Аккуратно подними выше.','This pin binds. Lift it gently.','Dieser Stift klemmt. Vorsichtig höher heben.'):distance>5?lockText('Сопротивление ослабевает — почти у линии среза.','Resistance is easing — close to the shear line.','Der Widerstand lässt nach — nahe der Scherlinie.'):distance>=-5?lockText('Тихий щелчок. Можно зафиксировать.','A quiet click. You can set the pin.','Ein leises Klicken. Stift kann gesetzt werden.'):lockText('Слишком высоко — опусти немного.','Too high — lower it a little.','Zu hoch — etwas absenken.'));
-  }
-  function pressLockpick(){
-    if(!lockState||debuffState.clicker)return;var st=lockState,pin=st.selected;
-    if(st.overset||st.set.indexOf(pin)>=0){lockFeel();return;}
-    if(st.tension>62){st.health--;st.overset=true;lockSound('pinbreak');haptic('heavy');}
-    else if(st.tension<22||pin!==st.order[st.set.length]){lockSound('pin');lockFeel();return;}
-    else if(st.lifts[pin]>st.targets[pin]+8){st.health--;st.overset=true;lockSound('pinbreak');haptic('warning');}
-    else if(Math.abs(st.targets[pin]-st.lifts[pin])<=5){st.set.push(pin);lockSound('pin');haptic('medium');renderLockPins();
-      if(st.set.length===st.pins){lockSound('unlock');stopLockpick();setTimeout(finishHackerCombo,240);return;}
-      lockMessage(lockText('Пин зафиксирован. Найди следующий упирающийся.','Pin set. Find the next binding pin.','Stift sitzt. Finde den nächsten klemmenden Stift.'));return;
-    }else{lockSound('pin');lockFeel();return;}
-    renderLockPins();
-    if(st.health<=0){var btn=document.getElementById('hacker-lock-btn');stopLockpick();triggerDebuff('clicker','clicker-feedback','hacker-lock',btn.offsetLeft+btn.offsetWidth/2,btn.offsetTop,document.getElementById('hacker-terminal'));}
-    else lockFeel();
-  }
-  document.getElementById('hacker-lock-btn').onclick=pressLockpick;
-  document.getElementById('lock-tension').oninput=function(){if(!lockState)return;lockState.tension=Number(this.value);if(lockState.tension<8){lockState.set=[];lockState.overset=false;lockState.lifts.fill(0);document.getElementById('lock-lift').value=0;}renderLockPins();lockFeel();};
-  var lastLockProbe=0;
-  document.getElementById('lock-lift').oninput=function(){if(!lockState)return;lockState.lifts[lockState.selected]=Number(this.value);renderLockPins();lockFeel();if(Date.now()-lastLockProbe>180){lastLockProbe=Date.now();lockSound('pin');haptic('select');}};
+  function stopLockpick(){if(lockState&&lockState.raf)cancelAnimationFrame(lockState.raf);lockState=null;}
+  function pressLockpick(){if(lockState&&!debuffState.clicker){lockState.turning=true;lockSound('pin');}}
+  var turnButton=document.getElementById('hacker-lock-btn');turnButton.onpointerdown=function(e){e.preventDefault();turnButton.setPointerCapture(e.pointerId);pressLockpick();};turnButton.onpointerup=turnButton.onpointercancel=function(){if(lockState)lockState.turning=false;};turnButton.onkeydown=function(e){if(e.key===' '||e.key==='Enter'){e.preventDefault();pressLockpick();}};turnButton.onkeyup=function(){if(lockState)lockState.turning=false;};
+  document.getElementById('lock-angle').oninput=function(){setPickAngle(Number(this.value));};
+  var lockFace=document.getElementById('lock-face');function movePick(e){var r=lockFace.getBoundingClientRect();setPickAngle(Math.atan2(e.clientX-r.left-r.width/2,-(e.clientY-r.top-r.height/2))*180/Math.PI);}
+  lockFace.onpointerdown=function(e){e.preventDefault();lockFace.setPointerCapture(e.pointerId);movePick(e);};lockFace.onpointermove=function(e){if(lockFace.hasPointerCapture(e.pointerId))movePick(e);};lockFace.onkeydown=function(e){if(!lockState)return;if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();setPickAngle(lockState.angle+(e.key==='ArrowLeft'?-4:4));}};
 
   // ---------- Order (drag basket) ----------
   function fieldPctFromClientX(field, clientX) {
@@ -16413,6 +16453,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function appendFallingItem(field, x, className, text, dataset, sprite) {
     var item = document.createElement("div");
     item.className = className;
+    if(!sprite&&(className.indexOf('rocket')>=0||className.indexOf('big-hazard')>=0))sprite='catch_bighazard';
     if (sprite) setSprite(item, sprite, text); else item.textContent = text;
     Object.keys(dataset || {}).forEach(function (k) { item.dataset[k] = dataset[k]; });
     item.style.left = x + "%";
@@ -16657,304 +16698,45 @@ WORK_PAGE_HTML = r'''<!doctype html>
     catchCollisionTick();
   }
 
-  // ---------- Courier ----------
-  function setCourierLane(lane) {
-    var prevLane = courierLane;
-    courierLane = Math.max(0, Math.min(2, lane));
-    if (courierLane !== prevLane) fx("lane");
-    var rider = document.getElementById("courier-rider");
-    if (rider) rider.style.top = COURIER_LANE_Y[courierLane] + "px";
-    var upBtn = document.getElementById("courier-up");
-    var downBtn = document.getElementById("courier-down");
-    if (upBtn) upBtn.disabled = courierLane === 0;
-    if (downBtn) downBtn.disabled = courierLane === 2;
+  // Vertical courier: lanes, speed, delivery stops and traffic lights.
+  var courierRun=null;
+  function courierWords(ru,en,de){return state.lang==='ru'?ru:state.lang==='de'?de:en;}
+  function setCourierLane(lane){courierLane=Math.max(0,Math.min(2,lane));var rider=document.getElementById('courier-rider');rider.style.left=(20+courierLane*30)+'%';if(courierRun)courierRun.lane=courierLane;fx('lane');}
+  function courierHUD(){if(!courierRun)return;document.getElementById('courier-feedback').textContent=courierWords('Доставок: ','Deliveries: ','Lieferungen: ')+courierRun.delivered+' · '+courierWords('Скорость ','Speed ','Tempo ')+courierRun.speed+'/3'+(courierRun.stopped?' · '+courierWords('СТОП','STOP','STOPP'):'');document.getElementById('courier-rider').classList.toggle('stopped',courierRun.stopped);}
+  function pressCourierStopline(){if(!courierRun)return;courierRun.stopped=!courierRun.stopped;courierHUD();haptic('medium');}
+  function spawnCourierTraffic(){
+    var run=courierRun;if(!run)return;var road=document.getElementById('courier-road'),type=(run.spawned%4===1?'delivery':run.spawned%8===6?'light':'obstacle'),lane=Math.floor(Math.random()*3);run.spawned++;
+    var node=document.createElement('div');node.className='vertical-traffic '+type;node.dataset.lane=lane;node.style.left=(20+lane*30)+'%';
+    if(type==='delivery'){var image=document.createElement('img');image.src='/assets/courier_parcel.png';image.alt='';node.appendChild(image);}
+    else if(type==='light'){node.innerHTML='<span class="traffic-red"></span>';node.style.left='50%';}
+    else node.innerHTML='<i></i><i></i>';
+    road.appendChild(node);run.objects.push({node:node,y:-65,lane:lane,type:type,served:false,hold:0});
   }
-
-  function setCourierProgress() {
-    var fill = document.getElementById("courier-progress-fill");
-    var pct = courierRecipientsTotal > 0 ? (courierRecipientsDelivered / courierRecipientsTotal) * 100 : 0;
-    if (fill) fill.style.width = Math.min(100, pct) + "%";
-  }
-
-  function startCourierLeg() {
-    courierRecipientsTotal = 4 + Math.floor(Math.random() * 4); // 4..7 people per leg
-    courierRecipientsDelivered = 0;
-    setCourierProgress();
-  }
-
-  // Доставили нужное число людей -- короткая анимация "забрал новую посылку" и едем дальше, уже
-  // без отзеркаливания (раньше тут был courierFacingLeft) -- просто новый отрезок пути.
-  function completeCourierLeg() {
-    var rider = document.getElementById("courier-rider");
-    var feedback = document.getElementById("courier-feedback");
-    if (feedback) {
-      var text = "";
-      feedback.textContent = text;
-      feedback.className = "arrived";
-      setTimeout(function () {
-        if (feedback.textContent === text) { feedback.textContent = ""; feedback.className = ""; }
-      }, 1500);
-    }
-    if (rider) rider.classList.add("arriving");
-    if (courierSpawnInterval) { clearInterval(courierSpawnInterval); courierSpawnInterval = null; }
-    courierArrivalTimeoutId = setTimeout(function () {
-      courierArrivalTimeoutId = null;
-      if (rider) rider.classList.remove("arriving");
-      startCourierLeg();
-      courierSpawnInterval = setInterval(spawnCourierTraffic, 900);
-    }, 900);
-  }
-
-  function spawnCourierTraffic() {
-    var road = document.getElementById("courier-road");
-    if (!road) return;
-    var spawnRecipient = courierRecipientsDelivered < courierRecipientsTotal
-      && Math.random() < COURIER_RECIPIENT_CHANCE;
-    // Честность: не даём препятствиям занять ОБЕ полосы одновременно -- иначе можно оказаться
-    // без единого безопасного варианта (баг "дохуя преград, нереально пройти"). Получателей это
-    // не касается -- они не опасны, можно ставить в любую полосу даже если там уже препятствие
-    // (просто одно из двух не достанется, без штрафа).
-    var lane;
-    if (spawnRecipient) {
-      // Получатель стоит на обочине сверху (забрать из верхней полосы) или снизу (из нижней).
-      lane = Math.random() < 0.5 ? 0 : 2;
-    } else {
-      var occupied = {};
-      road.querySelectorAll(".courier-obstacle").forEach(function (el) { occupied[el.dataset.lane] = true; });
-      var freeLanes = [0, 1, 2].filter(function (l) { return !occupied[l]; });
-      if (freeLanes.length === 0) return; // все полосы заняты -- пропускаем тик
-      lane = freeLanes[Math.floor(Math.random() * freeLanes.length)];
-    }
-    var el = document.createElement("div");
-    el.dataset.lane = String(lane);
-    var edgeY = lane === 0 ? COURIER_TREE_TOP_Y : COURIER_TREE_BOTTOM_Y;
-    el.style.top = (spawnRecipient ? edgeY : COURIER_LANE_Y[lane]) + "px";
-    el.style.animationDuration = (2.3 + Math.random() * 0.6) + "s";
-    el.addEventListener("animationend", function () { if (el.parentNode) el.remove(); });
-    if (spawnRecipient) {
-      el.className = "courier-recipient";
-      setSprite(el, PERSON_KEYS[Math.floor(Math.random() * PERSON_KEYS.length)], COURIER_RECIPIENT_EMOJI);
-    } else {
-      el.className = "courier-obstacle";
-      var obstacleEmoji = COURIER_OBSTACLE_EMOJIS[Math.floor(Math.random() * COURIER_OBSTACLE_EMOJIS.length)];
-      if (obstacleEmoji === "🚧" || obstacleEmoji === "🛢") setSprite(el, "courier_obstacle", obstacleEmoji); else el.textContent = obstacleEmoji;
-    }
-    road.appendChild(el);
-  }
-
-  // Редкая встречная машина на огромной скорости -- сперва мигающее "❗" в целевой полосе, и только
-  // через COURIER_CAR_WARN_MS сама машина с намного более быстрой анимацией, чем обычные препятствия.
-  function spawnCourierCarMaybe() {
-    if (Math.random() >= COURIER_CAR_CHANCE) return; // доп. редкость сверху и так нечастого интервала
-    var road = document.getElementById("courier-road");
-    if (!road) return;
-    var lane = Math.floor(Math.random() * 3);
-    var warn = document.createElement("div");
-    warn.className = "courier-warning";
-    warn.textContent = "❗";
-    warn.style.top = COURIER_LANE_Y[lane] + "px";
-    road.appendChild(warn);
-    var id = setTimeout(function () {
-      if (warn.parentNode) warn.remove();
-      var liveRoad = document.getElementById("courier-road");
-      if (!liveRoad) return;
-      var car = document.createElement("div");
-      car.className = "courier-car";
-      fx("car");
-      car.textContent = COURIER_CAR_EMOJI;
-      car.dataset.lane = String(lane);
-      car.style.top = COURIER_LANE_Y[lane] + "px";
-      car.style.animationDuration = "0.8s";
-      car.addEventListener("animationend", function () { if (car.parentNode) car.remove(); });
-      liveRoad.appendChild(car);
-    }, COURIER_CAR_WARN_MS);
-    courierWarningTimeoutIds.push(id);
-  }
-
-  var COURIER_BRAKE_RANGE_PX = 55; // на таком расстоянии до совпадающего по полосе получателя
-                                     // рендер уже показывает "притормаживание", см. .braking
-
-  function courierCollisionTick() {
-    var road = document.getElementById("courier-road");
-    var rider = document.getElementById("courier-rider");
-    if (road && rider) {
-      var riderRect = rider.getBoundingClientRect();
-      var riderCenterX = riderRect.left + riderRect.width / 2;
-      var els = road.querySelectorAll(
-        ".courier-obstacle:not([data-resolved]), .courier-recipient:not([data-resolved]), .courier-car:not([data-resolved])");
-      var approaching = false;
-      for (var i = 0; i < els.length; i++) {
-        if (debuffState.courier) break; // авария в этом же кадре -- остальное уже удалено
-        var el = els[i];
-        var r = el.getBoundingClientRect();
-        var elCenterX = r.left + r.width / 2;
-        var inLane = parseInt(el.dataset.lane, 10) === courierLane;
-        if (elCenterX > riderCenterX) {
-          if (inLane && el.classList.contains("courier-recipient") &&
-              elCenterX - riderCenterX <= COURIER_BRAKE_RANGE_PX) {
-            approaching = true;
-          }
-          continue;
-        }
-        el.dataset.resolved = "1";
-        if (el.classList.contains("courier-recipient")) {
-          if (inLane) {
-            el.classList.add("delivered");
-            courierRecipientsDelivered++;
-            // Получатель платит всегда; чаевые (редкие, разного размера) решает сервер и возвращает в res.tip.
-            (function (recipient) {
-              registerHit("courier", rider.offsetLeft, rider.offsetTop, road, false, function (awarded, res) {
-                if (!res || !res.tip) return;
-                recipient.classList.add("tipped");
-                var tipEl = document.createElement("div");
-                tipEl.className = "gain-popup tip-popup";
-                tipEl.textContent = state.ui.courier_tip_popup.replace("{amount}", String(res.tip));
-                tipEl.style.left = rider.offsetLeft + "px";
-                tipEl.style.top = (rider.offsetTop - 30) + "px";
-                road.appendChild(tipEl);
-                fx("win");
-                setTimeout(function () { if (tipEl.parentNode) tipEl.remove(); }, 1400);
-              });
-            })(el);
-            spawnCourierHandoff(rider, road);
-            setCourierProgress();
-            if (courierRecipientsDelivered >= courierRecipientsTotal) completeCourierLeg();
-          }
-          // не в своей полосе -- доставка просто пропущена, упущенная награда без штрафа
-        } else if (inLane) {
-          el.classList.add("hit-flash"); fx('impact');
-          if (window.RDSFX) window.RDSFX.impact(rider);
-          courierGameOver();
-        }
+  function courierGameOver(){if(!courierRun)return;fx('impact');triggerDebuff('courier','courier-feedback','courier-road',120,300,document.getElementById('courier-road'));}
+  function courierCollisionTick(now){
+    var run=courierRun;if(!run||activeGame!=='courier')return;now=now||performance.now();var dt=Math.min(.05,(now-run.last)/1000);run.last=now;var road=document.getElementById('courier-road'),height=road.clientHeight,riderY=height-98;
+    if(!pausedGame){
+      if(!run.stopped){run.spawnTime+=dt;run.scroll+=dt*[0,68,105,145][run.speed];road.style.setProperty('--road-scroll',run.scroll+'px');if(run.spawnTime>1.25){run.spawnTime=0;spawnCourierTraffic();}}
+      for(var i=run.objects.length-1;i>=0;i--){var object=run.objects[i];if(!run.stopped)object.y+=dt*[0,68,105,145][run.speed];object.node.style.top=object.y+'px';var distance=Math.abs(object.y-riderY);
+        if(object.type==='obstacle'&&object.lane===run.lane&&distance<41){courierGameOver();return;}
+        if(object.type==='delivery'&&!object.served&&object.lane===run.lane&&distance<87&&run.stopped){object.hold+=dt;if(object.hold>.4){object.served=true;object.node.classList.add('delivered');registerHit('courier',road.clientWidth*(.2+run.lane*.3),riderY,road,false,function(awarded){if(courierRun&&awarded){courierRun.delivered++;courierHUD();}});fx('deliver');setTimeout(function(n){n.remove();},250,object.node);}}
+        if(object.type==='light'&&!object.served&&distance<108){if(run.stopped){object.hold+=dt;if(object.hold>1.7){object.served=true;object.node.classList.add('green');haptic('success');}}else if(object.y>riderY-18){courierGameOver();return;}}
+        if(object.y>height+80){object.node.remove();run.objects.splice(i,1);}
       }
-      rider.classList.toggle("braking", approaching);
-      if (!debuffState.courier) courierStoplineTick(riderCenterX);
     }
-    courierRafId = debuffState.courier ? null : requestAnimationFrame(courierCollisionTick);
+    courierRafId=requestAnimationFrame(courierCollisionTick);
   }
-
-  // Авария/проезд на красный -- общий экран "Игра окончена" (см. triggerDebuff), штраф
-  // COURIER_CRASH_PENALTY_BUCKS (больше типичной прибыли с доставки).
-  function courierGameOver() {
-    var rider = document.getElementById("courier-rider");
-    var road = document.getElementById("courier-road");
-    triggerDebuff("courier", null, null, rider ? rider.offsetLeft : 0, rider ? rider.offsetTop : 0, road);
+  function startCourier(){
+    var road=document.getElementById('courier-road');road.innerHTML='<div id="courier-rider"><img src="/assets/courier_top.webp" alt=""></div>';
+    courierRun={lane:1,speed:2,stopped:false,delivered:0,objects:[],last:performance.now(),spawnTime:0,spawned:0,scroll:0};setCourierLane(1);courierHUD();courierCollisionTick(performance.now());
+    document.getElementById('courier-hint').textContent=courierWords('Свайп ← →: полоса · ↑ ↓: скорость · двойной тап: стоп/старт. Остановись у посылки, чтобы доставить.','Swipe ← →: lane · ↑ ↓: speed · double tap: stop/start. Stop beside a parcel to deliver.','Wischen ← →: Spur · ↑ ↓: Tempo · Doppeltippen: Stopp/Start. Für Pakete anhalten.');
   }
-
-  // Короткая анимация "вручения" посылки -- всплывающая 📦 над получателем при доставке (по
-  // фидбэку "нужна анимация вручения заказа", раньше была только подсветка получателя).
-  function spawnCourierHandoff(rider, road) {
-    fx("deliver");
-    var el = document.createElement("div");
-    el.className = "courier-handoff";
-    setSprite(el, "courier_parcel", "📦");
-    el.style.left = rider.offsetLeft + "px";
-    el.style.top = rider.offsetTop + "px";
-    road.appendChild(el);
-    setTimeout(function () { if (el.parentNode) el.remove(); }, 700);
-  }
-
-  // ---- Стоп-линия (вместо старого "светофора-кнопки, жми когда угодно") ----
-  function scheduleCourierStopline() {
-    if (courierStoplineTimeoutId) clearTimeout(courierStoplineTimeoutId);
-    var gap = COURIER_STOPLINE_MIN_GAP_MS + Math.random() * COURIER_STOPLINE_GAP_RANGE_MS;
-    courierStoplineTimeoutId = setTimeout(spawnCourierStopline, gap);
-  }
-
-  function spawnCourierStopline() {
-    courierStoplineTimeoutId = null;
-    var road = document.getElementById("courier-road");
-    if (!road) return;
-    var el = document.createElement("div");
-    el.className = "courier-stopline";
-    el.dataset.phase = "green";
-    el.innerHTML = '<div class="courier-stopline-bar"></div><div class="courier-stopline-light">🟢</div>';
-    el.style.animationDuration = COURIER_STOPLINE_TRAVEL_S + "s";
-    el.addEventListener("animationend", function () {
-      if (el.parentNode) el.remove();
-      scheduleCourierStopline();
-    });
-    road.appendChild(el);
-  }
-
-  function updateStoplineIcon(el, phase) {
-    var icon = el.querySelector(".courier-stopline-light");
-    if (!icon) return;
-    icon.textContent = phase === "red" ? "🔴" : (phase === "yellow" ? "🟡" : "🟢");
-  }
-
-  // Цвет линии считается от РЕАЛЬНОГО расстояния до руля (не от отдельного таймера) -- физически
-  // "красный" означает "линия вплотную перед рулём, стой СЕЙЧАС" (по фидбэку "должна быть именно
-  // как стоп-линия на пути, а не нажми в любой момент").
-  function courierStoplineTick(riderCenterX) {
-    var el = document.querySelector(".courier-stopline:not([data-missed])");
-    if (!el || el.dataset.frozen === "1") return;
-    var r = el.getBoundingClientRect();
-    var elCenterX = r.left + r.width / 2;
-    var dist = elCenterX - riderCenterX;
-    var phase = dist > COURIER_STOPLINE_WARN_PX ? "green" : (dist > COURIER_STOPLINE_STOP_PX ? "yellow" : "red");
-    if (phase !== el.dataset.phase) {
-      el.dataset.phase = phase;
-      updateStoplineIcon(el, phase);
-    }
-    if (dist < -30 && !el.dataset.stopped) {
-      // проехал стоп-линию на красный, не остановившись -- авария, та же, что и столкновение
-      el.dataset.missed = "1";
-      courierGameOver();
-    }
-  }
-
-  function pressCourierStopline() {
-    var el = document.querySelector(".courier-stopline:not([data-missed]):not([data-stopped])");
-    if (!el || courierStoplineFrozen) return;
-    if (el.dataset.phase !== "red") {
-      el.classList.add("too-early");
-      setTimeout(function () { el.classList.remove("too-early"); }, 300);
-      return; // логично: нельзя "остановиться" там, где линии ещё физически нет рядом
-    }
-    el.dataset.stopped = "1";
-    el.dataset.frozen = "1";
-    var rider = document.getElementById("courier-rider");
-    var road = document.getElementById("courier-road");
-    if (rider) rider.classList.add("stopped");
-    if (road) road.classList.add("light-frozen");
-    if (courierSpawnInterval) { clearInterval(courierSpawnInterval); courierSpawnInterval = null; }
-    if (courierCarInterval) { clearInterval(courierCarInterval); courierCarInterval = null; }
-    courierStoplineFrozen = true;
-    var hold = COURIER_STOPLINE_HOLD_MIN_MS + Math.random() * COURIER_STOPLINE_HOLD_RANGE_MS;
-    // Тот же id, что и у планировщика стоп-линий (пока стоим на линии, следующая не запланирована),
-    // чтобы stopAllGames при смене вкладки снимал и этот таймер.
-    courierStoplineTimeoutId = setTimeout(function () {
-      courierStoplineTimeoutId = null;
-      el.dataset.frozen = "0";
-      el.dataset.phase = "green";
-      updateStoplineIcon(el, "green");
-      if (rider) rider.classList.remove("stopped");
-      if (road) road.classList.remove("light-frozen");
-      if (!courierSpawnInterval) courierSpawnInterval = setInterval(spawnCourierTraffic, 900);
-      if (!courierCarInterval) courierCarInterval = setInterval(spawnCourierCarMaybe, 4000);
-      courierStoplineFrozen = false;
-    }, hold);
-  }
-
-  function startCourier() {
-    setCourierLane(1);
-    startCourierLeg();
-    var rider = document.getElementById("courier-rider");
-    if (rider) rider.classList.remove("stopped", "crash", "arriving", "braking");
-    var road = document.getElementById("courier-road");
-    if (road) road.classList.remove("light-frozen");
-    courierStoplineFrozen = false;
-    scheduleCourierStopline();
-    courierSpawnInterval = setInterval(spawnCourierTraffic, 900);
-    courierCarInterval = setInterval(spawnCourierCarMaybe, 4000);
-    courierCollisionTick();
-  }
-
-  function bindCourierControls() {
-    document.getElementById("courier-up").onclick = function () { setCourierLane(courierLane - 1); };
-    document.getElementById("courier-down").onclick = function () { setCourierLane(courierLane + 1); };
-    document.getElementById("courier-stop-btn").onclick = pressCourierStopline;
+  function bindCourierControls(){
+    var road=document.getElementById('courier-road'),start=null,lastTap=0;
+    road.addEventListener('pointerdown',function(e){start={x:e.clientX,y:e.clientY};road.setPointerCapture(e.pointerId);});
+    road.addEventListener('pointerup',function(e){if(!start||!courierRun)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;start=null;if(Math.max(Math.abs(dx),Math.abs(dy))>25){if(Math.abs(dx)>Math.abs(dy))setCourierLane(courierRun.lane+(dx>0?1:-1));else courierRun.speed=Math.max(1,Math.min(3,courierRun.speed+(dy<0?1:-1)));lastTap=0;courierHUD();}else{var now=Date.now();if(now-lastTap<320){pressCourierStopline();lastTap=0;}else lastTap=now;}});
+    road.addEventListener('pointercancel',function(){start=null;});
+    document.getElementById('courier-up').textContent='←';document.getElementById('courier-down').textContent='→';document.getElementById('courier-up').onclick=function(){setCourierLane(courierLane-1);};document.getElementById('courier-down').onclick=function(){setCourierLane(courierLane+1);};document.getElementById('courier-stop-btn').textContent=courierWords('Стоп / Старт','Stop / Start','Stopp / Start');document.getElementById('courier-stop-btn').onclick=pressCourierStopline;
   }
 
   // ---------- Farm ----------
@@ -16990,7 +16772,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       if (res.ok && res.state) {
         state = res.state;
         if (action === 'harvest') { fx('harvest'); if (window.RDSFX) { var plot = document.querySelectorAll('.farm-plot')[slot]; window.RDSFX.effect('✦', plot ? plot.getBoundingClientRect().left+plot.offsetWidth/2 : innerWidth/2, plot ? plot.getBoundingClientRect().top+plot.offsetHeight/2 : innerHeight/2); } }
-        if (action === 'water') { fx('drop'); if (window.RDSFX) { var target = document.querySelectorAll('.farm-plot')[slot]; if (target) window.RDSFX.impact(target); } }
+        if (action === 'water') { fx('waterplant'); if (window.RDSFX) { var target = document.querySelectorAll('.farm-plot')[slot]; if (target) window.RDSFX.impact(target); } }
         setBalance(state.bucks);
         renderFarm();
       }
@@ -17070,7 +16852,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       plot.appendChild(pips);
 
       var scene = document.createElement("div");
-      var hasBed = !!SPRITES.farm_bed_dry;
+      var hasBed = true;
       scene.className = "farm-scene" + (hasBed ? " has-bed" : "");
       if (hasBed) plot.classList.add("has-bed");
       var bed = document.createElement("div");
@@ -18955,9 +18737,9 @@ def serialize_onboarding(user):
     sub = get_subscription_level(user)
     styles = []
     for key in STYLES:
-        tier = None if is_style_unlocked(key, user) else ("SUPER PRO" if key in SUPER_PRO_STYLE_KEYS else "PRO")
-        styles.append({"key": key, "label": style_display_label(key, user), "desc": at(user, "style_desc_" + key), "locked": tier})
-    return {"worlds": [{"key": "realism", "label": get_text(user, "realism"), "desc": at(user, "ob_realism")},
+        tier = None if is_style_unlocked(key, user) else (style_required_tier(key))
+        styles.append({"key": key, "label": style_display_label(key, user), "desc": (STYLES[key].get("summary") or (STYLES[key]["description"],STYLES[key]["label_en"],STYLES[key]["label_de"]))[{"ru":0,"en":1,"de":2}.get(lang,1)], "locked": tier})
+    return {"portrait_enabled":bool(photo_generation.token()),"appearance_fields":character_options.choices(lang),"appearance_defaults":dict(character_options.DEFAULT),"worlds": [{"key": "realism", "label": get_text(user, "realism"), "desc": at(user, "ob_realism")},
                        {"key": "anime", "label": get_text(user, "anime"), "desc": at(user, "ob_anime")}],
             "genders": [{"key": "female", "label": at(user, "ob_female")}, {"key": "male", "label": at(user, "ob_male")}],
             "default_gender": "female" if user.get("user_gender") != "female" else "male",
@@ -18993,7 +18775,11 @@ def app_sub_offers(user):
                                          ("subscribe_super", "SUPER PRO", "perks_super", "✨"),
                                          ("subscribe_elite", "ELITE", "perks_elite", "💎")):
         methods = methods_cache.setdefault(payload, available_payment_methods(payload))
-        offers.append({"payload": payload, "title": title, "emoji": emoji, "perks": at(user, perks),
+        style_keys=BASE_STYLE_KEYS+PRO_STYLE_KEYS+(SUPER_PRO_STYLE_KEYS if payload!='subscribe_pro' else [])+(ELITE_STYLE_KEYS if payload=='subscribe_elite' else [])
+        examples=['playful','humorous','energetic'] if payload=='subscribe_pro' else ['rude','aggressive','cynical'] if payload=='subscribe_super' else ['intellectual','unflappable','enigmatic']
+        style_line=str(len(style_keys))+{'ru':' характеров · ','en':' personalities · ','de':' Charaktere · '}.get(user.get('lang'),' personalities · ')+', '.join(style_display_label(k,user,with_emoji=False) for k in examples)
+        benefits=[p for p in at(user,perks) if not any(w in p.lower() for w in ('стил','style','stil'))]
+        offers.append({"payload": payload, "title": title, "emoji": emoji, "perks": [style_line]+benefits,
                        "stars": product_stars(payload, user), "stars_label": price_label(payload, user),
                        "rub": product_rub(payload, user) if "platega" in methods else None})
     for base in list(offers):
@@ -19012,6 +18798,7 @@ def serialize_app_state(user):
         ui = {k: v for k, v in APP_TEXTS.get(user.get("lang", "ru"), APP_TEXTS["en"]).items() if isinstance(v, str)}
         return {"onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
     app_unstick(user)
+    if migrate_character_appearance(user):save_data(user_data)
     _reset_daily_quota_if_needed(user)
     lang = user.get("lang", "ru")
     ensure_message_ids(user)
@@ -19033,7 +18820,7 @@ def serialize_app_state(user):
                      for m in history],
         "onboarding": None,
         "reply_choices": serialize_reply_choices(user),
-        "pending": bool(user.get("app_pending")),
+        "pending": bool(user.get("app_pending")),"photo_pending":bool(user.get("photo_pending")),
         "notices": notices,
         "can_reroll": bool(history and history[-1]["role"] == "assistant" and len(history) >= 2
                            and history[-2]["role"] == "user"),
@@ -19041,8 +18828,8 @@ def serialize_app_state(user):
             "avatar": app_avatar(user),
             "avatar_url": f"/avatars/{user['avatar']}" if user.get("avatar") else look_image(user),
             "look": user.get("look"),
-            "custom_photo": bool(user.get("avatar")),
-            "styles": [{"key": k, "label": style_display_label(k, user)} for k in STYLES],
+            "custom_photo": bool(user.get("avatar")),"appearance":user.get("appearance"),"appearance_fields":character_options.choices(lang),"portrait_pending":bool(user.get("portrait_pending")),"portrait_error":bool(user.get("portrait_error")),
+            "styles": [{"key": k, "label": style_display_label(k, user),"locked":not is_style_unlocked(k,user),"tier":style_required_tier(k)} for k in STYLES],
             "style": user.get("style"),
             "looks": [{"key": k, "img": f"/assets/avatar_{k}.jpg", "label": v["label_ru"] if lang == "ru" else v["label_en"]}
                       for k, v in LOOKS.items() if v["world"] == (user.get("world") or "realism") and v["gender"] == (user.get("gender") or "female")],
@@ -19163,10 +18950,10 @@ def is_photo_request(text):
     value=re.sub(r'\s+',' ',str(text).lower()).strip()
     if len(value)>500:
         return False
-    direct=re.search(r'^(?:(?:а |ну |пожалуйста,? |можешь |можно |can you |please |bitte )?){0,3}(?:пришли|прислать|отправь|отправить|скинь|скинуть|покажи|показать|сделай|сделать|send|show|schick|zeig)\b',value)
+    direct=re.search(r'^(?:(?:а |ну |пожалуйста,? |можешь |можно |can you |please |bitte )?){0,3}(?:пришли|прислать|отправь|отправить|скинь|скинуть|кинь|кинуть|покажи|показать|сделай|сделать|send|show|schick|zeig)\b',value)
     photo_word=re.search(r'фот(?:о(?:графию|чку)?|ку|ки|очку)\b|селфи|photo|selfie|picture|foto',value)
     self_view=re.search(r'^(?:а |ну |можешь |пожалуйста,? )*(?:(?:покажи|показать) себя|покажи(?:,)? как (?:ты )?выглядишь|show yourself|zeig dich)',value)
-    return bool(direct and photo_word or self_view or re.search(r'^(?:можно|хочу увидеть) (?:тво[еёю]|твой) (?:фото|фотку|селфи)',value))
+    return bool(direct and photo_word or self_view or re.search(r'^(?:я |так |очень |я очень )*(?:хочу|хотел(?:а)? бы) (?:уже )?(?:увидеть тебя|тебя увидеть|посмотреть на тебя)|^(?:i (?:want|would like) to see you|ich möchte dich sehen)',value) or re.search(r'^(?:можно|хочу увидеть) (?:тво[еёю]|твой) (?:фото|фотку|селфи)',value))
 
 
 async def app_generate(user_id, user):
@@ -19220,7 +19007,7 @@ async def app_photo_generate(user_id, user, request_text):
             'If closeness is below 10, refuse requests for swimwear, lingerie or seductive posing; '
             'otherwise tasteful adult swimwear is allowed, never explicit. '
             'A normal portrait, everyday clothes, a suit or evening dress is allowed at any level. '
-            'Describe one image in English. Appearance: ' + LOOKS.get(user.get('look'), {}).get('en', 'adult anime character') +
+            'Describe one image in English. Appearance: ' + photo_appearance(user) +
             '. Gender: ' + str(user.get('gender')) + '. Closeness: ' + str(get_intimacy_level(user)))
         response = await asyncio.wait_for(asyncio.to_thread(call_ai, AI_MODEL, 'ai',
             messages=[{'role':'system','content':instruction}, {'role':'user','content':json.dumps({'conversation':context,'request':request_text},ensure_ascii=False)}],
@@ -19235,7 +19022,7 @@ async def app_photo_generate(user_id, user, request_text):
         user['photo_reserved'] = PHOTO_ENERGY_COST
         charged = True
         save_data(user_data)
-        raw, ext = await asyncio.wait_for(photo_generation.generate('Adult age 25+, safe non-explicit anime photograph. ' + plan['prompt'][:2200]), timeout=280)
+        raw, ext = await asyncio.wait_for(photo_generation.generate('Adult age 25+, safe non-explicit anime photograph. Preserve appearance: '+photo_appearance(user)+'. '+plan['prompt'][:2200]), timeout=280)
         os.makedirs(AVATAR_DIR, exist_ok=True)
         name = os.urandom(12).hex() + '.' + ext
         with open(os.path.join(AVATAR_DIR,name),'wb') as output:
@@ -19456,6 +19243,9 @@ async def api_app_look_handler(request):
     if look not in LOOKS or LOOKS[look]["world"] != user.get("world") or LOOKS[look]["gender"] != user.get("gender"):
         return web.json_response({"ok": False, "error": "Bad request"})
     user["look"] = look
+    user.pop("appearance",None)
+    user["portrait_url"]=None
+    migrate_character_appearance(user)
     save_data(user_data)
     return web.json_response({"ok": True, "state": serialize_app_state(user)})
 
@@ -19502,8 +19292,12 @@ async def api_app_create_handler(request):
         return web.json_response({"ok": False, "error": "Bad request"})
     if not is_style_unlocked(style, user):
         label = style_display_label(style, user, with_emoji=False)
-        tier = "SUPER PRO" if style in SUPER_PRO_STYLE_KEYS else "PRO/SUPER PRO"
+        tier = style_required_tier(style)
         return web.json_response({"ok": False, "error": get_text(user, "style_locked_alert", label=label, tier=tier)})
+    try:
+        appearance=character_options.validate(body.get('appearance',character_options.DEFAULT))
+    except ValueError:
+        return web.json_response({'ok':False,'error':'Invalid appearance'})
     custom = (body.get("custom") or "").strip()
     if custom and get_subscription_level(user) not in ("super_pro", "elite"):
         custom = ""
@@ -19514,19 +19308,71 @@ async def api_app_create_handler(request):
     user["char_name"] = clean_char_name(body.get("name"))
     look = body.get("look")
     user["look"] = look if look in LOOKS and LOOKS[look]["world"] == world and LOOKS[look]["gender"] == gender else None
+    if not body.get("avatar"):user.pop("avatar",None)
     if body.get("avatar") and get_subscription_level(user) in ("super_pro", "elite"):
         error = save_avatar(user, body.get("avatar"))
         if error:
             return web.json_response({"ok": False, "error": error})
-    user.update(world=world, gender=gender, style=style, scene=scene, custom_character=custom[:2000] or None,
+    user.update(appearance=appearance,portrait_url=None,world=world, gender=gender, style=style, scene=scene, custom_character=custom[:2000] or None,
                 personality_ready=True, history=[], relationship={}, reply_choices={}, reply_choices_turns=0,
                 reply_choices_next=random.randint(5, 8), creating_character=False, switching_personality=False,
                 last_activity=datetime.now().isoformat())
     award_referral(user)
+    request_character_portrait(user)
     user["app_pending"] = None
     save_data(user_data)
 
     return web.json_response({"ok": True, "state": serialize_app_state(user)})
+
+
+def request_character_portrait(user):
+    if not user.get('appearance') or user.get('avatar'):
+        return
+    signature=character_options.signature(user)
+    for ext in ('png','jpg','webp'):
+        name=signature[:24]+'.'+ext
+        if os.path.isfile(os.path.join(AVATAR_DIR,name)):
+            user.update(portrait_url='/avatars/'+name,portrait_pending=None,portrait_error=False)
+            return
+    if photo_generation.token():
+        try:asyncio.get_running_loop()
+        except RuntimeError:return
+        if user.get('portrait_pending')==signature:return
+        user['portrait_error']=False
+        user['portrait_pending']=signature
+        asyncio.create_task(generate_character_portrait(user,signature,photo_appearance(user),user.get('gender')))
+
+
+async def generate_character_portrait(user,signature,appearance,gender):
+    try:
+        # Stable cache shares identical presets instead of generating duplicates on every reset.
+        await asyncio.sleep(max(1,60-(time.time()-user.get('portrait_last_started',0))))
+        if user.get('portrait_pending')!=signature:return
+        user['portrait_last_started']=time.time()
+        prompt='One adult '+('man' if gender=='male' else 'woman')+', age 25+, fully clothed premium anime profile portrait, face and shoulders, soft lavender studio background, no text. Appearance: '+appearance+'. Simple casual sweater, no hat or headphones unless explicitly requested.'
+        raw,ext=await asyncio.wait_for(photo_generation.generate(prompt),timeout=280)
+        name=signature[:24]+'.'+ext
+        os.makedirs(AVATAR_DIR,exist_ok=True)
+        with open(os.path.join(AVATAR_DIR,name),'wb') as output:output.write(raw)
+        if user.get('portrait_pending')==signature and character_options.signature(user)==signature:
+            user.update(portrait_url='/avatars/'+name,portrait_pending=None,portrait_error=False)
+    except Exception as exc:
+        logging.warning('Character portrait unavailable: %s, HTTP %s',type(exc).__name__,getattr(getattr(exc,'response',None),'status_code',None))
+        if user.get('portrait_pending')==signature:user.update(portrait_pending=None,portrait_error=True)
+    finally:
+        save_data(user_data)
+
+
+async def api_app_appearance_handler(request):
+    _,user,body,err=await _play_request(request)
+    if err:return err
+    try:appearance=character_options.validate(body.get('appearance'))
+    except ValueError:return _app_reply(user,False,'Invalid appearance')
+    user.pop("avatar",None)
+    user.update(appearance=appearance,portrait_url=None)
+    request_character_portrait(user)
+    save_data(user_data)
+    return _app_reply(user)
 
 
 async def api_app_reset_handler(request):
@@ -19558,7 +19404,7 @@ setTimeout(function () { if (window.__tgSdkOnSettle) window.__tgSdkOnSettle(); }
 _SDK_TAG_RE = re.compile(r'<script src="/tg-sdk\.js"[^>]*>\s*</script>', re.S)
 
 
-SFX_TAG = '<script src="/sfx.js?v=20261116"></script>'
+SFX_TAG = '<script src="/sfx.js?v=20261116b"></script>'
 
 
 async def sfx_js_handler(request):
@@ -19737,7 +19583,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
 @media(prefers-reduced-motion:reduce){.btn::after,.buy-btn::after,.action-btn::after,.rd-premium,.rd-spark{animation:none!important;}}
 
 '''
-APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261116">'
+APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261116b">'
 
 
 async def theme_css_handler(request):
@@ -19771,7 +19617,7 @@ def refund_scene_photo(user, job_id):
 async def generate_scene_photo(user, scene, job_id):
     """One neutral portrait per successful generation; never forwards scene text to the image API."""
     try:
-        appearance=LOOKS.get(user.get('look'),{}).get('en','adult anime character with a consistent face and hairstyle')
+        appearance=photo_appearance(user)
         gender=user.get('gender')
         response=await asyncio.wait_for(asyncio.to_thread(call_ai,AI_MODEL,'ai',
             messages=[{'role':'system','content':scene_photos.INSTRUCTION},
@@ -20126,13 +19972,13 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
     (motifs[kind]||[[0,'light']]).forEach(function(step){feedbackTimer.push(setTimeout(function(){try{if(['success','error','warning'].indexOf(step[1])>=0)h.notificationOccurred(step[1]);else h.impactOccurred(step[1]);}catch(e){}},step[0]));});
   }
   var sampleBuffers={},sampleLoads={},sampleVoices=[],lastSample={};
-  var sampleNames=['key','tick','start','win','deliver','loss','drop','freeze','impact','explosion','shatter','water','soda','eat','crunch','keya','keyb','keyc','wirea','wireb','wirec','pina','pinb','pinc','pinbreak','unlock','dicea','diceb','dicec','chessa','chessb','chessc','countera','counterb','counterc','match','reveal'];
+  var sampleNames=['soila','soilb','soilc','waterplanta','waterplantb','waterplantc','harvesta','harvestb','harvestc','key','tick','start','win','deliver','loss','drop','freeze','impact','explosion','shatter','water','soda','eat','crunch','keya','keyb','keyc','wirea','wireb','wirec','pina','pinb','pinc','pinbreak','unlock','dicea','diceb','dicec','chessa','chessb','chessc','countera','counterb','counterc','match','reveal'];
   var bankLast={};
-  function gameSound(kind){var banks={key:['keya','keyb','keyc'],wire:['wirea','wireb','wirec'],pin:['pina','pinb','pinc'],chess:['chessa','chessb','chessc'],counter:['countera','counterb','counterc'],dice:['dicea','diceb','dicec']};var options=banks[kind];if(options){var fresh=options.filter(function(x){return x!==bankLast[kind];});var pick=fresh[Math.floor(Math.random()*fresh.length)];bankLast[kind]=pick;sample(pick);}else sample(kind);}
+  function gameSound(kind){var banks={soil:['soila','soilb','soilc'],waterplant:['waterplanta','waterplantb','waterplantc'],harvest:['harvesta','harvestb','harvestc'],key:['keya','keyb','keyc'],wire:['wirea','wireb','wirec'],pin:['pina','pinb','pinc'],chess:['chessa','chessb','chessc'],counter:['countera','counterb','counterc'],dice:['dicea','diceb','dicec']};var options=banks[kind];if(options){var fresh=options.filter(function(x){return x!==bankLast[kind];});var pick=fresh[Math.floor(Math.random()*fresh.length)];bankLast[kind]=pick;sample(pick);}else sample(kind);}
   function loadSample(kind){
     if(sampleBuffers[kind])return Promise.resolve(sampleBuffers[kind]);
     if(sampleLoads[kind])return sampleLoads[kind];
-    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261116').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
+    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261116b').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
     return sampleLoads[kind];
   }
   function sample(kind){
@@ -20378,6 +20224,9 @@ APP_PAGE_HTML = r'''<!doctype html>
   .row.me .bub { background: var(--grad); border-bottom-right-radius: 6px; box-shadow: 0 6px 18px rgba(139,92,246,.25); }
   .row.gap { margin-top: 10px; }
   .rd-chat-tools{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:5px 2px}.rd-energizer-use{width:auto!important;min-height:34px!important;padding:7px 10px!important;font-size:12px!important}.rd-photo-hint{font-size:11px!important;line-height:1.35}.rd-sub-terms{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.rd-sub-terms .btn{white-space:pre-line;font-size:14px;padding:11px 6px}
+
+  #composer{gap:6px!important;padding-left:5px!important}.composer-action{width:34px!important;min-width:34px;min-height:40px;padding:2px!important;border:0!important;border-radius:12px;background:#27253e;color:#c9b2ff;display:flex;align-items:center;justify-content:center}.composer-action img{width:28px;height:38px;object-fit:contain}.composer-action svg{width:23px;height:23px}.composer-action:disabled{opacity:.35}.input-shell{position:relative;flex:1;min-width:0}#input{position:relative;z-index:1;width:100%;background:transparent!important}#input-ghost{position:absolute;inset:0;pointer-events:none;white-space:pre-wrap;overflow:hidden;font:inherit;padding:12px 14px;line-height:1.45;word-break:break-word}.ghost-typed{visibility:hidden}.ghost-suffix{color:#a4a0ba77}#input{font:inherit;line-height:1.45;padding:12px 14px!important}.input-shell{background:#222239;border:1px solid #3c3c57;border-radius:24px}.rd-chat-tools,.rd-photo-hint{display:none!important}#composer #send{width:40px;min-width:40px}.appearance-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.appearance-grid label{min-width:0}.appearance-base{display:block;width:135px;height:135px;border-radius:24px;object-fit:cover;margin:12px auto}.monthly-best{background:linear-gradient(135deg,#7c3aed,#d946b6)!important;box-shadow:0 0 18px #c44cdb44!important;border:1px solid #ecbaff!important}.energy-drink-fx{position:fixed;left:calc(50% - 28px);bottom:130px;width:56px;height:80px;object-fit:contain;z-index:1100;pointer-events:none;animation:drink-can .95s ease forwards}.energy-flash{animation:energy-chip .9s ease}@keyframes drink-can{0%{opacity:0;transform:translateY(25px) rotate(0)}25%{opacity:1}55%{transform:translateY(-55px) rotate(-35deg)}100%{opacity:0;transform:translateY(-120px) rotate(-35deg) scale(.7)}}@keyframes energy-chip{40%{filter:brightness(1.8);box-shadow:0 0 20px #b38bff}}
+  .composer-action{position:relative}#energy-count{position:absolute;right:-2px;bottom:0;min-width:14px;height:14px;border-radius:7px;background:#302644;border:1px solid #a085ba;color:#ede0ff;font-size:9px;line-height:12px;text-align:center}
   .bub em { color: #c4b5fd; font-style: italic; }
   .row.me .bub em { color: #fde7f3; }
   @keyframes bub-in { from { opacity: 0; transform: translateY(6px) scale(.98); } to { opacity: 1; transform: none; } }
@@ -20535,7 +20384,9 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
       <div id="sleep"></div>
       <section id="reply-choices" aria-label="Reply suggestions" hidden></section>
       <div id="composer">
-        <textarea id="input" rows="1"></textarea>
+        <button id="energy-action" class="composer-action" type="button"><img src="/assets/ui_energizer.webp" alt=""><span id="energy-count"></span></button>
+        <button id="photo-action" class="composer-action" type="button" aria-label="Photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l2-2h4l2 2h4v15H4V5z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
+        <div class="input-shell"><div id="input-ghost" aria-hidden="true"></div><textarea id="input" rows="1"></textarea></div>
         <button id="send" type="button" aria-label="send">➤</button>
       </div>
     </div>
@@ -20655,7 +20506,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
     $("h-tier").textContent = { pro: "PRO", super_pro: "SUPER", elite: "ELITE" }[lvl] || "";
     var st = $("h-status");
     st.className = "status" + (s.pending ? " typing" : "");
-    st.textContent = s.pending ? s.ui.typing : (s.asleep ? s.ui.asleep : (s.illness ? s.illness + " · " + s.ui.sick : s.ui.online));
+    st.textContent = s.photo_pending ? tr('отправляет фото…','sending a photo…','sendet ein Foto…') : s.pending ? s.ui.typing : (s.asleep ? s.ui.asleep : (s.illness ? s.illness + " · " + s.ui.sick : s.ui.online));
     withIcon($("h-bucks"), "icon_bucks", "💵", s.stats.bucks);
     withIcon($("h-hot"), "icon_hot", "🔥", s.hot.available);
     withIcon($("h-en"), "icon_energy", "⚡", s.stats.energy);
@@ -20686,6 +20537,24 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
     box.appendChild(el('p', null, tr('Выбери, при желании измени и нажми отправку.', 'Choose a line, edit if you like, then send.')));
   }
 
+  function energyGainAnimation(amount){
+    var chip=$('h-en');chip.classList.remove('energy-flash');void chip.offsetWidth;chip.classList.add('energy-flash');
+    var r=chip.getBoundingClientRect();if(window.RDSFX)RDSFX.effect('+'+amount,r.left+r.width/2,r.bottom+12);
+    var can=el('img','energy-drink-fx');can.src='/assets/ui_energizer.webp';document.body.appendChild(can);setTimeout(function(){can.remove();chip.classList.remove('energy-flash');},1000);
+  }
+  function useComposerEnergy(){
+    if(energizerBusy||state.stats.energizers<1||state.stats.energy>=state.stats.energy_max)return;
+    var before=state.stats.energy;energizerBusy=true;$('energy-action').disabled=true;
+    api('/api/app/wake',{method:'energizer'}).then(function(res){energizerBusy=false;if(res.state)state=res.state;render();if(res.ok){energyGainAnimation(state.stats.energy-before);haptic('reward');if(sndOn()&&window.RDSFX)RDSFX.care('drink','sparkling_water');}else toast(res.error);}).catch(function(){energizerBusy=false;render();toast('Network error');});
+  }
+  function requestComposerPhoto(){
+    if(state.pending)return;
+    var go=function(ok){if(!ok)return;api('/api/app/photo',{text:$('input').value.trim()||tr('Пришли свой портрет в одежде с учётом нашей беседы.','Send a clothed portrait of yourself in our current setting.','Schick mir ein bekleidetes Porträt von dir in unserer Umgebung.')}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);render();schedulePoll();});};
+    if(tg&&tg.showConfirm)tg.showConfirm(tr('Отправить фото за 40 энергии?','Send a photo for 40 energy?','Foto für 40 Energie senden?'),go);else go(confirm(tr('Отправить фото за 40 энергии?','Send a photo for 40 energy?','Foto für 40 Energie senden?')));
+  }
+  function appearanceFields(container,values,fields,onchange){
+    var grid=el('div','appearance-grid');(fields||[]).forEach(function(field){var label=el('label','rd-field',field.label),select=el('select','ob-in');select.dataset.appearance=field.key;field.items.forEach(function(item){var option=el('option',null,item.label);option.value=item.key;select.appendChild(option);});select.value=values[field.key]||field.items[0].key;values[field.key]=select.value;select.onchange=function(){values[field.key]=select.value;if(onchange)onchange();};label.appendChild(select);grid.appendChild(label);});container.appendChild(grid);
+  }
   var energizerBusy=false;
   function energizerButton(container){
     var count=state.stats.energizers||0;
@@ -20719,7 +20588,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
       row.appendChild(w); box.appendChild(row);
       prev = m.role;
     });
-    if (s.pending) { var r = el("div", "row ai gap"); var t = el("div", "bub typing-bub"); t.innerHTML = "<i></i><i></i><i></i>"; r.appendChild(t); box.appendChild(r); }
+    if (s.pending) { var r = el("div", "row ai gap"); var t = el("div", "bub typing-bub"); if(s.photo_pending)t.textContent=tr('Отправляет фото…','Sending a photo…','Foto wird gesendet…');else t.innerHTML = "<i></i><i></i><i></i>"; r.appendChild(t); box.appendChild(r); }
     else if (s.can_reroll && !s.asleep) { var rr = el("button", "reroll", s.ui.reroll); rr.onclick = reroll; box.appendChild(rr); }
     if (stick || s.messages.length !== lastCount) scrollBottom(true);
     lastCount = s.messages.length;
@@ -20734,10 +20603,14 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
       if (s.wake.energizers > 0) { var e2 = el("button", "btn", s.ui.wake_energizer.replace("{n}", s.wake.energizers)); e2.onclick = function () { wake("energizer"); }; sl.appendChild(e2); }
       var e3 = el("button", "btn ghost", s.ui.wake_now.replace("{price}", s.wake.price)); e3.onclick = function () { pay("wake_now", "stars"); }; sl.appendChild(e3);
     } else { comp.style.display = "flex"; sl.style.display = "none"; }
-    var tools=$('chat-photo-tools');if(!tools){tools=el('div','rd-chat-tools');tools.id='chat-photo-tools';comp.parentNode.insertBefore(tools,comp);}tools.innerHTML='';
-    energizerButton(tools);
-    tools.appendChild(el('span','note rd-photo-hint',tr('📷 «Скинь свою фотку» или «Покажи себя» · 40 энергии','📷 Say “Send me a selfie” or “Show yourself” · 40 energy','📷 „Schick mir ein Foto“ oder „Zeig dich“ · 40 Energie')));
+    $('energy-action').disabled=energizerBusy||s.stats.energizers<1||s.stats.energy>=s.stats.energy_max;
+    $('energy-count').textContent=s.stats.energizers;
+    $('energy-action').title=tr('Энергетик','Energizer','Energydrink')+' · '+s.stats.energizers;
+    $('energy-action').setAttribute('aria-label',$('energy-action').title);
+    $('photo-action').disabled=s.pending||s.asleep;
+    $('photo-action').title=tr('Фото персонажа · 40 энергии','Character photo · 40 energy','Charakterfoto · 40 Energie');
     renderReplyChoices();
+    ghostComplete();
     $("send").disabled = s.pending || sending;
     $("input").placeholder = s.ui.placeholder;
   }
@@ -20748,7 +20621,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
     sending = true; haptic("light"); if (sndOn() && window.RDSFX) window.RDSFX.sent();
     // сразу показываем своё сообщение и «печатает…», не дожидаясь сервера
     state.messages.push({ role: "user", text: text }); state.pending = true; state.can_reroll = false;
-    inp.value = ""; autosize(); renderChat(); renderHead(); scrollBottom(true);
+    inp.value = ""; autosize();ghostComplete(); renderChat(); renderHead(); scrollBottom(true);
     api("/api/app/send", { text: text }).then(function (res) {
       sending = false;
       if (res.state) state = res.state;
@@ -21021,6 +20894,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
     if (s.character.looks && s.character.looks.length) {
       var lk = el("button", null, ui.look_btn);
       lk.onclick = function () {
+        if(s.character.appearance_fields){var box=$('sheet-box');box.innerHTML='';box.appendChild(el('h4',null,ui.look_title));var values=Object.assign({},s.character.appearance||{});appearanceFields(box,values,s.character.appearance_fields);var save=el('button','btn',tr('Сохранить внешность','Save appearance','Aussehen speichern'));save.onclick=function(){save.disabled=true;api('/api/app/appearance',{appearance:values}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);else $('sheet').classList.remove('on');render();});};box.appendChild(save);$('sheet').classList.add('on');return;}
         var box = $("sheet-box"); box.innerHTML = ""; box.appendChild(el("h4", null, ui.look_title));
         var g2 = el("div", "looks");
         s.character.looks.forEach(function (L) {
@@ -21042,7 +20916,8 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
     hb2.appendChild(av);
     if (s.character.custom_photo) { var rm = el("button", null, ui.avatar_remove);
       rm.onclick = function () { api("/api/app/avatar", { remove: true }).then(function (res) { if (res.state) state = res.state; render(); }); }; hb2.appendChild(rm); }
-    hero.appendChild(hb2);
+    hero.appendChild(hb2);if(s.character.portrait_pending)hero.appendChild(el('p','note',tr('Создаю персональный портрет…','Creating your portrait…','Dein Porträt entsteht…')));
+    if(s.character.portrait_error){var retry=el('button','btn ghost',tr('Портрет не получился · повторить','Portrait failed · retry','Porträt fehlgeschlagen · erneut'));retry.onclick=function(){api('/api/app/appearance',{appearance:s.character.appearance}).then(function(res){if(res.state)state=res.state;render();schedulePoll();});};hero.appendChild(retry);}
     hero.appendChild(el("div", "lvl", "❤️ " + ui.level.replace("{n}", st.level)));
     var xb = el("div", "xpbar"), xi = el("i"); xi.style.width = Math.min(100, st.xp / st.xp_cost * 100) + "%"; xb.appendChild(xi); hero.appendChild(xb);
     hero.appendChild(el("div", "xptxt", ui.xp.replace("{p}", st.xp).replace("{c}", st.xp_cost)));
@@ -21058,7 +20933,6 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
       var m = el("div", "mini"), big = icon(x[2], x[3]); big.style.cssText = "width:30px;height:30px;display:block;margin:0 auto 4px";
       m.appendChild(big); m.appendChild(el("b", null, x[0])); m.appendChild(el("span", null, x[1])); g.appendChild(m); });
     sc.appendChild(g);
-    energizerButton(sc);
     if (s.illness) sc.appendChild(el("div", "sick", s.illness));
     v.appendChild(sc);
     renderEconomy(v);
@@ -21078,7 +20952,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
     if (s.subscription.level) sub.appendChild(el("div", "note", ui.sub_active_note));
     else s.offers.filter(function(o){return !o.payload.endsWith('_week');}).forEach(function (o) {
       var t = el("div", "tier" + (o.payload === "subscribe_super" ? " super" : o.payload === "subscribe_elite" ? " elite" : ""));
-      if (o.payload === "subscribe_super") t.appendChild(el("span", "tag", "TOP"));
+      if(o.payload==='subscribe_pro')t.appendChild(el('span','tag',tr('Популярно','Popular','Beliebt')));if(o.payload==='subscribe_super')t.appendChild(el('span','tag',tr('Выгодно','Best value','Preiswert')));
       t.appendChild(el("div", "tt", o.emoji + " " + o.title));
       var ul = el("ul"); o.perks.forEach(function (p) { ul.appendChild(el("li", null, p)); }); t.appendChild(ul);
       var week=s.offers.find(function(w){return w.payload===o.payload+'_week';});
@@ -21102,7 +20976,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
       if (tg && tg.showConfirm) safe(function () { tg.showConfirm(ui.change_char_confirm, go); }); else go(confirm(ui.change_char_confirm));
     };
     var styleSelect=el('select','rd-input');
-    (s.character.styles||[]).forEach(function(o){var opt=el('option',null,o.label);opt.value=o.key;opt.selected=o.key===s.character.style;styleSelect.appendChild(opt);});
+    (s.character.styles||[]).forEach(function(o){var opt=el('option',null,o.label+(o.locked?' · '+o.tier:''));opt.disabled=!!o.locked;opt.value=o.key;opt.selected=o.key===s.character.style;styleSelect.appendChild(opt);});
     styleSelect.disabled=['super_pro','elite'].indexOf(tier)<0;
     more.appendChild(el('p','note',tr('Характер без потери истории · SUPER PRO / ELITE','Change personality, keep history · SUPER PRO / ELITE','Charakter ändern, Verlauf behalten · SUPER PRO / ELITE')));
     styleSelect.onchange=function(){api('/api/app/settings',{style:styleSelect.value}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);render();});};more.appendChild(styleSelect);
@@ -21113,7 +20987,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
   function subscriptionTerms(week,month){
     var row=el('div','rd-sub-terms');
     [[week,tr('7 дней','7 days','7 Tage')],[month,tr('30 дней','30 days','30 Tage')]].forEach(function(pair){
-      var offer=pair[0],button=el('button','btn',pair[1]+'\n'+offer.stars_label+' ⭐');button.dataset.payload=offer.payload;
+      var offer=pair[0],button=el('button','btn',pair[1]+'\n'+offer.stars_label+' ⭐');button.dataset.payload=offer.payload;if(!offer.payload.endsWith('_week'))button.classList.add('monthly-best');
       button.onclick=function(){if(offer.rub&&tg&&tg.showPopup){tg.showPopup({title:offer.title,message:pair[1],buttons:[{id:'stars',type:'default',text:offer.stars+' ⭐'},{id:'platega',type:'default',text:offer.rub+' ₽'},{type:'cancel'}]},function(method){if(method)pay(offer.payload,method);});}else pay(offer.payload,'stars');};row.appendChild(button);
     });return row;
   }
@@ -21177,7 +21051,6 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
       if(!photoOption.can_afford&&!h.photo_pending)card.appendChild(el('p','note',tr('Для фото нужно 40 энергии. Можно продолжить без фото.','A photo requires 40 energy. You can continue without it.','Ein Foto benötigt 40 Energie. Du kannst ohne Foto fortfahren.')));
     }
     photoChoice(hero);
-    energizerButton(hero);
     if (h.pending) {
       var w = el("div", "card writing"); w.appendChild(el("div", "big", "🔥")); w.appendChild(el("div", null, ui.hot_writing)); v.appendChild(w); return;
     }
@@ -21300,7 +21173,12 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
     var looks = (o.looks || []).filter(function (L) { return L.world === ob.world && L.gender === ob.gender; });
     var step = [["world", o.worlds, ui.ob_world], ["gender", o.genders, ui.ob_gender], ["look", looks, ui.ob_look], ["style", o.styles, ui.ob_style], ["scene", o.scenes, tr("Как будем общаться?", "How shall we chat?")]][obStep];
     v.appendChild(el("div", "ob-q", step[2]));
-    if (step[0] === "look") {
+    if(step[0]==='look'&&o.appearance_fields){
+      ob.appearance=ob.appearance||Object.assign({},o.appearance_defaults);ob.look=ob.look||(looks[0]&&looks[0].key);
+      var preview=el('img','appearance-base');preview.src='/assets/portrait_'+ob.gender+'.webp';preview.alt=tr('Базовый портрет','Base portrait','Basisporträt');v.appendChild(preview);
+      v.appendChild(el('p','note',o.portrait_enabled?tr('Выбери детали. Персональный портрет создастся после завершения.','Choose the details. Your portrait is generated after setup.','Wähle die Details. Dein Porträt entsteht nach der Einrichtung.'):tr('Выбери внешность и привычки персонажа.','Choose appearance and personality details.','Wähle Aussehen und persönliche Details.')));
+      appearanceFields(v,ob.appearance,o.appearance_fields);
+    } else if (step[0] === "look") {
       var lw = el("div", "looks");
       looks.forEach(function (L) {
         var b = el("button", "look" + (ob.look === L.key ? " on" : "")), im = document.createElement("img"); im.src = L.img;
@@ -21340,7 +21218,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
     nx.onclick = function () {
       if (!last) { obStep++; haptic("light"); renderOnb(); v.scrollTop = 0; return; }
       nx.disabled = true;
-      api("/api/app/create", { world: ob.world, gender: ob.gender, look: ob.look, style: ob.style, scene: ob.scene, custom: ob.custom || "", name: ob.name || "", avatar: ob.avatar || null }).then(function (res) {
+      api("/api/app/create", { world: ob.world, gender: ob.gender, look: ob.look, style: ob.style, scene: ob.scene, appearance:ob.appearance, custom: ob.custom || "", name: ob.name || "", avatar: ob.avatar || null }).then(function (res) {
         if (!res.ok) { nx.disabled = false; toast(res.error || "Error"); haptic("error"); return; }
         haptic("success"); state = res.state; tab = "chat"; render(); schedulePoll();
       }).catch(function () { nx.disabled = false; toast("Network error"); });
@@ -21368,17 +21246,17 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
   function schedulePoll() {
     clearTimeout(pollTimer);
     if (state && state.onboarding) return;
-    var fast = state && (state.pending || (state.hot && (state.hot.pending||state.hot.photo_pending)));
+    var fast = state && (state.pending || (state.hot && (state.hot.pending||state.hot.photo_pending))||(state.character&&state.character.portrait_pending));
     pollTimer = setTimeout(function () { load(true).then(schedulePoll, schedulePoll); }, fast ? 1500 : 12000);
   }
   function load(quiet) {
     return api("/api/app/state").then(function (res) {
       if (!res.state) { full(res.message || res.error || "Error", res.error === "not_ready" ? "✨" : "⚠️"); return; }
-      var before = state ? JSON.stringify([state.messages, state.reply_choices,state.quests,state.server_day,state.hot]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) : "";
+      var before = state ? JSON.stringify([state.messages, state.reply_choices,state.quests,state.server_day,state.hot,state.character,state.photo_pending]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) : "";
       state = res.state;
       document.documentElement.lang = (state.settings && state.settings.lang) || (state.onboarding && state.onboarding.lang) || 'ru';
       if (state.onboarding) { if (!quiet) render(); return; }
-      if (!quiet || before !== JSON.stringify([state.messages, state.reply_choices,state.quests,state.server_day,state.hot]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) || state.notices.length) { if (!FRAME_PATH[tab]) render(); else if (state.notices.length) { toast(state.notices.join("\n\n")); state.notices = []; } }
+      if (!quiet || before !== JSON.stringify([state.messages, state.reply_choices,state.quests,state.server_day,state.hot,state.character,state.photo_pending]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) || state.notices.length) { if (!FRAME_PATH[tab]) render(); else if (state.notices.length) { toast(state.notices.join("\n\n")); state.notices = []; } }
       else if (!FRAME_PATH[tab]) renderHead();
     }).catch(function (e) { if (!quiet) full("Network error: " + (e && e.message || "unknown"), "⚠️"); });
   }
@@ -21387,8 +21265,18 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
   setInterval(function(){if(!resettingDay&&state&&state.quests&&Date.now()>=state.quests.reset_at*1000){resettingDay=true;load(true).finally(function(){resettingDay=false;});}},1000);
   var inp = $("input");
   function autosize() { inp.style.height = "auto"; inp.style.height = Math.min(120, inp.scrollHeight) + "px"; }
-  inp.addEventListener("input", autosize);
+  var completion='';
+  function ghostComplete(){
+    var value=inp.value,match=value.match(/(?:^|\s)([^\s]{2,})$/u),suffix='';
+    var words=state&&state.settings.lang==='ru'?['привет','приветик','пожалуйста','спасибо','сегодня','сейчас','конечно','красиво','хорошо','люблю','скучаю','покажи','фотографию','увидеть','интересно','расскажи','почему','подожди','хочешь','знаешь']:state&&state.settings.lang==='de'?['hallo','danke','bitte','heute','schön','erzähle']:['hello','thanks','please','today','beautiful','interesting'];
+    if(match&&inp.selectionStart===value.length){var part=match[1].toLowerCase(),word=words.find(function(w){return w.startsWith(part)&&w.length>part.length;});if(word)suffix=word.slice(part.length);}
+    completion=suffix;var ghost=$('input-ghost');ghost.innerHTML='';var prior=el('span','ghost-typed',value);ghost.appendChild(prior);ghost.appendChild(el('span','ghost-suffix',suffix));ghost.scrollTop=inp.scrollTop;
+  }
+  inp.addEventListener('input',function(){autosize();ghostComplete();});
+  inp.addEventListener('scroll',function(){$('input-ghost').scrollTop=inp.scrollTop;});
+  $('energy-action').onclick=useComposerEnergy;$('photo-action').onclick=requestComposerPhoto;
   inp.addEventListener("keydown", function (e) {
+    if(e.key==='Tab'&&completion){e.preventDefault();inp.value+=completion;autosize();ghostComplete();return;}
     if (e.key === "Enter" && !e.shiftKey && !("ontouchstart" in window)) { e.preventDefault(); send(); }
   });
   inp.addEventListener("focus", function () { setTimeout(function () { scrollBottom(true); }, 300); });
@@ -21684,6 +21572,7 @@ async def run_webapp_server():
     app_web.router.add_post("/api/app/toggle", api_app_toggle_handler)
     app_web.router.add_post("/api/app/rename", api_app_rename_handler)
     app_web.router.add_post("/api/app/look", api_app_look_handler)
+    app_web.router.add_post("/api/app/appearance", api_app_appearance_handler)
     app_web.router.add_post("/api/app/avatar", api_app_avatar_handler)
     app_web.router.add_get("/avatars/{name}", avatar_file_handler)
     app_web.router.add_post("/api/app/create", api_app_create_handler)
@@ -22207,6 +22096,9 @@ async def main():
     for account_id,account in user_data.items():
         if account_id != '__settings__' and isinstance(account,dict):
             retire_blackjack(account)
+            if account.get('portrait_pending'):
+                account['portrait_pending']=None
+                request_character_portrait(account)
     for account in user_data.values():
         if isinstance(account,dict) and account.get('scene_photo_job'):
             refund_scene_photo(account,account['scene_photo_job'].get('id'))

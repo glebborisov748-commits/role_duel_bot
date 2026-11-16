@@ -38,11 +38,11 @@ with sync_playwright() as p:
                 return r.fulfill(content_type='application/json',body=json.dumps({'ok':True,'state':state}))
             return r.fulfill(status=404,body='')
         page.route('**/*',route);page.goto('https://roleduel.test/app')
-        page.locator('.rd-photo-hint').wait_for()
+        page.locator('#photo-action').wait_for()
         assert page.locator('#photo-request').count()==0
-        assert page.locator('#chat-photo-tools .rd-energizer-use').is_disabled()
-        state['stats']['energy']=90;page.reload();page.locator('.rd-photo-hint').wait_for()
-        page.locator('#chat-photo-tools .rd-energizer-use').click()
+        assert page.locator('#energy-action').is_disabled()
+        state['stats']['energy']=90;page.reload();page.locator('#photo-action').wait_for()
+        page.locator('#energy-action').click()
         page.wait_for_function("document.querySelector('#h-en').textContent.includes('150')")
         assert state['stats']['energizers']==1
         page.locator('#nav button').nth(5).click()

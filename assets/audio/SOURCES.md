@@ -31,3 +31,10 @@ Recordings trimmed, converted to mono 24 kHz and gain reduced.
 `key[a-c]`, `pin[a-c]`, `chess[a-c]`, `counter[a-c]`, `dice[a-c]`, `pinbreak`, `unlock`, `match`, `reveal` are edited/layered Kenney Interface Sounds and Impact Sounds (CC0; licenses above). Each event chooses among three recordings without repeating the previous choice. Dice use layered wooden impacts.
 
 `wire[a-c]` are original, deterministic synthesized electrical hiss/crackle, not recordings of real live wires. They are used specifically for connecting cables. Build script: `scripts/build_game_audio.py interface.zip impacts.zip`. Existing food/drink recordings are retained.
+
+## 2026-11-16 farm banks
+
+`soil[a-c]`: edited CC0 Kenney `footstep_grass_000..002` plus an original soft synthesized sprout pop. These are original planting effects, not audio copied from Plants vs. Zombies.
+`waterplant[a-c]`: original synthesized short water-drop sequences, distinct from planting and drinking recordings.
+`harvest[a-c]`: edited CC0 Kenney grass impacts with an original brief chime.
+Build with `python scripts/build_farm_audio.py /path/to/kenney-impact-sounds.zip`.

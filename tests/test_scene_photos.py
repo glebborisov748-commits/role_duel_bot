@@ -15,7 +15,7 @@ from test_core import load_functions
 class ScenePhotoTests(unittest.IsolatedAsyncioTestCase):
     def namespace(self):
         ns=dict(asyncio=asyncio,os=os,datetime=datetime,json=json,logging=logging,
-                ENERGY_MAX=150,LOOKS={'test':{'en':'blue eyes, brown hair'}},AI_MODEL='mock',call_ai=lambda:None,
+                ENERGY_MAX=150,photo_appearance=lambda u:'adult with brown hair',LOOKS={'test':{'en':'blue eyes, brown hair'}},AI_MODEL='mock',call_ai=lambda:None,
                 scene_photos=scene_photos,photo_generation=photo_generation,user_data={},save_data=lambda d:None)
         load_functions({'generate_scene_photo','refund_scene_photo','app_hot_generate'},ns)
         scene={'text':'A quiet evening in a cafe.','photo_id':'job','photo_status':'pending'}
