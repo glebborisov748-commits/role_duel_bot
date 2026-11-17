@@ -36,7 +36,7 @@ class WorkshopTests(unittest.TestCase):
   self.assertIs(workshop.start(user,120),job)
   self.assertNotEqual(workshop.start(user,1400)['id'],job['id'])
  def test_reward_is_single_use_and_requires_correct_values_and_elapsed_time(self):
-  user={};job=workshop.start(user,100);correct=job['target'][:]
+  user={};job=workshop.start(user,100);correct=job['solution'][:]
   self.assertFalse(workshop.complete(user,job['id'],correct,102))
   self.assertFalse(workshop.complete(user,'wrong',correct,110))
   self.assertFalse(workshop.complete(user,job['id'],[True,True,True],110))
@@ -45,7 +45,28 @@ class WorkshopTests(unittest.TestCase):
   self.assertFalse(workshop.complete(user,job['id'],correct,111))
  def test_expired_job_cannot_be_claimed(self):
   user={};job=workshop.start(user,100)
-  self.assertFalse(workshop.complete(user,job['id'],job['target'],1400))
+  self.assertFalse(workshop.complete(user,job['id'],job['solution'],1400))
+
+class PipeGenerationTests(unittest.TestCase):
+ def test_random_boards_are_solvable_scrambled_and_difficulty_grows(self):
+  import random
+  states=[]
+  for level in range(30):
+   random.seed(234+level);job=workshop.start({'pipe_completed':level},100)
+   self.assertTrue(workshop.connected(job,job['solution']))
+   self.assertFalse(workshop.connected(job,[c['rotation'] for c in job['cells']]))
+   self.assertEqual({c['kind'] for c in job['cells']},{'straight','elbow'})
+   self.assertNotIn('solution',workshop.public(job))
+   states.append(str(job['cells']))
+  self.assertEqual(len(set(states)),30)
+  self.assertEqual(workshop.start({},100)['size'],4)
+  self.assertEqual(workshop.start({'pipe_completed':3},100)['size'],5)
+  self.assertEqual(workshop.start({'pipe_completed':6},100)['size'],6)
+ def test_rotations_require_complete_valid_arrays(self):
+  job=workshop.start({},100)
+  self.assertFalse(workshop.connected(job,job['solution'][:-1]))
+  self.assertFalse(workshop.connected(job,[True]*len(job['cells'])))
+  self.assertFalse(workshop.connected(job,[4]*len(job['cells'])))
 
 class PhotoPayloadTests(unittest.IsolatedAsyncioTestCase):
  def test_models_follow_world_and_gender(self):

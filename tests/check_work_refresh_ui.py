@@ -1,14 +1,16 @@
 """Mobile work flows: multi-turn locks, memory countdown, city routing and radio repair."""
-import json,copy
+import json,copy,sys
 from pathlib import Path
 from collections import deque
 from playwright.sync_api import sync_playwright
 from ui_fixture import constants,ROOT
+sys.path.insert(0,str(ROOT))
+import workshop
 initial=json.loads(Path('/tmp/rd-work.json').read_text())
 with sync_playwright() as p:
  browser=p.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
  for width in (320,390,430):
-  state=copy.deepcopy(initial);page=browser.new_page(viewport={'width':width,'height':844},is_mobile=True,has_touch=True);errors=[];hits=[];radio=[]
+  state=copy.deepcopy(initial);page=browser.new_page(viewport={'width':width,'height':844},is_mobile=True,has_touch=True);errors=[];hits=[];pipe_submissions=[];pipe_job=workshop.start({'pipe_completed':{320:0,390:3,430:6}[width]},100)
   page.on('pageerror',lambda e:errors.append(str(e)))
   def route(r):
    path=r.request.url.split('roleduel.test')[-1].split('?')[0]
@@ -24,8 +26,8 @@ with sync_playwright() as p:
    if path=='/api/work/hit':hits.append(r.request.post_data_json)
    if path=='/api/work/workshop':
     body=r.request.post_data_json
-    if body['action']=='start':return r.fulfill(content_type='application/json',body=json.dumps({'ok':True,'job':{'id':'test-job','target':[3,6,4]}}))
-    radio.append(body);matched=body['values']==[3,6,4]
+    if body['action']=='start':return r.fulfill(content_type='application/json',body=json.dumps({'ok':True,'job':workshop.public(pipe_job)}))
+    pipe_submissions.append(body);matched=workshop.connected(pipe_job,body['values'])
     return r.fulfill(content_type='application/json',body=json.dumps({'ok':matched,'awarded':35 if matched else 0,'state':state}))
    if path.startswith('/api/'):return r.fulfill(content_type='application/json',body=json.dumps({'ok':True,'state':state,'awarded':110,'penalty':40}))
    return r.fulfill(status=404,body='')
@@ -58,10 +60,15 @@ with sync_playwright() as p:
   page.wait_for_timeout(1100);assert sum(h['game']=='courier' for h in hits)==1,hits
   page.wait_for_timeout(400);assert sum(h['game']=='courier' for h in hits)==1
   page.screenshot(path=f'/tmp/rd-city-courier-{width}.png')
-  page.locator('#tab-workshop').click();page.locator('.radio-knob').first.wait_for();page.locator('.radio-check').click();page.wait_for_timeout(100);assert radio[-1]['values']==[0,0,0]
-  for i,value in enumerate([3,6,4]):page.locator('[data-radio="'+str(i)+'"]').evaluate('(n,v)=>{n.value=v;n.dispatchEvent(new Event("input"));}',value)
-  page.locator('.radio-check').click();page.wait_for_timeout(100);assert radio[-1]['values']==[3,6,4]
-  page.screenshot(path=f'/tmp/rd-radio-{width}.png');assert not errors,errors
+  page.locator('#tab-workshop').click();page.locator('.pipe-tile').first.wait_for()
+  assert page.locator('.pipe-tile').count()==pipe_job['size']**2
+  page.locator('.pipe-check').click();assert not pipe_submissions
+  for i,rotation in enumerate(pipe_job['solution']):
+   for _ in range((rotation-pipe_job['cells'][i]['rotation'])%4):page.locator('[data-pipe="'+str(i)+'"]').click()
+  assert 'Соединено' in page.locator('#pipe-result').inner_text()
+  page.wait_for_timeout(250);page.screenshot(path=f'/tmp/rd-pipes-{width}.png')
+  page.locator('.pipe-check').click();page.wait_for_timeout(100);assert len(pipe_submissions)==1 and workshop.connected(pipe_job,pipe_submissions[-1]['values'])
+  assert not errors,errors
   assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
-  page.close();print('Lock, memory, city courier and radio passed:',width,flush=True)
+  page.close();print('Lock, memory, city courier and pipes passed:',width,flush=True)
  browser.close()

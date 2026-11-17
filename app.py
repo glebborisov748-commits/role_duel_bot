@@ -1,3 +1,4 @@
+import profile_options
 import workshop
 import avatar_preview
 import character_options
@@ -1656,6 +1657,9 @@ def get_user(user_id):
             "satiety": 100,
             "energizers": 0,
             "bucks": 0,
+            "inventory": {},
+            "preferences": profile_options.defaults(),
+            "race": "human",
             "custom_gifts_given": [],
             "writing_custom_gift": False,
             "last_hot_scene": None,
@@ -1708,6 +1712,9 @@ def get_user(user_id):
             "satiety": 100,
             "energizers": 0,
             "bucks": 0,
+            "inventory": {},
+            "preferences": profile_options.defaults(),
+            "race": "human",
             "custom_gifts_given": [],
             "writing_custom_gift": False,
             "last_hot_scene": None,
@@ -9177,6 +9184,16 @@ def serialize_shop_state(user):
         if items:
             categories.append({"key": shop_category, "name": get_text(user, SHOP_CATEGORY_TEXT_KEY[shop_category]), "items": items})
 
+    wardrobe_items=[]
+    inventory=user.get('inventory') or {}
+    for key,item in profile_options.WARDROBE.items():
+        owned=bool(inventory.get(key,0))
+        wardrobe_items.append({'key':key,'category':'wardrobe','name':item['name'],'price':item['price'],
+            'emoji':item['emoji'],'image':None,'ready_in':None,'refuse':False,'owned':owned,
+            'owned_label':{'ru':'В гардеробе','de':'Im Kleiderschrank'}.get(lang,'Owned'),
+            'effects':{'ru':'Остаётся в твоём гардеробе','de':'Bleibt in deinem Kleiderschrank'}.get(lang,'Kept in your wardrobe')})
+    categories.append({'key':'wardrobe','name':{'ru':'Гардероб','de':'Kleiderschrank'}.get(lang,'Wardrobe'),'items':wardrobe_items})
+
     game_items = [{
         "key": key, "category": "play", "image": shop_item_image("game", key), "emoji": offer["emoji"],
         "name": game_offer_name(user, key), "price": offer["price"],
@@ -9271,6 +9288,15 @@ async def perform_webapp_purchase(user, user_id, category, key, note=None):
     """Та же последовательность проверок, что в buy_food/buy_gift/buy_medicine и в
     writing_item_note-ветке handle_message — просто вызывается из API, а не из
     callback-хендлера. Содержательная логика по-прежнему только в execute_item_purchase."""
+    if category=='wardrobe':
+        item=profile_options.WARDROBE.get(key)
+        if not item:return {'ok':False,'error':'Not found'}
+        inventory=user.get('inventory') or {}
+        if inventory.get(key,0):return {'ok':False,'error':{'ru':'Этот предмет уже в гардеробе','de':'Dieser Artikel ist bereits im Kleiderschrank'}.get(user.get('lang'),'Already owned')}
+        if not spend_bucks(user,item['price']):return {'ok':False,'error':get_text(user,'not_enough_bucks',n=item['price']-user.get('bucks',0))}
+        user['inventory']={**inventory,key:1}
+        save_data(user_data)
+        return {'ok':True}
     if category in ("game", "event"):
         # Игра/сюжет идут в чате с персонажем -- Mini App после старта закрываем (см. buy() в SHOP_PAGE_HTML).
         error = await (start_game(user_id, user, key) if category == "game" else start_story_event(user_id, user, key))
@@ -13068,7 +13094,7 @@ SHOP_PAGE_HTML = r'''<!doctype html>
     top.appendChild(emoji);
 
     var noteBox = null;
-    if (["medicine", "energizer", "game", "event", "exchange", "play"].indexOf(item.category) < 0) {
+    if (["wardrobe", "medicine", "energizer", "game", "event", "exchange", "play"].indexOf(item.category) < 0) {
       var toggle = document.createElement("button");
       toggle.className = "note-toggle";
       toggle.textContent = "✍️";
@@ -13168,6 +13194,7 @@ SHOP_PAGE_HTML = r'''<!doctype html>
       var buyBtn = document.createElement("button");
       buyBtn.className = "buy-btn";
       buyBtn.textContent = (item.category === "game" || item.category === "play") ? s.ui.play_btn : (item.category === "event" ? s.ui.start_btn : s.ui.webapp_buy_btn);
+      if(item.owned){buyBtn.textContent=item.owned_label;buyBtn.disabled=true;}
       if (busyKeys[itemKey]) buyBtn.disabled = true;
       buyBtn.onclick = item.category === "play"
         ? function () { if (window.__rdNav) window.__rdNav("/play?game=" + item.key); else window.location.href = "/play?game=" + item.key + window.location.hash; }
@@ -15655,7 +15682,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
 #courier-road.city-map{height:auto!important;aspect-ratio:1;min-height:270px;max-height:none;background:#33323b!important;border:8px solid #292630;border-radius:22px;overflow:hidden}
 #courier-road.city-map::before,#courier-road.city-map::after{display:none!important}.city-cell{position:absolute;width:14.2858%;height:14.2858%;box-sizing:border-box}.city-cell.street{background:#3c3b43;border:1px dashed #88807835}.city-cell.building{background:var(--roof);border:4px solid #2c2932;border-radius:8px;box-shadow:inset 0 4px 0 #ffffff12,0 4px 0 #0003;display:flex;align-items:center;justify-content:center;gap:4px}.city-cell.building i{width:6px;height:9px;background:#d7b78a;border-radius:2px}.city-map #courier-rider{position:absolute!important;width:38px!important;height:58px!important;bottom:auto!important;transition:top .22s linear,left .22s linear;transform:translate(-50%,-50%) rotate(var(--heading,0deg))!important;z-index:5}.city-map #courier-rider img{width:100%;height:100%;object-fit:contain}.city-map #courier-rider.stopped{filter:drop-shadow(0 0 5px #ad90b9)}#courier-address{position:absolute;width:42px;height:42px;transform:translate(-50%,-50%);z-index:4;border:2px solid #d3bb80;border-radius:12px;background:#66513b;box-shadow:0 0 calc(var(--handoff,0)*18px) #f6d595;pointer-events:none}#courier-address img{width:100%;height:100%;object-fit:contain}#courier-address b{position:absolute;right:-5px;top:-8px;width:19px;height:19px;text-align:center;border-radius:50%;background:#e4ba85;color:#30252b;font-size:12px}.city-barrier{position:absolute;width:29px;height:11px;border:2px solid #3d2a2e;border-radius:3px;background:repeating-linear-gradient(135deg,#d3a965 0 6px,#514447 6px 12px);z-index:3;transform:translate(-50%,-50%)}#courier-controls{display:flex!important;flex-wrap:wrap;gap:6px;justify-content:center}#courier-controls button{flex:0 0 34px!important;min-width:34px!important;min-height:39px!important;max-width:none!important;width:auto!important;padding:5px!important;font-size:15px!important}#courier-controls button{background:linear-gradient(#6a5d74,#43394f)!important;color:#f5eafa!important;border:1px solid #96849e!important;box-shadow:0 2px 0 #26212d!important}#courier-controls #courier-stop-btn{flex-basis:90px!important;font-size:11px!important}.memory-countdown{color:#c5ad7c;font-variant-numeric:tabular-nums}#hacker-mode button{font-size:11px;padding:5px 9px;margin-left:8px;border-radius:8px}#tabs{flex-wrap:wrap}.tab-btn{min-width:65px}
 
-#game-workshop{padding:16px;background:#292839;border-radius:22px;border:1px solid #685866}#game-workshop h3{margin:0 0 8px}#game-workshop p{font-size:13px;color:#c7bac9;line-height:1.5}#radio-scope{width:100%;background:repeating-linear-gradient(0deg,#ffffff05 0 1px,transparent 1px 20px),#181b25;border:1px solid #605463;border-radius:15px}#radio-scope path{fill:none;stroke-width:2;stroke-linecap:round}#radio-target{stroke:#d5bd83;stroke-dasharray:4 3}#radio-current{stroke:#cc92c6}.radio-knob{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:19px 0;font-size:13px}.radio-knob input{width:62%;accent-color:#c698c6;min-height:32px}.radio-check{width:100%;padding:13px;border:1px solid #b299b5;border-radius:12px;background:linear-gradient(#796681,#50465e);color:#fff;font-size:15px}
+#game-workshop{padding:12px;background:#292839;border-radius:22px;border:1px solid #685866}#game-workshop h3{margin:0 0 8px}#game-workshop p{font-size:13px;color:#c7bac9;line-height:1.5}.pipe-meta{font-size:12px;color:#c9bba1;margin:10px 0}.pipe-check{width:100%;padding:13px;border:1px solid #b299b5;border-radius:12px;background:linear-gradient(#796681,#50465e);color:#fff;font-size:15px}#pipe-board{display:grid;gap:3px;padding:5px;border-radius:15px;background:#171e27}.pipe-tile{aspect-ratio:1;position:relative;min-width:0;padding:0;border:1px solid #444b59;border-radius:8px;background:linear-gradient(135deg,#353b49,#292d3a);overflow:hidden;touch-action:manipulation}.pipe-tile svg{display:block;width:100%;height:100%;transition:transform .16s ease}.pipe-tile path{fill:none;stroke-linejoin:round}.pipe-shadow{stroke:#111720;stroke-width:32}.pipe-metal{stroke:#a9adae;stroke-width:24}.pipe-water{stroke:#727c86;stroke-width:11;transition:stroke .2s}.pipe-tile.wet .pipe-water{stroke:#67cfb1}.pipe-tile.inlet{border:2px solid #67cfb1;box-shadow:inset 4px 0 #67cfb1}.pipe-tile.outlet{border:2px solid #e0bd7d;box-shadow:inset -4px 0 #e0bd7d}#pipe-result{min-height:20px}
 </style>
 </head>
 <body>
@@ -16793,20 +16820,31 @@ WORK_PAGE_HTML = r'''<!doctype html>
     var speed=document.createElement('button');speed.id='courier-speed';speed.textContent='×2';speed.onclick=function(){if(courierRun){courierRun.speed=courierRun.speed%3+1;speed.textContent='×'+courierRun.speed;courierHUD();}};controls.appendChild(speed);
   }
 
-  var radioJob=null,radioBusy=false,radioValues=[0,0,0];
-  function radioWave(values){var points=[];for(var x=0;x<=300;x+=2){var y=70-Math.sin(x/300*Math.PI*(2+values[0]) + values[2]*Math.PI/5)*(10+values[1]*4);points.push((x?'L':'M')+x+','+y.toFixed(2));}return points.join(' ');}
-  function drawRadio(){
-    var panel=document.getElementById('game-workshop');panel.innerHTML='';
-    panel.innerHTML='<h3>'+courierWords('Радиомастерская','Radio workshop','Radiowerkstatt')+'</h3><p>'+courierWords('Совмести розовую волну с золотой. Настрой частоту, усиление и фазу. Звук включать не нужно.','Match the pink wave to the gold one. Adjust frequency, gain and phase. Sound is optional.','Bringe die rosa Welle mit der goldenen zur Deckung. Stelle Frequenz, Verstärkung und Phase ein. Ohne Ton spielbar.')+'</p><svg id="radio-scope" viewBox="0 0 300 140"><path id="radio-target"/><path id="radio-current"/></svg>';
-    if(!radioJob){panel.appendChild(document.createTextNode(courierWords('Загрузка…','Loading…','Laden…')));return;}
-    document.getElementById('radio-target').setAttribute('d',radioWave(radioJob.target));
-    function update(){document.getElementById('radio-current').setAttribute('d',radioWave(radioValues));}
-    [courierWords('Частота','Frequency','Frequenz'),courierWords('Усиление','Gain','Verstärkung'),courierWords('Фаза','Phase','Phase')].forEach(function(label,i){var row=document.createElement('label');row.className='radio-knob';row.textContent=label;var knob=document.createElement('input');knob.type='range';knob.min=0;knob.max=10;knob.step=1;knob.value=radioValues[i];knob.dataset.radio=i;knob.oninput=function(){radioValues[i]=Number(knob.value);update();};row.appendChild(knob);panel.appendChild(row);});
-    var result=document.createElement('p');result.id='radio-result';result.setAttribute('aria-live','polite');panel.appendChild(result);
-    var check=document.createElement('button');check.className='radio-check';check.textContent=courierWords('Проверить настройку','Check calibration','Abgleich prüfen');check.onclick=function(){if(radioBusy)return;radioBusy=true;check.disabled=true;api('/api/work/workshop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'complete',id:radioJob.id,values:radioValues})}).then(function(res){radioBusy=false;check.disabled=false;if(res.state){state=res.state;setBalance(state.bucks);}if(res.ok){fx('good');result.textContent='+'+res.awarded;radioJob=null;setTimeout(function(){if(activeGame==='workshop')startRadio();},900);}else{haptic('warning');result.textContent=courierWords('Ещё не совпало. Подстрой волну и проверь снова.','Not matched yet. Adjust the wave and try again.','Noch nicht passend. Stelle die Welle weiter ein.');}}).catch(function(){radioBusy=false;check.disabled=false;});};panel.appendChild(check);update();
+  var pipeJob=null,pipeBusy=false,pipeRotations=[];
+  function pipeMask(kind,rotation){rotation=rotation%4;var base=kind==='straight'?5:3;return ((base<<rotation)|(base>>(4-rotation)))&15;}
+  function pipeTrace(){
+    if(!pipeJob)return {wet:[],complete:false};var pos=pipeJob.source,entry=8,seen={},wet=[],size=pipeJob.size;
+    while(!seen[pos]){seen[pos]=true;var ports=pipeMask(pipeJob.cells[pos].kind,pipeRotations[pos]);if(!(ports&entry))break;wet.push(pos);var out=ports^entry;if(pos===pipeJob.sink&&out===2)return {wet:wet,complete:true};var dx=out===2?1:out===8?-1:0,dy=out===4?1:out===1?-1:0;if(!dx&&!dy)break;var x=pos%size+dx,y=Math.floor(pos/size)+dy;if(x<0||y<0||x>=size||y>=size)break;pos=y*size+x;entry=out===1?4:out===2?8:out===4?1:2;}return {wet:wet,complete:false};
   }
-  function startRadio(){
-    if(radioJob){drawRadio();return;}drawRadio();api('/api/work/workshop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'start'})}).then(function(res){if(!res.ok)return;radioJob=res.job;radioValues=[0,0,0];if(activeGame==='workshop')drawRadio();});
+  function pipePaint(){
+    var trace=pipeTrace();document.querySelectorAll('.pipe-tile').forEach(function(tile){var i=Number(tile.dataset.pipe);tile.classList.toggle('wet',trace.wet.indexOf(i)>=0);tile.querySelector('svg').style.transform='rotate('+(pipeRotations[i]*90)+'deg)';tile.setAttribute('aria-label',courierWords('Труба ','Pipe ','Rohr ')+(i+1)+', '+pipeRotations[i]*90+'°');});
+    var result=document.getElementById('pipe-result');if(result)result.textContent=trace.complete?courierWords('Соединено. Пусти воду!','Connected. Open the valve!','Verbunden. Wasser aufdrehen!'):'';
+  }
+  function drawPipes(){
+    var panel=document.getElementById('game-workshop');panel.innerHTML='';
+    panel.appendChild(Object.assign(document.createElement('h3'),{textContent:courierWords('Сантехник','Plumber','Klempner')}));
+    var hint=document.createElement('p');hint.textContent=courierWords('Нажимай на трубы: соедини зелёный вход с золотым выходом.','Tap pipes to connect the green inlet to the gold outlet.','Drehe die Rohre: grünen Eingang mit goldenem Ausgang verbinden.');panel.appendChild(hint);
+    if(!pipeJob){panel.appendChild(Object.assign(document.createElement('p'),{textContent:courierWords('Загрузка…','Loading…','Laden…')}));return;}
+    var meta=document.createElement('div');meta.className='pipe-meta';meta.textContent=courierWords('Уровень ','Level ','Stufe ')+pipeJob.level+' · '+pipeJob.size+'×'+pipeJob.size;panel.appendChild(meta);
+    var board=document.createElement('div');board.id='pipe-board';board.style.gridTemplateColumns='repeat('+pipeJob.size+',1fr)';board.setAttribute('role','group');board.setAttribute('aria-label',courierWords('Поле труб','Pipe board','Rohrfeld'));
+    pipeJob.cells.forEach(function(cell,i){var tile=document.createElement('button');tile.type='button';tile.className='pipe-tile'+(i===pipeJob.source?' inlet':'')+(i===pipeJob.sink?' outlet':'');tile.dataset.pipe=i;
+      var d=cell.kind==='straight'?'M50 0V100':'M50 0V32Q50 50 68 50H100';tile.innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true"><path class="pipe-shadow" d="'+d+'"/><path class="pipe-metal" d="'+d+'"/><path class="pipe-water" d="'+d+'"/></svg>';
+      tile.onclick=function(){if(pipeBusy||!pipeJob)return;pipeRotations[i]++;fx('key');pipePaint();};board.appendChild(tile);});panel.appendChild(board);
+    var result=document.createElement('p');result.id='pipe-result';result.setAttribute('aria-live','polite');panel.appendChild(result);
+    var check=document.createElement('button');check.className='pipe-check';check.textContent=courierWords('Пустить воду','Open valve','Wasser aufdrehen');check.onclick=function(){if(pipeBusy)return;if(!pipeTrace().complete){result.textContent=courierWords('Есть разрыв. Проверь соединения.','There is a gap. Check the connections.','Noch eine Lücke. Prüfe die Verbindungen.');haptic('warning');return;}pipeBusy=true;check.disabled=true;var id=pipeJob.id;api('/api/work/workshop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'complete',id:id,values:pipeRotations.map(function(r){return r%4;})})}).then(function(res){pipeBusy=false;check.disabled=false;if(res.state){state=res.state;setBalance(state.bucks);}if(res.ok){fx('good');result.textContent='+'+res.awarded;pipeJob=null;check.disabled=true;setTimeout(function(){if(activeGame==='workshop')startPipes();},900);}else{result.textContent=courierWords('Проверь соединения и попробуй ещё раз.','Check the connections and try again.','Verbindungen prüfen und erneut versuchen.');}}).catch(function(){pipeBusy=false;check.disabled=false;result.textContent=courierWords('Нет связи. Попробуй ещё раз.','Connection lost. Please retry.','Verbindung verloren. Erneut versuchen.');});};panel.appendChild(check);pipePaint();
+  }
+  function startPipes(){
+    if(pipeJob){drawPipes();return;}drawPipes();api('/api/work/workshop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'start'})}).then(function(res){if(!res.ok)return;pipeJob=res.job;pipeRotations=pipeJob.cells.map(function(cell){return cell.rotation;});if(activeGame==='workshop')drawPipes();});
   }
 
   // ---------- Farm ----------
@@ -17070,7 +17108,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (name === "catch") startCatch();
     if (name === "courier") startCourier();
     if (name === "farm") renderFarm();
-    if (name === "workshop") startRadio();
+    if (name === "workshop") startPipes();
   }
 
   function render() {
@@ -17088,7 +17126,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     document.getElementById("tab-catch").textContent = state.ui.tab_catch;
     document.getElementById("tab-courier").textContent = state.ui.tab_courier;
     document.getElementById("tab-farm").textContent = state.ui.tab_farm;
-    document.getElementById("tab-workshop").textContent=courierWords("Радио","Radio","Radio");document.getElementById("tab-workshop").onclick=function(){switchGame("workshop");};
+    document.getElementById("tab-workshop").textContent=courierWords("Трубы","Pipes","Rohre");document.getElementById("tab-workshop").onclick=function(){switchGame("workshop");};
     document.getElementById("clicker-hint").textContent = state.ui.clicker_hint;
     document.getElementById("catch-hint").textContent = state.ui.catch_hint;
     document.getElementById("courier-hint").textContent = state.ui.courier_hint;
@@ -18911,7 +18949,7 @@ def serialize_onboarding(user):
     for key in STYLES:
         tier = None if is_style_unlocked(key, user) else (style_required_tier(key))
         styles.append({"key": key, "label": style_display_label(key, user), "desc": (STYLES[key].get("summary") or (STYLES[key]["description"],STYLES[key]["label_en"],STYLES[key]["label_de"]))[{"ru":0,"en":1,"de":2}.get(lang,1)], "locked": tier})
-    return {"portrait_enabled":False,"appearance_fields":character_options.choices(lang),"appearance_defaults":dict(character_options.DEFAULT),"worlds": [{"key": "realism", "label": get_text(user, "realism"), "desc": at(user, "ob_realism")},
+    return {"races":profile_options.choices(profile_options.RACES,lang),"portrait_enabled":False,"appearance_fields":character_options.choices(lang),"appearance_defaults":dict(character_options.DEFAULT),"worlds": [{"key": "realism", "label": get_text(user, "realism"), "desc": at(user, "ob_realism")},
                        {"key": "anime", "label": get_text(user, "anime"), "desc": at(user, "ob_anime")}],
             "genders": [{"key": "female", "label": at(user, "ob_female")}, {"key": "male", "label": at(user, "ob_male")}],
             "default_gender": "female" if user.get("user_gender") != "female" else "male",
@@ -18992,6 +19030,7 @@ def serialize_app_state(user):
         "messages": [{"id": m["id"], "role": m["role"], "text": m["content"], "reaction": m.get("reaction"), "user_reaction": m.get("user_reaction"), "reaction_animated": bool(m.get("reaction_animated")), "edited": bool(m.get("edited")), "card": m.get("card"), "photo": m.get("photo")}
                      for m in history],
         "onboarding": None,
+        "content_settings":profile_options.state(user),
         "reply_choices": serialize_reply_choices(user),
         "pending": bool(user.get("app_pending")),"photo_pending":bool(user.get("photo_pending")),
         "notices": notices,
@@ -19502,6 +19541,8 @@ async def api_app_create_handler(request):
         appearance=character_options.validate(body.get('appearance',character_options.DEFAULT))
     except ValueError:
         return web.json_response({'ok':False,'error':'Invalid appearance'})
+    try:race=profile_options.validate_race(body.get('race','human'))
+    except ValueError:return web.json_response({'ok':False,'error':'Invalid race'})
     custom = str(body.get("custom") or "").strip()[:2000]
     if custom and get_subscription_level(user) not in ("super_pro", "elite"):
         custom = ""
@@ -19517,7 +19558,7 @@ async def api_app_create_handler(request):
         error = save_avatar(user, body.get("avatar"))
         if error:
             return web.json_response({"ok": False, "error": error})
-    user.update(appearance=character_options.visual_from_description(appearance,custom),portrait_url=None,world=world, gender=gender, style=style, scene=scene, custom_character=custom[:2000] or None,
+    user.update(race=race,appearance=character_options.visual_from_description(appearance,custom),portrait_url=None,world=world, gender=gender, style=style, scene=scene, custom_character=custom[:2000] or None,
                 personality_ready=True, history=[], relationship={}, reply_choices={}, reply_choices_turns=0,
                 reply_choices_next=random.randint(5, 8), creating_character=False, switching_personality=False,
                 last_activity=datetime.now().isoformat())
@@ -21062,6 +21103,12 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     window.addEventListener('resize', position); show();
   }
 
+  function showContentSettings(){
+    var current=state.content_settings||{},values=Object.assign({},current.preferences||{}),box=$('sheet-box');box.innerHTML='';box.appendChild(el('h4',null,tr('Настройки контента','Content settings','Inhaltseinstellungen')));
+    (current.preference_options||[]).forEach(function(option){var row=el('label');row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px';row.appendChild(el('span',null,option.label));var check=el('input');check.type='checkbox';check.dataset.preference=option.key;check.checked=values[option.key]===true;check.style.cssText='width:21px;height:21px;accent-color:#bd80de';check.onchange=function(){values[option.key]=check.checked;};row.appendChild(check);box.appendChild(row);});
+    var label=el('label','rd-field',tr('Раса персонажа','Character race','Charaktervolk')),race=el('select','rd-style-select');race.id='content-race';(current.races||[]).forEach(function(option){var node=el('option',null,option.label);node.value=option.key;race.appendChild(node);});race.value=current.race||'human';label.appendChild(race);box.appendChild(label);
+    var save=el('button','btn',tr('Сохранить','Save','Speichern'));save.id='content-save';save.onclick=function(){save.disabled=true;api('/api/app/settings',{preferences:values,race:race.value}).then(function(res){if(res.state)state=res.state;if(res.ok){$('sheet').classList.remove('on');render();}else{toast(res.error);save.disabled=false;}}).catch(function(){save.disabled=false;toast('Network error');});};box.appendChild(save);$('sheet').classList.add('on');
+  }
   function renderProfile() {
     var s = state, ui = s.ui, st = s.stats, v = $("view-profile");
     v.innerHTML = "";
@@ -21160,6 +21207,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     v.appendChild(sub);
 
     renderSettings(v);
+    var contentButton=el('button','btn ghost',tr('⚙️ Настройки контента','⚙️ Content settings','⚙️ Inhaltseinstellungen'));contentButton.id='content-settings';contentButton.onclick=showContentSettings;v.appendChild(contentButton);
     var more = el("div", "card");
     var hb = el("button", "hot-feature");hb.type="button";var hotIcon=el("img");hotIcon.src="/assets/icon_hot.webp";hotIcon.alt="";hb.appendChild(hotIcon);var hotTitle=el("span");hotTitle.appendChild(el("strong",null,ui.hot_btn));hotTitle.appendChild(el("small",null,tr("Выбери сюжет и обстановку","Choose a setting and story","Wähle Geschichte und Umgebung")));hb.appendChild(hotTitle);hb.appendChild(el("span","feature-arrow","›"));
     hb.onclick = function () { setTab("hot"); };
@@ -21389,6 +21437,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       v.appendChild(wrap);
     }
     if (obStep === 2) {
+      if(o.races){var raceLabel=el('label','rd-field',tr('Раса персонажа','Character race','Charaktervolk')),raceSelect=el('select','ob-in');raceSelect.id='ob-race';o.races.forEach(function(item){var node=el('option',null,item.label);node.value=item.key;raceSelect.appendChild(node);});raceSelect.value=ob.race||'human';raceSelect.onchange=function(){ob.race=raceSelect.value;};raceLabel.appendChild(raceSelect);v.appendChild(raceLabel);}
       v.appendChild(el("div", "ob-q", ui.ob_name));
       var ni = el("input", "ob-in"); ni.maxLength = o.name_max || 24; ni.placeholder = ui.ob_name_hint; ni.value = ob.name || "";
       ni.oninput = function () { ob.name = ni.value; }; v.appendChild(ni);
@@ -21414,7 +21463,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     nx.onclick = function () {
       if (!last) { obStep++; haptic("light"); renderOnb(); v.scrollTop = 0; return; }
       nx.disabled = true;
-      api("/api/app/create", { world: ob.world, gender: ob.gender, look: ob.look, style: ob.style, scene: ob.scene, appearance:ob.appearance, custom: ob.custom || "", name: ob.name || "", avatar: ob.avatar || null }).then(function (res) {
+      api("/api/app/create", { world: ob.world, gender: ob.gender, look: ob.look, style: ob.style, scene: ob.scene, race:ob.race||'human', appearance:ob.appearance, custom: ob.custom || "", name: ob.name || "", avatar: ob.avatar || null }).then(function (res) {
         if (!res.ok) { nx.disabled = false; toast(res.error || "Error"); haptic("error"); return; }
         haptic("success"); state = res.state; tab = "chat"; render(); schedulePoll();
       }).catch(function () { nx.disabled = false; toast("Network error"); });
@@ -21620,7 +21669,7 @@ async def api_work_workshop_handler(request):
     if not isinstance(body,dict):body={}
     if body.get('action')=='start':
         job=workshop.start(user);save_data(user_data)
-        return web.json_response({'ok':True,'job':{'id':job['id'],'target':job['target']}})
+        return web.json_response({'ok':True,'job':workshop.public(job)})
     if body.get('action')!='complete' or not workshop.complete(user,body.get('id'),body.get('values')):
         return web.json_response({'ok':False,'error':'not_calibrated'})
     amount=credit_work_bucks(user,35*(2 if work_double_active(user) else 1))
@@ -22240,6 +22289,10 @@ async def api_app_settings_handler(request):
     _, user, body, err = await _app_request(request)
     if err:
         return err
+    try:
+        preferences=profile_options.validate_preferences(body['preferences'],profile_options.preferences(user)) if 'preferences' in body else None
+        race=profile_options.validate_race(body['race']) if 'race' in body else None
+    except ValueError as exc:return _app_reply(user,False,str(exc))
     if "lang" in body:
         if body["lang"] not in LANG_BUTTONS:
             return _app_reply(user, False, "Unsupported language")
@@ -22255,6 +22308,8 @@ async def api_app_settings_handler(request):
         if body["scene"] not in ("phone", "live"):
             return _app_reply(user, False, "Unsupported mode")
         user["scene"] = body["scene"]
+    if preferences is not None:user['preferences']=preferences
+    if race is not None:user['race']=race
     if body.get("tour_seen") is True:
         user["tour_seen"] = True
     save_data(user_data)
