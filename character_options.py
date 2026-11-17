@@ -125,4 +125,4 @@ def identity(user):
 
 def preview_url(user):
  o=validate(user.get('appearance') or {},user.get('gender'))
- return '/api/appearance-preview.svg?'+urlencode({'world':user.get('world') or 'anime','race':user.get('race','human'),'gender':'male' if user.get('gender')=='male' else 'female',**{k:o[k] for k in VISUAL_KEYS}})
+ return '/api/appearance-preview.svg?v=20261117d&'+urlencode({'world':user.get('world') or 'anime','race':user.get('race','human'),'gender':'male' if user.get('gender')=='male' else 'female',**{k:o[k] for k in VISUAL_KEYS}})

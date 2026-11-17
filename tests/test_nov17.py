@@ -19,10 +19,16 @@ class AppearanceIdentityTests(unittest.TestCase):
   self.assertIn('No second person',options.identity({'gender':'male','appearance':{}}))
   negative=photo_generation.negative_identity('male',{'hair_color':'silver'})
   self.assertIn('woman',negative);self.assertIn('red auburn hair',negative);self.assertNotIn('white silver hair',negative)
- def test_preview_changes_all_visual_features_and_rejects_markup(self):
-  base=avatar_preview.svg({})
-  for key,value in [('hair_color','silver'),('skin','dark'),('eyes','green'),('hair_style','short'),('accessory','glasses'),('species','cat')]:self.assertNotEqual(base,avatar_preview.svg({key:value}))
-  self.assertNotEqual(base,avatar_preview.svg({},'male'))
+ def test_preview_keeps_source_intact_and_rejects_markup(self):
+  import xml.etree.ElementTree as ET
+  for gender in ('male','female'):
+   for world in ('anime','realism'):
+    raw=avatar_preview.svg({'world':world,'hair_color':'silver','skin':'dark','eyes':'green'},gender)
+    root=ET.fromstring(raw)
+    self.assertEqual(len(root),1)
+    self.assertTrue(root[0].tag.endswith('image'))
+    self.assertNotIn('filter=',raw);self.assertNotIn('<mask',raw)
+  self.assertTrue(avatar_preview.svg({})!=avatar_preview.svg({'hair_style':'short'}))
   with self.assertRaises(ValueError):avatar_preview.svg({'hair_color':'<script>'})
  def test_retired_styles_have_public_replacements(self):
   self.assertEqual(options.ALIASES['magnetic'],'calm');self.assertEqual(options.ALIASES['seduction'],'playful')

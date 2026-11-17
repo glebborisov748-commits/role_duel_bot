@@ -1,5 +1,6 @@
 import profile_options
 import workshop
+import player_avatar
 import avatar_preview
 import character_options
 import scene_photos
@@ -3588,6 +3589,7 @@ def photo_appearance(user):
 
 
 def look_image(user):
+    if user.get('identity_reference'):return user['identity_reference']
     if user.get('appearance'):
         return character_options.preview_url(user)
     return f"/assets/avatar_{user['look']}.jpg" if user.get("look") in LOOKS else None
@@ -9291,7 +9293,7 @@ def serialize_shop_state(user):
         "illness": illness_label,
         "asleep": is_asleep(user),
         "categories": categories,
-        "wardrobe_preview":character_options.preview_url(user)+"&full=1",
+        "wardrobe_preview":"/assets/wardrobe_model_"+("realism" if user.get("world")=="realism" else "anime")+"_"+("male" if user.get("gender")=="male" else "female")+".webp",
         "wardrobe_outfit":user.get("wardrobe_outfit"),
         "medicine": medicine,
         "energizer_packs": energizer_packs,
@@ -12959,6 +12961,10 @@ SHOP_PAGE_HTML = r'''<!doctype html>
   }
 
 #tabs{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px!important;overflow:visible!important;white-space:normal!important}#tabs button{white-space:normal;min-width:0;font-size:11px;padding:9px 5px;min-height:43px}.tab-wardrobe{grid-column:span 2;background:linear-gradient(135deg,#745270,#b98297)!important;color:#fff!important;font-size:17px!important;font-weight:800}.wardrobe-room{display:grid;grid-template-columns:minmax(90px,38%) 1fr;gap:12px;grid-column:1/-1;padding:12px;border:1px solid #80637e;border-radius:20px;background:#272337;margin-bottom:12px}.wardrobe-room img{width:100%;max-height:310px;object-fit:contain}.wardrobe-room h3{font-size:16px}.wardrobe-room p{font-size:12px;color:#c8bace}.wardrobe-room select{width:100%;padding:8px;border-radius:10px;background:#383147;color:#eee1f3;border:1px solid #7d657e}.wardrobe-room button{width:100%;margin-top:12px;padding:10px;border-radius:12px;border:1px solid #b195aa;background:#795d80;color:white}
+
+#tabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;align-items:stretch!important;white-space:normal!important;margin-bottom:14px!important}
+#tabs button.tab{width:100%!important;min-width:0!important;min-height:52px!important;max-height:60px!important;padding:7px 5px!important;font-size:11px!important;line-height:1.2!important;border-radius:14px!important;grid-column:auto!important;overflow:hidden!important;overflow-wrap:anywhere!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;box-sizing:border-box!important;font-weight:650!important}
+.wardrobe-room{grid-template-columns:minmax(0,42%) minmax(0,1fr)!important;width:100%!important;box-sizing:border-box!important;gap:12px!important;padding:12px!important;align-items:start!important}.wardrobe-room>div{min-width:0}.wardrobe-room .wardrobe-model{width:100%;height:270px!important;max-height:none!important;object-fit:cover!important;object-position:top;border-radius:16px}.wardrobe-room .wardrobe-product{display:block;width:90px;height:90px;object-fit:contain;margin:12px auto}.wardrobe-room .wardrobe-product[hidden]{display:none}.wardrobe-room select{font-size:12px!important;max-width:100%;min-width:0;box-sizing:border-box!important}.wardrobe-room h3{font-size:16px!important;margin:0 0 12px}.wardrobe-room p{font-size:11px!important;line-height:1.45}.wardrobe-room button{font-size:13px!important;min-height:44px!important}.card,.card-top,.card-body{min-width:0;box-sizing:border-box}html,body{max-width:100%;overflow-x:hidden}
 </style>
 </head>
 <body>
@@ -12982,7 +12988,8 @@ SHOP_PAGE_HTML = r'''<!doctype html>
   if (tg) { safe(function () { tg.ready(); }); safe(function () { tg.expand(); }); }
 
   var state = null;
-  var activeTab = null;
+  var wardrobeOnly=new URLSearchParams(location.search).get("wardrobe")==="1";
+  var activeTab = wardrobeOnly?"wardrobe":null;
   var busyKeys = {};
 
   function initData() { return tg ? tg.initData : ""; }
@@ -13049,7 +13056,7 @@ SHOP_PAGE_HTML = r'''<!doctype html>
     // Энергетики -- первой вкладкой (и выделены отдельным стилем, см. .tab-energizer/.card-energizer
     // в CSS): по просьбе сделать их самым заметным, приоритетным разделом магазина. Лекарства всё
     // равно важнее при болезни -- unshift ниже их всё равно выносит перед энергетиками.
-    var list = [];var wardrobe=s.categories.find(function(c){return c.key==='wardrobe';});if(wardrobe)list.push(wardrobe);
+    var list = [];var wardrobe=s.categories.find(function(c){return c.key==='wardrobe';});if(wardrobeOnly)return wardrobe?[wardrobe]:[];
     if (s.energizer_packs && s.energizer_packs.length) {
       list.push({
         key: "energizer",
@@ -13100,7 +13107,10 @@ SHOP_PAGE_HTML = r'''<!doctype html>
 
   var fittingItem=null;
   function fittingRoom(s){
-    var room=document.createElement('div');room.className='wardrobe-room';var image=document.createElement('img');image.alt=s.lang==='ru'?'Примерка':'Try on';var controls=document.createElement('div'),title=document.createElement('h3');title.textContent=s.lang==='ru'?'Примерочная':s.lang==='de'?'Anprobe':'Dressing room';controls.appendChild(title);var select=document.createElement('select');select.id='wardrobe-fitting';var items=s.categories.find(function(c){return c.key==='wardrobe';}).items;var basic=document.createElement('option');basic.value='';basic.textContent=s.lang==='ru'?'Базовый образ':s.lang==='de'?'Basis-Outfit':'Basic outfit';select.appendChild(basic);items.forEach(function(item){var option=document.createElement('option');option.value=item.key;option.textContent=item.name;select.appendChild(option);});if(fittingItem===null)fittingItem=s.wardrobe_outfit||items[0].key;select.value=fittingItem;controls.appendChild(select);var note=document.createElement('p');note.textContent=s.lang==='ru'?'Бесплатный предпросмотр. Купленную вещь можно надеть.':s.lang==='de'?'Kostenlose Vorschau. Gekaufte Kleidung kann angezogen werden.':'Free preview. Purchased clothes can be equipped.';controls.appendChild(note);var equip=document.createElement('button');equip.id='wardrobe-equip';function refresh(){fittingItem=select.value;image.src=s.wardrobe_preview+'&outfit='+encodeURIComponent(fittingItem);var item=items.find(function(i){return i.key===fittingItem;});equip.disabled=fittingItem!==''&&!item.owned;equip.textContent=(s.wardrobe_outfit||'')===fittingItem?(s.lang==='ru'?'Надето':s.lang==='de'?'Angezogen':'Equipped'):(s.lang==='ru'?'Надеть':s.lang==='de'?'Anziehen':'Equip');}select.onchange=refresh;equip.onclick=function(){equip.disabled=true;api('/api/wardrobe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({outfit:fittingItem||null})}).then(function(res){if(res.state)state=res.state;render();});};controls.appendChild(equip);room.appendChild(image);room.appendChild(controls);refresh();return room;
+    var room=document.createElement('div');room.className='wardrobe-room';var image=document.createElement('img');image.className='wardrobe-model';image.src=s.wardrobe_preview;image.alt=s.lang==='ru'?'Пример готового образа':'Style reference';var controls=document.createElement('div'),title=document.createElement('h3');title.textContent=s.lang==='ru'?'Твой гардероб':s.lang==='de'?'Deine Garderobe':'Your wardrobe';controls.appendChild(title);var select=document.createElement('select');select.id='wardrobe-fitting';var items=s.categories.find(function(c){return c.key==='wardrobe';}).items;
+    var basic=document.createElement('option');basic.value='';basic.textContent=s.lang==='ru'?'Базовая одежда':s.lang==='de'?'Grundkleidung':'Basic clothing';select.appendChild(basic);items.forEach(function(item){var option=document.createElement('option');option.value=item.key;option.textContent=item.name+(item.owned?' ✓':'');select.appendChild(option);});if(fittingItem===null)fittingItem=s.wardrobe_outfit||'';select.value=fittingItem;controls.appendChild(select);
+    var product=document.createElement('img');product.className='wardrobe-product';product.alt='';controls.appendChild(product);var note=document.createElement('p');note.textContent=s.lang==='ru'?'Выбранная вещь используется в новых фото. Образ слева — пример, без платной генерации.':s.lang==='de'?'Die Auswahl gilt für neue Fotos. Links: kostenlose Stilvorlage.':'The selected item is used in new photos. Left: a free style reference.';controls.appendChild(note);var equip=document.createElement('button');equip.id='wardrobe-equip';
+    function refresh(){fittingItem=select.value;var item=items.find(function(i){return i.key===fittingItem;});product.hidden=!item;if(item)product.src=item.image;equip.disabled=fittingItem!==''&&!item.owned;equip.textContent=(s.wardrobe_outfit||'')===fittingItem?(s.lang==='ru'?'Надето':s.lang==='de'?'Angezogen':'Equipped'):(s.lang==='ru'?'Надеть':s.lang==='de'?'Anziehen':'Equip');}select.onchange=refresh;equip.onclick=function(){equip.disabled=true;api('/api/wardrobe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({outfit:fittingItem||null})}).then(function(res){if(res.state)state=res.state;render();});};controls.appendChild(equip);room.appendChild(image);room.appendChild(controls);refresh();return room;
   }
   function makeCard(s, item) {
     var card = document.createElement("div");
@@ -13494,7 +13504,7 @@ async def audio_sample_handler(request):
     path = os.path.join(ASSETS_DIR, 'audio', name)
     if not os.path.isfile(path):
         raise web.HTTPNotFound()
-    return web.FileResponse(path, headers={'Cache-Control':'public, max-age=86400'})
+    return web.FileResponse(path, headers={'Cache-Control':'no-cache'})
 
 
 async def asset_image_handler(request):
@@ -15714,6 +15724,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
 #game-workshop{padding:12px;background:#292839;border-radius:22px;border:1px solid #685866}#game-workshop h3{margin:0 0 8px}#game-workshop p{font-size:13px;color:#c7bac9;line-height:1.5}.pipe-meta{font-size:12px;color:#c9bba1;margin:10px 0}.pipe-check{width:100%;padding:13px;border:1px solid #b299b5;border-radius:12px;background:linear-gradient(#796681,#50465e);color:#fff;font-size:15px}#pipe-board{display:grid;gap:3px;padding:5px;border-radius:15px;background:#171e27}.pipe-tile{aspect-ratio:1;position:relative;min-width:0;padding:0;border:1px solid #444b59;border-radius:8px;background:linear-gradient(135deg,#353b49,#292d3a);overflow:hidden;touch-action:manipulation}.pipe-tile svg{display:block;width:100%;height:100%;transition:transform .16s ease}.pipe-tile path{fill:none;stroke-linejoin:round}.pipe-shadow{stroke:#111720;stroke-width:32}.pipe-metal{stroke:#a9adae;stroke-width:24}.pipe-water{stroke:#727c86;stroke-width:11;transition:stroke .2s}.pipe-tile.wet .pipe-water{stroke:#67cfb1}.pipe-tile.inlet{border:2px solid #67cfb1;box-shadow:inset 4px 0 #67cfb1}.pipe-tile.outlet{border:2px solid #e0bd7d;box-shadow:inset -4px 0 #e0bd7d}#pipe-result{min-height:20px}
 #courier-controls{display:none!important}.city-address{opacity:.5}.city-address.current{opacity:1;border-color:#e4ba85;animation:address-glow 1.2s ease-in-out infinite}.city-address.done{display:none}@keyframes address-glow{50%{box-shadow:0 0 12px #deb87980}}
 #lock-side{display:flex;align-items:flex-start;justify-content:space-around;gap:8px;height:185px;padding:12px 15px 0;margin:12px 0;background:linear-gradient(#4b4648 0 64%,#a88f61 64% 69%,#2c2931 69%);border:5px solid #8a785c;border-radius:19px;touch-action:none}.side-pin{position:relative;flex:1;height:158px;min-width:30px;background:none!important;border:0!important;padding:0!important;touch-action:none}.side-pin span{position:absolute;top:0;left:0;right:0;font-size:12px;color:#dfcfaf}.side-pin i{position:absolute;left:22%;width:56%;top:25px;border:2px solid #c5b58b;border-radius:4px;background:linear-gradient(90deg,#796a4d,#d1c09a,#7e7054);box-shadow:0 -8px 0 #312d32}.side-pin.selected i{border-color:#f3d398}.side-pin.set i{background:#7cab97}.pick-snapped{animation:pick-snap .3s ease}.cable-live{stroke-dasharray:16 4;animation:cable-current .6s linear}@keyframes cable-current{to{stroke-dashoffset:-40}}@keyframes pick-snap{25%{transform:translateX(-5px);filter:sepia(1)}65%{transform:translateX(5px)}}.hacker-wire-end,.hacker-wire-socket{display:flex;align-items:center;justify-content:center;color:white!important;font-weight:800;font-size:15px;text-shadow:0 1px 3px black}
+
+#tabs{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:5px!important}#tabs .tab-btn{min-width:0!important;min-height:48px!important;font-size:11px!important;line-height:1.15!important;padding:6px 2px!important;border-radius:16px!important;overflow-wrap:anywhere!important}#catch-hint,#courier-hint{font-size:12px!important;line-height:1.4!important;max-height:none!important;overflow:visible!important;margin:10px 0!important;white-space:normal!important}#catch-field .catch-item{font-size:30px!important;line-height:1!important;width:36px!important;height:36px!important;max-width:36px!important;filter:none!important}#catch-field .catch-item.rocket{font-size:32px!important}#catch-basket{width:54px!important;font-size:44px!important;line-height:1.1!important;min-height:48px!important}#catch-field.slow-active{box-shadow:inset 15px 0 24px -8px #64baff,inset -15px 0 24px -8px #64baff,inset 0 0 0 2px #75c6ff!important;background-color:#172c4d!important}.game-panel:has(#catch-field.slow-active){box-shadow:inset 0 0 28px #439ef655!important}
+#courier-controls{display:none!important}#courier-road.courier-avenue{position:relative!important;height:clamp(310px,48vh,460px)!important;overflow:hidden!important;touch-action:none!important;background:linear-gradient(90deg,#283c37 0 4%,#45434a 4% 96%,#283c37 96%)!important;border:1px solid #78717e!important;border-radius:20px!important}#courier-road.courier-avenue:before,#courier-road.courier-avenue:after{display:none!important}.courier-markings{position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,#c8c1b980 0 32px,transparent 32px 80px),repeating-linear-gradient(0deg,#c8c1b980 0 32px,transparent 32px 80px);background-size:2px 100%,2px 100%;background-position:34% var(--travel,0px),66% var(--travel,0px);background-repeat:no-repeat;pointer-events:none}.courier-avenue #courier-rider{position:absolute!important;top:78%!important;bottom:auto!important;width:36px!important;height:61px!important;transform:translate(-50%,-50%)!important;transition:left .16s ease!important;z-index:5!important;background:none!important;font-size:30px!important}.courier-avenue #courier-rider img{width:100%;height:100%;object-fit:contain}.courier-avenue #courier-rider.stopped{filter:drop-shadow(0 0 8px #d4aaff)}#courier-delivery{position:absolute;width:55px;height:58px;transform:translate(-50%,-50%);border:2px dashed #e7bf84;border-radius:12px;background:#6a534caa;box-shadow:0 0 calc(var(--handoff,0)*26px) #e7bf84;z-index:3;pointer-events:none}#courier-delivery img{width:42px;height:42px;object-fit:contain}#courier-delivery span{display:block;height:4px;width:calc(var(--handoff,0)*100%);background:#e8cfa2;transition:width .1s}#courier-destination{position:absolute;top:8px;left:8px;right:8px;border-radius:10px;background:#16151fdd;color:#efd8b6;padding:8px;font-size:12px;text-align:center;z-index:8;pointer-events:none}.avenue-cone{position:absolute;width:38px;height:36px;font-size:29px;transform:translate(-50%,-50%);pointer-events:none;z-index:4}.delivery-near{border-color:#e7bf84!important}.courier-bump{animation:pick-snap .3s ease}
+#hacker-wires{min-height:265px!important;position:relative!important;overflow:hidden}.hacker-wire-end,.hacker-wire-socket{min-width:32px!important;width:32px!important;height:32px!important;min-height:32px!important;padding:0!important;border-radius:50%!important;background:#665d70!important;border:3px solid #c1b1c8!important;box-shadow:inset 0 0 0 6px #25202f!important;cursor:pointer}.hacker-wire-end.tracing{border-color:#f3c47c!important;background:#f3c47c!important;box-shadow:0 0 14px #cda05d66!important}.hacker-wire-end.connected,.hacker-wire-socket.connected{border-color:#99b4a1!important}.wire-wrong{animation:pick-snap .3s}.hacker-wire-col{position:absolute!important;top:0!important;bottom:0!important;width:32px!important;z-index:2;display:flex!important;flex-direction:column!important;justify-content:space-around!important}#hacker-wires-svg{pointer-events:none!important;z-index:1}
+#lock-side{position:relative!important;overflow:hidden!important;height:205px!important;padding-bottom:25px!important;box-sizing:border-box!important}#side-pick-tool{position:absolute;width:210px;height:28px;z-index:7;pointer-events:none;transform-origin:90% 50%;transition:left .12s,bottom .1s,transform .1s;filter:drop-shadow(0 2px 3px #0009)}.side-pin{z-index:2}.side-pin span{font-size:0!important}.side-pin.selected i{box-shadow:0 0 12px #dfbd7b77!important}.side-pin.set:after{content:'✓';position:absolute;top:4px;left:35%;color:#a5d4b9}#lock-pick{width:8px!important;height:116px!important;z-index:5!important;background:linear-gradient(90deg,#5b6472,#f4e4bd,#747c85)!important;box-shadow:0 0 0 1px #17131a,0 3px 6px #000a!important}#lock-pick:before{content:'';position:absolute;left:-2px;top:-4px;width:15px;height:7px;border-top:4px solid #e7d2a9;border-radius:8px;transform:rotate(-25deg)}#lock-wrench{z-index:4!important}#lock-feedback{font-size:12px!important;min-height:32px!important}#lock-health{font-size:12px;color:#cbb5a1}
+#side-pick-tool i{position:absolute;left:0;top:5px;width:calc(100% - 48px);height:6px;background:linear-gradient(#f1dfc6,#969ca5,#ded1b8);border:1px solid #35313a;border-radius:3px;transform:rotate(-6deg);transform-origin:right center}#side-pick-tool i:before{content:'';position:absolute;top:-10px;left:0;width:14px;height:12px;border-left:5px solid #d9c8ad;border-top:4px solid #d9c8ad;border-radius:7px 0 0 0}#side-pick-tool b{position:absolute;right:0;top:0;width:55px;height:23px;border-radius:7px;background:linear-gradient(#746076,#342d3c 40%,#1d1b25);border:1px solid #9d8194;box-shadow:inset -10px 0 #a18a65}
 </style>
 </head>
 <body>
@@ -15745,7 +15761,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   <div id="game-catch" class="game-panel">
     <div id="catch-hint"></div>
     <div id="catch-field">
-      <div id="catch-basket"><img class="sprite" src="/assets/catch_basket.webp" alt=""></div>
+      <div id="catch-basket">🧺</div>
     </div>
     <div id="catch-feedback"></div>
   </div>
@@ -15831,20 +15847,8 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var hackerWiresBound = false;
   var SVG_NS = "http://www.w3.org/2000/svg";
 
-  var hackerWireVariant="color";
-  function startHackerWires() {
-    hackerWireVariant=["color","labels","order"][Math.floor(Math.random()*3)];
-    hackerWires = HACKER_WIRE_COLORS.slice(0, Math.random() < 0.5 ? 3 : 5);
-    hackerWireRightOrder = shuffleArray(hackerWires.slice());
-    hackerWireLinks = {};
-    hackerWireConnected = 0;
-    hackerWireDrag = null;
-    document.getElementById("hacker-wires").classList.add("active");
-    document.getElementById("hacker-keyboard").style.display = "none";
-    document.getElementById("hacker-mode").textContent=state.lang==='ru'?(hackerWireVariant==='order'?'Контакты 1 → 2 → 3 · соединяй по очереди':hackerWireVariant==='labels'?'Соедини одинаковые номера':'Соедини провода по цветам'):hackerWireVariant==='order'?'Connect terminals in order':'Match terminal labels';
-    renderHackerWires();
-    bindHackerWires();
-  }
+  var hackerWireVariant="trace",wireSelected=0;
+  function startHackerWires(){hackerWires=HACKER_WIRE_COLORS.slice(0,3+Math.floor(Math.random()*3));hackerWireRightOrder=shuffleArray(hackerWires.slice());hackerWireLinks={};hackerWireConnected=0;hackerWireDrag=null;wireSelected=0;document.getElementById('hacker-wires').classList.add('active');document.getElementById('hacker-keyboard').style.display='none';document.getElementById('hacker-mode').textContent=courierWords('Проследи золотой вход до выхода. Нажми нужный контакт справа.','Trace the gold inlet to its outlet. Tap that contact on the right.','Verfolge den goldenen Eingang. Tippe rechts auf seinen Ausgang.');renderHackerWires();bindHackerWires();}
 
   function shuffleArray(arr) {
     for (var i = arr.length - 1; i > 0; i--) {
@@ -15877,89 +15881,9 @@ WORK_PAGE_HTML = r'''<!doctype html>
     path.setAttribute("d", "M" + a.x + "," + a.y + " C" + mid + "," + (a.y + 30) + " " + mid + "," + (b.y + 30) + " " + b.x + "," + b.y);
   }
 
-  function renderHackerWires() {
-    var left = document.getElementById("hacker-wires-left");
-    var right = document.getElementById("hacker-wires-right");
-    var svg = document.getElementById("hacker-wires-svg");
-    left.innerHTML = "";
-    right.innerHTML = "";
-    svg.innerHTML = "";
-    hackerWires.forEach(function (color, i) {
-      var b = document.createElement("div");
-      b.textContent=String(i+1);b.setAttribute("aria-label","Wire "+(i+1));
-      b.className = "hacker-wire-end" + (hackerWireLinks[i] !== undefined ? " connected" : "");
-      b.style.background = hackerWireVariant==='labels'?'#655a73':color;
-      b.style.color = color;
-      b.dataset.index = String(i);
-      left.appendChild(b);
-    });
-    hackerWireRightOrder.forEach(function (color, i) {
-      var s = document.createElement("div");
-      s.textContent=String(hackerWires.indexOf(color)+1);s.setAttribute("aria-label","Socket "+(hackerWires.indexOf(color)+1));
-      s.className = "hacker-wire-socket";
-      s.style.borderColor = hackerWireVariant==='labels'?'#b2a5be':color;
-      s.style.color = color;
-      s.dataset.socket = String(i);
-      right.appendChild(s);
-    });
-    Object.keys(hackerWireLinks).forEach(function (i) {
-      var j = hackerWireLinks[i];
-      right.children[j].classList.add("connected");
-      makeCable(hackerWires[i], wirePoint(left.children[i], "left"), wirePoint(right.children[j], "right"));
-    });
-  }
-
-  function pointerInWires(e) {
-    var box = document.getElementById("hacker-wires").getBoundingClientRect();
-    return { x: e.clientX - box.left, y: e.clientY - box.top };
-  }
-
-  function bindHackerWires() {
-    if (hackerWiresBound) return;
-    hackerWiresBound = true;
-    var area = document.getElementById("hacker-wires");
-    area.addEventListener("pointerdown", function (e) {
-      if (debuffState.clicker) return;
-      var end = e.target.closest(".hacker-wire-end");
-      if (!end || end.classList.contains("connected")) return;
-      var i = parseInt(end.dataset.index, 10);
-      end.classList.add("dragging");
-      try { area.setPointerCapture(e.pointerId); } catch (err) {}
-      hackerWireDrag = { i: i, el: end, line: makeCable(hackerWires[i], wirePoint(end, "left"), pointerInWires(e)) };
-      e.preventDefault();
-    });
-    area.addEventListener("pointermove", function (e) {
-      if (!hackerWireDrag) return;
-      setCable(hackerWireDrag.line, wirePoint(hackerWireDrag.el, "left"), pointerInWires(e));
-    });
-    function release(e) {
-      if (!hackerWireDrag) return;
-      var drag = hackerWireDrag;
-      hackerWireDrag = null;
-      drag.el.classList.remove("dragging");
-      var target = document.elementFromPoint(e.clientX, e.clientY);
-      var socket = target && target.closest ? target.closest(".hacker-wire-socket") : null;
-      if (!socket) { drag.line.remove(); return; } // отпустил мимо гнезда -- просто кабель возвращается
-      var j = parseInt(socket.dataset.socket, 10);
-      var taken = Object.keys(hackerWireLinks).some(function (k) { return hackerWireLinks[k] === j; });
-      if (taken) { drag.line.remove(); return; }
-      if(hackerWireVariant==='order'&&drag.i!==hackerWireConnected){drag.line.remove();haptic("warning");return;}
-      if (hackerWireRightOrder[j] === hackerWires[drag.i]) {
-        hackerWireLinks[drag.i] = j;
-        hackerWireConnected++;
-        renderHackerWires();
-        fx("wire");
-        if (hackerWireConnected >= hackerWires.length) finishHackerCombo();
-      } else {
-        drag.line.remove();
-        triggerDebuff("clicker", null, null, socket.offsetLeft, socket.offsetTop, document.getElementById("hacker-terminal"));
-      }
-    }
-    area.addEventListener("pointerup", release);
-    area.addEventListener("pointercancel", function () {
-      if (hackerWireDrag) { hackerWireDrag.el.classList.remove("dragging"); hackerWireDrag.line.remove(); hackerWireDrag = null; }
-    });
-  }
+  function renderHackerWires(){var left=document.getElementById('hacker-wires-left'),right=document.getElementById('hacker-wires-right'),svg=document.getElementById('hacker-wires-svg');left.innerHTML='';right.innerHTML='';svg.innerHTML='';hackerWires.forEach(function(color,i){var b=document.createElement('button');b.type='button';b.className='hacker-wire-end'+(hackerWireLinks[i]!==undefined?' connected':'')+(i===wireSelected?' tracing':'');b.setAttribute('aria-label',courierWords('Вход','Inlet','Eingang'));b.dataset.index=i;left.appendChild(b);});hackerWireRightOrder.forEach(function(_,i){var b=document.createElement('button');b.type='button';b.className='hacker-wire-socket';b.setAttribute('aria-label',courierWords('Выход','Outlet','Ausgang'));b.dataset.socket=i;right.appendChild(b);});
+    requestAnimationFrame(function(){if(!left.isConnected||activeGame!=='clicker')return;svg.innerHTML='';hackerWires.forEach(function(color,i){var j=hackerWireRightOrder.indexOf(color),a=wirePoint(left.children[i],'left'),b=wirePoint(right.children[j],'right'),width=b.x-a.x;var d='M'+a.x+','+a.y+' C'+(a.x+width*.25)+','+a.y+' '+(a.x+width*.38)+','+(a.y+(i%2?35:-35))+' '+(a.x+width*.5)+','+((a.y+b.y)/2)+' S'+(b.x-width*.15)+','+b.y+' '+b.x+','+b.y;[10,5].forEach(function(weight){var path=document.createElementNS(SVG_NS,'path');path.setAttribute('d',d);path.setAttribute('fill','none');path.setAttribute('stroke-width',weight);path.setAttribute('stroke-linecap','round');path.setAttribute('stroke',weight===10?'#17151f':hackerWireLinks[i]!==undefined?'#b0c5b0':'#a195ae');svg.appendChild(path);});if(i===wireSelected&&hackerWireLinks[i]===undefined){var lead=document.createElementNS(SVG_NS,'path');lead.setAttribute('d',d);lead.setAttribute('fill','none');lead.setAttribute('stroke','#f3c47c');lead.setAttribute('stroke-width','5');lead.setAttribute('stroke-dasharray','24 2000');svg.appendChild(lead);}if(hackerWireLinks[i]!==undefined)right.children[j].classList.add('connected');});});}
+  function bindHackerWires(){if(hackerWiresBound)return;hackerWiresBound=true;var area=document.getElementById('hacker-wires');area.addEventListener('click',function(e){if(debuffState.clicker)return;var inlet=e.target.closest('.hacker-wire-end'),out=e.target.closest('.hacker-wire-socket');if(inlet){var i=Number(inlet.dataset.index);if(hackerWireLinks[i]===undefined){wireSelected=i;renderHackerWires();}return;}if(!out||hackerWireLinks[wireSelected]!==undefined)return;var j=Number(out.dataset.socket);if(hackerWireRightOrder[j]!==hackerWires[wireSelected]){fx('pinbreak');haptic('warning');out.classList.add('wire-wrong');setTimeout(function(){out.classList.remove('wire-wrong');},350);return;}hackerWireLinks[wireSelected]=j;hackerWireConnected++;fx('wire');haptic('select');if(hackerWireConnected>=hackerWires.length){finishHackerCombo();return;}wireSelected=hackerWires.findIndex(function(_,i){return hackerWireLinks[i]===undefined;});renderHackerWires();});}
 
   function finishHackerCombo() {
     fx("win");
@@ -16055,13 +15979,13 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var SHIELD_EMOJI = "🛡️";
   var SHIELD_CHANCE = 0.03; // щит гасит ОДНУ следующую бомбу/большую угрозу вместо проигрыша
   var shieldCharges = 0;
-  var CATCH_FALL_MIN_S = 1.5, CATCH_FALL_RANGE_S = 1.0; // was 2.1-3.5s -- faster, harder to react to
-  var BIG_HAZARD_CHANCE = 0.04; // rolled only when the spawn didn't already roll a bomb/slowfall
+  var CATCH_FALL_MIN_S = 2.2, CATCH_FALL_RANGE_S = 1.1; // was 2.1-3.5s -- faster, harder to react to
+  var BIG_HAZARD_CHANCE = 0; // rolled only when the spawn didn't already roll a bomb/slowfall
   var BIG_HAZARD_EMOJIS = ["⚫", "💣", "🪨"]; // ядро, большая бомба, валун -- одинаково опасны
   // Ракета: летит втрое быстрее обычного, перед ней -- короткое предупреждение ❗ (по фидбэку «больше препятствий»).
   var ROCKET_CHANCE = 0.03;
   var ROCKET_WARN_MS = 500;
-  var ROCKET_FALL_MIN_S = 0.6, ROCKET_FALL_RANGE_S = 0.25;
+  var ROCKET_FALL_MIN_S = 1.1, ROCKET_FALL_RANGE_S = 0.3;
   // Чтобы предмет не оказался внутри бомбы и его можно было взять: новые предметы появляются не ближе
   // CATCH_MIN_GAP_PCT по горизонтали к тем, что выпали за последние CATCH_GAP_WINDOW_MS.
   var CATCH_MIN_GAP_PCT = 14, CATCH_GAP_WINDOW_MS = 1300;
@@ -16497,14 +16421,14 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function lockSound(kind){if(sfxOn&&window.RDSFX)RDSFX.game(kind);}
   function lockMessage(text){document.getElementById('lock-feedback').textContent=text;}
   function drawSideLock(){
-    var st=lockState;if(!st||st.mode!=='side')return;var side=document.getElementById('lock-side');side.querySelectorAll('.side-pin').forEach(function(p){var i=Number(p.dataset.pin),lift=st.done[i]?st.targets[i]:i===st.selected?st.lift:0;p.classList.toggle('selected',i===st.selected);p.classList.toggle('set',!!st.done[i]);p.querySelector('i').style.height=(26+lift*.7)+'px';p.setAttribute('aria-label',lockText('Пин ','Pin ','Stift ')+(i+1));});
+    var st=lockState;if(!st||st.mode!=='side')return;var side=document.getElementById('lock-side');side.querySelectorAll('.side-pin').forEach(function(p){var i=Number(p.dataset.pin),lift=st.done[i]?st.targets[i]:i===st.selected?st.lift:0;p.classList.toggle('selected',i===st.selected);p.classList.toggle('set',!!st.done[i]);p.querySelector('i').style.height=(26+lift*.7)+'px';p.setAttribute('aria-label',lockText('Пин ','Pin ','Stift ')+(i+1));});var tool=document.getElementById('side-pick-tool');if(tool){var left=8+st.selected*(65/st.targets.length);tool.style.left=left+'%';tool.style.width=Math.min(210,side.clientWidth*(1-left/100)-10)+'px';tool.style.bottom=(8+st.lift*.55)+'px';tool.style.transform='rotate('+(-st.lift*.1)+'deg)';}
   }
-  function setPickAngle(value){if(!lockState)return;var st=lockState;if(st.mode==='side'){st.lift=Math.max(0,Math.min(100,value));document.getElementById('lock-angle').value=st.lift;drawSideLock();return;}st.angle=Math.max(-80,Math.min(80,value));document.getElementById('lock-angle').value=st.angle;document.getElementById('lock-pick').style.transform='translateX(-50%) rotate('+st.angle+'deg)';document.getElementById('lock-face').setAttribute('aria-valuenow',Math.round(st.angle));}
+  function setPickAngle(value){if(!lockState)return;var st=lockState;var val=Math.max(0,Math.min(100,value)),near=st.mode==='side'?st.selected===st.order[st.stage]&&Math.abs(val-st.targets[st.selected])<12:Math.abs(value-st.target)<16;if(near&&Date.now()-(st.lastHint||0)>220){st.lastHint=Date.now();lockSound('pin');haptic('select');}if(st.mode==='side'){st.lift=Math.max(0,Math.min(100,value));document.getElementById('lock-angle').value=st.lift;drawSideLock();return;}st.angle=Math.max(-80,Math.min(80,value));document.getElementById('lock-angle').value=st.angle;document.getElementById('lock-pick').style.transform='translateX(-50%) rotate('+st.angle+'deg)';document.getElementById('lock-face').setAttribute('aria-valuenow',Math.round(st.angle));}
   function startLockpick(forceMode){
     var mode=forceMode||(lockNextSide?'side':'front');if(!forceMode)lockNextSide=!lockNextSide;
-    document.getElementById('hacker-lock').classList.add('active');lockState={mode:mode,angle:0,target:-58+Math.random()*116,progress:0,strain:0,health:3,stage:0,stages:1+Math.floor(Math.random()*3),turning:false,last:performance.now(),raf:null,lift:0,selected:0,done:{},pinHold:0};
+    document.getElementById('hacker-mode').textContent=mode==='side'?lockText('Замок · штифты','Lock · pins','Schloss · Stifte'):lockText('Замок · цилиндр','Lock · cylinder','Schloss · Zylinder');document.getElementById('hacker-lock').classList.add('active');lockState={mode:mode,angle:0,target:-58+Math.random()*116,progress:0,strain:0,health:3,stage:0,stages:1+Math.floor(Math.random()*3),turning:false,last:performance.now(),raf:null,lift:0,selected:0,done:{},pinHold:0};
     var old=document.getElementById('lock-side');if(old)old.remove();document.getElementById('lock-face').style.display=mode==='side'?'none':'block';var range=document.getElementById('lock-angle');range.min=mode==='side'?0:-80;range.max=mode==='side'?100:80;range.setAttribute('aria-label',mode==='side'?lockText('Подъём пина','Pin lift','Stifthöhe'):lockText('Угол отмычки','Pick angle','Dietrichwinkel'));
-    if(mode==='side'){var st=lockState,count=Math.random()<.5?3:4;st.targets=Array.from({length:count},function(){return 35+Math.random()*43;});st.order=shuffleArray(Array.from({length:count},function(_,i){return i;}));st.stages=count;var side=document.createElement('div');side.id='lock-side';st.targets.forEach(function(_,i){var pin=document.createElement('button');pin.type='button';pin.className='side-pin';pin.dataset.pin=i;pin.innerHTML='<span>'+(i+1)+'</span><i></i>';pin.onpointerdown=function(e){e.preventDefault();if(!lockState)return;lockState.selected=i;lockState.pinHold=0;pin.setPointerCapture(e.pointerId);lift(e);};function lift(e){if(!lockState)return;var box=side.getBoundingClientRect();setPickAngle((box.bottom-e.clientY)/box.height*100);}pin.onpointermove=function(e){if(pin.hasPointerCapture(e.pointerId))lift(e);};pin.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();if(lockState){lockState.selected=i;drawSideLock();}}};side.appendChild(pin);});document.getElementById('hacker-lock').prepend(side);drawSideLock();}
+    if(mode==='side'){var st=lockState,count=Math.random()<.5?3:4;st.targets=Array.from({length:count},function(){return 35+Math.random()*43;});st.order=shuffleArray(Array.from({length:count},function(_,i){return i;}));st.stages=count;var side=document.createElement('div');side.id='lock-side';var tool=document.createElement('div');tool.id='side-pick-tool';tool.setAttribute('aria-label',lockText('Отмычка','Lockpick','Dietrich'));tool.innerHTML='<i></i><b></b>';side.appendChild(tool);st.targets.forEach(function(_,i){var pin=document.createElement('button');pin.type='button';pin.className='side-pin';pin.dataset.pin=i;pin.innerHTML='<span>'+(i+1)+'</span><i></i>';pin.onpointerdown=function(e){e.preventDefault();if(!lockState)return;lockState.selected=i;lockState.pinHold=0;pin.setPointerCapture(e.pointerId);lift(e);};function lift(e){if(!lockState)return;var box=side.getBoundingClientRect();setPickAngle((box.bottom-e.clientY)/box.height*100);}pin.onpointermove=function(e){if(pin.hasPointerCapture(e.pointerId))lift(e);};pin.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();if(lockState){lockState.selected=i;drawSideLock();}}};side.appendChild(pin);});document.getElementById('hacker-lock').prepend(side);drawSideLock();}
     setPickAngle(0);document.getElementById('hacker-lock-btn').textContent=mode==='side'?lockText('Удерживай натяжение','Hold tension','Spannung halten'):lockText('Удерживай поворот','Hold to turn','Zum Drehen halten');
     lockMessage(mode==='side'?lockText('Выбери пин, плавно поднимай и держи натяжение. Ищи тот, который поддаётся.','Choose a pin, lift slowly and hold tension. Find the binding pin.','Wähle einen Stift, hebe langsam an und halte Spannung.'):lockText('Найди угол и удерживай поворот. Если упирается — отпусти, иначе отмычка сломается.','Find the angle and hold to turn. Release if it binds or the pick will break.','Winkel finden und drehen. Bei Widerstand loslassen.'));lockTick(performance.now());
   }
@@ -16522,7 +16446,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
         if(st.progress>=100&&st.stage+1<st.stages){st.stage++;st.target=-58+Math.random()*116;st.progress=0;st.turning=false;setPickAngle(0);lockMessage(lockText('Щелчок! Теперь другой угол.','Click! Find the next angle.','Klick! Nächsten Winkel finden.'));lockSound('pin');}
         if(st.progress>=100){lockSound('unlock');haptic('success');stopLockpick();setTimeout(finishHackerCombo,180);return;}
       }
-      if(st.strain>1.15){st.health--;st.strain=0;st.turning=false;st.progress=0;st.pinHold=0;lockSound('pinbreak');haptic('warning');var box=document.getElementById('hacker-lock');box.classList.add('pick-snapped');setTimeout(function(){box.classList.remove('pick-snapped');},350);if(st.health<=0){stopLockpick();triggerDebuff('clicker','clicker-feedback','hacker-lock',100,100,document.getElementById('hacker-terminal'));return;}}
+      if(st.strain>.65){st.health--;st.strain=0;st.turning=false;st.progress=0;st.pinHold=0;lockSound('pinbreak');haptic('warning');var box=document.getElementById('hacker-lock');box.classList.add('pick-snapped');setTimeout(function(){box.classList.remove('pick-snapped');},350);if(st.health<=0){stopLockpick();triggerDebuff('clicker','clicker-feedback','hacker-lock',100,100,document.getElementById('hacker-terminal'));return;}}
     }else{st.progress=Math.max(0,st.progress-dt*160);st.strain=Math.max(0,st.strain-dt*.65);}
     document.getElementById('lock-cylinder').style.transform='rotate('+(st.progress*.8)+'deg)';document.getElementById('lock-wrench').style.transform='rotate('+(st.progress*.8)+'deg)';document.getElementById('lock-health').textContent=lockText('Отмычки: ','Picks: ','Dietriche: ')+st.health+'/3 · '+(st.stage+1)+'/'+st.stages;st.raf=requestAnimationFrame(lockTick);
   }
@@ -16567,8 +16491,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   function appendFallingItem(field, x, className, text, dataset, sprite) {
     var item = document.createElement("div");
     item.className = className;
-    if(!sprite&&(className.indexOf('rocket')>=0||className.indexOf('big-hazard')>=0))sprite='catch_bighazard';
-    if (sprite) setSprite(item, sprite, text); else item.textContent = text;
+    item.textContent = text;
     Object.keys(dataset || {}).forEach(function (k) { item.dataset[k] = dataset[k]; });
     item.style.left = x + "%";
     var baseDuration = dataset && dataset.fast ? ROCKET_FALL_MIN_S + Math.random() * ROCKET_FALL_RANGE_S
@@ -16812,51 +16735,27 @@ WORK_PAGE_HTML = r'''<!doctype html>
     catchCollisionTick();
   }
 
-  // Vertical courier: lanes, speed, delivery stops and traffic lights.
+  // Courier avenue: continuously scrolling traffic, swipes to steer and brake, double tap to park.
   var courierRun=null;
   function courierWords(ru,en,de){return state.lang==='ru'?ru:state.lang==='de'?de:en;}
-  function courierOpen(x,y){return x>=0&&y>=0&&x<7&&y<7&&!(x%2&&y%2);}
-  function courierBlocked(r,x,y){return !courierOpen(x,y)||r.blocks.some(function(b){return b.x===x&&b.y===y;});}
-  function courierDistance(r,a,b){var q=[[a.x,a.y,0]],seen={};while(q.length){var n=q.shift(),key=n[0]+','+n[1];if(seen[key])continue;seen[key]=true;if(n[0]===b.x&&n[1]===b.y)return n[2];[[1,0],[-1,0],[0,1],[0,-1]].forEach(function(d){if(!courierBlocked(r,n[0]+d[0],n[1]+d[1]))q.push([n[0]+d[0],n[1]+d[1],n[2]+1]);});}return 50;}
-  function courierHUD(){var r=courierRun;if(!r)return;document.getElementById('courier-feedback').textContent=courierWords('Адрес ','Address ','Adresse ')+Math.min(3,r.delivered+1)+'/3 · '+courierWords('Ходы: ','Moves: ','Züge: ')+r.fuel;document.getElementById('courier-rider').classList.toggle('stopped',r.stopped);}
-  function courierDraw(){var r=courierRun;if(!r)return;var rider=document.getElementById('courier-rider');rider.style.left=((r.x+.5)/7*100)+'%';rider.style.top=((r.y+.5)/7*100)+'%';rider.style.setProperty('--heading',r.heading+'deg');courierHUD();}
-  function setCourierDirection(dx,dy){
-    var r=courierRun;if(!r||r.served||r.ended||!r.stopped)return;if(r.fuel<=0){document.getElementById('courier-hint').textContent=courierWords('Ходы закончились. Двойной тап — новый маршрут.','No moves left. Double tap for a new route.','Keine Züge übrig. Doppeltippen: neue Route.');return;}
-    var nx=r.x,ny=r.y,steps=[];do{nx+=dx;ny+=dy;if(courierBlocked(r,nx,ny)){haptic('warning');document.getElementById('courier-hint').textContent=courierWords('Здесь не проехать. Найди другую улицу.','Road blocked. Find another street.','Straße gesperrt. Finde einen anderen Weg.');return;}steps.push({x:nx,y:ny});}while((nx%2||ny%2)&&steps.length<3);
-    r.steps=steps;r.fuel--;r.stopped=false;r.parked=false;r.hold=0;r.step=0;r.heading=dx===1?90:dx===-1?-90:dy===1?180:0;courierDraw();haptic('select');
-  }
-  function setCourierLane(lane){if(courierRun)setCourierDirection(lane>courierRun.x?1:-1,0);}
-  function pressCourierStopline(){var r=courierRun;if(!r)return;if(r.ended||(r.fuel<=0&&(r.x!==r.target.x||r.y!==r.target.y))){startCourier();return;}r.stopped=true;r.steps=[];r.parked=true;r.hold=0;courierHUD();haptic('medium');}
-  function courierNextAddress(){
-    var r=courierRun;if(!r)return;r.target=r.addresses[r.delivered];r.hold=0;r.served=false;r.parked=false;r.deliveryId=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
-    document.querySelectorAll('.city-address').forEach(function(n){var i=Number(n.dataset.address);n.classList.toggle('current',i===r.delivered);n.classList.toggle('done',i<r.delivered);});
-  }
-  function courierCollisionTick(now){
-    var r=courierRun;if(!r||activeGame!=='courier')return;now=now||performance.now();var dt=Math.min(.05,(now-r.last)/1000);r.last=now;
-    if(!pausedGame){
-      if(!r.stopped){r.step+=dt;if(r.step>.22){r.step=0;var next=r.steps.shift();if(next){r.x=next.x;r.y=next.y;}if(!r.steps.length)r.stopped=true;courierDraw();}}
-      if(r.stopped&&r.parked&&r.target&&r.x===r.target.x&&r.y===r.target.y&&!r.served&&!r.ended){
-        r.hold+=dt;var marker=document.querySelector('.city-address.current');if(marker)marker.style.setProperty('--handoff',Math.min(1,r.hold/.85));
-        if(r.hold>=.85){r.served=true;var road=document.getElementById('courier-road');registerHit('courier',road.clientWidth*(r.x+.5)/7,road.clientHeight*(r.y+.5)/7,road,false,function(awarded){if(courierRun!==r)return;if(awarded){r.delivered++;fx('deliver');if(r.delivered>=3){r.ended=true;document.getElementById('courier-hint').textContent=courierWords('Маршрут готов! Двойной тап — следующий квартал.','Route complete! Double tap for the next district.','Route fertig! Doppeltippen: nächstes Viertel.');document.querySelectorAll('.city-address').forEach(function(n){n.classList.add('done');});}else courierNextAddress();}else{r.served=false;r.hold=-1;}courierHUD();},r.deliveryId);}
-      }else r.hold=0;
-    }
+  function courierHUD(){var r=courierRun;if(!r)return;document.getElementById('courier-feedback').textContent=courierWords('Посылок: ','Parcels: ','Pakete: ')+r.delivered+' · '+(r.stopped?courierWords('СТОП','STOP','HALT'):Math.round(r.speed*20)+' km/h');}
+  function courierDraw(){var r=courierRun;if(!r)return;var road=document.getElementById('courier-road'),h=road.clientHeight,rider=document.getElementById('courier-rider');rider.style.left=(18+r.lane*32)+'%';rider.classList.toggle('stopped',r.stopped);road.style.setProperty('--travel',(r.travel%80)+'px');var marker=document.getElementById('courier-delivery');marker.style.left=(18+r.targetLane*32)+'%';marker.style.top=r.targetY+'px';marker.style.setProperty('--handoff',Math.min(1,r.hold/.75));r.obstacles.forEach(function(o){o.node.style.left=(18+o.lane*32)+'%';o.node.style.top=o.y+'px';});var near=Math.abs(r.targetY-h*.78)<45;road.classList.toggle('delivery-near',near&&r.lane===r.targetLane);courierHUD();}
+  function setCourierDirection(dx,dy){var r=courierRun;if(!r||r.served)return;if(dx){r.lane=Math.max(0,Math.min(2,r.lane+dx));haptic('select');}if(dy){r.speed=dy<0?Math.min(2.4,r.speed+.35):Math.max(.45,r.speed-.45);r.stopped=false;}courierDraw();}
+  function setCourierLane(lane){if(courierRun){courierRun.lane=Math.max(0,Math.min(2,lane));courierDraw();}}
+  function pressCourierStopline(){if(!courierRun||courierRun.served)return;courierRun.stopped=!courierRun.stopped;courierRun.hold=0;haptic('medium');courierDraw();}
+  function courierNextAddress(){var r=courierRun;if(!r)return;r.targetLane=Math.floor(Math.random()*3);r.targetY=-70;r.hold=0;r.served=false;r.deliveryId=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);document.getElementById('courier-destination').textContent=courierWords('Следующий адрес: ','Next address: ','Nächstes Ziel: ')+[courierWords('слева','left','links'),courierWords('по центру','center','Mitte'),courierWords('справа','right','rechts')][r.targetLane];}
+  function courierCollisionTick(now){var r=courierRun;if(!r||activeGame!=='courier')return;now=now||performance.now();var dt=Math.min(.05,Math.max(0,(now-r.last)/1000));r.last=now;var road=document.getElementById('courier-road'),h=road.clientHeight;
+    if(!pausedGame){var move=r.stopped||r.served?0:dt*85*r.speed;r.travel+=move;r.targetY+=move;
+      r.obstacles.forEach(function(o){o.y+=move;if(o.y>h+70){o.y=-120-Math.random()*230;o.lane=Math.floor(Math.random()*3);o.hit=false;}if(!r.stopped&&!r.served&&!o.hit&&o.lane===r.lane&&Math.abs(o.y-h*.78)<32){o.hit=true;r.stopped=true;r.hold=0;road.classList.add('courier-bump');setTimeout(function(){road.classList.remove('courier-bump');},350);haptic('impact');fx('impact');document.getElementById('courier-destination').textContent=courierWords('Столкновение. Смени полосу и двойной тап — ехать.','Collision. Change lane and double tap to continue.','Kollision. Spur wechseln und zum Fahren doppeltippen.');}});
+      if(r.targetY>h+70)courierNextAddress();
+      if(r.stopped&&!r.served&&r.lane===r.targetLane&&Math.abs(r.targetY-h*.78)<45){r.hold+=dt;if(r.hold>=.75){r.served=true;registerHit('courier',road.clientWidth*(18+r.lane*32)/100,h*.78,road,false,function(awarded){if(courierRun!==r)return;if(awarded){r.delivered++;fx('deliver');haptic('success');courierNextAddress();}else{r.served=false;r.hold=0;document.getElementById('courier-destination').textContent=courierWords('Не удалось вручить. Двойной тап и попробуй ещё.','Delivery failed. Double tap and try again.','Übergabe fehlgeschlagen. Doppeltippen und erneut versuchen.');}},r.deliveryId);}}else if(!r.served)r.hold=0;courierDraw();}
     courierRafId=requestAnimationFrame(courierCollisionTick);
   }
-  function startCourier(){
-    if(courierRafId)cancelAnimationFrame(courierRafId);var road=document.getElementById('courier-road');road.innerHTML='';road.classList.add('city-map');
-    for(var y=0;y<7;y++)for(var x=0;x<7;x++){var cell=document.createElement('div');cell.className='city-cell '+(courierOpen(x,y)?'street':'building');cell.style.left=(x/7*100)+'%';cell.style.top=(y/7*100)+'%';if(!courierOpen(x,y)){cell.style.setProperty('--roof',['#84666e','#716d86','#738a7c','#98836f'][(x+y)%4]);cell.innerHTML='<i></i><i></i>';}road.appendChild(cell);}
-    var rider=document.createElement('div');rider.id='courier-rider';rider.innerHTML='<img src="/assets/courier_top.webp" alt="">';road.appendChild(rider);
-    var blocks=shuffleArray([{x:1,y:2},{x:3,y:4},{x:5,y:2},{x:2,y:3},{x:4,y:5}]).slice(0,2);blocks.forEach(function(b){var n=document.createElement('div');n.className='city-barrier';n.style.left=((b.x+.5)/7*100)+'%';n.style.top=((b.y+.5)/7*100)+'%';road.appendChild(n);});
-    var r={x:0,y:6,stopped:true,parked:false,delivered:0,blocks:blocks,last:performance.now(),step:0,steps:[],heading:0,hold:0,addresses:[],fuel:0};var previous={x:0,y:6},used={'0,6':true};
-    for(var i=0;i<3;i++){var choices=[];for(var ay=0;ay<7;ay+=2)for(var ax=0;ax<7;ax+=2)if(!used[ax+','+ay]&&Math.abs(ax-previous.x)+Math.abs(ay-previous.y)>=4)choices.push({x:ax,y:ay});var address=choices[Math.floor(Math.random()*choices.length)];used[address.x+','+address.y]=true;r.fuel+=Math.ceil(courierDistance(r,previous,address)/2);r.addresses.push(address);previous=address;var marker=document.createElement('div');marker.className='city-address';marker.dataset.address=i;marker.style.left=((address.x+.5)/7*100)+'%';marker.style.top=((address.y+.5)/7*100)+'%';marker.innerHTML='<img src="/assets/work_parcel.webp" alt=""><b>'+(i+1)+'</b>';road.appendChild(marker);}
-    r.fuel+=3;courierRun=r;courierNextAddress();courierDraw();courierCollisionTick(performance.now());document.getElementById('courier-hint').textContent=courierWords('Доставь 1 → 2 → 3. Свайп — до перекрёстка. На адресе двойной тап — вручить. Береги ходы!','Deliver 1 → 2 → 3. Swipe to the next junction. Double tap at the address to hand over. Plan your moves!','Liefere 1 → 2 → 3. Wischen: nächste Kreuzung. Am Ziel doppeltippen zum Übergeben. Plane deine Züge!');
-  }
+  function startCourier(){if(courierRafId)cancelAnimationFrame(courierRafId);var road=document.getElementById('courier-road');road.className='courier-avenue';road.innerHTML='<div class="courier-markings"></div><div id="courier-destination"></div><div id="courier-delivery"><img src="/assets/work_parcel.webp" alt=""><span></span></div><div id="courier-rider"><img src="/assets/courier_top.webp" alt=""></div>';var r={lane:1,speed:1,stopped:false,delivered:0,last:performance.now(),travel:0,hold:0,obstacles:[]};for(var i=0;i<2;i++){var node=document.createElement('div');node.className='avenue-cone';node.textContent='🚧';road.appendChild(node);r.obstacles.push({node:node,y:-200-i*250,lane:i===0?0:2,hit:false});}courierRun=r;courierNextAddress();courierDraw();courierCollisionTick(performance.now());document.getElementById('courier-hint').textContent=courierWords('Свайп ← →: полоса. ↑ быстрее, ↓ медленнее. Двойной тап: стоп / ехать. Остановись у посылки для передачи.','Swipe ← → to steer, ↑ faster, ↓ slower. Double tap: stop / go. Park beside the parcel to deliver.','← → Spur, ↑ schneller, ↓ langsamer. Doppeltippen: Halt / Fahrt. Am Paket anhalten.');}
   var courierControlsBound=false;
-  function bindCourierControls(){
-    document.getElementById('courier-controls').hidden=true;if(courierControlsBound)return;courierControlsBound=true;var road=document.getElementById('courier-road'),start=null,lastTap=0;road.style.touchAction='none';
-    road.addEventListener('pointerdown',function(e){e.preventDefault();start={x:e.clientX,y:e.clientY};road.setPointerCapture(e.pointerId);});
-    road.addEventListener('pointerup',function(e){if(!start||!courierRun)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;start=null;if(Math.max(Math.abs(dx),Math.abs(dy))>23){if(Math.abs(dx)>Math.abs(dy))setCourierDirection(dx>0?1:-1,0);else setCourierDirection(0,dy>0?1:-1);lastTap=0;}else{var now=Date.now();if(now-lastTap<340){pressCourierStopline();lastTap=0;}else lastTap=now;}});road.addEventListener('pointercancel',function(){start=null;});
-  }
+  function bindCourierControls(){document.getElementById('courier-controls').hidden=true;if(courierControlsBound)return;courierControlsBound=true;var road=document.getElementById('courier-road'),start=null,lastTap=0;road.style.touchAction='none';
+    road.addEventListener('pointerdown',function(e){e.preventDefault();start={x:e.clientX,y:e.clientY};try{road.setPointerCapture(e.pointerId);}catch(err){}});
+    road.addEventListener('pointerup',function(e){e.preventDefault();if(!start||!courierRun)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;start=null;if(Math.max(Math.abs(dx),Math.abs(dy))>18){if(Math.abs(dx)>Math.abs(dy))setCourierDirection(dx>0?1:-1,0);else setCourierDirection(0,dy>0?1:-1);lastTap=0;}else{var now=Date.now();if(now-lastTap<360){pressCourierStopline();lastTap=0;}else lastTap=now;}});road.addEventListener('pointercancel',function(){start=null;});}
 
   var pipeJob=null,pipeBusy=false,pipeRotations=[];
   function pipeMask(kind,rotation){rotation=rotation%4;var base=kind==='straight'?5:3;return ((base<<rotation)|(base>>(4-rotation)))&15;}
@@ -17165,7 +17064,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     document.getElementById("tab-courier").textContent = state.ui.tab_courier;
     document.getElementById("tab-farm").textContent = state.ui.tab_farm;
     document.getElementById("tab-workshop").textContent=courierWords("Трубы","Pipes","Rohre");document.getElementById("tab-workshop").onclick=function(){switchGame("workshop");};
-    document.getElementById("clicker-hint").textContent = state.ui.clicker_hint;
+    document.getElementById("clicker-hint").textContent = courierWords("Запомни код, проследи провод или вскрой замок.","Remember the code, trace a cable or open a lock.","Code merken, Kabel verfolgen oder Schloss öffnen.");
     document.getElementById("catch-hint").textContent = state.ui.catch_hint;
     document.getElementById("courier-hint").textContent = state.ui.courier_hint;
 
@@ -19046,7 +18945,7 @@ def serialize_app_state(user):
     user["app_seen"] = datetime.now().isoformat()
     if not user.get("personality_ready"):
         ui = {k: v for k, v in APP_TEXTS.get(user.get("lang", "ru"), APP_TEXTS["en"]).items() if isinstance(v, str)}
-        return {"onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
+        return {"player": serialize_player(user), "release":"20261117d", "onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
     app_unstick(user)
     if migrate_character_appearance(user):save_data(user_data)
     if user.get('appearance'):
@@ -19076,6 +18975,7 @@ def serialize_app_state(user):
                      for m in history],
         "onboarding": None,
         "content_settings":profile_options.state(user),
+        "player":serialize_player(user),"release":"20261117d",
         "reply_choices": serialize_reply_choices(user),
         "pending": bool(user.get("app_pending")),"photo_pending":bool(user.get("photo_pending")),
         "notices": notices,
@@ -19315,6 +19215,14 @@ async def api_app_photo_handler(request):
         return _app_reply(user, False, 'Генерация фото ещё не настроена.' if user.get('lang') == 'ru' else 'Photo generation is not configured yet.')
     if user.get('energy',0) < PHOTO_ENERGY_COST:
         return _app_reply(user, False, 'Нужно 40 энергии.' if user.get('lang') == 'ru' else '40 energy required.')
+    pair_action=body.get('pair_action')
+    if pair_action is not None:
+        actions={'together':'standing together for a warm shared portrait','hug':'a gentle mutual hug','kiss':'a gentle mutual kiss'}
+        if not isinstance(pair_action,str) or pair_action not in actions:return _app_reply(user,False,'Invalid action')
+        if not user.get('player_avatar'):return _app_reply(user,False,'Сначала создай своего героя')
+        user['app_pending']=datetime.now().isoformat();user['photo_pending']=True;save_data(user_data)
+        asyncio.create_task(app_couple_photo_generate(user_id,user,actions[pair_action]))
+        return _app_reply(user)
     text = str(body.get('text') or 'Send me a photo of yourself in the current setting.')[:2000]
     user['app_pending'] = datetime.now().isoformat()
     user['photo_pending'] = True
@@ -19520,7 +19428,7 @@ def save_avatar(user, data_url):
 async def appearance_preview_handler(request):
     try:raw=avatar_preview.svg(dict(request.query),request.query.get('gender','female'))
     except ValueError:raise web.HTTPBadRequest()
-    return web.Response(text=raw,content_type='image/svg+xml',headers={'Cache-Control':'public, max-age=86400','Content-Security-Policy':"default-src 'none'; img-src data:; style-src 'unsafe-inline'; sandbox"})
+    return web.Response(text=raw,content_type='image/svg+xml',headers={'Cache-Control':'no-cache','Content-Security-Policy':"default-src 'none'; img-src data:; style-src 'unsafe-inline'; sandbox"})
 
 
 async def avatar_file_handler(request):
@@ -19538,9 +19446,13 @@ async def api_app_look_handler(request):
     user_id, user, body, err = await _play_request(request)
     if err:
         return err
+    if get_subscription_level(user) not in ('super_pro','elite'):return _app_reply(user,False,'Изменение внешности · SUPER PRO / ELITE')
+    if user.get('photo_pending'):return _app_reply(user,False,at(user,'wait_reply'))
     look = body.get("look")
     if look not in LOOKS or LOOKS[look]["world"] != user.get("world") or LOOKS[look]["gender"] != user.get("gender"):
         return web.json_response({"ok": False, "error": "Bad request"})
+    user.pop('identity_reference',None)
+    user.pop('avatar',None)
     user["look"] = look
     user.pop("appearance",None)
     user["portrait_url"]=None
@@ -19562,6 +19474,7 @@ async def api_app_avatar_handler(request):
     user_id, user, body, err = await _play_request(request)
     if err:
         return err
+    if user.get('photo_pending'):return _app_reply(user,False,at(user,'wait_reply'))
     if get_subscription_level(user) not in ("super_pro", "elite"):
         return web.json_response({"ok": False, "error": at(user, "avatar_locked")})
     if body.get("remove"):
@@ -19575,6 +19488,7 @@ async def api_app_avatar_handler(request):
         error = save_avatar(user, body.get("image"))
         if error:
             return web.json_response({"ok": False, "error": error})
+    user.pop('identity_reference',None)
     save_data(user_data)
     return web.json_response({"ok": True, "state": serialize_app_state(user)})
 
@@ -19584,6 +19498,10 @@ async def api_app_create_handler(request):
     user_id, user, body, err = await _app_request(request)
     if err:
         return err
+    if user.get('personality_ready'):
+        return _app_reply(user,False,'Для нового персонажа сначала подтверди сброс истории в профиле.')
+    if not user.get('player_avatar'):
+        return _app_reply(user,False,'Сначала создай своего героя.')
     world, gender, style, scene = body.get("world"), body.get("gender"), body.get("style"), body.get("scene", "phone")
     if scene not in ("phone", "live"):
         return web.json_response({"ok": False, "error": "Bad scene"})
@@ -19614,6 +19532,7 @@ async def api_app_create_handler(request):
         error = save_avatar(user, body.get("avatar"))
         if error:
             return web.json_response({"ok": False, "error": error})
+    user.pop('identity_reference',None)
     user.update(appearance_race_v2=True,race=race,appearance=character_options.visual_from_description(appearance,custom),portrait_url=None,world=world, gender=gender, style=style, scene=scene, custom_character=custom[:2000] or None,
                 personality_ready=True, history=[], relationship={}, reply_choices={}, reply_choices_turns=0,
                 reply_choices_next=random.randint(5, 8), creating_character=False, switching_personality=False,
@@ -19628,20 +19547,99 @@ async def api_app_create_handler(request):
 
 
 def request_character_portrait(user):
-    # The reusable local mannequin is instant and does not submit paid provider jobs.
+    # Reusable generated presets are instant and never submit paid provider jobs.
     user.pop('portrait_pending',None)
     user.pop('portrait_error',None)
     user['portrait_url']=character_options.preview_url(user)
 
 
+def serialize_player(user):
+    value=user.get('player_avatar')
+    return {'required':not bool(value),'value':value,'can_edit':get_subscription_level(user) in ('super_pro','elite'),
+            'fields':{gender:character_options.choices(user.get('lang','ru'),gender) for gender in ('male','female')},
+            'races':profile_options.state(user)['races']}
+
+
+async def api_player_avatar_handler(request):
+    _,user,body,err=await _app_request(request)
+    if err:return err
+    if user.get('photo_pending'):return _app_reply(user,False,at(user,'wait_reply'))
+    if user.get('player_avatar') and get_subscription_level(user) not in ('super_pro','elite'):
+        return _app_reply(user,False,'Изменение внешности · SUPER PRO / ELITE')
+    try:value=player_avatar.validate(body)
+    except (ValueError,TypeError):return _app_reply(user,False,'Invalid avatar')
+    image=body.get('image')
+    if image:
+        if not isinstance(image,str) or body.get('photo_consent') is not True:return _app_reply(user,False,'Подтверди использование своего фото')
+        temp={'lang':user.get('lang','ru')}
+        error=save_avatar(temp,image)
+        if error:return _app_reply(user,False,error)
+        value['avatar']=temp['avatar']
+    elif not body.get('remove_photo') and user.get('player_avatar',{}).get('avatar'):
+        value['avatar']=user['player_avatar']['avatar']
+    previous=user.get('player_avatar',{}).get('avatar')
+    user['player_avatar']=value
+    save_data(user_data)
+    if previous and previous!=value.get('avatar'):
+        try:os.remove(os.path.join(AVATAR_DIR,os.path.basename(previous)))
+        except OSError:pass
+    return _app_reply(user)
+
+
+def identity_source_url(path):
+    if not WEBAPP_URL.startswith('https://') or not path.startswith('/avatars/'):
+        raise RuntimeError('Public HTTPS WEBAPP_URL required for image references')
+    return WEBAPP_URL+path
+
+
+async def ensure_identity_reference(person,player=False):
+    # No implicit provider jobs: a couple photo is exactly one editing task.
+    if person.get('avatar'):return identity_source_url('/avatars/'+person['avatar'])
+    if person.get('identity_reference'):return identity_source_url(person['identity_reference'])
+    world='realism' if person.get('world')=='realism' else 'anime'
+    gender='male' if person.get('gender')=='male' else 'female'
+    if not WEBAPP_URL.startswith('https://'):raise RuntimeError('Public HTTPS WEBAPP_URL required')
+    values=character_options.validate(person.get('appearance') or {},gender)
+    return WEBAPP_URL+'/assets/'+('player_avatar_' if player else 'avatar_')+world+'_'+gender+'_'+values['hair_style']+'.webp'
+
+
+async def app_couple_photo_generate(user_id,user,action):
+    reserved=False
+    try:
+        if user.get('energy',0)<PHOTO_ENERGY_COST:raise RuntimeError('Insufficient energy')
+        if not WEBAPP_URL.startswith('https://'):raise RuntimeError('Public HTTPS WEBAPP_URL required')
+        user['energy']-=PHOTO_ENERGY_COST;user['photo_reserved']=PHOTO_ENERGY_COST;reserved=True;save_data(user_data)
+        player=user['player_avatar']
+        references=[await ensure_identity_reference(player,True),await ensure_identity_reference(user)]
+        raw,ext=await asyncio.wait_for(photo_generation.edit(player_avatar.couple_prompt(player,user,action),references),timeout=280)
+        os.makedirs(AVATAR_DIR,exist_ok=True)
+        name=secrets.token_hex(12)+'.'+ext
+        with open(os.path.join(AVATAR_DIR,name),'wb') as f:f.write(raw)
+        user.setdefault('history',[]).append({'role':'assistant','content':'📷','photo':'/avatars/'+name})
+        user.pop('photo_reserved',None);reserved=False
+        if user['energy']<=0:user['sleep_until']=datetime.now().isoformat()
+    except asyncio.CancelledError:
+        if reserved:user['energy']=min(ENERGY_MAX,user.get('energy',0)+user.pop('photo_reserved',PHOTO_ENERGY_COST))
+        raise
+    except Exception as exc:
+        if reserved:user['energy']=min(ENERGY_MAX,user.get('energy',0)+user.pop('photo_reserved',PHOTO_ENERGY_COST))
+        logging.warning('Couple photo unavailable: %s',type(exc).__name__)
+        user.setdefault('app_notices',[]).append({'ru':'Совместное фото не получилось. Энергия возвращена.','de':'Das gemeinsame Foto ist fehlgeschlagen. Energie zurückerstattet.'}.get(user.get('lang'),'The photo failed. Energy refunded.'))
+    finally:
+        user['app_pending']=None;user.pop('photo_pending',None);save_data(user_data)
+
+
 async def api_app_appearance_handler(request):
     _,user,body,err=await _play_request(request)
     if err:return err
+    if get_subscription_level(user) not in ('super_pro','elite'):return _app_reply(user,False,'Изменение внешности · SUPER PRO / ELITE')
+    if user.get('photo_pending'):return _app_reply(user,False,at(user,'wait_reply'))
     try:appearance={k:v for k,v in character_options.validate(body.get('appearance'),user.get('gender')).items() if k in character_options.VISUAL_KEYS}
     except ValueError:return _app_reply(user,False,'Invalid appearance')
     try:race=profile_options.validate_race(body.get('race',user.get('race','human')))
     except ValueError:return _app_reply(user,False,'Invalid race')
     user.pop("avatar",None)
+    user.pop("identity_reference",None)
     user.update(race=race,appearance=appearance,portrait_url=None,appearance_race_v2=True)
     request_character_portrait(user)
     save_data(user_data)
@@ -19653,6 +19651,7 @@ async def api_app_reset_handler(request):
     user_id, user, body, err = await _play_request(request)
     if err:
         return err
+    if user.get('app_pending'):return _app_reply(user,False,at(user,'wait_reply'))
     if is_asleep(user):
         return web.json_response({"ok": False, "error": at(user, "asleep_no_new")})
     user["personality_ready"] = False
@@ -19677,7 +19676,7 @@ setTimeout(function () { if (window.__tgSdkOnSettle) window.__tgSdkOnSettle(); }
 _SDK_TAG_RE = re.compile(r'<script src="/tg-sdk\.js"[^>]*>\s*</script>', re.S)
 
 
-SFX_TAG = '<script src="/sfx.js?v=20261117c"></script>'
+SFX_TAG = '<script src="/sfx.js?v=20261117d"></script>'
 
 
 async def sfx_js_handler(request):
@@ -19858,7 +19857,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
 @media(prefers-reduced-motion:reduce){.btn::after,.buy-btn::after,.action-btn::after,.rd-premium,.rd-spark{animation:none!important;}}
 
 '''
-APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261117c">'
+APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261117d">'
 
 
 async def theme_css_handler(request):
@@ -19871,8 +19870,8 @@ def page_response(request, html):
         html = html.replace("</head>", APP_THEME_TAG + "</head>", 1)
     if request.query.get("embed") == "1":
         html = _SDK_TAG_RE.sub(lambda m: EMBED_BRIDGE, html, count=1)
-        return web.Response(text=html, content_type="text/html")
-    return web.Response(text=with_app_back(html), content_type="text/html")
+        return web.Response(text=html, content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261117d"})
+    return web.Response(text=with_app_back(html), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261117d"})
 
 
 def refund_scene_photo(user, job_id):
@@ -20084,7 +20083,7 @@ def serialize_referral(user):
 
 
 async def app_page_handler(request):
-    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html")
+    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261117d"})
 
 # Нативная кнопка «Назад» Telegram на внутренних страницах (магазин, колесо, игры, работа, гайд) --
 # возвращает в главное приложение /app, так что всё выглядит как одно мини-приложение.
@@ -20253,7 +20252,7 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
   function loadSample(kind){
     if(sampleBuffers[kind])return Promise.resolve(sampleBuffers[kind]);
     if(sampleLoads[kind])return sampleLoads[kind];
-    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261117c').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
+    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261117d').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
     return sampleLoads[kind];
   }
   function sample(kind){
@@ -20656,6 +20655,11 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 #composer .input-shell.focus-flare::after{animation-duration:1.2s;animation-iteration-count:2}#input,#input-ghost{font-size:16px!important;font-family:inherit!important;font-weight:400!important;letter-spacing:normal!important;line-height:1.45!important;padding:12px 14px!important;box-sizing:border-box!important;white-space:pre-wrap!important;overflow-wrap:break-word!important;word-break:normal!important}#input-ghost{border:0!important;inset:0!important}#input{min-height:47px;transition:height .13s ease}button.press-pop{animation:press-pop .28s ease}@keyframes press-pop{40%{transform:scale(.95);filter:brightness(1.2)}100%{transform:none}}
 .maintenance-screen{background:radial-gradient(ellipse at 50% 5%,#463154,#171522 65%)!important;overflow:auto!important;padding:35px 24px!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:12px}.maintenance-screen p{max-width:330px;font-size:14px;color:#cfc0d8;text-align:center}.maintenance-screen .btn{width:min(100%,320px)}.maintenance-orb{font-size:60px;color:#ddadcb;text-shadow:0 0 25px #b47bb8;animation:maintenance-breathe 2.4s ease-in-out infinite}.maintenance-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;width:min(270px,85vw)}.maintenance-grid button{aspect-ratio:1;border-radius:18px;background:#4a3c56;border:1px solid #816684;transition:background .15s,transform .15s}.maintenance-grid button.lit{background:#ddb3d1;box-shadow:0 0 22px #d5a6ca66;transform:scale(.95)}@keyframes maintenance-breathe{50%{transform:scale(1.1);opacity:.65}}
 @media(prefers-reduced-motion:reduce){button.press-pop{animation:none!important}#input{transition:none!important}.maintenance-orb{animation:none!important}}
+
+#nav button{min-width:0!important;padding:7px 0!important;flex:1 1 0!important;font-size:9px!important}#nav .ic{font-size:23px!important}#nav button>span:last-child{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.appearance-swatches{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 0 16px}.appearance-swatches span{display:flex;align-items:center;gap:5px;font-size:11px;background:#2a243b;padding:5px 8px;border-radius:20px}.appearance-swatches i{width:13px;height:13px;border:1px solid #fff4;border-radius:50%}.appearance-locked .rd-field:after{content:'🔒';position:absolute;right:10px;top:0;font-size:11px}.appearance-locked .rd-field{position:relative;padding-top:4px}.appearance-locked .rd-field>select{padding-right:24px!important}.player-selfie{display:block;width:150px;height:175px;object-fit:cover;border-radius:18px;margin:16px auto}.player-consent{display:flex;align-items:flex-start;gap:10px;line-height:1.5;font-size:12px;margin:15px 0}.player-consent input{width:20px;height:20px;flex:none}#view-onb{overflow-x:hidden}#view-onb>.ob-in{width:100%;box-sizing:border-box;margin:12px 0}#view-onb>.btn{width:100%;margin:7px 0}
+.send-bounce{animation:send-hop .6s cubic-bezier(.2,.7,.3,1)!important}.input-shell.send-sweep:after{content:'';position:absolute;inset:-2px;pointer-events:none;border:2px solid #c590f8;border-radius:inherit;z-index:3;animation:send-edge .7s ease-out!important}.reaction-art{display:block;width:34px;height:34px;object-fit:contain;border-radius:10px}.rd-user-react .reaction-art{width:29px;height:29px}.rd-premium{animation:none!important}.reaction-heart{animation:heart-beat 1.5s ease-in-out infinite}.reaction-star{animation:star-rock 2s ease-in-out infinite}.reaction-flame{animation:flame-dance 1.2s ease-in-out infinite;transform-origin:50% 85%}.reaction-party{animation:party-pop 1.7s ease-in-out infinite}
+@keyframes send-hop{35%{transform:translateY(-9px) rotate(-12deg)}70%{transform:translateY(2px) rotate(5deg)}}@keyframes send-edge{0%{clip-path:inset(0 100% 0 0);opacity:1}70%{clip-path:inset(0 0 0 75%);opacity:1}100%{clip-path:inset(0 0 0 100%);opacity:0}}@keyframes heart-beat{35%{transform:scale(1.13)}55%{transform:scale(.98)}70%{transform:scale(1.07)}}@keyframes star-rock{50%{transform:translate(2px,-3px) rotate(15deg);filter:brightness(1.2)}}@keyframes flame-dance{50%{transform:scaleX(.9) scaleY(1.08) rotate(-3deg)}}@keyframes party-pop{45%{transform:scale(1.12) rotate(7deg)}75%{transform:rotate(-4deg)}}@media(prefers-reduced-motion:reduce){.reaction-art,.send-bounce,.input-shell.send-sweep:after{animation:none!important}}
 </style>
 </head>
 <body>
@@ -20681,7 +20685,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     </div>
     <div class="view" id="view-profile"></div>
     <div class="view frame" id="view-games"></div>
-    <div class="view frame" id="view-shop"></div>
+    <div class="view frame" id="view-shop"></div><div class="view frame" id="view-wardrobe"></div>
     <div class="view frame" id="view-spin"></div>
     <div class="view frame" id="view-work"></div>
     <div class="view" id="view-onb"></div>
@@ -20756,8 +20760,8 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 
   // ---- навигация ----
   var TABS = [["chat", "💬", null, "nav_chat"], ["games", "🎮", "/play", "nav_games"], ["shop", "🛍", "/shop", "nav_shop"],
-              ["spin", "🎰", "/spin", "nav_wheel"], ["work", "💼", "/work", "nav_work"], ["profile", "👤", null, "nav_profile"]];
-  var FRAME_PATH = { games: "/play", shop: "/shop", spin: "/spin", work: "/work" };
+              ["spin", "🎰", "/spin", "nav_wheel"], ["work", "💼", "/work", "nav_work"], ["profile", "👤", null, "nav_profile"],["wardrobe","👔","/shop?wardrobe=1","nav_shop"]];
+  var FRAME_PATH = { games: "/play", shop: "/shop", spin: "/spin", work: "/work", wardrobe:"/shop?wardrobe=1" };
   var frames = {}, hiddenAt = {};
   // Раздел грузится один раз во вкладку (iframe) и дальше просто показывается -- без нового мини-приложения.
   function showFrame(name, path) {
@@ -20792,7 +20796,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     var nav = $("nav"); nav.innerHTML = "";
     TABS.forEach(function (t) {
       var b = el("button", t[0] === tab ? "on" : "");
-      var ic = el("span", "ic"); ic.appendChild(icon(t[3], t[1], "")); b.appendChild(ic); b.appendChild(el("span", null, state.ui["tab_" + t[0]]));
+      var ic = el("span", "ic"); ic.appendChild(icon(t[3], t[1], "")); b.appendChild(ic); b.appendChild(el("span", null, t[0]==='wardrobe'?tr('Гардероб','Wardrobe','Kleidung'):state.ui["tab_" + t[0]]));
       b.onclick = function () { haptic("select"); setTab(t[0]); };
       nav.appendChild(b);
     });
@@ -20852,21 +20856,22 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     api('/api/app/wake',{method:'energizer'}).then(function(res){energizerBusy=false;if(res.state)state=res.state;render();if(res.ok){energyGainAnimation(state.stats.energy-before);haptic('reward');if(sndOn()&&window.RDSFX)RDSFX.care('drink','sparkling_water');}else toast(res.error);}).catch(function(){energizerBusy=false;render();toast('Network error');});
   }
   function requestComposerPhoto(){
-    if(state.pending)return;
-    var go=function(ok){if(!ok)return;api('/api/app/photo',{text:$('input').value.trim()||tr('Пришли свой портрет в одежде с учётом нашей беседы.','Send a clothed portrait of yourself in our current setting.','Schick mir ein bekleidetes Porträt von dir in unserer Umgebung.')}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);render();schedulePoll();});};
-    if(tg&&tg.showConfirm)tg.showConfirm(tr('Отправить фото за 40 энергии?','Send a photo for 40 energy?','Foto für 40 Energie senden?'),go);else go(confirm(tr('Отправить фото за 40 энергии?','Send a photo for 40 energy?','Foto für 40 Energie senden?')));
+    if(state.pending)return;var box=$('sheet-box');box.innerHTML='';box.classList.remove('appearance-locked');box.appendChild(el('h4',null,tr('Какое фото?','Which photo?','Welches Foto?')));box.appendChild(el('p','note',tr('40 энергии за один снимок. Без фоновой генерации.','40 energy per photo. No background generation.','40 Energie pro Foto. Keine Hintergrundgenerierung.')));
+    [[null,tr('Портрет собеседника','Companion portrait','Porträt')],['together',tr('Вместе с моим героем','Together with my avatar','Gemeinsam mit meinem Avatar')],['hug',tr('Объятие','Hug','Umarmung')],['kiss',tr('Поцелуй','Kiss','Kuss')]].forEach(function(item){var b=el('button','btn ghost',item[1]);b.onclick=function(){b.disabled=true;var body=item[0]?{pair_action:item[0]}:{text:$('input').value.trim()||'An ordinary fully clothed portrait of yourself.'};api('/api/app/photo',body).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);else $('sheet').classList.remove('on');render();schedulePoll();});};box.appendChild(b);});$('sheet').classList.add('on');
   }
   var inputGlowTimer=null;function inputGlow(){clearTimeout(inputGlowTimer);var shell=$('input').parentNode;shell.classList.remove('focus-flare');void shell.offsetWidth;shell.classList.add('focus-flare');inputGlowTimer=setTimeout(function(){shell.classList.remove('focus-flare');},2600);}
   $('input').addEventListener('focus',function(){setTimeout(inputGlow,260);});
   if(window.visualViewport)visualViewport.addEventListener('resize',function(){if(document.activeElement===$('input')){setTimeout(inputGlow,120);autosize();ghostComplete();}});
   document.addEventListener('contextmenu',function(e){if(!e.target.closest('input,textarea,[contenteditable=true]'))e.preventDefault();});
-  function appearanceFields(container,values,fields,onchange){
-    var gender=state.onboarding?(ob.gender||'female'):(state.character.gender||'female');
-    if(state.onboarding&&state.onboarding.appearance_fields_by_gender)fields=state.onboarding.appearance_fields_by_gender[gender];
-    var races=state.onboarding?state.onboarding.races:(state.content_settings||{}).races;
+  function appearanceFields(container,values,fields,onchange,context){
+    var gender=context?context.gender:state.onboarding?(ob.gender||'female'):(state.character.gender||'female');
+    if(!context&&state.onboarding&&state.onboarding.appearance_fields_by_gender)fields=state.onboarding.appearance_fields_by_gender[gender];
+    var races=context?context.races:state.onboarding?state.onboarding.races:(state.content_settings||{}).races;
     values.race=values.race||(state.onboarding?(ob.race||'human'):(state.content_settings||{}).race)||'human';
     var preview=el('img','appearance-live');preview.alt=tr('Предпросмотр внешности','Appearance preview','Vorschau');preview.draggable=false;container.appendChild(preview);
-    function refresh(){if(state.onboarding)ob.race=values.race;preview.src='/api/appearance-preview.svg?'+new URLSearchParams(Object.assign({gender:gender,world:state.onboarding?ob.world:state.character.world},values)).toString();if(onchange)onchange();}
+    var caption=el('p','appearance-caption',tr('Эскиз причёски. Цвета и детали ниже применяются при создании фото.','Hair silhouette preview. Colors and details below apply to generated photos.','Frisurvorschau. Farben und Details werden bei Fotos angewendet.'));container.appendChild(caption);
+    var chips=el('div','appearance-swatches');container.appendChild(chips);
+    function refresh(){if(state.onboarding&&!context)ob.race=values.race;preview.src='/api/appearance-preview.svg?v=20261117d&'+new URLSearchParams(Object.assign({gender:gender,world:context?context.world:state.onboarding?ob.world:state.character.world,owner:context?'player':'companion'},values)).toString();chips.innerHTML='';var palette={hair_color:{brown:'#684039',black:'#23222e',blonde:'#e9c887',red:'#b65b39',silver:'#e3e2ec',pink:'#e5a1be',purple:'#b799d7',blue:'#4c628d'},skin:{fair:'#f7dfd2',light:'#e9c7b2',olive:'#c4ab83',tan:'#bc8d6d',brown:'#956347',dark:'#654333'},eyes:{brown:'#765644',blue:'#72adcd',green:'#83ad87',grey:'#9ca7b2',amber:'#c7a35f',violet:'#ac8dcd'}};['hair_color','skin','eyes'].forEach(function(key){var field=(fields||[]).find(function(f){return f.key===key;}),item=field&&field.items.find(function(i){return i.key===values[key];});if(item){var chip=el('span',null,item.label),dot=el('i');dot.style.background=palette[key][values[key]];chip.prepend(dot);chips.appendChild(chip);}});if(onchange)onchange();}
     var grid=el('div','appearance-grid');
     if(races){var label=el('label','rd-field',tr('Раса персонажа','Character race','Charaktervolk')),select=el('select','ob-in');select.id=state.onboarding?'ob-race':'appearance-race';races.forEach(function(item){var option=el('option',null,item.label);option.value=item.key;select.appendChild(option);});select.value=values.race;select.onchange=function(){values.race=select.value;refresh();};label.appendChild(select);grid.appendChild(label);}
     (fields||[]).forEach(function(field){var label=el('label','rd-field',field.label),select=el('select','ob-in');select.dataset.appearance=field.key;field.items.forEach(function(item){var option=el('option',null,item.label);option.value=item.key;select.appendChild(option);});select.value=values[field.key]||field.items[0].key;if(!select.value)select.value=field.items[0].key;values[field.key]=select.value;select.onchange=function(){values[field.key]=select.value;refresh();};label.appendChild(select);grid.appendChild(label);});container.appendChild(grid);refresh();
@@ -20887,6 +20892,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     button.onclick=function(){if(energizerBusy)return;energizerBusy=true;button.disabled=true;api('/api/app/wake',{method:'energizer'}).then(function(res){energizerBusy=false;if(res.state)state=res.state;if(res.ok){haptic('reward');if(sndOn()&&window.RDSFX)RDSFX.care('drink','sparkling_water');}toast(res.toast||res.error||'');render();}).catch(function(){energizerBusy=false;button.disabled=false;toast('Network error');});};
     container.appendChild(button);
   }
+  function reactionArt(button,emoji){var names={'💖':'heart','✨':'star','🔥':'flame','🎉':'party'},name=names[emoji];if(!name)return;button.textContent='';button.setAttribute('aria-label',emoji);var image=el('img','reaction-art reaction-'+name);image.src='/assets/reaction_'+name+'.webp';image.alt=emoji;button.appendChild(image);}
   function renderChat() {
     var s = state, box = $("msgs");
     var stick = nearBottom() || lastCount < 0;
@@ -20908,7 +20914,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       if (!m.card) bindMessageMenu(b, m);
       w.appendChild(b);
       if (m.edited) w.appendChild(el("div", "rd-edited", tr("изменено", "edited")));
-      if (m.user_reaction) { var ur = el("button", "rd-user-react"+(m.reaction_animated?" rd-premium":""), m.user_reaction); ur.onclick = function () { messageAction(m, "react", {emoji: m.user_reaction}); }; b.appendChild(ur); }
+      if (m.user_reaction) { var ur = el("button", "rd-user-react"+(m.reaction_animated?" rd-premium":""), m.user_reaction); ur.onclick = function () { messageAction(m, "react", {emoji: m.user_reaction}); }; if(m.reaction_animated)reactionArt(ur,m.user_reaction);b.appendChild(ur); }
       if (m.reaction) b.appendChild(el("span", "react", m.reaction));
       row.appendChild(w); box.appendChild(row);
       prev = m.role;
@@ -20943,12 +20949,12 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   function send() {
     var inp = $("input"), text = inp.value.trim();
     if (!text || sending || state.pending) return;
-    var inputRect=inp.getBoundingClientRect();
+    var inputRect=inp.getBoundingClientRect(),sendNode=$("send"),shell=inp.parentNode;sendNode.classList.remove("send-bounce");shell.classList.remove("send-sweep");void sendNode.offsetWidth;sendNode.classList.add("send-bounce");shell.classList.add("send-sweep");setTimeout(function(){sendNode.classList.remove("send-bounce");shell.classList.remove("send-sweep");},800);
     sending = true; haptic("light"); if (sndOn() && window.RDSFX) window.RDSFX.sent();
     // сразу показываем своё сообщение и «печатает…», не дожидаясь сервера
     state.messages.push({ role: "user", text: text }); state.pending = true; state.can_reroll = false;
     inp.value = ""; autosize();ghostComplete(); renderChat(); renderHead(); scrollBottom(true);
-    requestAnimationFrame(function(){if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;var bubbles=$('msgs').querySelectorAll('.row.me .bub'),target=bubbles[bubbles.length-1];if(!target||!target.animate)return;var end=target.getBoundingClientRect(),fly=el('div','message-flight',text);fly.style.cssText='position:fixed;left:'+inputRect.left+'px;top:'+inputRect.top+'px;width:'+inputRect.width+'px;max-height:180px;overflow:hidden;z-index:1200;pointer-events:none;padding:12px 14px;border-radius:22px;background:#8851a9;color:white;white-space:pre-wrap';document.body.appendChild(fly);target.style.opacity='.2';var motion=fly.animate([{transform:'translate(0,0)',opacity:1},{transform:'translate('+(end.left-inputRect.left)+'px,'+(end.top-inputRect.top)+'px)',opacity:0}],{duration:380,easing:'cubic-bezier(.2,.7,.2,1)'});motion.onfinish=function(){fly.remove();target.style.opacity='';};});
+    requestAnimationFrame(function(){if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;var fly=el('div','message-flight',text);fly.style.cssText='position:fixed;left:'+inputRect.left+'px;top:'+inputRect.top+'px;width:'+Math.min(inputRect.width,260)+'px;max-height:100px;overflow:hidden;z-index:5000;pointer-events:none;padding:12px 14px;border-radius:22px;background:linear-gradient(115deg,#8851a9,#b84c9c);color:white;white-space:pre-wrap;box-sizing:border-box';document.body.appendChild(fly);var motion=fly.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:'translate(12px,-95px) scale(.96)',opacity:1,offset:.65},{transform:'translate(18px,-135px) scale(.92)',opacity:0}],{duration:650,easing:'cubic-bezier(.2,.7,.2,1)'});motion.onfinish=function(){fly.remove();};setTimeout(function(){fly.remove();},900);});
     api("/api/app/send", { text: text }).then(function (res) {
       sending = false;
       if (res.state) state = res.state;
@@ -21077,7 +21083,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       }); box.appendChild(reactions);
       var premium=el('div','rd-reactions rd-premium-picker');
       ['💖','✨','🔥','🎉'].forEach(function(emoji){
-        var b=el('button','btn ghost',emoji);b.title='PRO';b.setAttribute('aria-label',emoji+' PRO');
+        var b=el('button','btn ghost',emoji);reactionArt(b,emoji);b.title='PRO';b.setAttribute('aria-label',emoji+' PRO');
         b.classList.toggle('locked',!state.animated_reactions);
         b.onclick=function(){if(state.animated_reactions)messageAction(m,'react',{emoji:emoji});else toast(tr('Анимированные реакции — с подпиской','Animated reactions come with a subscription','Animierte Reaktionen gibt es mit Abo'));};
         premium.appendChild(b);
@@ -21193,7 +21199,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   function showContentSettings(){
     var current=state.content_settings||{},values=Object.assign({},current.preferences||{}),box=$('sheet-box');box.innerHTML='';box.appendChild(el('h4',null,tr('Настройки контента','Content settings','Inhaltseinstellungen')));
     (current.preference_options||[]).forEach(function(option){var row=el('label');row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px';row.appendChild(el('span',null,option.label));var check=el('input');check.type='checkbox';check.dataset.preference=option.key;check.checked=values[option.key]===true;check.style.cssText='width:21px;height:21px;accent-color:#bd80de';check.onchange=function(){values[option.key]=check.checked;};row.appendChild(check);box.appendChild(row);});
-    var label=el('label','rd-field',tr('Раса персонажа','Character race','Charaktervolk')),race=el('select','rd-style-select');race.id='content-race';(current.races||[]).forEach(function(option){var node=el('option',null,option.label);node.value=option.key;race.appendChild(node);});race.value=current.race||'human';label.appendChild(race);box.appendChild(label);
+    var label=el('label','rd-field',tr('Раса персонажа','Character race','Charaktervolk')),race=el('select','rd-style-select');race.id='content-race';(current.races||[]).forEach(function(option){var node=el('option',null,option.label);node.value=option.key;race.appendChild(node);});race.value=current.race||'human';if(!state.character.can_avatar){race.disabled=true;label.appendChild(el('small',null,'🔒 SUPER PRO / ELITE'));}label.appendChild(race);box.appendChild(label);
     var save=el('button','btn',tr('Сохранить','Save','Speichern'));save.id='content-save';save.onclick=function(){save.disabled=true;api('/api/app/settings',{preferences:values,race:race.value}).then(function(res){if(res.state)state=res.state;if(res.ok){$('sheet').classList.remove('on');render();}else{toast(res.error);save.disabled=false;}}).catch(function(){save.disabled=false;toast('Network error');});};box.appendChild(save);$('sheet').classList.add('on');
   }
   function renderProfile() {
@@ -21211,6 +21217,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       }
       hero.appendChild(fxl);
     }
+    if(s.player){var mine=el('button','btn ghost',tr('Мой герой · внешность','My avatar · appearance','Mein Avatar · Aussehen'));mine.onclick=function(){playerEditing=true;playerDraft=null;render();};v.appendChild(mine);}
     var ava = el("div", "ava"); ava.appendChild(el("span", null, s.character.avatar)); setAvatar(ava, s.character.avatar_url); hero.appendChild(ava);
     hero.appendChild(el("div", "ttl", s.character.title)); hero.appendChild(el("div", "sub", s.character.subtitle));
     if (tier) hero.appendChild(el("div", "tierline", s.subscription.title));
@@ -21224,10 +21231,10 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       row.appendChild(inp); row.appendChild(ok); hero.insertBefore(row, hb2.nextSibling); inp.focus();
     };
     hb2.appendChild(rn);
-    if (s.character.looks && s.character.looks.length) {
+    if (s.character.appearance_fields || s.character.looks && s.character.looks.length) {
       var lk = el("button", null, ui.look_btn);
       lk.onclick = function () {
-        if(s.character.appearance_fields){var box=$('sheet-box');box.innerHTML='';box.appendChild(el('h4',null,ui.look_title));var values=Object.assign({},s.character.appearance||{});appearanceFields(box,values,s.character.appearance_fields);var save=el('button','btn',tr('Сохранить внешность','Save appearance','Aussehen speichern'));save.onclick=function(){save.disabled=true;api('/api/app/appearance',{appearance:values,race:values.race}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);else $('sheet').classList.remove('on');render();});};box.appendChild(save);$('sheet').classList.add('on');return;}
+        if(s.character.appearance_fields){var box=$('sheet-box');box.innerHTML='';box.appendChild(el('h4',null,ui.look_title));var values=Object.assign({},s.character.appearance||{});appearanceFields(box,values,s.character.appearance_fields);if(!s.character.can_avatar){box.classList.add('appearance-locked');box.appendChild(el('p','note',tr('🔒 Изменения доступны с SUPER PRO и ELITE. Предпросмотр бесплатный.','🔒 Changes require SUPER PRO or ELITE. Preview is free.','🔒 Änderungen mit SUPER PRO oder ELITE. Vorschau kostenlos.')));}else box.classList.remove('appearance-locked');var save=el('button','btn',tr('Сохранить внешность','Save appearance','Aussehen speichern'));save.disabled=!s.character.can_avatar;if(save.disabled)save.textContent='🔒 SUPER PRO / ELITE';save.onclick=function(){save.disabled=true;api('/api/app/appearance',{appearance:values,race:values.race}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);else $('sheet').classList.remove('on');render();});};box.appendChild(save);$('sheet').classList.add('on');return;}
         var box = $("sheet-box"); box.innerHTML = ""; box.appendChild(el("h4", null, ui.look_title));
         var g2 = el("div", "looks");
         s.character.looks.forEach(function (L) {
@@ -21484,6 +21491,28 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   $("sheet").onclick = function (e) { if (e.target.id === "sheet") $("sheet").classList.remove("on"); };
 
   var ob = {}, obStep = 0;
+  var playerDraft=null,playerEditing=false;
+  function renderPlayer(){
+    var v=$('view-onb');v.innerHTML='';var ps=state.player;
+    if(!playerDraft){var old=ps.value||{};playerDraft={name:old.name||'',world:old.world||'anime',gender:old.gender||'male',race:old.race||'human',appearance:Object.assign({},old.appearance||{}),image:null,photo_consent:false,use_photo_appearance:old.use_photo_appearance!==false};}
+    var draft=playerDraft,locked=!!ps.value&&!ps.can_edit;
+    v.appendChild(el('h2',null,tr('Твой герой','Your avatar','Dein Avatar')));
+    v.appendChild(el('p','note',tr('Это ты в совместных фото. Собеседника создадим отдельно. Настройка и готовые образы бесплатны.','This is you in shared photos. Your companion is separate. Setup and presets are free.','Das bist du auf gemeinsamen Fotos. Dein Gesprächspartner ist separat. Einrichtung und Vorlagen sind kostenlos.')));
+    var grid=el('div','appearance-grid');[['world',tr('Стиль','Style','Stil'),[['anime','Аниме'],['realism',tr('Реализм','Realism','Realismus')]]],['gender',tr('Пол героя','Avatar gender','Geschlecht'),[['male',tr('Мужчина','Man','Mann')],['female',tr('Женщина','Woman','Frau')]]]].forEach(function(row){var label=el('label','rd-field',row[1]),select=el('select','ob-in');select.dataset.player=row[0];row[2].forEach(function(item){var option=el('option',null,item[1]);option.value=item[0];select.appendChild(option);});select.value=draft[row[0]];select.onchange=function(){draft[row[0]]=select.value;if(row[0]==='gender'){draft.appearance.hair_style=select.value==='male'?'short':'waves';draft.appearance.accessory='none';}renderPlayer();};label.appendChild(select);grid.appendChild(label);});v.appendChild(grid);
+    var name=el('input','ob-in');name.placeholder=tr('Твоё имя (необязательно)','Your name (optional)','Dein Name (optional)');name.maxLength=60;name.value=draft.name;name.oninput=function(){draft.name=name.value;};v.appendChild(name);
+    draft.appearance.race=draft.race;appearanceFields(v,draft.appearance,ps.fields[draft.gender],function(){draft.race=draft.appearance.race;},{gender:draft.gender,world:draft.world,races:ps.races});
+    draft.race=draft.appearance.race||draft.race;
+    var photo=el('button','btn ghost',tr('Загрузить своё фото','Upload my photo','Eigenes Foto hochladen'));photo.onclick=function(){pickImage(function(data){draft.image=data;renderPlayer();});};v.appendChild(photo);
+    if(draft.image||(ps.value&&ps.value.avatar&&!draft.remove_photo)){var img=el('img','player-selfie');img.src=draft.image||'/avatars/'+ps.value.avatar;v.appendChild(img);var remove=el('button','btn ghost',tr('Использовать готовый образ','Use a preset','Vorlage verwenden'));remove.onclick=function(){draft.image=null;draft.remove_photo=true;draft.photo_consent=false;renderPlayer();};v.appendChild(remove);}
+    if(draft.image||(ps.value&&ps.value.avatar&&!draft.remove_photo)){
+      var use=el('label','player-consent'),toggle=el('input');toggle.type='checkbox';toggle.checked=draft.use_photo_appearance;toggle.onchange=function(){draft.use_photo_appearance=toggle.checked;renderPlayer();};use.appendChild(toggle);use.appendChild(document.createTextNode(tr('Сохранить внешность с фото. Отключи, чтобы применить выбранные волосы и цвета.','Keep the appearance from my photo. Turn off to apply selected hair and colors.','Aussehen vom Foto beibehalten. Deaktivieren, um gewählte Haare und Farben anzuwenden.')));v.appendChild(use);
+      if(draft.use_photo_appearance){v.querySelector('.appearance-live').src=draft.image||'/avatars/'+ps.value.avatar;v.querySelector('.appearance-caption').textContent=tr('Фото используется как референс без предварительной генерации.','The photo is used as a reference, without preliminary generation.','Das Foto dient als Referenz, ohne zusätzliche Generierung.');v.querySelector('.appearance-swatches').hidden=true;v.querySelectorAll('.appearance-grid [data-appearance],.appearance-grid #appearance-race,.appearance-grid #ob-race').forEach(function(n){n.disabled=true;});}
+    }
+    if(draft.image){var label=el('label','player-consent'),check=el('input');check.type='checkbox';check.checked=draft.photo_consent;check.onchange=function(){draft.photo_consent=check.checked;save.disabled=!check.checked||locked;};label.appendChild(check);label.appendChild(document.createTextNode(tr('Это моё фото. Разрешаю передавать его генератору при создании фото.','This is my photo. I allow sending it to the image provider when I request a photo.','Das ist mein Foto. Es darf bei einer Fotoanfrage an den Bildanbieter gesendet werden.')));v.appendChild(label);}
+    if(locked){v.classList.add('appearance-locked');v.appendChild(el('p','note','🔒 SUPER PRO / ELITE'));}else v.classList.remove('appearance-locked');
+    var save=el('button','btn',tr('Сохранить героя · бесплатно','Save avatar · free','Avatar speichern · kostenlos'));save.disabled=locked||!!draft.image&&!draft.photo_consent;save.onclick=function(){save.disabled=true;draft.race=draft.appearance.race||'human';api('/api/app/player-avatar',draft).then(function(res){if(res.state)state=res.state;if(res.ok){playerEditing=false;playerDraft=null;}else toast(res.error);render();}).catch(function(){save.disabled=false;toast('Network error');});};v.appendChild(save);
+    if(ps.value){var back=el('button','btn ghost',tr('Назад','Back','Zurück'));back.onclick=function(){playerEditing=false;playerDraft=null;render();};v.appendChild(back);}
+  }
   function renderOnb() {
     var o = state.onboarding, ui = state.ui, v = $("view-onb");
     if (!ob.gender) ob.gender = o.default_gender;
@@ -21560,8 +21589,9 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 
   function render() {
     var root = $("root");
-    root.classList.toggle("onb", !!state.onboarding);
-    ["chat", "profile", "games", "shop", "spin", "work", "onb", "hot"].forEach(function (n) { $("view-" + n).classList.remove("on"); });
+    root.classList.toggle("onb", !!state.onboarding||!!(state.player&&state.player.required)||playerEditing);
+    ["chat", "profile", "games", "shop", "spin", "work", "wardrobe", "onb", "hot"].forEach(function (n) { $("view-" + n).classList.remove("on"); });
+    if(state.player&&(state.player.required||playerEditing)){$("view-onb").classList.add("on");renderPlayer();return;}
     if (state.onboarding) { $("view-onb").classList.add("on"); renderOnb(); return; }
     root.classList.toggle("framed", !!FRAME_PATH[tab]);
     if (FRAME_PATH[tab]) { renderNav(); $("view-" + tab).classList.add("on"); renderHead(); return; }
@@ -21588,7 +21618,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       var before = state ? JSON.stringify([state.messages, state.reply_choices,state.quests,state.server_day,state.hot,state.character,state.photo_pending]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) : "";
       state = res.state;
       document.documentElement.lang = (state.settings && state.settings.lang) || (state.onboarding && state.onboarding.lang) || 'ru';
-      if (state.onboarding) { if (!quiet) render(); return; }
+      if (state.onboarding||state.player&&state.player.required) { if (!quiet) render(); return; }
       if (!quiet || before !== JSON.stringify([state.messages, state.reply_choices,state.quests,state.server_day,state.hot,state.character,state.photo_pending]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) || state.notices.length) { if (!FRAME_PATH[tab]) render(); else if (state.notices.length) { toast(state.notices.join("\n\n")); state.notices = []; } }
       else if (!FRAME_PATH[tab]) renderHead();
     }).catch(function (e) { if (!quiet) full("Network error: " + (e && e.message || "unknown"), "⚠️"); });
@@ -21603,7 +21633,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     var value=inp.value,match=value.match(/(?:^|\s)([^\s]{2,})$/u),suffix='';
     var words=state&&state.settings.lang==='ru'?['привет','приветик','пожалуйста','спасибо','сегодня','сейчас','конечно','красиво','хорошо','люблю','скучаю','покажи','фотографию','увидеть','интересно','расскажи','почему','подожди','хочешь','знаешь']:state&&state.settings.lang==='de'?['hallo','danke','bitte','heute','schön','erzähle']:['hello','thanks','please','today','beautiful','interesting'];
     if(match&&inp.selectionStart===value.length){var part=match[1].toLowerCase(),word=words.find(function(w){return w.startsWith(part)&&w.length>part.length;});if(word)suffix=word.slice(part.length);}
-    completion=suffix;var ghost=$('input-ghost');ghost.innerHTML='';var prior=el('span','ghost-typed',value);ghost.appendChild(prior);ghost.appendChild(el('span','ghost-suffix',suffix));ghost.scrollTop=inp.scrollTop;ghost.scrollLeft=inp.scrollLeft;
+    var metrics=getComputedStyle(inp);var ghost=$('input-ghost');['font','lineHeight','letterSpacing','padding','textIndent','textAlign','boxSizing'].forEach(function(k){ghost.style[k]=metrics[k];});if(value.indexOf('\n')>=0||inp.scrollHeight>parseFloat(metrics.lineHeight)*1.8+parseFloat(metrics.paddingTop)+parseFloat(metrics.paddingBottom))suffix='';completion=suffix;ghost.innerHTML='';var prior=el('span','ghost-typed',value);ghost.appendChild(prior);ghost.appendChild(el('span','ghost-suffix',suffix));ghost.scrollTop=inp.scrollTop;ghost.scrollLeft=inp.scrollLeft;
   }
   inp.addEventListener('input',function(){autosize();ghostComplete();});
   inp.addEventListener('scroll',function(){$('input-ghost').scrollTop=inp.scrollTop;});
@@ -21935,6 +21965,7 @@ async def run_webapp_server():
     app_web.router.add_post("/api/app/rename", api_app_rename_handler)
     app_web.router.add_post("/api/app/look", api_app_look_handler)
     app_web.router.add_post("/api/app/appearance", api_app_appearance_handler)
+    app_web.router.add_post("/api/app/player-avatar", api_player_avatar_handler)
     app_web.router.add_post("/api/app/avatar", api_app_avatar_handler)
     app_web.router.add_get("/avatars/{name}", avatar_file_handler)
     app_web.router.add_post("/api/app/create", api_app_create_handler)
@@ -22382,6 +22413,9 @@ async def api_app_settings_handler(request):
         preferences=profile_options.validate_preferences(body['preferences'],profile_options.preferences(user)) if 'preferences' in body else None
         race=profile_options.validate_race(body['race']) if 'race' in body else None
     except ValueError as exc:return _app_reply(user,False,str(exc))
+    if race is not None and race!=user.get('race','human') and get_subscription_level(user) not in ('super_pro','elite'):
+        return _app_reply(user,False,'Изменение внешности · SUPER PRO / ELITE')
+    if race is not None and race!=user.get('race','human') and user.get('photo_pending'):return _app_reply(user,False,at(user,'wait_reply'))
     if "lang" in body:
         if body["lang"] not in LANG_BUTTONS:
             return _app_reply(user, False, "Unsupported language")
@@ -22398,7 +22432,9 @@ async def api_app_settings_handler(request):
             return _app_reply(user, False, "Unsupported mode")
         user["scene"] = body["scene"]
     if preferences is not None:user['preferences']=preferences
-    if race is not None:user['race']=race
+    if race is not None and race!=user.get('race','human'):
+        user['race']=race
+        user.pop('identity_reference',None)
     if body.get("tour_seen") is True:
         user["tour_seen"] = True
     save_data(user_data)

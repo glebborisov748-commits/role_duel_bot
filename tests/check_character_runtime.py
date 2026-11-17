@@ -42,6 +42,8 @@ async def run():
  assert 'silver' in calls[-1] and 'green eyes' in calls[-1]
  # Recreating a male realistic companion uses the free preview and parsed custom facts.
  count=len(calls)
+ assert json.loads((await app.api_app_reset_handler(None)).text)['ok']
+ u['player_avatar']={'gender':'male','world':'anime','race':'human','appearance':{}}
  body={'world':'realism','gender':'male','style':'honest','scene':'phone','appearance':{},'custom':'Внешность: взрослый мужчина 25+, кошачьи уши, белые волосы, зелёные глаза. Характер: спокойный.'}
  assert json.loads((await app.api_app_create_handler(None)).text)['ok']
  assert len(calls)==count and u['appearance']['species']=='cat' and u['appearance']['hair_color']=='silver'

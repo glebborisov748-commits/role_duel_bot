@@ -10,11 +10,11 @@ KEYS=['short','undercut','fade','crop','sidepart','slicked','curls_short','mediu
 def dimensions(path):return json.loads(subprocess.check_output(['ffprobe','-v','error','-show_entries','stream=width,height','-of','json',path]))['streams'][0]
 def crop(path,x,y,w,h,name,size):
  subprocess.run(['ffmpeg','-v','error','-y','-i',path,'-vf',f'crop={w}:{h}:{x}:{y},scale={size}','-c:v','libwebp','-quality','87',str(OUT/(name+'.webp'))],check=True)
-def portraits(path,world):
+def portraits(path,world,prefix="avatar"):
  m=dimensions(path);w,h=m['width'],m['height']
  for i,key in enumerate(KEYS):
   x=round(i%4*w/4);y=round(i//4*h/4)
-  crop(path,x,y,round((i%4+1)*w/4)-x,round((i//4+1)*h/4)-y,'avatar_'+world+('_male_' if i<8 else '_female_')+key,'320:360')
+  crop(path,x,y,round((i%4+1)*w/4)-x,round((i//4+1)*h/4)-y,prefix+'_'+world+('_male_' if i<8 else '_female_')+key,'320:360')
 if __name__=='__main__':
  portraits(sys.argv[1],'anime');portraits(sys.argv[2],'realism')
  m=dimensions(sys.argv[3]);w,h=m['width'],m['height']

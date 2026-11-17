@@ -18,10 +18,18 @@ class VisualRefreshTests(unittest.TestCase):
      if field['key']=='hair_style':
       for option in field['items']:self.assertTrue((root/f"avatar_{world}_{gender}_{option['key']}.webp").is_file())
   self.assertNotEqual(avatar_preview.base('anime','male','short'),avatar_preview.base('realism','male','short'))
- def test_eye_color_uses_an_iris_mask_and_does_not_draw_fake_eyes(self):
-  blue=avatar_preview.svg({'world':'anime','eyes':'blue'},'male');green=avatar_preview.svg({'world':'anime','eyes':'green'},'male')
-  self.assertIn('id="eye-mask"',blue);self.assertIn('filter="url(#eye-dye)" mask="url(#eye-mask)"',blue)
-  self.assertNotEqual(hashlib.sha256(blue.encode()).hexdigest(),hashlib.sha256(green.encode()).hexdigest())
+  for world in ('anime','realism'):
+   for gender in ('male','female'):
+    for field in character_options.choices('ru',gender):
+     if field['key']=='hair_style':
+      for item in field['items']:
+       self.assertTrue((root/f"player_avatar_{world}_{gender}_{item['key']}.webp").is_file())
+       self.assertTrue(avatar_preview.base(world,gender,item['key'],True)!=avatar_preview.base(world,gender,item['key']))
+ def test_presets_never_recolor_pixels_or_paste_body_shapes(self):
+  import xml.etree.ElementTree as ET
+  for raw in ({'eyes':'blue','skin':'dark','hair_color':'silver'}, {'full':'1','outfit':'bunny_outfit','race':'elf'}):
+   node=ET.fromstring(avatar_preview.svg(raw,'male'))
+   self.assertEqual([x.tag.rsplit('}',1)[-1] for x in node],['image'])
  def test_online_screen_uses_local_sdk_so_embed_can_share_parent_auth(self):
   import re
   ns={'with_sfx':lambda h:h,'APP_THEME_TAG':'<link rel="stylesheet" href="/theme.css">','_SDK_TAG_RE':re.compile(r'<script src="/tg-sdk\.js"[^>]*>\s*</script>',re.S),'EMBED_BRIDGE':'<script>window.Telegram=window.parent.Telegram;</script>','web':types.SimpleNamespace(Response=lambda **kw:kw),'with_app_back':lambda h:h}

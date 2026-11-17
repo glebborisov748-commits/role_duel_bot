@@ -48,3 +48,12 @@ The keyboard again plays the existing `key.wav` (Kenney `click_003.ogg`) rather 
 ## 2026-11-17 — connector sample revision
 
 `wire[a-c]` now layer the existing CC0 Kenney switch recording (`unlock.wav`, `switch_006.ogg`) with a brief original electrical arc. The three short connector variants replace the previous noise-based hiss. Rebuild with `python scripts/build_wire_audio.py`; keyboard, food and drink samples are unchanged.
+
+## 2026-11-17 — trace probe and flowing water
+
+`wire[a-c]`: distinct CC0 Kenney switch_001..003 contacts layered with quiet
+impactMetal_light_000..002 and an original very short continuity-probe tone.
+These replace the repeated arc/static effects. `waterplant[a-c]` and `drop`:
+original continuous soft flow/ripple synthesis, replacing the three plucked drops.
+These are designed effects, not recordings of water. `key.wav` is unchanged.
+Rebuild with `scripts/build_refresh_audio.py interface.zip impact.zip`.

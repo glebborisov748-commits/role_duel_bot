@@ -31,6 +31,7 @@ async def run():
  app._app_request=request;app._play_request=request
  for invalid in ({'preferences':{'toys':'true'}},{'preferences':{'unknown':True}},{'race':'unknown'},{'preferences':{'toys':True},'race':[] }):
   body=invalid;old=json.dumps([u['preferences'],u['race']]);assert not json.loads((await app.api_app_settings_handler(None)).text)['ok'];assert json.dumps([u['preferences'],u['race']])==old
+ u['subscription']={'active':True,'level':'super_pro','expires_at':'2099-01-01T00:00:00'}
  body={'preferences':{'latex_style':True,'toys':True},'race':'android'}
  assert json.loads((await app.api_app_settings_handler(None)).text)['ok']
  disk=json.loads(Path(app.DATA_FILE).read_text())['51'];assert disk['inventory']==u['inventory'] and disk['preferences']==u['preferences'] and disk['race']=='android'
@@ -55,8 +56,8 @@ async def run():
   async def json(self):return body
  body={'action':'start'};response=json.loads((await app.api_work_workshop_handler(Request())).text);assert response['ok'] and 'solution' not in response['job']
  job=u['pipe_job'];job['started']=time.time()-5;body={'action':'complete','id':job['id'],'values':job['solution']}
- balance=u['bucks'];res=json.loads((await app.api_work_workshop_handler(Request())).text);assert res['ok'] and u['bucks']==balance+35
- assert not json.loads((await app.api_work_workshop_handler(Request())).text)['ok'] and u['bucks']==balance+35
+ balance=u['bucks'];res=json.loads((await app.api_work_workshop_handler(Request())).text);assert res['ok'] and u['bucks']==balance+70
+ assert not json.loads((await app.api_work_workshop_handler(Request())).text)['ok'] and u['bucks']==balance+70
  assert u['pipe_completed']==1
  print('Profile options, persistent wardrobe, race and single-use pipe rewards passed')
 with asyncio.Runner(loop_factory=LocalLoop) as runner:runner.run(run())

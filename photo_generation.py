@@ -57,3 +57,38 @@ async def generate(prompt, *, world=None, gender=None, appearance=None):
                     raise RuntimeError('Invalid image')
                 return raw, ext
         raise TimeoutError('Image generation timed out')
+
+
+async def edit(prompt, references):
+    """Two ordered identity references; the image-edit contract accepts public HTTPS URLs.
+
+    This is deliberately separate from the solo image-gen payload, whose negative
+    prompt forbids couples. The default editor is documented as multi-reference.
+    """
+    if not token():raise RuntimeError('Problembo token missing')
+    if len(references)!=2 or any(not isinstance(url,str) or not url.startswith('https://') for url in references):
+        raise ValueError('Two HTTPS references required')
+    headers={'Authorization':'Bearer '+token()}
+    async with httpx.AsyncClient(timeout=25) as client:
+        response=await client.post(BASE_URL+'/image-edit/tasks',headers=headers,json={
+            'modelId':os.getenv('PROBLEMBO_COUPLE_MODEL_ID','image-gpt-v3.6'),
+            'prompt':prompt,'sourceImageFileIds':references,'imageCount':1})
+        response.raise_for_status()
+        task_id=response.json()['taskId']
+        for _ in range(100):
+            await asyncio.sleep(3)
+            response=await client.get(BASE_URL+'/tasks/'+task_id,headers=headers)
+            response.raise_for_status();task=response.json()
+            if not task.get('ready'):continue
+            if task.get('status')!='END_SUCCESS':raise RuntimeError('Image editing failed')
+            url=task['result']['taskResult'][0]['url']
+            async with client.stream('GET',url) as image:
+                image.raise_for_status();raw=bytearray()
+                async for part in image.aiter_bytes():
+                    raw.extend(part)
+                    if len(raw)>12*1024*1024:raise RuntimeError('Image too large')
+            raw=bytes(raw)
+            ext='jpg' if raw.startswith(b'\xff\xd8\xff') else 'png' if raw.startswith(b'\x89PNG\r\n\x1a\n') else 'webp' if raw[:4]==b'RIFF' and raw[8:12]==b'WEBP' else None
+            if not ext:raise RuntimeError('Invalid image')
+            return raw,ext
+        raise TimeoutError('Image editing timed out')

@@ -1,4 +1,4 @@
-"""Mobile work flows: multi-turn locks, memory countdown, city routing and radio repair."""
+"""Mobile work flows: multi-turn locks, memory countdown, trace cables and pipes."""
 import json,copy,sys
 from pathlib import Path
 from collections import deque
@@ -51,34 +51,12 @@ with sync_playwright() as p:
    page.locator('[data-pin="'+str(index)+'"]').click();page.locator('#lock-angle').evaluate('(n,v)=>{n.value=v;n.dispatchEvent(new Event("input"));}',target)
    rect=page.locator('#hacker-lock-btn').bounding_box();page.mouse.move(rect['x']+rect['width']/2,rect['y']+rect['height']/2);page.mouse.down();page.wait_for_timeout(650);page.mouse.up()
   page.wait_for_timeout(750);assert sum(h['game']=='hacker_combo' for h in hits)==2,hits
-  # Real pointer drags connect the marked terminals.
+  # Follow each cable to its outlet, without numbered/color-matched terminals.
   wires=page.evaluate('__testWork.wires()')
   for i,color in enumerate(wires['colors']):
-   left=page.locator('[data-index="'+str(i)+'"]').bounding_box();right=page.locator('[data-socket="'+str(wires['right'].index(color))+'"]').bounding_box()
-   page.mouse.move(left['x']+left['width']/2,left['y']+left['height']/2);page.mouse.down();page.mouse.move(right['x']+right['width']/2,right['y']+right['height']/2,steps=8);page.mouse.up()
+   page.locator('[data-socket="'+str(wires['right'].index(color))+'"]').click()
   page.wait_for_timeout(750);assert sum(h['game']=='hacker_combo' for h in hits)==3,hits
-  page.locator('#tab-courier').click();road=page.locator('#courier-road');road.scroll_into_view_if_needed();rect=road.bounding_box()
-  assert not page.locator('#courier-controls').is_visible()
-  assert page.locator('.city-address').count()==3
-  def swipe(dx,dy):
-   x=rect['x']+rect['width']/2;y=rect['y']+rect['height']/2
-   page.mouse.move(x,y);page.mouse.down();page.mouse.move(x+dx*55,y+dy*55,steps=5);page.mouse.up()
-  for delivery in range(3):
-   run=page.evaluate('__testWork.run()');start=(run['x'],run['y']);target=(run['target']['x'],run['target']['y']);blocks={(b['x'],b['y']) for b in run['blocks']};q=deque([(start,[])]);seen={start};path=None
-   while q:
-    point,steps=q.popleft()
-    if point==target:path=steps;break
-    for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):
-     nx,ny=point[0]+2*dx,point[1]+2*dy;mid=(point[0]+dx,point[1]+dy)
-     if not(0<=nx<7 and 0<=ny<7) or mid in blocks or (nx,ny) in seen:continue
-     seen.add((nx,ny));q.append(((nx,ny),steps+[(dx,dy,nx,ny)]))
-   assert path is not None
-   for dx,dy,nx,ny in path:
-    fuel=page.evaluate('__testWork.run().fuel');swipe(dx,dy);page.wait_for_function('p=>__testWork.run().stopped&&__testWork.run().x===p[0]&&__testWork.run().y===p[1]',arg=[nx,ny]);assert page.evaluate('__testWork.run().fuel')==fuel-1
-   page.wait_for_timeout(950);assert sum(h['game']=='courier' for h in hits)==delivery
-   road.dblclick(position={'x':65,'y':95});page.wait_for_timeout(1150);assert sum(h['game']=='courier' for h in hits)==delivery+1,hits
-  assert page.evaluate('__testWork.run().ended')
-  page.screenshot(path=f'/tmp/rd-courier-puzzle-{width}.png')
+  # Continuous courier gestures and real-time handoff are covered in check_polish_ui.py.
   page.locator('#tab-workshop').click();page.locator('.pipe-tile').first.wait_for()
   assert page.locator('.pipe-tile').count()==pipe_job['size']**2
   page.locator('.pipe-check').click();assert not pipe_submissions
@@ -89,5 +67,5 @@ with sync_playwright() as p:
   page.locator('.pipe-check').click();page.wait_for_timeout(100);assert len(pipe_submissions)==1 and workshop.connected(pipe_job,pipe_submissions[-1]['values'])
   assert not errors,errors
   assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
-  page.close();print('Lock, memory, city courier and pipes passed:',width,flush=True)
+  page.close();print('Lock, memory, trace cables and pipes passed:',width,flush=True)
  browser.close()

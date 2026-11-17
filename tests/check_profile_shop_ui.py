@@ -7,7 +7,7 @@ fixtures=json.loads(Path('/tmp/rd-profile-options.json').read_text())
 with sync_playwright() as p:
  browser=p.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
  for width in (320,390,430):
-  state=copy.deepcopy(fixtures['app']);state['settings']['tour_seen']=True;shop=copy.deepcopy(fixtures['shop']);shop['bucks']=1000;calls=[];errors=[]
+  state=copy.deepcopy(fixtures['app']);state['settings']['tour_seen']=True;state['player']['required']=False;shop=copy.deepcopy(fixtures['shop']);shop['bucks']=1000;calls=[];errors=[]
   page=browser.new_page(viewport={'width':width,'height':844},is_mobile=True,has_touch=True);page.on('pageerror',lambda e:errors.append(str(e)))
   def route(r):
    from urllib.parse import urlparse,parse_qsl
@@ -35,7 +35,7 @@ with sync_playwright() as p:
     if path=='/api/app/create':state['onboarding']=None
     return r.fulfill(content_type='application/json',body=json.dumps({'ok':True,'state':shop if path in ('/api/state','/api/buy','/api/wardrobe') else state}))
    return r.fulfill(status=404,body='')
-  page.route('**/*',route);page.goto('https://roleduel.test/shop')
+  page.route('**/*',route);page.goto('https://roleduel.test/shop?wardrobe=1')
   page.get_by_role('button',name='Гардероб',exact=True).click();assert page.locator('#items > .card').count()==5
   assert page.locator('#items .buy-btn:disabled').count()==4
   assert page.locator('#tabs button').first.inner_text()=='Гардероб'
