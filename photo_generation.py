@@ -8,6 +8,21 @@ MODEL = 'waifu-studio-2.6'
 REAL_MODEL = os.getenv('PROBLEMBO_REAL_MODEL_ID','velvet-render-v5')
 MALE_ANIME_MODEL = os.getenv('PROBLEMBO_MALE_ANIME_MODEL_ID','velvet-render-v5-anime')
 
+class ProviderError(RuntimeError):
+    def __init__(self,code,phase='generation'):
+        self.code=str(code)[:80];self.phase=phase;super().__init__(self.code)
+
+def error_code(exc):
+    if isinstance(exc,ProviderError):return exc.code
+    if isinstance(exc,(TimeoutError,httpx.TimeoutException)):return 'timeout'
+    response=getattr(exc,'response',None)
+    if response is not None:
+        return {401:'authorization',403:'access_denied',429:'rate_limit',400:'invalid_request'}.get(response.status_code,'http_'+str(response.status_code))
+    if isinstance(exc,httpx.RequestError):return 'network'
+    if isinstance(exc,(ValueError,KeyError)):return 'invalid_response'
+    return 'generation_failed'
+
+
 def model_for(world=None,gender=None):
     return REAL_MODEL if world=='realism' else MALE_ANIME_MODEL if gender=='male' else MODEL
 
@@ -42,7 +57,7 @@ async def generate(prompt, *, world=None, gender=None, appearance=None):
             task = response.json()
             if task.get('ready'):
                 if task.get('status') != 'END_SUCCESS':
-                    raise RuntimeError('Image generation failed')
+                    raise ProviderError((task.get('error') or {}).get('key') or task.get('status') or 'generation_failed')
                 url = task['result']['taskResult'][0]['url']
                 async with client.stream('GET', url) as image:
                     image.raise_for_status()
@@ -54,7 +69,7 @@ async def generate(prompt, *, world=None, gender=None, appearance=None):
                 raw = bytes(raw)
                 ext = 'jpg' if raw.startswith(b'\xff\xd8\xff') else 'png' if raw.startswith(b'\x89PNG\r\n\x1a\n') else 'webp' if raw[:4] == b'RIFF' and raw[8:12] == b'WEBP' else None
                 if not ext:
-                    raise RuntimeError('Invalid image')
+                    raise ProviderError('invalid_image','download')
                 return raw, ext
         raise TimeoutError('Image generation timed out')
 
@@ -89,6 +104,6 @@ async def edit(prompt, references):
                     if len(raw)>12*1024*1024:raise RuntimeError('Image too large')
             raw=bytes(raw)
             ext='jpg' if raw.startswith(b'\xff\xd8\xff') else 'png' if raw.startswith(b'\x89PNG\r\n\x1a\n') else 'webp' if raw[:4]==b'RIFF' and raw[8:12]==b'WEBP' else None
-            if not ext:raise RuntimeError('Invalid image')
+            if not ext:raise ProviderError('invalid_image','download')
             return raw,ext
         raise TimeoutError('Image editing timed out')

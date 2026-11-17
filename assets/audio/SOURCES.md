@@ -57,3 +57,12 @@ These replace the repeated arc/static effects. `waterplant[a-c]` and `drop`:
 original continuous soft flow/ripple synthesis, replacing the three plucked drops.
 These are designed effects, not recordings of water. `key.wav` is unchanged.
 Rebuild with `scripts/build_refresh_audio.py interface.zip impact.zip`.
+
+## 2026-11-17 — recorded farm watering
+
+Farm `waterplant[a-c].wav` now use three 0.8-second excerpts of **Waterflow Sound**
+by TyberiusGames (CC0), https://opengameart.org/content/waterflow-sound .
+Original download: https://opengameart.org/sites/default/files/waterflow.mp3 .
+Trimmed at 0.2/1.2/2.2 seconds, mono 24 kHz, gain 0.45 and short fades.
+These replace synthesized flow/drop tones with a ready-made recording.
+The keyboard and drinking recordings are unchanged.

@@ -7,14 +7,14 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
 from datetime import datetime
-import scene_photos
+import scene_photos,profile_options
 import photo_generation
 from test_core import load_functions
 
 
 class ScenePhotoTests(unittest.IsolatedAsyncioTestCase):
     def namespace(self):
-        ns=dict(asyncio=asyncio,os=os,datetime=datetime,json=json,logging=logging,
+        ns=dict(profile_options=profile_options,get_intimacy_level=lambda u:1,asyncio=asyncio,os=os,datetime=datetime,json=json,logging=logging,
                 ENERGY_MAX=150,photo_appearance=lambda u:'adult with brown hair',LOOKS={'test':{'en':'blue eyes, brown hair'}},AI_MODEL='mock',call_ai=lambda:None,
                 scene_photos=scene_photos,photo_generation=photo_generation,user_data={},save_data=lambda d:None)
         load_functions({'generate_scene_photo','refund_scene_photo','app_hot_generate'},ns)
@@ -27,7 +27,7 @@ class ScenePhotoTests(unittest.IsolatedAsyncioTestCase):
     def test_only_allowlisted_background_details_enter_image_prompt(self):
         prompt=scene_photos.portrait_prompt('brown hair','female',json.dumps({'setting':'INJECTED','lighting':'INJECTED','prompt':'INJECTED'}))
         self.assertNotIn('INJECTED',prompt)
-        self.assertIn('seductive and revealing outfit',prompt)
+        self.assertIn('opaque casual outfit',prompt)
         self.assertNotIn('fully clothed',prompt)
         self.assertIn('simple photo studio',prompt)
         self.assertIn('brown hair',prompt)

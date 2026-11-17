@@ -28,18 +28,13 @@ class PlayerAvatarTests(unittest.TestCase):
   self.assertIn('Keep clothes on',prompt)
 
 class AvatarEndpointTests(unittest.IsolatedAsyncioTestCase):
- async def test_initial_creation_free_subsequent_changes_require_super(self):
-  user={};body={'gender':'male','world':'anime','appearance':{},'race':'human'}
-  async def request(_):return 1,user,body,None
-  ns={'_app_request':request,'get_subscription_level':lambda u:u.get('tier'),'_app_reply':lambda u,ok=True,error=None:{'ok':ok,'error':error},'player_avatar':player_avatar,'save_data':lambda d:None,'user_data':{},'at':lambda *a:'wait'}
+ async def test_retired_player_creation_never_saves_data(self):
+  user={}
+  async def request(_):return 1,user,{'gender':'male','world':'anime'},None
+  ns={'_app_request':request,'_app_reply':lambda u,ok=True,error=None:{'ok':ok}}
   load_functions({'api_player_avatar_handler'},ns)
-  self.assertTrue((await ns['api_player_avatar_handler'](None))['ok'])
-  old=json.dumps(user)
-  body['appearance']={'hair_color':'red'}
-  self.assertFalse((await ns['api_player_avatar_handler'](None))['ok']);self.assertEqual(json.dumps(user),old)
-  user['tier']='pro';self.assertFalse((await ns['api_player_avatar_handler'](None))['ok'])
-  user['tier']='super_pro';self.assertTrue((await ns['api_player_avatar_handler'](None))['ok'])
-  self.assertEqual(user['player_avatar']['appearance']['hair_color'],'red')
+  self.assertFalse((await ns['api_player_avatar_handler'](None))['ok'])
+  self.assertNotIn('player_avatar',user)
  async def test_companion_edit_and_legacy_route_cannot_bypass_gate(self):
   user={'tier':'pro','appearance':{'hair_color':'black'}}
   async def request(_):return 1,user,{},None

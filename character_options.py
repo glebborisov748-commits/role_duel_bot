@@ -8,7 +8,7 @@ from urllib.parse import urlencode
 # key, RU, EN, DE, appearance phrase (EN)
 OPTIONS={
  'hair_style': [('long','Длинные прямые','Long straight','Lang und glatt','long straight hair'),('waves','Волнистые','Wavy','Wellig','wavy shoulder-length hair'),('bob','Каре','Bob','Bob','a neat bob haircut'),('short','Короткие','Short','Kurz','short textured hair'),('curls','Кудри','Curly','Lockig','curly hair'),('ponytail','Хвост','Ponytail','Pferdeschwanz','hair tied in a ponytail'),('braid','Коса','Braid','Zopf','a loose braid'),('pixie','Пикси','Pixie','Pixie','a pixie haircut')],
- 'hair_color':[('brown','Каштановые','Brown','Braun','brown'),('black','Чёрные','Black','Schwarz','black'),('blonde','Светлые','Blond','Blond','blond'),('red','Рыжие','Red','Rot','auburn'),('silver','Серебристые','Silver','Silber','silver'),('pink','Розовые','Pink','Rosa','pastel pink'),('purple','Сиреневые','Lavender','Lavendel','lavender'),('blue','Синие','Blue','Blau','dark blue')],
+ 'hair_color':[('brown','Каштановые','Brown','Braun','brown'),('black','Чёрные','Black','Schwarz','black'),('blonde','Светлые','Blond','Blond','blond'),('red','Рыжие','Red','Rot','vivid copper-red ginger hair'),('silver','Серебристые','Silver','Silber','silver'),('pink','Розовые','Pink','Rosa','pastel pink'),('purple','Сиреневые','Lavender','Lavendel','lavender'),('blue','Синие','Blue','Blau','dark blue')],
  'skin':[('fair','Светлая','Fair','Hell','fair skin'),('light','Светло-бежевая','Light beige','Hellbeige','light beige skin'),('olive','Оливковая','Olive','Oliv','olive skin'),('tan','Смуглая','Tan','Gebräunt','tan skin'),('brown','Коричневая','Brown','Braun','brown skin'),('dark','Тёмная','Dark','Dunkel','dark skin')],
  'eyes':[('brown','Карие','Brown','Braun','brown eyes'),('blue','Голубые','Blue','Blau','blue eyes'),('green','Зелёные','Green','Grün','green eyes'),('grey','Серые','Grey','Grau','grey eyes'),('amber','Янтарные','Amber','Bernstein','amber eyes'),('violet','Сиреневые','Violet','Violett','violet eyes')],
  'accessory':[('none','Без аксессуаров','None','Keine','no accessories'),('glasses','Очки','Glasses','Brille','thin round glasses'),('earrings','Серьги','Earrings','Ohrringe','small silver earrings'),('necklace','Кулон','Pendant','Anhänger','a small pendant necklace'),('hairclip','Заколка','Hairclip','Haarspange','a discreet hairclip')],
@@ -120,9 +120,22 @@ def visual_from_description(raw, text):
 
 def identity(user):
  gender='man' if user.get('gender')=='male' else 'woman'
- outfit=profile_options.WARDROBE.get(user.get('wardrobe_outfit'),{}).get('fact','')
- return ('Outfit: '+outfit+'. ' if outfit else '')+'Exactly ONE adult '+gender+', age 25 or older, solo portrait. '+(appearance(user) or 'human')+'. Keep the same gender and every listed visual attribute in every picture. No second person, no couple, no split view. '
+ return 'Exactly ONE adult '+gender+', age 25 or older, solo portrait. '+(appearance(user) or 'human')+'. Keep the same gender and every listed visual attribute in every picture. No second person, no couple, no split view. '
+
 
 def preview_url(user):
  o=validate(user.get('appearance') or {},user.get('gender'))
  return '/api/appearance-preview.svg?v=20261117d&'+urlencode({'world':user.get('world') or 'anime','race':user.get('race','human'),'gender':'male' if user.get('gender')=='male' else 'female',**{k:o[k] for k in VISUAL_KEYS}})
+
+STYLE_EMOJI={'honest':'🤍','calm':'🍃','energetic':'⚡','melancholic':'🌧','humorous':'😄','naive':'🌼','playful':'😉','cynical':'🕶','compliant':'🕊','aggressive':'🌋','unflappable':'🧊','intellectual':'📚','rude':'💬'}
+
+# Selection cards are descriptive only. No library portrait is used as an avatar/reference.
+def creation_presets(lang,gender):
+ rows=[('red',('Рыжие волосы · зелёные глаза','Red hair · green eyes','Rote Haare · grüne Augen'),'red','green','human'),
+       ('dark',('Тёмные волосы · карие глаза','Dark hair · brown eyes','Dunkle Haare · braune Augen'),'black','brown','human'),
+       ('blond',('Светлые волосы · голубые глаза','Blond hair · blue eyes','Blonde Haare · blaue Augen'),'blonde','blue','human'),
+       ('silver',('Серебристые волосы · серые глаза','Silver hair · grey eyes','Silberne Haare · graue Augen'),'silver','grey','human'),
+       ('elf',('Эльф · светлые волосы','Elf · blond hair','Elf · blonde Haare'),'blonde','green','elf'),
+       ('cat',('Кошачьи уши · тёмные волосы','Cat ears · dark hair','Katzenohren · dunkle Haare'),'black','amber','catfolk')]
+ ix={'ru':0,'en':1,'de':2}.get(lang,1)
+ return [{'key':key,'label':label[ix],'race':race,'appearance':{'hair_style':'short' if gender=='male' else 'waves','hair_color':color,'eyes':eyes,'skin':'light','accessory':'none','species':'human'}} for key,label,color,eyes,race in rows]
