@@ -22,3 +22,13 @@ Original generated atlases remain in the workspace image library:
 - `exec-9c487766-7527-4484-ba7f-ec188c435073.png` (2 × 2).
 
 Export with `python scripts/extract_work_art.py first-atlas.png second-atlas.png`. Original atlases are preserved. Old PNG assets remain for compatibility but are not used by the updated work sprite renderer.
+
+## 2026-11-17 — world-specific generated portrait presets and wardrobe
+
+The appearance preview now uses **32 generated portrait presets**, replacing the vector hair and head drawings: 8 hairstyles × 2 genders × 2 worlds. Anime uses the clearly illustrated atlas `exec-c0dbb6d9-18a8-4d80-b096-1a30904f208b.png`; realism uses `exec-3872393d-9aec-4d8f-b547-cf1a2094ceae.png`. Each world/gender has a consistent face and its own hair set. Assets are `avatar_{world}_{gender}_{hairstyle}.webp`.
+
+Local SVG compositing adds selected hair/skin/iris colors, race details and accessories. Hair is generated raster artwork, with pigment masks for color changes. Iris changes use separate masks calibrated to the portrait's eye line. No provider job or energy charge is started by the builder. Browser pixel comparisons verify both irises change, surrounding skin stays unchanged, and hair recoloring preserves the face/neck. Previews remain approximate references for subsequent provider-generated photographs.
+
+`wardrobe_bunny.webp`, `wardrobe_latex.webp`, `wardrobe_stockings.webp` come from the clothing-only atlas `exec-7baf6727-6112-414f-ae47-7dd45ede9df9.png`. Dress and heels reuse their existing matching shop illustrations. The fitting room is a free local, fully clothed outfit preview.
+
+Build with `python scripts/export_avatar_presets.py anime-atlas.png realism-atlas.png wardrobe-atlas.png`. Source PNGs remain unchanged in the workspace image library; mobile WebP exports are committed.

@@ -95,6 +95,16 @@ try:
         body=json.dumps({'mode':'bj','bet':100}).encode()
         request=urllib.request.Request(base+'/api/play/start',data=body,headers={'Content-Type':'application/json','X-Telegram-Init-Data':manifest['tokens']['1']})
         assert not json.load(urllib.request.urlopen(request))['ok']
+        # Real embedded navigation must reuse the parent SDK and its signed initData.
+        parent_context=browser.new_context(viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
+        parent_sdk='window.Telegram={WebApp:{initData:'+json.dumps(manifest['tokens']['3'])+',ready(){},expand(){},showConfirm(t,c){c(true)},shareMessage(id){window.__shared=id},openTelegramLink(url){window.__shared=url},isVersionAtLeast(){return true},HapticFeedback:{impactOccurred(){},notificationOccurred(){}}}};'
+        parent_context.route('**/parent',lambda r:r.fulfill(content_type='text/html',body='<html><body style="margin:0"><script>'+parent_sdk+'</script><iframe style="border:0;width:390px;height:844px" src="/online?game=connect4&embed=1"></iframe></body></html>'))
+        parent=parent_context.new_page();parent.goto(base+'/parent');parent.locator('iframe').wait_for();frame=parent.frames[1]
+        frame.get_by_role('button',name='Позвать друга',exact=True).click();frame.get_by_text('Ждём второго игрока',exact=True).wait_for()
+        assert frame.locator('.invite-link').input_value().startswith('https://t.me/fixture_bot?start=match_')
+        frame.get_by_role('button',name='Отправить приглашение',exact=True).click();parent.wait_for_function("window.__shared==='prepared_fixture'")
+        assert frame.evaluate("Math.abs((document.querySelector('#balance').getBoundingClientRect().left+document.querySelector('#balance').getBoundingClientRect().width/2)-innerWidth/2)<2")
+        parent_context.close()
         print('Two authenticated browser clients: invite, escrow, Connect Four victory, restart, random RPS, hidden choices and blackjack retirement passed')
         browser.close()
 finally:

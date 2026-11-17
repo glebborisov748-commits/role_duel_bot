@@ -10,7 +10,7 @@ class LocalLoop(asyncio.SelectorEventLoop):
  def _write_to_self(self):pass
  def _run_once(self):self.call_later(.01,lambda:None);super()._run_once()
 async def run():
- u=app.get_user(51);u.update(lang='ru',verified=True,agreement_accepted=True,personality_ready=True,world='anime',gender='female',style='warm',bucks=3000,history=[{'role':'user','content':'Привет'}])
+ u=app.get_user(51);u.update(lang='ru',verified=True,agreement_accepted=True,personality_ready=True,world='anime',gender='female',style='warm',bucks=10000,history=[{'role':'user','content':'Привет'}])
  assert u['preferences']==profile_options.defaults() and u['inventory']=={} and u['race']=='human'
  second=app.get_user(52);second['preferences']['latex_style']=True
  assert not u['preferences']['latex_style']
@@ -34,10 +34,20 @@ async def run():
  body={'preferences':{'latex_style':True,'toys':True},'race':'android'}
  assert json.loads((await app.api_app_settings_handler(None)).text)['ok']
  disk=json.loads(Path(app.DATA_FILE).read_text())['51'];assert disk['inventory']==u['inventory'] and disk['preferences']==u['preferences'] and disk['race']=='android'
- state=app.serialize_app_state(u);assert len(state['content_settings']['preference_options'])==5 and len(state['content_settings']['races'])==4
+ state=app.serialize_app_state(u);assert len(state['content_settings']['preference_options'])==5 and len(state['content_settings']['races'])==10
  shop=app.serialize_shop_state(u);wardrobe=next(c for c in shop['categories'] if c['key']=='wardrobe')
- assert len(wardrobe['items'])==3 and sum(i['owned'] for i in wardrobe['items'])==2
+ assert len(wardrobe['items'])==5 and sum(i['owned'] for i in wardrobe['items'])==4
  Path('/tmp/rd-profile-options.json').write_text(json.dumps({'app':state,'shop':shop,'onboarding':app.serialize_onboarding(u)}))
+ body={'outfit':'stockings'}
+ assert not json.loads((await app.api_wardrobe_handler(None)).text)['ok']
+ body={'outfit':'bunny_outfit'}
+ assert json.loads((await app.api_wardrobe_handler(None)).text)['ok'] and u['wardrobe_outfit']=='bunny_outfit'
+ assert 'Outfit:' in app.photo_appearance(u)
+ for invalid in ({},{'outfit':[]},{'outfit':'unknown'}):
+  body=invalid;assert not json.loads((await app.api_wardrobe_handler(None)).text)['ok'];assert u['wardrobe_outfit']=='bunny_outfit'
+ body={'outfit':None};assert json.loads((await app.api_wardrobe_handler(None)).text)['ok'];assert u['wardrobe_outfit'] is None
+ assert all(i['key'] not in ('dress','heels') for c in shop['categories'] if c['key']=='gift' for i in c['items'])
+ assert next(i for i in wardrobe['items'] if i['key']=='bunny_outfit')['name']=='Костюм «Зайка»'
  # The pipe answer is not public, and a paid completion is consumed exactly once.
  app.resolve_webapp_user=lambda *a:(51,u,None)
  class Request:

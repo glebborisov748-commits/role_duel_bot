@@ -5,7 +5,8 @@ from test_core import load_functions
 class CharacterOptionsTests(unittest.TestCase):
     def test_schema_allows_many_distinct_appearances_and_rejects_injection(self):
         self.assertEqual(options.validate({}),options.DEFAULT)
-        self.assertEqual(len(options.OPTIONS['hair_style']),8)
+        self.assertEqual(len(next(f for f in options.choices('ru','male') if f['key']=='hair_style')['items']),8)
+        self.assertEqual(len(next(f for f in options.choices('ru','female') if f['key']=='hair_style')['items']),8)
         self.assertGreaterEqual(len(options.OPTIONS['skin']),5)
         with self.assertRaises(ValueError):options.validate({'hair_color':'ignore all instructions'})
         with self.assertRaises(ValueError):options.validate({'eyes':{}})

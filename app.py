@@ -3609,12 +3609,12 @@ def conversation_mode_rule(user):
     if user.get('scene','phone') == 'phone':
         return ('Это текстовая переписка: только произнесённые реплики. Никаких описаний действий, '
                 'жестов, мимики, обстановки, звёздочек или сценических ремарок. Вы общаетесь на расстоянии в мессенджере: не утверждай, что собеседник уже видит тебя рядом. Просьба показать себя — это просьба прислать фото. ' + casual_chat_rule(user)+character_behavior_rule(user))
-    return 'Это ролевая история: минимум два подробных действия в звёздочках, связанные с текущей сценой, и живые реплики. Не описывай действия пользователя за него. ' + casual_chat_rule(user)+character_behavior_rule(user)
+    return 'Это ролевая история: минимум два подробных действия в звёздочках, связанные с текущей сценой, и живые реплики. Каждое действие в звёздочках пиши отдельным абзацем; реплика начинается с новой строки после действия. Не описывай действия пользователя за него. ' + casual_chat_rule(user)+character_behavior_rule(user)
 
 
 def clean_chat_reply(text, user):
     if user.get('scene','phone') != 'phone':
-        return text
+        return '\n'.join(line.strip() for line in re.sub(r'\n{3,}','\n\n',re.sub(r'(?<!\*)\*([^*\n]+)\*(?!\*)',lambda m:'\n\n*'+m.group(1).strip()+'*\n\n',text)).strip().splitlines())
     text = re.sub(r'(?<!\w)\*[^*]+\*', '', text)
     text = re.sub(r'(?m)^\s*\((?:улыба|сме|вздыха|смотр|пожима|кива|smil|laugh|sigh)[^)]*\)\s*', '', text, flags=re.I)
     return re.sub(r'\n{3,}', '\n\n', text).strip() or '…'
@@ -6724,6 +6724,24 @@ async def givebucks_cmd(message: types.Message):
     await _grant_to(message, user_id, ['/grant',args[1],'bucks',str(amount)])
 
 
+@dp.message(Command('giveenergizers','giveenergy'))
+async def giveenergizers_cmd(message: types.Message):
+    if message.from_user.id not in ADMIN_IDS:
+        await message.answer('⛔ Нет прав.');return
+    args=(message.text or '').split()
+    if len(args)!=3:
+        await message.answer('/giveenergizers ID_или_@username количество');return
+    try:
+        amount=int(args[2])
+        if amount<=0:raise ValueError()
+    except ValueError:
+        await message.answer('❌ Количество должно быть положительным целым числом.');return
+    uid=await _resolve_admin_target(message,args[1])
+    if uid is None:return
+    if uid<=0:await message.answer('❌ Нужен ID пользователя.');return
+    await _grant_to(message,uid,['/grant',args[1],'energizers',str(amount)])
+
+
 MAIN_ADMIN_ID = 7287815074
 
 
@@ -9140,7 +9158,7 @@ def resolve_webapp_user(init_data):
     user_id = int(user_id)
     user = get_user(user_id)
     if maintenance_mode and user_id not in ADMIN_IDS:
-        return None, None, {"ok": False, "error": "maintenance", "message": get_text(user, "maintenance")}
+        return None, None, {"ok": False, "error": "maintenance", "message": get_text(user, "maintenance"), "lang":user.get("lang","ru")}
     if not (user["verified"] and user["agreement_accepted"] and user["personality_ready"]):
         return None, None, {"ok": False, "error": "not_ready", "message": get_text(user, "webapp_character_not_ready")}
     if user.get("dead"):
@@ -9179,7 +9197,7 @@ def serialize_shop_state(user):
         items = [serialize_item(FOOD_ITEMS, key, False)
                  for key, it in FOOD_ITEMS.items() if it.get("category") == shop_category]
         items += [serialize_item(GIFT_ITEMS, key, True)
-                  for key, it in GIFT_ITEMS.items() if it.get("category") == shop_category]
+                  for key, it in GIFT_ITEMS.items() if it.get("category") == shop_category and key not in ("dress","heels")]
         # Preserve catalog placement for daily offers.
         if items:
             categories.append({"key": shop_category, "name": get_text(user, SHOP_CATEGORY_TEXT_KEY[shop_category]), "items": items})
@@ -9188,8 +9206,8 @@ def serialize_shop_state(user):
     inventory=user.get('inventory') or {}
     for key,item in profile_options.WARDROBE.items():
         owned=bool(inventory.get(key,0))
-        wardrobe_items.append({'key':key,'category':'wardrobe','name':item['name'],'price':item['price'],
-            'emoji':item['emoji'],'image':None,'ready_in':None,'refuse':False,'owned':owned,
+        wardrobe_items.append({'key':key,'category':'wardrobe','name':item.get(lang,item['name']),'price':item['price'],
+            'emoji':item['emoji'],'image':'/assets/'+item['image']+'.webp','ready_in':None,'refuse':False,'owned':owned,
             'owned_label':{'ru':'В гардеробе','de':'Im Kleiderschrank'}.get(lang,'Owned'),
             'effects':{'ru':'Остаётся в твоём гардеробе','de':'Bleibt in deinem Kleiderschrank'}.get(lang,'Kept in your wardrobe')})
     categories.append({'key':'wardrobe','name':{'ru':'Гардероб','de':'Kleiderschrank'}.get(lang,'Wardrobe'),'items':wardrobe_items})
@@ -9273,6 +9291,8 @@ def serialize_shop_state(user):
         "illness": illness_label,
         "asleep": is_asleep(user),
         "categories": categories,
+        "wardrobe_preview":character_options.preview_url(user)+"&full=1",
+        "wardrobe_outfit":user.get("wardrobe_outfit"),
         "medicine": medicine,
         "energizer_packs": energizer_packs,
         "custom_gift": {"price": CUSTOM_GIFT_PRICE, "max_len": CUSTOM_GIFT_MAX_LEN},
@@ -9288,6 +9308,7 @@ async def perform_webapp_purchase(user, user_id, category, key, note=None):
     """Та же последовательность проверок, что в buy_food/buy_gift/buy_medicine и в
     writing_item_note-ветке handle_message — просто вызывается из API, а не из
     callback-хендлера. Содержательная логика по-прежнему только в execute_item_purchase."""
+    if category=='gift' and key in ('dress','heels'):return {'ok':False,'error':'Этот товар перенесён в гардероб'}
     if category=='wardrobe':
         item=profile_options.WARDROBE.get(key)
         if not item:return {'ok':False,'error':'Not found'}
@@ -12936,6 +12957,8 @@ SHOP_PAGE_HTML = r'''<!doctype html>
     white-space: pre-line;
     word-break: break-word;
   }
+
+#tabs{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px!important;overflow:visible!important;white-space:normal!important}#tabs button{white-space:normal;min-width:0;font-size:11px;padding:9px 5px;min-height:43px}.tab-wardrobe{grid-column:span 2;background:linear-gradient(135deg,#745270,#b98297)!important;color:#fff!important;font-size:17px!important;font-weight:800}.wardrobe-room{display:grid;grid-template-columns:minmax(90px,38%) 1fr;gap:12px;grid-column:1/-1;padding:12px;border:1px solid #80637e;border-radius:20px;background:#272337;margin-bottom:12px}.wardrobe-room img{width:100%;max-height:310px;object-fit:contain}.wardrobe-room h3{font-size:16px}.wardrobe-room p{font-size:12px;color:#c8bace}.wardrobe-room select{width:100%;padding:8px;border-radius:10px;background:#383147;color:#eee1f3;border:1px solid #7d657e}.wardrobe-room button{width:100%;margin-top:12px;padding:10px;border-radius:12px;border:1px solid #b195aa;background:#795d80;color:white}
 </style>
 </head>
 <body>
@@ -13026,7 +13049,7 @@ SHOP_PAGE_HTML = r'''<!doctype html>
     // Энергетики -- первой вкладкой (и выделены отдельным стилем, см. .tab-energizer/.card-energizer
     // в CSS): по просьбе сделать их самым заметным, приоритетным разделом магазина. Лекарства всё
     // равно важнее при болезни -- unshift ниже их всё равно выносит перед энергетиками.
-    var list = [];
+    var list = [];var wardrobe=s.categories.find(function(c){return c.key==='wardrobe';});if(wardrobe)list.push(wardrobe);
     if (s.energizer_packs && s.energizer_packs.length) {
       list.push({
         key: "energizer",
@@ -13038,6 +13061,7 @@ SHOP_PAGE_HTML = r'''<!doctype html>
       });
     }
     s.categories.forEach(function(c){
+      if(c.key==='wardrobe')return;
       if(c.key!=='food'){list.push({key:c.key,name:c.name,items:c.items});return;}
       var groups=[['drinks','💧 Напитки','💧 Drinks',['water','sparkling_water','coconut_water','beer','fine_wine']],['food','🍽 Еда','🍽 Food',null]];
       groups.forEach(function(g){var items=c.items.filter(function(i){return g[3]?g[3].indexOf(i.key)>=0:groups[0][3].indexOf(i.key)<0;});if(items.length)list.push({key:g[0],name:s.lang==='ru'?g[1]:(s.lang==='de'?({'drinks':'💧 Getränke','food':'🍽 Essen'}[g[0]]):g[2]),items:items});});
@@ -13046,7 +13070,7 @@ SHOP_PAGE_HTML = r'''<!doctype html>
       list.push({key: "custom", name: s.ui.shop_category_custom, items: [], custom: true});
     }
     if (s.medicine && s.medicine.length) {
-      list.unshift({
+      list.splice(wardrobe?1:0,0,{
         key: "medicine",
         name: s.ui.shop_category_medicine,
         items: s.medicine.map(function (m) {
@@ -13067,13 +13091,17 @@ SHOP_PAGE_HTML = r'''<!doctype html>
     el.innerHTML = "";
     cats.forEach(function (c) {
       var btn = document.createElement("button");
-      btn.className = "tab" + (c.key === activeTab ? " active" : "") + (c.key === "energizer" ? " tab-energizer" : "");
+      btn.className = "tab" + (c.key === activeTab ? " active" : "") + (c.key === "energizer" ? " tab-energizer" : "")+(c.key === "wardrobe" ? " tab-wardrobe" : "");
       btn.textContent = c.name;
       btn.onclick = function () { activeTab = c.key; render(); };
       el.appendChild(btn);
     });
   }
 
+  var fittingItem=null;
+  function fittingRoom(s){
+    var room=document.createElement('div');room.className='wardrobe-room';var image=document.createElement('img');image.alt=s.lang==='ru'?'Примерка':'Try on';var controls=document.createElement('div'),title=document.createElement('h3');title.textContent=s.lang==='ru'?'Примерочная':s.lang==='de'?'Anprobe':'Dressing room';controls.appendChild(title);var select=document.createElement('select');select.id='wardrobe-fitting';var items=s.categories.find(function(c){return c.key==='wardrobe';}).items;var basic=document.createElement('option');basic.value='';basic.textContent=s.lang==='ru'?'Базовый образ':s.lang==='de'?'Basis-Outfit':'Basic outfit';select.appendChild(basic);items.forEach(function(item){var option=document.createElement('option');option.value=item.key;option.textContent=item.name;select.appendChild(option);});if(fittingItem===null)fittingItem=s.wardrobe_outfit||items[0].key;select.value=fittingItem;controls.appendChild(select);var note=document.createElement('p');note.textContent=s.lang==='ru'?'Бесплатный предпросмотр. Купленную вещь можно надеть.':s.lang==='de'?'Kostenlose Vorschau. Gekaufte Kleidung kann angezogen werden.':'Free preview. Purchased clothes can be equipped.';controls.appendChild(note);var equip=document.createElement('button');equip.id='wardrobe-equip';function refresh(){fittingItem=select.value;image.src=s.wardrobe_preview+'&outfit='+encodeURIComponent(fittingItem);var item=items.find(function(i){return i.key===fittingItem;});equip.disabled=fittingItem!==''&&!item.owned;equip.textContent=(s.wardrobe_outfit||'')===fittingItem?(s.lang==='ru'?'Надето':s.lang==='de'?'Angezogen':'Equipped'):(s.lang==='ru'?'Надеть':s.lang==='de'?'Anziehen':'Equip');}select.onchange=refresh;equip.onclick=function(){equip.disabled=true;api('/api/wardrobe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({outfit:fittingItem||null})}).then(function(res){if(res.state)state=res.state;render();});};controls.appendChild(equip);room.appendChild(image);room.appendChild(controls);refresh();return room;
+  }
   function makeCard(s, item) {
     var card = document.createElement("div");
     card.className = "card" + (item.old_price ? " card-deal" : "") + (item.category === "energizer" ? " card-energizer" : "");
@@ -13242,6 +13270,7 @@ SHOP_PAGE_HTML = r'''<!doctype html>
     var el = document.getElementById("items");
     el.innerHTML = "";
     if (!current) return;
+    if(current.key==='wardrobe'&&s.wardrobe_preview)el.appendChild(fittingRoom(s));
     if (current.custom) {
       el.appendChild(makeCustomGiftCard(s));
       return;
@@ -15680,9 +15709,11 @@ WORK_PAGE_HTML = r'''<!doctype html>
 #hacker-mode button{font-size:12px;padding:5px 9px;margin-left:8px;border-radius:8px;background:#18322b;color:#b5f4d6;border:1px solid #4e977d}.catch-item.big-hazard .sprite,.catch-item.rocket .sprite{width:100%;height:100%;object-fit:contain}
 
 #courier-road.city-map{height:auto!important;aspect-ratio:1;min-height:270px;max-height:none;background:#33323b!important;border:8px solid #292630;border-radius:22px;overflow:hidden}
-#courier-road.city-map::before,#courier-road.city-map::after{display:none!important}.city-cell{position:absolute;width:14.2858%;height:14.2858%;box-sizing:border-box}.city-cell.street{background:#3c3b43;border:1px dashed #88807835}.city-cell.building{background:var(--roof);border:4px solid #2c2932;border-radius:8px;box-shadow:inset 0 4px 0 #ffffff12,0 4px 0 #0003;display:flex;align-items:center;justify-content:center;gap:4px}.city-cell.building i{width:6px;height:9px;background:#d7b78a;border-radius:2px}.city-map #courier-rider{position:absolute!important;width:38px!important;height:58px!important;bottom:auto!important;transition:top .22s linear,left .22s linear;transform:translate(-50%,-50%) rotate(var(--heading,0deg))!important;z-index:5}.city-map #courier-rider img{width:100%;height:100%;object-fit:contain}.city-map #courier-rider.stopped{filter:drop-shadow(0 0 5px #ad90b9)}#courier-address{position:absolute;width:42px;height:42px;transform:translate(-50%,-50%);z-index:4;border:2px solid #d3bb80;border-radius:12px;background:#66513b;box-shadow:0 0 calc(var(--handoff,0)*18px) #f6d595;pointer-events:none}#courier-address img{width:100%;height:100%;object-fit:contain}#courier-address b{position:absolute;right:-5px;top:-8px;width:19px;height:19px;text-align:center;border-radius:50%;background:#e4ba85;color:#30252b;font-size:12px}.city-barrier{position:absolute;width:29px;height:11px;border:2px solid #3d2a2e;border-radius:3px;background:repeating-linear-gradient(135deg,#d3a965 0 6px,#514447 6px 12px);z-index:3;transform:translate(-50%,-50%)}#courier-controls{display:flex!important;flex-wrap:wrap;gap:6px;justify-content:center}#courier-controls button{flex:0 0 34px!important;min-width:34px!important;min-height:39px!important;max-width:none!important;width:auto!important;padding:5px!important;font-size:15px!important}#courier-controls button{background:linear-gradient(#6a5d74,#43394f)!important;color:#f5eafa!important;border:1px solid #96849e!important;box-shadow:0 2px 0 #26212d!important}#courier-controls #courier-stop-btn{flex-basis:90px!important;font-size:11px!important}.memory-countdown{color:#c5ad7c;font-variant-numeric:tabular-nums}#hacker-mode button{font-size:11px;padding:5px 9px;margin-left:8px;border-radius:8px}#tabs{flex-wrap:wrap}.tab-btn{min-width:65px}
+#courier-road.city-map::before,#courier-road.city-map::after{display:none!important}.city-cell{position:absolute;width:14.2858%;height:14.2858%;box-sizing:border-box}.city-cell.street{background:#3c3b43;border:1px dashed #88807835}.city-cell.building{background:var(--roof);border:4px solid #2c2932;border-radius:8px;box-shadow:inset 0 4px 0 #ffffff12,0 4px 0 #0003;display:flex;align-items:center;justify-content:center;gap:4px}.city-cell.building i{width:6px;height:9px;background:#d7b78a;border-radius:2px}.city-map #courier-rider{position:absolute!important;width:38px!important;height:58px!important;bottom:auto!important;transition:top .22s linear,left .22s linear;transform:translate(-50%,-50%) rotate(var(--heading,0deg))!important;z-index:5}.city-map #courier-rider img{width:100%;height:100%;object-fit:contain}.city-map #courier-rider.stopped{filter:drop-shadow(0 0 5px #ad90b9)}.city-address{position:absolute;width:42px;height:42px;transform:translate(-50%,-50%);z-index:4;border:2px solid #d3bb80;border-radius:12px;background:#66513b;box-shadow:0 0 calc(var(--handoff,0)*18px) #f6d595;pointer-events:none}.city-address img{width:100%;height:100%;object-fit:contain}.city-address b{position:absolute;right:-5px;top:-8px;width:19px;height:19px;text-align:center;border-radius:50%;background:#e4ba85;color:#30252b;font-size:12px}.city-barrier{position:absolute;width:29px;height:11px;border:2px solid #3d2a2e;border-radius:3px;background:repeating-linear-gradient(135deg,#d3a965 0 6px,#514447 6px 12px);z-index:3;transform:translate(-50%,-50%)}#courier-controls{display:flex!important;flex-wrap:wrap;gap:6px;justify-content:center}#courier-controls button{flex:0 0 34px!important;min-width:34px!important;min-height:39px!important;max-width:none!important;width:auto!important;padding:5px!important;font-size:15px!important}#courier-controls button{background:linear-gradient(#6a5d74,#43394f)!important;color:#f5eafa!important;border:1px solid #96849e!important;box-shadow:0 2px 0 #26212d!important}#courier-controls #courier-stop-btn{flex-basis:90px!important;font-size:11px!important}.memory-countdown{color:#c5ad7c;font-variant-numeric:tabular-nums}#hacker-mode button{font-size:11px;padding:5px 9px;margin-left:8px;border-radius:8px}#tabs{flex-wrap:wrap}.tab-btn{min-width:65px}
 
 #game-workshop{padding:12px;background:#292839;border-radius:22px;border:1px solid #685866}#game-workshop h3{margin:0 0 8px}#game-workshop p{font-size:13px;color:#c7bac9;line-height:1.5}.pipe-meta{font-size:12px;color:#c9bba1;margin:10px 0}.pipe-check{width:100%;padding:13px;border:1px solid #b299b5;border-radius:12px;background:linear-gradient(#796681,#50465e);color:#fff;font-size:15px}#pipe-board{display:grid;gap:3px;padding:5px;border-radius:15px;background:#171e27}.pipe-tile{aspect-ratio:1;position:relative;min-width:0;padding:0;border:1px solid #444b59;border-radius:8px;background:linear-gradient(135deg,#353b49,#292d3a);overflow:hidden;touch-action:manipulation}.pipe-tile svg{display:block;width:100%;height:100%;transition:transform .16s ease}.pipe-tile path{fill:none;stroke-linejoin:round}.pipe-shadow{stroke:#111720;stroke-width:32}.pipe-metal{stroke:#a9adae;stroke-width:24}.pipe-water{stroke:#727c86;stroke-width:11;transition:stroke .2s}.pipe-tile.wet .pipe-water{stroke:#67cfb1}.pipe-tile.inlet{border:2px solid #67cfb1;box-shadow:inset 4px 0 #67cfb1}.pipe-tile.outlet{border:2px solid #e0bd7d;box-shadow:inset -4px 0 #e0bd7d}#pipe-result{min-height:20px}
+#courier-controls{display:none!important}.city-address{opacity:.5}.city-address.current{opacity:1;border-color:#e4ba85;animation:address-glow 1.2s ease-in-out infinite}.city-address.done{display:none}@keyframes address-glow{50%{box-shadow:0 0 12px #deb87980}}
+#lock-side{display:flex;align-items:flex-start;justify-content:space-around;gap:8px;height:185px;padding:12px 15px 0;margin:12px 0;background:linear-gradient(#4b4648 0 64%,#a88f61 64% 69%,#2c2931 69%);border:5px solid #8a785c;border-radius:19px;touch-action:none}.side-pin{position:relative;flex:1;height:158px;min-width:30px;background:none!important;border:0!important;padding:0!important;touch-action:none}.side-pin span{position:absolute;top:0;left:0;right:0;font-size:12px;color:#dfcfaf}.side-pin i{position:absolute;left:22%;width:56%;top:25px;border:2px solid #c5b58b;border-radius:4px;background:linear-gradient(90deg,#796a4d,#d1c09a,#7e7054);box-shadow:0 -8px 0 #312d32}.side-pin.selected i{border-color:#f3d398}.side-pin.set i{background:#7cab97}.pick-snapped{animation:pick-snap .3s ease}.cable-live{stroke-dasharray:16 4;animation:cable-current .6s linear}@keyframes cable-current{to{stroke-dashoffset:-40}}@keyframes pick-snap{25%{transform:translateX(-5px);filter:sepia(1)}65%{transform:translateX(5px)}}.hacker-wire-end,.hacker-wire-socket{display:flex;align-items:center;justify-content:center;color:white!important;font-weight:800;font-size:15px;text-shadow:0 1px 3px black}
 </style>
 </head>
 <body>
@@ -15696,7 +15727,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     <button id="tab-clicker" class="tab-btn"></button>
     <button id="tab-catch" class="tab-btn"></button>
     <button id="tab-courier" class="tab-btn"></button>
-    <button id="tab-farm" class="tab-btn"></button><button id="tab-workshop" class="tab-btn"></button>
+    <button id="tab-workshop" class="tab-btn"></button><button id="tab-farm" class="tab-btn"></button>
   </div>
 
   <div id="game-clicker" class="game-panel">
@@ -15800,7 +15831,9 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var hackerWiresBound = false;
   var SVG_NS = "http://www.w3.org/2000/svg";
 
+  var hackerWireVariant="color";
   function startHackerWires() {
+    hackerWireVariant=["color","labels","order"][Math.floor(Math.random()*3)];
     hackerWires = HACKER_WIRE_COLORS.slice(0, Math.random() < 0.5 ? 3 : 5);
     hackerWireRightOrder = shuffleArray(hackerWires.slice());
     hackerWireLinks = {};
@@ -15808,6 +15841,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     hackerWireDrag = null;
     document.getElementById("hacker-wires").classList.add("active");
     document.getElementById("hacker-keyboard").style.display = "none";
+    document.getElementById("hacker-mode").textContent=state.lang==='ru'?(hackerWireVariant==='order'?'Контакты 1 → 2 → 3 · соединяй по очереди':hackerWireVariant==='labels'?'Соедини одинаковые номера':'Соедини провода по цветам'):hackerWireVariant==='order'?'Connect terminals in order':'Match terminal labels';
     renderHackerWires();
     bindHackerWires();
   }
@@ -15828,7 +15862,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   function makeCable(color, a, b) {
     var path = document.createElementNS(SVG_NS, "path");
-    path.setAttribute("stroke", color);
+    path.setAttribute("stroke", color);path.classList.add("cable-live");
     path.setAttribute("stroke-width", "7");
     path.setAttribute("stroke-linecap", "round");
     path.setAttribute("fill", "none");
@@ -15852,16 +15886,18 @@ WORK_PAGE_HTML = r'''<!doctype html>
     svg.innerHTML = "";
     hackerWires.forEach(function (color, i) {
       var b = document.createElement("div");
+      b.textContent=String(i+1);b.setAttribute("aria-label","Wire "+(i+1));
       b.className = "hacker-wire-end" + (hackerWireLinks[i] !== undefined ? " connected" : "");
-      b.style.background = color;
+      b.style.background = hackerWireVariant==='labels'?'#655a73':color;
       b.style.color = color;
       b.dataset.index = String(i);
       left.appendChild(b);
     });
     hackerWireRightOrder.forEach(function (color, i) {
       var s = document.createElement("div");
+      s.textContent=String(hackerWires.indexOf(color)+1);s.setAttribute("aria-label","Socket "+(hackerWires.indexOf(color)+1));
       s.className = "hacker-wire-socket";
-      s.style.borderColor = color;
+      s.style.borderColor = hackerWireVariant==='labels'?'#b2a5be':color;
       s.style.color = color;
       s.dataset.socket = String(i);
       right.appendChild(s);
@@ -15907,6 +15943,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       var j = parseInt(socket.dataset.socket, 10);
       var taken = Object.keys(hackerWireLinks).some(function (k) { return hackerWireLinks[k] === j; });
       if (taken) { drag.line.remove(); return; }
+      if(hackerWireVariant==='order'&&drag.i!==hackerWireConnected){drag.line.remove();haptic("warning");return;}
       if (hackerWireRightOrder[j] === hackerWires[drag.i]) {
         hackerWireLinks[drag.i] = j;
         hackerWireConnected++;
@@ -16455,26 +16492,39 @@ WORK_PAGE_HTML = r'''<!doctype html>
   }
 
   // Front-facing lock: choose a pick angle, hold torque, read how far the cylinder yields.
-  var lockState=null;
+  var lockState=null,lockNextSide=false;
   function lockText(ru,en,de){return state.lang==='ru'?ru:state.lang==='de'?de:en;}
   function lockSound(kind){if(sfxOn&&window.RDSFX)RDSFX.game(kind);}
   function lockMessage(text){document.getElementById('lock-feedback').textContent=text;}
-  function setPickAngle(value){if(!lockState)return;lockState.angle=Math.max(-80,Math.min(80,value));lockState.strain=0;document.getElementById('lock-angle').value=lockState.angle;document.getElementById('lock-pick').style.transform='translateX(-50%) rotate('+lockState.angle+'deg)';document.getElementById('lock-face').setAttribute('aria-valuenow',Math.round(lockState.angle));}
-  function startLockpick(){
-    document.getElementById('hacker-lock').classList.add('active');lockState={angle:0,target:-58+Math.random()*116,progress:0,strain:0,health:3,stage:0,stages:1+Math.floor(Math.random()*3),turning:false,last:performance.now(),raf:null};
-    setPickAngle(0);document.getElementById('hacker-lock-btn').textContent=lockText('Удерживай, чтобы повернуть','Hold to turn','Zum Drehen halten');
-    lockMessage(lockText('Двигай отмычку по замку, затем удерживай поворот. Чем дальше поворачивается — тем ближе нужный угол.','Move the pick over the lock, then hold to turn. More rotation means a better angle.','Bewege den Dietrich und halte zum Drehen. Mehr Drehung bedeutet einen besseren Winkel.'));lockTick(performance.now());
+  function drawSideLock(){
+    var st=lockState;if(!st||st.mode!=='side')return;var side=document.getElementById('lock-side');side.querySelectorAll('.side-pin').forEach(function(p){var i=Number(p.dataset.pin),lift=st.done[i]?st.targets[i]:i===st.selected?st.lift:0;p.classList.toggle('selected',i===st.selected);p.classList.toggle('set',!!st.done[i]);p.querySelector('i').style.height=(26+lift*.7)+'px';p.setAttribute('aria-label',lockText('Пин ','Pin ','Stift ')+(i+1));});
+  }
+  function setPickAngle(value){if(!lockState)return;var st=lockState;if(st.mode==='side'){st.lift=Math.max(0,Math.min(100,value));document.getElementById('lock-angle').value=st.lift;drawSideLock();return;}st.angle=Math.max(-80,Math.min(80,value));document.getElementById('lock-angle').value=st.angle;document.getElementById('lock-pick').style.transform='translateX(-50%) rotate('+st.angle+'deg)';document.getElementById('lock-face').setAttribute('aria-valuenow',Math.round(st.angle));}
+  function startLockpick(forceMode){
+    var mode=forceMode||(lockNextSide?'side':'front');if(!forceMode)lockNextSide=!lockNextSide;
+    document.getElementById('hacker-lock').classList.add('active');lockState={mode:mode,angle:0,target:-58+Math.random()*116,progress:0,strain:0,health:3,stage:0,stages:1+Math.floor(Math.random()*3),turning:false,last:performance.now(),raf:null,lift:0,selected:0,done:{},pinHold:0};
+    var old=document.getElementById('lock-side');if(old)old.remove();document.getElementById('lock-face').style.display=mode==='side'?'none':'block';var range=document.getElementById('lock-angle');range.min=mode==='side'?0:-80;range.max=mode==='side'?100:80;range.setAttribute('aria-label',mode==='side'?lockText('Подъём пина','Pin lift','Stifthöhe'):lockText('Угол отмычки','Pick angle','Dietrichwinkel'));
+    if(mode==='side'){var st=lockState,count=Math.random()<.5?3:4;st.targets=Array.from({length:count},function(){return 35+Math.random()*43;});st.order=shuffleArray(Array.from({length:count},function(_,i){return i;}));st.stages=count;var side=document.createElement('div');side.id='lock-side';st.targets.forEach(function(_,i){var pin=document.createElement('button');pin.type='button';pin.className='side-pin';pin.dataset.pin=i;pin.innerHTML='<span>'+(i+1)+'</span><i></i>';pin.onpointerdown=function(e){e.preventDefault();if(!lockState)return;lockState.selected=i;lockState.pinHold=0;pin.setPointerCapture(e.pointerId);lift(e);};function lift(e){if(!lockState)return;var box=side.getBoundingClientRect();setPickAngle((box.bottom-e.clientY)/box.height*100);}pin.onpointermove=function(e){if(pin.hasPointerCapture(e.pointerId))lift(e);};pin.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();if(lockState){lockState.selected=i;drawSideLock();}}};side.appendChild(pin);});document.getElementById('hacker-lock').prepend(side);drawSideLock();}
+    setPickAngle(0);document.getElementById('hacker-lock-btn').textContent=mode==='side'?lockText('Удерживай натяжение','Hold tension','Spannung halten'):lockText('Удерживай поворот','Hold to turn','Zum Drehen halten');
+    lockMessage(mode==='side'?lockText('Выбери пин, плавно поднимай и держи натяжение. Ищи тот, который поддаётся.','Choose a pin, lift slowly and hold tension. Find the binding pin.','Wähle einen Stift, hebe langsam an und halte Spannung.'):lockText('Найди угол и удерживай поворот. Если упирается — отпусти, иначе отмычка сломается.','Find the angle and hold to turn. Release if it binds or the pick will break.','Winkel finden und drehen. Bei Widerstand loslassen.'));lockTick(performance.now());
   }
   function lockTick(now){
     var st=lockState;if(!st)return;var dt=Math.min(.05,(now-st.last)/1000);st.last=now;
-    if(st.turning){var distance=Math.abs(st.angle-st.target),limit=distance<19?100:Math.max(7,100-(distance-19)*2.8);st.progress=Math.min(limit,st.progress+dt*125);
-      if(distance<19){lockMessage(lockText('Поддаётся — держи!','It is turning — keep holding!','Es dreht sich — weiter halten!'));st.strain=0;}
-      else if(st.progress>=limit){st.strain+=dt;lockMessage(distance<34?lockText('Почти. Чуть измени угол.','Almost. Adjust the angle a little.','Fast. Winkel etwas ändern.'):lockText('Упирается. Отпусти и поищи другой угол.','It binds. Release and try another angle.','Es klemmt. Loslassen und Winkel ändern.'));}
-      if(st.strain>1.6){st.health--;st.strain=0;st.turning=false;lockSound('pinbreak');haptic('warning');if(st.health<=0){stopLockpick();triggerDebuff('clicker','clicker-feedback','hacker-lock',100,100,document.getElementById('hacker-terminal'));return;}}
-      if(st.progress>=100&&st.stage+1<st.stages){st.stage++;st.target=-58+Math.random()*116;st.progress=0;st.turning=false;setPickAngle(0);lockMessage(lockText('Щелчок! Следующий оборот — найди новый угол.','Click! Next turn — find a new angle.','Klick! Nächste Drehung — neuen Winkel finden.'));lockSound('pin');}
-      if(st.progress>=100){lockSound('unlock');haptic('success');stopLockpick();setTimeout(finishHackerCombo,180);return;}
-    }else st.progress=Math.max(0,st.progress-dt*160);
-    document.getElementById('lock-cylinder').style.transform='rotate('+(st.progress*.8)+'deg)';document.getElementById('lock-wrench').style.transform='rotate('+(st.progress*.8)+'deg)';document.getElementById('lock-health').textContent=lockText('Отмычки: ','Picks: ','Dietriche: ')+st.health+'/3 · '+lockText('Оборот ','Turn ','Drehung ')+(st.stage+1)+'/'+st.stages;st.raf=requestAnimationFrame(lockTick);
+    if(st.turning){
+      if(st.mode==='side'){
+        if(st.done[st.selected])lockMessage(lockText('Этот пин уже установлен.','This pin is set.','Dieser Stift sitzt.'));
+        else if(st.selected!==st.order[st.stage]){st.strain+=dt*.65;st.pinHold=0;lockMessage(lockText('Этот пока не поддаётся. Проверь соседний.','This pin binds. Try another one.','Dieser klemmt. Anderen probieren.'));}
+        else if(Math.abs(st.lift-st.targets[st.selected])<9){st.pinHold+=dt;st.strain=Math.max(0,st.strain-dt*.3);lockMessage(lockText('Поддаётся… держи!','It yields… hold!','Es gibt nach… halten!'));if(st.pinHold>.55){st.done[st.selected]=true;st.stage++;st.pinHold=0;st.turning=false;st.lift=0;lockSound('pin');haptic('select');drawSideLock();if(st.stage>=st.stages){lockSound('unlock');stopLockpick();setTimeout(finishHackerCombo,180);return;}}}
+        else{st.pinHold=0;if(st.lift>st.targets[st.selected]+9){st.strain+=dt*1.5;lockMessage(lockText('Пережато! Опусти чуть ниже.','Too high! Lower it a little.','Zu hoch! Etwas senken.'));}else lockMessage(lockText('Поднимай плавнее.','Lift slowly.','Langsam anheben.'));}
+      }else{
+        var distance=Math.abs(st.angle-st.target),limit=distance<13?100:Math.max(7,100-(distance-13)*2.8);st.progress=Math.min(limit,st.progress+dt*110);
+        if(distance<13){lockMessage(lockText('Поддаётся — держи!','It is turning — keep holding!','Es dreht sich — halten!'));st.strain=Math.max(0,st.strain-dt*.3);}else if(st.progress>=limit){st.strain+=dt;lockMessage(lockText('Упирается. Отпусти — отмычка гнётся!','It binds. Release — the pick is bending!','Es klemmt. Loslassen — Dietrich verbiegt sich!'));}
+        if(st.progress>=100&&st.stage+1<st.stages){st.stage++;st.target=-58+Math.random()*116;st.progress=0;st.turning=false;setPickAngle(0);lockMessage(lockText('Щелчок! Теперь другой угол.','Click! Find the next angle.','Klick! Nächsten Winkel finden.'));lockSound('pin');}
+        if(st.progress>=100){lockSound('unlock');haptic('success');stopLockpick();setTimeout(finishHackerCombo,180);return;}
+      }
+      if(st.strain>1.15){st.health--;st.strain=0;st.turning=false;st.progress=0;st.pinHold=0;lockSound('pinbreak');haptic('warning');var box=document.getElementById('hacker-lock');box.classList.add('pick-snapped');setTimeout(function(){box.classList.remove('pick-snapped');},350);if(st.health<=0){stopLockpick();triggerDebuff('clicker','clicker-feedback','hacker-lock',100,100,document.getElementById('hacker-terminal'));return;}}
+    }else{st.progress=Math.max(0,st.progress-dt*160);st.strain=Math.max(0,st.strain-dt*.65);}
+    document.getElementById('lock-cylinder').style.transform='rotate('+(st.progress*.8)+'deg)';document.getElementById('lock-wrench').style.transform='rotate('+(st.progress*.8)+'deg)';document.getElementById('lock-health').textContent=lockText('Отмычки: ','Picks: ','Dietriche: ')+st.health+'/3 · '+(st.stage+1)+'/'+st.stages;st.raf=requestAnimationFrame(lockTick);
   }
   function stopLockpick(){if(lockState&&lockState.raf)cancelAnimationFrame(lockState.raf);lockState=null;}
   function pressLockpick(){if(lockState&&!debuffState.clicker){lockState.turning=true;lockSound('pin');}}
@@ -16766,58 +16816,46 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var courierRun=null;
   function courierWords(ru,en,de){return state.lang==='ru'?ru:state.lang==='de'?de:en;}
   function courierOpen(x,y){return x>=0&&y>=0&&x<7&&y<7&&!(x%2&&y%2);}
-  function courierHUD(){
-    var r=courierRun;if(!r)return;
-    document.getElementById('courier-feedback').textContent=courierWords('Адрес ','Address ','Adresse ')+(r.delivered+1)+' / 3 · '+courierWords('Доставок: ','Delivered: ','Geliefert: ')+r.delivered+' · '+courierWords('Скорость ','Speed ','Tempo ')+r.speed+'/3'+(r.stopped?' · '+courierWords('СТОП','STOP','STOPP'):'');
-    document.getElementById('courier-rider').classList.toggle('stopped',r.stopped);
-  }
+  function courierBlocked(r,x,y){return !courierOpen(x,y)||r.blocks.some(function(b){return b.x===x&&b.y===y;});}
+  function courierDistance(r,a,b){var q=[[a.x,a.y,0]],seen={};while(q.length){var n=q.shift(),key=n[0]+','+n[1];if(seen[key])continue;seen[key]=true;if(n[0]===b.x&&n[1]===b.y)return n[2];[[1,0],[-1,0],[0,1],[0,-1]].forEach(function(d){if(!courierBlocked(r,n[0]+d[0],n[1]+d[1]))q.push([n[0]+d[0],n[1]+d[1],n[2]+1]);});}return 50;}
+  function courierHUD(){var r=courierRun;if(!r)return;document.getElementById('courier-feedback').textContent=courierWords('Адрес ','Address ','Adresse ')+Math.min(3,r.delivered+1)+'/3 · '+courierWords('Ходы: ','Moves: ','Züge: ')+r.fuel;document.getElementById('courier-rider').classList.toggle('stopped',r.stopped);}
   function courierDraw(){var r=courierRun;if(!r)return;var rider=document.getElementById('courier-rider');rider.style.left=((r.x+.5)/7*100)+'%';rider.style.top=((r.y+.5)/7*100)+'%';rider.style.setProperty('--heading',r.heading+'deg');courierHUD();}
-  function setCourierDirection(dx,dy){var r=courierRun;if(!r)return;r.dx=dx;r.dy=dy;r.heading=dx===1?90:dx===-1?-90:dy===1?180:0;r.stopped=false;r.hold=0;courierDraw();haptic('select');}
+  function setCourierDirection(dx,dy){
+    var r=courierRun;if(!r||r.served||r.ended||!r.stopped)return;if(r.fuel<=0){document.getElementById('courier-hint').textContent=courierWords('Ходы закончились. Двойной тап — новый маршрут.','No moves left. Double tap for a new route.','Keine Züge übrig. Doppeltippen: neue Route.');return;}
+    var nx=r.x,ny=r.y,steps=[];do{nx+=dx;ny+=dy;if(courierBlocked(r,nx,ny)){haptic('warning');document.getElementById('courier-hint').textContent=courierWords('Здесь не проехать. Найди другую улицу.','Road blocked. Find another street.','Straße gesperrt. Finde einen anderen Weg.');return;}steps.push({x:nx,y:ny});}while((nx%2||ny%2)&&steps.length<3);
+    r.steps=steps;r.fuel--;r.stopped=false;r.parked=false;r.hold=0;r.step=0;r.heading=dx===1?90:dx===-1?-90:dy===1?180:0;courierDraw();haptic('select');
+  }
   function setCourierLane(lane){if(courierRun)setCourierDirection(lane>courierRun.x?1:-1,0);}
-  function pressCourierStopline(){if(!courierRun)return;courierRun.stopped=!courierRun.stopped;courierRun.hold=0;courierHUD();haptic('medium');}
+  function pressCourierStopline(){var r=courierRun;if(!r)return;if(r.ended||(r.fuel<=0&&(r.x!==r.target.x||r.y!==r.target.y))){startCourier();return;}r.stopped=true;r.steps=[];r.parked=true;r.hold=0;courierHUD();haptic('medium');}
   function courierNextAddress(){
-    var r=courierRun;if(!r)return;
-    var old=document.getElementById('courier-address');if(old)old.remove();
-    var choices=[];for(var y=0;y<7;y+=2)for(var x=0;x<7;x+=2)if(Math.abs(x-r.x)+Math.abs(y-r.y)>=4)choices.push({x:x,y:y});
-    r.target=choices[Math.floor(Math.random()*choices.length)];r.hold=0;r.served=false;r.deliveryId=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
-    var marker=document.createElement('div');marker.id='courier-address';marker.style.left=((r.target.x+.5)/7*100)+'%';marker.style.top=((r.target.y+.5)/7*100)+'%';marker.innerHTML='<img src="/assets/work_parcel.webp" alt=""><b>'+(r.delivered+1)+'</b>';document.getElementById('courier-road').appendChild(marker);
+    var r=courierRun;if(!r)return;r.target=r.addresses[r.delivered];r.hold=0;r.served=false;r.parked=false;r.deliveryId=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
+    document.querySelectorAll('.city-address').forEach(function(n){var i=Number(n.dataset.address);n.classList.toggle('current',i===r.delivered);n.classList.toggle('done',i<r.delivered);});
   }
   function courierCollisionTick(now){
     var r=courierRun;if(!r||activeGame!=='courier')return;now=now||performance.now();var dt=Math.min(.05,(now-r.last)/1000);r.last=now;
     if(!pausedGame){
-      if(!r.stopped){r.step+=dt;if(r.step>1/[0,1.8,2.6,3.5][r.speed]){r.step=0;var nx=r.x+r.dx,ny=r.y+r.dy;
-        if(!courierOpen(nx,ny)){r.stopped=true;haptic('light');}
-        else if(r.blocks.some(function(b){return b.x===nx&&b.y===ny;})){r.stopped=true;fx('impact');document.getElementById('courier-hint').textContent=courierWords('Улица перекрыта. Найди объезд.','Road closed. Find a detour.','Straße gesperrt. Finde einen Umweg.');}
-        else{r.x=nx;r.y=ny;}courierDraw();
-      }}
-      if(r.stopped&&r.x===r.target.x&&r.y===r.target.y&&!r.served){
-        r.hold+=dt;var marker=document.getElementById('courier-address');if(marker)marker.style.setProperty('--handoff',Math.min(1,r.hold/.85));
-        if(r.hold>=.85){r.served=true;var road=document.getElementById('courier-road');registerHit('courier',road.clientWidth*(r.x+.5)/7,road.clientHeight*(r.y+.5)/7,road,false,function(awarded){if(courierRun!==r)return;if(awarded){r.delivered++;fx('deliver');if(r.delivered>=3){document.getElementById('courier-hint').textContent=courierWords('Маршрут завершён! Следующий квартал готов.','Route complete! The next district is ready.','Route fertig! Das nächste Viertel wartet.');setTimeout(function(){if(courierRun===r)startCourier();},1100);}else courierNextAddress();}else{r.served=false;r.hold=-1;}courierHUD();},r.deliveryId);}
-      }else{r.hold=0;}
+      if(!r.stopped){r.step+=dt;if(r.step>.22){r.step=0;var next=r.steps.shift();if(next){r.x=next.x;r.y=next.y;}if(!r.steps.length)r.stopped=true;courierDraw();}}
+      if(r.stopped&&r.parked&&r.target&&r.x===r.target.x&&r.y===r.target.y&&!r.served&&!r.ended){
+        r.hold+=dt;var marker=document.querySelector('.city-address.current');if(marker)marker.style.setProperty('--handoff',Math.min(1,r.hold/.85));
+        if(r.hold>=.85){r.served=true;var road=document.getElementById('courier-road');registerHit('courier',road.clientWidth*(r.x+.5)/7,road.clientHeight*(r.y+.5)/7,road,false,function(awarded){if(courierRun!==r)return;if(awarded){r.delivered++;fx('deliver');if(r.delivered>=3){r.ended=true;document.getElementById('courier-hint').textContent=courierWords('Маршрут готов! Двойной тап — следующий квартал.','Route complete! Double tap for the next district.','Route fertig! Doppeltippen: nächstes Viertel.');document.querySelectorAll('.city-address').forEach(function(n){n.classList.add('done');});}else courierNextAddress();}else{r.served=false;r.hold=-1;}courierHUD();},r.deliveryId);}
+      }else r.hold=0;
     }
     courierRafId=requestAnimationFrame(courierCollisionTick);
   }
   function startCourier(){
-    if(courierRafId)cancelAnimationFrame(courierRafId);
-    var road=document.getElementById('courier-road');road.innerHTML='';road.classList.add('city-map');
+    if(courierRafId)cancelAnimationFrame(courierRafId);var road=document.getElementById('courier-road');road.innerHTML='';road.classList.add('city-map');
     for(var y=0;y<7;y++)for(var x=0;x<7;x++){var cell=document.createElement('div');cell.className='city-cell '+(courierOpen(x,y)?'street':'building');cell.style.left=(x/7*100)+'%';cell.style.top=(y/7*100)+'%';if(!courierOpen(x,y)){cell.style.setProperty('--roof',['#84666e','#716d86','#738a7c','#98836f'][(x+y)%4]);cell.innerHTML='<i></i><i></i>';}road.appendChild(cell);}
     var rider=document.createElement('div');rider.id='courier-rider';rider.innerHTML='<img src="/assets/courier_top.webp" alt="">';road.appendChild(rider);
-    // Only mid-block street segments may be closed; intersections always remain connected.
-    var all=[{x:1,y:2},{x:3,y:4},{x:5,y:2},{x:2,y:3},{x:4,y:5}];var blocks=shuffleArray(all).slice(0,2);
-    blocks.forEach(function(b){var n=document.createElement('div');n.className='city-barrier';n.style.left=((b.x+.5)/7*100)+'%';n.style.top=((b.y+.5)/7*100)+'%';road.appendChild(n);});
-    courierRun={x:0,y:6,dx:0,dy:-1,speed:2,stopped:true,delivered:0,blocks:blocks,last:performance.now(),step:0,heading:0,hold:0};courierNextAddress();courierDraw();courierCollisionTick(performance.now());
-    document.getElementById('courier-hint').textContent=courierWords('Доедь до посылки с номером. Свайп — направление, двойной тап — остановка. На адресе стой до передачи. Перекрытия объезжай.','Reach the numbered parcel. Swipe to steer, double tap to stop. Wait at the address to hand over. Detour around barriers.','Fahre zum nummerierten Paket. Wischen: Richtung, Doppeltippen: Stopp. Zum Übergeben anhalten. Sperren umfahren.');
+    var blocks=shuffleArray([{x:1,y:2},{x:3,y:4},{x:5,y:2},{x:2,y:3},{x:4,y:5}]).slice(0,2);blocks.forEach(function(b){var n=document.createElement('div');n.className='city-barrier';n.style.left=((b.x+.5)/7*100)+'%';n.style.top=((b.y+.5)/7*100)+'%';road.appendChild(n);});
+    var r={x:0,y:6,stopped:true,parked:false,delivered:0,blocks:blocks,last:performance.now(),step:0,steps:[],heading:0,hold:0,addresses:[],fuel:0};var previous={x:0,y:6},used={'0,6':true};
+    for(var i=0;i<3;i++){var choices=[];for(var ay=0;ay<7;ay+=2)for(var ax=0;ax<7;ax+=2)if(!used[ax+','+ay]&&Math.abs(ax-previous.x)+Math.abs(ay-previous.y)>=4)choices.push({x:ax,y:ay});var address=choices[Math.floor(Math.random()*choices.length)];used[address.x+','+address.y]=true;r.fuel+=Math.ceil(courierDistance(r,previous,address)/2);r.addresses.push(address);previous=address;var marker=document.createElement('div');marker.className='city-address';marker.dataset.address=i;marker.style.left=((address.x+.5)/7*100)+'%';marker.style.top=((address.y+.5)/7*100)+'%';marker.innerHTML='<img src="/assets/work_parcel.webp" alt=""><b>'+(i+1)+'</b>';road.appendChild(marker);}
+    r.fuel+=3;courierRun=r;courierNextAddress();courierDraw();courierCollisionTick(performance.now());document.getElementById('courier-hint').textContent=courierWords('Доставь 1 → 2 → 3. Свайп — до перекрёстка. На адресе двойной тап — вручить. Береги ходы!','Deliver 1 → 2 → 3. Swipe to the next junction. Double tap at the address to hand over. Plan your moves!','Liefere 1 → 2 → 3. Wischen: nächste Kreuzung. Am Ziel doppeltippen zum Übergeben. Plane deine Züge!');
   }
   var courierControlsBound=false;
   function bindCourierControls(){
-    if(courierControlsBound)return;courierControlsBound=true;
-    var road=document.getElementById('courier-road'),start=null,lastTap=0;
-    road.addEventListener('pointerdown',function(e){start={x:e.clientX,y:e.clientY};road.setPointerCapture(e.pointerId);});
-    road.addEventListener('pointerup',function(e){if(!start||!courierRun)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;start=null;if(Math.max(Math.abs(dx),Math.abs(dy))>25){if(Math.abs(dx)>Math.abs(dy))setCourierDirection(dx>0?1:-1,0);else setCourierDirection(0,dy>0?1:-1);lastTap=0;}else{var now=Date.now();if(now-lastTap<320){pressCourierStopline();lastTap=0;}else lastTap=now;}});
-    road.addEventListener('pointercancel',function(){start=null;});
-    var controls=document.getElementById('courier-controls');controls.innerHTML='';[[0,-1,'↑'],[-1,0,'←'],[0,1,'↓'],[1,0,'→']].forEach(function(a){var b=document.createElement('button');b.textContent=a[2];b.setAttribute('aria-label',a[2]);b.onclick=function(){setCourierDirection(a[0],a[1]);};controls.appendChild(b);});
-    var stop=document.createElement('button');stop.id='courier-stop-btn';stop.textContent=courierWords('Стоп / Старт','Stop / Start','Stopp / Start');stop.onclick=pressCourierStopline;controls.appendChild(stop);
-    var speed=document.createElement('button');speed.id='courier-speed';speed.textContent='×2';speed.onclick=function(){if(courierRun){courierRun.speed=courierRun.speed%3+1;speed.textContent='×'+courierRun.speed;courierHUD();}};controls.appendChild(speed);
+    document.getElementById('courier-controls').hidden=true;if(courierControlsBound)return;courierControlsBound=true;var road=document.getElementById('courier-road'),start=null,lastTap=0;road.style.touchAction='none';
+    road.addEventListener('pointerdown',function(e){e.preventDefault();start={x:e.clientX,y:e.clientY};road.setPointerCapture(e.pointerId);});
+    road.addEventListener('pointerup',function(e){if(!start||!courierRun)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;start=null;if(Math.max(Math.abs(dx),Math.abs(dy))>23){if(Math.abs(dx)>Math.abs(dy))setCourierDirection(dx>0?1:-1,0);else setCourierDirection(0,dy>0?1:-1);lastTap=0;}else{var now=Date.now();if(now-lastTap<340){pressCourierStopline();lastTap=0;}else lastTap=now;}});road.addEventListener('pointercancel',function(){start=null;});
   }
 
   var pipeJob=null,pipeBusy=false,pipeRotations=[];
@@ -17100,7 +17138,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     var pov = document.getElementById("pause-ov");
     if (pov) pov.style.display = "none";
     stopAllGames();
-    ["clicker", "catch", "courier", "farm", "workshop"].forEach(function (g) {
+    ["clicker", "catch", "courier", "workshop", "farm"].forEach(function (g) {
       document.getElementById("game-" + g).style.display = g === name ? "block" : "none";
       document.getElementById("tab-" + g).classList.toggle("active", g === name);
     });
@@ -18116,6 +18154,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   .talk-input button { width: 46px; border: none; border-radius: 14px; background: linear-gradient(135deg, #8b5cf6, #ec4899); color: #fff; font-size: 18px; }
   .talk-card { background: linear-gradient(150deg, rgba(14,165,233,.16), rgba(139,92,246,.10) 60%, var(--card)); }
   #full-screen-msg { display: none; padding: 30px 10px; text-align: center; color: var(--hint); white-space: pre-wrap; }
+#top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}#top>div:last-child{display:contents}#title{grid-column:1;grid-row:1}#bucks{grid-column:2;grid-row:1;text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}#sound-toggle{grid-column:3;grid-row:1;justify-self:end}
 </style>
 </head>
 <body>
@@ -18923,7 +18962,7 @@ def app_request_user(init_data):
     user_id = int(parsed["user"]["id"])
     user = get_user(user_id)
     if maintenance_mode and user_id not in ADMIN_IDS:
-        return None, None, {"ok": False, "error": "maintenance", "message": get_text(user, "maintenance")}
+        return None, None, {"ok": False, "error": "maintenance", "message": get_text(user, "maintenance"), "lang":user.get("lang","ru")}
     if not (user["verified"] and user["agreement_accepted"]):
         return None, None, {"ok": False, "error": "not_ready", "message": get_text(user, "webapp_character_not_ready")}
     if user.get("dead"):
@@ -18949,7 +18988,7 @@ def serialize_onboarding(user):
     for key in STYLES:
         tier = None if is_style_unlocked(key, user) else (style_required_tier(key))
         styles.append({"key": key, "label": style_display_label(key, user), "desc": (STYLES[key].get("summary") or (STYLES[key]["description"],STYLES[key]["label_en"],STYLES[key]["label_de"]))[{"ru":0,"en":1,"de":2}.get(lang,1)], "locked": tier})
-    return {"races":profile_options.choices(profile_options.RACES,lang),"portrait_enabled":False,"appearance_fields":character_options.choices(lang),"appearance_defaults":dict(character_options.DEFAULT),"worlds": [{"key": "realism", "label": get_text(user, "realism"), "desc": at(user, "ob_realism")},
+    return {"appearance_fields_by_gender":{g:character_options.choices(lang,g) for g in ("male","female")},"races":profile_options.choices(profile_options.RACES,lang),"portrait_enabled":False,"appearance_fields":character_options.choices(lang,user.get("gender")),"appearance_defaults":dict(character_options.DEFAULT),"worlds": [{"key": "realism", "label": get_text(user, "realism"), "desc": at(user, "ob_realism")},
                        {"key": "anime", "label": get_text(user, "anime"), "desc": at(user, "ob_anime")}],
             "genders": [{"key": "female", "label": at(user, "ob_female")}, {"key": "male", "label": at(user, "ob_male")}],
             "default_gender": "female" if user.get("user_gender") != "female" else "male",
@@ -19010,6 +19049,12 @@ def serialize_app_state(user):
         return {"onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
     app_unstick(user)
     if migrate_character_appearance(user):save_data(user_data)
+    if user.get('appearance'):
+        value={k:v for k,v in character_options.validate(user['appearance'],user.get('gender')).items() if k in user['appearance'] or k in character_options.VISUAL_KEYS}
+        if value!=user['appearance']:user['appearance']=value
+        if not user.get('appearance_race_v2') and user.get('race','human')=='human' and user['appearance'].get('species') in ('cat','elf'):user['race']='catfolk' if user['appearance']['species']=='cat' else 'elf'
+        user['appearance_race_v2']=True
+
     _reset_daily_quota_if_needed(user)
     lang = user.get("lang", "ru")
     ensure_message_ids(user)
@@ -19040,7 +19085,7 @@ def serialize_app_state(user):
             "avatar": app_avatar(user),
             "avatar_url": f"/avatars/{user['avatar']}" if user.get("avatar") else look_image(user),
             "look": user.get("look"),
-            "world":user.get("world"),"gender":user.get("gender"),"custom_photo": bool(user.get("avatar")),"appearance":user.get("appearance"),"appearance_fields":character_options.choices(lang),"portrait_pending":bool(user.get("portrait_pending")),"portrait_error":bool(user.get("portrait_error")),
+            "world":user.get("world"),"gender":user.get("gender"),"custom_photo": bool(user.get("avatar")),"appearance":user.get("appearance"),"appearance_fields":character_options.choices(lang,user.get("gender")),"portrait_pending":bool(user.get("portrait_pending")),"portrait_error":bool(user.get("portrait_error")),
             "styles": [{"key": k, "label": style_display_label(k, user),"locked":not is_style_unlocked(k,user),"tier":style_required_tier(k)} for k in STYLES],
             "style": user.get("style"),
             "looks": [{"key": k, "img": f"/assets/avatar_{k}.jpg", "label": v["label_ru"] if lang == "ru" else v["label_en"]}
@@ -19278,6 +19323,17 @@ async def api_app_photo_handler(request):
     return _app_reply(user)
 
 
+async def api_wardrobe_handler(request):
+    _,user,body,err=await _play_request(request)
+    if err:return err
+    if 'outfit' not in body:return web.json_response({'ok':False,'error':'Bad request'})
+    outfit=body.get('outfit')
+    if outfit is not None and (not isinstance(outfit,str) or outfit not in profile_options.WARDROBE or not (user.get('inventory') or {}).get(outfit)):
+        return web.json_response({'ok':False,'error':'Сначала купи этот предмет'})
+    user['wardrobe_outfit']=outfit;save_data(user_data)
+    return web.json_response({'ok':True,'state':serialize_shop_state(user)})
+
+
 async def api_app_share_handler(request):
     uid,user,body,err=await _play_request(request)
     if err:return err
@@ -19464,7 +19520,7 @@ def save_avatar(user, data_url):
 async def appearance_preview_handler(request):
     try:raw=avatar_preview.svg(dict(request.query),request.query.get('gender','female'))
     except ValueError:raise web.HTTPBadRequest()
-    return web.Response(text=raw,content_type='image/svg+xml',headers={'Cache-Control':'public, max-age=86400','Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; sandbox"})
+    return web.Response(text=raw,content_type='image/svg+xml',headers={'Cache-Control':'public, max-age=86400','Content-Security-Policy':"default-src 'none'; img-src data:; style-src 'unsafe-inline'; sandbox"})
 
 
 async def avatar_file_handler(request):
@@ -19538,7 +19594,7 @@ async def api_app_create_handler(request):
         tier = style_required_tier(style)
         return web.json_response({"ok": False, "error": get_text(user, "style_locked_alert", label=label, tier=tier)})
     try:
-        appearance=character_options.validate(body.get('appearance',character_options.DEFAULT))
+        appearance=character_options.validate(body.get('appearance',character_options.DEFAULT),gender)
     except ValueError:
         return web.json_response({'ok':False,'error':'Invalid appearance'})
     try:race=profile_options.validate_race(body.get('race','human'))
@@ -19558,10 +19614,11 @@ async def api_app_create_handler(request):
         error = save_avatar(user, body.get("avatar"))
         if error:
             return web.json_response({"ok": False, "error": error})
-    user.update(race=race,appearance=character_options.visual_from_description(appearance,custom),portrait_url=None,world=world, gender=gender, style=style, scene=scene, custom_character=custom[:2000] or None,
+    user.update(appearance_race_v2=True,race=race,appearance=character_options.visual_from_description(appearance,custom),portrait_url=None,world=world, gender=gender, style=style, scene=scene, custom_character=custom[:2000] or None,
                 personality_ready=True, history=[], relationship={}, reply_choices={}, reply_choices_turns=0,
                 reply_choices_next=random.randint(5, 8), creating_character=False, switching_personality=False,
                 last_activity=datetime.now().isoformat())
+    if race=='human' and user['appearance'].get('species') in ('cat','elf'):user['race']='catfolk' if user['appearance']['species']=='cat' else 'elf'
     award_referral(user)
     request_character_portrait(user)
     user["app_pending"] = None
@@ -19580,10 +19637,12 @@ def request_character_portrait(user):
 async def api_app_appearance_handler(request):
     _,user,body,err=await _play_request(request)
     if err:return err
-    try:appearance={k:v for k,v in character_options.validate(body.get('appearance')).items() if k in character_options.VISUAL_KEYS}
+    try:appearance={k:v for k,v in character_options.validate(body.get('appearance'),user.get('gender')).items() if k in character_options.VISUAL_KEYS}
     except ValueError:return _app_reply(user,False,'Invalid appearance')
+    try:race=profile_options.validate_race(body.get('race',user.get('race','human')))
+    except ValueError:return _app_reply(user,False,'Invalid race')
     user.pop("avatar",None)
-    user.update(appearance=appearance,portrait_url=None)
+    user.update(race=race,appearance=appearance,portrait_url=None,appearance_race_v2=True)
     request_character_portrait(user)
     save_data(user_data)
     return _app_reply(user)
@@ -19618,7 +19677,7 @@ setTimeout(function () { if (window.__tgSdkOnSettle) window.__tgSdkOnSettle(); }
 _SDK_TAG_RE = re.compile(r'<script src="/tg-sdk\.js"[^>]*>\s*</script>', re.S)
 
 
-SFX_TAG = '<script src="/sfx.js?v=20261117a"></script>'
+SFX_TAG = '<script src="/sfx.js?v=20261117c"></script>'
 
 
 async def sfx_js_handler(request):
@@ -19799,7 +19858,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
 @media(prefers-reduced-motion:reduce){.btn::after,.buy-btn::after,.action-btn::after,.rd-premium,.rd-spark{animation:none!important;}}
 
 '''
-APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261117a">'
+APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261117c">'
 
 
 async def theme_css_handler(request):
@@ -20194,7 +20253,7 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
   function loadSample(kind){
     if(sampleBuffers[kind])return Promise.resolve(sampleBuffers[kind]);
     if(sampleLoads[kind])return sampleLoads[kind];
-    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261117a').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
+    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261117c').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
     return sampleLoads[kind];
   }
   function sample(kind){
@@ -20593,6 +20652,10 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 @keyframes input-focus-orbit{0%{--input-orbit:0deg;opacity:0}15%{opacity:1}80%{opacity:1}100%{--input-orbit:360deg;opacity:0}}
 .appearance-live{display:block;width:180px;height:208px;object-fit:contain;margin:6px auto 18px;border-radius:25px;transition:filter .2s}.appearance-grid{gap:14px}.appearance-grid .rd-field{display:flex;flex-direction:column;gap:7px;font-size:13px;color:#c5bfd6}.appearance-grid select{width:100%;min-height:46px;padding:9px!important}.appearance-caption{font-size:12px;text-align:center;color:#b3a7c5;margin:-10px 0 16px}.style-picker-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 8px}.style-picker-row small{font-size:10px;color:#b8a1d1;text-align:right}.rd-style-select{display:block;width:100%;min-height:48px;padding:10px 12px;background:#26243b;color:#eee5ff;border:1px solid #635276;border-radius:14px;font-size:15px}.opt>span:not(.lk){font-size:13px;line-height:1.45}.opt{padding:15px!important}.hot-feature{color:#f9edf7;display:flex;align-items:center;text-align:left;width:100%;gap:15px;padding:18px!important;background:linear-gradient(120deg,#613e77,#a54580)!important;border:1px solid #d895bd66!important;border-radius:23px;margin:14px 0;box-shadow:0 7px 24px #b54a8d33}.hot-feature img{width:58px;height:58px;object-fit:contain}.hot-feature strong{font-size:18px}.hot-feature span{display:block}.hot-feature small{display:block;color:#e7c9e1;font-size:12px;margin-top:5px}.hot-feature .feature-arrow{margin-left:auto;font-size:24px;color:#ebc8e4}
 @media(prefers-reduced-motion:reduce){.input-shell.focus-flare::after{animation:none;opacity:0}}
+
+#composer .input-shell.focus-flare::after{animation-duration:1.2s;animation-iteration-count:2}#input,#input-ghost{font-size:16px!important;font-family:inherit!important;font-weight:400!important;letter-spacing:normal!important;line-height:1.45!important;padding:12px 14px!important;box-sizing:border-box!important;white-space:pre-wrap!important;overflow-wrap:break-word!important;word-break:normal!important}#input-ghost{border:0!important;inset:0!important}#input{min-height:47px;transition:height .13s ease}button.press-pop{animation:press-pop .28s ease}@keyframes press-pop{40%{transform:scale(.95);filter:brightness(1.2)}100%{transform:none}}
+.maintenance-screen{background:radial-gradient(ellipse at 50% 5%,#463154,#171522 65%)!important;overflow:auto!important;padding:35px 24px!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:12px}.maintenance-screen p{max-width:330px;font-size:14px;color:#cfc0d8;text-align:center}.maintenance-screen .btn{width:min(100%,320px)}.maintenance-orb{font-size:60px;color:#ddadcb;text-shadow:0 0 25px #b47bb8;animation:maintenance-breathe 2.4s ease-in-out infinite}.maintenance-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;width:min(270px,85vw)}.maintenance-grid button{aspect-ratio:1;border-radius:18px;background:#4a3c56;border:1px solid #816684;transition:background .15s,transform .15s}.maintenance-grid button.lit{background:#ddb3d1;box-shadow:0 0 22px #d5a6ca66;transform:scale(.95)}@keyframes maintenance-breathe{50%{transform:scale(1.1);opacity:.65}}
+@media(prefers-reduced-motion:reduce){button.press-pop{animation:none!important}#input{transition:none!important}.maintenance-orb{animation:none!important}}
 </style>
 </head>
 <body>
@@ -20667,9 +20730,24 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   function full(text, icon) { var f = $("full"); f.style.display = "block"; f.innerHTML = "";
     f.appendChild(el("div", "big", icon || "💬")); f.appendChild(el("div", null, text)); }
 
+  var maintenanceVisible=false,maintenanceTimers=[],maintenanceLocale='ru';
+  function maintenanceScreen(lang){
+    maintenanceLocale=lang||'ru';
+    if(maintenanceVisible)return;maintenanceVisible=true;var f=$('full');f.style.display='block';f.innerHTML='';f.classList.add('maintenance-screen');
+    f.appendChild(el('div','maintenance-orb','✦'));f.appendChild(el('h2',null,tr('Скоро вернёмся','Back shortly','Gleich wieder da')));f.appendChild(el('p',null,tr('Обновляем бота. Пока ждёшь — повтори световую последовательность.','We are updating the bot. While you wait, repeat the light sequence.','Wir aktualisieren den Bot. Wiederhole in der Zwischenzeit die Lichtfolge.')));
+    var score=el('p'),grid=el('div','maintenance-grid'),buttons=[],sequence=[],index=0,accepting=false,round=0,active=true;grid.setAttribute('aria-label',tr('Игра на память','Memory game','Gedächtnisspiel'));
+    function later(fn,ms){var id=setTimeout(function(){if(active)fn();},ms);maintenanceTimers.push(id);}
+    function flash(i){buttons[i].classList.add('lit');later(function(){buttons[i].classList.remove('lit');},320);}
+    function play(){accepting=false;index=0;score.textContent=tr('Запомни · уровень ','Watch · level ','Merken · Stufe ')+round;sequence.forEach(function(i,n){later(function(){flash(i);},450+n*560);});later(function(){accepting=true;score.textContent=tr('Твоя очередь · ','Your turn · ','Du bist dran · ')+round;},500+sequence.length*560);}
+    for(var i=0;i<9;i++){(function(i){var b=el('button');b.type='button';b.setAttribute('aria-label',tr('Плитка ','Tile ','Feld ')+(i+1));b.onclick=function(){if(!accepting)return;flash(i);if(i!==sequence[index]){accepting=false;score.textContent=tr('Почти! Нажми «Начать» и попробуй ещё.','Almost! Press Start and try again.','Fast! Starte erneut.');return;}index++;if(index===sequence.length){accepting=false;later(function(){round++;sequence.push(Math.floor(Math.random()*9));play();},600);}};buttons.push(b);grid.appendChild(b);})(i);}
+    f.appendChild(score);f.appendChild(grid);var start=el('button','btn',tr('Начать','Start','Starten'));start.onclick=function(){maintenanceTimers.forEach(clearTimeout);maintenanceTimers=[];buttons.forEach(function(b){b.classList.remove('lit');});round=1;sequence=[Math.floor(Math.random()*9)];play();};f.appendChild(start);var retry=el('button','btn ghost',tr('Проверить готовность','Check availability','Verfügbarkeit prüfen'));retry.onclick=function(){load(false);};f.appendChild(retry);start.click();
+    f._stopMaintenance=function(){active=false;maintenanceTimers.forEach(clearTimeout);maintenanceTimers=[];maintenanceVisible=false;f.classList.remove('maintenance-screen');};
+  }
+
   // *действие* -> курсив; остальной текст как есть (без HTML)
   function richText(node, text) {
-    var parts = String(text).split(/(\*[^*\n]+\*)/g);
+    var shown=String(text);if(state&&state.settings&&state.settings.scene==='live')shown=shown.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g,'\n\n*$1*\n\n').replace(/\n{3,}/g,'\n\n').trim();
+    var parts = shown.split(/(\*[^*\n]+\*)/g);
     parts.forEach(function (p) {
       if (/^\*[^*\n]+\*$/.test(p)) node.appendChild(el("em", null, p.slice(1, -1)));
       else if (p) node.appendChild(document.createTextNode(p.replace(/\*\*/g, "")));
@@ -20778,15 +20856,22 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     var go=function(ok){if(!ok)return;api('/api/app/photo',{text:$('input').value.trim()||tr('Пришли свой портрет в одежде с учётом нашей беседы.','Send a clothed portrait of yourself in our current setting.','Schick mir ein bekleidetes Porträt von dir in unserer Umgebung.')}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);render();schedulePoll();});};
     if(tg&&tg.showConfirm)tg.showConfirm(tr('Отправить фото за 40 энергии?','Send a photo for 40 energy?','Foto für 40 Energie senden?'),go);else go(confirm(tr('Отправить фото за 40 энергии?','Send a photo for 40 energy?','Foto für 40 Energie senden?')));
   }
-  $('input').addEventListener('focus',function(){var shell=this.parentNode;shell.classList.remove('focus-flare');void shell.offsetWidth;shell.classList.add('focus-flare');setTimeout(function(){shell.classList.remove('focus-flare');},1050);});
+  var inputGlowTimer=null;function inputGlow(){clearTimeout(inputGlowTimer);var shell=$('input').parentNode;shell.classList.remove('focus-flare');void shell.offsetWidth;shell.classList.add('focus-flare');inputGlowTimer=setTimeout(function(){shell.classList.remove('focus-flare');},2600);}
+  $('input').addEventListener('focus',function(){setTimeout(inputGlow,260);});
+  if(window.visualViewport)visualViewport.addEventListener('resize',function(){if(document.activeElement===$('input')){setTimeout(inputGlow,120);autosize();ghostComplete();}});
   document.addEventListener('contextmenu',function(e){if(!e.target.closest('input,textarea,[contenteditable=true]'))e.preventDefault();});
   function appearanceFields(container,values,fields,onchange){
     var gender=state.onboarding?(ob.gender||'female'):(state.character.gender||'female');
+    if(state.onboarding&&state.onboarding.appearance_fields_by_gender)fields=state.onboarding.appearance_fields_by_gender[gender];
+    var races=state.onboarding?state.onboarding.races:(state.content_settings||{}).races;
+    values.race=values.race||(state.onboarding?(ob.race||'human'):(state.content_settings||{}).race)||'human';
     var preview=el('img','appearance-live');preview.alt=tr('Предпросмотр внешности','Appearance preview','Vorschau');preview.draggable=false;container.appendChild(preview);
-    container.appendChild(el('p','appearance-caption',tr('Примерный образ · меняется сразу · бесплатно','Approximate preview · instant · free','Ungefähre Vorschau · sofort · kostenlos')));
-    function refresh(){var q=new URLSearchParams(Object.assign({gender:gender},values));preview.src='/api/appearance-preview.svg?'+q.toString();if(onchange)onchange();}
-    var grid=el('div','appearance-grid');(fields||[]).forEach(function(field){var label=el('label','rd-field',field.label),select=el('select','ob-in');select.dataset.appearance=field.key;field.items.forEach(function(item){var option=el('option',null,item.label);option.value=item.key;select.appendChild(option);});select.value=values[field.key]||field.items[0].key;values[field.key]=select.value;select.onchange=function(){values[field.key]=select.value;refresh();};label.appendChild(select);grid.appendChild(label);});container.appendChild(grid);refresh();
+    function refresh(){if(state.onboarding)ob.race=values.race;preview.src='/api/appearance-preview.svg?'+new URLSearchParams(Object.assign({gender:gender,world:state.onboarding?ob.world:state.character.world},values)).toString();if(onchange)onchange();}
+    var grid=el('div','appearance-grid');
+    if(races){var label=el('label','rd-field',tr('Раса персонажа','Character race','Charaktervolk')),select=el('select','ob-in');select.id=state.onboarding?'ob-race':'appearance-race';races.forEach(function(item){var option=el('option',null,item.label);option.value=item.key;select.appendChild(option);});select.value=values.race;select.onchange=function(){values.race=select.value;refresh();};label.appendChild(select);grid.appendChild(label);}
+    (fields||[]).forEach(function(field){var label=el('label','rd-field',field.label),select=el('select','ob-in');select.dataset.appearance=field.key;field.items.forEach(function(item){var option=el('option',null,item.label);option.value=item.key;select.appendChild(option);});select.value=values[field.key]||field.items[0].key;if(!select.value)select.value=field.items[0].key;values[field.key]=select.value;select.onchange=function(){values[field.key]=select.value;refresh();};label.appendChild(select);grid.appendChild(label);});container.appendChild(grid);refresh();
   }
+  document.addEventListener('pointerdown',function(e){var b=e.target.closest('button');if(!b||b.disabled)return;b.classList.remove('press-pop');void b.offsetWidth;b.classList.add('press-pop');setTimeout(function(){b.classList.remove('press-pop');},300);});
   function shareTelegram(url,text){
     if(!url)return;
     var share='https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text||'');
@@ -20858,10 +20943,12 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   function send() {
     var inp = $("input"), text = inp.value.trim();
     if (!text || sending || state.pending) return;
+    var inputRect=inp.getBoundingClientRect();
     sending = true; haptic("light"); if (sndOn() && window.RDSFX) window.RDSFX.sent();
     // сразу показываем своё сообщение и «печатает…», не дожидаясь сервера
     state.messages.push({ role: "user", text: text }); state.pending = true; state.can_reroll = false;
     inp.value = ""; autosize();ghostComplete(); renderChat(); renderHead(); scrollBottom(true);
+    requestAnimationFrame(function(){if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;var bubbles=$('msgs').querySelectorAll('.row.me .bub'),target=bubbles[bubbles.length-1];if(!target||!target.animate)return;var end=target.getBoundingClientRect(),fly=el('div','message-flight',text);fly.style.cssText='position:fixed;left:'+inputRect.left+'px;top:'+inputRect.top+'px;width:'+inputRect.width+'px;max-height:180px;overflow:hidden;z-index:1200;pointer-events:none;padding:12px 14px;border-radius:22px;background:#8851a9;color:white;white-space:pre-wrap';document.body.appendChild(fly);target.style.opacity='.2';var motion=fly.animate([{transform:'translate(0,0)',opacity:1},{transform:'translate('+(end.left-inputRect.left)+'px,'+(end.top-inputRect.top)+'px)',opacity:0}],{duration:380,easing:'cubic-bezier(.2,.7,.2,1)'});motion.onfinish=function(){fly.remove();target.style.opacity='';};});
     api("/api/app/send", { text: text }).then(function (res) {
       sending = false;
       if (res.state) state = res.state;
@@ -20905,7 +20992,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     bar.appendChild(i); d.appendChild(l); d.appendChild(bar); return d;
   }
   var DE_TEXT = {"Message": "Nachricht", "Edit": "Bearbeiten", "Save": "Speichern", "Delete": "Löschen", "Cancel": "Abbrechen", "Message options": "Nachrichtenoptionen", "Delete this message and everything after it?": "Diese Nachricht und den gesamten folgenden Verlauf löschen?", "Character replies will be kept.": "Antworten bleiben erhalten.", "Reply suggestions": "Antwortvorschläge", "What will you say?": "Was antwortest du?", "How shall we start?": "Wie beginnen wir?", "Write my own": "Selbst schreiben", "Choose a line, edit if you like, then send.": "Auswählen, bearbeiten und senden.", "Close help": "Hilfe schließen", "Show me around": "Einführung zeigen", "Back": "Zurück", "Next": "Weiter", "Done": "Fertig", "Skip": "Überspringen", "Language": "Sprache", "Conversation mode": "Gesprächsmodus", "Messages": "Nachrichten", "Roleplay": "Rollenspiel", "Relationships": "Beziehung", "Trust": "Vertrauen", "Respect": "Respekt", "Get bucks": "Bucks kaufen", "Bucks are an in-game currency.": "Bucks sind Spielwährung.", "Save ": "Spare ", "Subscriber quick job": "Tagesauftrag", "Collect reward": "Belohnung abholen", "Go to work": "Zur Arbeit", "Collected today": "Heute abgeholt", "Your subscription": "Dein Abonnement", "edited": "bearbeitet", "Connection lost. Please retry.": "Keine Verbindung. Erneut versuchen.", "RoleDuel help": "RoleDuel-Hilfe", "Could not save. Please retry.": "Speichern fehlgeschlagen. Erneut versuchen.", "Wait for the reply": "Warte auf die Antwort", "Complete 3 work actions to collect ": "Erledige 3 Arbeitsaktionen für ", " bucks. Once a day.": " Bucks. Einmal täglich.", "Your character and balance": "Charakter und Guthaben", "See your character status, energy and bucks here.": "Hier siehst du Zustand, Energie und Bucks.", "Chat": "Chat", "Send a message. Hold your message to edit, or a character reply to react.": "Nachricht senden. Kurz gedrückt halten zum Bearbeiten oder Reagieren.", "Shop": "Shop", "Food, drinks and gifts for your character live here.": "Hier findest du Essen, Getränke und Geschenke.", "Work and farm": "Arbeit und Farm", "Earn bucks and harvest crops.": "Verdiene Bucks und ernte Pflanzen.", "Games": "Spiele", "Choose a game and read its rules before starting.": "Wähle ein Spiel und lies zuerst die Regeln.", "Fortune wheel": "Glücksrad", "Check available spins and prizes. Sector size does not represent winning odds.": "Prüfe Drehungen und Preise. Sektorgröße ist keine Gewinnchance.", "Profile and settings": "Profil und Einstellungen", "Relationships, subscription benefits, language, chat mode and help.": "Beziehung, Abo-Vorteile, Sprache, Gesprächsmodus und Hilfe.", "Your character": "Dein Charakter", "Change the name and appearance here. Energy, food, water and mood are shown below.": "Ändere Namen und Aussehen. Darunter stehen Energie, Hunger, Wasser und Stimmung.", "Bucks and purchases": "Bucks und Käufe", "Compare bucks and Stars prices. Payment opens separately; this tour makes no purchases.": "Vergleiche Bucks und Stars. Die Einführung kauft nichts.", "Switch between Russian, English and German.": "Wähle Russisch, Englisch oder Deutsch.", "This field chooses messages without actions or a roleplay story. Start the conversation when ready; your character will wait.": "Wähle Nachrichten oder Rollenspiel. Dein Charakter wartet auf deine erste Nachricht.", "Help is always nearby": "Hilfe ist immer erreichbar", "Open help in your profile to read the rules or replay this tour.": "Öffne die Hilfe im Profil für Regeln oder die Einführung."};
-  function tr(ru,en,de) { var lang=state && ((state.settings && state.settings.lang)||(state.onboarding && state.onboarding.lang));return lang==='ru'?ru:(lang==='de'?(de||DE_TEXT[en]||en):en); }
+  function tr(ru,en,de) { var lang=(state && ((state.settings && state.settings.lang)||(state.onboarding && state.onboarding.lang)))||(maintenanceVisible&&maintenanceLocale)||document.documentElement.lang;return lang==='ru'?ru:(lang==='de'?(de||DE_TEXT[en]||en):en); }
   function updateSetting(body) {
     return api('/api/app/settings', body).then(function (res) {
       if (!res.ok) { toast(res.error || 'Error'); return; }
@@ -21140,7 +21227,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     if (s.character.looks && s.character.looks.length) {
       var lk = el("button", null, ui.look_btn);
       lk.onclick = function () {
-        if(s.character.appearance_fields){var box=$('sheet-box');box.innerHTML='';box.appendChild(el('h4',null,ui.look_title));var values=Object.assign({},s.character.appearance||{});appearanceFields(box,values,s.character.appearance_fields);var save=el('button','btn',tr('Сохранить внешность','Save appearance','Aussehen speichern'));save.onclick=function(){save.disabled=true;api('/api/app/appearance',{appearance:values}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);else $('sheet').classList.remove('on');render();});};box.appendChild(save);$('sheet').classList.add('on');return;}
+        if(s.character.appearance_fields){var box=$('sheet-box');box.innerHTML='';box.appendChild(el('h4',null,ui.look_title));var values=Object.assign({},s.character.appearance||{});appearanceFields(box,values,s.character.appearance_fields);var save=el('button','btn',tr('Сохранить внешность','Save appearance','Aussehen speichern'));save.onclick=function(){save.disabled=true;api('/api/app/appearance',{appearance:values,race:values.race}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);else $('sheet').classList.remove('on');render();});};box.appendChild(save);$('sheet').classList.add('on');return;}
         var box = $("sheet-box"); box.innerHTML = ""; box.appendChild(el("h4", null, ui.look_title));
         var g2 = el("div", "looks");
         s.character.looks.forEach(function (L) {
@@ -21437,7 +21524,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       v.appendChild(wrap);
     }
     if (obStep === 2) {
-      if(o.races){var raceLabel=el('label','rd-field',tr('Раса персонажа','Character race','Charaktervolk')),raceSelect=el('select','ob-in');raceSelect.id='ob-race';o.races.forEach(function(item){var node=el('option',null,item.label);node.value=item.key;raceSelect.appendChild(node);});raceSelect.value=ob.race||'human';raceSelect.onchange=function(){ob.race=raceSelect.value;};raceLabel.appendChild(raceSelect);v.appendChild(raceLabel);}
+
       v.appendChild(el("div", "ob-q", ui.ob_name));
       var ni = el("input", "ob-in"); ni.maxLength = o.name_max || 24; ni.placeholder = ui.ob_name_hint; ni.value = ob.name || "";
       ni.oninput = function () { ob.name = ni.value; }; v.appendChild(ni);
@@ -21445,7 +21532,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
         v.appendChild(el("div", "ob-q", ui.ob_avatar));
         var row = el("div", "ob-av"), pv = el("div", "ava"); pv.appendChild(el("span", null, ob.gender === "male" ? "👨🏻" : "👩🏻"));
         var lk0 = looks.filter(function (L) { return L.key === ob.look; })[0];
-        setAvatar(pv, ob.avatar || ('/api/appearance-preview.svg?'+new URLSearchParams(Object.assign({gender:ob.gender},ob.appearance||{})).toString()));
+        setAvatar(pv, ob.avatar || ('/api/appearance-preview.svg?'+new URLSearchParams(Object.assign({gender:ob.gender,world:ob.world},ob.appearance||{})).toString()));
         var pb = el("button", "btn ghost", ob.avatar ? ui.ob_avatar_change : ui.ob_avatar_pick);
         pb.onclick = function () { pickImage(function (data) { ob.avatar = data; renderOnb(); }); };
         row.appendChild(pv); row.appendChild(pb); v.appendChild(row);
@@ -21454,7 +21541,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     if (obStep === 2 && o.can_custom) {
       v.appendChild(el("div", "ob-q", ui.ob_custom));
       var ta = el("textarea"); ta.id = "ob-custom"; ta.placeholder = ui.ob_custom_hint; ta.value = ob.custom || "";
-      ta.oninput = function () { ob.custom = ta.value;var text=ta.value.toLowerCase().split(/характер\s*:|история\s*:/)[0];if(/кошк|кошач|неко|cat[ -]?(girl|boy|ears)/.test(text))ob.appearance.species='cat';else if(/эльф|elf/.test(text))ob.appearance.species='elf';if(/бел(?:ые|ыми|ых) волос|white hair|серебрист|silver hair/.test(text))ob.appearance.hair_color='silver';Object.keys(ob.appearance).forEach(function(k){var select=v.querySelector('[data-appearance="'+k+'"]');if(select)select.value=ob.appearance[k];});var preview=v.querySelector('.appearance-live');if(preview)preview.src='/api/appearance-preview.svg?'+new URLSearchParams(Object.assign({gender:ob.gender},ob.appearance)).toString();}; v.appendChild(ta);
+      ta.oninput = function () { ob.custom = ta.value;var text=ta.value.toLowerCase().split(/характер\s*:|история\s*:/)[0];if(/кошк|кошач|неко|cat[ -]?(girl|boy|ears)/.test(text))ob.appearance.species='cat';else if(/эльф|elf/.test(text))ob.appearance.species='elf';if(/бел(?:ые|ыми|ых) волос|white hair|серебрист|silver hair/.test(text))ob.appearance.hair_color='silver';Object.keys(ob.appearance).forEach(function(k){var select=v.querySelector('[data-appearance="'+k+'"]');if(select)select.value=ob.appearance[k];});var preview=v.querySelector('.appearance-live');if(preview)preview.src='/api/appearance-preview.svg?'+new URLSearchParams(Object.assign({gender:ob.gender,world:ob.world},ob.appearance)).toString();}; v.appendChild(ta);
     }
     var nav = el("div", "ob-nav");
     if (obStep > 0) { var bk = el("button", "btn ghost", ui.ob_back); bk.onclick = function () { obStep--; renderOnb(); }; nav.appendChild(bk); }
@@ -21496,7 +21583,8 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   }
   function load(quiet) {
     return api("/api/app/state").then(function (res) {
-      if (!res.state) { full(res.message || res.error || "Error", res.error === "not_ready" ? "✨" : "⚠️"); return; }
+      if (!res.state) { if(res.error==='maintenance')maintenanceScreen(res.lang);else full(res.message || res.error || "Error", res.error === "not_ready" ? "✨" : "⚠️"); return; }
+      if(maintenanceVisible){if($("full")._stopMaintenance)$("full")._stopMaintenance();$("full").style.display="none";}
       var before = state ? JSON.stringify([state.messages, state.reply_choices,state.quests,state.server_day,state.hot,state.character,state.photo_pending]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) : "";
       state = res.state;
       document.documentElement.lang = (state.settings && state.settings.lang) || (state.onboarding && state.onboarding.lang) || 'ru';
@@ -21509,13 +21597,13 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   var resettingDay=false;
   setInterval(function(){if(!resettingDay&&state&&state.quests&&Date.now()>=state.quests.reset_at*1000){resettingDay=true;load(true).finally(function(){resettingDay=false;});}},1000);
   var inp = $("input");
-  function autosize() { inp.style.height = "auto"; inp.style.height = Math.min(120, inp.scrollHeight) + "px"; }
+  function autosize() { inp.style.height = "auto"; inp.style.height = Math.min(Math.max(120,Math.min(220,innerHeight*.3)), inp.scrollHeight) + "px"; }
   var completion='';
   function ghostComplete(){
     var value=inp.value,match=value.match(/(?:^|\s)([^\s]{2,})$/u),suffix='';
     var words=state&&state.settings.lang==='ru'?['привет','приветик','пожалуйста','спасибо','сегодня','сейчас','конечно','красиво','хорошо','люблю','скучаю','покажи','фотографию','увидеть','интересно','расскажи','почему','подожди','хочешь','знаешь']:state&&state.settings.lang==='de'?['hallo','danke','bitte','heute','schön','erzähle']:['hello','thanks','please','today','beautiful','interesting'];
     if(match&&inp.selectionStart===value.length){var part=match[1].toLowerCase(),word=words.find(function(w){return w.startsWith(part)&&w.length>part.length;});if(word)suffix=word.slice(part.length);}
-    completion=suffix;var ghost=$('input-ghost');ghost.innerHTML='';var prior=el('span','ghost-typed',value);ghost.appendChild(prior);ghost.appendChild(el('span','ghost-suffix',suffix));ghost.scrollTop=inp.scrollTop;
+    completion=suffix;var ghost=$('input-ghost');ghost.innerHTML='';var prior=el('span','ghost-typed',value);ghost.appendChild(prior);ghost.appendChild(el('span','ghost-suffix',suffix));ghost.scrollTop=inp.scrollTop;ghost.scrollLeft=inp.scrollLeft;
   }
   inp.addEventListener('input',function(){autosize();ghostComplete();});
   inp.addEventListener('scroll',function(){$('input-ghost').scrollTop=inp.scrollTop;});
@@ -21832,6 +21920,7 @@ async def run_webapp_server():
     app_web.router.add_post("/api/app/send", api_app_send_handler)
     app_web.router.add_post("/api/app/photo", api_app_photo_handler)
     app_web.router.add_post("/api/app/share", api_app_share_handler)
+    app_web.router.add_post("/api/wardrobe", api_wardrobe_handler)
     app_web.router.add_post("/api/app/message", api_app_message_handler)
     app_web.router.add_get("/api/appearance-preview.svg", appearance_preview_handler)
     app_web.router.add_post("/api/app/settings", api_app_settings_handler)

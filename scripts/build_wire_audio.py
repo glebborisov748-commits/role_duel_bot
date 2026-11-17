@@ -1,14 +1,13 @@
-"""Original short electrical contact: a snap, bright arc fizz and a clean cut-off."""
-import math,random
-from build_game_audio import RATE,write
+"""Mechanical connector contact from the existing CC0 switch, plus a short original arc."""
+import math,random,wave,array
+from build_game_audio import RATE,write,OUT
+with wave.open(str(OUT/'unlock.wav')) as recording:
+ data=array.array('h',recording.readframes(recording.getnframes()));contact=[n/32768 for n in data]
 for number,suffix in enumerate('abc'):
- rng=random.Random(17110+number);duration=.19+number*.018;low=0.;spark=0.;samples=[]
+ rng=random.Random(17220+number);duration=.16+number*.012;samples=[]
  for i in range(round(duration*RATE)):
-  t=i/RATE;n=rng.uniform(-1,1);low+=.09*(n-low);high=n-low
-  if rng.random()<.003:spark=rng.uniform(.15,.38)
-  spark*=.77
-  envelope=min(1,t/.0015)*max(0,1-t/duration)**1.8
-  contact=math.exp(-t*270)*math.sin(2*math.pi*2700*t)*.32
-  arc=high*.23*(.65+.35*math.sin(2*math.pi*(170+number*31)*t)**2)
-  samples.append((arc+spark)*envelope+contact)
+  t=i/RATE;record=contact[min(len(contact)-1,int(i*(1+number*.035)))]*.8
+  gate=max(0,1-t/.065)**2;arc=.04*math.sin(2*math.pi*(1800*t-3800*t*t))*gate
+  crackle=rng.uniform(-1,1)*.025*gate if t<.018 else 0
+  samples.append(record+arc+crackle)
  write('wire'+suffix,samples)

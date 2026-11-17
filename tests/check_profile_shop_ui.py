@@ -26,19 +26,24 @@ with sync_playwright() as p:
     raw=dict(parse_qsl(urlparse(r.request.url).query));return r.fulfill(content_type='image/svg+xml',body=avatar_preview.svg(raw,raw.get('gender')))
    if path.startswith('/api/'):
     body=r.request.post_data_json if r.request.method=='POST' else {};calls.append((path,body))
+    if path=='/api/wardrobe':
+     shop['wardrobe_outfit']=body['outfit']
     if path=='/api/buy':
      assert body['category']=='wardrobe' and body['key']=='stockings'
      shop['bucks']-=200;next(i for c in shop['categories'] for i in c['items'] if i['key']=='stockings')['owned']=True
     if path=='/api/app/settings':state['content_settings']['preferences']=body['preferences'];state['content_settings']['race']=body['race']
     if path=='/api/app/create':state['onboarding']=None
-    return r.fulfill(content_type='application/json',body=json.dumps({'ok':True,'state':shop if path in ('/api/state','/api/buy') else state}))
+    return r.fulfill(content_type='application/json',body=json.dumps({'ok':True,'state':shop if path in ('/api/state','/api/buy','/api/wardrobe') else state}))
    return r.fulfill(status=404,body='')
   page.route('**/*',route);page.goto('https://roleduel.test/shop')
-  page.get_by_role('button',name='Гардероб',exact=True).click();assert page.locator('#items .card').count()==3
-  assert page.locator('#items .buy-btn:disabled').count()==2
+  page.get_by_role('button',name='Гардероб',exact=True).click();assert page.locator('#items > .card').count()==5
+  assert page.locator('#items .buy-btn:disabled').count()==4
+  assert page.locator('#tabs button').first.inner_text()=='Гардероб'
+  assert page.locator('#tabs button').evaluate_all('(nodes)=>new Set(nodes.map(n=>Math.round(n.getBoundingClientRect().top))).size')<=2
   assert page.locator('#items .card-note').count()==0
-  page.locator('#items .buy-btn:not(:disabled)').click();page.wait_for_function("document.querySelectorAll('#items .buy-btn:disabled').length===3")
+  page.locator('#items .buy-btn:not(:disabled)').click();page.wait_for_function("document.querySelectorAll('#items .buy-btn:disabled').length===5")
   assert shop['bucks']==800 and sum(path=='/api/buy' for path,_ in calls)==1
+  page.locator('#wardrobe-fitting').select_option('bunny_outfit');page.locator('#wardrobe-equip').click();page.wait_for_timeout(100);assert shop['wardrobe_outfit']=='bunny_outfit'
   page.screenshot(path=f'/tmp/rd-wardrobe-{width}.png')
   page.goto('https://roleduel.test/app');page.locator('#nav button').nth(5).click();page.locator('#content-settings').click()
   assert page.locator('[data-preference]').count()==5
@@ -51,10 +56,24 @@ with sync_playwright() as p:
   state['onboarding']=copy.deepcopy(fixtures['onboarding']);page.reload()
   page.get_by_role('button',name=next(w['label'] for w in state['onboarding']['worlds'] if w['key']=='anime'),exact=False).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click()
   page.get_by_role('button',name=state['onboarding']['genders'][0]['label'],exact=True).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click()
-  assert page.locator('#ob-race option').count()==4;page.locator('#ob-race').select_option('elf')
+  assert page.locator('#ob-race option').count()==10;page.locator('#ob-race').select_option('elf')
   page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click();page.get_by_role('button',name='Нежный',exact=False).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click()
   page.get_by_role('button',name='Переписка',exact=False).click();page.get_by_role('button',name=state['ui']['ob_done'],exact=True).click();page.wait_for_timeout(100)
   assert next(body for path,body in calls if path=='/api/app/create')['race']=='elf'
+  if width==390:
+   state['onboarding']=copy.deepcopy(fixtures['onboarding']);page.reload()
+   page.get_by_role('button',name=next(w['label'] for w in state['onboarding']['worlds'] if w['key']=='realism'),exact=False).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click()
+   page.get_by_role('button',name=state['onboarding']['genders'][1]['label'],exact=True).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click()
+   assert page.locator('[data-appearance="species"]').count()==0
+   assert page.locator('[data-appearance="hair_style"] option[value="long"]').count()==0
+   assert page.locator('[data-appearance="accessory"] option[value="hairclip"]').count()==0
+   page.locator('[data-appearance="hair_style"]').select_option('undercut')
+   assert 'world=realism' in page.locator('.appearance-live').get_attribute('src') and 'gender=male' in page.locator('.appearance-live').get_attribute('src')
+   page.screenshot(path='/tmp/rd-male-realism-builder.png')
+   for _ in range(2):page.get_by_role('button',name=state['ui']['ob_back'],exact=True).click()
+   page.get_by_role('button',name=next(w['label'] for w in state['onboarding']['worlds'] if w['key']=='anime'),exact=False).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click()
+   assert 'world=anime' in page.locator('.appearance-live').get_attribute('src')
+   page.screenshot(path='/tmp/rd-male-anime-builder.png')
   assert not errors,errors
   assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
   page.close();print('Wardrobe, preferences and race passed:',width,flush=True)

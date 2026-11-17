@@ -7,15 +7,19 @@ PREFERENCES={
  'domination':('Доминирование','Domination','Dominanz'),
 }
 RACES={
- 'human':('Человек','Human','Mensch'),
- 'elf':('Эльф','Elf','Elf'),
- 'succubus':('Суккуб','Succubus','Sukkubus'),
- 'android':('Андроид','Android','Android'),
+ 'human':('Человек','Human','Mensch'), 'elf':('Эльф','Elf','Elf'),
+ 'catfolk':('Кошачий народ','Catfolk','Katzenmensch'), 'foxfolk':('Лисий народ','Foxfolk','Fuchsmensch'),
+ 'wolffolk':('Волчий народ','Wolffolk','Wolfsmensch'), 'vampire':('Вампир','Vampire','Vampir'),
+ 'angel':('Ангел','Angel','Engel'), 'succubus':('Демон','Demon','Dämon'),
+ 'android':('Андроид','Android','Android'), 'dragonborn':('Драконий народ','Dragonfolk','Drachenmensch'),
 }
+RACE_FACTS={'human':'human','elf':'elf with pointed ears','catfolk':'human face with cat ears','foxfolk':'human face with fox ears','wolffolk':'human face with wolf ears','vampire':'adult vampire with subtle fangs','angel':'adult human with a subtle golden halo','succubus':'adult humanoid with small curved horns','android':'humanoid android with discreet metallic temples','dragonborn':'adult humanoid with small horns and subtle temple scales'}
 WARDROBE={
- 'bunny_outfit':{'name':'Bunny Outfit','price':500,'emoji':'👗'},
- 'latex_bodysuit':{'name':'Latex Bodysuit','price':750,'emoji':'🖤'},
- 'stockings':{'name':'Stockings','price':200,'emoji':'🧦'},
+ 'bunny_outfit':{'name':'Bunny Outfit','ru':'Костюм «Зайка»','de':'Hasenkostüm','price':500,'emoji':'👗','image':'wardrobe_bunny','fact':'opaque black stage costume, tuxedo jacket, bow tie and rabbit-ear headband'},
+ 'latex_bodysuit':{'name':'Latex Bodysuit','ru':'Латексный комбинезон','de':'Latex-Overall','price':750,'emoji':'🖤','image':'wardrobe_latex','fact':'opaque full-length high-neck long-sleeved charcoal fashion jumpsuit'},
+ 'stockings':{'name':'Stockings','ru':'Чулки','de':'Strümpfe','price':200,'emoji':'🧦','image':'wardrobe_stockings','fact':'opaque dark fashion stockings with a modest skirt and top'},
+ 'dress':{'name':'Evening dress','ru':'Вечернее платье','de':'Abendkleid','price':1200,'emoji':'👗','image':'gift_dress','fact':'elegant opaque evening dress'},
+ 'heels':{'name':'Heeled shoes','ru':'Туфли на каблуке','de':'Pumps','price':900,'emoji':'👠','image':'gift_heels','fact':'elegant heeled shoes with a modest everyday outfit'},
 }
 
 def defaults():return dict.fromkeys(PREFERENCES,False)

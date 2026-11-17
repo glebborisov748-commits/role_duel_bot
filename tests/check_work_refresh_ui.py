@@ -15,8 +15,8 @@ with sync_playwright() as p:
   def route(r):
    path=r.request.url.split('roleduel.test')[-1].split('?')[0]
    if path=='/work':
-    hooks="""var lockState=null;window.__testWork={lock:function(){return lockState},beginLock:function(turns){hackerMode='lock';document.getElementById('hacker-mode').textContent=state.ui.hack_mode_lock;document.getElementById('hacker-wires').classList.remove('active');document.getElementById('hacker-code').style.display='none';document.getElementById('hacker-keyboard').style.display='none';startLockpick();lockState.stages=turns;},memory:function(){hackerMode='code';var original=Math.random;Math.random=function(){return .1};newHackerCode();Math.random=original;document.getElementById('hacker-code').style.display='flex';},run:function(){return courierRun;},steer:setCourierDirection,stop:pressCourierStopline};"""
-    html=constants['WORK_PAGE_HTML'].replace('var lockState=null;',hooks)
+    hooks="""var lockState=null;window.__testWork={lock:function(){return lockState},beginLock:function(turns){hackerMode='lock';document.getElementById('hacker-mode').textContent=state.ui.hack_mode_lock;document.getElementById('hacker-wires').classList.remove('active');document.getElementById('hacker-code').style.display='none';document.getElementById('hacker-keyboard').style.display='none';startLockpick('front');lockState.stages=turns;},beginSide:function(){hackerMode='lock';document.getElementById('hacker-wires').classList.remove('active');document.getElementById('hacker-code').style.display='none';document.getElementById('hacker-keyboard').style.display='none';startLockpick('side');},wires:function(){stopLockpick();hackerMode='wires';document.getElementById('hacker-lock').classList.remove('active');document.getElementById('hacker-code').style.display='none';startHackerWires();return {colors:hackerWires,right:hackerWireRightOrder,variant:hackerWireVariant};},memory:function(){hackerMode='code';var original=Math.random;Math.random=function(){return .1};newHackerCode();Math.random=original;document.getElementById('hacker-code').style.display='flex';},run:function(){return courierRun;},steer:setCourierDirection,stop:pressCourierStopline};"""
+    html=constants['WORK_PAGE_HTML'].replace('var lockState=null,lockNextSide=false;',hooks+'var lockNextSide=false;')
     return r.fulfill(content_type='text/html',body=html.replace('<head>','<head><script src="/sfx.js"></script><link rel="stylesheet" href="/theme.css">',1))
    if path=='/sfx.js':return r.fulfill(content_type='application/javascript',body=constants['SFX_JS'])
    if path=='/theme.css':return r.fulfill(content_type='text/css',body=constants['APP_THEME_CSS'])
@@ -36,30 +36,49 @@ with sync_playwright() as p:
   for stage in range(turns):
    target=page.evaluate('__testWork.lock().target')
    page.locator('#lock-angle').evaluate('(n,v)=>{n.value=v;n.dispatchEvent(new Event("input"));}',target+8)
-   button=page.locator('#hacker-lock-btn');button.scroll_into_view_if_needed();rect=button.bounding_box();page.mouse.move(rect['x']+rect['width']/2,rect['y']+rect['height']/2);page.mouse.down();page.wait_for_timeout(900);page.mouse.up()
+   button=page.locator('#hacker-lock-btn');button.scroll_into_view_if_needed();rect=button.bounding_box();page.mouse.move(rect['x']+rect['width']/2,rect['y']+rect['height']/2);page.mouse.down();page.wait_for_timeout(1050);page.mouse.up()
   page.wait_for_timeout(800);assert sum(h['game']=='hacker_combo' for h in hits)==1,hits
   page.evaluate('__testWork.memory()');hint=page.locator('#hacker-mode button');assert hint.is_disabled();assert '3' in page.locator('.memory-countdown').inner_text()
   page.wait_for_timeout(3200);assert not hint.is_disabled();assert '·' in page.locator('#hacker-code').inner_text();hint.click();assert hint.is_disabled();page.wait_for_timeout(2200);assert hint.is_disabled()
+  # Forcing a wrong angle must break a pick, even while the player moves it.
+  page.evaluate('__testWork.beginLock(1)');bad=page.evaluate('__testWork.lock().target>0?-80:80')
+  page.locator('#lock-angle').evaluate('(n,v)=>{n.value=v;n.dispatchEvent(new Event("input"));}',bad)
+  button=page.locator('#hacker-lock-btn');button.scroll_into_view_if_needed();rect=button.bounding_box();page.mouse.move(rect['x']+rect['width']/2,rect['y']+rect['height']/2);page.mouse.down();page.wait_for_timeout(1450);page.mouse.up();assert page.evaluate('__testWork.lock().health')==2
+  page.evaluate('__testWork.beginSide()');page.screenshot(path=f'/tmp/rd-side-lock-{width}.png')
+  pins=page.evaluate('__testWork.lock().stages')
+  for _ in range(pins):
+   state_now=page.evaluate('__testWork.lock()');index=state_now['order'][state_now['stage']];target=state_now['targets'][index]
+   page.locator('[data-pin="'+str(index)+'"]').click();page.locator('#lock-angle').evaluate('(n,v)=>{n.value=v;n.dispatchEvent(new Event("input"));}',target)
+   rect=page.locator('#hacker-lock-btn').bounding_box();page.mouse.move(rect['x']+rect['width']/2,rect['y']+rect['height']/2);page.mouse.down();page.wait_for_timeout(650);page.mouse.up()
+  page.wait_for_timeout(750);assert sum(h['game']=='hacker_combo' for h in hits)==2,hits
+  # Real pointer drags connect the marked terminals.
+  wires=page.evaluate('__testWork.wires()')
+  for i,color in enumerate(wires['colors']):
+   left=page.locator('[data-index="'+str(i)+'"]').bounding_box();right=page.locator('[data-socket="'+str(wires['right'].index(color))+'"]').bounding_box()
+   page.mouse.move(left['x']+left['width']/2,left['y']+left['height']/2);page.mouse.down();page.mouse.move(right['x']+right['width']/2,right['y']+right['height']/2,steps=8);page.mouse.up()
+  page.wait_for_timeout(750);assert sum(h['game']=='hacker_combo' for h in hits)==3,hits
   page.locator('#tab-courier').click();road=page.locator('#courier-road');road.scroll_into_view_if_needed();rect=road.bounding_box()
-  # Swiping steers over a real finite city; stopped starts prevent accidental loss.
-  x=rect['x']+rect['width']/2;y=rect['y']+rect['height']/2
-  page.mouse.move(x,y);page.mouse.down();page.mouse.move(x+55,y,steps=6);page.mouse.up();assert page.evaluate('__testWork.run().dx')==1
-  road.dblclick(position={'x':70,'y':100});assert page.evaluate('__testWork.run().stopped')
-  page.locator('#courier-speed').click();assert page.evaluate('__testWork.run().speed')==3
-  run=page.evaluate('__testWork.run()');start=(run['x'],run['y']);target=(run['target']['x'],run['target']['y']);blocks={(b['x'],b['y']) for b in run['blocks']};q=deque([(start,[])]);seen={start};path=None
-  while q:
-   point,steps=q.popleft()
-   if point==target:path=steps;break
-   for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):
-    nx,ny=point[0]+dx,point[1]+dy
-    if not(0<=nx<7 and 0<=ny<7) or (nx%2 and ny%2) or (nx,ny) in blocks or (nx,ny) in seen:continue
-    seen.add((nx,ny));q.append(((nx,ny),steps+[(dx,dy,nx,ny)]))
-  assert path is not None
-  for dx,dy,nx,ny in path:
-   page.evaluate('d=>__testWork.steer(d[0],d[1])',[dx,dy]);page.wait_for_function('p=>__testWork.run().x===p[0]&&__testWork.run().y===p[1]',arg=[nx,ny]);page.evaluate('__testWork.stop()')
-  page.wait_for_timeout(1100);assert sum(h['game']=='courier' for h in hits)==1,hits
-  page.wait_for_timeout(400);assert sum(h['game']=='courier' for h in hits)==1
-  page.screenshot(path=f'/tmp/rd-city-courier-{width}.png')
+  assert not page.locator('#courier-controls').is_visible()
+  assert page.locator('.city-address').count()==3
+  def swipe(dx,dy):
+   x=rect['x']+rect['width']/2;y=rect['y']+rect['height']/2
+   page.mouse.move(x,y);page.mouse.down();page.mouse.move(x+dx*55,y+dy*55,steps=5);page.mouse.up()
+  for delivery in range(3):
+   run=page.evaluate('__testWork.run()');start=(run['x'],run['y']);target=(run['target']['x'],run['target']['y']);blocks={(b['x'],b['y']) for b in run['blocks']};q=deque([(start,[])]);seen={start};path=None
+   while q:
+    point,steps=q.popleft()
+    if point==target:path=steps;break
+    for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):
+     nx,ny=point[0]+2*dx,point[1]+2*dy;mid=(point[0]+dx,point[1]+dy)
+     if not(0<=nx<7 and 0<=ny<7) or mid in blocks or (nx,ny) in seen:continue
+     seen.add((nx,ny));q.append(((nx,ny),steps+[(dx,dy,nx,ny)]))
+   assert path is not None
+   for dx,dy,nx,ny in path:
+    fuel=page.evaluate('__testWork.run().fuel');swipe(dx,dy);page.wait_for_function('p=>__testWork.run().stopped&&__testWork.run().x===p[0]&&__testWork.run().y===p[1]',arg=[nx,ny]);assert page.evaluate('__testWork.run().fuel')==fuel-1
+   page.wait_for_timeout(950);assert sum(h['game']=='courier' for h in hits)==delivery
+   road.dblclick(position={'x':65,'y':95});page.wait_for_timeout(1150);assert sum(h['game']=='courier' for h in hits)==delivery+1,hits
+  assert page.evaluate('__testWork.run().ended')
+  page.screenshot(path=f'/tmp/rd-courier-puzzle-{width}.png')
   page.locator('#tab-workshop').click();page.locator('.pipe-tile').first.wait_for()
   assert page.locator('.pipe-tile').count()==pipe_job['size']**2
   page.locator('.pipe-check').click();assert not pipe_submissions

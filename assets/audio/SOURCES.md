@@ -44,3 +44,7 @@ Build with `python scripts/build_farm_audio.py /path/to/kenney-impact-sounds.zip
 The keyboard again plays the existing `key.wav` (Kenney `click_003.ogg`) rather than the later three generic click variants. The file itself is unchanged.
 
 `wire[a-c]` are replaced by new original short electrical contact effects: a sharp initial snap, bright high-frequency arc fizz and a clean decay, without the previous low muffled buzz. Each variant is about 0.2 seconds, mono 24 kHz and unclipped. Rebuild with `python scripts/build_wire_audio.py`. No recordings of real electrical equipment or copyrighted game audio were used.
+
+## 2026-11-17 — connector sample revision
+
+`wire[a-c]` now layer the existing CC0 Kenney switch recording (`unlock.wav`, `switch_006.ogg`) with a brief original electrical arc. The three short connector variants replace the previous noise-based hiss. Rebuild with `python scripts/build_wire_audio.py`; keyboard, food and drink samples are unchanged.

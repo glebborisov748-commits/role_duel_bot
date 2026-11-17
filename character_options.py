@@ -1,4 +1,5 @@
 """Validated appearance and personality choices shared by setup, prompts and photos."""
+import profile_options
 import hashlib
 import json
 import re
@@ -17,30 +18,38 @@ OPTIONS={
 }
 OPTIONS['species']=[('human','Человек','Human','Mensch','human'),('cat','Кошачьи уши','Cat ears','Katzenohren','human with cat ears, human face'),('elf','Эльфийские уши','Elf ears','Elfenohren','human with pointed elf ears')]
 VISUAL_KEYS=('hair_style','hair_color','skin','eyes','accessory','species')
+MALE_HAIR=[('short','Короткая','Short','Kurz','short textured hair'),('undercut','Андеркат','Undercut','Undercut','an undercut hairstyle'),('fade','Фейд','Fade','Fade','a clean fade haircut'),('crop','Кроп','Crop','Crop','a short crop haircut'),('sidepart','С пробором','Side part','Seitenscheitel','a short side-part haircut'),('slicked','Зачёс назад','Slicked back','Zurückgekämmt','slicked-back short hair'),('curls_short','Короткие кудри','Short curls','Kurze Locken','short curly hair'),('medium','Средняя длина','Medium','Mittellang','medium-length masculine layered hair')]
+OPTIONS['hair_style']+= [r for r in MALE_HAIR if r[0] not in {v[0] for v in OPTIONS['hair_style']}]
+OPTIONS['accessory'] += [('sunglasses','Тёмные очки','Sunglasses','Sonnenbrille','dark sunglasses'),('stud','Серьга-гвоздик','Ear stud','Ohrstecker','a small ear stud'),('chain','Цепочка','Chain','Kette','a simple chain necklace'),('scarf','Шарф','Scarf','Schal','a soft scarf'),('headband','Ободок','Headband','Haarreif','a subtle headband'),('ribbon','Лента','Ribbon','Haarband','a hair ribbon')]
+FEMALE_HAIR={'long','waves','bob','short','curls','ponytail','braid','pixie'}
+MALE_ACCESSORIES={'none','glasses','sunglasses','stud','chain','scarf'}
 DEFAULT={'species':'human','hair_style':'waves','hair_color':'brown','skin':'light','eyes':'brown','accessory':'none','interest':'music','pace':'balanced','detail':'balanced'}
 FIELDS={'species':('Образ','Character type','Figurtyp'),'hair_style':('Причёска','Hair style','Frisur'),'hair_color':('Цвет волос','Hair color','Haarfarbe'),'skin':('Цвет кожи','Skin tone','Hautton'),'eyes':('Глаза','Eyes','Augen'),'accessory':('Аксессуар','Accessory','Accessoire'),'interest':('Увлечение','Interest','Interesse'),'pace':('Темп общения','Conversation pace','Gesprächstempo'),'detail':('Длина ответов','Reply length','Antwortlänge')}
 
-def validate(raw):
+def validate(raw,gender=None):
  if not isinstance(raw,dict):raise ValueError('Invalid character options')
  result={}
  for k,items in OPTIONS.items():
   value=raw.get(k,DEFAULT[k])
   if not isinstance(value,str) or value not in {i[0] for i in items}:raise ValueError('Invalid '+k)
   result[k]=value
+ if gender=='male':
+  if result['hair_style'] not in {r[0] for r in MALE_HAIR}:result['hair_style']='short'
+  if result['accessory'] not in MALE_ACCESSORIES:result['accessory']='none'
  return result
 
-def choices(lang):
+def choices(lang,gender=None):
  ix={'ru':1,'en':2,'de':3}.get(lang,2)
- return [{'key':k,'label':FIELDS[k][ix-1],'items':[{'key':r[0],'label':r[ix]} for r in rows]} for k,rows in OPTIONS.items() if k in VISUAL_KEYS]
+ return [{'key':k,'label':FIELDS[k][ix-1],'items':[{'key':r[0],'label':r[ix]} for r in (MALE_HAIR if k=='hair_style' and gender=='male' else [v for v in rows if v[0] in FEMALE_HAIR] if k=='hair_style' else [v for v in rows if v[0] in MALE_ACCESSORIES] if k=='accessory' and gender=='male' else rows)]} for k,rows in OPTIONS.items() if k in VISUAL_KEYS and k!='species']
 
 def selected(options,k):return next(r for r in OPTIONS[k] if r[0]==options[k])
 
 def appearance(user,lang='en'):
  raw=user.get('appearance')
  if not raw:return None
- o=validate(raw)
- if lang=='ru':return ', '.join(FIELDS[k][0]+': '+selected(o,k)[1].lower() for k in VISUAL_KEYS)
- return selected(o,'species')[4]+', '+selected(o,'hair_color')[4]+' '+selected(o,'hair_style')[4]+', '+', '.join(selected(o,k)[4] for k in ('skin','eyes','accessory'))
+ o=validate(raw,user.get('gender'))
+ if lang=='ru':return profile_options.RACES.get(user.get('race','human'),profile_options.RACES['human'])[0]+', '+', '.join(FIELDS[k][0]+': '+selected(o,k)[1].lower() for k in VISUAL_KEYS if k!='species')
+ return profile_options.RACE_FACTS.get(user.get('race') or {'cat':'catfolk','elf':'elf'}.get(o.get('species'),'human'),'human')+', '+selected(o,'hair_color')[4]+' '+selected(o,'hair_style')[4]+', '+', '.join(selected(o,k)[4] for k in ('skin','eyes','accessory'))
 
 def traits(user):
  if not user.get('appearance') or not any(k in user['appearance'] for k in ('interest','pace','detail')):return ''
@@ -111,8 +120,9 @@ def visual_from_description(raw, text):
 
 def identity(user):
  gender='man' if user.get('gender')=='male' else 'woman'
- return 'Exactly ONE adult '+gender+', age 25 or older, solo portrait. '+(appearance(user) or 'human')+'. Keep the same gender and every listed visual attribute in every picture. No second person, no couple, no split view. '
+ outfit=profile_options.WARDROBE.get(user.get('wardrobe_outfit'),{}).get('fact','')
+ return ('Outfit: '+outfit+'. ' if outfit else '')+'Exactly ONE adult '+gender+', age 25 or older, solo portrait. '+(appearance(user) or 'human')+'. Keep the same gender and every listed visual attribute in every picture. No second person, no couple, no split view. '
 
 def preview_url(user):
- o=validate(user.get('appearance') or {})
- return '/api/appearance-preview.svg?'+urlencode({'gender':'male' if user.get('gender')=='male' else 'female',**{k:o[k] for k in VISUAL_KEYS}})
+ o=validate(user.get('appearance') or {},user.get('gender'))
+ return '/api/appearance-preview.svg?'+urlencode({'world':user.get('world') or 'anime','race':user.get('race','human'),'gender':'male' if user.get('gender')=='male' else 'female',**{k:o[k] for k in VISUAL_KEYS}})

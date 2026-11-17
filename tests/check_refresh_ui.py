@@ -41,7 +41,7 @@ with sync_playwright() as p:
   page.route('**/*',route);page.goto('https://roleduel.test/app');page.locator('#energy-action').wait_for()
   assert page.locator('#energy-action img').get_attribute('src')=='/assets/ui_energizer.webp'
   assert page.locator('#chat-photo-tools').count()==0
-  page.locator('#input').focus();assert page.locator('.input-shell.focus-flare').count()==1
+  page.locator('#input').focus();page.locator('.input-shell.focus-flare').wait_for();assert page.locator('.input-shell.focus-flare').count()==1
   assert page.locator('#input').evaluate('(n)=>getComputedStyle(n).borderTopWidth')=='0px'
   assert page.locator('#msgs').evaluate('(n)=>getComputedStyle(n).userSelect')=='none'
   assert page.locator('#input').evaluate('(n)=>getComputedStyle(n).userSelect')=='text'
@@ -69,7 +69,7 @@ with sync_playwright() as p:
   page.reload();page.get_by_role('button',name='Аниме',exact=True).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click()
   page.get_by_role('button',name='Девушка',exact=True).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click()
   page.locator('select[data-appearance="hair_color"]').select_option('pink');page.locator('select[data-appearance="eyes"]').select_option('green')
-  assert page.locator('select[data-appearance]').count()==6
+  assert page.locator('select[data-appearance]').count()==5
   page.screenshot(path=f'/tmp/rd-appearance-{width}.png')
   page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click();page.get_by_role('button',name='Честный',exact=False).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click()
   page.get_by_role('button',name='Переписка',exact=True).click();page.get_by_role('button',name=state['ui']['ob_done'],exact=True).click()
