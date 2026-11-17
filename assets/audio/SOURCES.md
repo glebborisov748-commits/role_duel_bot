@@ -38,3 +38,9 @@ Recordings trimmed, converted to mono 24 kHz and gain reduced.
 `waterplant[a-c]`: original synthesized short water-drop sequences, distinct from planting and drinking recordings.
 `harvest[a-c]`: edited CC0 Kenney grass impacts with an original brief chime.
 Build with `python scripts/build_farm_audio.py /path/to/kenney-impact-sounds.zip`.
+
+## 2026-11-17 — electrical contact and original keyboard
+
+The keyboard again plays the existing `key.wav` (Kenney `click_003.ogg`) rather than the later three generic click variants. The file itself is unchanged.
+
+`wire[a-c]` are replaced by new original short electrical contact effects: a sharp initial snap, bright high-frequency arc fizz and a clean decay, without the previous low muffled buzz. Each variant is about 0.2 seconds, mono 24 kHz and unclipped. Rebuild with `python scripts/build_wire_audio.py`. No recordings of real electrical equipment or copyrighted game audio were used.

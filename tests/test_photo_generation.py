@@ -20,7 +20,7 @@ class PhotoFlowTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_failure_refunds_energy_and_clears_pending(self):
         ns,thread=self.namespace('{"allowed":true,"prompt":"adult in a suit"}')
-        async def fail(prompt):raise RuntimeError('provider failed')
+        async def fail(prompt,**kwargs):raise RuntimeError('provider failed')
         user={'energy':150,'app_pending':'now','photo_pending':True}
         with patch('asyncio.to_thread',thread),patch.object(photo_generation,'generate',fail):
             await ns['app_photo_generate'](1,user,'a portrait')
@@ -42,7 +42,7 @@ class PhotoFlowTests(unittest.IsolatedAsyncioTestCase):
     async def test_success_persists_photo_and_charges_once(self):
         import tempfile,os,json,logging
         ns,thread=self.namespace('{"allowed":true,"prompt":"adult in a suit"}')
-        async def image(prompt):return b'\xff\xd8\xfftest','jpg'
+        async def image(prompt,**kwargs):return b'\xff\xd8\xfftest','jpg'
         user={'energy':150,'history':[],'photo_pending':True}
         with tempfile.TemporaryDirectory() as directory:
             ns.update(os=os,AVATAR_DIR=directory)

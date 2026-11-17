@@ -21,7 +21,7 @@ class CharacterOptionsTests(unittest.TestCase):
         b['appearance']['hair_color']='silver'
         self.assertNotEqual(options.signature(a),options.signature(b))
     def test_tier_access_and_free_limit(self):
-        ns={'BASE_STYLE_KEYS':['warm','daring','shy']+list(options.FREE),'PRO_STYLE_KEYS':['passionate','magnetic']+list(options.PRO),'SUPER_PRO_STYLE_KEYS':['rude','seduction']+list(options.SUPER),'ELITE_STYLE_KEYS':list(options.ELITE),'get_subscription_level':lambda u:u.get('tier')}
+        ns={'character_options':options,'BASE_STYLE_KEYS':['warm','daring','shy']+list(options.FREE),'PRO_STYLE_KEYS':['energetic','humorous','playful'],'SUPER_PRO_STYLE_KEYS':['rude','cynical','aggressive'],'ELITE_STYLE_KEYS':['intellectual'],'get_subscription_level':lambda u:u.get('tier')}
         load_functions({'is_style_unlocked'},ns)
         self.assertEqual(len(ns['BASE_STYLE_KEYS']),5)
         for key in ns['BASE_STYLE_KEYS']:self.assertTrue(ns['is_style_unlocked'](key,{}))

@@ -5,19 +5,34 @@ import httpx
 
 BASE_URL = os.getenv('PROBLEMBO_BASE_URL', 'https://problembo.com/apis/v1/client').rstrip('/')
 MODEL = 'waifu-studio-2.6'
+REAL_MODEL = os.getenv('PROBLEMBO_REAL_MODEL_ID','velvet-render-v5')
+MALE_ANIME_MODEL = os.getenv('PROBLEMBO_MALE_ANIME_MODEL_ID','velvet-render-v5-anime')
+
+def model_for(world=None,gender=None):
+    return REAL_MODEL if world=='realism' else MALE_ANIME_MODEL if gender=='male' else MODEL
 
 
 def token():
     return os.getenv('PROBLEMBO_API_TOKEN') or os.getenv('PROBLEMBO_API_KEY') or os.getenv('PROBLEMBO_TOKEN')
 
 
-async def generate(prompt):
+def negative_identity(gender=None,appearance=None):
+    words=['child','minor','low quality','multiple people','two people','couple','split screen','collage','duplicate person']
+    if gender=='male':words+=['woman','girl','female','feminine breasts']
+    elif gender=='female':words+=['man','boy','male','beard']
+    hair=(appearance or {}).get('hair_color')
+    colors={'silver':'white silver hair','black':'black hair','brown':'brown hair','red':'red auburn hair','pink':'pink hair','blue':'blue hair','purple':'purple hair','blonde':'blond hair'}
+    if hair in colors:words += [value for key,value in colors.items() if key!=hair]
+    return ', '.join(words)
+
+
+async def generate(prompt, *, world=None, gender=None, appearance=None):
     if not token():
         raise RuntimeError('Problembo token missing')
     headers = {'Authorization': 'Bearer ' + token()}
     async with httpx.AsyncClient(timeout=25) as client:
         response = await client.post(BASE_URL + '/image-gen/tasks', headers=headers, json={
-            'modelId': MODEL, 'prompt': prompt, 'negativePrompt': 'child, minor, low quality', 'imageCount': 1})
+            'modelId': model_for(world,gender), 'prompt': (('solo, 1boy, adult man, ' if gender=='male' else 'solo, 1girl, adult woman, ') if gender else '')+prompt, 'aspectRatio':'VERTICAL', 'negativePrompt': negative_identity(gender,appearance), 'imageCount': 1})
         response.raise_for_status()
         task_id = response.json()['taskId']
         for _ in range(80):

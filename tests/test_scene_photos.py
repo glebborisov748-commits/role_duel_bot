@@ -34,7 +34,7 @@ class ScenePhotoTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_one_photo_attached_to_scene_without_chat_message(self):
         ns,user,scene,thread=self.namespace();calls=[]
-        async def image(prompt):calls.append(prompt);return b'\xff\xd8\xfftest','jpg'
+        async def image(prompt,**kwargs):calls.append(prompt);return b'\xff\xd8\xfftest','jpg'
         with tempfile.TemporaryDirectory() as directory:
             ns['AVATAR_DIR']=directory
             with patch('asyncio.to_thread',thread),patch.object(photo_generation,'generate',image):
@@ -50,7 +50,7 @@ class ScenePhotoTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_provider_failure_preserves_text_and_refunds_once(self):
         ns,user,scene,thread=self.namespace()
-        async def fail(prompt):raise RuntimeError('provider failure')
+        async def fail(prompt,**kwargs):raise RuntimeError('provider failure')
         with patch('asyncio.to_thread',thread),patch.object(photo_generation,'generate',fail):
             await ns['generate_scene_photo'](user,scene,'job')
         self.assertEqual(user['energy'],150)
@@ -61,7 +61,7 @@ class ScenePhotoTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_stale_scene_never_gets_photo_attached_to_new_scene(self):
         ns,user,scene,thread=self.namespace()
-        async def replaced(prompt):
+        async def replaced(prompt,**kwargs):
             user['last_hot_scene']={'text':'A different scene.'}
             return b'\xff\xd8\xfftest','jpg'
         with patch('asyncio.to_thread',thread),patch.object(photo_generation,'generate',replaced):

@@ -8,23 +8,28 @@ import character_options
 with sync_playwright() as p:
  browser=p.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
  for width in (320,390,430):
-  state=copy.deepcopy(initial);state['stats'].update(energy=80,energy_max=150,energizers=2);state['photo_pending']=False
+  state=copy.deepcopy(initial);state['stats'].update(energy=80,energy_max=150,energizers=2);state['photo_pending']=False;state['referral']['link']='https://t.me/fixture_bot?start=ref_123'
   state['character'].update(appearance_fields=character_options.choices('ru'),appearance=character_options.validate({}),portrait_pending=False)
   state['subscription']={'level':None,'title':None,'until':None};state['offers']=[]
   for payload,name,price,week in [('subscribe_pro','PRO',220,75),('subscribe_super','SUPER PRO',500,170),('subscribe_elite','ELITE',1000,340)]:
    offer={'payload':payload,'title':name,'emoji':'✦','perks':['Test perk'],'stars':price,'stars_label':str(price),'rub':None};state['offers'] += [offer,{**offer,'payload':payload+'_week','stars':week,'stars_label':str(week)}]
-  errors=[];calls=[];ready=[False]
+  errors=[];calls=[];ready=[False];prepared=[True]
   page=browser.new_page(viewport={'width':width,'height':844},is_mobile=True,has_touch=True);page.on('pageerror',lambda e:errors.append(str(e)))
   def route(r):
    path=r.request.url.split('roleduel.test')[-1].split('?')[0]
    if path=='/app':return r.fulfill(content_type='text/html',body=constants['APP_PAGE_HTML'].replace('<head>','<head><script src="/sfx.js"></script><link rel="stylesheet" href="/theme.css">',1))
    if path=='/sfx.js':return r.fulfill(content_type='application/javascript',body=constants['SFX_JS'])
    if path=='/theme.css':return r.fulfill(content_type='text/css',body=constants['APP_THEME_CSS'])
-   if path=='/tg-sdk.js':return r.fulfill(content_type='application/javascript',body='window.Telegram={WebApp:{initData:"fixture",ready(){},expand(){},setHeaderColor(){},setBackgroundColor(){},disableVerticalSwipes(){},BackButton:{hide(){}},showConfirm(t,c){c(true)},HapticFeedback:{impactOccurred(){},selectionChanged(){},notificationOccurred(){}}}};')
+   if path=='/tg-sdk.js':return r.fulfill(content_type='application/javascript',body='window.Telegram={WebApp:{initData:"fixture",ready(){},expand(){},setHeaderColor(){},setBackgroundColor(){},disableVerticalSwipes(){},BackButton:{hide(){}},showConfirm(t,c){c(true)},shareMessage(id){window.__shared=id},openTelegramLink(url){window.__shared=url},isVersionAtLeast(){return true},HapticFeedback:{impactOccurred(){},selectionChanged(){},notificationOccurred(){}}}};')
    if path.startswith('/assets/'):
     f=ROOT/path.lstrip('/');return r.fulfill(path=str(f)) if f.is_file() else r.fulfill(status=404,body='')
+   if path=='/api/appearance-preview.svg':
+    import avatar_preview
+    from urllib.parse import urlparse,parse_qsl
+    q=dict(parse_qsl(urlparse(r.request.url).query));return r.fulfill(content_type='image/svg+xml',body=avatar_preview.svg(q,q.get('gender')))
    if path.startswith('/api/'):
     body=r.request.post_data_json if r.request.method=='POST' else {};calls.append((path,body))
+    if path=='/api/app/share':return r.fulfill(content_type='application/json',body=json.dumps({'ok':prepared[0],'id':'prepared-test' if prepared[0] else None}))
     if path=='/api/app/wake':state['stats']['energy']=min(150,state['stats']['energy']+78);state['stats']['energizers']-=1
     if path=='/api/app/photo':state.update(pending=True,photo_pending=True);state['stats']['energy']-=40
     if path=='/api/app/state' and ready[0] and state['pending']:
@@ -36,6 +41,10 @@ with sync_playwright() as p:
   page.route('**/*',route);page.goto('https://roleduel.test/app');page.locator('#energy-action').wait_for()
   assert page.locator('#energy-action img').get_attribute('src')=='/assets/ui_energizer.webp'
   assert page.locator('#chat-photo-tools').count()==0
+  page.locator('#input').focus();assert page.locator('.input-shell.focus-flare').count()==1
+  assert page.locator('#input').evaluate('(n)=>getComputedStyle(n).borderTopWidth')=='0px'
+  assert page.locator('#msgs').evaluate('(n)=>getComputedStyle(n).userSelect')=='none'
+  assert page.locator('#input').evaluate('(n)=>getComputedStyle(n).userSelect')=='text'
   page.locator('#input').fill('при');assert page.locator('.ghost-suffix').inner_text()=='вет'
   page.locator('#input').press('Tab');assert page.locator('#input').input_value()=='привет'
   page.locator('#input').fill('')
@@ -49,6 +58,10 @@ with sync_playwright() as p:
   assert page.get_by_text('Популярно',exact=True).count()==1
   assert page.get_by_text('Выгодно',exact=True).count()==1
   assert page.locator('.monthly-best').count()==3
+  page.get_by_role('button',name=state['ui']['ref_share'],exact=True).click();page.wait_for_function("window.__shared==='prepared-test'")
+  prepared[0]=False;page.get_by_role('button',name=state['ui']['ref_share'],exact=True).click();page.wait_for_function("window.__shared.startsWith('https://t.me/share/url?')")
+  assert page.locator('.hot-feature').count()==1
+  assert page.locator('.hot-feature').evaluate('(n)=>getComputedStyle(n).color')=='rgb(249, 237, 247)'
   assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
   page.screenshot(path=f'/tmp/rd-refresh-profile-{width}.png')
   # Creation replaces four presets with validated independent appearance fields.
@@ -56,7 +69,7 @@ with sync_playwright() as p:
   page.reload();page.get_by_role('button',name='Аниме',exact=True).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click()
   page.get_by_role('button',name='Девушка',exact=True).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click()
   page.locator('select[data-appearance="hair_color"]').select_option('pink');page.locator('select[data-appearance="eyes"]').select_option('green')
-  assert page.locator('select[data-appearance]').count()==8
+  assert page.locator('select[data-appearance]').count()==6
   page.screenshot(path=f'/tmp/rd-appearance-{width}.png')
   page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click();page.get_by_role('button',name='Честный',exact=False).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click()
   page.get_by_role('button',name='Переписка',exact=True).click();page.get_by_role('button',name=state['ui']['ob_done'],exact=True).click()

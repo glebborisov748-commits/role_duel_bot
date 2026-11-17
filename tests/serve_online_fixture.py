@@ -23,6 +23,9 @@ for uid in (1,2,3):
     secret=hmac.new(b'WebAppData',os.environ['BOT_TOKEN'].encode(),hashlib.sha256).digest()
     fields['hash']=hmac.new(secret,'\n'.join(k+'='+v for k,v in sorted(fields.items())).encode(),hashlib.sha256).hexdigest()
     tokens[str(uid)]=urlencode(fields)
+from types import SimpleNamespace
+async def prepared_share(**kwargs):return SimpleNamespace(id='prepared_fixture')
+app.bot.save_prepared_inline_message=prepared_share
 app.save_data(app.user_data)
 async def manifest(request):return web.json_response({'tokens':tokens})
 async def inspect(request):return web.json_response({'rooms':app.online_store(),'users':{k:v for k,v in app.user_data.items() if k!='__settings__'}})
@@ -30,6 +33,7 @@ site=web.Application()
 site.router.add_get('/online',app.online_page_handler)
 site.router.add_get('/play',app.play_page_handler)
 site.router.add_post('/api/online',app.api_online_handler)
+site.router.add_post('/api/app/share',app.api_app_share_handler)
 site.router.add_get('/api/play/state',app.api_play_state_handler)
 site.router.add_post('/api/play/start',app.api_play_start_handler)
 site.router.add_get('/sfx.js',app.sfx_js_handler)
