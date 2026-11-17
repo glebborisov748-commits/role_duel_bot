@@ -90,6 +90,7 @@ def equip(user,key,level,slot=None):
   item=WARDROBE[key]
   if not (user.get('inventory') or {}).get(key):raise ValueError('Сначала купи этот предмет')
   if item['adult'] and level<5:raise ValueError('Раздел 18+ доступен с 5 уровня близости')
+  if item.get('catalog_only'):raise ValueError('Этот предмет пока только в каталоге. Применение к фото ещё не подключено.')
   if not item['slot']:raise ValueError('Этот предмет хранится в инвентаре, его нельзя надеть')
   slot=item['slot']
   if slot=='body':current.pop('top',None);current.pop('bottom',None)
@@ -101,10 +102,51 @@ def equip(user,key,level,slot=None):
 
 def clothing_facts(user,level):
  items=[WARDROBE[k] for k in active_outfit(user).values()]
- items=[i for i in items if not i['adult'] or level>=5]
+ items=[i for i in items if not i.get('catalog_only') and (not i['adult'] or level>=5)]
  facts=[i['fact'] for i in items if i['fact']]
  if not any(i['slot'] in ('body','top','bottom') for i in items):facts.insert(0,'an opaque casual shirt and full-length trousers')
  elif any(i['slot']=='top' for i in items) and not any(i['slot']=='bottom' for i in items):facts.append('full-length casual trousers')
  elif any(i['slot']=='bottom' for i in items) and not any(i['slot']=='top' for i in items):facts.append('an opaque casual shirt')
  return ', '.join(facts)
 WARDROBE['scarf']=dict(name='Scarf',ru='Шарф',de='Schal',price=200,slot='neck',adult=False,emoji='🧣',image='wardrobe_scarf',fact='a soft lavender scarf')
+
+# Catalog expansion only. New tags are stored metadata, not image-generation facts.
+# Keep the existing body/neck/legs slot names so old purchases remain compatible.
+SLOTS['outerwear']=('Верхняя одежда','Outerwear','Oberbekleidung')
+WARDROBE['tracksuit'].update(price=600,tags='tracksuit')
+WARDROBE['latex_bodysuit'].update(price=2000,tags='latex bodysuit')
+
+
+def _catalog_item(name,ru,de,price,slot,adult,tags,emoji,gender='unisex'):
+ return dict(name=name,ru=ru,de=de,price=price,slot=slot,adult=adult,tags=tags,
+             emoji=emoji,gender=gender,image='wardrobe_catalog_placeholder',fact='',catalog_only=True)
+
+
+WARDROBE.update({
+ 'crop_top':_catalog_item('Crop top','Кроп-топ','Crop-Top',300,'top',False,'crop top','👚'),
+ 'oversized_shirt':_catalog_item('Oversized shirt','Рубашка оверсайз','Oversize-Hemd',400,'top',False,'oversized shirt','👕'),
+ 'denim_shorts':_catalog_item('Denim shorts','Джинсовые шорты','Jeansshorts',300,'bottom',False,'denim shorts','🩳'),
+ 'pencil_skirt':_catalog_item('Pencil skirt','Юбка-карандаш','Bleistiftrock',500,'bottom',False,'pencil skirt','👗'),
+ 'qipao':_catalog_item('Qipao','Китайское платье Ципао','Qipao-Kleid',1000,'body',False,'qipao, chinese dress','👗'),
+ 'cap':_catalog_item('Cap','Кепка','Kappe',200,'head',False,'cap','🧢'),
+ 'cat_ears_headband':_catalog_item('Cat-ear headband','Ободок с кошачьими ушками','Katzenohren-Haarreif',400,'head',False,'cat ears headband','🐱'),
+ 'maid_outfit':_catalog_item('Maid outfit','Костюм горничной','Dienstmädchen-Kostüm',1500,'body',True,'maid outfit, apron','🧹'),
+ 'nurse_outfit':_catalog_item('Nurse outfit','Костюм медсестры','Pflege-Kostüm',1500,'body',True,'nurse outfit','🩺'),
+ 'lace_panties':_catalog_item('Lace panties','Кружевные трусики','Spitzenhöschen',800,'bottom',True,'lace panties','🩲'),
+ 'collar_leash':_catalog_item('Collar with leash','Ошейник с поводком','Halsband mit Leine',600,'neck',True,'choker, collar','◉'),
+ 'garter_stockings':_catalog_item('Stockings with garter belt','Чулки с поясом','Strümpfe mit Strapsgürtel',900,'legs',True,'stockings, garter belt','🧦'),
+ 'business_suit':_catalog_item('Business suit','Деловой костюм','Business-Anzug',800,'body',False,'business suit, tie','👔','male'),
+ 'sportswear':_catalog_item('Sportswear','Спортивный комплект: майка и шорты','Sportset: Tanktop und Shorts',500,'body',False,'tank top, shorts, sportswear','🎽','male'),
+ 'casual_outfit':_catalog_item('Casual outfit','Худи и джинсы','Hoodie und Jeans',500,'body',False,'hoodie, jeans','👕','male'),
+ 'leather_jacket':_catalog_item('Leather jacket','Кожаная куртка','Lederjacke',600,'outerwear',False,'leather jacket','🧥','male'),
+ 'stripper_outfit':_catalog_item('Stage outfit with bow tie','Сценический костюм стриптизёра','Bühnenkostüm mit Fliege',1500,'body',True,'open shirt, bow tie','🎩','male'),
+ 'police_male':_catalog_item('Police outfit — male','Полицейская форма — мужская','Polizeikostüm — Herren',1500,'body',True,'sexy police uniform','👮','male'),
+ 'police_female':_catalog_item('Police outfit — female','Полицейская форма — женская','Polizeikostüm — Damen',1500,'body',True,'sexy police uniform','👮','female'),
+ 'firefighter_male':_catalog_item('Firefighter outfit — male','Костюм пожарного — мужской','Feuerwehrkostüm — Herren',1500,'body',True,'firefighter uniform','🚒','male'),
+ 'firefighter_female':_catalog_item('Firefighter outfit — female','Костюм пожарного — женский','Feuerwehrkostüm — Damen',1500,'body',True,'firefighter uniform','🚒','female'),
+ 'boxer_outfit':_catalog_item('Boxer outfit','Боксёрские шорты и бинты','Boxershorts und Handbandagen',900,'body',True,'boxer shorts, hand wraps','🥊','male'),
+})
+for _item in WARDROBE.values():
+ _item.setdefault('tags','')
+ _item.setdefault('gender','unisex')
+ _item.setdefault('catalog_only',False)

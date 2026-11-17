@@ -80,7 +80,7 @@ with sync_playwright() as p:
   page.goto('https://roleduel.test/shop?wardrobe=1');page.wait_for_selector('[data-slot="body"]')
   for slot,key in [('body','dress'),('legs','stockings'),('shoes','heels')]:page.locator('[data-slot="'+slot+'"]').select_option(key);page.wait_for_timeout(100)
   assert shop['active_outfit']['body']=='dress' and shop['active_outfit']['legs']=='stockings' and shop['active_outfit']['shoes']=='heels'
-  page.screenshot(path=f'/tmp/rd-slots-wardrobe-{width}.png');page.get_by_role('button',name='🔞 Секс-шоп',exact=True).click();assert page.locator('#items .card').count()==4
+  page.screenshot(path=f'/tmp/rd-slots-wardrobe-{width}.png');page.get_by_role('button',name='🔞 Секс-шоп',exact=True).click();assert page.locator('#items .card').count()==len(next(c for c in shop['categories'] if c['key']=='adult_shop')['items'])
   assert page.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
   if width==390:
    next(c for c in shop['categories'] if c['key']=='adult_shop')['locked']=True
