@@ -4,8 +4,8 @@ import profile_options
 
 
 def recent(user):
- return [{'role':m['role'],'text':str(m.get('content',''))[:1600]} for m in user.get('history',[])[-12:]
-         if m.get('role') in ('user','assistant') and m.get('content') and not m.get('card') and not m.get('photo') and str(m['content']).strip()!='📷']
+ return [{'role':m['role'],'text':str(m.get('content',''))[:1600]} for m in user.get('history',[])
+         if m.get('role') in ('user','assistant') and m.get('content') and not m.get('card') and not m.get('photo') and str(m['content']).strip()!='📷'][-12:]
 
 
 def instruction(user,level,appearance):

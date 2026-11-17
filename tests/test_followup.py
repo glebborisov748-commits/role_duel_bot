@@ -39,6 +39,8 @@ class OutfitTests(unittest.TestCase):
  def test_context_is_recent_dialogue_not_gift_or_photo_cards(self):
   u={'history':[{'role':'user','content':'Кафе'},{'role':'assistant','content':'Подарок','card':{}},{'role':'assistant','content':'📷','photo':'url'}]}
   self.assertEqual(photo_context.recent(u)[0]['text'],'Кафе')
+  u['history'] += [{'role':'assistant','content':'📷','photo':'url'} for _ in range(15)]
+  self.assertEqual(photo_context.recent(u)[0]['text'],'Кафе')
   for level in (1,5,10):
    instruction=photo_context.instruction({},level,'red hair')
    self.assertIn('red hair',instruction);self.assertIn('most recent',instruction)
