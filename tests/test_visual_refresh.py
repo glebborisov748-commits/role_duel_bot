@@ -41,7 +41,7 @@ class VisualRefreshTests(unittest.TestCase):
 class EnergizerAdminTests(unittest.IsolatedAsyncioTestCase):
  async def test_permission_validation_and_id_username_routes(self):
   grant=AsyncMock();resolve=AsyncMock(return_value=42);answer=AsyncMock()
-  ns={'ADMIN_IDS':[7],'_resolve_admin_target':resolve,'_grant_to':grant}
+  ns={'MAIN_ADMIN_ID':7,'ADMIN_IDS':[7,8],'_resolve_admin_target':resolve,'_grant_to':grant}
   load_functions({'giveenergizers_cmd'},ns)
   m=types.SimpleNamespace(from_user=types.SimpleNamespace(id=8),text='/giveenergizers @friend 20',answer=answer)
   await ns['giveenergizers_cmd'](m);grant.assert_not_called();resolve.assert_not_called()

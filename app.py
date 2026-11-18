@@ -1515,7 +1515,8 @@ ELITE_BADGE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ass
 # Файл лежит в репозитории и едет с каждым деплоем (см. комментарий у DATA_DIR).
 MAIN_MENU_IMAGE_URL = "https://i.ibb.co/xSDWKM52/image.jpg"
 
-ADMIN_IDS = [7287815074, 8078585678, 5507779506, 5255398262]
+MAIN_ADMIN_ID = 7287815074
+ADMIN_IDS = [MAIN_ADMIN_ID, 8078585678, 5507779506, 5255398262]
 # maintenance_mode: значение по умолчанию до чтения data.json — реальное состояние
 # ставится ниже, сразу после user_data = load_data(), чтобы переживать рестарт бота.
 maintenance_mode = False
@@ -1795,6 +1796,7 @@ def get_user(user_id):
         apply_passive_satiety_decay(user)
         apply_mood_inactivity_decay(user)
         save_data(user_data)
+    user_data[user_id]['_telegram_id'] = int(user_id)
     user_data[user_id]['preferences']=profile_options.preferences(user_data[user_id])
     return user_data[user_id]
 
@@ -3026,8 +3028,9 @@ def work_double_active(user):
     return bool(until) and datetime.now().isoformat() < until
 
 
-def work_is_open(game):
-    return work_rotation.is_open(game,local_today())
+def work_is_open(game, user=None):
+    bypass = (user or {}).get("_telegram_id") == MAIN_ADMIN_ID
+    return work_rotation.is_open(game, local_today(), bypass=bypass)
 
 
 def work_closed_reply(user):
@@ -3040,7 +3043,7 @@ def register_work_hit(user, game, tip=False):
     попадание отклонено анти-спамом (см. WORK_MIN_HIT_INTERVAL_SECONDS), None при неизвестной
     игре. Один общий таймер последнего попадания на все игры — играть в две сразу руками всё
     равно нельзя, упрощение не меняет защиту."""
-    if game not in WORK_HIT_BUCKS or not work_is_open(game):
+    if game not in WORK_HIT_BUCKS or not work_is_open(game, user):
         return None
     now = datetime.now()
     last_hit_raw = user.get("work_last_hit_at")
@@ -3089,7 +3092,7 @@ def register_work_failure(user, game):
     ограничивают по частоте, отдельный спам-вектор тут бессмысленен. Баланс никогда не уходит в
     минус. Возвращает фактически списанную сумму, None при неизвестной игре. courier — особый
     случай с бОльшим штрафом (см. COURIER_CRASH_PENALTY_BUCKS)."""
-    if not work_is_open(game):return 0
+    if not work_is_open(game, user):return 0
     if game not in WORK_HIT_BUCKS:
         return None
     base = WORK_PENALTY_BUCKS.get(game, WORK_FAILURE_PENALTY_BUCKS)
@@ -3975,7 +3978,7 @@ async def proceed_flow(user_id: int, chat_id: int):
 
 @dp.message(Command("start"))
 async def start_cmd(message: types.Message):
-    if maintenance_mode and message.from_user.id not in ADMIN_IDS:
+    if maintenance_mode and message.from_user.id != MAIN_ADMIN_ID:
         user = get_user(message.from_user.id)
         await message.answer(get_text(user, "maintenance"), parse_mode="Markdown")
         return
@@ -4676,7 +4679,7 @@ async def handle_edited_message(message: types.Message):
     user = get_user(message.from_user.id)
     if not user["verified"] or not user["agreement_accepted"] or not user["personality_ready"]:
         return
-    if maintenance_mode and message.from_user.id not in ADMIN_IDS:
+    if maintenance_mode and message.from_user.id != MAIN_ADMIN_ID:
         return
     if is_asleep(user):
         return
@@ -6675,7 +6678,7 @@ async def _resolve_admin_target(message: types.Message, target: str):
 async def reset_all_cmd(message: types.Message):
     """Полный сброс прогресса ВСЕХ пользователей (админ). Требует подтверждения кнопкой —
     необратимо (кроме резервной копии, которую делаем перед сбросом, см. reset_all_confirm)."""
-    if message.from_user.id not in ADMIN_IDS:
+    if message.from_user.id != MAIN_ADMIN_ID:
         await message.answer("⛔ Нет прав.")
         return
     count = len([k for k in user_data if k != "__settings__"])
@@ -6689,7 +6692,7 @@ async def reset_all_cmd(message: types.Message):
 
 @dp.callback_query(lambda c: c.data in ("reset_all_confirm", "reset_all_cancel"))
 async def reset_all_confirm(call: types.CallbackQuery):
-    if call.from_user.id not in ADMIN_IDS:
+    if call.from_user.id != MAIN_ADMIN_ID:
         await call.answer("⛔ Нет прав.", show_alert=True)
         return
     await safe_delete(call.message)
@@ -6711,7 +6714,7 @@ async def reset_all_confirm(call: types.CallbackQuery):
 @dp.message(Command("tehwork"))
 async def maintenance_cmd(message: types.Message):
     global maintenance_mode
-    if message.from_user.id not in ADMIN_IDS:
+    if message.from_user.id != MAIN_ADMIN_ID:
         await message.answer("⛔ Нет прав.")
         return
     args = message.text.split()
@@ -6734,7 +6737,7 @@ async def maintenance_cmd(message: types.Message):
 
 @dp.message(Command("reset_me"))
 async def reset_me_cmd(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS:
+    if message.from_user.id != MAIN_ADMIN_ID:
         await message.answer("⛔ Нет прав.")
         return
     user_id = str(message.from_user.id)
@@ -6748,7 +6751,7 @@ async def reset_me_cmd(message: types.Message):
 
 @dp.message(Command("grant"))
 async def grant_cmd(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS:
+    if message.from_user.id != MAIN_ADMIN_ID:
         await message.answer("⛔ Нет прав.")
         return
     args = message.text.split()
@@ -6768,7 +6771,7 @@ async def grant_cmd(message: types.Message):
 
 @dp.message(Command('givebucks'))
 async def givebucks_cmd(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS:
+    if message.from_user.id != MAIN_ADMIN_ID:
         await message.answer('⛔ Нет прав.')
         return
     args = (message.text or '').split()
@@ -6793,7 +6796,7 @@ async def givebucks_cmd(message: types.Message):
 
 @dp.message(Command('giveenergizers','giveenergy'))
 async def giveenergizers_cmd(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS:
+    if message.from_user.id != MAIN_ADMIN_ID:
         await message.answer('⛔ Нет прав.');return
     args=(message.text or '').split()
     if len(args)!=3:
@@ -6809,9 +6812,6 @@ async def giveenergizers_cmd(message: types.Message):
     await _grant_to(message,uid,['/grant',args[1],'energizers',str(amount)])
 
 
-MAIN_ADMIN_ID = 7287815074
-
-
 @dp.message(Command("grant_me"))
 async def grant_me_cmd(message: types.Message):
     """То же, что /grant, но себе -- без ввода юзернейма. Только для главного админа.
@@ -6824,6 +6824,9 @@ async def grant_me_cmd(message: types.Message):
 
 
 async def _grant_to(message, user_id, args):
+    if message.from_user.id != MAIN_ADMIN_ID:
+        await message.answer("⛔ Выдавать награды может только главный администратор.")
+        return
     if len(args)>=3 and args[2].lower() not in ('intim','energizers','bucks','pro','super','super_pro','elite'):
         await message.answer('❌ Неизвестный тип награды. /grant — справка.')
         return
@@ -6891,7 +6894,7 @@ GIVEAWAY_WINNER_DAYS = 14  # кому за эти дни выдали подпи
 @dp.message(Command("giveaway_all"))
 async def giveaway_all_cmd(message: types.Message):
     """/giveaway_all 1000 -- всем, кто создал персонажа, +N баксов за участие в розыгрыше (кроме победителей)."""
-    if message.from_user.id not in ADMIN_IDS:
+    if message.from_user.id != MAIN_ADMIN_ID:
         await message.answer("⛔ Нет прав.")
         return
     args = message.text.split()
@@ -6950,7 +6953,7 @@ async def stats_cmd(message: types.Message):
 
 @dp.message(Command("revoke_subscription"))
 async def revoke_subscription_cmd(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS:
+    if message.from_user.id != MAIN_ADMIN_ID:
         await message.answer("⛔ Нет прав.")
         return
     args = message.text.split()
@@ -6971,7 +6974,7 @@ async def revoke_subscription_cmd(message: types.Message):
 
 @dp.message(Command('setlevel'))
 async def setlevel_cmd(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS:return await message.answer('Нет прав.')
+    if message.from_user.id != MAIN_ADMIN_ID:return await message.answer('Нет прав.')
     args=(message.text or '').split()
     if len(args)!=3 or not args[2].isdigit() or not 1<=int(args[2])<=10:return await message.answer('/setlevel ID_или_@username 1–10')
     uid=await _resolve_admin_target(message,args[1])
@@ -6982,20 +6985,22 @@ async def setlevel_cmd(message: types.Message):
 
 @dp.message(Command('broadcast'))
 async def broadcast_cmd(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS:return await message.answer('Нет прав.')
+    if message.from_user.id != MAIN_ADMIN_ID:return await message.answer('Нет прав.')
     user=get_user(message.from_user.id);user['broadcast_draft']={'awaiting':True};save_data(user_data)
     await message.answer('Пришли новость: текст, фото или видео. Я покажу предпросмотр перед отправкой. /cancel_broadcast — отмена.')
 
 
 @dp.message(Command('cancel_broadcast'))
 async def cancel_broadcast_cmd(message: types.Message):
-    if message.from_user.id not in ADMIN_IDS:return
+    if message.from_user.id != MAIN_ADMIN_ID:return
     user=get_user(message.from_user.id);user.pop('broadcast_draft',None);save_data(user_data)
     await message.answer('Черновик рассылки отменён.')
 
 
-@dp.message(lambda m: m.from_user and m.from_user.id in ADMIN_IDS and (get_user(m.from_user.id).get('broadcast_draft') or {}).get('awaiting') and not (m.text or '').startswith('/'))
+@dp.message(lambda m: m.from_user and m.from_user.id == MAIN_ADMIN_ID and (get_user(m.from_user.id).get('broadcast_draft') or {}).get('awaiting') and not (m.text or '').startswith('/'))
 async def broadcast_draft_handler(message: types.Message):
+    if message.from_user.id != MAIN_ADMIN_ID:
+        return
     if not (message.text or message.photo or message.video):return await message.answer('Поддерживается текст, фото или видео.')
     user=get_user(message.from_user.id);token=secrets.token_hex(8)
     recipients=[int(uid) for uid,u in user_data.items() if str(uid).isdigit() and u.get('verified')]
@@ -7028,7 +7033,7 @@ async def deliver_broadcast(admin_id,job):
 
 @dp.callback_query(lambda c: c.data.startswith('broadcast:'))
 async def broadcast_send_handler(call: types.CallbackQuery):
-    if call.from_user.id not in ADMIN_IDS:return await call.answer('Нет прав.',show_alert=True)
+    if call.from_user.id != MAIN_ADMIN_ID:return await call.answer('Нет прав.',show_alert=True)
     user=get_user(call.from_user.id);job=user.get('broadcast_draft') or {}
     token=call.data.split(':',1)[1]
     if token=='cancel':
@@ -9129,7 +9134,7 @@ async def handle_message(message: types.Message):
             pass
 
     # 3. Техобслуживание / регистрация
-    if maintenance_mode and message.from_user.id not in ADMIN_IDS:
+    if maintenance_mode and message.from_user.id != MAIN_ADMIN_ID:
         await message.answer(get_text(user, "maintenance"), parse_mode="Markdown")
         return
     if not user["verified"] or not user["agreement_accepted"]:
@@ -9297,7 +9302,7 @@ def resolve_webapp_user(init_data):
         return None, None, {"ok": False, "error": "auth", "message": "Missing user id"}
     user_id = int(user_id)
     user = get_user(user_id)
-    if maintenance_mode and user_id not in ADMIN_IDS:
+    if maintenance_mode and user_id != MAIN_ADMIN_ID:
         return None, None, {"ok": False, "error": "maintenance", "message": get_text(user, "maintenance"), "lang":user.get("lang","ru")}
     if not (user["verified"] and user["agreement_accepted"] and user["personality_ready"]):
         return None, None, {"ok": False, "error": "not_ready", "message": get_text(user, "webapp_character_not_ready")}
@@ -15155,7 +15160,7 @@ def serialize_work_state(user):
         "hit_bucks": WORK_HIT_BUCKS,
         "failure_penalty": WORK_FAILURE_PENALTY_BUCKS,
         "courier_crash_penalty": COURIER_CRASH_PENALTY_BUCKS,
-        "rotation":work_rotation.state(local_today(),daily_reset_timestamp()),
+        "rotation":work_rotation.state(local_today(), daily_reset_timestamp(), bypass=user.get("_telegram_id") == MAIN_ADMIN_ID),
         "mine":mine.snapshot(user),
         "farm_market":farm_market(),
         "dig":archaeology.snapshot(user),
@@ -19123,7 +19128,7 @@ def app_request_user(init_data):
         return None, None, {"ok": False, "error": "auth", "message": "Invalid Telegram signature"}
     user_id = int(parsed["user"]["id"])
     user = get_user(user_id)
-    if maintenance_mode and user_id not in ADMIN_IDS:
+    if maintenance_mode and user_id != MAIN_ADMIN_ID:
         return None, None, {"ok": False, "error": "maintenance", "message": get_text(user, "maintenance"), "lang":user.get("lang","ru")}
     if not (user["verified"] and user["agreement_accepted"]):
         return None, None, {"ok": False, "error": "not_ready", "message": get_text(user, "webapp_character_not_ready")}
@@ -22091,7 +22096,7 @@ async def api_work_state_handler(request):
 async def api_work_mine_handler(request):
     uid,user,body,err=await _play_request(request)
     if err:return err
-    if not work_is_open('mine') and body.get('action')!='haul':return work_closed_reply(user)
+    if not work_is_open('mine', user) and body.get('action')!='haul':return work_closed_reply(user)
     try:
         payout,count=mine.action(user,body)
         awarded=credit_work_bucks(user,payout) if payout else 0
@@ -22104,7 +22109,7 @@ async def api_work_mine_handler(request):
 async def api_work_dig_handler(request):
     uid,user,body,err=await _play_request(request)
     if err:return err
-    if not work_is_open('dig') and body.get('action')!='cashout':return work_closed_reply(user)
+    if not work_is_open('dig', user) and body.get('action')!='cashout':return work_closed_reply(user)
     try:
         count=len((user.get('dig_run') or {}).get('bag',[])) if body.get('action')=='cashout' else 0
         payout=archaeology.action(user,body)
@@ -22118,7 +22123,7 @@ async def api_work_dig_handler(request):
 async def api_work_workshop_handler(request):
     _,user,error=resolve_webapp_user(request.headers.get('X-Telegram-Init-Data',''))
     if error:return web.json_response(error,status=401 if error['error']=='auth' else 200)
-    if not work_is_open('workshop'):return work_closed_reply(user)
+    if not work_is_open('workshop', user):return work_closed_reply(user)
     try:body=await request.json()
     except Exception:body={}
     if not isinstance(body,dict):body={}
@@ -22146,7 +22151,7 @@ async def api_work_hit_handler(request):
     except Exception:
         body = {}
     game = body.get("game") if isinstance(body, dict) else None
-    if not work_is_open(game):return work_closed_reply(user)
+    if not work_is_open(game, user):return work_closed_reply(user)
     tip = bool(body.get("tip")) if isinstance(body, dict) else False
     hit_id=body.get('hit_id') if isinstance(body,dict) else None
     if hit_id is not None and (not isinstance(hit_id,str) or not re.fullmatch(r'[a-z0-9-]{8,64}',hit_id)):
@@ -22173,7 +22178,7 @@ async def api_work_powerup_handler(request):
     user_id, user, error = resolve_webapp_user(init_data)
     if error:
         return web.json_response(error, status=401 if error["error"] == "auth" else 200)
-    if not work_is_open('catch'):return work_closed_reply(user)
+    if not work_is_open('catch', user):return work_closed_reply(user)
     now = datetime.now()
     ready_raw = user.get("work_double_next_at")
     granted = False

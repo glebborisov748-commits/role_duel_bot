@@ -8,7 +8,7 @@ class AdminBucksTests(unittest.IsolatedAsyncioTestCase):
         async def answer(text):answers.append(text)
         async def resolve(message,target):return 42
         async def grant(message,user_id,args):calls.append((user_id,args))
-        ns={'ADMIN_IDS':[7],'_resolve_admin_target':resolve,'_grant_to':grant}
+        ns={'MAIN_ADMIN_ID':7,'ADMIN_IDS':[7,8],'_resolve_admin_target':resolve,'_grant_to':grant}
         load_functions({'givebucks_cmd'},ns)
         message=types.SimpleNamespace(from_user=types.SimpleNamespace(id=8),text='/givebucks @friend 5000',answer=answer)
         await ns['givebucks_cmd'](message);self.assertFalse(calls)
