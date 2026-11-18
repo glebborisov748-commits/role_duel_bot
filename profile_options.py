@@ -172,10 +172,20 @@ WARDROBE.update({
  'stripper_outfit':_catalog_item('Stage outfit with bow tie','Сценический костюм стриптизёра','Bühnenkostüm mit Fliege',1500,'body',True,'open shirt, bow tie','🎩','male'),
  'police_male':_catalog_item('Police outfit — male','Полицейская форма — мужская','Polizeikostüm — Herren',1500,'body',True,'sexy police uniform','👮','male'),
  'police_female':_catalog_item('Police outfit — female','Полицейская форма — женская','Polizeikostüm — Damen',1500,'body',True,'sexy police uniform','👮','female'),
- 'firefighter_male':_catalog_item('Firefighter outfit — male','Костюм пожарного — мужской','Feuerwehrkostüm — Herren',1500,'body',True,'firefighter uniform','🚒','male'),
- 'firefighter_female':_catalog_item('Firefighter outfit — female','Костюм пожарного — женский','Feuerwehrkostüm — Damen',1500,'body',True,'firefighter uniform','🚒','female'),
- 'boxer_outfit':_catalog_item('Boxer outfit','Боксёрские шорты и бинты','Boxershorts und Handbandagen',900,'body',True,'boxer shorts, hand wraps','🥊','male'),
 })
+# New adult-shop collection is catalog-only: no artwork jobs or photo prompt changes.
+ADULT_CATALOG_ITEMS={
+ 'male_leather_harness':_catalog_item('Leather harness and trousers','Кожаная портупея с брюками','Lederharness mit Hose',1800,'body',True,'mens leather harness, leather trousers','🖤','male'),
+ 'male_leather_bodysuit':_catalog_item('Leather bodysuit — male','Кожаный комбинезон — мужской','Leder-Overall — Herren',2400,'body',True,'mens leather bodysuit','🖤','male'),
+ 'male_mesh_outfit':_catalog_item('Mesh top and trousers','Сетчатый верх с брюками','Netzoberteil mit Hose',1600,'body',True,'mens mesh top, black trousers','🕸️','male'),
+ 'male_bdsm_outfit':_catalog_item('BDSM outfit — male','БДСМ-комплект: брюки, ошейник и манжеты','BDSM-Set: Hose, Halsband und Manschetten',2600,'body',True,'mens leather trousers, collar, wrist cuffs','⛓️','male'),
+ 'female_corset_skirt':_catalog_item('Corset and skirt','Корсет с юбкой','Korsett mit Rock',1800,'body',True,'corset, fitted skirt','🖤','female'),
+ 'female_harness_bodysuit':_catalog_item('Opaque bodysuit with harness','Закрытое боди с портупеей','Blickdichter Body mit Harness',2300,'body',True,'opaque bodysuit, leather harness','⛓️','female'),
+ 'female_leather_outfit':_catalog_item('Leather outfit — female','Кожаный комплект — женский','Leder-Outfit — Damen',2200,'body',True,'womens leather top, leather trousers','🖤','female'),
+ 'female_mesh_dress':_catalog_item('Lined mesh dress','Сетчатое платье с подкладкой','Netzkleid mit blickdichtem Unterkleid',1900,'body',True,'mesh dress, opaque lining','🕸️','female'),
+}
+WARDROBE.update(ADULT_CATALOG_ITEMS)
+
 for _item in WARDROBE.values():
  _item.setdefault('tags','')
  _item.setdefault('gender','unisex')
@@ -193,8 +203,6 @@ OUTFIT_FACTS={
  'casual_outfit':'a hoodie and jeans','leather_jacket':'a leather jacket',
  'stripper_outfit':'an opaque white stage shirt with bow tie and full-length trousers',
  'police_male':'a navy police uniform shirt and trousers','police_female':'a navy police uniform shirt and trousers',
- 'firefighter_male':'an opaque firefighter uniform jacket and trousers','firefighter_female':'an opaque firefighter uniform jacket and trousers',
- 'boxer_outfit':'boxing sports shorts with hand wraps and a sports tank top',
 }
 for _key,_item in WARDROBE.items():
  _item['image']='catalog_'+_key
@@ -205,9 +213,9 @@ for _key,_item in WARDROBE.items():
 for _key,_item in WARDROBE.items():
  _item['occupies']=[_item['slot']] if _item.get('slot') else []
  if _item.get('slot')=='body':_item['occupies']=['body','top','bottom','legs','outerwear']
-for _key in ('police_male','police_female','firefighter_male','firefighter_female'):
+for _key in ('police_male','police_female'):
  WARDROBE[_key]['occupies']=list(SLOTS)
-for _key,_extra in {'bunny_outfit':['head'],'business_suit':['neck'],'stripper_outfit':['neck']}.items():
+for _key,_extra in {'bunny_outfit':['head'],'business_suit':['neck'],'stripper_outfit':['neck'],'male_bdsm_outfit':['neck']}.items():
  WARDROBE[_key]['occupies']=list(set(WARDROBE[_key]['occupies'])|set(_extra))
 
 
@@ -234,8 +242,8 @@ def fitting_preview(user):
  gender='male' if user.get('gender')=='male' else 'female'
  current=active_outfit(user);body=current.get('body')
  indices={
- 'female':{'dress':0,'tracksuit':1,'pajamas':2,'qipao':3,'maid_outfit':4,'nurse_outfit':5,'latex_bodysuit':6,'bunny_outfit':7,'police_female':8,'firefighter_female':9,'casual_outfit':14,'sportswear':15},
- 'male':{'business_suit':0,'casual_outfit':1,'sportswear':3,'police_male':4,'firefighter_male':5,'tracksuit':6,'pajamas':7,'stripper_outfit':10,'boxer_outfit':11}}
+ 'female':{'dress':0,'tracksuit':1,'pajamas':2,'qipao':3,'maid_outfit':4,'nurse_outfit':5,'latex_bodysuit':6,'bunny_outfit':7,'police_female':8,'casual_outfit':14,'sportswear':15},
+ 'male':{'business_suit':0,'casual_outfit':1,'sportswear':3,'police_male':4,'tracksuit':6,'pajamas':7,'stripper_outfit':10}}
  index=indices[gender].get(body)
  if index is None:
   top=current.get('top');bottom=current.get('bottom')

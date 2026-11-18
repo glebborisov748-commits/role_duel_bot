@@ -58,7 +58,7 @@ class OccupancyTests(unittest.TestCase):
 class WholeOutfitRulesTests(unittest.TestCase):
  def test_every_full_outfit_blocks_separate_upper_lower_and_stockings(self):
   for key,item in wardrobe.WARDROBE.items():
-   if item['slot']!='body':continue
+   if item['slot']!='body' or item.get('catalog_only'):continue
    with self.subTest(outfit=key):
     u={'inventory':{k:1 for k in wardrobe.WARDROBE}};wardrobe.equip(u,key,5)
     for other in ('shirt','trousers','stockings','garter_stockings','leather_jacket'):

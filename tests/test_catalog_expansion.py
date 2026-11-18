@@ -18,16 +18,16 @@ class CatalogExpansionTests(unittest.TestCase):
     item=wardrobe.WARDROBE[key]
     self.assertEqual((item['price'],item['slot'],item['tags']),value)
  def test_male_collection_and_both_uniform_cuts(self):
-  for key in ('business_suit','sportswear','casual_outfit','leather_jacket','stripper_outfit','boxer_outfit'):
+  for key in ('business_suit','sportswear','casual_outfit','leather_jacket','stripper_outfit'):
    self.assertEqual(wardrobe.WARDROBE[key]['gender'],'male')
-  for uniform in ('police','firefighter'):
+  for uniform in ('police',):
    for gender in ('male','female'):
     item=wardrobe.WARDROBE[uniform+'_'+gender]
     self.assertEqual(item['gender'],gender);self.assertTrue(item['adult'])
   self.assertEqual(wardrobe.WARDROBE['leather_jacket']['slot'],'outerwear')
  def test_new_wearables_have_art_and_enforce_ownership_and_level(self):
   from pathlib import Path
-  self.assertEqual(len(wardrobe.OUTFIT_FACTS),22)
+  self.assertEqual(len(wardrobe.OUTFIT_FACTS),19)
   for key,fact in wardrobe.OUTFIT_FACTS.items():
    item=wardrobe.WARDROBE[key];self.assertFalse(item['catalog_only']);self.assertTrue(fact)
    self.assertTrue(Path('assets/'+item['image']+'.webp').is_file())
@@ -42,3 +42,28 @@ class CatalogExpansionTests(unittest.TestCase):
   self.assertIn('comfortable opaque matching tracksuit',wardrobe.clothing_facts(user,5))
   wardrobe.equip(user,'latex_bodysuit',5)
   self.assertIn('opaque full-length high-neck',wardrobe.clothing_facts(user,5))
+
+ def test_removed_costumes_are_unavailable_but_inventory_is_preserved(self):
+  for key in ('firefighter_male','firefighter_female','boxer_outfit'):
+   self.assertNotIn(key,wardrobe.WARDROBE)
+   user={'inventory':{key:1},'active_outfit':{'body':key},'wardrobe_outfit':key}
+   self.assertEqual(wardrobe.active_outfit(user),{})
+   with self.assertRaises(ValueError):wardrobe.equip(user,key,10)
+   self.assertEqual(user['inventory'],{key:1})
+ def test_adult_additions_are_gender_specific_catalog_items_only(self):
+  self.assertEqual(len(wardrobe.ADULT_CATALOG_ITEMS),8)
+  for key,item in wardrobe.ADULT_CATALOG_ITEMS.items():
+   with self.subTest(item=key):
+    self.assertTrue(item['adult']);self.assertTrue(item['catalog_only'])
+    self.assertEqual(item['fact'],'');self.assertTrue(item['tags'])
+    self.assertNotIn(key,wardrobe.OUTFIT_FACTS)
+    own_gender=item['gender'];other='female' if own_gender=='male' else 'male'
+    self.assertTrue(wardrobe.gender_matches({'gender':own_gender},key))
+    self.assertFalse(wardrobe.gender_matches({'gender':other},key))
+    user={'gender':own_gender,'inventory':{key:1}}
+    with self.assertRaisesRegex(ValueError,'каталоге'):wardrobe.equip(user,key,10)
+    # Even a stale or injected outfit cannot turn catalog metadata into photo instructions.
+    user['active_outfit']={'body':key}
+    facts=wardrobe.clothing_facts(user,10)
+    self.assertNotIn(item['tags'],facts)
+    self.assertIn('opaque casual shirt',facts)
