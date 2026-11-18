@@ -9,6 +9,7 @@ import time
 import copy
 import online_games
 import online_ui
+import archaeology
 import companion_initiative
 import photo_wallet
 import photo_generation
@@ -3109,6 +3110,13 @@ def farm_plots_raw(user):
     return plots
 
 
+def farm_market():
+    keys=sorted(CROPS)
+    # Predictable daily demand is shared by all accounts. Bonus locked at planting.
+    key=keys[local_today().toordinal()%len(keys)]
+    return {'crop':key,'multiplier':1.5,'until':daily_reset_timestamp(),'name':CROPS[key]['ru']}
+
+
 def farm_state(user):
     """Чистые снимки всех FARM_SLOTS грядок — ничего не меняет и не сохраняет, в отличие от
     farm_plant/water/harvest ниже. Возвращает список длины FARM_SLOTS, каждый элемент либо None
@@ -3144,7 +3152,7 @@ def farm_state(user):
             "watered_slots": watered,
             "total_slots": FARM_WATER_SLOTS,
             "can_water": (not ready) and watered < slots_opened,
-            "payout_preview": crop["base_payout"] + watered * crop["water_bonus"],
+            "payout_preview": round((crop["base_payout"] + watered * crop["water_bonus"]) * plot.get("market_multiplier",1.0)),
         })
     return result
 
@@ -3158,7 +3166,7 @@ def farm_plant(user, slot, crop_key):
     quest_event(user, "plant")
     plots[slot] = {
         "crop": crop_key, "planted_at": datetime.now().isoformat(),
-        "watered_slots": 0, "ready_notified": False,
+        "watered_slots": 0, "ready_notified": False,"market_multiplier":1.5 if crop_key==farm_market()["crop"] else 1.0,
     }
     save_data(user_data)
     return True
@@ -4790,7 +4798,7 @@ SPIN_PRIZES = [
     # джекпот и подписки. Порядок списка — порядок секторов и списка призов:
     # по группам (ничего, баксы, XP, сцены, энергетики, остальное, редкое), шансы от порядка не зависят. fx/fx_power — эффект при выигрыше (см. showSpinOutcome в SPIN_PAGE_HTML):
     # чем реже приз, тем эффектнее (spark/coins/hearts/bolts -> silver фейерверк -> gold -> rainbow).
-    {"name": "😢 Ничего", "name_en": "😢 Nothing", "name_de": "😢 Nichts", "value": 0, "type": "nothing", "weight": 10, "wheel_label": "😢", "fx": "none", "fx_power": 1},
+    {"name": "😢 Ничего", "name_en": "😢 Nothing", "name_de": "😢 Nichts", "value": 0, "type": "nothing", "weight": 2, "wheel_label": "😢", "fx": "none", "fx_power": 1},
     {"name": "550💵 баксов", "name_en": "550💵 bucks", "name_de": "550💵 Bucks", "value": 550, "type": "bucks", "weight": 5, "wheel_label": "550💵", "fx": "coins", "fx_power": 1},
     {"name": "1200💵 баксов", "name_en": "1200💵 bucks", "name_de": "1200💵 Bucks", "value": 1200, "type": "bucks", "weight": 2.5, "wheel_label": "1200💵", "fx": "coins", "fx_power": 2},
     {"name": "100 XP", "name_en": "100 XP", "name_de": "100 XP", "value": 100, "type": "xp", "weight": 5, "wheel_label": "100 XP", "fx": "spark", "fx_power": 1},
@@ -4798,8 +4806,8 @@ SPIN_PRIZES = [
     {"name": "250 XP", "name_en": "250 XP", "name_de": "250 XP", "value": 250, "type": "xp", "weight": 1.5, "wheel_label": "250 XP", "fx": "spark", "fx_power": 2},
     {"name": "🔥 1 горячая сцена", "name_en": "🔥 1 hot scene", "name_de": "🔥 1 heiße Szene", "value": 1, "type": "intim_scenes", "weight": 3, "wheel_label": "🔥", "fx": "hearts", "fx_power": 1},
     {"name": "🔥🔥 2 горячие сцены", "name_en": "🔥🔥 2 hot scenes", "name_de": "🔥🔥 2 heiße Szenen", "value": 2, "type": "intim_scenes", "weight": 1.5, "wheel_label": "🔥🔥", "fx": "hearts", "fx_power": 2},
-    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 0.7, "wheel_label": "2⚡", "fx": "bolts", "fx_power": 1},
-    {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 0.15, "wheel_label": "4⚡", "fx": "bolts", "fx_power": 2},
+    {"name": "2⚡ энергетика", "name_en": "2⚡ energizers", "name_de": "2⚡ Energydrinks", "value": 2, "type": "energizers", "weight": 0.6, "wheel_label": "2⚡", "fx": "bolts", "fx_power": 1},
+    {"name": "4⚡ энергетика", "name_en": "4⚡ energizers", "name_de": "4⚡ Energydrinks", "value": 4, "type": "energizers", "weight": 0.12, "wheel_label": "4⚡", "fx": "bolts", "fx_power": 2},
     {"name": "🎟 +1 доп. прокрут", "name_en": "🎟 +1 extra spin", "name_de": "🎟 +1 Extra-Dreh", "value": 1, "type": "extra_spin", "weight": 6, "wheel_label": "🎟+1", "fx": "spark", "fx_power": 2},
     {"name": "🍱 100 еды + 100 воды", "name_en": "🍱 100 food + 100 water", "name_de": "🍱 100 Essen + 100 Wasser", "value": 0, "type": "care_package", "weight": 5, "wheel_label": "🍱+100", "fx": "spark", "fx_power": 2},
     {"name": "⚡x5 буст заработка на 10 минут", "name_en": "⚡x5 earnings boost for 10 minutes", "name_de": "⚡x5 Verdienst-Boost für 10 Minuten", "value": 0, "type": "work_boost", "weight": 3.5, "wheel_label": "⚡x5", "fx": "silver", "fx_power": 3},
@@ -4807,6 +4815,18 @@ SPIN_PRIZES = [
     {"name": "🔥 PRO на 5 дней", "name_en": "🔥 PRO for 5 days", "name_de": "🔥 PRO für 5 Tage", "value": 5, "type": "subscription_pro", "weight": 0.2, "wheel_label": "🔥PRO", "fx": "rainbow", "fx_power": 3},
     {"name": "✨ SUPER PRO на 3 дня", "name_en": "✨ SUPER PRO for 3 days", "name_de": "✨ SUPER PRO für 3 Tage", "value": 3, "type": "subscription_super", "weight": 0.1, "wheel_label": "✨SUPER", "fx": "rainbow", "fx_power": 3},
 ]
+
+SPIN_PRIZES.extend([
+ {'name':'1 попытка фото','name_en':'1 photo attempt','name_de':'1 Fotoversuch','type':'photos','value':1,'weight':2.5,'wheel_label':'1 📷','fx':'silver','fx_power':2},
+ {'name':'3 попытки фото','name_en':'3 photo attempts','name_de':'3 Fotoversuche','type':'photos','value':3,'weight':.3,'wheel_label':'3 📷','fx':'gold','fx_power':3},
+ {'name':'Набор: 700 баксов + сцена','name_en':'700 bucks + scene','name_de':'700 Bucks + Szene','type':'bundle','value':700,'weight':.7,'wheel_label':'Набор','fx':'gold','fx_power':2},
+ {'name':'Предмет гардероба','name_en':'Wardrobe item','name_de':'Kleidungsstück','type':'wardrobe','value':1,'weight':.8,'wheel_label':'Гардероб','fx':'silver','fx_power':2},
+])
+
+
+def spin_weights(user):
+    luck=spin_luck_active(user)
+    return [p['weight']*(SPIN_LUCK_WEIGHT_MULT.get(p['type'],1.0) if luck else 1.0)*(SPIN_LUCK_JACKPOT_MULT if luck and p['type']=='bucks' and p['value']>=10000 else 1.0) for p in SPIN_PRIZES]
 
 
 def prize_name(prize, user):
@@ -4841,24 +4861,22 @@ def spin_luck_active(user):
 
 
 def choose_spin_prize(user=None):
-    """Взвешенный выбор приза — общий для чата и Mini App. Для "Удачи" (покупная на 24ч или вечная
-    у ELITE) вес "ничего" режется, а редкие призы растут — сумма пересчитывается сама."""
-    luck = bool(user) and spin_luck_active(user)
-    weights = []
-    for p in SPIN_PRIZES:
-        w = p["weight"]
-        if luck:
-            w *= SPIN_LUCK_WEIGHT_MULT.get(p["type"], 1.0)
-            if p["type"] == "bucks" and p["value"] >= 10000:
-                w *= SPIN_LUCK_JACKPOT_MULT
-        weights.append(w)
-    return random.choices(SPIN_PRIZES, weights=weights, k=1)[0]
+    return random.choices(SPIN_PRIZES,weights=spin_weights(user or {}),k=1)[0]
 
 
 def apply_spin_prize(user, chosen):
     """Начисляет выигрыш и возвращает готовый локализованный текст результата — общая часть
     между чатовым колесом (spin_result) и колесом в Mini App (perform_webapp_spin)."""
-    if chosen["type"] == "bucks":
+    if chosen['type']=='photos':
+        photo_wallet.ensure(user);photo_wallet.grant(user,chosen['value']);result_text='Фото: +'+str(chosen['value'])
+    elif chosen['type']=='bundle':
+        user['bucks']=user.get('bucks',0)+chosen['value'];user['intim_scenes']=user.get('intim_scenes',0)+1;result_text=prize_name(chosen,user)
+    elif chosen['type']=='wardrobe':
+        options=[k for k,item in profile_options.WARDROBE.items() if not item['adult'] and not (user.get('inventory') or {}).get(k)]
+        if options:
+            key=random.choice(options);user.setdefault('inventory',{})[key]=1;result_text=profile_options.WARDROBE[key].get(user.get('lang'),profile_options.WARDROBE[key]['ru'])
+        else:user['bucks']=user.get('bucks',0)+500;result_text='+500 баксов · гардероб уже собран'
+    elif chosen["type"] == "bucks":
         user["bucks"] = user.get("bucks", 0) + chosen["value"]
         result_text = get_text(user, "spin_win_bucks", value=chosen["value"])
     elif chosen["type"] == "energizers":
@@ -5975,10 +5993,10 @@ for _payload, (_tier, _stars, _rub) in WEEKLY_SUBSCRIPTIONS.items():
     PRODUCTS[_payload] = {'stars': _stars, 'rub': _rub, 'usd': round(_stars / 70, 2)}
 
 for _key, (_stars,_rub) in SUBSCRIPTION_PRICES.items():
-    PRODUCTS[_key].update(stars=_stars,rub=_rub)
-PRODUCTS['intim_scene'].update(stars=15,rub=18)
-PRODUCTS['scene_photo']={'stars':25,'rub':30}
-for _key,(_amount,_stars) in photo_wallet.PACKS.items():PRODUCTS[_key]={'stars':_stars,'rub':round(_stars*RUB_PER_STAR)}
+    PRODUCTS[_key].update(stars=_stars,rub=_rub,usd=round(_stars/70,2))
+PRODUCTS['intim_scene'].update(stars=15,rub=18,usd=round(15/70,2))
+PRODUCTS['scene_photo']={'stars':25,'rub':30,'usd':round(25/70,2)}
+for _key,(_amount,_stars) in photo_wallet.PACKS.items():PRODUCTS[_key]={'stars':_stars,'rub':round(_stars*RUB_PER_STAR),'usd':round(_stars/70,2)}
 
 ENERGIZER_PACKS = {
     # emoji растёт по ощущению объёма вместе с количеством -- пара банок, потом упаковка,
@@ -6043,7 +6061,7 @@ def product_invoice_texts(user, payload):
         return title,title,title
     if payload=='avatar_generate':
         title={'ru':'Образ персонажа','de':'Charakterbild'}.get(user.get('lang'),'Character portrait')
-        return title,{'ru':'Один образ в полный рост по внешности и диалогу. Если генерация не удалась, попытка сохранится.','de':'Ein Ganzkörperbild. Bei Fehlern bleibt der Versuch erhalten.'}.get(user.get('lang'),'One full-length portrait. Failed attempts are preserved.'),title
+        return title,{'ru':'Одна попытка фото для образа персонажа. Если генерация не удалась, попытка сохранится.','de':'Ein Ganzkörperbild. Bei Fehlern bleibt der Versuch erhalten.'}.get(user.get('lang'),'One full-length portrait. Failed attempts are preserved.'),title
     if payload in WEEKLY_SUBSCRIPTIONS:
         title = WEEKLY_SUBSCRIPTIONS[payload][0].replace('_', ' ').upper() + ' · 7 ' + ('дней' if user.get('lang') == 'ru' else 'days')
         return title, title, title
@@ -6938,6 +6956,76 @@ async def revoke_subscription_cmd(message: types.Message):
     user["subscription"] = {"active": False, "expires_at": None, "level": None}
     save_data(user_data)
     await message.answer(f"✅ Подписка {args[1]} отозвана.")
+
+
+@dp.message(Command('setlevel'))
+async def setlevel_cmd(message: types.Message):
+    if message.from_user.id not in ADMIN_IDS:return await message.answer('Нет прав.')
+    args=(message.text or '').split()
+    if len(args)!=3 or not args[2].isdigit() or not 1<=int(args[2])<=10:return await message.answer('/setlevel ID_или_@username 1–10')
+    uid=await _resolve_admin_target(message,args[1])
+    if uid is None:return
+    u=get_user(uid);u.update(xp=LEVEL_XP_THRESHOLD[int(args[2])],xp_migrated_v2=True,xp_migrated_v3=True)
+    save_data(user_data);await message.answer(f'Уровень {args[2]} установлен для {uid}.')
+
+
+@dp.message(Command('broadcast'))
+async def broadcast_cmd(message: types.Message):
+    if message.from_user.id not in ADMIN_IDS:return await message.answer('Нет прав.')
+    user=get_user(message.from_user.id);user['broadcast_draft']={'awaiting':True};save_data(user_data)
+    await message.answer('Пришли новость: текст, фото или видео. Я покажу предпросмотр перед отправкой. /cancel_broadcast — отмена.')
+
+
+@dp.message(Command('cancel_broadcast'))
+async def cancel_broadcast_cmd(message: types.Message):
+    if message.from_user.id not in ADMIN_IDS:return
+    user=get_user(message.from_user.id);user.pop('broadcast_draft',None);save_data(user_data)
+    await message.answer('Черновик рассылки отменён.')
+
+
+@dp.message(lambda m: m.from_user and m.from_user.id in ADMIN_IDS and (get_user(m.from_user.id).get('broadcast_draft') or {}).get('awaiting') and not (m.text or '').startswith('/'))
+async def broadcast_draft_handler(message: types.Message):
+    if not (message.text or message.photo or message.video):return await message.answer('Поддерживается текст, фото или видео.')
+    user=get_user(message.from_user.id);token=secrets.token_hex(8)
+    recipients=[int(uid) for uid,u in user_data.items() if str(uid).isdigit() and u.get('verified')]
+    user['broadcast_draft']={'token':token,'chat_id':message.chat.id,'message_id':message.message_id,'recipients':recipients,'status':'draft'};save_data(user_data)
+    await bot.copy_message(message.chat.id,message.chat.id,message.message_id)
+    buttons=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text=f'Отправить {len(recipients)} пользователям',callback_data='broadcast:'+token)],[InlineKeyboardButton(text='Отмена',callback_data='broadcast:cancel')]])
+    await message.answer('Предпросмотр выше. Рассылка уйдёт только после нажатия «Отправить».',reply_markup=buttons)
+
+
+async def deliver_broadcast(admin_id,job):
+    success=0;failed=0
+    try:
+        for uid in job['recipients']:
+            if uid in job.setdefault('delivered',[]):continue
+            for attempt in range(3):
+                try:
+                    await bot.copy_message(uid,job['chat_id'],job['message_id'],reply_markup=app_open_kb(get_user(uid)) if APP_MODE else None)
+                    success+=1;job['delivered'].append(uid);break
+                except Exception as exc:
+                    retry=getattr(exc,'retry_after',None)
+                    if retry and attempt<2:await asyncio.sleep(min(60,int(retry)+1));continue
+                    failed+=1;break
+            if (success+failed)%20==0:save_data(user_data)
+            await asyncio.sleep(.06)
+        job.update(status='complete',success=success,failed=failed);save_data(user_data)
+        await bot.send_message(admin_id,f'Рассылка завершена. Доставлено: {success}, недоступны: {failed}.')
+    except asyncio.CancelledError:
+        job['status']='interrupted';save_data(user_data);raise
+
+
+@dp.callback_query(lambda c: c.data.startswith('broadcast:'))
+async def broadcast_send_handler(call: types.CallbackQuery):
+    if call.from_user.id not in ADMIN_IDS:return await call.answer('Нет прав.',show_alert=True)
+    user=get_user(call.from_user.id);job=user.get('broadcast_draft') or {}
+    token=call.data.split(':',1)[1]
+    if token=='cancel':
+        if job.get('status')=='sending':return await call.answer('Рассылка уже отправляется.')
+        user.pop('broadcast_draft',None);save_data(user_data);return await call.answer('Отменено')
+    if token!=job.get('token') or job.get('status') not in ('draft','interrupted'):return await call.answer('Этот черновик уже отправлен или устарел.')
+    job['status']='sending';save_data(user_data)
+    asyncio.create_task(deliver_broadcast(call.from_user.id,job));await call.answer('Начинаю отправку')
 
 
 @dp.message(Command("models"))
@@ -9320,6 +9408,7 @@ def serialize_shop_state(user):
         "illness": illness_label,
         "asleep": is_asleep(user),
         "categories": categories,
+        "wardrobe_pending":bool(user.get("avatar_job")),"wardrobe_gender":user.get("gender","female"),"photo_balance":photo_wallet.balance(user),
         "wardrobe_preview":"/avatars/"+user["avatar_fullbody"] if user.get("avatar_fullbody") else None,
         "active_outfit":profile_options.active_outfit(user),"outfit_slots":profile_options.choices(profile_options.SLOTS,lang),
         "wardrobe_outfit":user.get("wardrobe_outfit"),
@@ -12996,7 +13085,9 @@ SHOP_PAGE_HTML = r"""<!doctype html>
 .wardrobe-room{grid-template-columns:minmax(0,42%) minmax(0,1fr)!important;width:100%!important;box-sizing:border-box!important;gap:12px!important;padding:12px!important;align-items:start!important}.wardrobe-room>div{min-width:0}.wardrobe-room .wardrobe-model{width:100%;height:270px!important;max-height:none!important;object-fit:cover!important;object-position:top;border-radius:16px}.wardrobe-room .wardrobe-product{display:block;width:90px;height:90px;object-fit:contain;margin:12px auto}.wardrobe-room .wardrobe-product[hidden]{display:none}.wardrobe-room select{font-size:12px!important;max-width:100%;min-width:0;box-sizing:border-box!important}.wardrobe-room h3{font-size:16px!important;margin:0 0 12px}.wardrobe-room p{font-size:11px!important;line-height:1.45}.wardrobe-room button{font-size:13px!important;min-height:44px!important}.card,.card-top,.card-body{min-width:0;box-sizing:border-box}html,body{max-width:100%;overflow-x:hidden}
 
 .wardrobe-room label{display:flex;flex-direction:column;gap:5px;font-size:12px;margin-top:10px}.wardrobe-empty{padding:18px 10px;display:flex;align-items:center;text-align:center;min-height:200px;background:radial-gradient(ellipse,#47364d,#221c2c);border-radius:18px;color:#cdbed6;font-size:12px;line-height:1.5}.wardrobe-room img[hidden]{display:none!important}.wardrobe-room .wardrobe-model{height:330px!important;object-fit:contain!important}.wardrobe-lock{padding:15px;text-align:center;font-size:14px;color:#d3b4e8}.wardrobe-room select{min-height:40px!important}.wardrobe-room .wardrobe-product{display:none}
-del,.old-price{position:relative;text-decoration:none!important}del:after,.old-price:after{content:'';position:absolute;left:0;right:0;height:2px;top:50%;background:#ed5965;transform:rotate(-8deg)}.card{box-shadow:inset 0 1px 0 #fff08,0 8px 22px #0003}</style>
+del,.old-price{position:relative;text-decoration:none!important}del:after,.old-price:after{content:'';position:absolute;left:0;right:0;height:2px;top:50%;background:#ed5965;transform:rotate(-8deg)}.card{box-shadow:inset 0 1px 0 #fff08,0 8px 22px #0003}
+.wardrobe-room{grid-template-columns:minmax(0,1fr)!important;padding:16px!important;background:radial-gradient(ellipse at 50% 20%,#50354d55,#1d192b 70%)}.fitting-stage{height:320px;max-width:230px;width:100%;margin:0 auto;position:relative;isolation:isolate;border-radius:20px;background:radial-gradient(ellipse at 50% 85%,#d8a3c233,transparent 60%)}.wardrobe-room .tailor-base{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:.85}.wardrobe-room .outfit-layer{position:absolute!important;object-fit:contain!important;margin:0!important;max-height:none!important;pointer-events:none;filter:drop-shadow(0 3px 3px #0004)}.outfit-body{left:8%;top:4%;width:84%!important;height:80%!important;z-index:2}.outfit-top,.outfit-outerwear{left:13%;top:12%;width:74%!important;height:43%!important;z-index:3}.outfit-bottom{left:22%;top:48%;width:56%!important;height:35%!important;z-index:2}.outfit-head{left:28%;top:0;width:44%!important;height:18%!important;z-index:5}.outfit-neck{left:37%;top:12%;width:26%!important;height:12%!important;z-index:5}.outfit-legs{left:25%;top:60%;width:50%!important;height:30%!important;z-index:1}.outfit-shoes{left:25%;top:83%;width:50%!important;height:16%!important;z-index:4}.fitting-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.fitting-controls h3,.fitting-note,#wardrobe-generate,.wardrobe-result{grid-column:1/-1}.fitting-controls select{width:100%;box-sizing:border-box}.wardrobe-room .wardrobe-result{width:100%;height:auto;max-height:460px;object-fit:contain;border-radius:16px;margin:auto}.wardrobe-lightbox{position:fixed;inset:0;z-index:10000;background:#090712ed;display:grid;place-items:center;touch-action:pinch-zoom}.wardrobe-lightbox img{max-width:98vw;max-height:95dvh}
+</style>
 </head>
 <body>
   <div id="stats"></div>
@@ -13138,14 +13229,20 @@ del,.old-price{position:relative;text-decoration:none!important}del:after,.old-p
 
   var fittingItem=null;
   function fittingRoom(s){
-    var room=document.createElement('div');room.className='wardrobe-room';var image=document.createElement('img');image.className='wardrobe-model';image.alt=s.lang==='ru'?'Образ персонажа':'Character outfit';if(s.wardrobe_preview)image.src=s.wardrobe_preview;else image.hidden=true;
-    var controls=document.createElement('div'),title=document.createElement('h3');title.textContent=s.lang==='ru'?'Твой гардероб':s.lang==='de'?'Deine Garderobe':'Your wardrobe';controls.appendChild(title);
-    if(!s.wardrobe_preview){var blank=document.createElement('div');blank.className='wardrobe-empty';blank.textContent=s.lang==='ru'?'Образ в полный рост можно создать в профиле за 10 Stars.':'Create a full-length character in your profile for 10 Stars.';room.appendChild(blank);}
-    var note=document.createElement('p');note.textContent=s.lang==='ru'?'Костюмы применяются при отправке следующего фото. Смена одежды здесь бесплатна и не запускает генерацию.':'Clothing applies to the next requested photo. Equipping is free and does not generate an image.';controls.appendChild(note);
+    var room=document.createElement('div');room.className='wardrobe-room';
+    var stage=document.createElement('div');stage.className='fitting-stage';var base=document.createElement('img');base.className='tailor-base';base.src='/assets/tailor_'+(s.wardrobe_gender==='male'?'male':'female')+'.webp';base.alt='';stage.appendChild(base);
+    var controls=document.createElement('div');controls.className='fitting-controls';var title=document.createElement('h3');title.textContent=s.lang==='ru'?'Примерочная':'Fitting room';controls.appendChild(title);
     var items=s.categories.filter(function(c){return c.key==='wardrobe'||c.key==='adult_shop';}).reduce(function(all,c){return all.concat(c.items);},[]),active=s.active_outfit||{};
-    (s.outfit_slots||[]).forEach(function(slot){var label=document.createElement('label');label.textContent=slot.label;var select=document.createElement('select');select.dataset.slot=slot.key;var empty=document.createElement('option');empty.value='';empty.textContent=s.lang==='ru'?'Не выбрано':'None';select.appendChild(empty);items.filter(function(item){return item.slot===slot.key&&item.owned&&!item.catalog_only;}).forEach(function(item){var option=document.createElement('option');option.value=item.key;option.textContent=item.name;option.disabled=!!item.locked_level;select.appendChild(option);});select.value=active[slot.key]||'';select.onchange=function(){select.disabled=true;api('/api/wardrobe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({outfit:select.value||null,slot:slot.key})}).then(function(res){if(res.state)state=res.state;if(!res.ok)alert(res.error);render();});};label.appendChild(select);controls.appendChild(label);});
-    room.appendChild(image);room.appendChild(controls);return room;
+    Object.keys(active).forEach(function(slot){var item=items.find(function(i){return i.key===active[slot];});if(!item||!item.image)return;var im=document.createElement('img');im.src=item.image;im.alt=item.name;im.className='outfit-layer outfit-'+slot;stage.appendChild(im);});
+    room.appendChild(stage);
+    (s.outfit_slots||[]).forEach(function(slot){var label=document.createElement('label');label.textContent=slot.label;var select=document.createElement('select');select.dataset.slot=slot.key;select.disabled=!!s.wardrobe_pending;var empty=document.createElement('option');empty.value='';empty.textContent=s.lang==='ru'?'Не выбрано':'None';select.appendChild(empty);items.filter(function(item){return item.slot===slot.key&&item.owned&&!item.catalog_only;}).forEach(function(item){var option=document.createElement('option');option.value=item.key;option.textContent=item.name;option.disabled=!!item.locked_level;select.appendChild(option);});select.value=active[slot.key]||'';select.onchange=function(){select.disabled=true;api('/api/wardrobe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({outfit:select.value||null,slot:slot.key})}).then(function(res){if(res.state)state=res.state;if(!res.ok)alert(res.error);render();});};label.appendChild(select);controls.appendChild(label);});
+    var note=document.createElement('p');note.className='fitting-note';note.textContent=s.lang==='ru'?'Примерка бесплатна. На стойке — приблизительная посадка; на фото одежда подстроится под персонажа.':'Free fitting. Display is approximate; generated clothes fit your character.';controls.appendChild(note);
+    var generate=document.createElement('button');generate.type='button';generate.id='wardrobe-generate';generate.textContent=s.wardrobe_pending?'Создаю образ…':'Показать на персонаже · 1 фото ('+s.photo_balance+')';generate.disabled=!!s.wardrobe_pending;
+    generate.onclick=function(){if(s.photo_balance<1){window.parent.postMessage({type:'rd-open-purchases'},location.origin);return;}if(!confirm('Создать фото в выбранной одежде? Будет потрачена 1 попытка.'))return;generate.disabled=true;api('/api/app/avatar-generate',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(function(res){if(!res.ok)alert(res.error);load();});};controls.appendChild(generate);
+    if(s.wardrobe_preview){var preview=document.createElement('img');preview.src=s.wardrobe_preview;preview.className='wardrobe-result';preview.alt='Фото персонажа';preview.onclick=function(){var modal=document.createElement('div');modal.className='wardrobe-lightbox';var im=document.createElement('img');im.src=s.wardrobe_preview;modal.appendChild(im);modal.onclick=function(){modal.remove();};document.body.appendChild(modal);};controls.appendChild(preview);}
+    room.appendChild(controls);return room;
   }
+
   function makeCard(s, item) {
     var card = document.createElement("div");
     card.className = "card" + (item.old_price ? " card-deal" : "") + (item.category === "energizer" ? " card-energizer" : "");
@@ -13496,6 +13593,7 @@ del,.old-price{position:relative;text-decoration:none!important}del:after,.old-p
     });
   }
 
+  setInterval(function(){if(state&&state.wardrobe_pending)load();},2500);
   load();
   }
 
@@ -14027,6 +14125,7 @@ def serialize_spin_state(user):
     в этом списке однозначно определяет, на какой сектор колеса анимация должна "приехать"
     (см. api_spin_free_handler/SPIN_PAGE_HTML)."""
     return {
+        "price_refs":{k:{"now":product_stars(k,user),"old":regular_stars(k)} for k in ("spin_paid_webapp","spin_luck")},
         "server_day":local_today().isoformat(),
         "reset_at":daily_reset_timestamp(),
         "free_left": free_spins_left(user),
@@ -14037,7 +14136,7 @@ def serialize_spin_state(user):
         "coupon_note": coupon_note(user),
         "prizes": [
             {"index": i, "wheel_label": p["wheel_label"], "name": prize_name(p, user),
-             "fx": p.get("fx", "none"), "fx_power": p.get("fx_power", 1)}
+             "fx": p.get("fx", "none"), "fx_power": p.get("fx_power", 1),"chance":round(spin_weights(user)[i]/sum(spin_weights(user))*100,3)}
             for i, p in enumerate(SPIN_PRIZES)
         ],
         "ui": {
@@ -14045,8 +14144,8 @@ def serialize_spin_state(user):
             "spin_hint": get_text(user, "spin_hint"),
             "free_label": spin_free_label(user),
             "tomorrow_label": get_text(user, "tomorrow"),
-            "paid_label": get_text(user, "spin_paid", price=price_label("spin_paid_webapp", user)),
-            "luck_btn": get_text(user, "spin_luck_btn", price=price_label("spin_luck", user)),
+            "paid_label": get_text(user, "spin_paid", price=str(product_stars("spin_paid_webapp", user))),
+            "luck_btn": get_text(user, "spin_luck_btn", price=str(product_stars("spin_luck", user))),
             "luck_active": get_text(user, "spin_luck_active", time="{time}"),
             "luck_elite": get_text(user, "spin_luck_elite"),
             "spin_btn": get_text(user, "webapp_spin_btn"),
@@ -14081,7 +14180,7 @@ async def perform_webapp_spin(user, user_id):
 
 # Как и SHOP_PAGE_HTML — полностью статичная страница, вся персонализация через /api/spin/*
 # (initData в URL-фрагменте на сервер не попадает, см. комментарий у SHOP_PAGE_HTML).
-SPIN_PAGE_HTML = r'''<!doctype html>
+SPIN_PAGE_HTML = r"""<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -14351,7 +14450,10 @@ SPIN_PAGE_HTML = r'''<!doctype html>
   @keyframes coupon-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
   #sound-toggle { position: absolute; top: 8px; right: 12px; border: none; background: rgba(127,127,127,.18); border-radius: 10px;
     font-size: 16px; padding: 4px 8px; cursor: pointer; z-index: 5; }
-</style>
+
+#wheel-wrap,.wheel-wrap{filter:drop-shadow(0 16px 22px #0006)}canvas#wheel{border:6px solid #d1a4c7;border-radius:50%;box-shadow:inset 0 2px 3px #fff8,0 0 0 5px #4b365d,0 15px 30px #0006}#result,.result{border:1px solid #b896ca66;background:radial-gradient(ellipse at top,#76538e44,#1d1a2c);border-radius:18px}button{box-shadow:inset 0 1px 0 #fff2,0 6px 14px #0003}button:active{transform:scale(.97)}
+#wheel{border:6px solid #b88fae!important;box-shadow:inset 0 2px 6px #fff9,0 0 0 5px #403047,0 16px 26px #0007!important;position:relative}#wheel-wrap:after{content:'';pointer-events:none;position:absolute;inset:8px;border-radius:50%;background:linear-gradient(135deg,#fff2,transparent 35%,#0002 75%,#fff1);z-index:2}.prize-row{padding:10px 12px;border-bottom:1px solid #ffffff0a;font-size:13px}#result-banner{padding:18px!important;box-shadow:inset 0 1px 0 #fff2,0 8px 24px #0004}
+del{position:relative;text-decoration:none!important;opacity:.8}del:after{content:'';position:absolute;top:50%;height:2px;left:0;right:0;background:#f46571;transform:rotate(-8deg)}</style>
 </head>
 <body>
   <div id="stats"></div>
@@ -14652,6 +14754,7 @@ SPIN_PAGE_HTML = r'''<!doctype html>
     var paidBtn = document.createElement("button");
     paidBtn.className = "action-btn secondary";
     paidBtn.textContent = paidStatusText || s.ui.paid_label;
+    if(!paidStatusText&&s.price_refs&&s.price_refs.spin_paid_webapp.old>s.price_refs.spin_paid_webapp.now){var old=document.createElement('del');old.textContent=s.price_refs.spin_paid_webapp.old+' ⭐';paidBtn.prepend(old,document.createTextNode(' → '));}
     paidBtn.disabled = spinning;
     paidBtn.onclick = spinPaid;
     el.appendChild(paidBtn);
@@ -14667,6 +14770,7 @@ SPIN_PAGE_HTML = r'''<!doctype html>
       luckBtn.disabled = true;
     } else {
       luckBtn.textContent = s.ui.luck_btn;
+      if(s.price_refs&&s.price_refs.spin_luck.old>s.price_refs.spin_luck.now){var old=document.createElement('del');old.textContent=s.price_refs.spin_luck.old+' ⭐';luckBtn.prepend(old,document.createTextNode(' → '));}
       luckBtn.disabled = spinning;
       luckBtn.onclick = buyLuck;
     }
@@ -14698,14 +14802,14 @@ SPIN_PAGE_HTML = r'''<!doctype html>
   var prizeListBuilt = false;
 
   function renderPrizeList(s) {
-    if (prizeListBuilt) return;
+
     prizeListBuilt = true;
     document.getElementById("prize-list-title").textContent = s.ui.prizes_title;
     var el = document.getElementById("prize-list-items");
     el.innerHTML = "";
     s.prizes.forEach(function (p) {
-      var row = document.createElement("div");
-      row.textContent = p.name;
+      var row = document.createElement("div");row.className='prize-row';
+      row.textContent = p.name+(typeof p.chance==='number'?' · '+p.chance+'%':'');
       el.appendChild(row);
     });
   }
@@ -14779,7 +14883,7 @@ SPIN_PAGE_HTML = r'''<!doctype html>
 
   // ---- звуки приза: чем реже приз, тем богаче и «волшебнее» звук (колокольчики, арфа, пэд -- без хлопков) ----
   function prizeSound(kind, power) {
-    if(window.RDSFX && window.RDSFX.sample){if(sfxOn)window.RDSFX.sample(kind?'win':'loss');return;}
+    if(window.RDSFX&&window.RDSFX.sample){if(sfxOn){var bank={coins:'deliver',spark:'reveal',hearts:'match',bolts:'unlock',silver:'reveal',gold:'win',rainbow:'win'};window.RDSFX.sample(bank[kind]||'loss');if(kind==='gold'||kind==='rainbow'){setTimeout(function(){window.RDSFX.sample('unlock');},180);setTimeout(function(){window.RDSFX.sample('win');},420);}}return;}
     power = power || 1;
     var S = window.RDSFX;
     if (!sfxOn || !sfxCtx || !S) { fx(kind ? "win" : "loss"); return; }
@@ -14852,7 +14956,7 @@ SPIN_PAGE_HTML = r'''<!doctype html>
       var kind = prize && prize.fx && prize.fx !== "none" ? prize.fx : "";
       var banner = document.getElementById("result-banner");
       banner.textContent = resultText.replace(/\*/g, "");
-      banner.className = kind ? "fx-" + kind : "";
+      banner.className = kind ? "fx-" + kind : "";banner.animate([{transform:'translateY(12px) scale(.94)',opacity:0},{transform:'translateY(-3px) scale(1.03)',opacity:1,offset:.7},{transform:'translateY(0) scale(1)',opacity:1}],{duration:600,easing:'ease-out'});
       banner.style.display = "block";
       renderStats(state);
       renderActions(state);
@@ -15018,7 +15122,7 @@ SPIN_PAGE_HTML = r'''<!doctype html>
 </script>
 </body>
 </html>
-'''
+"""
 
 
 def serialize_work_state(user):
@@ -15039,6 +15143,8 @@ def serialize_work_state(user):
         "hit_bucks": WORK_HIT_BUCKS,
         "failure_penalty": WORK_FAILURE_PENALTY_BUCKS,
         "courier_crash_penalty": COURIER_CRASH_PENALTY_BUCKS,
+        "farm_market":farm_market(),
+        "dig":archaeology.snapshot(user),
         "farm": farm_state(user),
         "farm_slots": get_farm_slots(user),
         "farm_slots_max": FARM_SLOTS_MAX,
@@ -15095,7 +15201,7 @@ def serialize_work_state(user):
         },
     }
 
-WORK_PAGE_HTML = r'''<!doctype html>
+WORK_PAGE_HTML = r"""<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -15766,7 +15872,11 @@ WORK_PAGE_HTML = r'''<!doctype html>
 #side-pick-tool i{position:absolute;left:0;top:5px;width:calc(100% - 48px);height:6px;background:linear-gradient(#f1dfc6,#969ca5,#ded1b8);border:1px solid #35313a;border-radius:3px;transform:rotate(-6deg);transform-origin:right center}#side-pick-tool i:before{content:'';position:absolute;top:-10px;left:0;width:14px;height:12px;border-left:5px solid #d9c8ad;border-top:4px solid #d9c8ad;border-radius:7px 0 0 0}#side-pick-tool b{position:absolute;right:0;top:0;width:55px;height:23px;border-radius:7px;background:linear-gradient(#746076,#342d3c 40%,#1d1b25);border:1px solid #9d8194;box-shadow:inset -10px 0 #a18a65}
 
 #topbar{display:flex!important;align-items:center!important;justify-content:space-between!important;flex-wrap:nowrap!important;gap:6px!important;padding:10px 8px!important}#topbar #title{font-size:clamp(14px,4vw,19px)!important;white-space:nowrap!important;min-width:0;flex:0 1 auto}#topbar>div:last-child{display:flex!important;align-items:center!important;flex-wrap:nowrap!important;justify-content:flex-end!important;gap:5px!important;min-width:0}#balance{white-space:nowrap!important;font-size:clamp(13px,3.6vw,18px)!important;min-width:0;overflow:hidden;text-overflow:ellipsis}#multiplier-badge{font-size:11px!important;white-space:nowrap!important;padding:4px 6px!important;flex:none!important;margin:0!important}#sound-toggle{flex:none!important;min-width:32px!important;width:32px!important;height:32px!important;margin:0!important;padding:3px!important}#farm-plots .farm-plant .sprite{width:52px!important;height:56px!important;max-width:70%!important;object-fit:contain!important}#farm-plots .farm-scene.has-bed .farm-plant{bottom:32px!important}#farm-plots .farm-scene{overflow:hidden}#farm-plots .farm-plot{min-width:0!important}#farm-plots .farm-plot button{font-size:12px!important;line-height:1.3!important;padding:8px 3px!important}
-</style>
+
+#tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap!important}#tabs .tab-btn{flex:0 0 auto;white-space:nowrap;padding:11px 14px}#game-dig{padding:16px;border:1px solid #79634c;border-radius:22px;background:radial-gradient(ellipse at top,#4b3740,#1c1a2b 70%)}#game-dig p{font-size:13px;line-height:1.5;color:#cfc2ba}.dig-board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin:14px 0}.dig-cell{aspect-ratio:1;border:1px solid #a88a65;border-radius:10px;background:linear-gradient(140deg,#8d684c,#49342b);color:#ead4af;font-size:18px;box-shadow:inset 0 2px 0 #ffffff18,0 3px 5px #0003}.dig-cell.found{color:#ffe596;background:#725240}.dig-cell:disabled{opacity:.55}.dig-button{padding:11px 14px;border:1px solid #9d7d93;border-radius:12px;background:#4a374d;color:white;margin:4px 2px;min-height:42px}.dig-button.on{background:#9b638e}.dig-tools{display:flex;justify-content:space-between}.dig-tools button{flex:1;min-width:0;padding:10px 5px}.dig-meta{font-size:13px;color:#f1d6af}.dig-bag{border:1px solid #7c6551;border-radius:12px;padding:8px}
+
+.avenue-cone{width:46px!important;height:54px!important;border-radius:7px;box-shadow:0 3px 7px #0005;overflow:hidden}.hazard-barrier{background:repeating-linear-gradient(135deg,#d78e57 0 9px,#3c3440 9px 18px);border:3px solid #ba9c86}.hazard-puddle{background:radial-gradient(ellipse,#90bbd4aa,#41617d77 65%,transparent 70%);box-shadow:none;transform:translateX(-50%) scaleX(1.3)}.hazard-bump{background:repeating-linear-gradient(0deg,#b6a575 0 7px,#514536 7px 14px);height:24px!important;border-radius:50%}.hazard-crosswalk{background:repeating-linear-gradient(0deg,#e7ded7cc 0 7px,transparent 7px 14px);box-shadow:none;height:58px!important}.hazard-traffic{background:linear-gradient(90deg,#67598e,#b8a4cf,#67598e);border:2px solid #ccbddd}.hazard-traffic:before{content:'';display:block;margin:8px;height:15px;background:#272733;border-radius:4px}#hacker-wires{height:260px!important}.hacker-wire-end,.hacker-wire-socket{border:2px solid #d2c3d6!important;box-shadow:inset 0 2px 0 #ffffff55,0 2px 8px #0005}.hacker-wire-end.tracing{outline:3px solid #f2ca85;outline-offset:3px}
+.farm-demand{padding:12px;margin-bottom:10px;border:1px solid #b79d67;border-radius:14px;background:linear-gradient(120deg,#65502f88,#392946);color:#f5dfa8;font-size:12px;line-height:1.5}#tabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;overflow:visible!important}#tabs .tab-btn{width:100%;min-width:0;box-sizing:border-box;white-space:nowrap;padding:12px 5px;font-size:12px!important}</style>
 </head>
 <body>
   <div id="topbar">
@@ -15779,7 +15889,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     <button id="tab-clicker" class="tab-btn"></button>
     <button id="tab-catch" class="tab-btn"></button>
     <button id="tab-courier" class="tab-btn"></button>
-    <button id="tab-workshop" class="tab-btn"></button><button id="tab-farm" class="tab-btn"></button>
+    <button id="tab-workshop" class="tab-btn"></button><button id="tab-dig" class="tab-btn">Раскопки</button><button id="tab-farm" class="tab-btn"></button>
   </div>
 
   <div id="game-clicker" class="game-panel">
@@ -15823,7 +15933,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     <div id="courier-feedback"></div>
   </div>
 
-  <div id="game-farm" class="game-panel"></div><div id="game-workshop" class="game-panel"></div>
+  <div id="game-dig" class="game-panel"></div><div id="game-farm" class="game-panel"></div><div id="game-workshop" class="game-panel"></div>
 
   <div id="gameover">
     <div id="gameover-title"></div>
@@ -15852,7 +15962,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
 
   var state = null;
   var requestedGame=new URLSearchParams(location.search).get("game");
-  var activeGame = ["clicker","catch","courier","farm","workshop"].indexOf(requestedGame)>=0?requestedGame:(/[?&]tab=farm\b/.test(location.search)?"farm":"clicker"); // пуш "урожай созрел" открывает сразу ферму
+  var activeGame = ["clicker","catch","courier","farm","workshop","dig"].indexOf(requestedGame)>=0?requestedGame:(/[?&]tab=farm\b/.test(location.search)?"farm":"clicker"); // пуш "урожай созрел" открывает сразу ферму
   var catchSpawnInterval = null;
   var catchRafId = null;
   var courierRafId = null;
@@ -15884,7 +15994,12 @@ WORK_PAGE_HTML = r'''<!doctype html>
   var SVG_NS = "http://www.w3.org/2000/svg";
 
   var hackerWireVariant="trace",wireSelected=0;
-  function startHackerWires(){hackerWires=HACKER_WIRE_COLORS.slice(0,3+Math.floor(Math.random()*3));hackerWireRightOrder=shuffleArray(hackerWires.slice());hackerWireLinks={};hackerWireConnected=0;hackerWireDrag=null;wireSelected=0;document.getElementById('hacker-wires').classList.add('active');document.getElementById('hacker-keyboard').style.display='none';document.getElementById('hacker-mode').textContent=courierWords('Проследи золотой вход до выхода. Нажми нужный контакт справа.','Trace the gold inlet to its outlet. Tap that contact on the right.','Verfolge den goldenen Eingang. Tippe rechts auf seinen Ausgang.');renderHackerWires();bindHackerWires();}
+  var wireDeadline=0,wireClock=null,wireTarget=0;
+  function startHackerWires(){
+    hackerWireVariant=hackerMode==='cut'?'cut':'connect';hackerWires=HACKER_WIRE_COLORS.slice(0,hackerWireVariant==='cut'?5:4);hackerWireRightOrder=shuffleArray(hackerWires.slice());hackerWireLinks={};hackerWireConnected=0;hackerWireDrag=null;wireSelected=0;wireTarget=Math.floor(Math.random()*hackerWires.length);wireDeadline=performance.now()+(hackerWireVariant==='cut'?22000:45000);
+    document.getElementById('hacker-wires').classList.add('active');document.getElementById('hacker-keyboard').style.display='none';renderHackerWires();bindHackerWires();clearInterval(wireClock);
+    wireClock=setInterval(function(){if(activeGame!=='clicker'||(hackerMode!=='wires'&&hackerMode!=='cut')){clearInterval(wireClock);return;}var left=Math.ceil((wireDeadline-performance.now())/1000);document.getElementById('hacker-mode').textContent=(hackerWireVariant==='cut'?courierWords('Найди провод от золотого входа и отрежь его справа','Trace the gold inlet and cut its cable on the right','Verfolge den goldenen Eingang und trenne rechts'):courierWords('Соедини одинаковые контакты','Connect matching contacts','Verbinde passende Kontakte'))+' · '+Math.max(0,left)+' сек.';if(left<=0){clearInterval(wireClock);fx('loss');startHacker();}},150);
+  }
 
   function shuffleArray(arr) {
     for (var i = arr.length - 1; i > 0; i--) {
@@ -15917,9 +16032,15 @@ WORK_PAGE_HTML = r'''<!doctype html>
     path.setAttribute("d", "M" + a.x + "," + a.y + " C" + mid + "," + (a.y + 30) + " " + mid + "," + (b.y + 30) + " " + b.x + "," + b.y);
   }
 
-  function renderHackerWires(){var left=document.getElementById('hacker-wires-left'),right=document.getElementById('hacker-wires-right'),svg=document.getElementById('hacker-wires-svg');left.innerHTML='';right.innerHTML='';svg.innerHTML='';hackerWires.forEach(function(color,i){var b=document.createElement('button');b.type='button';b.className='hacker-wire-end'+(hackerWireLinks[i]!==undefined?' connected':'')+(i===wireSelected?' tracing':'');b.setAttribute('aria-label',courierWords('Вход','Inlet','Eingang'));b.dataset.index=i;left.appendChild(b);});hackerWireRightOrder.forEach(function(_,i){var b=document.createElement('button');b.type='button';b.className='hacker-wire-socket';b.setAttribute('aria-label',courierWords('Выход','Outlet','Ausgang'));b.dataset.socket=i;right.appendChild(b);});
-    requestAnimationFrame(function(){if(!left.isConnected||activeGame!=='clicker')return;svg.innerHTML='';hackerWires.forEach(function(color,i){var j=hackerWireRightOrder.indexOf(color),a=wirePoint(left.children[i],'left'),b=wirePoint(right.children[j],'right'),width=b.x-a.x;var d='M'+a.x+','+a.y+' C'+(a.x+width*.25)+','+a.y+' '+(a.x+width*.38)+','+(a.y+(i%2?35:-35))+' '+(a.x+width*.5)+','+((a.y+b.y)/2)+' S'+(b.x-width*.15)+','+b.y+' '+b.x+','+b.y;[10,5].forEach(function(weight){var path=document.createElementNS(SVG_NS,'path');path.setAttribute('d',d);path.setAttribute('fill','none');path.setAttribute('stroke-width',weight);path.setAttribute('stroke-linecap','round');path.setAttribute('stroke',weight===10?'#17151f':hackerWireLinks[i]!==undefined?'#b0c5b0':'#a195ae');svg.appendChild(path);});if(i===wireSelected&&hackerWireLinks[i]===undefined){var lead=document.createElementNS(SVG_NS,'path');lead.setAttribute('d',d);lead.setAttribute('fill','none');lead.setAttribute('stroke','#f3c47c');lead.setAttribute('stroke-width','5');lead.setAttribute('stroke-dasharray','24 2000');svg.appendChild(lead);}if(hackerWireLinks[i]!==undefined)right.children[j].classList.add('connected');});});}
-  function bindHackerWires(){if(hackerWiresBound)return;hackerWiresBound=true;var area=document.getElementById('hacker-wires');area.addEventListener('click',function(e){if(debuffState.clicker)return;var inlet=e.target.closest('.hacker-wire-end'),out=e.target.closest('.hacker-wire-socket');if(inlet){var i=Number(inlet.dataset.index);if(hackerWireLinks[i]===undefined){wireSelected=i;renderHackerWires();}return;}if(!out||hackerWireLinks[wireSelected]!==undefined)return;var j=Number(out.dataset.socket);if(hackerWireRightOrder[j]!==hackerWires[wireSelected]){fx('pinbreak');haptic('warning');out.classList.add('wire-wrong');setTimeout(function(){out.classList.remove('wire-wrong');},350);return;}hackerWireLinks[wireSelected]=j;hackerWireConnected++;fx('wire');haptic('select');if(hackerWireConnected>=hackerWires.length){finishHackerCombo();return;}wireSelected=hackerWires.findIndex(function(_,i){return hackerWireLinks[i]===undefined;});renderHackerWires();});}
+  function renderHackerWires(){
+    var left=document.getElementById('hacker-wires-left'),right=document.getElementById('hacker-wires-right'),svg=document.getElementById('hacker-wires-svg');left.innerHTML='';right.innerHTML='';svg.innerHTML='';
+    hackerWires.forEach(function(color,i){var button=document.createElement('button');button.type='button';button.className='hacker-wire-end'+(hackerWireLinks[i]!==undefined?' connected':'');button.dataset.index=i;button.setAttribute('aria-label','Вход '+(i+1));button.style.background=hackerWireVariant==='connect'?color:(i===wireTarget?'#f6c675':'#6a6173');button.classList.toggle('tracing',i===wireSelected);left.appendChild(button);});
+    hackerWireRightOrder.forEach(function(color,i){var button=document.createElement('button');button.type='button';button.className='hacker-wire-socket';button.dataset.socket=i;button.setAttribute('aria-label','Контакт '+(i+1));button.style.background=hackerWireVariant==='connect'?color:'#7c7184';right.appendChild(button);});
+    requestAnimationFrame(function(){if(!left.isConnected)return;svg.innerHTML='';hackerWires.forEach(function(color,i){var j=hackerWireRightOrder.indexOf(color);if(hackerWireVariant==='connect'&&hackerWireLinks[i]===undefined)return;var a=wirePoint(left.children[i],'left'),b=wirePoint(right.children[j],'right'),w=b.x-a.x;var d='M'+a.x+','+a.y+' C'+(a.x+w*.28)+','+(a.y+(i%2?100:-90))+' '+(b.x-w*.32)+','+(b.y+(i%2?-90:100))+' '+b.x+','+b.y;
+      [10,5].forEach(function(weight){var path=document.createElementNS(SVG_NS,'path');path.setAttribute('d',d);path.setAttribute('fill','none');path.setAttribute('stroke-width',weight);path.setAttribute('stroke-linecap','round');path.setAttribute('stroke',weight===10?'#17121c':hackerWireVariant==='connect'?color:'#ac96ba');svg.appendChild(path);});});});
+  }
+
+  function bindHackerWires(){if(hackerWiresBound)return;hackerWiresBound=true;document.getElementById('hacker-wires').addEventListener('click',function(e){if(debuffState.clicker||performance.now()>wireDeadline)return;var inlet=e.target.closest('.hacker-wire-end'),out=e.target.closest('.hacker-wire-socket');if(inlet&&hackerWireVariant==='connect'){wireSelected=Number(inlet.dataset.index);renderHackerWires();return;}if(!out)return;var j=Number(out.dataset.socket),target=hackerWireVariant==='cut'?wireTarget:wireSelected;if(hackerWireLinks[target]!==undefined)return;if(hackerWireRightOrder[j]!==hackerWires[target]){fx('loss');wireDeadline-=4000;return;}if(hackerWireVariant==='cut'){clearInterval(wireClock);finishHackerCombo();return;}hackerWireLinks[target]=j;hackerWireConnected++;fx('wire');if(hackerWireConnected===hackerWires.length){clearInterval(wireClock);finishHackerCombo();return;}wireSelected=hackerWires.findIndex(function(_,i){return hackerWireLinks[i]===undefined;});renderHackerWires();});}
 
   function finishHackerCombo() {
     fx("win");
@@ -16427,7 +16548,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
   // Каждый взлом -- случайный вид: кодовый замок, щиток с проводами (3 или 5) или замок с отмычкой.
   var hackerMode = "code";
   function startHacker() {
-    var modes = ["code", "wires", "lock"];
+    var modes = ["code", "wires", "cut"];
     hackerMode = modes[Math.floor(Math.random() * modes.length)];
     stopLockpick();
     var wires = document.getElementById("hacker-wires");
@@ -16444,7 +16565,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
       kb.style.display = "grid";
       newHackerCode();
       buildHackerKeyboard();
-    } else if (hackerMode === "wires") {
+    } else if (hackerMode === "wires" || hackerMode === "cut") {
       startHackerWires();
     } else {
       startLockpick();
@@ -16774,25 +16895,46 @@ WORK_PAGE_HTML = r'''<!doctype html>
   // Courier avenue: continuously scrolling traffic, swipes to steer and brake, double tap to park.
   var courierRun=null;
   function courierWords(ru,en,de){return state.lang==='ru'?ru:state.lang==='de'?de:en;}
-  function courierHUD(){var r=courierRun;if(!r)return;document.getElementById('courier-feedback').textContent=courierWords('Посылок: ','Parcels: ','Pakete: ')+r.delivered+' · '+(r.stopped?courierWords('СТОП','STOP','HALT'):Math.round(r.speed*20)+' km/h');}
-  function courierDraw(){var r=courierRun;if(!r)return;var road=document.getElementById('courier-road'),h=road.clientHeight,rider=document.getElementById('courier-rider');rider.style.left=(18+r.lane*32)+'%';rider.classList.toggle('stopped',r.stopped);road.style.setProperty('--travel',(r.travel%80)+'px');var marker=document.getElementById('courier-delivery');marker.style.left=(18+r.targetLane*32)+'%';marker.style.top=r.targetY+'px';marker.style.setProperty('--handoff',Math.min(1,r.hold/.75));r.obstacles.forEach(function(o){o.node.style.left=(18+o.lane*32)+'%';o.node.style.top=o.y+'px';});var near=Math.abs(r.targetY-h*.78)<45;road.classList.toggle('delivery-near',near&&r.lane===r.targetLane);courierHUD();}
-  function setCourierDirection(dx,dy){var r=courierRun;if(!r||r.served)return;if(dx){r.lane=Math.max(0,Math.min(2,r.lane+dx));haptic('select');}if(dy){r.speed=dy<0?Math.min(2.4,r.speed+.35):Math.max(.45,r.speed-.45);r.stopped=false;}courierDraw();}
+  function courierHUD(){var r=courierRun;if(!r)return;document.getElementById('courier-feedback').textContent=courierWords('Посылок: ','Parcels: ','Pakete: ')+r.delivered+' · '+(r.stopped?courierWords('СТОП','STOP','HALT'):Math.round(r.speed*20)+' km/h')+(r.targetSpeed<r.speed?' · торможение':'')+(r.wet?' · мокрая дорога':'');}
+  function courierDraw(){var r=courierRun;if(!r)return;var road=document.getElementById('courier-road'),h=road.clientHeight,rider=document.getElementById('courier-rider');rider.style.left=(18+r.lane*32)+'%';rider.classList.toggle('stopped',r.stopped);road.style.setProperty('--travel',(r.travel%80)+'px');var marker=document.getElementById('courier-delivery');marker.style.left=(18+r.targetLane*32)+'%';marker.style.top=r.targetY+'px';marker.style.setProperty('--handoff',Math.min(1,r.hold/.75));r.obstacles.forEach(function(o){o.node.className='avenue-cone hazard-'+(o.kind||'barrier');o.node.style.left=(18+o.lane*32)+'%';o.node.style.top=o.y+'px';});var near=Math.abs(r.targetY-h*.78)<45;road.classList.toggle('delivery-near',near&&r.lane===r.targetLane);courierHUD();}
+  function setCourierDirection(dx,dy){var r=courierRun;if(!r||r.served)return;if(dx){r.lane=Math.max(0,Math.min(2,r.lane+dx));haptic('select');}if(dy){r.targetSpeed=dy<0?Math.min(2.4,r.targetSpeed+.4):Math.max(0,r.targetSpeed-.6);r.emergency=false;}courierDraw();}
   function setCourierLane(lane){if(courierRun){courierRun.lane=Math.max(0,Math.min(2,lane));courierDraw();}}
-  function pressCourierStopline(){if(!courierRun||courierRun.served)return;courierRun.stopped=!courierRun.stopped;courierRun.hold=0;haptic('medium');courierDraw();}
+  function pressCourierStopline(){if(!courierRun||courierRun.served)return;courierRun.targetSpeed=courierRun.speed<.05?1:0;courierRun.emergency=true;courierRun.hold=0;haptic('medium');courierDraw();}
   function courierNextAddress(){var r=courierRun;if(!r)return;r.targetLane=Math.floor(Math.random()*3);r.targetY=-70;r.hold=0;r.served=false;r.deliveryId=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);document.getElementById('courier-destination').textContent=courierWords('Следующий адрес: ','Next address: ','Nächstes Ziel: ')+[courierWords('слева','left','links'),courierWords('по центру','center','Mitte'),courierWords('справа','right','rechts')][r.targetLane];}
   function courierCollisionTick(now){var r=courierRun;if(!r||activeGame!=='courier')return;now=now||performance.now();var dt=Math.min(.05,Math.max(0,(now-r.last)/1000));r.last=now;var road=document.getElementById('courier-road'),h=road.clientHeight;
-    if(!pausedGame){var move=r.stopped||r.served?0:dt*85*r.speed;r.travel+=move;r.targetY+=move;
-      r.obstacles.forEach(function(o){o.y+=move;if(o.y>h+70){o.y=-120-Math.random()*230;o.lane=Math.floor(Math.random()*3);o.hit=false;}if(!r.stopped&&!r.served&&!o.hit&&o.lane===r.lane&&Math.abs(o.y-h*.78)<32){o.hit=true;r.stopped=true;r.hold=0;road.classList.add('courier-bump');setTimeout(function(){road.classList.remove('courier-bump');},350);haptic('impact');fx('impact');document.getElementById('courier-destination').textContent=courierWords('Столкновение. Смени полосу и двойной тап — ехать.','Collision. Change lane and double tap to continue.','Kollision. Spur wechseln und zum Fahren doppeltippen.');}});
+    if(!pausedGame){var desired=r.served?0:r.targetSpeed,rate=desired<r.speed?(r.emergency?2.5:1.05)*(r.wet?.6:1):.65;r.speed+=Math.sign(desired-r.speed)*Math.min(Math.abs(desired-r.speed),rate*dt);r.stopped=r.speed<.035;var move=r.served?0:dt*85*r.speed;r.travel+=move;r.targetY+=move;
+      r.obstacles.forEach(function(o){o.y+=move;if(o.y>h+70){o.y=-120-Math.random()*230;o.lane=Math.floor(Math.random()*3);o.hit=false;o.kind=['barrier','puddle','bump','crosswalk','traffic'][Math.floor(Math.random()*5)];}if(!r.stopped&&!r.served&&!o.hit&&o.lane===r.lane&&Math.abs(o.y-h*.78)<32){o.hit=true;if(o.kind==='puddle'){r.targetSpeed=Math.min(r.targetSpeed,.8);r.wet=true;}else if(o.kind==='bump'&&r.speed<1.1){fx('lane');return;}else if(o.kind==='crosswalk'&&r.speed<.55){fx('lane');return;}else{r.speed=0;r.targetSpeed=0;r.stopped=true;api('/api/work/penalty',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({game:'courier'})}).then(function(res){if(res.state){state=res.state;setBalance(state.bucks);}});}r.hold=0;road.classList.add('courier-bump');setTimeout(function(){road.classList.remove('courier-bump');},350);haptic('impact');fx('impact');document.getElementById('courier-destination').textContent=courierWords('Столкновение. Смени полосу и двойной тап — ехать.','Collision. Change lane and double tap to continue.','Kollision. Spur wechseln und zum Fahren doppeltippen.');}});
       if(r.targetY>h+70)courierNextAddress();
       if(r.stopped&&!r.served&&r.lane===r.targetLane&&Math.abs(r.targetY-h*.78)<45){r.hold+=dt;if(r.hold>=.75){r.served=true;registerHit('courier',road.clientWidth*(18+r.lane*32)/100,h*.78,road,false,function(awarded){if(courierRun!==r)return;if(awarded){r.delivered++;fx('deliver');haptic('success');courierNextAddress();}else{r.served=false;r.hold=0;document.getElementById('courier-destination').textContent=courierWords('Не удалось вручить. Двойной тап и попробуй ещё.','Delivery failed. Double tap and try again.','Übergabe fehlgeschlagen. Doppeltippen und erneut versuchen.');}},r.deliveryId);}}else if(!r.served)r.hold=0;courierDraw();}
     courierRafId=requestAnimationFrame(courierCollisionTick);
   }
-  function startCourier(){if(courierRafId)cancelAnimationFrame(courierRafId);var road=document.getElementById('courier-road');road.className='courier-avenue';road.innerHTML='<div class="courier-markings"></div><div id="courier-destination"></div><div id="courier-delivery"><img src="/assets/work_parcel.webp" alt=""><span></span></div><div id="courier-rider"><img src="/assets/courier_top.webp" alt=""></div>';var r={lane:1,speed:1,stopped:false,delivered:0,last:performance.now(),travel:0,hold:0,obstacles:[]};for(var i=0;i<2;i++){var node=document.createElement('div');node.className='avenue-cone';node.textContent='🚧';road.appendChild(node);r.obstacles.push({node:node,y:-200-i*250,lane:i===0?0:2,hit:false});}courierRun=r;courierNextAddress();courierDraw();courierCollisionTick(performance.now());document.getElementById('courier-hint').textContent=courierWords('Свайп ← →: полоса. ↑ быстрее, ↓ медленнее. Двойной тап: стоп / ехать. Остановись у посылки для передачи.','Swipe ← → to steer, ↑ faster, ↓ slower. Double tap: stop / go. Park beside the parcel to deliver.','← → Spur, ↑ schneller, ↓ langsamer. Doppeltippen: Halt / Fahrt. Am Paket anhalten.');}
+  function startCourier(){if(courierRafId)cancelAnimationFrame(courierRafId);var road=document.getElementById('courier-road');road.className='courier-avenue';road.innerHTML='<div class="courier-markings"></div><div id="courier-destination"></div><div id="courier-delivery"><img src="/assets/work_parcel.webp" alt=""><span></span></div><div id="courier-rider"><img src="/assets/courier_top.webp" alt=""></div>';var r={lane:1,speed:.3,targetSpeed:1,emergency:false,wet:Math.random()<.3,stopped:false,delivered:0,last:performance.now(),travel:0,hold:0,obstacles:[]};for(var i=0;i<2;i++){var node=document.createElement('div');node.className='avenue-cone';node.textContent='';road.appendChild(node);r.obstacles.push({node:node,y:-200-i*250,lane:i===0?0:2,hit:false,kind:i?'puddle':'barrier'});}courierRun=r;courierNextAddress();courierDraw();courierCollisionTick(performance.now());document.getElementById('courier-hint').textContent=courierWords('Свайп ← →: полоса. ↑ быстрее, ↓ медленнее. Двойной тап: экстренное торможение / старт. Тормози заранее: остановись у посылки. Перед переходом и неровностями снижай скорость.','Swipe ← → to steer, ↑ faster, ↓ slower. Double tap: emergency brake / start. Brake early to park beside the parcel. Slow down at crossings and bumps.','← → Spur, ↑ schneller, ↓ langsamer. Doppeltippen: Halt / Fahrt. Am Paket anhalten.');}
   var courierControlsBound=false;
   function bindCourierControls(){document.getElementById('courier-controls').hidden=true;if(courierControlsBound)return;courierControlsBound=true;var road=document.getElementById('courier-road'),start=null,lastTap=0;road.style.touchAction='none';
     road.addEventListener('pointerdown',function(e){e.preventDefault();start={x:e.clientX,y:e.clientY};try{road.setPointerCapture(e.pointerId);}catch(err){}});
     road.addEventListener('pointerup',function(e){e.preventDefault();if(!start||!courierRun)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;start=null;if(Math.max(Math.abs(dx),Math.abs(dy))>18){if(Math.abs(dx)>Math.abs(dy))setCourierDirection(dx>0?1:-1,0);else setCourierDirection(0,dy>0?1:-1);lastTap=0;}else{var now=Date.now();if(now-lastTap<360){pressCourierStopline();lastTap=0;}else lastTap=now;}});road.addEventListener('pointercancel',function(){start=null;});}
 
+  var digBusy=false,digTool='brush';
+  function digAction(body){if(digBusy)return;digBusy=true;api('/api/work/dig',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){digBusy=false;if(res.state){state=res.state;setBalance(state.bucks);}if(res.dig)state.dig=res.dig;if(!res.ok)alert(res.error);else if(res.awarded)fx('win');renderDig();}).catch(function(){digBusy=false;});}
+  function renderDig(){
+    var panel=document.getElementById('game-dig');panel.innerHTML='';var d=state.dig||{},run=d.run;
+    function node(tag,text,cls){var e=document.createElement(tag);e.textContent=text||'';if(cls)e.className=cls;return e;}
+    function button(text,body){var b=node('button',text,'dig-button');b.disabled=digBusy;b.onclick=function(){digAction(body);};return b;}
+    panel.appendChild(node('h3',courierWords('Раскопки · экспедиция','Archaeology expedition','Ausgrabung')));
+    panel.appendChild(node('p',courierWords('Кисть бережёт находки. Кирка быстрее, но повреждает лут. Забери добычу или рискни и копай глубже.','Brush preserves finds. Pickaxe is fast but damages loot. Cash out or risk another layer.','Pinsel schont Funde. Spitzhacke ist schnell, aber riskant.')));
+    if(!run){panel.appendChild(button(d.ready_in?'Отдых · '+d.ready_in+' сек.':'Начать экспедицию',{action:'start'}));}
+    else{
+      panel.appendChild(node('div','Слой '+run.depth+' · Добыча '+run.bag_value+' · Риск '+run.damage+'/8','dig-meta'));
+      if(run.collapse)panel.appendChild(node('p','Осыпание грунта! Часть добычи потеряна. Можно вернуться с остатком или продолжить.'));var tools=node('div','','dig-tools');Object.keys(d.tools).forEach(function(key){var b=node('button',d.tools[key].name,'dig-button'+(digTool===key?' on':''));b.onclick=function(){digTool=key;renderDig();};tools.appendChild(b);});panel.appendChild(tools);
+      var board=node('div','','dig-board');run.cells.forEach(function(cell,index){var b=node('button',cell.earth>0?String(cell.earth):cell.loot?'✦':'·','dig-cell'+(cell.found?' found':''));b.disabled=digBusy||!cell.earth||!!run.choice;b.setAttribute('aria-label','Клетка '+(index+1)+', грунт '+cell.earth);b.onclick=function(){digAction({action:'dig',id:run.id,cell:index,tool:digTool});};board.appendChild(b);});panel.appendChild(board);
+      if(run.choice){panel.appendChild(node('h4',run.depth>=8?'Экспедиция завершена — забери добычу':'Выбери улучшение на этот заход'));run.choice.forEach(function(key){if(key==='cashout')return;panel.appendChild(button(({speed:'Быстрые руки',area:'Лопатка копает 3 клетки',luck:'Больше редких находок'})[key],{action:'upgrade',id:run.id,upgrade:key}));});}
+      if(run.bag.length){var bag=node('div','','dig-bag');run.bag.forEach(function(item){bag.appendChild(node('p',item.name+' · '+item.value+' баксов · сохранность '+item.condition+'%'));});panel.appendChild(bag);}
+      panel.appendChild(button('Забрать добычу · '+run.bag_value,{action:'cashout',id:run.id}));
+    }
+    if(d.upgrade_price)panel.appendChild(button('Улучшить инструменты · '+d.upgrade_price+' баксов (ур. '+d.rank+')',{action:'tool_upgrade'}));
+    panel.appendChild(node('small','Редкость находок: '+(d.chances||[]).map(function(x){return x.name+' '+x.chance+'%';}).join(' · ')));
+    var total=Object.values(d.collection||{}).reduce(function(a,b){return a+b;},0);panel.appendChild(node('p','В коллекции находок: '+total));
+  }
   var pipeJob=null,pipeBusy=false,pipeRotations=[];
   function pipeMask(kind,rotation){rotation=rotation%4;var base=kind==='straight'?5:3;return ((base<<rotation)|(base>>(4-rotation)))&15;}
   function pipeTrace(){
@@ -17067,13 +17209,15 @@ WORK_PAGE_HTML = r'''<!doctype html>
   document.addEventListener("visibilitychange", function () { if (document.hidden) pauseGames(); });
   window.__rdPause = pauseGames;
 
+
+  var originalRenderFarm=renderFarm;renderFarm=function(){originalRenderFarm();var f=document.getElementById('game-farm');if(state&&state.farm_market&&f){var banner=document.createElement('div');banner.className='farm-demand';banner.textContent='Спрос дня: '+state.farm_market.name+' · урожай +50%. Цена закрепляется при посадке.';f.prepend(banner);}};
   function switchGame(name) {
     activeGame = name;
     pausedGame = null;
     var pov = document.getElementById("pause-ov");
     if (pov) pov.style.display = "none";
     stopAllGames();
-    ["clicker", "catch", "courier", "workshop", "farm"].forEach(function (g) {
+    ["clicker", "catch", "courier", "workshop", "farm", "dig"].forEach(function (g) {
       document.getElementById("game-" + g).style.display = g === name ? "block" : "none";
       document.getElementById("tab-" + g).classList.toggle("active", g === name);
     });
@@ -17082,6 +17226,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     if (name === "courier") startCourier();
     if (name === "farm") renderFarm();
     if (name === "workshop") startPipes();
+    if(name==='dig')renderDig();
   }
 
   function render() {
@@ -17099,6 +17244,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     document.getElementById("tab-catch").textContent = state.ui.tab_catch;
     document.getElementById("tab-courier").textContent = state.ui.tab_courier;
     document.getElementById("tab-farm").textContent = state.ui.tab_farm;
+    document.getElementById('tab-dig').onclick=function(){switchGame('dig');};
     document.getElementById("tab-workshop").textContent=courierWords("Трубы","Pipes","Rohre");document.getElementById("tab-workshop").onclick=function(){switchGame("workshop");};
     document.getElementById("clicker-hint").textContent = courierWords("Запомни код, проследи провод или вскрой замок.","Remember the code, trace a cable or open a lock.","Code merken, Kabel verfolgen oder Schloss öffnen.");
     document.getElementById("catch-hint").textContent = state.ui.catch_hint;
@@ -17136,6 +17282,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
     });
   }
 
+  var marketRefreshAt=0;setInterval(function(){if(state&&state.farm_market&&Date.now()>=state.farm_market.until*1000&&Date.now()-marketRefreshAt>10000){marketRefreshAt=Date.now();load();}},1000);
   load();
   }
 
@@ -17145,7 +17292,7 @@ WORK_PAGE_HTML = r'''<!doctype html>
 })();
 </script>
 </body>
-</html>'''
+</html>"""
 
 
 # ============================================================
@@ -17185,6 +17332,18 @@ CLOTHES_MALE = {
     "shoes": [("sneakers", "Кроссовки", "Sneakers", "👟"), ("boots", "Ботинки", "Boots", "🥾"), ("shoes", "Туфли", "Shoes", "👞")],
     "boxers": [("boxers", "Боксёры", "Boxers", "🩲")],
 }
+for _pool,_extra in ((CLOTHES_FEMALE,{
+ 'top':[('oversize','Рубашка оверсайз','Oversized shirt','👕'),('vest','Жилет','Vest','🦺'),('polo','Поло','Polo','👕')],
+ 'bottom':[('cargo','Карго','Cargo pants','👖'),('pencil','Юбка-карандаш','Pencil skirt','👗'),('denimshorts','Джинсовые шорты','Denim shorts','🩳')],
+ 'acc':[('cap','Кепка','Cap','🧢'),('beret','Берет','Beret','🧢'),('headband','Ободок','Headband','🎀'),('pendant','Кулон','Pendant','📿')],
+ 'shoes':[('loafers','Лоферы','Loafers','👞'),('sandals','Босоножки','Sandals','👡')]}),(CLOTHES_MALE,{
+ 'top':[('oversize','Рубашка оверсайз','Oversized shirt','👕'),('vest','Жилет','Vest','🦺'),('polo','Поло','Polo','👕')],
+ 'bottom':[('cargo','Карго','Cargo pants','👖'),('sportshorts','Спортивные шорты','Sports shorts','🩳')],
+ 'acc':[('hat','Шляпа','Hat','🎩'),('beanie','Шапка','Beanie','🧢'),('pendant','Кулон','Pendant','📿')],
+ 'shoes':[('loafers','Лоферы','Loafers','👞'),('hightops','Высокие кеды','High-tops','👟')]})):
+    for _slot,_items in _extra.items():_pool[_slot].extend(_items)
+
+
 # Что должно быть уже снято, прежде чем можно снять вещь этой категории.
 CLOTH_BLOCKERS = {"top": {"outer"}, "dress": {"outer"}, "legs": {"shoes"}, "bra": {"top", "dress", "outer"},
                   "panties": {"bottom", "dress", "legs"}, "boxers": {"bottom"},
@@ -17244,7 +17403,7 @@ def play_self_gender(user):
 # Кастомизация перед игрой: по одной вещи в каждом из 5 слотов, для игрока ("mine") и персонажа ("her").
 # Выбор хранится в профиле (user["strip_outfit"]); без выбора наряд случайный, как раньше.
 STRIP_SLOTS = ("head", "top", "bottom", "shoes", "accessory")
-STRIP_HEADWEAR = ("hat", "cap")
+STRIP_HEADWEAR = ("hat", "cap", "beret", "headband", "beanie")
 
 
 def strip_slot_options(gender):
@@ -17332,6 +17491,16 @@ async def online_page_handler(request):
     return page_response(request, online_ui.PAGE_HTML)
 
 
+ONLINE_SKINS={
+ 'anime_f_short':('Аниме · короткие волосы','player_avatar_anime_female_short'),
+ 'anime_f_long':('Аниме · длинные волосы','player_avatar_anime_female_long'),
+ 'anime_m_crop':('Аниме · мужской образ','player_avatar_anime_male_crop'),
+ 'anime_m_medium':('Аниме · средние волосы','player_avatar_anime_male_medium'),
+ 'real_f_short':('Реализм · короткие волосы','player_avatar_realism_female_short'),
+ 'real_m_crop':('Реализм · мужской образ','player_avatar_realism_male_crop'),
+}
+
+
 async def api_online_handler(request):
     uid, user, body, err = await _play_request(request)
     if err:
@@ -17340,7 +17509,7 @@ async def api_online_handler(request):
     store = online_store()
     original = copy.deepcopy(store)
     affected = {uid} | {p for room in store.values() for p in room['players'] if p != 'bot'}
-    wallets = {p: {k:user_data[p].get(k) for k in ('bucks','online_room','online_invite')} for p in affected if p in user_data}
+    wallets = {p: {k:user_data[p].get(k) for k in ('bucks','online_room','online_invite','online_skin')} for p in affected if p in user_data}
     failure = None
     preview = None
     try:
@@ -17349,6 +17518,11 @@ async def api_online_handler(request):
         room = online_games.current(store,user_data,uid)
         if action == 'state' and room and room['status']=='waiting' and time.time()-room.get('seen',0)>=5:
             room['seen']=time.time()
+        if action in ('start','join') and body.get('skin') is not None:
+            skin=body.get('skin')
+            if skin not in ONLINE_SKINS:raise online_games.GameError('invalid_request')
+            if room and room['status'] in ('playing','waiting'):raise online_games.GameError('already_playing')
+            user['online_skin']=skin
         if action == 'start':
             game = body.get('game')
             if game == 'rps18' and (not online_adult_allowed(user) or body.get('adult') is not True):
@@ -17406,11 +17580,15 @@ async def api_online_handler(request):
                 else:user_data[p][key]=value
         failure='save_failed'
     current = online_games.current(store,user_data,uid)
+    room_view=online_games.view(current,uid)
+    if room_view and current:
+        room_view['skins']=[{'image':'/assets/'+ONLINE_SKINS.get((user_data.get(p) or {}).get('online_skin'),ONLINE_SKINS['anime_m_crop'])[1]+'.webp','name':('Компьютер' if p=='bot' else 'Твой персонаж' if p==uid else 'Персонаж соперника')} for p in current['players']]
     return web.json_response({'ok':failure is None,'error':failure,'preview':preview,'state':{
         'lang':user.get('lang','ru'),'bucks':user.get('bucks',0),'bets':list(online_games.BETS),
         'adult_allowed':online_adult_allowed(user),'invite':user.get('online_invite'),
+        'skin':user.get('online_skin','anime_m_crop'),'skins':[{'key':key,'name':value[0],'image':'/assets/'+value[1]+'.webp'} for key,value in ONLINE_SKINS.items()],
         'bot_username':_BOT_USERNAME['v'],'server_time':time.time(),
-        'room':online_games.view(current,uid)}})
+        'room':room_view}})
 
 
 def serialize_play_state(user):
@@ -17999,7 +18177,7 @@ async def play_page_handler(request):
 
 
 # Страница игр -- статичная, всё состояние через /api/play/* (как у колеса и магазина).
-PLAY_PAGE_HTML = r'''<!doctype html>
+PLAY_PAGE_HTML = r"""<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -18090,6 +18268,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
   .talk-card { background: linear-gradient(150deg, rgba(14,165,233,.16), rgba(139,92,246,.10) 60%, var(--card)); }
   #full-screen-msg { display: none; padding: 30px 10px; text-align: center; color: var(--hint); white-space: pre-wrap; }
 #top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}#top>div:last-child{display:contents}#title{grid-column:1;grid-row:1}#bucks{grid-column:2;grid-row:1;text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}#sound-toggle{grid-column:3;grid-row:1;justify-self:end}
+#top{display:grid!important;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}#title{font-size:16px}#bucks{text-align:center;white-space:nowrap}#sound-toggle{justify-self:end} .card{border:1px solid #86709755;background:linear-gradient(145deg,#292338,#191827);box-shadow:inset 0 1px 0 #ffffff0a,0 10px 24px #0003}.card h3{text-align:center}.btn{background:linear-gradient(120deg,#9560bd,#b9589e);box-shadow:inset 0 1px 0 #fff2,0 5px 12px #0003}.btn:active{transform:scale(.97)}.card p{line-height:1.5}.outfit-row select{border:1px solid #8e729855;min-height:40px}#arena{border-radius:20px}
 </style>
 </head>
 <body>
@@ -18497,7 +18676,7 @@ PLAY_PAGE_HTML = r'''<!doctype html>
 </script>
 </body>
 </html>
-'''
+"""
 
 
 # ============================================================
@@ -18975,12 +19154,12 @@ def app_sub_offers(user):
         if tier=='elite':benefits += [text('Иммунитет к болезням; постоянная удача колеса; бесплатное пробуждение раз в неделю','Illness immunity; permanent wheel luck; one free wake per week','Krankheitsimmunität; dauerhaftes Radglück; einmal wöchentlich kostenlos aufwecken')]
 
         offers.append({"payload": payload, "title": title, "emoji": emoji, "perks": [style_line]+benefits,
-                       "stars": product_stars(payload, user), "old_stars":regular_stars(payload), "stars_label": str(product_stars(payload,user)),"photos":photo_wallet.MONTHLY[tier],
+                       "stars": product_stars(payload, user), "old_stars":regular_stars(payload),"old_rub":SUBSCRIPTION_PRICES[payload][1], "stars_label": str(product_stars(payload,user)),"photos":photo_wallet.MONTHLY[tier],
                        "rub": product_rub(payload, user) if "platega" in methods else None})
     for base in list(offers):
         payload = base['payload'] + '_week'
         offers.append({**base, 'payload': payload, 'title': base['title'] + ' · 7 ' + ('дней' if user.get('lang') == 'ru' else 'days'),
-                       'stars':product_stars(payload,user),'old_stars':regular_stars(payload),'stars_label':str(product_stars(payload,user)), 'photos':photo_wallet.WEEKLY[{'subscribe_pro':'pro','subscribe_super':'super_pro','subscribe_elite':'elite'}[base['payload']]], 'rub':product_rub(payload,user) if 'platega' in available_payment_methods(payload) else None})
+                       'stars':product_stars(payload,user),'old_stars':regular_stars(payload),'old_rub':SUBSCRIPTION_PRICES[payload][1],'stars_label':str(product_stars(payload,user)), 'photos':photo_wallet.WEEKLY[{'subscribe_pro':'pro','subscribe_super':'super_pro','subscribe_elite':'elite'}[base['payload']]], 'rub':product_rub(payload,user) if 'platega' in available_payment_methods(payload) else None})
     return offers
 
 
@@ -18994,7 +19173,7 @@ def serialize_app_state(user):
     user["app_seen"] = datetime.now().isoformat()
     if not user.get("personality_ready"):
         ui = {k: v for k, v in APP_TEXTS.get(user.get("lang", "ru"), APP_TEXTS["en"]).items() if isinstance(v, str)}
-        return {"release":"20261118a", "onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
+        return {"release":"20261118b", "onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
     app_unstick(user)
     if migrate_character_appearance(user):save_data(user_data)
     if user.get('appearance'):
@@ -19027,7 +19206,7 @@ def serialize_app_state(user):
         "content_settings":profile_options.state(user),
         "photos":photo_wallet.snapshot(user),
         "purchase_products":[{"payload":k,"amount":v[0],"stars":product_stars(k,user),"rub":product_rub(k,user),"image":"/assets/photo_pack_"+str(v[0])+".webp"} for k,v in photo_wallet.PACKS.items()],
-        "release":"20261118a",
+        "release":"20261118b",
         "reply_choices": serialize_reply_choices(user),
         "pending": bool(user.get("app_pending")),"photo_pending":bool(user.get("photo_pending")),
         "notices": notices,
@@ -19072,7 +19251,7 @@ def serialize_app_state(user):
         "server_day": local_today().isoformat(),
         "animated_reactions": get_subscription_level(user) in ("pro","super_pro","elite"),
         "offers": app_sub_offers(user),
-        "upgrade": {"stars": product_stars("upgrade_to_super", user), "stars_label": price_label("upgrade_to_super", user),
+        "upgrade": {"stars": product_stars("upgrade_to_super", user), "stars_label": str(product_stars("upgrade_to_super", user)),
                     "rub": product_rub("upgrade_to_super", user) if "platega" in available_payment_methods("upgrade_to_super") else None}
                    if sub_level == "pro" else None,
         "sale": at(user, "sale", n=int(SUB_SALE_DISCOUNT * 100)) if sub_sale_active() else None,
@@ -19216,9 +19395,10 @@ async def app_photo_generate(user_id, user, request_text):
         charged = False
         if user['energy'] <= 0:
             user['sleep_until'] = datetime.now().isoformat()
-    except Exception as exc:
+    except (Exception,asyncio.CancelledError) as exc:
         if charged:
             photo_wallet.finish(user,'chat',refund=True)
+        if isinstance(exc,asyncio.CancelledError):raise
         user['photo_error']=photo_generation.error_code(exc)
         logging.warning('Photo generation unavailable: %s',user['photo_error'])
         user.setdefault('app_notices', []).append(('Не получилось создать фото. Попытка возвращена. Код: ' if user.get('lang') == 'ru' else 'Could not create the photo. Energy preserved. Code: ')+user['photo_error'])
@@ -19251,6 +19431,7 @@ async def api_app_photo_handler(request):
 async def api_wardrobe_handler(request):
     _,user,body,err=await _play_request(request)
     if err:return err
+    if user.get('avatar_job'):return web.json_response({'ok':False,'error':'Дождись готового образа'})
     if 'outfit' not in body:return web.json_response({'ok':False,'error':'Bad request'})
     try:profile_options.equip(user,body.get('outfit'),get_intimacy_level(user),body.get('slot'))
     except ValueError as exc:return web.json_response({'ok':False,'error':str(exc)})
@@ -19720,7 +19901,7 @@ setTimeout(function () { if (window.__tgSdkOnSettle) window.__tgSdkOnSettle(); }
 _SDK_TAG_RE = re.compile(r'<script src="/tg-sdk\.js"[^>]*>\s*</script>', re.S)
 
 
-SFX_TAG = '<script src="/sfx.js?v=20261117e"></script>'
+SFX_TAG = '<script src="/sfx.js?v=20261118b"></script>'
 
 
 async def sfx_js_handler(request):
@@ -19901,7 +20082,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
 @media(prefers-reduced-motion:reduce){.btn::after,.buy-btn::after,.action-btn::after,.rd-premium,.rd-spark{animation:none!important;}}
 
 '''
-APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261117e">'
+APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261118b">'
 
 
 async def theme_css_handler(request):
@@ -19914,8 +20095,8 @@ def page_response(request, html):
         html = html.replace("</head>", APP_THEME_TAG + "</head>", 1)
     if request.query.get("embed") == "1":
         html = _SDK_TAG_RE.sub(lambda m: EMBED_BRIDGE, html, count=1)
-        return web.Response(text=html, content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118a"})
-    return web.Response(text=with_app_back(html), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118a"})
+        return web.Response(text=html, content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118b"})
+    return web.Response(text=with_app_back(html), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118b"})
 
 
 def refund_scene_photo(user, job_id):
@@ -19955,10 +20136,11 @@ async def generate_scene_photo(user, scene, job_id):
             output.write(raw)
         scene.update(photo='/avatars/'+name,photo_status='ready');photo_wallet.finish(user,job_id)
         user.pop('scene_photo_job',None)
-    except Exception as exc:
+    except (Exception,asyncio.CancelledError) as exc:
         logging.warning('Scene portrait unavailable: %s',photo_generation.error_code(exc))
         scene['photo_error']=photo_generation.error_code(exc)
         refund_scene_photo(user,job_id)
+        if isinstance(exc,asyncio.CancelledError):raise
     finally:
         save_data(user_data)
 
@@ -20006,11 +20188,12 @@ async def app_hot_generate(user_id, user, kind, photo_job_id=None, **kw):
             scene.update(photo_id=photo_job_id,photo_status='pending')
             save_data(user_data)
             asyncio.create_task(generate_scene_photo(user,scene,photo_job_id))
-    except Exception as e:
+    except (Exception,asyncio.CancelledError) as e:
         logging.warning('app scene: %s',type(e).__name__)
         refund_intim_scene(user,kind)
         if photo_job_id:
             refund_scene_photo(user,photo_job_id)
+        if isinstance(e,asyncio.CancelledError):raise
         user.setdefault('app_notices',[]).append(at(user,'gen_error'))
     finally:
         user['hot_pending']=None
@@ -20129,7 +20312,7 @@ def serialize_referral(user):
 
 
 async def app_page_handler(request):
-    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118a"})
+    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118b"})
 
 # Нативная кнопка «Назад» Telegram на внутренних страницах (магазин, колесо, игры, работа, гайд) --
 # возвращает в главное приложение /app, так что всё выглядит как одно мини-приложение.
@@ -20298,7 +20481,7 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
   function loadSample(kind){
     if(sampleBuffers[kind])return Promise.resolve(sampleBuffers[kind]);
     if(sampleLoads[kind])return sampleLoads[kind];
-    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261117f').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
+    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261118b').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
     return sampleLoads[kind];
   }
   function sample(kind){
@@ -20717,6 +20900,8 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 @keyframes send-merge{0%,100%{transform:scale(1)}35%,65%{transform:scale(1.2);box-shadow:0 0 25px #d76bcb88}}#send.sending{animation:send-merge 2s ease!important}#composer .composer-input:before{animation-duration:2s!important} .card,.tier{box-shadow:inset 0 1px 0 #fff08,0 8px 22px #0002}del,.old-price{position:relative;text-decoration:none!important}del:after,.old-price:after{content:'';position:absolute;left:0;right:0;top:50%;height:2px;background:#ef606c;transform:rotate(-8deg)}
 
 #send.send-bounce{animation:send-merge 2s ease!important}#composer.send-sweep:after,.composer-shell.send-sweep:after{animation-duration:2s!important}.composer-shell:focus-within:before{animation-duration:2s!important;animation-iteration-count:2!important}.send-flight{max-width:min(80vw,340px)!important;pointer-events:none} .photo-viewer{overscroll-behavior:contain}.message-reactions:empty{display:none!important}
+
+.energy-ritual{position:fixed;inset:0;z-index:10000;background:radial-gradient(ellipse,#513458,#141123 65%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;box-sizing:border-box}.energy-ritual-can{height:min(62dvh,480px);width:min(80vw,350px);object-fit:contain;touch-action:none;filter:drop-shadow(0 20px 24px #0007)}.energy-ritual p{text-align:center;color:#e1cfea;max-width:320px}.energy-close{position:absolute;right:18px;top:20px;color:white;background:#ffffff16;border:0;width:42px;height:42px;border-radius:50%;font-size:27px}.energy-ring{position:absolute;top:18%;width:58px;height:58px;border:2px solid #e8d7eb;border-radius:50%;background:#a179ae;color:white;font-size:30px;touch-action:none;box-shadow:0 0 22px #b982c477}.energy-ring:disabled{opacity:.35}.energy-ritual-can.shake{animation:can-shake .35s ease}.energy-ritual-can.opened{animation:can-open .6s ease forwards}@keyframes can-shake{25%{transform:rotate(-9deg) translateX(-8px)}75%{transform:rotate(9deg) translateX(8px)}}@keyframes can-open{to{transform:translateY(10px) rotate(-8deg);filter:drop-shadow(0 0 35px #dfb1e9)}}
 </style>
 </head>
 <body>
@@ -20912,9 +21097,18 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   }
   function useComposerEnergy(){
     if(energizerBusy||state.stats.energizers<1||state.stats.energy>=state.stats.energy_max)return;
-    var before=state.stats.energy;energizerBusy=true;$('energy-action').disabled=true;
-    api('/api/app/wake',{method:'energizer'}).then(function(res){energizerBusy=false;if(res.state)state=res.state;render();if(res.ok){energyGainAnimation(state.stats.energy-before);haptic('reward');if(sndOn()&&window.RDSFX)RDSFX.care('drink','sparkling_water');}else toast(res.error);}).catch(function(){energizerBusy=false;render();toast('Network error');});
+    energizerBusy=true;var layer=el('div','energy-ritual'),can=el('img','energy-ritual-can'),ring=el('button','energy-ring','↑'),hint=el('p',null,tr('Встряхни телефон или проведи по банке','Shake your phone or swipe the can','Schüttle das Handy oder wische über die Dose')),close=el('button','energy-close','×');can.src='/assets/energy_can.webp';can.alt=tr('Энергетик','Energy drink','Energydrink');ring.setAttribute('aria-label','Потянуть кольцо');ring.disabled=true;var charge=0,lastShake=0,startY=0,finished=false;
+    function cleanup(){window.removeEventListener('devicemotion',motion);layer.remove();energizerBusy=false;}
+    function shake(){if(finished)return;var t=Date.now();if(t-lastShake<180)return;lastShake=t;charge++;can.classList.remove('shake');void can.offsetWidth;can.classList.add('shake');haptic('light');if(charge>=3){ring.disabled=false;hint.textContent=tr('Потяни кольцо вверх или нажми на него','Pull the ring up or tap it','Zieh den Ring nach oben oder tippe darauf');}}
+    function motion(e){var a=e.accelerationIncludingGravity;if(a&&Math.abs(a.x)+Math.abs(a.y)+Math.abs(a.z)>24)shake();}
+    can.onpointerdown=function(e){startY=e.clientY;can.setPointerCapture(e.pointerId);};can.onpointermove=function(e){if(e.buttons&&Math.abs(e.clientY-startY)>20){shake();startY=e.clientY;}};can.onclick=shake;
+    ring.onpointerdown=function(e){startY=e.clientY;ring.setPointerCapture(e.pointerId);};ring.onpointerup=function(e){if(startY-e.clientY>25)openCan();};ring.onclick=openCan;
+    function openCan(){if(ring.disabled||finished)return;finished=true;ring.disabled=true;close.disabled=true;can.classList.add('opened');hint.textContent=tr('Открываем…','Opening…','Öffnen…');haptic('medium');if(sndOn()&&window.RDSFX)RDSFX.game('unlock');var before=state.stats.energy;
+      setTimeout(function(){api('/api/app/wake',{method:'energizer'}).then(function(res){cleanup();if(res.state)state=res.state;render();if(res.ok){energyGainAnimation(state.stats.energy-before);if(sndOn()&&window.RDSFX)RDSFX.care('drink','sparkling_water');toast(tr('Персонаж выпил энергетик','Your companion had an energy drink','Dein Charakter hat den Energydrink getrunken'));}else toast(res.error);}).catch(function(){cleanup();toast('Network error');load(true);});},550);}
+    close.onclick=cleanup;layer.appendChild(close);layer.appendChild(can);layer.appendChild(ring);layer.appendChild(hint);document.body.appendChild(layer);
+    if(window.DeviceMotionEvent&&typeof DeviceMotionEvent.requestPermission==='function'){var enable=el('button','btn ghost',tr('Включить встряхивание','Enable motion','Bewegung aktivieren'));enable.onclick=function(){DeviceMotionEvent.requestPermission().then(function(answer){if(answer==='granted'){window.addEventListener('devicemotion',motion);enable.remove();}else toast(tr('Можно встряхнуть банку пальцем','Swipe the can instead','Wische stattdessen über die Dose'));}).catch(function(){});};layer.appendChild(enable);}else window.addEventListener('devicemotion',motion);
   }
+
   function requestComposerPhoto(){
     if(state.pending)return;if((state.photos||{}).total<1){openPurchases();return;}if(!state.messages.some(function(m){return !m.card&&!m.photo&&m.text&&m.text!=='📷';})){toast(tr('Пока нет контекста. Сначала пообщайтесь с персонажем.','No context yet. Chat with your companion first.','Noch kein Kontext. Unterhalte dich zuerst.'));return;}
     var go=function(ok){if(!ok)return;api('/api/app/photo',{text:tr('Фото по нашей последней беседе, один персонаж.','One character in our latest dialogue context.','Eine Person nach unserem letzten Gespräch.')}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);render();schedulePoll();});};var question=tr('Фото по последнему диалогу · 1 попытка фото?','Photo from latest dialogue · 1 photo attempt?','Foto · 1 Fotoversuch?');if(tg&&tg.showConfirm)tg.showConfirm(question,go);else go(confirm(question));
@@ -20942,8 +21136,16 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     button.onclick=function(){if(energizerBusy)return;energizerBusy=true;button.disabled=true;api('/api/app/wake',{method:'energizer'}).then(function(res){energizerBusy=false;if(res.state)state=res.state;if(res.ok){haptic('reward');if(sndOn()&&window.RDSFX)RDSFX.care('drink','sparkling_water');}toast(res.toast||res.error||'');render();}).catch(function(){energizerBusy=false;button.disabled=false;toast('Network error');});};
     container.appendChild(button);
   }
-  function openPhoto(url){var layer=el('div','photo-viewer'),close=el('button',null,'×'),im=el('img');im.src=url;im.alt=tr('Фото персонажа','Character photo','Charakterfoto');close.setAttribute('aria-label','Close');close.onclick=function(){layer.remove();};layer.onclick=function(e){if(e.target===layer)layer.remove();};var startY=0;layer.ontouchstart=function(e){startY=e.touches[0].clientY;};layer.ontouchend=function(e){if(e.changedTouches[0].clientY-startY>120)layer.remove();};layer.appendChild(im);layer.appendChild(close);document.body.appendChild(layer);}
-  function reactionArt(button,emoji){var names={'💖':'heart','✨':'star','🔥':'flame','🎉':'party'},name=names[emoji];if(!name)return;button.textContent='';button.setAttribute('aria-label',emoji);var image=el('img','reaction-art reaction-'+name);image.src='/assets/reaction_'+name+'.webp?v=20261117e';image.alt=emoji;button.appendChild(image);}
+  function openPhoto(url){
+    var layer=el('div','photo-viewer'),close=el('button',null,'×'),im=el('img');im.src=url;im.alt=tr('Фото персонажа','Character photo','Charakterfoto');close.setAttribute('aria-label','Close');close.onclick=function(){layer.remove();};layer.onclick=function(e){if(e.target===layer)layer.remove();};var startY=0,scale=1,initialScale=1,distance=0,x=0,y=0,lastX=0,lastY=0;
+    function draw(){im.style.transform='translate('+x+'px,'+y+'px) scale('+scale+')';}
+    im.ondblclick=function(){scale=scale>1?1:2;x=y=0;draw();};
+    layer.addEventListener('touchstart',function(e){startY=e.touches[0].clientY;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;if(e.touches.length===2){distance=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);initialScale=scale;}},{passive:true});
+    layer.addEventListener('touchmove',function(e){if(e.touches.length===2){e.preventDefault();var now=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);scale=Math.max(1,Math.min(4,initialScale*now/Math.max(1,distance)));draw();}else if(scale>1){e.preventDefault();x+=e.touches[0].clientX-lastX;y+=e.touches[0].clientY-lastY;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;draw();}},{passive:false});
+    layer.addEventListener('touchend',function(e){if(scale===1&&e.changedTouches[0].clientY-startY>120)layer.remove();});layer.appendChild(im);layer.appendChild(close);document.body.appendChild(layer);
+  }
+
+  function reactionArt(button,emoji){var names={'💖':'heart','✨':'star','🔥':'flame','🎉':'party'},name=names[emoji];if(!name)return;button.textContent='';button.setAttribute('aria-label',emoji);var image=el('img','reaction-art reaction-'+name);image.src='/assets/reaction_'+name+'.webp?v=20261118b';image.alt=emoji;button.appendChild(image);}
   function renderChat() {
     var s = state, box = $("msgs"), previousScroll=box.scrollTop;
     var stick = nearBottom() || lastCount < 0;
@@ -21365,6 +21567,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     v.appendChild(more);
     renderExtras(v);
   }
+  window.addEventListener('message',function(e){if(e.origin===location.origin&&e.data&&e.data.type==='rd-open-purchases')openPurchases();});
   function openPurchases(){
     var s=state,ui=s.ui,tier=s.subscription.level,v=$('sheet-box');v.innerHTML='';
     var close=el('button','btn ghost',tr('Назад в профиль','Back to profile','Zurück'));close.onclick=function(){$('sheet').classList.remove('on');};v.appendChild(close);
@@ -21399,12 +21602,13 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     (s.purchase_products||[]).forEach(function(o){var card=el('div','photo-pack');var im=el('img');im.src=o.image;im.alt='';im.onerror=function(){im.hidden=true;};card.appendChild(im);card.appendChild(el('b',null,o.amount+tr(' фото',' photos',' Fotos')));card.appendChild(payRow(o.payload,{stars_label:o.stars,rub:o.rub}));v.appendChild(card);});
     var scene=el('button','btn ghost',tr('Сцена · 15 ⭐','Scene · 15 ⭐','Szene · 15 ⭐'));scene.onclick=function(){pay('intim_scene','stars');};v.appendChild(scene);
     var combo=el('button','btn ghost',tr('Сцена + фото · 25 ⭐','Scene + photo · 25 ⭐','Szene + Foto · 25 ⭐'));combo.onclick=function(){pay('scene_photo','stars');};v.appendChild(combo);
+    [['wake_now','Разбудить персонажа · 25 ⭐'],['defibrillator','Дефибриллятор · 50 ⭐']].forEach(function(item){var b=el('button','btn ghost',item[1]);b.onclick=function(){pay(item[0],'stars');};v.appendChild(b);});
     renderEconomy(v);$('sheet').classList.add('on');
   }
   function subscriptionTerms(week,month){
     var row=el('div','rd-sub-terms');
     [[week,tr('7 дней','7 days','7 Tage')],[month,tr('30 дней','30 days','30 Tage')]].forEach(function(pair){
-      var offer=pair[0],button=el('button','btn',pair[1]+' · '+offer.photos+tr(' фото',' photos',' Fotos')+'\n'+offer.stars+' ⭐'+(offer.rub?' / '+offer.rub+' ₽':''));if(offer.old_stars>offer.stars){var old=el('del',null,offer.old_stars+' ⭐');button.prepend(old,document.createTextNode(' → '));}button.dataset.payload=offer.payload;if(!offer.payload.endsWith('_week'))button.classList.add('monthly-best');
+      var offer=pair[0],button=el('button','btn',pair[1]+' · '+offer.photos+tr(' фото',' photos',' Fotos')+'\n'+offer.stars+' ⭐'+(offer.rub?' / '+offer.rub+' ₽':''));if(offer.old_stars>offer.stars){var old=el('del',null,offer.old_stars+' ⭐'+(offer.rub&&offer.old_rub?' / '+offer.old_rub+' ₽':''));button.prepend(old,document.createTextNode(' → '));}button.dataset.payload=offer.payload;if(!offer.payload.endsWith('_week'))button.classList.add('monthly-best');
       button.onclick=function(){if(offer.rub&&tg&&tg.showPopup){tg.showPopup({title:offer.title,message:pair[1],buttons:[{id:'stars',type:'default',text:offer.stars+' ⭐'},{id:'platega',type:'default',text:offer.rub+' ₽'},{type:'cancel'}]},function(method){if(method)pay(offer.payload,method);});}else pay(offer.payload,'stars');};row.appendChild(button);
     });return row;
   }
@@ -21835,6 +22039,17 @@ async def api_work_state_handler(request):
     return web.json_response({"ok": True, "state": serialize_work_state(user)})
 
 
+async def api_work_dig_handler(request):
+    uid,user,body,err=await _play_request(request)
+    if err:return err
+    try:
+        payout=archaeology.action(user,body)
+        awarded=credit_work_bucks(user,payout) if payout else 0
+        save_data(user_data)
+        return web.json_response({'ok':True,'dig':archaeology.snapshot(user),'awarded':awarded,'state':serialize_work_state(user)})
+    except archaeology.DigError as exc:return web.json_response({'ok':False,'error':str(exc),'dig':archaeology.snapshot(user)})
+
+
 async def api_work_workshop_handler(request):
     _,user,error=resolve_webapp_user(request.headers.get('X-Telegram-Init-Data',''))
     if error:return web.json_response(error,status=401 if error['error']=='auth' else 200)
@@ -22040,6 +22255,7 @@ async def run_webapp_server():
     app_web.router.add_post("/api/spin/luck/invoice", api_spin_luck_invoice_handler)
     app_web.router.add_get("/api/spin/paid/result", api_spin_paid_result_handler)
     app_web.router.add_post("/api/spin/reminder", api_spin_reminder_handler)
+    app_web.router.add_post("/api/work/dig", api_work_dig_handler)
     app_web.router.add_post("/api/work/workshop", api_work_workshop_handler)
     app_web.router.add_get("/work", work_page_handler)
     app_web.router.add_get("/api/work/state", api_work_state_handler)
@@ -22175,7 +22391,7 @@ async def check_notifications():
                     try:
                         response=await asyncio.to_thread(call_ai,AI_MODEL,'ai',messages=[{'role':'system','content':companion_initiative.instruction(user,get_intimacy_level(user),STYLES[get_display_style(user)]['description'])},{'role':'user','content':json.dumps(user.get('history',[])[-8:],ensure_ascii=False)}],max_tokens=180,temperature=.85)
                         text=(response.choices[0].message.content or '').strip()[:300]
-                        if text and text!='SKIP' and companion_initiative.signature(user)==sig:
+                        if text and text!='SKIP' and companion_initiative.signature(user)==sig and not user.get('app_pending'):
                             await bot.send_message(int(user_id),text,reply_markup=app_open_kb(user) if APP_MODE else None)
                             user.setdefault('history',[]).append({'role':'assistant','content':text,'initiative':True});save_data(user_data)
                     except Exception as exc:logging.warning('Initiative unavailable: %s',type(exc).__name__)
@@ -22567,11 +22783,9 @@ async def main():
                 account['portrait_pending']=None
                 request_character_portrait(account)
     for account in user_data.values():
-        if isinstance(account,dict) and account.get('avatar_job'):
-            account['avatar_credits']=int(account.get('avatar_credits',0))+1
-            account.pop('avatar_job',None);account['avatar_error']='interrupted'
         if isinstance(account,dict):
-            for photo_key in list(account.get('photo_reservations',{})):photo_wallet.finish(account,photo_key,refund=True)
+            photo_wallet.recover(account)
+            if (account.get('broadcast_draft') or {}).get('status')=='sending':account['broadcast_draft']['status']='interrupted'
         if isinstance(account,dict) and account.get('scene_photo_job'):
             refund_scene_photo(account,account['scene_photo_job'].get('id'))
     # Interrupted image jobs never consume the user's energy after a restart.

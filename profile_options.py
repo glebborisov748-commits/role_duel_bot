@@ -150,3 +150,23 @@ for _item in WARDROBE.values():
  _item.setdefault('tags','')
  _item.setdefault('gender','unisex')
  _item.setdefault('catalog_only',False)
+
+# Generated catalog art and wearable descriptions. Preferences are not image tags.
+OUTFIT_FACTS={
+ 'crop_top':'an opaque casual crop top','oversized_shirt':'an opaque oversized shirt',
+ 'denim_shorts':'denim shorts','pencil_skirt':'an opaque knee-length pencil skirt',
+ 'qipao':'an elegant opaque high-neck qipao dress','cap':'a casual cap',
+ 'cat_ears_headband':'a decorative cat-ear headband','maid_outfit':'an opaque knee-length black and white uniform dress with apron',
+ 'nurse_outfit':'an opaque knee-length nurse uniform dress','lace_panties':'opaque underwear worn under an ordinary skirt',
+ 'collar_leash':'a simple black fashion neck band','garter_stockings':'opaque dark stockings worn with an ordinary knee-length skirt',
+ 'business_suit':'a business suit with tie','sportswear':'a tank top and sports shorts',
+ 'casual_outfit':'a hoodie and jeans','leather_jacket':'a leather jacket',
+ 'stripper_outfit':'an opaque white stage shirt with bow tie and full-length trousers',
+ 'police_male':'a navy police uniform shirt and trousers','police_female':'a navy police uniform shirt and trousers',
+ 'firefighter_male':'an opaque firefighter uniform jacket and trousers','firefighter_female':'an opaque firefighter uniform jacket and trousers',
+ 'boxer_outfit':'boxing sports shorts with hand wraps and a sports tank top',
+}
+for _key,_item in WARDROBE.items():
+ _item['image']='catalog_'+_key
+ if _key in OUTFIT_FACTS:
+  _item.update(fact=OUTFIT_FACTS[_key],catalog_only=False)

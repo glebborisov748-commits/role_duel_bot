@@ -19,3 +19,8 @@ class WalletTests(unittest.TestCase):
  def test_existing_subscription_prorated_once(self):
   u={'subscription':{'active':True,'level':'pro','expires_at':(datetime.now()+timedelta(days=15,seconds=5)).isoformat()}}
   self.assertEqual(w.balance(u),23);self.assertEqual(w.balance(u),23)
+ def test_restart_refunds_avatar_once_without_extra_legacy_credit(self):
+  u={};w.ensure(u);w.reserve(u,'avatar');u['avatar_job']={'id':'job'};w.recover(u)
+  self.assertEqual(w.balance(u),1);self.assertNotIn('avatar_credits',u);w.recover(u);self.assertEqual(w.balance(u),1)
+ def test_restart_preserves_old_paid_avatar_and_trial(self):
+  u={'avatar_credits':0,'avatar_job':{'id':'old'}};w.recover(u);self.assertEqual(w.balance(u),2);w.recover(u);self.assertEqual(w.balance(u),2)

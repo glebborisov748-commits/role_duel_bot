@@ -25,25 +25,17 @@ class CatalogExpansionTests(unittest.TestCase):
     item=wardrobe.WARDROBE[uniform+'_'+gender]
     self.assertEqual(item['gender'],gender);self.assertTrue(item['adult'])
   self.assertEqual(wardrobe.WARDROBE['leather_jacket']['slot'],'outerwear')
- def test_every_new_item_is_catalog_only_and_cannot_displace_current_outfit(self):
-  new={k:v for k,v in wardrobe.WARDROBE.items() if v.get('catalog_only')}
-  self.assertEqual(len(new),22)
-  user={'inventory':{k:1 for k in wardrobe.WARDROBE},'active_outfit':{'body':'dress','shoes':'heels'}}
-  before=dict(user['active_outfit'])
-  for key,item in new.items():
-   with self.subTest(item=key):
-    self.assertIn(item['slot'],wardrobe.SLOTS)
-    self.assertTrue(all(item.get(lang) for lang in ('name','ru','de')))
-    self.assertIs(type(item['price']),int);self.assertGreater(item['price'],0)
-    self.assertTrue(item['tags']);self.assertEqual(item['fact'],'')
-    with self.assertRaises(ValueError):wardrobe.equip(user,key,10)
-    self.assertEqual(user['active_outfit'],before)
- def test_new_tags_never_enter_photos_even_if_old_client_supplies_active_slot(self):
-  for key,item in wardrobe.WARDROBE.items():
-   if not item.get('catalog_only'):continue
-   user={'inventory':{key:1},'active_outfit':{item['slot']:key}}
-   for level in (1,5,10):
-    self.assertEqual(wardrobe.clothing_facts(user,level),'an opaque casual shirt and full-length trousers')
+ def test_new_wearables_have_art_and_enforce_ownership_and_level(self):
+  from pathlib import Path
+  self.assertEqual(len(wardrobe.OUTFIT_FACTS),22)
+  for key,fact in wardrobe.OUTFIT_FACTS.items():
+   item=wardrobe.WARDROBE[key];self.assertFalse(item['catalog_only']);self.assertTrue(fact)
+   self.assertTrue(Path('assets/'+item['image']+'.webp').is_file())
+   with self.assertRaises(ValueError):wardrobe.equip({},key,10)
+   u={'inventory':{key:1}}
+   if item['adult']:
+    with self.assertRaises(ValueError):wardrobe.equip(u,key,4)
+   wardrobe.equip(u,key,5);self.assertIn(fact,wardrobe.clothing_facts(u,5))
  def test_existing_outfits_keep_their_photo_behavior(self):
   user={'inventory':{'tracksuit':1,'latex_bodysuit':1}}
   wardrobe.equip(user,'tracksuit',5)

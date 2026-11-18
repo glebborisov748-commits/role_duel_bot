@@ -10,6 +10,7 @@ def ensure(user):
  if user.get('photo_wallet_version')!=1:
   user['photo_credits']=max(0,int(user.get('photo_credits',0)))+max(0,int(user.pop('avatar_credits',0)))
   user['photo_wallet_version']=1
+  if user.get('avatar_job'):user.setdefault('photo_reservations',{})['avatar']={'started':user['avatar_job'].get('started',now().isoformat())}
   if not user.get('photo_trial_granted'):
    user['photo_credits']+=1;user['photo_trial_granted']=True
   sub=user.get('subscription') or {}
@@ -54,3 +55,13 @@ def snapshot(user):
  total=balance(user)
  return {'total':total,'purchased':user.get('photo_credits',0),'subscription':sum(g['remaining'] for g in user['photo_grants']),
          'expires_at':min((g['expires_at'] for g in user['photo_grants']),default=None)}
+
+
+def recover(user):
+ """Refund interrupted jobs once, including legacy avatar jobs without wallet escrow."""
+ if user.get('avatar_job'):
+  if 'avatar' not in user.get('photo_reservations',{}):
+   if user.get('photo_wallet_version')==1:grant(user,1)
+   else:user['avatar_credits']=int(user.get('avatar_credits',0))+1
+  user.pop('avatar_job',None);user['avatar_error']='interrupted'
+ for key in list(user.get('photo_reservations',{})):finish(user,key,refund=True)

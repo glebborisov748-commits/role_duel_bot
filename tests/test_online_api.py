@@ -2,7 +2,7 @@ import copy
 import time
 import unittest
 import online_games
-from test_core import load_functions
+from test_core import load_functions,literal
 
 class OnlineAPITests(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
@@ -10,7 +10,7 @@ class OnlineAPITests(unittest.IsolatedAsyncioTestCase):
         self.store={};self.uid='1';self.body={};self.saved=0
         async def request(r):return int(self.uid),self.users[self.uid],self.body,None
         def save(d):self.saved+=1
-        self.ns=dict(copy=copy,re=__import__('re'),online_games=online_games,time=time,
+        self.ns=dict(ONLINE_SKINS=literal("ONLINE_SKINS"),copy=copy,re=__import__('re'),online_games=online_games,time=time,
             datetime=__import__('datetime').datetime,user_data=self.users,online_store=lambda:self.store,
             online_adult_allowed=lambda u:bool(u.get('adult')),logging=__import__('logging'),
             save_data=save,_play_request=request,_BOT_USERNAME={'v':'testbot'},

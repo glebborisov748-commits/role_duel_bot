@@ -15,7 +15,7 @@ async def run():
  app.photo_generation.generate=AsyncMock(side_effect=AssertionError('Catalog action submitted a model job'))
  assert not (await app.perform_webapp_purchase(u,907,'adult_shop','police_male'))['ok']
  u['xp']=app.LEVEL_XP_THRESHOLD[5]
- new={k:v for k,v in wardrobe.WARDROBE.items() if v.get('catalog_only')}
+ new={k:wardrobe.WARDROBE[k] for k in wardrobe.OUTFIT_FACTS}
  for key,item in new.items():
   category='adult_shop' if item['adult'] else 'wardrobe';balance=u['bucks']
   assert (await app.perform_webapp_purchase(u,907,category,key))['ok']
@@ -25,14 +25,14 @@ async def run():
  listed={i['key']:i for c in shop['categories'] for i in c['items'] if c['key'] in ('wardrobe','adult_shop')}
  for key,item in new.items():
   public=listed[key]
-  assert public['owned'] and public['catalog_only'] and public['tags']==item['tags'] and public['gender']==item['gender']
-  assert public['image'] is None and 'не подключено' in public['effects']
+  assert public['owned'] and not public['catalog_only'] and public['tags']==item['tags'] and public['gender']==item['gender']
+  assert public['image'] and Path('.'+public['image']).is_file()
   assert public['category']==('adult_shop' if item['adult'] else 'wardrobe')
  body={'outfit':'police_male'}
  async def request(_):return 907,u,body,None
  app._play_request=request
- assert not json.loads((await app.api_wardrobe_handler(None)).text)['ok']
- assert not wardrobe.active_outfit(u)
+ assert json.loads((await app.api_wardrobe_handler(None)).text)['ok']
+ assert wardrobe.active_outfit(u)['body']=='police_male'
  app.save_data(app.user_data)
  disk=json.loads(Path(app.DATA_FILE).read_text())['907'];assert all(disk['inventory'][k]==1 for k in new)
  app.photo_generation.generate.assert_not_awaited()

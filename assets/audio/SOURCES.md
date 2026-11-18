@@ -66,3 +66,11 @@ Original download: https://opengameart.org/sites/default/files/waterflow.mp3 .
 Trimmed at 0.2/1.2/2.2 seconds, mono 24 kHz, gain 0.45 and short fades.
 These replace synthesized flow/drop tones with a ready-made recording.
 The keyboard and drinking recordings are unchanged.
+
+## 2026-11-18 — single recorded drops into water
+
+Farm waterplant[a-c] and drop now use short isolated events from **Water drops**
+by **CeoxBlackj**, CC0: https://opengameart.org/content/water-drops .
+Source: https://opengameart.org/sites/default/files/water%20drops.mp3 .
+Excerpts begin at 2.43, 4.52 and 8.73 seconds, length 0.50/0.65/0.42 seconds,
+mono 24 kHz, quiet gain and fades. No synthesized pitch or continuous pouring.
