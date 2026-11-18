@@ -16050,8 +16050,8 @@ WORK_PAGE_HTML = r"""<!doctype html>
 
   function renderHackerWires(){
     var left=document.getElementById('hacker-wires-left'),right=document.getElementById('hacker-wires-right'),svg=document.getElementById('hacker-wires-svg');left.innerHTML='';right.innerHTML='';svg.innerHTML='';
-    hackerWires.forEach(function(color,i){var button=document.createElement('button');button.type='button';button.className='hacker-wire-end'+(hackerWireLinks[i]!==undefined?' connected':'');button.dataset.index=i;button.setAttribute('aria-label','Вход '+(i+1));button.style.background=hackerWireVariant==='connect'?color:(i===wireTarget?'#f6c675':'#6a6173');button.classList.toggle('tracing',i===wireSelected);left.appendChild(button);});
-    hackerWireRightOrder.forEach(function(color,i){var button=document.createElement('button');button.type='button';button.className='hacker-wire-socket';button.dataset.socket=i;button.setAttribute('aria-label','Контакт '+(i+1));button.style.background=hackerWireVariant==='connect'?color:'#7c7184';right.appendChild(button);});
+    hackerWires.forEach(function(color,i){var button=document.createElement('button');button.type='button';button.className='hacker-wire-end'+(hackerWireLinks[i]!==undefined?' connected':'');button.dataset.index=i;button.setAttribute('aria-label','Вход '+(i+1));button.style.setProperty('background',hackerWireVariant==='connect'?color:(i===wireTarget?'#f6c675':'#6a6173'),'important');button.classList.toggle('tracing',i===wireSelected);left.appendChild(button);});
+    hackerWireRightOrder.forEach(function(color,i){var button=document.createElement('button');button.type='button';button.className='hacker-wire-socket';button.dataset.socket=i;button.setAttribute('aria-label','Контакт '+(i+1));button.style.setProperty('background',hackerWireVariant==='connect'?color:'#7c7184','important');right.appendChild(button);});
     requestAnimationFrame(function(){if(!left.isConnected)return;svg.innerHTML='';hackerWires.forEach(function(color,i){var j=hackerWireRightOrder.indexOf(color);if(hackerWireVariant==='connect'&&hackerWireLinks[i]===undefined)return;var a=wirePoint(left.children[i],'left'),b=wirePoint(right.children[j],'right'),w=b.x-a.x;var d='M'+a.x+','+a.y+' C'+(a.x+w*.28)+','+(a.y+(i%2?100:-90))+' '+(b.x-w*.32)+','+(b.y+(i%2?-90:100))+' '+b.x+','+b.y;
       [10,5].forEach(function(weight){var path=document.createElementNS(SVG_NS,'path');path.setAttribute('d',d);path.setAttribute('fill','none');path.setAttribute('stroke-width',weight);path.setAttribute('stroke-linecap','round');path.setAttribute('stroke',weight===10?'#17121c':hackerWireVariant==='connect'?color:'#ac96ba');svg.appendChild(path);});});});
   }
@@ -19221,7 +19221,7 @@ def serialize_app_state(user):
     user["app_seen"] = datetime.now().isoformat()
     if not user.get("personality_ready"):
         ui = {k: v for k, v in APP_TEXTS.get(user.get("lang", "ru"), APP_TEXTS["en"]).items() if isinstance(v, str)}
-        return {"release":"20261118c", "onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
+        return {"release":"20261118d", "onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
     app_unstick(user)
     if migrate_character_appearance(user):save_data(user_data)
     if user.get('appearance'):
@@ -19254,7 +19254,7 @@ def serialize_app_state(user):
         "content_settings":profile_options.state(user),
         "photos":photo_wallet.snapshot(user),
         "purchase_products":[{"payload":k,"amount":v[0],"stars":product_stars(k,user),"rub":product_rub(k,user),"image":"/assets/photo_pack_"+str(v[0])+".webp"} for k,v in photo_wallet.PACKS.items()],
-        "release":"20261118c",
+        "release":"20261118d",
         "reply_choices": serialize_reply_choices(user),
         "pending": bool(user.get("app_pending")),"photo_pending":bool(user.get("photo_pending")),
         "notices": notices,
@@ -19949,7 +19949,7 @@ setTimeout(function () { if (window.__tgSdkOnSettle) window.__tgSdkOnSettle(); }
 _SDK_TAG_RE = re.compile(r'<script src="/tg-sdk\.js"[^>]*>\s*</script>', re.S)
 
 
-SFX_TAG = '<script src="/sfx.js?v=20261118c"></script>'
+SFX_TAG = '<script src="/sfx.js?v=20261118d"></script>'
 
 
 async def sfx_js_handler(request):
@@ -20130,7 +20130,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
 @media(prefers-reduced-motion:reduce){.btn::after,.buy-btn::after,.action-btn::after,.rd-premium,.rd-spark{animation:none!important;}}
 
 '''
-APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261118c">'
+APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261118d">'
 
 
 async def theme_css_handler(request):
@@ -20143,8 +20143,8 @@ def page_response(request, html):
         html = html.replace("</head>", APP_THEME_TAG + "</head>", 1)
     if request.query.get("embed") == "1":
         html = _SDK_TAG_RE.sub(lambda m: EMBED_BRIDGE, html, count=1)
-        return web.Response(text=html, content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118c"})
-    return web.Response(text=with_app_back(html), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118c"})
+        return web.Response(text=html, content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118d"})
+    return web.Response(text=with_app_back(html), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118d"})
 
 
 def refund_scene_photo(user, job_id):
@@ -20360,7 +20360,7 @@ def serialize_referral(user):
 
 
 async def app_page_handler(request):
-    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118c"})
+    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118d"})
 
 # Нативная кнопка «Назад» Telegram на внутренних страницах (магазин, колесо, игры, работа, гайд) --
 # возвращает в главное приложение /app, так что всё выглядит как одно мини-приложение.
@@ -20529,7 +20529,7 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
   function loadSample(kind){
     if(sampleBuffers[kind])return Promise.resolve(sampleBuffers[kind]);
     if(sampleLoads[kind])return sampleLoads[kind];
-    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261118c').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
+    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261118d').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
     return sampleLoads[kind];
   }
   function sample(kind){
@@ -20950,6 +20950,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 #send.send-bounce{animation:send-merge 2s ease!important}#composer.send-sweep:after,.composer-shell.send-sweep:after{animation-duration:2s!important}.composer-shell:focus-within:before{animation-duration:2s!important;animation-iteration-count:2!important}.send-flight{max-width:min(80vw,340px)!important;pointer-events:none} .photo-viewer{overscroll-behavior:contain}.message-reactions:empty{display:none!important}
 
 .energy-ritual{position:fixed;inset:0;z-index:10000;background:radial-gradient(ellipse,#513458,#141123 65%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;box-sizing:border-box}.energy-ritual-can{height:min(62dvh,480px);width:min(80vw,350px);object-fit:contain;touch-action:none;filter:drop-shadow(0 20px 24px #0007)}.energy-ritual p{text-align:center;color:#e1cfea;max-width:320px}.energy-close{position:absolute;right:18px;top:20px;color:white;background:#ffffff16;border:0;width:42px;height:42px;border-radius:50%;font-size:27px}.energy-ring{position:absolute;top:18%;width:58px;height:58px;border:2px solid #e8d7eb;border-radius:50%;background:#a179ae;color:white;font-size:30px;touch-action:none;box-shadow:0 0 22px #b982c477}.energy-ring:disabled{opacity:.35}.energy-ritual-can.shake{animation:can-shake .35s ease}.energy-ritual-can.opened{animation:can-open .6s ease forwards}@keyframes can-shake{25%{transform:rotate(-9deg) translateX(-8px)}75%{transform:rotate(9deg) translateX(8px)}}@keyframes can-open{to{transform:translateY(10px) rotate(-8deg);filter:drop-shadow(0 0 35px #dfb1e9)}}
+#reply-choices .rd-choice,#reply-choices .rd-own{font:inherit;color:var(--fg);background:var(--card2);border:1px solid #9675b04d;border-radius:15px;padding:10px 12px;text-align:left;min-height:42px;line-height:1.35;box-shadow:inset 0 1px 0 #ffffff08;transition:background .15s,transform .15s}#reply-choices .rd-choice:active,#reply-choices .rd-own:active{background:#49345b;transform:scale(.98)}#reply-choices .rd-own{background:transparent;color:#ccb5df;margin-top:8px;font-size:12px}
 </style>
 </head>
 <body>
@@ -21193,7 +21194,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     layer.addEventListener('touchend',function(e){if(scale===1&&e.changedTouches[0].clientY-startY>120)layer.remove();});layer.appendChild(im);layer.appendChild(close);document.body.appendChild(layer);
   }
 
-  function reactionArt(button,emoji){var names={'💖':'heart','✨':'star','🔥':'flame','🎉':'party'},name=names[emoji];if(!name)return;button.textContent='';button.setAttribute('aria-label',emoji);var image=el('img','reaction-art reaction-'+name);image.src='/assets/reaction_'+name+'.webp?v=20261118c';image.alt=emoji;button.appendChild(image);}
+  function reactionArt(button,emoji){var names={'💖':'heart','✨':'star','🔥':'flame','🎉':'party'},name=names[emoji];if(!name)return;button.textContent='';button.setAttribute('aria-label',emoji);var image=el('img','reaction-art reaction-'+name);image.src='/assets/reaction_'+name+'.webp?v=20261118d';image.alt=emoji;button.appendChild(image);}
   function renderChat() {
     var s = state, box = $("msgs"), previousScroll=box.scrollTop;
     var stick = nearBottom() || lastCount < 0;

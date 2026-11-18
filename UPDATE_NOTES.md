@@ -285,3 +285,10 @@ Validation for this follow-up: **104 unit tests passed**. Real signed requests w
 - Daily quests are filtered by the open jobs. New pipeline/excavation/mining quests are credited from server-confirmed completion/cashout. Valid existing progress and claimed tasks survive same-day migration.
 - Outfit occupancy: dresses and full outfits occupy body/top/bottom/legs/outerwear, leaving head/shoes/neckwear free; complete police and firefighter outfits occupy all slots. UI locks occupied controls, server rejects incompatible additions, and legacy conflicting combinations are filtered without deleting inventory. Remove the full outfit to unlock its slots.
 - Verification: 127 unit tests; signed endpoint integration covering rotation, closed payout rejection, midnight cashout idempotence, farming, slots and persistence; 320/390/430px browser checks covering mining actions/gas, exactly three work tabs plus farm, midnight transitions and dress/police locks. No live payments, notifications or provider jobs were executed.
+
+## 2026-11-18 — all-outfit rules and first-session audit
+
+- Full outfits now have automatic minimum slot occupancy even without per-item metadata. All 17 full outfits were checked against separate tops, bottoms, stockings and outerwear. Built-in bunny ears and ties/bow ties also reserve the matching accessory slot.
+- Fixed a real CSS conflict hiding cable colors; a new-user browser completed the matching task and received a server-side payout.
+- Styled starter reply buttons to avoid white native controls in the dark chat.
+- Clean-account browser walkthrough on 320/390px, actual handlers and storage, fake paid providers; 130 unit tests. Findings and limits: audit/NEW_USER_REVIEW.md. Remaining navigation/copy improvements are recommendations, not claimed as completed.

@@ -54,3 +54,23 @@ class OccupancyTests(unittest.TestCase):
  def test_legacy_conflicts_never_feed_generation_or_delete_inventory(self):
   u=self.user();u['active_outfit']={'body':'police_female','head':'hat','shoes':'heels','top':'shirt'}
   before=dict(u['inventory']);self.assertEqual(wardrobe.active_outfit(u),{'body':'police_female'});self.assertNotIn('heeled',wardrobe.clothing_facts(u,5));self.assertEqual(u['inventory'],before)
+
+class WholeOutfitRulesTests(unittest.TestCase):
+ def test_every_full_outfit_blocks_separate_upper_lower_and_stockings(self):
+  for key,item in wardrobe.WARDROBE.items():
+   if item['slot']!='body':continue
+   with self.subTest(outfit=key):
+    u={'inventory':{k:1 for k in wardrobe.WARDROBE}};wardrobe.equip(u,key,5)
+    for other in ('shirt','trousers','stockings','garter_stockings','leather_jacket'):
+     with self.assertRaises(ValueError):wardrobe.equip(u,other,5)
+    wardrobe.equip(u,None,5,'body');wardrobe.equip(u,'stockings',5)
+ def test_future_full_items_have_safe_default_even_without_metadata(self):
+  from unittest.mock import patch
+  item=dict(wardrobe.WARDROBE['pajamas'],ru='Юката',fact='an opaque yukata');item.pop('occupies',None)
+  with patch.dict(wardrobe.WARDROBE,{'test_yukata':item}):
+   self.assertTrue(wardrobe.FULL_OUTFIT_SLOTS<=wardrobe.occupied_slots('test_yukata'))
+   u={'inventory':{'test_yukata':1,'stockings':1}};wardrobe.equip(u,'test_yukata',5)
+   with self.assertRaises(ValueError):wardrobe.equip(u,'stockings',5)
+ def test_built_in_accessories_reserve_their_slots(self):
+  self.assertIn('head',wardrobe.occupied_slots('bunny_outfit'))
+  for key in ('business_suit','stripper_outfit'):self.assertIn('neck',wardrobe.occupied_slots(key))

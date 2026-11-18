@@ -71,9 +71,15 @@ WARDROBE.update({
  'hat':dict(name='Hat',ru='Шляпа',de='Hut',price=200,slot='head',adult=False,emoji='🎩',image='wardrobe_hat',fact='a stylish casual hat'),
 })
 
+FULL_OUTFIT_SLOTS=frozenset(('body','top','bottom','legs','outerwear'))
+
+
 def occupied_slots(key):
- item=WARDROBE[key]
- return set(item.get('occupies') or ([item['slot']] if item.get('slot') else []))
+ item=WARDROBE[key];slot=item.get('slot')
+ if not slot:return set()
+ # A full outfit can reserve more slots, never fewer than upper/lower body.
+ base=set(FULL_OUTFIT_SLOTS) if slot=='body' else {slot}
+ return base|set(item.get('occupies') or [])
 
 
 def active_outfit(user):
@@ -200,6 +206,8 @@ for _key,_item in WARDROBE.items():
  if _item.get('slot')=='body':_item['occupies']=['body','top','bottom','legs','outerwear']
 for _key in ('police_male','police_female','firefighter_male','firefighter_female'):
  WARDROBE[_key]['occupies']=list(SLOTS)
+for _key,_extra in {'bunny_outfit':['head'],'business_suit':['neck'],'stripper_outfit':['neck']}.items():
+ WARDROBE[_key]['occupies']=list(set(WARDROBE[_key]['occupies'])|set(_extra))
 
 
 def occupancy_label(key,lang='ru'):
