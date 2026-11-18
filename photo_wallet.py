@@ -19,6 +19,7 @@ def ensure(user):
   if sub.get('active') and remaining>0 and sub.get('level') in MONTHLY:
    grant(user,max(1,int(MONTHLY[sub['level']]*min(30,remaining)/30)),sub['expires_at'])
  user.setdefault('photo_grants',[]);user.setdefault('photo_reservations',{})
+ repair_admin_subscription(user)
  user['photo_grants']=[g for g in user['photo_grants'] if g['remaining']>0 and g['expires_at']>now().isoformat()]
 
 def grant(user,count,expires_at=None):
@@ -65,3 +66,25 @@ def recover(user):
    else:user['avatar_credits']=int(user.get('avatar_credits',0))+1
   user.pop('avatar_job',None);user['avatar_error']='interrupted'
  for key in list(user.get('photo_reservations',{})):finish(user,key,refund=True)
+
+
+def grant_subscription(user,tier,days,expires_at):
+ """Called once by the shared subscription grant path, after wallet migration."""
+ count=(WEEKLY if days==7 else MONTHLY).get(tier,0)
+ if days not in (7,30):count=max(0,int(MONTHLY.get(tier,0)*days/30))
+ if count:grant(user,count,expires_at)
+ user['subscription_photo_granted_at']=now().isoformat()
+
+
+def repair_admin_subscription(user):
+ """One-time, bounded repair for old command grants made after wallet migration.
+ Paid accounts and accounts with a surviving grant/escrow do not receive extra quota.
+ """
+ if not user.get('granted_sub_at') or user.get('subscription_photo_granted_at'):return
+ sub=user.get('subscription') or {}
+ try:remaining=(datetime.fromisoformat(sub.get('expires_at',''))-now()).total_seconds()/86400
+ except (ValueError,TypeError):return
+ if not sub.get('active') or remaining<=0 or sub.get('level') not in MONTHLY:return
+ if not user.get('ever_subscribed') and not user.get('photo_grants') and not user.get('photo_reservations'):
+  grant(user,max(1,int(MONTHLY[sub['level']]*min(30,remaining)/30)),sub['expires_at'])
+ user['subscription_photo_granted_at']=now().isoformat()

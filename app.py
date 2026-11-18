@@ -242,7 +242,7 @@ TEXTS = {
         "channel_text": "📢 **Наш канал:**\nПодписывайся, чтобы быть в курсе новостей и обновлений!",
         "ask_create_character": "👤 **Чтобы открыть профиль или купить что-то, сначала создай своего персонажа!**",
         "ask_create_character_btn": "🌟 Создать персонажа",
-        "maintenance": "🛠️ **Бот на техобслуживании**\nСледите за новостями: @duel_dev_channel",
+        "maintenance": "⚠️ Технические работы\nСледите за новостями: @duel_dev_channel",
         "subscription_expired_style": "⚠️ Твоя подписка закончилась, выбери бесплатный стиль:",
         "quarrel": "💢 Ссора! Уровень близости снижен.",
         "generation_error": "⚠️ Ошибка генерации ответа: {error}",
@@ -658,7 +658,7 @@ TEXTS = {
         "channel_text": "📢 **Our channel:**\nSubscribe to keep up with news and updates!",
         "ask_create_character": "👤 **To open your profile or buy anything, create your character first!**",
         "ask_create_character_btn": "🌟 Create a character",
-        "maintenance": "🛠️ **The bot is under maintenance**\nFollow the news: @duel_dev_channel",
+        "maintenance": "⚠️ Maintenance in progress\nFollow the news: @duel_dev_channel",
         "subscription_expired_style": "⚠️ Your subscription has ended, pick a free style:",
         "quarrel": "💢 A quarrel! Your closeness level dropped.",
         "generation_error": "⚠️ Failed to generate a reply: {error}",
@@ -1074,7 +1074,7 @@ TEXTS = {
         "channel_text": "📢 **Unser Kanal:**\nAbonniere ihn, um Neuigkeiten und Updates nicht zu verpassen!",
         "ask_create_character": "👤 **Um dein Profil zu öffnen oder etwas zu kaufen, erstelle zuerst deinen Charakter!**",
         "ask_create_character_btn": "🌟 Charakter erstellen",
-        "maintenance": "🛠️ **Der Bot wird gewartet**\nNeuigkeiten gibt es hier: @duel_dev_channel",
+        "maintenance": "⚠️ Wartungsarbeiten\nNeuigkeiten gibt es hier: @duel_dev_channel",
         "subscription_expired_style": "⚠️ Dein Abo ist abgelaufen, wähle einen kostenlosen Stil:",
         "quarrel": "💢 Streit! Dein Nähe-Level ist gesunken.",
         "generation_error": "⚠️ Antwort konnte nicht erzeugt werden: {error}",
@@ -1304,6 +1304,10 @@ def get_text(user, key, **kwargs):
     text = TEXTS.get(lang, TEXTS["ru"]).get(key, TEXTS["ru"][key])
     if kwargs:
         text = text.format(**kwargs)
+    if key == "maintenance":
+        reason = user_data.get("__settings__", {}).get("maintenance_reason", "")
+        if reason:
+            text += "\n\n" + reason
     return text
 
 
@@ -2380,6 +2384,7 @@ def grant_subscription_days(user, won_level, days):
     выигранному — уровень не трогаем, просто продлеваем; если ниже (или подписки нет вообще) —
     повышаем до выигранного. Отсчёт продления всегда от более поздней даты (текущий expires_at
     или сейчас), а не от "сейчас" безусловно."""
+    photo_wallet.ensure(user)
     sub = user["subscription"]
     now = datetime.now()
     current_level = sub.get("level")
@@ -2400,6 +2405,8 @@ def grant_subscription_days(user, won_level, days):
     sub["active"] = True
     sub["level"] = new_level
     sub["expires_at"] = (baseline + timedelta(days=days)).isoformat()
+    sub["term_days"] = days
+    photo_wallet.grant_subscription(user, won_level, days, sub["expires_at"])
 
 
 def get_display_style(user):
@@ -3980,7 +3987,7 @@ async def proceed_flow(user_id: int, chat_id: int):
 async def start_cmd(message: types.Message):
     if maintenance_mode and message.from_user.id != MAIN_ADMIN_ID:
         user = get_user(message.from_user.id)
-        await message.answer(get_text(user, "maintenance"), parse_mode="Markdown")
+        await message.answer(get_text(user, "maintenance"), parse_mode=None)
         return
 
     user = get_user(message.from_user.id)
@@ -4669,40 +4676,8 @@ async def edit_button_handler(message: types.Message):
 
 @dp.edited_message()
 async def handle_edited_message(message: types.Message):
-    """Более лёгкая альтернатива кнопке "Редактировать": правишь своё последнее сообщение
-    прямо в Телеграме (долгий тап → Изменить) — без отдельного шага "теперь пришли новый
-    текст". Опирается на ту же обрезку истории, что и кнопка (trim_history_to_last_user_message):
-    Telegram не сообщает, какое по счёту сообщение отредактировали, поэтому, как и кнопка, это
-    всегда считается редактированием именно ПОСЛЕДНЕЙ реплики пользователя."""
-    if not message.text:
-        return
-    user = get_user(message.from_user.id)
-    if not user["verified"] or not user["agreement_accepted"] or not user["personality_ready"]:
-        return
-    if maintenance_mode and message.from_user.id != MAIN_ADMIN_ID:
-        return
-    if is_asleep(user):
-        return
-    # Если сейчас ждём что-то особое (редактирование по кнопке, свой подарок, записку к
-    # покупке, текст нового персонажа) — не вмешиваемся, чтобы не перехватить это ожидание.
-    if (user.get("editing_message") or user.get("writing_custom_gift")
-            or user.get("writing_item_note") or user.get("creating_character")):
-        return
-    if not any(h.get("role") == "user" for h in user.get("history", [])):
-        return
-    # Старый ответ персонажа (на ДОредактированный текст) больше не актуален — раз пользователь
-    # передумал и переписал свою реплику, ответ на неё должен исчезнуть вместе со старым текстом,
-    # а не повиснуть в чате вперемешку с новым (см. last_bot_reply_message_id в generate_and_reply).
-    old_reply_id = user.get("last_bot_reply_message_id")
-    if old_reply_id:
-        try:
-            await bot.delete_message(message.chat.id, old_reply_id)
-        except Exception:
-            pass
-    trim_history_to_last_user_message(user)
-    user["history"].append({"role": "user", "content": message.text})
-    save_data(user_data)
-    await generate_and_reply(message, user)
+    """Telegram note edits never alter the companion conversation or trigger AI."""
+    return
 
 
 # ============================================================
@@ -6317,10 +6292,6 @@ async def grant_product(user, payload, chat_id):
     user["has_purchased"] = True
 
     photo_wallet.ensure(user)
-    if payload in SUBSCRIPTION_PRICES:
-        tier={'subscribe_pro':'pro','subscribe_super':'super_pro','subscribe_elite':'elite'}[payload.removesuffix('_week')]
-        days=7 if payload.endswith('_week') else 30
-        photo_wallet.grant(user,(photo_wallet.WEEKLY if days==7 else photo_wallet.MONTHLY)[tier],(datetime.now()+timedelta(days=days)).isoformat())
     if payload in photo_wallet.PACKS or payload in ('avatar_generate','scene_photo'):
         photo_wallet.grant(user,photo_wallet.PACKS[payload][0] if payload in photo_wallet.PACKS else 1)
         if payload=='scene_photo':user['intim_scenes']=user.get('intim_scenes',0)+1
@@ -6344,9 +6315,7 @@ async def grant_product(user, payload, chat_id):
         user["energizers"] = user.get("energizers", 0) + ENERGIZER_PACKS[payload]["amount"]
         save_data(user_data)
     elif payload == "subscribe_pro":
-        user["subscription"]["active"] = True
-        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
-        user["subscription"]["level"] = "pro"
+        grant_subscription_days(user, "pro", 30)
         # Форсируем полный пересчёт дневных плюшек (сообщения, баксы, энергетики, бесплатные
         # сцены) прямо сейчас, а не только с завтрашнего дня — раньше здесь просто вручную
         # проставлялись daily_messages/last_daily_reset, и бонус баксов/энергетиков в день
@@ -6362,9 +6331,7 @@ async def grant_product(user, payload, chat_id):
         if first_time_sub:
             await bot.send_message(chat_id, get_text(user, "first_subscription_bonus_alert", bucks=FIRST_SUBSCRIPTION_BONUS_BUCKS, energizers=FIRST_SUBSCRIPTION_BONUS_ENERGIZERS, scenes=FIRST_SUBSCRIPTION_BONUS_SCENES))
     elif payload == "subscribe_super":
-        user["subscription"]["active"] = True
-        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
-        user["subscription"]["level"] = "super_pro"
+        grant_subscription_days(user, "super_pro", 30)
         user["last_daily_reset"] = None
         _reset_daily_quota_if_needed(user)
         first_time_sub = not user.get("ever_subscribed")
@@ -6376,9 +6343,7 @@ async def grant_product(user, payload, chat_id):
         if first_time_sub:
             await bot.send_message(chat_id, get_text(user, "first_subscription_bonus_alert", bucks=FIRST_SUBSCRIPTION_BONUS_BUCKS, energizers=FIRST_SUBSCRIPTION_BONUS_ENERGIZERS, scenes=FIRST_SUBSCRIPTION_BONUS_SCENES))
     elif payload == "subscribe_elite":
-        user["subscription"]["active"] = True
-        user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
-        user["subscription"]["level"] = "elite"
+        grant_subscription_days(user, "elite", 30)
         user["last_daily_reset"] = None
         _reset_daily_quota_if_needed(user)
         first_time_sub = not user.get("ever_subscribed")
@@ -6717,22 +6682,24 @@ async def maintenance_cmd(message: types.Message):
     if message.from_user.id != MAIN_ADMIN_ID:
         await message.answer("⛔ Нет прав.")
         return
-    args = message.text.split()
+    args = (message.text or "").split(maxsplit=2)
     if len(args) < 2:
         await message.answer(f"Текущий режим: {'ВКЛ' if maintenance_mode else 'ВЫКЛ'}")
         return
     if args[1].lower() == "on":
         maintenance_mode = True
         user_data.setdefault("__settings__", {})["maintenance_mode"] = True
+        user_data["__settings__"]["maintenance_reason"] = args[2].strip()[:1000] if len(args) > 2 else ""
         save_data(user_data)
-        await message.answer("🛠️ Техобслуживание ВКЛ.")
+        await message.answer(get_text({}, "maintenance"), parse_mode=None)
     elif args[1].lower() == "off":
         maintenance_mode = False
         user_data.setdefault("__settings__", {})["maintenance_mode"] = False
+        user_data["__settings__"].pop("maintenance_reason", None)
         save_data(user_data)
         await message.answer("✅ Техобслуживание ВЫКЛ.")
     else:
-        await message.answer("❌ on или off")
+        await message.answer("/tehwork on Причина технических работ\n/tehwork off")
 
 
 @dp.message(Command("reset_me"))
@@ -6867,9 +6834,7 @@ async def _grant_to(message, user_id, args):
     level = "super_pro"
     if len(args) >= 3 and args[2].lower() in ("pro", "elite"):
         level = args[2].lower()
-    user["subscription"]["active"] = True
-    user["subscription"]["expires_at"] = (datetime.now() + timedelta(days=30)).isoformat()
-    user["subscription"]["level"] = level
+    grant_subscription_days(user, level, 30)
     # Форсируем полный пересчёт дневных плюшек (сообщения, баксы, энергетики, бесплатные сцены)
     # прямо сейчас — иначе, как раньше, они появились бы только на следующий день.
     user["last_daily_reset"] = None
@@ -9033,6 +8998,10 @@ async def handle_message(message: types.Message):
         await forward_to_support(message, user)
         return
 
+    if APP_MODE:
+        # Plain Telegram messages are private notes. Commands and support use their own handlers.
+        return
+
     if (user.get("game") or {}).get("type") == "cities" and not game_is_stale(user["game"]):
         await cities_user_move(message, user)
         return
@@ -9135,7 +9104,7 @@ async def handle_message(message: types.Message):
 
     # 3. Техобслуживание / регистрация
     if maintenance_mode and message.from_user.id != MAIN_ADMIN_ID:
-        await message.answer(get_text(user, "maintenance"), parse_mode="Markdown")
+        await message.answer(get_text(user, "maintenance"), parse_mode=None)
         return
     if not user["verified"] or not user["agreement_accepted"]:
         await message.answer(get_text(user, "finish_registration_first"))
@@ -21032,10 +21001,11 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     f.appendChild(el("div", "big", icon || "💬")); f.appendChild(el("div", null, text)); }
 
   var maintenanceVisible=false,maintenanceTimers=[],maintenanceLocale='ru';
-  function maintenanceScreen(lang){
+  function maintenanceScreen(lang,message){
     maintenanceLocale=lang||'ru';
     if(maintenanceVisible)return;maintenanceVisible=true;var f=$('full');f.style.display='block';f.innerHTML='';f.classList.add('maintenance-screen');
-    f.appendChild(el('div','maintenance-orb','✦'));f.appendChild(el('h2',null,tr('Скоро вернёмся','Back shortly','Gleich wieder da')));f.appendChild(el('p',null,tr('Обновляем бота. Пока ждёшь — повтори световую последовательность.','We are updating the bot. While you wait, repeat the light sequence.','Wir aktualisieren den Bot. Wiederhole in der Zwischenzeit die Lichtfolge.')));
+    f.appendChild(el('div','maintenance-orb','✦'));f.appendChild(el('h2',null,tr('⚠️ Технические работы','⚠️ Maintenance','⚠️ Wartungsarbeiten')));f.appendChild(el('p',null,tr('Обновляем бота. Пока ждёшь — повтори световую последовательность.','We are updating the bot. While you wait, repeat the light sequence.','Wir aktualisieren den Bot. Wiederhole in der Zwischenzeit die Lichtfolge.')));
+    if(message)f.appendChild(el('p',null,message));
     var score=el('p'),grid=el('div','maintenance-grid'),buttons=[],sequence=[],index=0,accepting=false,round=0,active=true;grid.setAttribute('aria-label',tr('Игра на память','Memory game','Gedächtnisspiel'));
     function later(fn,ms){var id=setTimeout(function(){if(active)fn();},ms);maintenanceTimers.push(id);}
     function flash(i){buttons[i].classList.add('lit');later(function(){buttons[i].classList.remove('lit');},320);}
@@ -21926,7 +21896,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   }
   function load(quiet) {
     return api("/api/app/state").then(function (res) {
-      if (!res.state) { if(res.error==='maintenance')maintenanceScreen(res.lang);else full(res.message || res.error || "Error", res.error === "not_ready" ? "✨" : "⚠️"); return; }
+      if (!res.state) { if(res.error==='maintenance')maintenanceScreen(res.lang,res.message);else full(res.message || res.error || "Error", res.error === "not_ready" ? "✨" : "⚠️"); return; }
       if(maintenanceVisible){if($("full")._stopMaintenance)$("full")._stopMaintenance();$("full").style.display="none";}
       var before = state ? JSON.stringify([state.messages, state.reply_choices,state.quests,state.server_day,state.hot,state.character,state.photo_pending]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) : "";
       state = res.state;
