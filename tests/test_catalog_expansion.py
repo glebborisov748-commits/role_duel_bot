@@ -51,11 +51,13 @@ class CatalogExpansionTests(unittest.TestCase):
    with self.assertRaises(ValueError):wardrobe.equip(user,key,10)
    self.assertEqual(user['inventory'],{key:1})
  def test_adult_additions_are_gender_specific_catalog_items_only(self):
-  self.assertEqual(len(wardrobe.ADULT_CATALOG_ITEMS),8)
+  self.assertEqual(len(wardrobe.ADULT_CATALOG_ITEMS),32)
   for key,item in wardrobe.ADULT_CATALOG_ITEMS.items():
    with self.subTest(item=key):
     self.assertTrue(item['adult']);self.assertTrue(item['catalog_only'])
     self.assertEqual(item['fact'],'');self.assertTrue(item['tags'])
+    from pathlib import Path
+    self.assertTrue((Path(__file__).resolve().parents[1]/'assets'/(item['image']+'.webp')).is_file())
     self.assertNotIn(key,wardrobe.OUTFIT_FACTS)
     own_gender=item['gender'];other='female' if own_gender=='male' else 'male'
     self.assertTrue(wardrobe.gender_matches({'gender':own_gender},key))

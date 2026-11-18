@@ -184,6 +184,33 @@ ADULT_CATALOG_ITEMS={
  'female_leather_outfit':_catalog_item('Leather outfit — female','Кожаный комплект — женский','Leder-Outfit — Damen',2200,'body',True,'womens leather top, leather trousers','🖤','female'),
  'female_mesh_dress':_catalog_item('Lined mesh dress','Сетчатое платье с подкладкой','Netzkleid mit blickdichtem Unterkleid',1900,'body',True,'mesh dress, opaque lining','🕸️','female'),
 }
+# Shop imagery is pre-generated at development time; tags remain catalog metadata only.
+ADULT_CATALOG_ITEMS.update({
+ 'female_wetlook_catsuit':_catalog_item('Wet-look catsuit — female','Wet-look комбинезон — женский','Wetlook-Catsuit — Damen',2400,'body',True,'womens glossy wet look catsuit','🖤','female'),
+ 'female_ribbed_tights_black':_catalog_item('Black ribbed tights','Чёрные колготки в рубчик','Schwarze Rippstrumpfhose',650,'legs',True,'black ribbed tights','🧦','female'),
+ 'female_ribbed_tights_cream':_catalog_item('Cream ribbed tights','Кремовые колготки в рубчик','Cremefarbene Rippstrumpfhose',650,'legs',True,'cream ribbed tights','🧦','female'),
+ 'female_bodycon_jumpsuit':_catalog_item('Fitted jumpsuit — female','Обтягивающий комбинезон — женский','Enger Overall — Damen',1900,'body',True,'womens fitted burgundy jumpsuit','♥️','female'),
+ 'female_leather_miniskirt':_catalog_item('Leather miniskirt','Кожаная мини-юбка','Leder-Minirock',900,'bottom',True,'black leather miniskirt','🖤','female'),
+ 'female_pleated_miniskirt':_catalog_item('Pleated miniskirt','Мини-юбка в складку','Falten-Minirock',800,'bottom',True,'red plaid pleated miniskirt','👗','female'),
+ 'female_neckline_dress':_catalog_item('V-neck mini dress','Мини-платье с декольте','Minikleid mit V-Ausschnitt',1600,'body',True,'burgundy v neck mini dress','♥️','female'),
+ 'female_fox_cosplay':_catalog_item('Fox cosplay — female','Косплей «Лисичка»','Fuchs-Cosplay — Damen',2300,'body',True,'fox cosplay dress, fox ears headband, decorative fox tail','🦊','female'),
+ 'female_satin_robe':_catalog_item('Satin robe — female','Атласный халат — женский','Satin-Morgenmantel — Damen',1400,'outerwear',True,'womens burgundy satin robe','🌹','female'),
+ 'female_kimono_robe':_catalog_item('Floral kimono robe','Халат-кимоно с цветами','Kimono-Morgenmantel mit Blumen',1700,'outerwear',True,'floral plum kimono robe, sash','🌸','female'),
+ 'female_strappy_lingerie':_catalog_item('Strappy lingerie set','Бельё с ремешками','Dessous-Set mit Riemchen',1800,'body',True,'black strappy lingerie set, opaque panels','🖤','female'),
+ 'female_stewardess':_catalog_item('Flight attendant cosplay','Костюм стюардессы','Flugbegleiterinnen-Kostüm',1900,'body',True,'navy flight attendant skirt suit, neck scarf, hat','✈️','female'),
+ 'female_teacher':_catalog_item('Teacher cosplay','Костюм учительницы','Lehrerinnen-Kostüm',1700,'body',True,'adult teacher cosplay, white blouse, pencil skirt, glasses','👓','female'),
+ 'female_angel':_catalog_item('Angel costume','Костюм ангела','Engelskostüm',2600,'body',True,'white angel costume dress, feather wings, halo','🤍','female'),
+ 'female_devil':_catalog_item('Devil costume','Костюм дьяволицы','Teufelinnen-Kostüm',2600,'body',True,'burgundy devil costume dress, horns headband, decorative tail','😈','female'),
+ 'female_onepiece_swimsuit':_catalog_item('One-piece swimsuit','Слитный купальник','Einteiliger Badeanzug',1200,'body',True,'blue opaque one piece swimsuit','🌊','female'),
+ 'female_bikini':_catalog_item('Emerald bikini','Изумрудное бикини','Smaragdgrüner Bikini',1300,'body',True,'emerald bikini swimwear, opaque fabric','👙','female'),
+ 'female_lace_bodystocking':_catalog_item('Lace bodystocking','Кружевной бодистокинг','Spitzen-Bodystocking',2000,'body',True,'black lace pattern bodystocking, opaque panels','🕸️','female'),
+ 'female_bandage_dress':_catalog_item('Bandage dress','Бандажное платье','Bandagekleid',2100,'body',True,'black fitted bandage mini dress','🖤','female'),
+ 'female_openback_dress':_catalog_item('Open-back dress','Платье с открытой спиной','Rückenfreies Kleid',1800,'body',True,'burgundy open back evening dress','🌹','female'),
+ 'male_wetlook_catsuit':_catalog_item('Wet-look catsuit — male','Wet-look комбинезон — мужской','Wetlook-Catsuit — Herren',2400,'body',True,'mens glossy wet look catsuit','🖤','male'),
+ 'male_bodycon_jumpsuit':_catalog_item('Fitted jumpsuit — male','Обтягивающий комбинезон — мужской','Enger Overall — Herren',1900,'body',True,'mens fitted burgundy jumpsuit','♥️','male'),
+ 'male_satin_robe':_catalog_item('Satin robe — male','Атласный халат — мужской','Satin-Morgenmantel — Herren',1400,'outerwear',True,'mens navy satin robe','🌙','male'),
+ 'male_fox_cosplay':_catalog_item('Fox cosplay — male','Косплей «Лис»','Fuchs-Cosplay — Herren',2300,'body',True,'mens orange fox cosplay jacket, black trousers, fox ears headband, decorative fox tail','🦊','male'),
+})
 WARDROBE.update(ADULT_CATALOG_ITEMS)
 
 for _item in WARDROBE.values():
@@ -215,7 +242,7 @@ for _key,_item in WARDROBE.items():
  if _item.get('slot')=='body':_item['occupies']=['body','top','bottom','legs','outerwear']
 for _key in ('police_male','police_female'):
  WARDROBE[_key]['occupies']=list(SLOTS)
-for _key,_extra in {'bunny_outfit':['head'],'business_suit':['neck'],'stripper_outfit':['neck'],'male_bdsm_outfit':['neck']}.items():
+for _key,_extra in {'bunny_outfit':['head'],'business_suit':['neck'],'stripper_outfit':['neck'],'male_bdsm_outfit':['neck'],'female_fox_cosplay':['head'],'male_fox_cosplay':['head'],'female_stewardess':['head','neck'],'female_angel':['head'],'female_devil':['head']}.items():
  WARDROBE[_key]['occupies']=list(set(WARDROBE[_key]['occupies'])|set(_extra))
 
 

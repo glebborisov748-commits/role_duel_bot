@@ -12,11 +12,12 @@ class LocalLoop(asyncio.SelectorEventLoop):
  def _run_once(self):self.call_later(.01,lambda:None);super()._run_once()
 async def run():
  app.photo_generation.generate=AsyncMock(side_effect=AssertionError('Catalog action submitted a model job'))
- users={}
+ users={};fixtures={}
  collection={**{k:wardrobe.WARDROBE[k] for k in wardrobe.OUTFIT_FACTS},**wardrobe.ADULT_CATALOG_ITEMS}
  for uid,gender in ((907,'male'),(908,'female')):
   u=app.get_user(uid);users[uid]=u
   u.update(lang='ru',verified=True,agreement_accepted=True,personality_ready=True,world='anime',gender=gender,style='honest',bucks=100000,xp_migrated_v2=True,xp_migrated_v3=True,appearance={})
+  credits=app.photo_wallet.balance(u)
   chosen='male_bdsm_outfit' if gender=='male' else 'female_corset_skirt'
   assert not (await app.perform_webapp_purchase(u,uid,'adult_shop',chosen))['ok']
   u['xp']=app.LEVEL_XP_THRESHOLD[5]
@@ -28,7 +29,7 @@ async def run():
    assert result['ok'],(key,result)
    assert u['inventory'][key]==1 and u['bucks']==balance-item['price']
    balance=u['bucks'];assert not (await app.perform_webapp_purchase(u,uid,category,key))['ok'];assert u['bucks']==balance
-  shop=app.serialize_shop_state(u)
+  shop=app.serialize_shop_state(u);fixtures[gender]=shop
   listed={i['key']:i for c in shop['categories'] for i in c['items'] if c['key'] in ('wardrobe','adult_shop')}
   for removed in ('firefighter_male','firefighter_female','boxer_outfit'):
    assert removed not in listed
@@ -38,7 +39,7 @@ async def run():
    public=listed[key]
    assert public['owned'] and public['catalog_only']==bool(item.get('catalog_only')) and public['tags']==item['tags'] and public['gender']==item['gender']
    assert public['category']==('adult_shop' if item['adult'] else 'wardrobe')
-   if not item.get('catalog_only'):assert public['image'] and Path('.'+public['image']).is_file()
+   assert public['image'] and Path('.'+public['image']).is_file()
   body={'outfit':chosen}
   async def request(_):return uid,u,body,None
   app._play_request=request
@@ -47,6 +48,8 @@ async def run():
   body['outfit']='police_'+gender
   assert json.loads((await app.api_wardrobe_handler(None)).text)['ok']
   assert wardrobe.active_outfit(u)['body']=='police_'+gender
+  assert app.photo_wallet.balance(u)==credits and not u.get('avatar_job') and not u.get('photo_pending')
+ Path('/tmp/rd-adult-catalog-fixtures.json').write_text(json.dumps(fixtures,ensure_ascii=False))
  app.save_data(app.user_data)
  disk=json.loads(Path(app.DATA_FILE).read_text())
  for uid,u in users.items():
