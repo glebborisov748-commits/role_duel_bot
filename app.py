@@ -19431,7 +19431,7 @@ async def app_photo_generate(user_id, user, request_text):
         if any(w in combined for w in ('oral', 'looking up', 'снизу вверх', 'von unten', 'blick nach oben')):
             pov_tags = ' POV, looking up at viewer, close-up.'
 
-        instruction = photo_context.instruction(user,get_intimacy_level(user),photo_appearance(user))
+        instruction = photo_context.instruction(user,get_intimacy_level(user),photo_appearance(user),pov_tags)
         if pov_tags:
             instruction += f' IMPORTANT: Add these camera tags to the end of the generated prompt: {pov_tags.strip()}.'
         response = await asyncio.wait_for(asyncio.to_thread(call_ai, AI_MODEL, 'ai',
