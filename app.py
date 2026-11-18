@@ -19445,7 +19445,7 @@ async def app_photo_generate(user_id, user, request_text):
         charged = True
         save_data(user_data)
         render_style='Natural realistic photograph, natural human proportions and skin texture. ' if user.get('world')=='realism' else 'Anime illustration. '
-        raw, ext = await asyncio.wait_for(photo_generation.generate(render_style + plan['prompt'][:2200] + '. Mandatory selected appearance: ' + photo_appearance(user) + '. Clothing: '+profile_options.clothing_facts(user,get_intimacy_level(user))+'. Single person, face clearly visible, non-explicit clothed photo.', world=user.get('world'),gender=user.get('gender'),appearance=user.get('appearance')), timeout=280)
+        raw, ext = await asyncio.wait_for(photo_generation.generate(render_style + plan['prompt'][:2200] + '. Mandatory selected appearance: ' + photo_appearance(user) + '. Single person, face clearly visible.', world=user.get('world'),gender=user.get('gender'),appearance=user.get('appearance')), timeout=280)
         os.makedirs(AVATAR_DIR, exist_ok=True)
         name = os.urandom(12).hex() + '.' + ext
         with open(os.path.join(AVATAR_DIR,name),'wb') as output:
