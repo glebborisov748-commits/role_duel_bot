@@ -19419,7 +19419,21 @@ async def app_photo_generate(user_id, user, request_text):
         if not context:
             user.setdefault('app_notices',[]).append('Пока нет контекста для фото. Сначала пообщайтесь.')
             return
+
+        # POV логика: если в контексте или запросе интим, добавляем POV теги
+        history_text = ' '.join(str(m.get('content',''))[:500] for m in context[:3])
+        combined = (history_text + ' ' + request_text).lower()
+        user_gender = user.get('user_gender', 'male')
+        hands = 'male hands visible' if user_gender == 'male' else 'female hands visible'
+        pov_tags = ''
+        if any(w in combined for w in ('kiss', 'touch', 'hug', 'sex', 'целу', 'трога', 'обнима', 'секс', 'küss', 'berühr', 'umar')):
+            pov_tags = f' POV, {hands}, interacting with viewer, close-up.'
+        if any(w in combined for w in ('oral', 'looking up', 'снизу вверх', 'von unten', 'blick nach oben')):
+            pov_tags = ' POV, looking up at viewer, close-up.'
+
         instruction = photo_context.instruction(user,get_intimacy_level(user),photo_appearance(user))
+        if pov_tags:
+            instruction += f' IMPORTANT: Add these camera tags to the end of the generated prompt: {pov_tags.strip()}.'
         response = await asyncio.wait_for(asyncio.to_thread(call_ai, AI_MODEL, 'ai',
             messages=[{'role':'system','content':instruction}, {'role':'user','content':json.dumps({'conversation':context,'request':request_text},ensure_ascii=False)}],
             temperature=0.5, max_tokens=350), timeout=35)
