@@ -48,7 +48,8 @@ class PhotoFlowTests(unittest.IsolatedAsyncioTestCase):
             ns.update(os=os,AVATAR_DIR=directory)
             with patch('asyncio.to_thread',thread),patch.object(photo_generation,'generate',image):
                 await ns['app_photo_generate'](1,user,'a portrait')
-            self.assertEqual(user['energy'],110)
+            self.assertEqual(user['energy'],150)
+            self.assertEqual(__import__('photo_wallet').balance(user),0)
             self.assertEqual(len(os.listdir(directory)),1)
             self.assertRegex(user['history'][-1]['photo'],r'^/avatars/[0-9a-f]{24}\.jpg$')
             self.assertNotIn('photo_reserved',user)

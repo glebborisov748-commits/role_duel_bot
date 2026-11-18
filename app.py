@@ -9,6 +9,8 @@ import time
 import copy
 import online_games
 import online_ui
+import companion_initiative
+import photo_wallet
 import photo_generation
 import asyncio
 import daily_quests
@@ -454,7 +456,7 @@ TEXTS = {
         "payment_pro_success": "✅ PRO подписка активирована на месяц!",
         "payment_super_success": "✅ SUPER PRO подписка активирована на месяц!",
         "payment_elite_success": "✅ ELITE подписка активирована на месяц!",
-        "first_subscription_bonus_alert": "🎁 Это твоя первая подписка — держи бонус: +{bucks}💵, +{energizers}⚡ и +{scenes} горячая сцена!",
+        "first_subscription_bonus_alert": "🎁 За первую покупку подписки: +{bucks} баксов и +{scenes} сцены!",
         "payment_upgrade_success": "✅ Апгрейд до SUPER PRO выполнен до {date}!",
     },
     "en": {
@@ -870,7 +872,7 @@ TEXTS = {
         "payment_pro_success": "✅ PRO subscription activated for a month!",
         "payment_super_success": "✅ SUPER PRO subscription activated for a month!",
         "payment_elite_success": "✅ ELITE subscription activated for a month!",
-        "first_subscription_bonus_alert": "🎁 This is your first subscription — here's your bonus: +{bucks}💵, +{energizers}⚡ and +{scenes} hot scene!",
+        "first_subscription_bonus_alert": "🎁 За первую покупку подписки: +{bucks} баксов и +{scenes} сцены!",
         "payment_upgrade_success": "✅ Upgrade to SUPER PRO done until {date}!",
     },
     "de": {
@@ -1286,7 +1288,7 @@ TEXTS = {
         "payment_pro_success": "✅ PRO-Abo für einen Monat aktiviert!",
         "payment_super_success": "✅ SUPER PRO-Abo für einen Monat aktiviert!",
         "payment_elite_success": "✅ ELITE-Abo für einen Monat aktiviert!",
-        "first_subscription_bonus_alert": "🎁 Das ist dein erstes Abo — hier ist dein Bonus: +{bucks}💵, +{energizers}⚡ und +{scenes} heiße Szene!",
+        "first_subscription_bonus_alert": "🎁 За первую покупку подписки: +{bucks} баксов и +{scenes} сцены!",
         "payment_upgrade_success": "✅ Upgrade auf SUPER PRO bis {date} erledigt!",
     }
 }
@@ -5330,6 +5332,7 @@ def product_discount(payload, user=None):
 def product_stars(payload, user=None):
     """Цена товара в звёздах для этого пользователя сейчас -- одна точка правды для счетов и подписей."""
     if payload=="avatar_generate":return 10
+    if payload=='subscribe_pro' and datetime.now().isoformat()<PHOTO_PROMO_UNTIL:return 250
     base = regular_stars(payload)
     discount = product_discount(payload, user)
     return max(1, int(round(base * (1 - discount)))) if discount else base
@@ -5962,11 +5965,20 @@ for _product in PRODUCTS.values():
 
 # Сколько энергетиков даёт каждый пакет — покупаются прямо в Mini App магазина через
 # openInvoice (см. api_shop_energizer_invoice_handler), без чатового каталога.
-WEEKLY_SUBSCRIPTIONS = {'subscribe_pro_week': ('pro', 75, 90),
-                        'subscribe_super_week': ('super_pro', 170, 210),
-                        'subscribe_elite_week': ('elite', 340, 420)}
+SUBSCRIPTION_PRICES={'subscribe_pro':(292,350),'subscribe_super':(667,800),'subscribe_elite':(1667,2000),
+ 'subscribe_pro_week':(100,120),'subscribe_super_week':(225,270),'subscribe_elite_week':(542,650)}
+PHOTO_PROMO_UNTIL=os.getenv('PRO_PHOTO_PROMO_UNTIL','2026-12-02T00:00:00')
+WEEKLY_SUBSCRIPTIONS = {'subscribe_pro_week': ('pro', 100, 120),
+                        'subscribe_super_week': ('super_pro', 225, 270),
+                        'subscribe_elite_week': ('elite', 542, 650)}
 for _payload, (_tier, _stars, _rub) in WEEKLY_SUBSCRIPTIONS.items():
     PRODUCTS[_payload] = {'stars': _stars, 'rub': _rub, 'usd': round(_stars / 70, 2)}
+
+for _key, (_stars,_rub) in SUBSCRIPTION_PRICES.items():
+    PRODUCTS[_key].update(stars=_stars,rub=_rub)
+PRODUCTS['intim_scene'].update(stars=15,rub=18)
+PRODUCTS['scene_photo']={'stars':25,'rub':30}
+for _key,(_amount,_stars) in photo_wallet.PACKS.items():PRODUCTS[_key]={'stars':_stars,'rub':round(_stars*RUB_PER_STAR)}
 
 ENERGIZER_PACKS = {
     # emoji растёт по ощущению объёма вместе с количеством -- пара банок, потом упаковка,
@@ -6026,6 +6038,9 @@ def available_payment_methods(payload=None):
 
 def product_invoice_texts(user, payload):
     """Заголовок, описание и подпись строки счёта для товара."""
+    if payload in photo_wallet.PACKS or payload=='scene_photo':
+        title=('Фото ×'+str(photo_wallet.PACKS[payload][0])) if payload in photo_wallet.PACKS else 'Сцена + фото'
+        return title,title,title
     if payload=='avatar_generate':
         title={'ru':'Образ персонажа','de':'Charakterbild'}.get(user.get('lang'),'Character portrait')
         return title,{'ru':'Один образ в полный рост по внешности и диалогу. Если генерация не удалась, попытка сохранится.','de':'Ein Ganzkörperbild. Bei Fehlern bleibt der Versuch erhalten.'}.get(user.get('lang'),'One full-length portrait. Failed attempts are preserved.'),title
@@ -6145,6 +6160,9 @@ async def check_lava_invoice(order_id):
 # ---------- Platega ----------
 def product_rub(payload, user=None):
     """Цена картой: от цены в звёздах для этого пользователя (распродажи и купон учитываются так же)."""
+    if payload in SUBSCRIPTION_PRICES:
+        if payload=='subscribe_pro' and datetime.now().isoformat()<PHOTO_PROMO_UNTIL:return 300
+        return SUBSCRIPTION_PRICES[payload][1]
     return max(10, int(round(product_stars(payload, user) * RUB_PER_STAR)))
 
 
@@ -6233,15 +6251,15 @@ def add_pending_payment(user, provider, invoice_id, payload, coupon=False):
     save_data(user_data)
 
 
-FIRST_SUBSCRIPTION_BONUS_BUCKS = 300  # было 150 — увеличено по просьбе, разовая премия за самую
+FIRST_SUBSCRIPTION_BONUS_BUCKS = 1000  # было 150 — увеличено по просьбе, разовая премия за самую
 # первую покупку ЛЮБОЙ подписки (см. ever_subscribed ниже) — по фидбэку заменяет часть ценности
 # прежнего ежедневного баксового стипенда (было BUCKS_DAILY_STIPEND) разовым бонусом в момент
 # покупки; вторая половина замены — тиерный множитель с заработка на работе, см.
 # work_earnings_multiplier/WORK_MULTIPLIER.
-FIRST_SUBSCRIPTION_BONUS_ENERGIZERS = 3  # по фидбэку "хотелось бы интереснее, чем просто баксы" —
+FIRST_SUBSCRIPTION_BONUS_ENERGIZERS = 0  # по фидбэку "хотелось бы интереснее, чем просто баксы" —
 # добавили энергетики (мгновенно применимая плюшка) и бесплатную горячую сцену ниже, а не только
 # циферки баланса.
-FIRST_SUBSCRIPTION_BONUS_SCENES = 1
+FIRST_SUBSCRIPTION_BONUS_SCENES = 2
 
 # Реферальные награды (по фидбэку: раньше было много энергетиков и мало баксов).
 REFERRAL_INVITER_BUCKS = 2000
@@ -6266,8 +6284,14 @@ async def grant_product(user, payload, chat_id):
     Раньше эта логика жила прямо в payment_success и работала только для Stars."""
     user["has_purchased"] = True
 
-    if payload=='avatar_generate':
-        user['avatar_credits']=int(user.get('avatar_credits',0))+1
+    photo_wallet.ensure(user)
+    if payload in SUBSCRIPTION_PRICES:
+        tier={'subscribe_pro':'pro','subscribe_super':'super_pro','subscribe_elite':'elite'}[payload.removesuffix('_week')]
+        days=7 if payload.endswith('_week') else 30
+        photo_wallet.grant(user,(photo_wallet.WEEKLY if days==7 else photo_wallet.MONTHLY)[tier],(datetime.now()+timedelta(days=days)).isoformat())
+    if payload in photo_wallet.PACKS or payload in ('avatar_generate','scene_photo'):
+        photo_wallet.grant(user,photo_wallet.PACKS[payload][0] if payload in photo_wallet.PACKS else 1)
+        if payload=='scene_photo':user['intim_scenes']=user.get('intim_scenes',0)+1
         save_data(user_data)
     elif payload in WEEKLY_SUBSCRIPTIONS:
         grant_subscription_days(user, WEEKLY_SUBSCRIPTIONS[payload][0], 7)
@@ -8233,10 +8257,13 @@ def exchange_today():
     return EXCHANGE_ROTATION[local_today().toordinal() % len(EXCHANGE_ROTATION)]
 
 
-def exchange_left(user, key):
-    if key != exchange_today():
-        return 0
-    return 0 if (user.get("bucks_exchange") or {}).get("day") == local_today().isoformat() else 1
+def exchange_ready_in(user,key):
+    try:return max(0,int((datetime.fromisoformat((user.get('exchange_cooldowns') or {})[key])+timedelta(hours=72)-datetime.now()).total_seconds()))
+    except (KeyError,ValueError,TypeError):return 0
+
+
+def exchange_left(user,key):
+    return int(key in BUCKS_EXCHANGE and not exchange_ready_in(user,key))
 
 
 def exchange_name(user, key):
@@ -8247,10 +8274,10 @@ def exchange_name(user, key):
 def buy_exchange(user, key):
     """(ok, error_text). Сегодняшний товар за баксы, один раз в день."""
     offer = BUCKS_EXCHANGE.get(key)
-    if not offer or key != exchange_today():
+    if not offer:
         return False, gt(user, "ex_not_today")
     if exchange_left(user, key) <= 0:
-        return False, gt(user, "ex_limit_day")
+        return False, "Этот предмет можно купить раз в 72 часа. Осталось: "+str((exchange_ready_in(user,key)+3599)//3600)+" ч."
     if not spend_bucks(user, offer["price"]):
         return False, get_text(user, "not_enough_bucks", n=offer["price"] - user.get("bucks", 0))
     if key == "energizer":
@@ -8262,7 +8289,7 @@ def buy_exchange(user, key):
             user["dead"] = False  # уже мёртв -- сразу воскрешаем
         else:
             user["defib_stock"] = user.get("defib_stock", 0) + 1  # иначе лежит в запасе до случая
-    user["bucks_exchange"] = {"day": local_today().isoformat()}
+    user.setdefault("exchange_cooldowns",{})[key]=datetime.now().isoformat()
     save_data(user_data)
     return True, None
 
@@ -9229,14 +9256,11 @@ def serialize_shop_state(user):
                 'effects':({'ru':'Новинка для коллекции. Применение к фото пока не подключено.','de':'Neu für die Sammlung. Noch nicht für Fotos verfügbar.'}.get(lang,'New collectible. Not connected to photos yet.') if item.get('catalog_only') else {'ru':'Остаётся в инвентаре','de':'Bleibt im Inventar'}.get(lang,'Kept in inventory'))})
         categories.append({'key':category,'name':title,'items':items,'locked':locked,'required_level':5 if adult else None})
 
-    ex_key = exchange_today()
-    ex_offer = BUCKS_EXCHANGE[ex_key]
-    categories.append({"key": "exchange", "name": gt(user, "shop_cat_exchange"), "items": [{
-        "key": ex_key, "category": "exchange", "image": shop_item_image("exchange", ex_key), "emoji": ex_offer["emoji"],
-        "name": exchange_name(user, ex_key), "price": ex_offer["price"],
-        "effects": gt(user, "ex_desc_" + ex_key, stock=user.get("defib_stock", 0)),
-        "ready_in": None if exchange_left(user, ex_key) else gt(user, "ex_bought_today"), "refuse": False,
-    }]})
+    categories.append({'key':'exchange','name':gt(user,'shop_cat_exchange'),'items':[
+        {'key':key,'category':'exchange','image':shop_item_image('exchange',key),'emoji':offer['emoji'],
+         'name':exchange_name(user,key),'price':offer['price'],'effects':'Покупка раз в 72 часа',
+         'ready_in':(str((exchange_ready_in(user,key)+3599)//3600)+' ч.') if exchange_ready_in(user,key) else None,
+         'refuse':False} for key,offer in BUCKS_EXCHANGE.items()]})
 
     medicine = []
     if user.get("illness"):
@@ -12774,7 +12798,7 @@ TELEGRAM_WEBAPP_SDK_JS = r'''// WebView
 '''
 
 
-SHOP_PAGE_HTML = r'''<!doctype html>
+SHOP_PAGE_HTML = r"""<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -12972,7 +12996,7 @@ SHOP_PAGE_HTML = r'''<!doctype html>
 .wardrobe-room{grid-template-columns:minmax(0,42%) minmax(0,1fr)!important;width:100%!important;box-sizing:border-box!important;gap:12px!important;padding:12px!important;align-items:start!important}.wardrobe-room>div{min-width:0}.wardrobe-room .wardrobe-model{width:100%;height:270px!important;max-height:none!important;object-fit:cover!important;object-position:top;border-radius:16px}.wardrobe-room .wardrobe-product{display:block;width:90px;height:90px;object-fit:contain;margin:12px auto}.wardrobe-room .wardrobe-product[hidden]{display:none}.wardrobe-room select{font-size:12px!important;max-width:100%;min-width:0;box-sizing:border-box!important}.wardrobe-room h3{font-size:16px!important;margin:0 0 12px}.wardrobe-room p{font-size:11px!important;line-height:1.45}.wardrobe-room button{font-size:13px!important;min-height:44px!important}.card,.card-top,.card-body{min-width:0;box-sizing:border-box}html,body{max-width:100%;overflow-x:hidden}
 
 .wardrobe-room label{display:flex;flex-direction:column;gap:5px;font-size:12px;margin-top:10px}.wardrobe-empty{padding:18px 10px;display:flex;align-items:center;text-align:center;min-height:200px;background:radial-gradient(ellipse,#47364d,#221c2c);border-radius:18px;color:#cdbed6;font-size:12px;line-height:1.5}.wardrobe-room img[hidden]{display:none!important}.wardrobe-room .wardrobe-model{height:330px!important;object-fit:contain!important}.wardrobe-lock{padding:15px;text-align:center;font-size:14px;color:#d3b4e8}.wardrobe-room select{min-height:40px!important}.wardrobe-room .wardrobe-product{display:none}
-</style>
+del,.old-price{position:relative;text-decoration:none!important}del:after,.old-price:after{content:'';position:absolute;left:0;right:0;height:2px;top:50%;background:#ed5965;transform:rotate(-8deg)}.card{box-shadow:inset 0 1px 0 #fff08,0 8px 22px #0003}</style>
 </head>
 <body>
   <div id="stats"></div>
@@ -13489,7 +13513,7 @@ SHOP_PAGE_HTML = r'''<!doctype html>
 </script>
 </body>
 </html>
-'''
+"""
 
 
 ASSETS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
@@ -18921,6 +18945,7 @@ def app_unstick(user):
     except (ValueError, TypeError):
         age = APP_PENDING_STALE_SECONDS + 1
     if age > (360 if user.get('photo_pending') else APP_PENDING_STALE_SECONDS):
+        photo_wallet.finish(user,'chat',refund=True)
         if user.get('photo_reserved'):
             user['energy'] = min(ENERGY_MAX,user.get('energy',0)+user.pop('photo_reserved'))
         user.pop('photo_pending', None)
@@ -18946,16 +18971,16 @@ def app_sub_offers(user):
             text('Анимированные реакции', 'Animated reactions','Animierte Reaktionen'),
             text(f'Расход потребностей ниже на {round((1-STAT_DECAY_MULTIPLIER[tier])*100)}%',f'Needs consumption reduced by {round((1-STAT_DECAY_MULTIPLIER[tier])*100)}%',f'Bedürfnisverbrauch −{round((1-STAT_DECAY_MULTIPLIER[tier])*100)}%')]
         if tier in ('super_pro','elite'):benefits += [text('Свой сценарий персонажа; смена характера и описания внешности без потери истории','Custom character; change personality and appearance facts without losing history','Eigener Charakter; Persönlichkeit und Aussehen ohne Verlaufverlust ändern'),text('Отключение уведомлений','Mute notifications','Benachrichtigungen stummschalten')]
-        if not user.get('ever_subscribed'):benefits += [text(f'Первая подписка: {FIRST_SUBSCRIPTION_BONUS_BUCKS} баксов, {FIRST_SUBSCRIPTION_BONUS_ENERGIZERS} энергетика и {FIRST_SUBSCRIPTION_BONUS_SCENES} сцена',f'First subscription: {FIRST_SUBSCRIPTION_BONUS_BUCKS} bucks, {FIRST_SUBSCRIPTION_BONUS_ENERGIZERS} energizers and {FIRST_SUBSCRIPTION_BONUS_SCENES} scene',f'Erstes Abo: {FIRST_SUBSCRIPTION_BONUS_BUCKS} Bucks, {FIRST_SUBSCRIPTION_BONUS_ENERGIZERS} Energydrinks und {FIRST_SUBSCRIPTION_BONUS_SCENES} Szene')]
+
         if tier=='elite':benefits += [text('Иммунитет к болезням; постоянная удача колеса; бесплатное пробуждение раз в неделю','Illness immunity; permanent wheel luck; one free wake per week','Krankheitsimmunität; dauerhaftes Radglück; einmal wöchentlich kostenlos aufwecken')]
 
         offers.append({"payload": payload, "title": title, "emoji": emoji, "perks": [style_line]+benefits,
-                       "stars": product_stars(payload, user), "stars_label": price_label(payload, user),
+                       "stars": product_stars(payload, user), "old_stars":regular_stars(payload), "stars_label": str(product_stars(payload,user)),"photos":photo_wallet.MONTHLY[tier],
                        "rub": product_rub(payload, user) if "platega" in methods else None})
     for base in list(offers):
         payload = base['payload'] + '_week'
         offers.append({**base, 'payload': payload, 'title': base['title'] + ' · 7 ' + ('дней' if user.get('lang') == 'ru' else 'days'),
-                       'stars': product_stars(payload, user), 'stars_label': price_label(payload, user), 'rub': None})
+                       'stars':product_stars(payload,user),'old_stars':regular_stars(payload),'stars_label':str(product_stars(payload,user)), 'photos':photo_wallet.WEEKLY[{'subscribe_pro':'pro','subscribe_super':'super_pro','subscribe_elite':'elite'}[base['payload']]], 'rub':product_rub(payload,user) if 'platega' in available_payment_methods(payload) else None})
     return offers
 
 
@@ -18963,12 +18988,13 @@ CHANNEL_URL = "https://t.me/duel_dev_channel"
 
 
 def serialize_app_state(user):
+    photo_wallet.ensure(user)
     user["style"]=character_options.ALIASES.get(user.get("style"),user.get("style","warm"))
     avatar_unstick(user)
     user["app_seen"] = datetime.now().isoformat()
     if not user.get("personality_ready"):
         ui = {k: v for k, v in APP_TEXTS.get(user.get("lang", "ru"), APP_TEXTS["en"]).items() if isinstance(v, str)}
-        return {"release":"20261117e", "onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
+        return {"release":"20261118a", "onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
     app_unstick(user)
     if migrate_character_appearance(user):save_data(user_data)
     if user.get('appearance'):
@@ -18997,8 +19023,11 @@ def serialize_app_state(user):
         "messages": [{"id": m["id"], "role": m["role"], "text": m["content"], "reaction": m.get("reaction"), "user_reaction": m.get("user_reaction"), "reaction_animated": bool(m.get("reaction_animated")), "edited": bool(m.get("edited")), "card": m.get("card"), "photo": m.get("photo")}
                      for m in history],
         "onboarding": None,
+        "initiative_enabled":user.get("initiative_enabled",True),"ever_subscribed":bool(user.get("ever_subscribed")),
         "content_settings":profile_options.state(user),
-        "release":"20261117e",
+        "photos":photo_wallet.snapshot(user),
+        "purchase_products":[{"payload":k,"amount":v[0],"stars":product_stars(k,user),"rub":product_rub(k,user),"image":"/assets/photo_pack_"+str(v[0])+".webp"} for k,v in photo_wallet.PACKS.items()],
+        "release":"20261118a",
         "reply_choices": serialize_reply_choices(user),
         "pending": bool(user.get("app_pending")),"photo_pending":bool(user.get("photo_pending")),
         "notices": notices,
@@ -19015,7 +19044,7 @@ def serialize_app_state(user):
             "looks": [{"key": k, "img": f"/assets/avatar_{k}.jpg", "label": v["label_ru"] if lang == "ru" else v["label_en"]}
                       for k, v in LOOKS.items() if v["world"] == (user.get("world") or "realism") and v["gender"] == (user.get("gender") or "female")],
             "name": user.get("char_name"),
-            "can_avatar": True,"can_edit_appearance":sub_level in ("super_pro","elite"),"avatar_credits":int(user.get("avatar_credits",0)),"avatar_pending":bool(user.get("avatar_job")),"avatar_error":user.get("avatar_error"),"avatar_generated":bool(user.get("avatar_generated")),
+            "can_avatar": True,"can_edit_appearance":sub_level in ("super_pro","elite"),"avatar_credits":photo_wallet.balance(user),"avatar_pending":bool(user.get("avatar_job")),"avatar_error":user.get("avatar_error"),"avatar_generated":bool(user.get("avatar_generated")),
             "title": user.get("char_name") or at(user, "char_female" if (user.get("gender") or "female") == "female" else "char_male"),
             "subtitle": f"{world_display_name(user.get('world') or 'realism', user).capitalize()} · "
                         f"{style_display_label(get_display_style(user), user)}",
@@ -19070,20 +19099,9 @@ def reply_choices_key(user):
 
 
 def serialize_reply_choices(user):
-    if user.get('app_pending') or is_asleep(user):
-        return []
-    if not user.get('history'):
-        if user.get('lang') == 'de':
-            return ['Hey! Wie läuft dein Tag?', 'Erzähl mir etwas Unerwartetes über dich.', 'Was würdest du mir gern zeigen?', 'Was interessiert dich gerade?']
-        if user.get('lang', 'ru') == 'ru':
-            return ['Привет! Как проходит твой день?', 'Расскажи о себе что-нибудь неожиданное.',
-                    'Как устроен твой мир?' if user.get('world') == 'anime' else 'Какое место тебе хотелось бы показать мне?',
-                    'Давай познакомимся: что тебе сейчас интересно?']
-        return ['Hi! How is your day going?', 'Tell me something unexpected about yourself.',
-                'What is your world like?' if user.get('world') == 'anime' else 'What place would you like to show me?',
-                'Let’s get to know each other. What interests you lately?']
-    choices = user.get('reply_choices') or {}
-    return choices.get('items', []) if choices.get('key') == reply_choices_key(user) else []
+    if any(m.get('role')=='user' for m in user.get('history',[])):return []
+    import companion_initiative
+    return companion_initiative.starters(user)
 
 
 def parse_reply_choices(raw):
@@ -19143,8 +19161,8 @@ async def app_generate(user_id, user):
     if is_photo_request(latest):
         if not photo_generation.token():
             user.setdefault('app_notices',[]).append({'ru':'Генерация фото ещё не настроена.','de':'Die Fotogenerierung ist noch nicht eingerichtet.'}.get(user.get('lang'),'Photo generation is not configured yet.'))
-        elif user.get('energy',0)<PHOTO_ENERGY_COST:
-            user.setdefault('app_notices',[]).append({'ru':'На фото нужно 40 энергии. Напои персонажа энергетиком и попроси ещё раз.','de':'Ein Foto braucht 40 Energie. Gib deinem Charakter einen Energydrink und frage erneut.'}.get(user.get('lang'),'A photo needs 40 energy. Use an energizer and ask again.'))
+        elif photo_wallet.balance(user)<1:
+            user.setdefault('app_notices',[]).append({'ru':'Закончились попытки фото. Открой «Подписки и покупки».','de':'Ein Foto braucht 40 Energie. Gib deinem Charakter einen Energydrink und frage erneut.'}.get(user.get('lang'),'A photo needs 40 energy. Use an energizer and ask again.'))
         else:
             user['photo_pending']=True
             save_data(user_data)
@@ -19164,13 +19182,6 @@ async def app_generate(user_id, user):
         user["app_pending"] = None
         save_data(user_data)
 
-    if generated:
-        count = user.get('reply_choices_turns', 0) + 1
-        user['reply_choices_turns'] = count
-        if count >= user.get('reply_choices_next', 5):
-            user['reply_choices_next'] = count + random.randint(5, 8)
-            asyncio.create_task(generate_reply_choices(user, reply_choices_key(user)))
-        save_data(user_data)
 
 
 PHOTO_ENERGY_COST = 40
@@ -19191,10 +19202,7 @@ async def app_photo_generate(user_id, user, request_text):
         if plan.get('allowed') is not True or not isinstance(plan.get('prompt'), str):
             user.setdefault('history', []).append({'role':'assistant','content': 'Могу прислать портрет или фото в одежде. Напиши, какой образ хочешь.' if user.get('lang') == 'ru' else 'I can send a portrait or a clothed photo. Tell me which outfit you would like.'})
             return
-        if user.get('energy',0) < PHOTO_ENERGY_COST:
-            raise RuntimeError('Insufficient energy')
-        user['energy'] -= PHOTO_ENERGY_COST
-        user['photo_reserved'] = PHOTO_ENERGY_COST
+        if not photo_wallet.reserve(user,'chat'):raise RuntimeError('No photo attempts')
         charged = True
         save_data(user_data)
         render_style='Natural realistic photograph, natural human proportions and skin texture. ' if user.get('world')=='realism' else 'Anime illustration. '
@@ -19204,16 +19212,16 @@ async def app_photo_generate(user_id, user, request_text):
         with open(os.path.join(AVATAR_DIR,name),'wb') as output:
             output.write(raw)
         user.setdefault('history', []).append({'role':'assistant','content':'📷','photo':'/avatars/'+name})
-        user.pop('photo_reserved', None)
+        photo_wallet.finish(user,'chat')
         charged = False
         if user['energy'] <= 0:
             user['sleep_until'] = datetime.now().isoformat()
     except Exception as exc:
         if charged:
-            user['energy'] = min(ENERGY_MAX,user.get('energy',0)+user.pop('photo_reserved', PHOTO_ENERGY_COST))
+            photo_wallet.finish(user,'chat',refund=True)
         user['photo_error']=photo_generation.error_code(exc)
         logging.warning('Photo generation unavailable: %s',user['photo_error'])
-        user.setdefault('app_notices', []).append(('Не получилось создать фото. Энергия сохранена. Код: ' if user.get('lang') == 'ru' else 'Could not create the photo. Energy preserved. Code: ')+user['photo_error'])
+        user.setdefault('app_notices', []).append(('Не получилось создать фото. Попытка возвращена. Код: ' if user.get('lang') == 'ru' else 'Could not create the photo. Energy preserved. Code: ')+user['photo_error'])
     finally:
         user['app_pending'] = None
         user.pop('photo_pending', None)
@@ -19228,8 +19236,7 @@ async def api_app_photo_handler(request):
         return _app_reply(user, False, at(user,'wait_reply'))
     if not photo_generation.token():
         return _app_reply(user, False, 'Генерация фото ещё не настроена.' if user.get('lang') == 'ru' else 'Photo generation is not configured yet.')
-    if user.get('energy',0) < PHOTO_ENERGY_COST:
-        return _app_reply(user, False, 'Нужно 40 энергии.' if user.get('lang') == 'ru' else '40 energy required.')
+    if photo_wallet.balance(user)<1:return _app_reply(user,False,'Закончились попытки фото. Открой «Подписки и покупки».')
     if body.get('pair_action') is not None:return _app_reply(user,False,'Теперь фото создаётся по последнему диалогу. Обнови приложение.')
     if not photo_context.recent(user):return _app_reply(user,False,{'ru':'Пока нет контекста. Сначала пообщайтесь с персонажем.','de':'Noch kein Kontext. Unterhalte dich zuerst mit deinem Charakter.'}.get(user.get('lang'),'No context yet. Chat with your companion first.'))
     text = str(body.get('text') or 'A photo reflecting our most recent conversation, with one character.')[:2000]
@@ -19361,7 +19368,7 @@ async def api_app_invoice_handler(request):
     if err:
         return err
     payload, method = body.get("payload"), body.get("method") or "stars"
-    if payload not in APP_INVOICE_PAYLOADS or method not in available_payment_methods(payload) \
+    if payload not in (set(APP_INVOICE_PAYLOADS)|set(photo_wallet.PACKS)|{'scene_photo'}) or method not in available_payment_methods(payload) \
             or method not in ("stars", "platega"):
         return web.json_response({"ok": False, "error": "Bad request"})
     if payload=='avatar_generate' and (not photo_generation.token() or user.get('avatar_job')):
@@ -19571,7 +19578,7 @@ def avatar_unstick(user):
     try:stale=bool(job) and (datetime.now()-datetime.fromisoformat(job['started'])).total_seconds()>360
     except (KeyError,ValueError,TypeError):stale=bool(job)
     if stale:
-        user['avatar_credits']=int(user.get('avatar_credits',0))+1
+        photo_wallet.finish(user,'avatar',refund=True)
         user.pop('avatar_job',None);user['avatar_error']='timeout';save_data(user_data)
 
 
@@ -19588,10 +19595,10 @@ async def generate_profile_avatar(user,job_id):
         os.makedirs(AVATAR_DIR,exist_ok=True);name=secrets.token_hex(12)+'.'+ext
         with open(os.path.join(AVATAR_DIR,name),'wb') as f:f.write(raw)
         user.update(avatar=name,avatar_fullbody=name,avatar_generated=True)
-        user.pop('avatar_error',None);user.pop('avatar_job',None)
+        user.pop('avatar_error',None);user.pop('avatar_job',None);photo_wallet.finish(user,'avatar')
     except (Exception,asyncio.CancelledError) as exc:
         if (user.get('avatar_job') or {}).get('id')==job_id:
-            user['avatar_credits']=int(user.get('avatar_credits',0))+1;user.pop('avatar_job',None)
+            photo_wallet.finish(user,'avatar',refund=True);user.pop('avatar_job',None)
             user['avatar_error']=photo_generation.error_code(exc)
         logging.warning('Profile portrait failed: %s',photo_generation.error_code(exc))
         if isinstance(exc,asyncio.CancelledError):raise
@@ -19604,8 +19611,8 @@ async def api_profile_avatar_generate_handler(request):
     avatar_unstick(user)
     if user.get('avatar_job') or user.get('photo_pending'):return _app_reply(user,False,at(user,'wait_reply'))
     if not photo_generation.token():return _app_reply(user,False,'Генерация временно не настроена. Попытка сохранена.')
-    if int(user.get('avatar_credits',0))<1:return _app_reply(user,False,'Сначала оплати образ за 10 Stars.')
-    job_id=secrets.token_hex(12);user['avatar_credits']-=1;user['avatar_job']={'id':job_id,'started':datetime.now().isoformat()};save_data(user_data)
+    if not photo_wallet.reserve(user,'avatar'):return _app_reply(user,False,'Нужна 1 попытка фото. Открой «Подписки и покупки».')
+    job_id=secrets.token_hex(12);user['avatar_job']={'id':job_id,'started':datetime.now().isoformat()};save_data(user_data)
     asyncio.create_task(generate_profile_avatar(user,job_id))
     return _app_reply(user)
 
@@ -19907,15 +19914,16 @@ def page_response(request, html):
         html = html.replace("</head>", APP_THEME_TAG + "</head>", 1)
     if request.query.get("embed") == "1":
         html = _SDK_TAG_RE.sub(lambda m: EMBED_BRIDGE, html, count=1)
-        return web.Response(text=html, content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261117e"})
-    return web.Response(text=with_app_back(html), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261117e"})
+        return web.Response(text=html, content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118a"})
+    return web.Response(text=with_app_back(html), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118a"})
 
 
 def refund_scene_photo(user, job_id):
     job=user.get('scene_photo_job')
     if not job or job.get('id')!=job_id:
         return False
-    user['energy']=min(ENERGY_MAX,user.get('energy',0)+job.get('reserved',0))
+    if job.get('wallet'):photo_wallet.finish(user,job_id,refund=True)
+    else:user['energy']=min(ENERGY_MAX,user.get('energy',0)+job.get('reserved',0))
     if user['energy']>0:
         user['sleep_until']=None
     last=user.get('last_hot_scene') or {}
@@ -19945,7 +19953,7 @@ async def generate_scene_photo(user, scene, job_id):
         name=os.urandom(12).hex()+'.'+ext
         with open(os.path.join(AVATAR_DIR,name),'wb') as output:
             output.write(raw)
-        scene.update(photo='/avatars/'+name,photo_status='ready')
+        scene.update(photo='/avatars/'+name,photo_status='ready');photo_wallet.finish(user,job_id)
         user.pop('scene_photo_job',None)
     except Exception as exc:
         logging.warning('Scene portrait unavailable: %s',photo_generation.error_code(exc))
@@ -19980,11 +19988,11 @@ def serialize_hot(user):
         "pending": bool(user.get("hot_pending")),
         "photo_pending":bool(user.get('scene_photo_job')),
         "photo_option":{'enabled':bool(photo_generation.token()),
-                        'can_afford':user.get('energy',0)>=PHOTO_ENERGY_COST,'cost':PHOTO_ENERGY_COST},
+                        'can_afford':photo_wallet.balance(user)>0,'cost':1},
         "types": opts(INTIM_SCENES, list(INTIM_SCENES)),
         "locations": {t: opts(INTIM_LOCATIONS, intim_compatible_locations(t)) for t in INTIM_SCENES},
         "dominants": opts(INTIM_DOMINANTS, list(INTIM_DOMINANTS)),
-        "price": price_label("intim_scene", user),
+        "price": str(product_stars("intim_scene", user)),
         "last": {"text": last["text"], "parts": last.get("parts", 1), "photo":last.get("photo"), "photo_status":last.get("photo_status"),"photo_error":last.get("photo_error"),
                  "footer": get_text(user, "intim_scene_footer", scene=intim_option_label(INTIM_SCENES, last["scene_type"], user),
                                     place=intim_option_label(INTIM_LOCATIONS, last["location"], user))} if last else None,
@@ -20031,20 +20039,20 @@ async def api_app_hot_start_handler(request):
             return web.json_response({"ok": False, "error": "Bad request"})
         kw = {"scene_type": t, "location": loc, "dominant": dom}
     want_photo=body.get('photo') is True
-    if want_photo and (user.get('world')!='anime' or not photo_generation.token()):
+    if want_photo and not photo_generation.token():
         return web.json_response({'ok':False,'error':{'ru':'Фото пока недоступны для этого персонажа.','de':'Fotos sind für diesen Charakter noch nicht verfügbar.'}.get(user.get('lang'),'Photos are not available for this character yet.')})
-    if want_photo and user.get('energy',0)<PHOTO_ENERGY_COST:
-        return web.json_response({'ok':False,'error':{'ru':'Для фото нужно 40 энергии.','de':'Für das Foto brauchst du 40 Energie.'}.get(user.get('lang'),'The photo requires 40 energy.')})
+    if want_photo and photo_wallet.balance(user)<1:
+        return web.json_response({'ok':False,'error':{'ru':'Для фото нужна 1 попытка.','de':'Für das Foto brauchst du 40 Energie.'}.get(user.get('lang'),'The photo requires 40 energy.')})
     kind = consume_intim_scene(user)
     if kind is None:
         return web.json_response({"ok": False, "error": get_text(user, "intim_none"), "need_buy": True})
     photo_job_id=None
     if want_photo:
         photo_job_id=secrets.token_hex(12)
-        user['scene_photo_job']={'id':photo_job_id,'reserved':PHOTO_ENERGY_COST,'started':datetime.now().isoformat()}
-        user['energy']-=PHOTO_ENERGY_COST
-        if user['energy']<=0:
-            user['sleep_until']=datetime.now().isoformat()
+        if not photo_wallet.reserve(user,photo_job_id):
+            refund_intim_scene(user,kind)
+            return _app_reply(user,False,'Нет попыток фото')
+        user['scene_photo_job']={'id':photo_job_id,'wallet':True,'started':datetime.now().isoformat()}
     user["hot_pending"] = datetime.now().isoformat()
     save_data(user_data)
     asyncio.create_task(app_hot_generate(user_id, user, kind, photo_job_id=photo_job_id, **kw))
@@ -20121,7 +20129,7 @@ def serialize_referral(user):
 
 
 async def app_page_handler(request):
-    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261117e"})
+    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118a"})
 
 # Нативная кнопка «Назад» Telegram на внутренних страницах (магазин, колесо, игры, работа, гайд) --
 # возвращает в главное приложение /app, так что всё выглядит как одно мини-приложение.
@@ -20341,7 +20349,7 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
 
 
 # Главная страница приложения -- статичная, всё состояние через /api/app/*.
-APP_PAGE_HTML = r'''<!doctype html>
+APP_PAGE_HTML = r"""<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -20704,6 +20712,11 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 @keyframes send-merge{35%,65%{transform:translateX(-5px) scale(1.15);border-radius:15px}100%{transform:translateX(0) scale(1)}}@keyframes send-travel{0%{clip-path:inset(0 100% 0 0);opacity:1}60%{clip-path:inset(0 0 0 0);opacity:1}85%{clip-path:inset(0 0 0 85%);opacity:1}100%{clip-path:inset(0 0 0 100%);opacity:0}}@keyframes message-arrived{to{opacity:1}}
 #jump-latest{position:absolute;right:16px;bottom:115px;z-index:8;width:39px;height:39px;border:1px solid #c69de977;border-radius:50%;background:#282138e8;color:#e6ccff;font-size:24px;box-shadow:0 3px 16px #0005}#hide-keyboard{position:absolute;bottom:86px;left:calc(50% - 20px);width:40px;height:23px;padding:0;border:1px solid #b7a9ca33;border-radius:12px;background:#30273c70;color:#dfd1edb0;z-index:9;font-size:20px;line-height:18px;backdrop-filter:blur(6px)}#jump-latest[hidden],#hide-keyboard[hidden]{display:none!important}.channel-mission{padding:12px!important;font-size:13px;display:flex;flex-wrap:wrap;gap:6px}.channel-mission>b{flex-basis:100%}.channel-mission .btn{font-size:12px;padding:8px!important;flex:1}.ava.generated-body{background-size:auto 420%!important;background-position:50% 5%!important}
 @media(prefers-reduced-motion:reduce){#send.send-bounce,.message-arriving{animation:none!important;opacity:1!important}}
+
+#toast{z-index:2147483647!important;position:fixed!important;pointer-events:none}#sheet{z-index:1000}.photo-pack{padding:14px;border:1px solid #514369;border-radius:18px;margin:12px 0;background:linear-gradient(145deg,#2a2440,#19172b)}.photo-pack>img{width:76px;height:76px;object-fit:contain;float:right}.photo-viewer{position:fixed;inset:0;z-index:99999;background:rgba(5,4,12,.96);display:flex;align-items:center;justify-content:center;overflow:auto;touch-action:pan-x pan-y pinch-zoom}.photo-viewer img{max-width:98vw;max-height:94dvh;object-fit:contain}.photo-viewer button{position:fixed;right:16px;top:max(15px,env(safe-area-inset-top));background:#302640c9;color:white;border:0;border-radius:50%;width:44px;height:44px;font-size:28px}.has-reactions{margin-bottom:16px!important;position:relative}.message-reactions{position:relative!important;margin:-2px 8px -12px!important;display:flex;gap:4px;align-self:flex-start;z-index:2}.message-reactions button,.message-reactions .react{display:inline-flex!important;align-items:center;justify-content:center;min-width:42px;height:26px!important;padding:2px 10px!important;border:1px solid #a27acb88!important;border-radius:999px!important;background:#302442ed!important;box-shadow:0 2px 6px #0003!important;font-size:17px!important}.message-reactions .reaction-art{width:20px!important;height:20px!important}.photo-loading{width:min(75%,290px);aspect-ratio:3/4;border:1px solid #604e80;border-radius:20px;background:radial-gradient(ellipse at 30% 20%,#77529a,#26213c 55%,#423354);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;overflow:hidden;position:relative;margin:10px 0}.photo-loading:before{content:'';position:absolute;inset:-80%;background:linear-gradient(110deg,transparent 42%,#ffffff20,transparent 58%);animation:photo-shimmer 2.4s infinite}.photo-orb{width:54px;height:54px;border:2px solid #ffffff30;border-top-color:#dcaaff;border-radius:50%;animation:photo-spin 1.5s linear infinite}.rd-scene-photo,.bub img{animation:photo-reveal .6s ease-out}.photo-loading span{z-index:1}@keyframes photo-shimmer{to{transform:translateX(55%)}}@keyframes photo-spin{to{transform:rotate(360deg)}}@keyframes photo-reveal{from{filter:blur(12px);opacity:.3}to{filter:blur(0);opacity:1}}
+@keyframes send-merge{0%,100%{transform:scale(1)}35%,65%{transform:scale(1.2);box-shadow:0 0 25px #d76bcb88}}#send.sending{animation:send-merge 2s ease!important}#composer .composer-input:before{animation-duration:2s!important} .card,.tier{box-shadow:inset 0 1px 0 #fff08,0 8px 22px #0002}del,.old-price{position:relative;text-decoration:none!important}del:after,.old-price:after{content:'';position:absolute;left:0;right:0;top:50%;height:2px;background:#ef606c;transform:rotate(-8deg)}
+
+#send.send-bounce{animation:send-merge 2s ease!important}#composer.send-sweep:after,.composer-shell.send-sweep:after{animation-duration:2s!important}.composer-shell:focus-within:before{animation-duration:2s!important;animation-iteration-count:2!important}.send-flight{max-width:min(80vw,340px)!important;pointer-events:none} .photo-viewer{overscroll-behavior:contain}.message-reactions:empty{display:none!important}
 </style>
 </head>
 <body>
@@ -20862,7 +20875,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     st.textContent = s.photo_pending ? tr('отправляет фото…','sending a photo…','sendet ein Foto…') : s.pending ? s.ui.typing : (s.asleep ? s.ui.asleep : (s.illness ? s.illness + " · " + s.ui.sick : s.ui.online));
     withIcon($("h-bucks"), "icon_bucks", "💵", s.stats.bucks);
     withIcon($("h-hot"), "icon_hot", "🔥", s.hot.available);
-    withIcon($("h-en"), "icon_energy", "⚡", s.stats.energy);
+    withIcon($("h-en"), "icon_energy", "⚡", s.stats.energy);$("photo-action").title=tr("Фото · осталось ","Photos remaining · ","Fotos übrig · ")+(s.photos||{}).total;
 
   }
 
@@ -20903,8 +20916,8 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     api('/api/app/wake',{method:'energizer'}).then(function(res){energizerBusy=false;if(res.state)state=res.state;render();if(res.ok){energyGainAnimation(state.stats.energy-before);haptic('reward');if(sndOn()&&window.RDSFX)RDSFX.care('drink','sparkling_water');}else toast(res.error);}).catch(function(){energizerBusy=false;render();toast('Network error');});
   }
   function requestComposerPhoto(){
-    if(state.pending)return;if(!state.messages.some(function(m){return !m.card&&!m.photo&&m.text&&m.text!=='📷';})){toast(tr('Пока нет контекста. Сначала пообщайтесь с персонажем.','No context yet. Chat with your companion first.','Noch kein Kontext. Unterhalte dich zuerst.'));return;}
-    var go=function(ok){if(!ok)return;api('/api/app/photo',{text:tr('Фото по нашей последней беседе, один персонаж.','One character in our latest dialogue context.','Eine Person nach unserem letzten Gespräch.')}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);render();schedulePoll();});};var question=tr('Фото по последнему диалогу · 40 энергии?','Photo from latest dialogue · 40 energy?','Foto · 40 Energie?');if(tg&&tg.showConfirm)tg.showConfirm(question,go);else go(confirm(question));
+    if(state.pending)return;if((state.photos||{}).total<1){openPurchases();return;}if(!state.messages.some(function(m){return !m.card&&!m.photo&&m.text&&m.text!=='📷';})){toast(tr('Пока нет контекста. Сначала пообщайтесь с персонажем.','No context yet. Chat with your companion first.','Noch kein Kontext. Unterhalte dich zuerst.'));return;}
+    var go=function(ok){if(!ok)return;api('/api/app/photo',{text:tr('Фото по нашей последней беседе, один персонаж.','One character in our latest dialogue context.','Eine Person nach unserem letzten Gespräch.')}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);render();schedulePoll();});};var question=tr('Фото по последнему диалогу · 1 попытка фото?','Photo from latest dialogue · 1 photo attempt?','Foto · 1 Fotoversuch?');if(tg&&tg.showConfirm)tg.showConfirm(question,go);else go(confirm(question));
   }
   var inputGlowTimer=null;function inputGlow(){clearTimeout(inputGlowTimer);var shell=$('input').parentNode;shell.classList.remove('focus-flare');void shell.offsetWidth;shell.classList.add('focus-flare');inputGlowTimer=setTimeout(function(){shell.classList.remove('focus-flare');},2600);}
   $('input').addEventListener('focus',function(){setTimeout(inputGlow,260);});
@@ -20929,12 +20942,13 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     button.onclick=function(){if(energizerBusy)return;energizerBusy=true;button.disabled=true;api('/api/app/wake',{method:'energizer'}).then(function(res){energizerBusy=false;if(res.state)state=res.state;if(res.ok){haptic('reward');if(sndOn()&&window.RDSFX)RDSFX.care('drink','sparkling_water');}toast(res.toast||res.error||'');render();}).catch(function(){energizerBusy=false;button.disabled=false;toast('Network error');});};
     container.appendChild(button);
   }
+  function openPhoto(url){var layer=el('div','photo-viewer'),close=el('button',null,'×'),im=el('img');im.src=url;im.alt=tr('Фото персонажа','Character photo','Charakterfoto');close.setAttribute('aria-label','Close');close.onclick=function(){layer.remove();};layer.onclick=function(e){if(e.target===layer)layer.remove();};var startY=0;layer.ontouchstart=function(e){startY=e.touches[0].clientY;};layer.ontouchend=function(e){if(e.changedTouches[0].clientY-startY>120)layer.remove();};layer.appendChild(im);layer.appendChild(close);document.body.appendChild(layer);}
   function reactionArt(button,emoji){var names={'💖':'heart','✨':'star','🔥':'flame','🎉':'party'},name=names[emoji];if(!name)return;button.textContent='';button.setAttribute('aria-label',emoji);var image=el('img','reaction-art reaction-'+name);image.src='/assets/reaction_'+name+'.webp?v=20261117e';image.alt=emoji;button.appendChild(image);}
   function renderChat() {
     var s = state, box = $("msgs"), previousScroll=box.scrollTop;
     var stick = nearBottom() || lastCount < 0;
     box.innerHTML = "";
-    if (!s.messages.length && !s.pending)channelMission(box);
+
     if (!s.messages.length && !s.pending) box.appendChild(el("div", "empty", s.ui.empty));
     if(!s.messages.length&&!s.pending){var discover=el('button','hot-feature');discover.appendChild(icon('icon_hot',''));discover.appendChild(el('strong',null,s.ui.hot_btn));discover.appendChild(el('span','feature-arrow','›'));discover.onclick=function(){setTab('hot');};box.appendChild(discover);}
 
@@ -20948,7 +20962,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
         var gt = el("div"); gt.appendChild(el("div", "gl", s.ui["card_" + m.card.kind] || s.ui.card_gift)); gt.appendChild(el("div", "gn", m.card.name));
         if (m.card.note) gt.appendChild(el("div", "gnote", "«" + m.card.note + "»"));
         b.appendChild(gt);
-      } else { b = el("div", "bub"); if(m.photo){var photo=el("img");photo.src=m.photo;photo.alt=tr("Фото персонажа","Character photo","Charakterfoto");photo.style.cssText="display:block;max-width:100%;border-radius:14px";b.appendChild(photo);}else richText(b, m.text); }
+      } else { b = el("div", "bub"); if(m.photo){var photo=el("img");photo.src=m.photo;photo.onclick=function(){openPhoto(m.photo);};photo.alt=tr("Фото персонажа","Character photo","Charakterfoto");photo.style.cssText="display:block;max-width:100%;border-radius:14px";b.appendChild(photo);}else richText(b, m.text); }
       if(messageArrival&&m.role==='user'&&m.text===messageArrival.text&&performance.now()<messageArrival.until){b.classList.add('message-arriving');b.style.animationDelay=Math.max(0,messageArrival.until-performance.now()-150)+'ms';}
       if (!m.card) bindMessageMenu(b, m);
       w.appendChild(b);
@@ -20956,11 +20970,12 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       var reactionBar=el('div','message-reactions');
       if (m.user_reaction) { var ur = el("button", "rd-user-react"+(m.reaction_animated?" rd-premium":""), m.user_reaction); ur.onclick = function () { messageAction(m, "react", {emoji: m.user_reaction}); }; if(m.reaction_animated)reactionArt(ur,m.user_reaction);reactionBar.appendChild(ur); }
       if (m.reaction) reactionBar.appendChild(el("span", "react", m.reaction));
-      if(reactionBar.childNodes.length)b.appendChild(reactionBar);
+      if(reactionBar.childNodes.length){w.classList.add('has-reactions');w.appendChild(reactionBar);}
       row.appendChild(w); box.appendChild(row);
       prev = m.role;
     });
-    if (s.pending) { var r = el("div", "row ai gap"); var t = el("div", "bub typing-bub"); if(s.photo_pending)t.textContent=tr('Отправляет фото…','Sending a photo…','Foto wird gesendet…');else t.innerHTML = "<i></i><i></i><i></i>"; r.appendChild(t); box.appendChild(r); }
+    if(s.photo_pending){var ph=el('div','photo-loading');ph.appendChild(el('div','photo-orb'));ph.appendChild(el('span',null,tr('Создаёт фото…','Creating photo…','Foto entsteht…')));box.appendChild(ph);}
+    if (s.pending&&!s.photo_pending) { var r = el("div", "row ai gap"); var t = el("div", "bub typing-bub"); if(s.photo_pending)t.textContent=tr('Отправляет фото…','Sending a photo…','Foto wird gesendet…');else t.innerHTML = "<i></i><i></i><i></i>"; r.appendChild(t); box.appendChild(r); }
     else if (s.can_reroll && !s.asleep) { var rr = el("button", "reroll", s.ui.reroll); rr.onclick = reroll; box.appendChild(rr); }
     if (stick) scrollBottom(true);else box.scrollTop=previousScroll;
     lastCount = s.messages.length;requestAnimationFrame(updateChatControls);
@@ -20980,7 +20995,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     $('energy-action').title=tr('Энергетик','Energizer','Energydrink')+' · '+s.stats.energizers;
     $('energy-action').setAttribute('aria-label',$('energy-action').title);
     $('photo-action').disabled=s.pending||s.asleep;
-    $('photo-action').title=tr('Фото персонажа · 40 энергии','Character photo · 40 energy','Charakterfoto · 40 Energie');
+    $('photo-action').title=tr('Фото персонажа · 1 попытка фото','Character photo · 1 photo attempt','Charakterfoto · 1 Fotoversuch');
     renderReplyChoices();
     ghostComplete();
     $("send").disabled = s.pending || sending;
@@ -20991,13 +21006,13 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   function send() {
     var inp = $("input"), text = inp.value.trim();
     if (!text || sending || state.pending) return;
-    messageArrival={text:text,until:performance.now()+1150};
-    var inputRect=inp.getBoundingClientRect(),sendNode=$("send"),shell=inp.parentNode;sendNode.classList.remove("send-bounce");shell.classList.remove("send-sweep");void sendNode.offsetWidth;sendNode.classList.add("send-bounce");shell.classList.add("send-sweep");setTimeout(function(){sendNode.classList.remove("send-bounce");shell.classList.remove("send-sweep");},1250);
+    messageArrival={text:text,until:performance.now()+1350};
+    var inputRect=inp.getBoundingClientRect(),sendNode=$("send"),shell=inp.parentNode;sendNode.classList.remove("send-bounce");shell.classList.remove("send-sweep");void sendNode.offsetWidth;sendNode.classList.add("send-bounce");shell.classList.add("send-sweep");setTimeout(function(){sendNode.classList.remove("send-bounce");shell.classList.remove("send-sweep");},2100);
     sending = true; haptic("light"); if (sndOn() && window.RDSFX) window.RDSFX.sent();
     // сразу показываем своё сообщение и «печатает…», не дожидаясь сервера
     state.messages.push({ role: "user", text: text }); state.pending = true; state.can_reroll = false;
     inp.value = ""; autosize();ghostComplete(); renderChat(); renderHead(); scrollBottom(true);
-    requestAnimationFrame(function(){if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;var fly=el('div','message-flight',text);fly.style.cssText='position:fixed;left:'+inputRect.left+'px;top:'+inputRect.top+'px;width:'+Math.min(inputRect.width,260)+'px;max-height:100px;overflow:hidden;z-index:5000;pointer-events:none;padding:12px 14px;border-radius:22px;background:linear-gradient(115deg,#8851a9,#b84c9c);color:white;white-space:pre-wrap;box-sizing:border-box';document.body.appendChild(fly);var motion=fly.animate([{transform:'translate(0,0)',opacity:1},{transform:'translate(0,-70px)',opacity:1,offset:.55},{transform:'translate(32px,-120px) scale(.96)',opacity:.9,offset:.9},{transform:'translate(36px,-124px) scale(.96)',opacity:0}],{duration:1100,easing:'cubic-bezier(.25,.5,.35,1)'});motion.onfinish=function(){fly.remove();};setTimeout(function(){fly.remove();},1250);});
+    requestAnimationFrame(function(){if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;var fly=el('div','message-flight',text);fly.style.cssText='position:fixed;left:'+inputRect.left+'px;top:'+inputRect.top+'px;width:'+Math.min(inputRect.width,260)+'px;max-height:100px;overflow:hidden;z-index:5000;pointer-events:none;padding:12px 14px;border-radius:22px;background:linear-gradient(115deg,#8851a9,#b84c9c);color:white;white-space:pre-wrap;box-sizing:border-box';document.body.appendChild(fly);var motion=fly.animate([{transform:'translate(0,0)',opacity:1},{transform:'translate(0,-26px)',opacity:1,offset:.55},{transform:'translate(20px,-52px) scale(.96)',opacity:.9,offset:.9},{transform:'translate(24px,-56px) scale(.96)',opacity:0}],{duration:1300,easing:'cubic-bezier(.25,.5,.35,1)'});motion.onfinish=function(){fly.remove();};setTimeout(function(){fly.remove();},2100);});
     api("/api/app/send", { text: text }).then(function (res) {
       sending = false;
       if (res.state) state = res.state;
@@ -21128,7 +21143,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       ['💖','✨','🔥','🎉'].forEach(function(emoji){
         var b=el('button','btn ghost',emoji);reactionArt(b,emoji);b.title='PRO';b.setAttribute('aria-label',emoji+' PRO');
         b.classList.toggle('locked',!state.animated_reactions);
-        b.onclick=function(){if(state.animated_reactions)messageAction(m,'react',{emoji:emoji});else toast(tr('Анимированные реакции — с подпиской','Animated reactions come with a subscription','Animierte Reaktionen gibt es mit Abo'));};
+        b.onclick=function(){if(state.animated_reactions)messageAction(m,'react',{emoji:emoji});else (closeMessageMenu(),toast(tr('Анимированные реакции доступны с PRO. Подписки — в профиле.','Animated reactions require PRO. See subscriptions in Profile.','Animierte Reaktionen ab PRO. Abos im Profil.')));};
         premium.appendChild(b);
       });box.appendChild(premium);
     }
@@ -21163,14 +21178,12 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       row.appendChild(buy); card.appendChild(row);
     });
     v.appendChild(card);
-    renderQuests(v);
   }
   function channelMission(v){var task=state.quests&&state.quests.channel;if(!task)return;var card=el('div','card channel-mission');card.appendChild(el('b',null,task.title));var open=el('button','btn ghost',tr('Открыть канал','Open channel','Kanal öffnen'));open.onclick=function(){if(tg&&tg.openTelegramLink)tg.openTelegramLink(task.url);else window.open(task.url,'_blank','noopener');};card.appendChild(open);var check=el('button','btn ghost',tr('Проверить подписку','Check subscription','Abonnement prüfen'));check.onclick=function(){check.disabled=true;api('/api/app/task',{action:'channel_check'}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);render();}).catch(function(){check.disabled=false;});};card.appendChild(check);v.appendChild(card);}
   function renderQuests(v) {
-    channelMission(v);
     var stateQuests=state.quests;if(!stateQuests)return;
     var card=el('div','card rd-quests');card.id='daily-quests';
-    card.appendChild(el('h4',null,tr('Задания дня','Daily quests','Tagesaufgaben')));
+    card.appendChild(el('h4',null,tr('Задания дня','Daily quests','Tagesaufgaben')));channelMission(card);
     card.appendChild(el('p','note',tr('Два задания · обновление в 00:00 МСК','Two quests · reset at 00:00 Moscow','Zwei Aufgaben · Neustart um 00:00 Moskauer Zeit')));
     stateQuests.items.forEach(function(q){
       var row=el('div','rd-quest');row.appendChild(el('b',null,q.title));
@@ -21248,7 +21261,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     var save=el('button','btn',tr('Сохранить','Save','Speichern'));save.id='content-save';save.onclick=function(){save.disabled=true;api('/api/app/settings',{preferences:values,race:race.value}).then(function(res){if(res.state)state=res.state;if(res.ok){$('sheet').classList.remove('on');render();}else{toast(res.error);save.disabled=false;}}).catch(function(){save.disabled=false;toast('Network error');});};box.appendChild(save);$('sheet').classList.add('on');
   }
   var avatarAfterPayment=false;
-  function requestProfileAvatar(){if(state.character.avatar_pending)return;if(!(state.character.avatar_credits>0)){pay('avatar_generate','stars');return;}api('/api/app/avatar-generate',{}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);render();schedulePoll();});}
+  function requestProfileAvatar(){if(state.character.avatar_pending)return;if(!(state.character.avatar_credits>0)){openPurchases();return;}api('/api/app/avatar-generate',{}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);render();schedulePoll();});}
   function renderProfile() {
     var s = state, ui = s.ui, st = s.stats, v = $("view-profile");
     v.innerHTML = "";
@@ -21300,7 +21313,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
         if (res.state) state = res.state; if (res.ok) { toast(ui.avatar_done); haptic("success"); } else toast(res.error || "Error"); render(); }); });
     };
     av.textContent=tr('Поставить своё фото · бесплатно','Upload photo · free','Foto hochladen · kostenlos');hb2.appendChild(av);
-    var generate=el('button',null,s.character.avatar_pending?tr('Создаю образ…','Creating portrait…','Bild entsteht…'):s.character.avatar_credits>0?tr('Создать образ · оплачено','Generate · paid','Erstellen · bezahlt'):tr('Сгенерировать образ · 10 Stars','Generate portrait · 10 Stars','Bild erstellen · 10 Stars'));generate.id='generate-avatar';generate.disabled=s.character.avatar_pending;generate.onclick=requestProfileAvatar;hb2.appendChild(generate);
+    var generate=el('button',null,s.character.avatar_pending?tr('Создаю образ…','Creating portrait…','Bild entsteht…'):s.character.avatar_credits>0?tr('Показать персонажа · 1 фото','Generate · paid','Erstellen · bezahlt'):tr('Показать персонажа · 1 фото','Generate portrait · 10 Stars','Bild erstellen · 10 Stars'));generate.id='generate-avatar';generate.disabled=s.character.avatar_pending;generate.onclick=requestProfileAvatar;hb2.appendChild(generate);
     if(s.character.avatar_error)hero.appendChild(el('p','note',tr('Образ не получился. Оплаченная попытка сохранена: ','Failed. Your paid attempt is preserved: ','Fehler. Bezahlter Versuch bleibt: ')+s.character.avatar_error));
     if (s.character.custom_photo) { var rm = el("button", null, ui.avatar_remove);
       rm.onclick = function () { api("/api/app/avatar", { remove: true }).then(function (res) { if (res.state) state = res.state; render(); }); }; hb2.appendChild(rm); }
@@ -21323,31 +21336,10 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     sc.appendChild(g);
     if (s.illness) sc.appendChild(el("div", "sick", s.illness));
     v.appendChild(sc);
-    renderEconomy(v);
 
-    var sub = el("div", "card"); sub.appendChild(el("h4", null, ui.sub_title));
-    if (s.sale) sub.appendChild(el("div", "banner", s.sale));
-    if (s.coupon) sub.appendChild(el("div", "banner", s.coupon));
-    var cur = el("div", "subcur"); cur.appendChild(el("b", null, s.subscription.title || ui.sub_none));
-    var currentOffer = s.offers.filter(function (o) { return o.payload === ({pro:'subscribe_pro',super_pro:'subscribe_super',elite:'subscribe_elite'}[tier]); })[0];
-    if (currentOffer) { var perks = el('ul'); currentOffer.perks.forEach(function (text) { perks.appendChild(el('li', null, text)); }); sub.appendChild(perks); }
-    if (s.subscription.until) cur.appendChild(el("span", null, ui.sub_until.replace("{date}", s.subscription.until)));
-    sub.appendChild(cur);
-    if (s.upgrade) {
-      var up = el("div", "tier super"); up.appendChild(el("div", "tt", ui.upgrade));
-      up.appendChild(payRow("upgrade_to_super", s.upgrade)); sub.appendChild(up);
-    }
-    if (s.subscription.level) sub.appendChild(el("div", "note", ui.sub_active_note));
-    else s.offers.filter(function(o){return !o.payload.endsWith('_week');}).forEach(function (o) {
-      var t = el("div", "tier" + (o.payload === "subscribe_super" ? " super" : o.payload === "subscribe_elite" ? " elite" : ""));
-      if(o.payload==='subscribe_pro')t.appendChild(el('span','tag',tr('Популярно','Popular','Beliebt')));if(o.payload==='subscribe_super')t.appendChild(el('span','tag',tr('Выгодно','Best value','Preiswert')));
-      t.appendChild(el("div", "tt", o.emoji + " " + o.title));
-      var ul = el("ul"); o.perks.forEach(function (p) { ul.appendChild(el("li", null, p)); }); t.appendChild(ul);
-      var week=s.offers.find(function(w){return w.payload===o.payload+'_week';});
-      t.appendChild(week?subscriptionTerms(week,o):payRow(o.payload,o));sub.appendChild(t);
-    });
-    v.appendChild(sub);
 
+    var purchaseLink=el('button','btn',tr('Подписки и покупки','Subscriptions & purchases','Abos & Käufe'));purchaseLink.onclick=openPurchases;v.appendChild(purchaseLink);
+    renderQuests(v);
     renderSettings(v);
     var contentButton=el('button','btn ghost',tr('⚙️ Настройки контента','⚙️ Content settings','⚙️ Inhaltseinstellungen'));contentButton.id='content-settings';contentButton.onclick=showContentSettings;v.appendChild(contentButton);
     var more = el("div", "card");
@@ -21373,16 +21365,52 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     v.appendChild(more);
     renderExtras(v);
   }
+  function openPurchases(){
+    var s=state,ui=s.ui,tier=s.subscription.level,v=$('sheet-box');v.innerHTML='';
+    var close=el('button','btn ghost',tr('Назад в профиль','Back to profile','Zurück'));close.onclick=function(){$('sheet').classList.remove('on');};v.appendChild(close);
+    v.appendChild(el('h3',null,tr('Подписки и покупки','Subscriptions & purchases','Abos & Käufe')));
+    if(!s.ever_subscribed)v.appendChild(el('div','banner',tr('За первую покупку любой подписки — 1000 баксов и 2 сцены в подарок','First subscription: 1000 bucks + 2 scenes','Erstes Abo: 1000 Bucks + 2 Szenen')));
+    var sub = el("div", "card"); sub.appendChild(el("h4", null, tr('Подписки','Subscriptions','Abonnements')));
+    if (s.sale) sub.appendChild(el("div", "banner", s.sale));
+    if (s.coupon) sub.appendChild(el("div", "banner", s.coupon));
+    var cur = el("div", "subcur"); cur.appendChild(el("b", null, s.subscription.title || ""));
+    var currentOffer = s.offers.filter(function (o) { return o.payload === ({pro:'subscribe_pro',super_pro:'subscribe_super',elite:'subscribe_elite'}[tier]); })[0];
+
+    if (s.subscription.until) cur.appendChild(el("span", null, ui.sub_until.replace("{date}", s.subscription.until)));
+    sub.appendChild(cur);
+    if (s.upgrade) {
+      var up = el("div", "tier super"); up.appendChild(el("div", "tt", ui.upgrade));
+      up.appendChild(payRow("upgrade_to_super", s.upgrade)); sub.appendChild(up);
+    }
+    s.offers.filter(function(o){return !o.payload.endsWith('_week');}).forEach(function (o) {
+      var t = el("div", "tier" + (o.payload === "subscribe_super" ? " super" : o.payload === "subscribe_elite" ? " elite" : ""));
+      if(o.payload==='subscribe_pro')t.appendChild(el('span','tag',tr('Популярно','Popular','Beliebt')));if(o.payload==='subscribe_super')t.appendChild(el('span','tag',tr('Выгодно','Best value','Preiswert')));
+      t.appendChild(el("div", "tt", o.emoji + " " + o.title));
+      t.appendChild(el('p','note',o.photos+tr(' фото на 30 дней',' photos for 30 days',' Fotos für 30 Tage')));
+      var ul = el("ul"); o.perks.forEach(function (p) { ul.appendChild(el("li", null, p)); }); t.appendChild(ul);
+      var week=s.offers.find(function(w){return w.payload===o.payload+'_week';});
+      t.appendChild(week?subscriptionTerms(week,o):payRow(o.payload,o));sub.appendChild(t);
+    });
+
+
+    v.appendChild(sub);
+    v.appendChild(el('h3',null,tr('Фото · осталось ','Photos remaining · ','Fotos übrig · ')+(s.photos||{}).total));
+    v.appendChild(el('p','note',tr('Одна попытка — одно фото. Купленные не сгорают.','One attempt per photo. Purchased attempts never expire.','Ein Versuch pro Foto. Gekaufte verfallen nicht.')));
+    (s.purchase_products||[]).forEach(function(o){var card=el('div','photo-pack');var im=el('img');im.src=o.image;im.alt='';im.onerror=function(){im.hidden=true;};card.appendChild(im);card.appendChild(el('b',null,o.amount+tr(' фото',' photos',' Fotos')));card.appendChild(payRow(o.payload,{stars_label:o.stars,rub:o.rub}));v.appendChild(card);});
+    var scene=el('button','btn ghost',tr('Сцена · 15 ⭐','Scene · 15 ⭐','Szene · 15 ⭐'));scene.onclick=function(){pay('intim_scene','stars');};v.appendChild(scene);
+    var combo=el('button','btn ghost',tr('Сцена + фото · 25 ⭐','Scene + photo · 25 ⭐','Szene + Foto · 25 ⭐'));combo.onclick=function(){pay('scene_photo','stars');};v.appendChild(combo);
+    renderEconomy(v);$('sheet').classList.add('on');
+  }
   function subscriptionTerms(week,month){
     var row=el('div','rd-sub-terms');
     [[week,tr('7 дней','7 days','7 Tage')],[month,tr('30 дней','30 days','30 Tage')]].forEach(function(pair){
-      var offer=pair[0],button=el('button','btn',pair[1]+'\n'+offer.stars_label+' ⭐');button.dataset.payload=offer.payload;if(!offer.payload.endsWith('_week'))button.classList.add('monthly-best');
+      var offer=pair[0],button=el('button','btn',pair[1]+' · '+offer.photos+tr(' фото',' photos',' Fotos')+'\n'+offer.stars+' ⭐'+(offer.rub?' / '+offer.rub+' ₽':''));if(offer.old_stars>offer.stars){var old=el('del',null,offer.old_stars+' ⭐');button.prepend(old,document.createTextNode(' → '));}button.dataset.payload=offer.payload;if(!offer.payload.endsWith('_week'))button.classList.add('monthly-best');
       button.onclick=function(){if(offer.rub&&tg&&tg.showPopup){tg.showPopup({title:offer.title,message:pair[1],buttons:[{id:'stars',type:'default',text:offer.stars+' ⭐'},{id:'platega',type:'default',text:offer.rub+' ₽'},{type:'cancel'}]},function(method){if(method)pay(offer.payload,method);});}else pay(offer.payload,'stars');};row.appendChild(button);
     });return row;
   }
   function payRow(payload, o) {
     var row = el("div", "pay");
-    var b1 = el("button", "btn", state.ui.buy_stars.replace("{price}", o.stars_label) + (payload === "upgrade_to_super" ? "" : " " + (payload.endsWith('_week')?tr('за 7 дней','for 7 days','für 7 Tage'):state.ui.per_month)));
+    var b1 = el("button", "btn", state.ui.buy_stars.replace("{price}", o.stars_label) );
     b1.onclick = function () { pay(payload, "stars"); }; row.appendChild(b1);
     if (o.rub) { var b2 = el("button", "btn ghost", state.ui.buy_card.replace("{price}", o.rub)); b2.onclick = function () { pay(payload, "platega"); }; row.appendChild(b2); }
     return row;
@@ -21436,8 +21464,8 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       var label=el('label','rd-field'),check=el('input');check.type='checkbox';check.style.width='auto';
       check.checked=h.photo_pending||hot.photo!==false&&photoOption.can_afford;check.disabled=!photoOption.can_afford||h.photo_pending||h.pending;
       check.onchange=function(){hot.photo=check.checked;};label.appendChild(check);
-      label.appendChild(document.createTextNode(' '+tr('Фото в одежде после текста · 40 энергии','Clothed portrait after the text · 40 energy','Bekleidetes Porträt nach dem Text · 40 Energie')));card.appendChild(label);
-      if(!photoOption.can_afford&&!h.photo_pending)card.appendChild(el('p','note',tr('Для фото нужно 40 энергии. Можно продолжить без фото.','A photo requires 40 energy. You can continue without it.','Ein Foto benötigt 40 Energie. Du kannst ohne Foto fortfahren.')));
+      label.appendChild(document.createTextNode(' '+tr('Фото в одежде после текста · 1 попытка фото','Clothed portrait after the text · 1 photo attempt','Bekleidetes Porträt nach dem Text · 1 Fotoversuch')));card.appendChild(label);
+      if(!photoOption.can_afford&&!h.photo_pending)card.appendChild(el('p','note',tr('Для фото нужна 1 попытка. Можно продолжить без фото.','A photo requires 1 photo attempt. You can continue without it.','Ein Foto benötigt 1 Fotoversuch. Du kannst ohne Foto fortfahren.')));
     }
     photoChoice(hero);
     if (h.pending) {
@@ -21448,9 +21476,9 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       var sc = el("div", "card"); sc.appendChild(el("h4", null, ui.hot_last + (h.last.parts > 1 ? " · " + h.last.parts : "")));
       var t = el("div", "scene"); richText(t, h.last.text); sc.appendChild(t);
       sc.appendChild(el("div", "scene-foot", h.last.footer));
-      if(h.last.photo){var image=el('img','rd-scene-photo');image.src=h.last.photo;image.alt=tr('Портрет персонажа по обстановке сцены','Character portrait in the scene setting','Charakterporträt in der Umgebung der Szene');image.style.cssText='display:block;width:100%;max-width:512px;margin:16px auto;border-radius:18px';sc.appendChild(image);}
+      if(h.last.photo){var image=el('img','rd-scene-photo');image.src=h.last.photo;image.onclick=function(){openPhoto(h.last.photo);};image.alt=tr('Портрет персонажа по обстановке сцены','Character portrait in the scene setting','Charakterporträt in der Umgebung der Szene');image.style.cssText='display:block;width:100%;max-width:512px;margin:16px auto;border-radius:18px';sc.appendChild(image);}
       if(h.last.photo_status==='pending')sc.appendChild(el('p','note',tr('📷 Готовлю фото… Текст уже можно читать.','📷 Preparing the photo… You can read the text now.','📷 Foto wird erstellt… Du kannst den Text schon lesen.')));
-      if(h.last.photo_status==='error')sc.appendChild(el('p','note',tr('Фото не получилось — энергия возвращена.','The photo failed — energy refunded.','Foto fehlgeschlagen — Energie erstattet.')+' '+(h.last.photo_error||'')));
+      if(h.last.photo_status==='error')sc.appendChild(el('p','note',tr('Фото не получилось — попытка возвращена.','The photo failed — energy refunded.','Foto fehlgeschlagen — Energie erstattet.')+' '+(h.last.photo_error||'')));
       if (h.available > 0) { var c = el("button", "btn", ui.hot_continue); c.disabled=!!h.photo_pending;c.onclick = function () { hotStart(true); }; sc.appendChild(c); }
       v.appendChild(sc);
     }
@@ -21499,6 +21527,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       var t = el("button", "tg" + (on ? " on" : "") + (locked ? " locked" : "")); t.onclick = fn;
       r.appendChild(l); r.appendChild(t); c.appendChild(r);
     }
+    row(tr('Сообщения от персонажа','Companion follow-ups','Nachrichten vom Charakter'),state.initiative_enabled!==false,false,'',function(){updateSetting({initiative_enabled:state.initiative_enabled===false});});
     function toggle(what) { haptic("select"); api("/api/app/toggle", { what: what }).then(function (res) {
       if (res.state) state = res.state; toast(res.toast || res.error || ""); render(); }); }
     row(ui.set_mute, st.muted, !st.can_mute, "SUPER PRO", function () { toggle("mute"); });
@@ -21689,7 +21718,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 </script>
 </body>
 </html>
-'''
+"""
 
 
 async def spin_page_handler(request):
@@ -22140,29 +22169,16 @@ async def check_notifications():
                     except Exception:
                         last_activity = None
 
-                if last_activity and (now - last_activity).days >= MISS_YOU_INACTIVITY_DAYS:
-                    last_reminder = user.get("last_reminder")
-                    due = True
-                    if last_reminder:
-                        try:
-                            due = (now - datetime.fromisoformat(last_reminder)).days >= MISS_YOU_INTERVAL_DAYS
-                        except Exception:
-                            due = True
-                    if due:
-                        user["last_reminder"] = today
-                        save_data(user_data)
-                        try:
-                            gender = user.get("gender", "female")
-                            miss = random.choice(get_text(user, f"miss_you_{gender}"))
-                            if APP_MODE and user.get("personality_ready"):
-                                user["history"].append({"role": "assistant", "content": miss})
-                                save_data(user_data)
-                                await app_push(int(user_id), user)
-                            else:
-                                await bot.send_message(int(user_id), miss)
-                        except Exception:
-                            pass
-                        continue  # только в тике, где реально отправили — иначе глушит ежедневный прокрут
+                if companion_initiative.due(user,local_now()):
+                    sig=companion_initiative.signature(user)
+                    user['initiative_signature']=sig;save_data(user_data)
+                    try:
+                        response=await asyncio.to_thread(call_ai,AI_MODEL,'ai',messages=[{'role':'system','content':companion_initiative.instruction(user,get_intimacy_level(user),STYLES[get_display_style(user)]['description'])},{'role':'user','content':json.dumps(user.get('history',[])[-8:],ensure_ascii=False)}],max_tokens=180,temperature=.85)
+                        text=(response.choices[0].message.content or '').strip()[:300]
+                        if text and text!='SKIP' and companion_initiative.signature(user)==sig:
+                            await bot.send_message(int(user_id),text,reply_markup=app_open_kb(user) if APP_MODE else None)
+                            user.setdefault('history',[]).append({'role':'assistant','content':text,'initiative':True});save_data(user_data)
+                    except Exception as exc:logging.warning('Initiative unavailable: %s',type(exc).__name__)
 
                 # 2) Персонаж всё ещё спит — лёгкое проактивное напоминание, отдельное от
                 # жёсткого asleep_message (который показывается только в ответ на попытку
@@ -22399,7 +22415,7 @@ def daily_quest_state(user):
         save_data(user_data)
     return {'day':local_today().isoformat(), 'reset_at':daily_reset_timestamp(),
             'bucks_multiplier':2 if has_active_subscription(user) else 1,
-            'channel':None if user.get('channel_quest_completed') else {'url':CHANNEL_URL,'title':{'ru':'Подпишись на наш канал','de':'Abonniere unseren Kanal'}.get(user.get('lang'),'Subscribe to our channel')},
+            'channel':None if user.get('channel_reward_claimed') else {'url':CHANNEL_URL,'title':{'ru':'Подпишись на канал · 500 баксов + 1 фото + 1 сцена','de':'Abonniere unseren Kanal'}.get(user.get('lang'),'Subscribe to our channel')},
             'items':daily_quests.snapshot(user, user.get('lang','ru'), has_active_subscription(user))}
 
 
@@ -22416,6 +22432,9 @@ async def api_app_task_handler(request):
         except Exception:
             return _app_reply(user,False,'Не удалось проверить подписку. Попробуй позже.')
         if not joined:return _app_reply(user,False,'Подписка пока не найдена. Открой канал и подпишись.')
+        if not user.get('channel_reward_claimed'):
+            user['bucks']=user.get('bucks',0)+500;user['intim_scenes']=user.get('intim_scenes',0)+1
+            photo_wallet.ensure(user);photo_wallet.grant(user,1);user['channel_reward_claimed']=True
         user['channel_quest_completed']=True;save_data(user_data);return _app_reply(user)
     ensure_quests(user)
     if body.get('day') != local_today().isoformat():
@@ -22448,6 +22467,9 @@ async def api_app_settings_handler(request):
     _, user, body, err = await _app_request(request)
     if err:
         return err
+    if 'initiative_enabled' in body:
+        if type(body['initiative_enabled']) is not bool:return _app_reply(user,False,'Invalid setting')
+        user['initiative_enabled']=body['initiative_enabled']
     try:
         preferences=profile_options.validate_preferences(body['preferences'],profile_options.preferences(user)) if 'preferences' in body else None
         race=profile_options.validate_race(body['race']) if 'race' in body else None
@@ -22548,6 +22570,8 @@ async def main():
         if isinstance(account,dict) and account.get('avatar_job'):
             account['avatar_credits']=int(account.get('avatar_credits',0))+1
             account.pop('avatar_job',None);account['avatar_error']='interrupted'
+        if isinstance(account,dict):
+            for photo_key in list(account.get('photo_reservations',{})):photo_wallet.finish(account,photo_key,refund=True)
         if isinstance(account,dict) and account.get('scene_photo_job'):
             refund_scene_photo(account,account['scene_photo_job'].get('id'))
     # Interrupted image jobs never consume the user's energy after a restart.

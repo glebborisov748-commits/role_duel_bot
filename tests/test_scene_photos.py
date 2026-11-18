@@ -112,12 +112,12 @@ class ScenePhotoReservationTests(unittest.IsolatedAsyncioTestCase):
     async def test_one_reservation_and_no_double_click_charge(self):
         ns,u,body,consumed,jobs=self.namespace()
         self.assertTrue((await ns['api_app_hot_start_handler'](None))['ok'])
-        self.assertEqual(u['energy'],110);self.assertEqual(u['intim_scenes'],1)
+        self.assertEqual(u['energy'],150);self.assertEqual(u['intim_scenes'],1)
         self.assertEqual(len(jobs),1)
         self.assertFalse((await ns['api_app_hot_start_handler'](None))['ok'])
-        self.assertEqual(u['energy'],110);self.assertEqual(len(consumed),1)
+        self.assertEqual(u['energy'],150);self.assertEqual(len(consumed),1)
     async def test_insufficient_energy_does_not_consume_scene(self):
-        ns,u,body,consumed,jobs=self.namespace();u['energy']=39
+        ns,u,body,consumed,jobs=self.namespace();u['energy']=39;u.update(photo_wallet_version=1,photo_credits=0,photo_trial_granted=True)
         self.assertFalse((await ns['api_app_hot_start_handler'](None))['ok'])
         self.assertFalse(consumed);self.assertFalse(jobs);self.assertEqual(u['energy'],39)
     async def test_photo_opt_out_preserves_energy(self):

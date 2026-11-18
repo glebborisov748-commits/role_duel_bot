@@ -3,6 +3,7 @@ from datetime import datetime,timedelta
 from unittest.mock import AsyncMock,patch
 import profile_options as wardrobe,character_options,photo_context,photo_generation,scene_photos
 from test_core import load_functions
+import photo_wallet
 
 class OutfitTests(unittest.TestCase):
  def user(self):return {'inventory':{k:1 for k in wardrobe.WARDROBE},'preferences':{}}
@@ -56,28 +57,31 @@ class PaidAvatarTests(unittest.IsolatedAsyncioTestCase):
   ns={'photo_generation':types.SimpleNamespace(generate=gen,error_code=photo_generation.error_code),'photo_context':photo_context,'photo_appearance':lambda u:'red hair',
       'get_intimacy_level':lambda u:1,'asyncio':asyncio,'datetime':datetime,'os':os,'secrets':secrets,'logging':logging,'user_data':{},'save_data':lambda d:None}
   load_functions({'generate_profile_avatar','avatar_unstick'},ns)
-  user={'gender':'female','avatar_credits':0,'avatar_job':{'id':'a','started':now},'history':[]}
+  user={'gender':'female','photo_wallet_version':1,'photo_credits':0,'photo_trial_granted':True,'avatar_job':{'id':'a','started':now},'history':[]}
   with tempfile.TemporaryDirectory() as directory:
    ns['AVATAR_DIR']=directory
    await ns['generate_profile_avatar'](user,'a')
    self.assertTrue(user['avatar_generated']);self.assertEqual(user['avatar'],user['avatar_fullbody'])
-   self.assertEqual(gen.await_count,1);self.assertEqual(user['avatar_credits'],0)
+   self.assertEqual(gen.await_count,1);self.assertEqual(photo_wallet.balance(user),0)
+   photo_wallet.grant(user,1);photo_wallet.reserve(user,'avatar')
    user['avatar_job']={'id':'b','started':now};gen.side_effect=RuntimeError('failure')
-   await ns['generate_profile_avatar'](user,'b');self.assertEqual(user['avatar_credits'],1)
-   await ns['generate_profile_avatar'](user,'b');self.assertEqual(user['avatar_credits'],1)
+   await ns['generate_profile_avatar'](user,'b');self.assertEqual(photo_wallet.balance(user),1)
+   await ns['generate_profile_avatar'](user,'b');self.assertEqual(photo_wallet.balance(user),1)
+   photo_wallet.grant(user,1);photo_wallet.reserve(user,'avatar')
    user['avatar_job']={'id':'c','started':now};gen.side_effect=asyncio.CancelledError()
    with self.assertRaises(asyncio.CancelledError):await ns['generate_profile_avatar'](user,'c')
-   self.assertEqual(user['avatar_credits'],2)
+   self.assertEqual(photo_wallet.balance(user),2)
+   photo_wallet.grant(user,1);photo_wallet.reserve(user,'avatar')
    user['avatar_job']={'id':'d','started':(datetime.now()-timedelta(minutes=8)).isoformat()}
-   ns['avatar_unstick'](user);ns['avatar_unstick'](user);self.assertEqual(user['avatar_credits'],3)
+   ns['avatar_unstick'](user);ns['avatar_unstick'](user);self.assertEqual(photo_wallet.balance(user),3)
  async def test_no_credit_no_job_and_only_one_reserved(self):
-  u={'avatar_credits':0};tasks=[]
+  u={'photo_wallet_version':1,'photo_credits':0,'photo_trial_granted':True};tasks=[]
   async def request(_):return 1,u,{},None
   def spawn(coro):tasks.append(coro)
   ns={'_play_request':request,'avatar_unstick':lambda u:None,'photo_generation':types.SimpleNamespace(token=lambda:'test'),'_app_reply':lambda u,ok=True,error=None:{'ok':ok},'at':lambda *a:'wait','secrets':secrets,'datetime':datetime,'asyncio':types.SimpleNamespace(create_task=spawn),'generate_profile_avatar':AsyncMock(),'save_data':lambda d:None,'user_data':{}}
   load_functions({'api_profile_avatar_generate_handler'},ns)
   self.assertFalse((await ns['api_profile_avatar_generate_handler'](None))['ok']);self.assertFalse(tasks)
-  u['avatar_credits']=1;self.assertTrue((await ns['api_profile_avatar_generate_handler'](None))['ok'])
-  self.assertEqual(u['avatar_credits'],0);self.assertEqual(len(tasks),1)
+  photo_wallet.grant(u,1);self.assertTrue((await ns['api_profile_avatar_generate_handler'](None))['ok'])
+  self.assertEqual(photo_wallet.balance(u),0);self.assertEqual(len(tasks),1)
   self.assertFalse((await ns['api_profile_avatar_generate_handler'](None))['ok']);self.assertEqual(len(tasks),1)
   tasks[0].close()

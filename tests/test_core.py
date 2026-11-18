@@ -22,6 +22,8 @@ TREE = ast.parse(SOURCE.read_text())
 
 
 def load_functions(names, namespace):
+    namespace.setdefault("photo_wallet", __import__("photo_wallet"))
+    namespace.setdefault("companion_initiative", __import__("companion_initiative"))
     for node in TREE.body:
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name in names:
             node = copy.deepcopy(node)
