@@ -11,6 +11,7 @@ with sync_playwright() as p:
  browser=p.chromium.launch(executable_path='/usr/bin/chromium',headless=True,args=['--no-sandbox','--disable-dev-shm-usage'])
  for width in (320,390,430):
   state=copy.deepcopy(fixture['app']);shop=copy.deepcopy(fixture['shop']);work=copy.deepcopy(fixture['work']);errors=[];calls=[]
+  work['rotation']['active']=list(work['rotation']['all']) # Chief fixture exercises every work panel.
   state['stats']['energy']=65;state['stats']['energizers']=2;state['asleep']=False;state['settings']['tour_seen']=True
   shop['active_outfit']={'top':'shirt','bottom':'trousers','shoes':'heels'}
   for cat in shop['categories']:
@@ -47,9 +48,17 @@ with sync_playwright() as p:
   page.route('**/*',route)
   page.goto('https://fixture.test/app');page.wait_for_selector('#energy-action');page.locator('#energy-action').click();page.locator('.energy-ritual').wait_for()
   assert not calls
-  for _ in range(3):page.locator('.energy-ritual-can').click();page.wait_for_timeout(200)
-  page.locator('.energy-ring').click();page.wait_for_timeout(750);assert len(calls)==1 and page.locator('.energy-ritual').count()==0
-  page.goto('https://fixture.test/shop?wardrobe=1');page.wait_for_selector('.fitting-stage');assert page.locator('.outfit-layer').count()==3
+  box=page.locator('.energy-ritual-can').bounding_box();x=box['x']+box['width']/2;y=box['y']+box['height']/2
+  page.mouse.move(x,y);page.mouse.down()
+  for i in range(6):page.mouse.move(x+(45 if i%2==0 else -45),y,steps=3);page.wait_for_timeout(230)
+  page.mouse.up();assert page.locator('.energy-ring').is_enabled(), page.evaluate('([x,y])=>({target:document.elementFromPoint(x,y).outerHTML,can:document.querySelector(".energy-ritual-can").outerHTML,hint:document.querySelector(".energy-hint").textContent})',[x,y])
+  page.locator('.energy-ring').click();page.wait_for_timeout(150);assert not calls
+  box=page.locator('.energy-ring').bounding_box();x=box['x']+box['width']/2;y=box['y']+box['height']/2
+  page.mouse.move(x,y);page.mouse.down();page.mouse.move(x,y-85,steps=8);page.mouse.up()
+  page.wait_for_timeout(1200);assert len(calls)==1 and page.locator('.energy-ritual').count()==0
+  page.goto('https://fixture.test/shop?wardrobe=1');page.wait_for_selector('.fitting-stage');assert page.locator('.outfit-layer').count()==0
+  page.locator('.cabinet-doors').click();page.wait_for_timeout(800);assert page.locator('.cabinet-open').count()==1
+  assert page.locator('.tailor-base').evaluate('(im)=>im.complete && im.naturalWidth>0')
   assert page.locator('#wardrobe-generate').count()==1
   assert page.evaluate('document.documentElement.scrollWidth<=innerWidth');page.screenshot(path=f'/tmp/fitting-{width}.png',full_page=True)
   page.goto('https://fixture.test/work');page.wait_for_selector('#tab-dig');page.locator('#tab-dig').click();page.wait_for_selector('.dig-cell');assert page.locator('.dig-cell').count()==25
@@ -64,4 +73,4 @@ with sync_playwright() as p:
   assert page.evaluate('document.documentElement.scrollWidth<=innerWidth');assert not errors,errors
   page.close()
  browser.close()
-print('320/390/430: energy ritual charges once, fitting layers, archaeology actions, courier braking and selectable online skins passed')
+print('320/390/430: energy ritual charges once, cabinet and coherent outfit previews, archaeology actions, courier braking and selectable online skins passed')

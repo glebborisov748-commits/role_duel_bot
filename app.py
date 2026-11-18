@@ -4813,6 +4813,13 @@ SPIN_PRIZES.extend([
 ])
 
 
+# Twelve distinct sectors: remove duplicate denominations rather than crowd the wheel.
+SPIN_PRIZES = [p for p in SPIN_PRIZES if (p['type'],p['value']) not in {
+ ('nothing',0),('bucks',1200),('xp',100),('xp',150),('intim_scenes',2),
+ ('energizers',4),('photos',3),('bundle',700)}]
+for _prize in SPIN_PRIZES:
+    if _prize['type']=='energizers':_prize['weight']=0.4
+
 def spin_weights(user):
     luck=spin_luck_active(user)
     return [p['weight']*(SPIN_LUCK_WEIGHT_MULT.get(p['type'],1.0) if luck else 1.0)*(SPIN_LUCK_JACKPOT_MULT if luck and p['type']=='bucks' and p['value']>=10000 else 1.0) for p in SPIN_PRIZES]
@@ -4861,7 +4868,7 @@ def apply_spin_prize(user, chosen):
     elif chosen['type']=='bundle':
         user['bucks']=user.get('bucks',0)+chosen['value'];user['intim_scenes']=user.get('intim_scenes',0)+1;result_text=prize_name(chosen,user)
     elif chosen['type']=='wardrobe':
-        options=[k for k,item in profile_options.WARDROBE.items() if not item['adult'] and not (user.get('inventory') or {}).get(k)]
+        options=[k for k,item in profile_options.WARDROBE.items() if not item['adult'] and profile_options.gender_matches(user,k) and not (user.get('inventory') or {}).get(k)]
         if options:
             key=random.choice(options);user.setdefault('inventory',{})[key]=1;result_text=profile_options.WARDROBE[key].get(user.get('lang'),profile_options.WARDROBE[key]['ru'])
         else:user['bucks']=user.get('bucks',0)+500;result_text='+500 баксов · гардероб уже собран'
@@ -9320,7 +9327,7 @@ def serialize_shop_state(user):
     for adult,category,title in ((False,'wardrobe',{'ru':'👗 Гардероб','de':'Garderobe'}.get(lang,'Wardrobe')),(True,'adult_shop',{'ru':'🔞 Секс-шоп','de':'18+ Shop'}.get(lang,'18+ shop'))):
         level=get_intimacy_level(user);locked=adult and level<5;items=[]
         for key,item in profile_options.WARDROBE.items():
-            if item['adult']!=adult:continue
+            if item['adult']!=adult or not profile_options.gender_matches(user,key):continue
             image='/assets/'+item['image']+'.webp' if os.path.isfile(os.path.join(ASSETS_DIR,item['image']+'.webp')) else None
             items.append({'key':key,'category':category,'name':item.get(lang,item['name']),'price':item['price'],
                 'emoji':item['emoji'],'image':image,'ready_in':None,'refuse':False,'owned':bool(inventory.get(key)),
@@ -9393,7 +9400,7 @@ def serialize_shop_state(user):
         "illness": illness_label,
         "asleep": is_asleep(user),
         "categories": categories,
-        "wardrobe_pending":bool(user.get("avatar_job")),"wardrobe_gender":user.get("gender","female"),"photo_balance":photo_wallet.balance(user),
+        "wardrobe_fitting":profile_options.fitting_preview(user),"wardrobe_pending":bool(user.get("avatar_job")),"wardrobe_gender":user.get("gender","female"),"photo_balance":photo_wallet.balance(user),
         "wardrobe_preview":"/avatars/"+user["avatar_fullbody"] if user.get("avatar_fullbody") else None,
         "slot_locks":profile_options.slot_locks(user),
         "active_outfit":profile_options.active_outfit(user),"outfit_slots":profile_options.choices(profile_options.SLOTS,lang),
@@ -9417,6 +9424,7 @@ async def perform_webapp_purchase(user, user_id, category, key, note=None):
     if category in ('wardrobe','adult_shop'):
         item=profile_options.WARDROBE.get(key)
         if not item or bool(item['adult'])!=(category=='adult_shop'):return {'ok':False,'error':'Not found'}
+        if not profile_options.gender_matches(user,key):return {'ok':False,'error':'Этот предмет предназначен для другого пола персонажа'}
         if item['adult'] and get_intimacy_level(user)<5:return {'ok':False,'error':'🔒 Откроется на 5 уровне близости'}
         inventory=user.get('inventory') or {}
         if inventory.get(key,0):return {'ok':False,'error':{'ru':'Этот предмет уже в гардеробе','de':'Dieser Artikel ist bereits im Kleiderschrank'}.get(user.get('lang'),'Already owned')}
@@ -13073,7 +13081,9 @@ SHOP_PAGE_HTML = r"""<!doctype html>
 .wardrobe-room label{display:flex;flex-direction:column;gap:5px;font-size:12px;margin-top:10px}.wardrobe-empty{padding:18px 10px;display:flex;align-items:center;text-align:center;min-height:200px;background:radial-gradient(ellipse,#47364d,#221c2c);border-radius:18px;color:#cdbed6;font-size:12px;line-height:1.5}.wardrobe-room img[hidden]{display:none!important}.wardrobe-room .wardrobe-model{height:330px!important;object-fit:contain!important}.wardrobe-lock{padding:15px;text-align:center;font-size:14px;color:#d3b4e8}.wardrobe-room select{min-height:40px!important}.wardrobe-room .wardrobe-product{display:none}
 del,.old-price{position:relative;text-decoration:none!important}del:after,.old-price:after{content:'';position:absolute;left:0;right:0;height:2px;top:50%;background:#ed5965;transform:rotate(-8deg)}.card{box-shadow:inset 0 1px 0 #fff08,0 8px 22px #0003}
 .wardrobe-room{grid-template-columns:minmax(0,1fr)!important;padding:16px!important;background:radial-gradient(ellipse at 50% 20%,#50354d55,#1d192b 70%)}.fitting-stage{height:320px;max-width:230px;width:100%;margin:0 auto;position:relative;isolation:isolate;border-radius:20px;background:radial-gradient(ellipse at 50% 85%,#d8a3c233,transparent 60%)}.wardrobe-room .tailor-base{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:.85}.wardrobe-room .outfit-layer{position:absolute!important;object-fit:contain!important;margin:0!important;max-height:none!important;pointer-events:none;filter:drop-shadow(0 3px 3px #0004)}.outfit-body{left:8%;top:4%;width:84%!important;height:80%!important;z-index:2}.outfit-top,.outfit-outerwear{left:13%;top:12%;width:74%!important;height:43%!important;z-index:3}.outfit-bottom{left:22%;top:48%;width:56%!important;height:35%!important;z-index:2}.outfit-head{left:28%;top:0;width:44%!important;height:18%!important;z-index:5}.outfit-neck{left:37%;top:12%;width:26%!important;height:12%!important;z-index:5}.outfit-legs{left:25%;top:60%;width:50%!important;height:30%!important;z-index:1}.outfit-shoes{left:25%;top:83%;width:50%!important;height:16%!important;z-index:4}.fitting-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.fitting-controls h3,.fitting-note,#wardrobe-generate,.wardrobe-result{grid-column:1/-1}.fitting-controls select{width:100%;box-sizing:border-box}.wardrobe-room .wardrobe-result{width:100%;height:auto;max-height:460px;object-fit:contain;border-radius:16px;margin:auto}.wardrobe-lightbox{position:fixed;inset:0;z-index:10000;background:#090712ed;display:grid;place-items:center;touch-action:pinch-zoom}.wardrobe-lightbox img{max-width:98vw;max-height:95dvh}
-.slot-occupied{color:#b9a9c5!important}.slot-occupied select{opacity:.7;border-style:dashed!important}.slot-occupied:before{content:"🔒";font-size:11px}</style>
+.slot-occupied{color:#b9a9c5!important}.slot-occupied select{opacity:.7;border-style:dashed!important}.slot-occupied:before{content:"🔒";font-size:11px}
+.fitting-stage{overflow:hidden;background:#211329;box-shadow:inset 0 0 0 5px #715069,inset 0 0 22px #0008,0 12px 24px #0005}.wardrobe-room .tailor-base{opacity:1;object-fit:cover}.cabinet-doors{position:absolute;inset:0;z-index:10;border:0;background:transparent;perspective:800px;padding:0;cursor:pointer}.cabinet-doors::before,.cabinet-doors::after{content:"";position:absolute;top:0;bottom:0;width:50%;background:linear-gradient(100deg,#493043,#7b5369 50%,#3c293b);border:2px solid #ae80976b;box-sizing:border-box;box-shadow:inset 0 0 0 8px #302231,inset 0 0 0 10px #97708580;transition:transform .75s cubic-bezier(.2,.7,.2,1)}.cabinet-doors::before{left:0;transform-origin:left}.cabinet-doors::after{right:0;transform-origin:right}.cabinet-doors span{position:absolute;z-index:2;left:10%;right:10%;bottom:18px;background:#201626d9;padding:10px;border-radius:20px;color:#f0d8e9;font-size:13px}.cabinet-open .cabinet-doors::before{transform:rotateY(-105deg)}.cabinet-open .cabinet-doors::after{transform:rotateY(105deg)}.cabinet-open .cabinet-doors span{opacity:.8;bottom:4px;padding:5px}.cabinet-open .cabinet-doors{background:transparent}
+</style>
 </head>
 <body>
   <div id="stats"></div>
@@ -13216,13 +13226,16 @@ del,.old-price{position:relative;text-decoration:none!important}del:after,.old-p
   var fittingItem=null;
   function fittingRoom(s){
     var room=document.createElement('div');room.className='wardrobe-room';
-    var stage=document.createElement('div');stage.className='fitting-stage';var base=document.createElement('img');base.className='tailor-base';base.src='/assets/tailor_'+(s.wardrobe_gender==='male'?'male':'female')+'.webp';base.alt='';stage.appendChild(base);
+    var stage=document.createElement('div');stage.className='fitting-stage';var base=document.createElement('img');base.className='tailor-base';base.src=s.wardrobe_fitting||('/assets/fitting_'+(s.wardrobe_gender==='male'?'male':'female')+'_13.webp');base.alt='';stage.appendChild(base);
     var controls=document.createElement('div');controls.className='fitting-controls';var title=document.createElement('h3');title.textContent=s.lang==='ru'?'Примерочная':'Fitting room';controls.appendChild(title);
     var items=s.categories.filter(function(c){return c.key==='wardrobe'||c.key==='adult_shop';}).reduce(function(all,c){return all.concat(c.items);},[]),active=s.active_outfit||{};
-    Object.keys(active).forEach(function(slot){var item=items.find(function(i){return i.key===active[slot];});if(!item||!item.image)return;var im=document.createElement('img');im.src=item.image;im.alt=item.name;im.className='outfit-layer outfit-'+slot;stage.appendChild(im);});
+    var cabinet=document.createElement('button');cabinet.type='button';cabinet.className='cabinet-doors';cabinet.setAttribute('aria-label',s.lang==='ru'?'Открыть шкаф':'Open wardrobe');cabinet.setAttribute('aria-expanded','false');
+    var cabinetLabel=document.createElement('span');cabinetLabel.textContent=s.lang==='ru'?'Открыть шкаф':'Open wardrobe';cabinet.appendChild(cabinetLabel);stage.appendChild(cabinet);
+    var cabinetKey='rd-cabinet-open';try{if(sessionStorage.getItem(cabinetKey)==='1'){stage.classList.add('cabinet-open');cabinet.setAttribute('aria-expanded','true');}}catch(e){}
+    cabinet.onclick=function(){var open=stage.classList.toggle('cabinet-open');cabinet.setAttribute('aria-expanded',String(open));cabinetLabel.textContent=open?(s.lang==='ru'?'Закрыть шкаф':'Close wardrobe'):(s.lang==='ru'?'Открыть шкаф':'Open wardrobe');try{sessionStorage.setItem(cabinetKey,open?'1':'0');}catch(e){}};
     room.appendChild(stage);
     (s.outfit_slots||[]).forEach(function(slot){var label=document.createElement('label');label.textContent=slot.label;var select=document.createElement('select');select.dataset.slot=slot.key;var blocked=(s.slot_locks||{})[slot.key];select.disabled=!!s.wardrobe_pending||!!blocked;var empty=document.createElement('option');empty.value='';var owner=items.find(function(i){return i.key===blocked;});empty.textContent=owner?('Занято: '+owner.name):(s.lang==='ru'?'Не выбрано':'None');select.appendChild(empty);items.filter(function(item){return item.slot===slot.key&&item.owned&&!item.catalog_only;}).forEach(function(item){var option=document.createElement('option');option.value=item.key;option.textContent=item.name;option.disabled=!!item.locked_level;select.appendChild(option);});select.value=active[slot.key]||'';select.onchange=function(){select.disabled=true;api('/api/wardrobe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({outfit:select.value||null,slot:slot.key})}).then(function(res){if(res.state)state=res.state;if(!res.ok)alert(res.error);render();});};if(blocked){label.classList.add('slot-occupied');label.title=owner?owner.name:'';}label.appendChild(select);controls.appendChild(label);});
-    var note=document.createElement('p');note.className='fitting-note';note.textContent=s.lang==='ru'?'Примерка бесплатна. Комплекты занимают несколько мест. Чтобы изменить занятую деталь, сначала сними комплект. Посадка на стойке приблизительная.':'Free fitting. Display is approximate; generated clothes fit your character.';controls.appendChild(note);
+    var note=document.createElement('p');note.className='fitting-note';note.textContent=s.lang==='ru'?'Примерка бесплатна. Комплекты занимают несколько мест. Чтобы изменить занятую деталь, сначала сними комплект. На стойке показан готовый основной комплект. Все выбранные детали учитываются в фото персонажа.':'Free fitting. The stand shows the main outfit. Character photos include all equipped details.';controls.appendChild(note);
     var generate=document.createElement('button');generate.type='button';generate.id='wardrobe-generate';generate.textContent=s.wardrobe_pending?'Создаю образ…':'Показать на персонаже · 1 фото ('+s.photo_balance+')';generate.disabled=!!s.wardrobe_pending;
     generate.onclick=function(){if(s.photo_balance<1){window.parent.postMessage({type:'rd-open-purchases'},location.origin);return;}if(!confirm('Создать фото в выбранной одежде? Будет потрачена 1 попытка.'))return;generate.disabled=true;api('/api/app/avatar-generate',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(function(res){if(!res.ok)alert(res.error);load();});};controls.appendChild(generate);
     if(s.wardrobe_preview){var preview=document.createElement('img');preview.src=s.wardrobe_preview;preview.className='wardrobe-result';preview.alt='Фото персонажа';preview.onclick=function(){var modal=document.createElement('div');modal.className='wardrobe-lightbox';var im=document.createElement('img');im.src=s.wardrobe_preview;modal.appendChild(im);modal.onclick=function(){modal.remove();};document.body.appendChild(modal);};controls.appendChild(preview);}
@@ -14439,7 +14452,10 @@ SPIN_PAGE_HTML = r"""<!doctype html>
 
 #wheel-wrap,.wheel-wrap{filter:drop-shadow(0 16px 22px #0006)}canvas#wheel{border:6px solid #d1a4c7;border-radius:50%;box-shadow:inset 0 2px 3px #fff8,0 0 0 5px #4b365d,0 15px 30px #0006}#result,.result{border:1px solid #b896ca66;background:radial-gradient(ellipse at top,#76538e44,#1d1a2c);border-radius:18px}button{box-shadow:inset 0 1px 0 #fff2,0 6px 14px #0003}button:active{transform:scale(.97)}
 #wheel{border:6px solid #b88fae!important;box-shadow:inset 0 2px 6px #fff9,0 0 0 5px #403047,0 16px 26px #0007!important;position:relative}#wheel-wrap:after{content:'';pointer-events:none;position:absolute;inset:8px;border-radius:50%;background:linear-gradient(135deg,#fff2,transparent 35%,#0002 75%,#fff1);z-index:2}.prize-row{padding:10px 12px;border-bottom:1px solid #ffffff0a;font-size:13px}#result-banner{padding:18px!important;box-shadow:inset 0 1px 0 #fff2,0 8px 24px #0004}
-del{position:relative;text-decoration:none!important;opacity:.8}del:after{content:'';position:absolute;top:50%;height:2px;left:0;right:0;background:#f46571;transform:rotate(-8deg)}</style>
+del{position:relative;text-decoration:none!important;opacity:.8}del:after{content:'';position:absolute;top:50%;height:2px;left:0;right:0;background:#f46571;transform:rotate(-8deg)}
+/* A round rim must include its border inside the wheel's measured diameter. */
+#wheel{box-sizing:border-box;border:0!important;box-shadow:inset 0 0 0 1px #fff3,inset 0 4px 12px #0005!important}#wheel-rim{padding:10px;background:conic-gradient(from 25deg,#d7b6d8,#6f547f,#ccb1d5,#684977,#d7b6d8);box-shadow:inset 0 1px 2px #fff9,inset 0 -3px 5px #261c40,0 12px 26px #0006,0 0 0 1px #d9b7dc77}#wheel-wrap:after{inset:10px;box-shadow:inset 0 1px 2px #fff3}#pointer{border-top-color:#d6b6e1}#pointer:after{background:radial-gradient(circle at 35% 30%,#fff0ff,#b98ecb 70%,#674476)}
+</style>
 </head>
 <body>
   <div id="stats"></div>
@@ -14795,7 +14811,7 @@ del{position:relative;text-decoration:none!important;opacity:.8}del:after{conten
     el.innerHTML = "";
     s.prizes.forEach(function (p) {
       var row = document.createElement("div");row.className='prize-row';
-      row.textContent = p.name+(typeof p.chance==='number'?' · '+p.chance+'%':'');
+      row.textContent = p.name;
       el.appendChild(row);
     });
   }
@@ -15866,6 +15882,8 @@ WORK_PAGE_HTML = r"""<!doctype html>
 .avenue-cone{width:46px!important;height:54px!important;border-radius:7px;box-shadow:0 3px 7px #0005;overflow:hidden}.hazard-barrier{background:repeating-linear-gradient(135deg,#d78e57 0 9px,#3c3440 9px 18px);border:3px solid #ba9c86}.hazard-puddle{background:radial-gradient(ellipse,#90bbd4aa,#41617d77 65%,transparent 70%);box-shadow:none;transform:translateX(-50%) scaleX(1.3)}.hazard-bump{background:repeating-linear-gradient(0deg,#b6a575 0 7px,#514536 7px 14px);height:24px!important;border-radius:50%}.hazard-crosswalk{background:repeating-linear-gradient(0deg,#e7ded7cc 0 7px,transparent 7px 14px);box-shadow:none;height:58px!important}.hazard-traffic{background:linear-gradient(90deg,#67598e,#b8a4cf,#67598e);border:2px solid #ccbddd}.hazard-traffic:before{content:'';display:block;margin:8px;height:15px;background:#272733;border-radius:4px}#hacker-wires{height:260px!important}.hacker-wire-end,.hacker-wire-socket{border:2px solid #d2c3d6!important;box-shadow:inset 0 2px 0 #ffffff55,0 2px 8px #0005}.hacker-wire-end.tracing{outline:3px solid #f2ca85;outline-offset:3px}
 .farm-demand{padding:12px;margin-bottom:10px;border:1px solid #b79d67;border-radius:14px;background:linear-gradient(120deg,#65502f88,#392946);color:#f5dfa8;font-size:12px;line-height:1.5}#tabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;overflow:visible!important}#tabs .tab-btn{width:100%;min-width:0;box-sizing:border-box;white-space:nowrap;padding:12px 5px;font-size:12px!important}
 #tabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}#tabs .finish-only{border:1px dashed #d4b987!important}#work-schedule{font-size:11px;color:#b8a7c8;padding:0 6px 12px;text-align:center}#game-mine{padding:16px;border:1px solid #6b647b;border-radius:22px;background:radial-gradient(ellipse at top,#39404e,#181722 70%)}#game-mine h3{margin-top:0;text-align:center}#game-mine p{font-size:13px;line-height:1.5;color:#c9becf}.mine-meta{text-align:center;font-size:13px;color:#e6d7bc;margin:12px 0}.mine-gas{height:9px;border-radius:9px;background:#272b35;margin:7px 0 15px;overflow:hidden}.mine-gas i{display:block;height:100%;background:linear-gradient(90deg,#78b8a4,#e4c36f,#ef7582);transition:width .25s}.mine-veins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.mine-vein{min-width:0;background:linear-gradient(150deg,#424756,#242631);border:1px solid #778196;border-radius:16px;padding:9px 5px;color:white;display:flex;flex-direction:column;gap:8px;align-items:center;box-shadow:inset 0 2px 0 #fff1,0 6px 10px #0004}.mine-vein strong{font-size:12px}.mine-vein small{font-size:10px;line-height:1.4}.mine-vein:disabled{opacity:.5}.mine-vein.danger{border-color:#ee6e7c}.tunnel-arch{height:80px;width:100%;border:7px solid #666271;border-bottom:0;border-radius:50% 50% 5px 5px;background:radial-gradient(ellipse at bottom,#36434b,#0a0b13 65%);box-sizing:border-box;position:relative}.ore-glint{position:absolute;left:32%;top:30%;color:#ebc885;text-shadow:0 0 12px #f2c278;font-size:26px}.ore-1 .ore-glint{color:#b6d5e6}.ore-2 .ore-glint{color:#c59ced}.mine-button{padding:12px;border:1px solid #9d8ba6;border-radius:13px;background:linear-gradient(135deg,#66506d,#3f354f);color:#fff;width:100%;margin:8px 0;font-weight:650}.mine-button:disabled{opacity:.45}.mine-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mine-bag{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.mine-bag span{padding:6px 9px;background:#ffffff09;border-radius:10px;font-size:11px}.mine-danger{color:#f1a7aa!important}
+
+#catch-basket.shield-expiring::after{animation:shield-fade .42s ease-in-out infinite}@keyframes shield-fade{50%{opacity:.15;transform:scale(.96)}}
 </style>
 </head>
 <body>
@@ -16125,7 +16143,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
   var doubleUntil = 0;
   var SHIELD_EMOJI = "🛡️";
   var SHIELD_CHANCE = 0.03; // щит гасит ОДНУ следующую бомбу/большую угрозу вместо проигрыша
-  var shieldCharges = 0;
+  var shieldCharges = 0, shieldUntil = 0, SHIELD_DURATION_MS = 12000;
   var CATCH_FALL_MIN_S = 2.2, CATCH_FALL_RANGE_S = 1.1; // was 2.1-3.5s -- faster, harder to react to
   var BIG_HAZARD_CHANCE = 0; // rolled only when the spawn didn't already roll a bomb/slowfall
   var BIG_HAZARD_EMOJIS = ["⚫", "💣", "🪨"]; // ядро, большая бомба, валун -- одинаково опасны
@@ -16407,9 +16425,9 @@ WORK_PAGE_HTML = r"""<!doctype html>
     slowFallUntil = 0;
     magnetUntil = 0;
     doubleUntil = 0;
-    shieldCharges = 0;
+    shieldCharges = 0;shieldUntil = 0;
     var catchBasketEl = document.getElementById("catch-basket");
-    if (catchBasketEl) catchBasketEl.classList.remove("magnet-active", "double-active", "shield-active", "shield-pop");
+    if (catchBasketEl) catchBasketEl.classList.remove("magnet-active", "double-active", "shield-active", "shield-pop", "shield-expiring");
     BUFF_ORDER.forEach(function (k) { setBuffOrbit(k, null); });
     if (catchBasketEl) setX2Label(catchBasketEl, false);
     recentCatchSpawns = [];
@@ -16743,6 +16761,11 @@ WORK_PAGE_HTML = r"""<!doctype html>
   function catchCollisionTick() {
     var field = document.getElementById("catch-field");
     var basket = document.getElementById("catch-basket");
+    if (basket && shieldCharges) {
+      var shieldLeft=shieldUntil-Date.now();
+      basket.classList.toggle('shield-expiring',shieldLeft>0&&shieldLeft<=3000);
+      if(shieldLeft<=0){shieldCharges=0;basket.classList.remove('shield-active','shield-expiring');setBuffOrbit('shield',null);}
+    }
     if (field && basket && !debuffState.catch) {
       var basketRect = basket.getBoundingClientRect();
       var fieldRect = field.getBoundingClientRect();
@@ -16787,8 +16810,8 @@ WORK_PAGE_HTML = r"""<!doctype html>
             (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 300); })(item);
             if (shieldCharges > 0) {
               // щит поглотил взрыв -- игра продолжается
-              shieldCharges = 0;
-              basket.classList.remove("shield-active");
+              shieldCharges = 0;shieldUntil=0;
+              basket.classList.remove("shield-active","shield-expiring");
               basket.classList.add("shield-pop");
               fx("shatter");
               setTimeout(function () { basket.classList.remove("shield-pop"); }, 400);
@@ -16824,8 +16847,9 @@ WORK_PAGE_HTML = r"""<!doctype html>
             } else if (item.dataset.double === "1") {
               activateDouble(basket);
             } else if (item.dataset.shield === "1") {
-              shieldCharges = 1;
-              basket.classList.add("shield-active");
+              shieldCharges = 1;shieldUntil=Date.now()+SHIELD_DURATION_MS;
+              basket.classList.remove("shield-expiring");basket.classList.add("shield-active");
+              setBuffOrbit("shield",SHIELD_EMOJI,SHIELD_DURATION_MS);
             }
           }
         }
@@ -16908,7 +16932,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
   function canFinishJob(name){return !!(state&&(name==='dig'&&state.dig&&state.dig.run||name==='mine'&&state.mine&&state.mine.run));}
   function applyWorkSchedule(){
     if(!state)return;var jobs=['clicker','catch','courier','workshop','dig','mine','farm'];jobs.forEach(function(name){var tab=document.getElementById('tab-'+name);if(tab){tab.style.display=jobOpen(name)||canFinishJob(name)?'':'none';tab.classList.toggle('finish-only',!jobOpen(name));}});
-    var banner=document.getElementById('work-schedule');if(!banner){banner=document.createElement('div');banner.id='work-schedule';document.getElementById('tabs').after(banner);}if(state.rotation){banner.textContent='Работы дня · смена в 00:00 МСК. Ферма доступна всегда.';}else banner.hidden=true;
+    var banner=document.getElementById('work-schedule');if(!banner){banner=document.createElement('div');banner.id='work-schedule';document.getElementById('tabs').after(banner);}if(state.rotation){banner.textContent=(state.rotation.bypass?'Главный админ · доступны все работы. ':'Работы дня · смена в 00:00 МСК. ')+(state.rotation.next_active?'Завтра: '+state.rotation.next_active.map(function(k){return state.rotation.names[k]||k;}).join(', ')+'. ':'')+'Ферма доступна всегда.';}else banner.hidden=true;
     if(activeGame&&!jobOpen(activeGame)&&!canFinishJob(activeGame))switchGame((state.rotation&&state.rotation.active[0])||'farm');
   }
   var mineBusy=false,mineNextAt=0;
@@ -20914,7 +20938,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 
 .message-reactions{display:flex;align-items:center;gap:5px;position:static;margin:10px 0 -1px;min-height:28px;clear:both}.bub:has(.message-reactions){padding-bottom:12px!important}.bub .message-reactions .rd-user-react,.bub .message-reactions .react{position:static!important;inset:auto!important;display:inline-flex;align-items:center;justify-content:center;background:transparent!important;border:0!important;padding:0!important;min-height:28px!important;box-shadow:none!important}.message-reactions .reaction-art{width:30px!important;height:30px!important;border-radius:0!important;background:transparent!important}.rd-premium-picker button{background:transparent!important;border:0!important;box-shadow:none!important}.reaction-art{background:transparent!important;border-radius:0!important}
 #send.send-bounce{animation:send-merge 1.15s ease-in-out!important;transform-origin:left center;box-shadow:0 0 24px #b974df88!important}.input-shell.send-sweep:after{animation:send-travel 1.1s ease-in-out!important;border-color:#d5a8ff!important}.message-arriving{opacity:0;animation-name:message-arrived!important;animation-duration:.15s!important;animation-timing-function:ease!important;animation-fill-mode:forwards!important}.input-shell{transition:border-radius .35s ease}.input-shell:has(+.send-bounce){border-top-right-radius:14px;border-bottom-right-radius:14px}
-@keyframes send-merge{35%,65%{transform:translateX(-5px) scale(1.15);border-radius:15px}100%{transform:translateX(0) scale(1)}}@keyframes send-travel{0%{clip-path:inset(0 100% 0 0);opacity:1}60%{clip-path:inset(0 0 0 0);opacity:1}85%{clip-path:inset(0 0 0 85%);opacity:1}100%{clip-path:inset(0 0 0 100%);opacity:0}}@keyframes message-arrived{to{opacity:1}}
+@keyframes send-merge{35%,65%{transform:scale(1.22);border-radius:50%}100%{transform:translateX(0) scale(1)}}@keyframes send-travel{0%{clip-path:inset(0 100% 0 0);opacity:1}60%{clip-path:inset(0 0 0 0);opacity:1}85%{clip-path:inset(0 0 0 85%);opacity:1}100%{clip-path:inset(0 0 0 100%);opacity:0}}@keyframes message-arrived{to{opacity:1}}
 #jump-latest{position:absolute;right:16px;bottom:115px;z-index:8;width:39px;height:39px;border:1px solid #c69de977;border-radius:50%;background:#282138e8;color:#e6ccff;font-size:24px;box-shadow:0 3px 16px #0005}#hide-keyboard{position:absolute;bottom:86px;left:calc(50% - 20px);width:40px;height:23px;padding:0;border:1px solid #b7a9ca33;border-radius:12px;background:#30273c70;color:#dfd1edb0;z-index:9;font-size:20px;line-height:18px;backdrop-filter:blur(6px)}#jump-latest[hidden],#hide-keyboard[hidden]{display:none!important}.channel-mission{padding:12px!important;font-size:13px;display:flex;flex-wrap:wrap;gap:6px}.channel-mission>b{flex-basis:100%}.channel-mission .btn{font-size:12px;padding:8px!important;flex:1}.ava.generated-body{background-size:auto 420%!important;background-position:50% 5%!important}
 @media(prefers-reduced-motion:reduce){#send.send-bounce,.message-arriving{animation:none!important;opacity:1!important}}
 
@@ -20925,6 +20949,8 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 
 .energy-ritual{position:fixed;inset:0;z-index:10000;background:radial-gradient(ellipse,#513458,#141123 65%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;box-sizing:border-box}.energy-ritual-can{height:min(62dvh,480px);width:min(80vw,350px);object-fit:contain;touch-action:none;filter:drop-shadow(0 20px 24px #0007)}.energy-ritual p{text-align:center;color:#e1cfea;max-width:320px}.energy-close{position:absolute;right:18px;top:20px;color:white;background:#ffffff16;border:0;width:42px;height:42px;border-radius:50%;font-size:27px}.energy-ring{position:absolute;top:18%;width:58px;height:58px;border:2px solid #e8d7eb;border-radius:50%;background:#a179ae;color:white;font-size:30px;touch-action:none;box-shadow:0 0 22px #b982c477}.energy-ring:disabled{opacity:.35}.energy-ritual-can.shake{animation:can-shake .35s ease}.energy-ritual-can.opened{animation:can-open .6s ease forwards}@keyframes can-shake{25%{transform:rotate(-9deg) translateX(-8px)}75%{transform:rotate(9deg) translateX(8px)}}@keyframes can-open{to{transform:translateY(10px) rotate(-8deg);filter:drop-shadow(0 0 35px #dfb1e9)}}
 #reply-choices .rd-choice,#reply-choices .rd-own{font:inherit;color:var(--fg);background:var(--card2);border:1px solid #9675b04d;border-radius:15px;padding:10px 12px;text-align:left;min-height:42px;line-height:1.35;box-shadow:inset 0 1px 0 #ffffff08;transition:background .15s,transform .15s}#reply-choices .rd-choice:active,#reply-choices .rd-own:active{background:#49345b;transform:scale(.98)}#reply-choices .rd-own{background:transparent;color:#ccb5df;margin-top:8px;font-size:12px}
+
+.energy-ring{top:calc(50% - min(31dvh,240px));width:56px;height:76px;border:0;background:transparent;box-shadow:none;perspective:400px;transition:transform .4s cubic-bezier(.2,.8,.25,1);padding:0}.energy-ring svg{width:100%;height:100%;filter:drop-shadow(0 3px 3px #0008)}.energy-ring.pulling{transition:none}.energy-ring.ring-open{transform:translateY(-40px) rotateX(110deg)!important}.energy-hint{min-height:42px}.energy-hint.shake-hint{animation:shake-nudge 1.5s ease-in-out 3}.energy-foam{position:absolute;top:calc(50% - min(31dvh,240px) + 55px);left:50%;pointer-events:none}.energy-foam i{position:absolute;width:var(--size);height:var(--size);background:radial-gradient(circle at 30% 25%,#fff,#efdeff 65%,#cbb8e6);border:1px solid #fff9;border-radius:50%;box-shadow:inset 0 -2px 3px #af96c944;animation:foam-rise 1s ease-out both}.ritual-finish{opacity:.1;transition:opacity .4s}@keyframes foam-rise{0%{transform:translate(-50%,0) scale(.2);opacity:0}25%{opacity:.95}100%{transform:translate(var(--x),var(--y)) scale(1.15);opacity:0}}@keyframes shake-nudge{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
 </style>
 </head>
 <body>
@@ -21121,16 +21147,36 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   }
   function useComposerEnergy(){
     if(energizerBusy||state.stats.energizers<1||state.stats.energy>=state.stats.energy_max)return;
-    energizerBusy=true;var layer=el('div','energy-ritual'),can=el('img','energy-ritual-can'),ring=el('button','energy-ring','↑'),hint=el('p',null,tr('Встряхни телефон или проведи по банке','Shake your phone or swipe the can','Schüttle das Handy oder wische über die Dose')),close=el('button','energy-close','×');can.src='/assets/energy_can.webp';can.alt=tr('Энергетик','Energy drink','Energydrink');ring.setAttribute('aria-label','Потянуть кольцо');ring.disabled=true;var charge=0,lastShake=0,startY=0,finished=false;
-    function cleanup(){window.removeEventListener('devicemotion',motion);layer.remove();energizerBusy=false;}
-    function shake(){if(finished)return;var t=Date.now();if(t-lastShake<180)return;lastShake=t;charge++;can.classList.remove('shake');void can.offsetWidth;can.classList.add('shake');haptic('light');if(charge>=3){ring.disabled=false;hint.textContent=tr('Потяни кольцо вверх или нажми на него','Pull the ring up or tap it','Zieh den Ring nach oben oder tippe darauf');}}
-    function motion(e){var a=e.accelerationIncludingGravity;if(a&&Math.abs(a.x)+Math.abs(a.y)+Math.abs(a.z)>24)shake();}
-    can.onpointerdown=function(e){startY=e.clientY;can.setPointerCapture(e.pointerId);};can.onpointermove=function(e){if(e.buttons&&Math.abs(e.clientY-startY)>20){shake();startY=e.clientY;}};can.onclick=shake;
-    ring.onpointerdown=function(e){startY=e.clientY;ring.setPointerCapture(e.pointerId);};ring.onpointerup=function(e){if(startY-e.clientY>25)openCan();};ring.onclick=openCan;
-    function openCan(){if(ring.disabled||finished)return;finished=true;ring.disabled=true;close.disabled=true;can.classList.add('opened');hint.textContent=tr('Открываем…','Opening…','Öffnen…');haptic('medium');if(sndOn()&&window.RDSFX)RDSFX.game('unlock');var before=state.stats.energy;
-      setTimeout(function(){api('/api/app/wake',{method:'energizer'}).then(function(res){cleanup();if(res.state)state=res.state;render();if(res.ok){energyGainAnimation(state.stats.energy-before);if(sndOn()&&window.RDSFX)RDSFX.care('drink','sparkling_water');toast(tr('Персонаж выпил энергетик','Your companion had an energy drink','Dein Charakter hat den Energydrink getrunken'));}else toast(res.error);}).catch(function(){cleanup();toast('Network error');load(true);});},550);}
+    energizerBusy=true;
+    var layer=el('div','energy-ritual'),can=el('img','energy-ritual-can'),ring=el('button','energy-ring'),hint=el('p','energy-hint'),close=el('button','energy-close','×');
+    var charge=0,lastShake=0,canX=0,canY=0,ringY=0,pulling=false,pull=0,finished=false,timers=[],enable=null;
+    can.draggable=false;can.ondragstart=function(e){e.preventDefault();};can.src='/assets/energy_can.webp';can.alt=tr('Энергетик','Energy drink','Energydrink');ring.setAttribute('aria-label',tr('Потянуть кольцо вверх','Pull ring upwards','Ring nach oben ziehen'));ring.disabled=true;
+    ring.innerHTML='<svg viewBox="0 0 60 80" aria-hidden="true"><path d="M30 72V55" stroke="#a1a3b0" stroke-width="10"/><ellipse cx="30" cy="30" rx="21" ry="26" fill="#d8dce6" stroke="#707583" stroke-width="4"/><ellipse cx="30" cy="28" rx="12" ry="16" fill="#42364d" stroke="#f4f5fa" stroke-width="2"/></svg>';
+    hint.textContent=tr('Встряхни банку','Shake the can','Schüttle die Dose');
+    function later(fn,ms){timers.push(setTimeout(fn,ms));}
+    function cleanup(){timers.forEach(clearTimeout);window.removeEventListener('devicemotion',motion);layer.remove();energizerBusy=false;}
+    function shake(){if(finished||charge>=3)return;var t=Date.now();if(t-lastShake<180)return;lastShake=t;charge++;can.classList.remove('shake');void can.offsetWidth;can.classList.add('shake');haptic('light');if(charge>=3){ring.disabled=false;hint.textContent=tr('Потяни кольцо вверх до щелчка','Pull the ring upwards until it clicks','Zieh den Ring bis zum Klicken hoch');hint.classList.add('pull-hint');}}
+    function motion(e){var v=e.acceleration||e.accelerationIncludingGravity;if(v&&Math.abs(v.x||0)+Math.abs(v.y||0)+Math.abs(v.z||0)>24)shake();}
+    can.onpointerdown=function(e){canX=e.clientX;canY=e.clientY;can.setPointerCapture(e.pointerId);};
+    can.onpointermove=function(e){if(e.buttons&&(Math.abs(e.clientX-canX)>24||Math.abs(e.clientY-canY)>24)){shake();canX=e.clientX;canY=e.clientY;}};
+    ring.onpointerdown=function(e){if(ring.disabled||finished)return;pulling=true;ringY=e.clientY;pull=0;ring.classList.add('pulling');ring.setPointerCapture(e.pointerId);};
+    ring.onpointermove=function(e){if(!pulling)return;pull=Math.max(0,ringY-e.clientY);var lift=Math.min(44,pull*.48);ring.style.transform='translateY(-'+lift+'px) rotateX('+Math.min(70,pull*.7)+'deg) scaleY('+(1+Math.min(.18,pull/500))+')';can.style.transform='translateY(-'+Math.min(7,pull*.055)+'px)';};
+    function release(){if(!pulling)return;pulling=false;ring.classList.remove('pulling');can.style.transform='';if(pull>=65)openCan();else{ring.style.transform='';haptic('light');}}
+    ring.onpointerup=release;ring.onpointercancel=function(){pull=0;release();};
+    function openCan(){if(ring.disabled||finished)return;finished=true;ring.disabled=true;close.disabled=true;ring.classList.add('ring-open');can.classList.add('opened');hint.textContent=tr('Пш-ш…','Psshh…','Psssch…');haptic('medium');
+      if(sndOn()&&window.RDSFX){RDSFX.tone(2200,.055,'triangle',.055,0,1100);RDSFX.noise(.08,.07,3400,0,900,'bandpass');RDSFX.noise(1.1,.045,6200,.055,1700,'highpass');}
+      var foam=el('div','energy-foam');for(var i=0;i<14;i++){var bubble=el('i');bubble.style.setProperty('--x',(Math.random()*100-50)+'px');bubble.style.setProperty('--y',(-20-Math.random()*65)+'px');bubble.style.setProperty('--size',(8+Math.random()*15)+'px');bubble.style.animationDelay=(Math.random()*.18)+'s';foam.appendChild(bubble);}layer.appendChild(foam);
+      var before=state.stats.energy;
+      later(function(){layer.classList.add('ritual-finish');api('/api/app/wake',{method:'energizer'}).then(function(res){cleanup();if(res.state)state=res.state;render();if(res.ok){energyGainAnimation(state.stats.energy-before);if(sndOn()&&window.RDSFX)RDSFX.care('drink','sparkling_water');toast(tr('Персонаж выпил энергетик','Your companion had an energy drink','Dein Charakter hat den Energydrink getrunken'));}else toast(res.error);}).catch(function(){cleanup();toast('Network error');load(true);});},850);
+    }
     close.onclick=cleanup;layer.appendChild(close);layer.appendChild(can);layer.appendChild(ring);layer.appendChild(hint);document.body.appendChild(layer);
-    if(window.DeviceMotionEvent&&typeof DeviceMotionEvent.requestPermission==='function'){var enable=el('button','btn ghost',tr('Включить встряхивание','Enable motion','Bewegung aktivieren'));enable.onclick=function(){DeviceMotionEvent.requestPermission().then(function(answer){if(answer==='granted'){window.addEventListener('devicemotion',motion);enable.remove();}else toast(tr('Можно встряхнуть банку пальцем','Swipe the can instead','Wische stattdessen über die Dose'));}).catch(function(){});};layer.appendChild(enable);}else window.addEventListener('devicemotion',motion);
+    later(function(){if(charge<3){hint.textContent=tr('↔ Потряси телефон или проведи пальцем по банке влево-вправо','↔ Shake your phone or swipe the can left and right','↔ Schüttle das Handy oder wische über die Dose');hint.classList.add('shake-hint');}},4500);
+    function allowMotion(){return DeviceMotionEvent.requestPermission().then(function(answer){if(answer==='granted'){try{localStorage.setItem('rd_motion','granted');}catch(e){}window.addEventListener('devicemotion',motion);if(enable)enable.remove();}else{try{localStorage.removeItem('rd_motion');}catch(e){}}}).catch(function(){});}
+    if(window.DeviceMotionEvent&&typeof DeviceMotionEvent.requestPermission==='function'){
+      var remembered=false;try{remembered=localStorage.getItem('rd_motion')==='granted';}catch(e){}
+      if(remembered){window.addEventListener('devicemotion',motion);allowMotion();}
+      else{enable=el('button','btn ghost',tr('Разрешить встряхивание телефона','Allow phone motion','Handybewegung erlauben'));enable.onclick=allowMotion;layer.appendChild(enable);}
+    }else window.addEventListener('devicemotion',motion);
   }
 
   function requestComposerPhoto(){
@@ -21238,7 +21284,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     // сразу показываем своё сообщение и «печатает…», не дожидаясь сервера
     state.messages.push({ role: "user", text: text }); state.pending = true; state.can_reroll = false;
     inp.value = ""; autosize();ghostComplete(); renderChat(); renderHead(); scrollBottom(true);
-    requestAnimationFrame(function(){if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;var fly=el('div','message-flight',text);fly.style.cssText='position:fixed;left:'+inputRect.left+'px;top:'+inputRect.top+'px;width:'+Math.min(inputRect.width,260)+'px;max-height:100px;overflow:hidden;z-index:5000;pointer-events:none;padding:12px 14px;border-radius:22px;background:linear-gradient(115deg,#8851a9,#b84c9c);color:white;white-space:pre-wrap;box-sizing:border-box';document.body.appendChild(fly);var motion=fly.animate([{transform:'translate(0,0)',opacity:1},{transform:'translate(0,-26px)',opacity:1,offset:.55},{transform:'translate(20px,-52px) scale(.96)',opacity:.9,offset:.9},{transform:'translate(24px,-56px) scale(.96)',opacity:0}],{duration:1300,easing:'cubic-bezier(.25,.5,.35,1)'});motion.onfinish=function(){fly.remove();};setTimeout(function(){fly.remove();},2100);});
+    requestAnimationFrame(function(){if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;var fly=el('div','message-flight',text);fly.style.cssText='position:fixed;left:'+inputRect.left+'px;top:'+inputRect.top+'px;width:'+Math.min(inputRect.width,260)+'px;max-height:100px;overflow:hidden;z-index:5000;pointer-events:none;padding:12px 14px;border-radius:22px;background:linear-gradient(115deg,#8851a9,#b84c9c);color:white;white-space:pre-wrap;box-sizing:border-box';document.body.appendChild(fly);var motion=fly.animate([{transform:'translate(0,0)',opacity:1},{transform:'translate(0,-12px)',opacity:.9,offset:.45},{transform:'translate(0,-22px) scale(.98)',opacity:.35,offset:.8},{transform:'translate(0,-28px) scale(.98)',opacity:0}],{duration:1300,easing:'cubic-bezier(.25,.5,.35,1)'});motion.onfinish=function(){fly.remove();};setTimeout(function(){fly.remove();},2100);});
     api("/api/app/send", { text: text }).then(function (res) {
       sending = false;
       if (res.state) state = res.state;

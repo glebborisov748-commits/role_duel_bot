@@ -17,6 +17,9 @@ class Request:
  async def json(self):return self.body
 async def call(handler,uid,**body):return json.loads((await handler(Request(uid,body))).text)
 async def run():
+ # Pick a deterministic open excavation day; rotation gates are covered separately.
+ day=next((datetime(2026,11,18)+timedelta(days=i)).date() for i in range(2) if 'dig' in app.work_rotation.active((datetime(2026,11,18)+timedelta(days=i)).date()))
+ app.local_today=lambda:day
  for uid in (920,921):
   u=app.get_user(uid);u.update(lang='ru',verified=True,agreement_accepted=True,personality_ready=True,style='honest',world='anime',gender='male',bucks=50000,xp_migrated_v2=True,xp_migrated_v3=True)
   u['subscription']={'active':True,'level':'super_pro','expires_at':(datetime.now()+timedelta(days=30)).isoformat()}
@@ -36,7 +39,7 @@ async def run():
  assert app.farm_harvest(u,0)>0 and app.farm_harvest(u,0) is None
  # New wheel rewards credit the common wallet/inventory; published odds sum to 100%.
  count=photo_wallet.balance(u);app.apply_spin_prize(u,{'type':'photos','value':3});assert photo_wallet.balance(u)==count+3
- state=app.serialize_spin_state(u);assert abs(sum(p['chance'] for p in state['prizes'])-100)<.02
+ state=app.serialize_spin_state(u);Path('/tmp/rd-spin-fixture.json').write_text(json.dumps(state,ensure_ascii=False));assert abs(sum(p['chance'] for p in state['prizes'])-100)<.02
  expected=sum(p['value']*w for p,w in zip(app.SPIN_PRIZES,app.spin_weights(u)) if p['type']=='photos')/sum(app.spin_weights(u))
  print('Wheel: expected photo credits per spin',round(expected,4),'cost at $0.04',round(expected*.04,5))
  # Both skins survive server validation and appear to the opposite player.

@@ -42,10 +42,12 @@ async def run():
  assert len(shop['slot_locks'])==len(app.profile_options.SLOTS)-1
  assert not (await call(app.api_wardrobe_handler,outfit='hat'))['ok'];assert app.profile_options.active_outfit(u)=={'body':'police_male'}
  assert (await call(app.api_wardrobe_handler,outfit=None,slot='body'))['ok']
- assert (await call(app.api_wardrobe_handler,outfit='dress'))['ok'];assert set(app.profile_options.SLOTS)-set(app.serialize_shop_state(u)['slot_locks'])-{'body'}=={'head','shoes','neck'}
+ assert not (await call(app.api_wardrobe_handler,outfit='dress'))['ok']
+ assert not (await call(app.api_wardrobe_handler,outfit='stockings'))['ok']
+ assert (await call(app.api_wardrobe_handler,outfit='tracksuit'))['ok'];assert set(app.profile_options.SLOTS)-set(app.serialize_shop_state(u)['slot_locks'])-{'body'}=={'head','shoes','neck'}
  # Real fixtures for mobile checks on an open mining day.
  clock[0]=day;u.pop('mine_ready_at',None);mine.start(u)
  Path('/tmp/rd-mine-fixture.json').write_text(json.dumps({'work':app.serialize_work_state(u),'shop':app.serialize_shop_state(u),'user':u},ensure_ascii=False))
- app.save_data(app.user_data);disk=json.loads(Path(app.DATA_FILE).read_text())['930'];assert disk['mine_collection']['gold']==1 and disk['active_outfit']['body']=='dress'
+ app.save_data(app.user_data);disk=json.loads(Path(app.DATA_FILE).read_text())['930'];assert disk['mine_collection']['gold']==1 and disk['active_outfit']['body']=='tracksuit'
  print('Signed endpoints: shared 3-job schedule, closed-job payout gates, midnight cashout once, always-open farm, slot locks and durable inventory passed')
 with asyncio.Runner(loop_factory=Loop) as runner:runner.run(run())

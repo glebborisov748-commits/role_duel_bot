@@ -89,7 +89,7 @@ def active_outfit(user):
  inventory=user.get('inventory') or {};result={};used=set()
  # Full outfits win over incompatible legacy combinations; inventory is never removed.
  for slot,key in sorted(raw.items(),key=lambda pair:0 if pair[0]=='body' else 1):
-  if slot not in SLOTS or not isinstance(key,str) or key not in WARDROBE or WARDROBE[key]['slot']!=slot or not inventory.get(key):continue
+  if slot not in SLOTS or not isinstance(key,str) or key not in WARDROBE or WARDROBE[key]['slot']!=slot or not inventory.get(key) or not gender_matches(user,key):continue
   occupied=occupied_slots(key)
   if occupied&used:continue
   result[slot]=key;used|=occupied
@@ -113,6 +113,7 @@ def equip(user,key,level,slot=None):
  else:
   if not isinstance(key,str) or key not in WARDROBE:raise ValueError('Unknown item')
   item=WARDROBE[key]
+  if not gender_matches(user,key):raise ValueError('Этот предмет предназначен для другого пола персонажа')
   if not (user.get('inventory') or {}).get(key):raise ValueError('Сначала купи этот предмет')
   if item['adult'] and level<5:raise ValueError('Раздел 18+ доступен с 5 уровня близости')
   if item.get('catalog_only'):raise ValueError('Этот предмет пока только в каталоге. Применение к фото ещё не подключено.')
@@ -216,3 +217,30 @@ def occupancy_label(key,lang='ru'):
  if slots==set(SLOTS):return {'ru':'Занимает весь образ','de':'Belegt das gesamte Outfit'}.get(lang,'Occupies the entire outfit')
  free=[labels[{'ru':0,'en':1,'de':2}.get(lang,1)] for slot,labels in SLOTS.items() if slot not in slots]
  return {'ru':'Свободно: ','de':'Frei: '}.get(lang,'Free: ')+', '.join(free)
+
+
+# Catalog suitability is enforced for both purchase and equip, not just hidden in the UI.
+for _key in ('dress','heels','stockings','bunny_outfit','latex_bodysuit','qipao','maid_outfit','nurse_outfit','lace_panties','garter_stockings','crop_top','pencil_skirt'):
+ WARDROBE[_key]['gender']='female'
+
+def gender_matches(user,key):
+ gender=user.get('gender')
+ return gender not in ('male','female') or WARDROBE[key].get('gender','unisex') in ('unisex',gender)
+
+def fitting_preview(user):
+ """A static, coherent full outfit illustration; selecting clothes makes no provider call.
+ These previews show the principal outfit; photo generation uses every equipped slot.
+ """
+ gender='male' if user.get('gender')=='male' else 'female'
+ current=active_outfit(user);body=current.get('body')
+ indices={
+ 'female':{'dress':0,'tracksuit':1,'pajamas':2,'qipao':3,'maid_outfit':4,'nurse_outfit':5,'latex_bodysuit':6,'bunny_outfit':7,'police_female':8,'firefighter_female':9,'casual_outfit':14,'sportswear':15},
+ 'male':{'business_suit':0,'casual_outfit':1,'sportswear':3,'police_male':4,'firefighter_male':5,'tracksuit':6,'pajamas':7,'stripper_outfit':10,'boxer_outfit':11}}
+ index=indices[gender].get(body)
+ if index is None:
+  top=current.get('top');bottom=current.get('bottom')
+  if current.get('outerwear')=='leather_jacket':index=17 if gender=='female' else 2
+  elif gender=='female':
+   index=11 if top=='crop_top' else 12 if bottom=='pencil_skirt' else 10 if top=='oversized_shirt' or bottom=='denim_shorts' else 13
+  else:index=12 if top=='oversized_shirt' or bottom=='denim_shorts' else 8
+ return '/assets/fitting_'+gender+'_'+str(index)+'.webp'
