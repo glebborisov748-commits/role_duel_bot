@@ -71,12 +71,31 @@ WARDROBE.update({
  'hat':dict(name='Hat',ru='Шляпа',de='Hut',price=200,slot='head',adult=False,emoji='🎩',image='wardrobe_hat',fact='a stylish casual hat'),
 })
 
+def occupied_slots(key):
+ item=WARDROBE[key]
+ return set(item.get('occupies') or ([item['slot']] if item.get('slot') else []))
+
+
 def active_outfit(user):
  raw=user.get('active_outfit')
  if not isinstance(raw,dict):
   key=user.get('wardrobe_outfit');raw={WARDROBE[key]['slot']:key} if key in WARDROBE and WARDROBE[key]['slot'] else {}
- inventory=user.get('inventory') or {}
- return {slot:key for slot,key in raw.items() if slot in SLOTS and isinstance(key,str) and key in WARDROBE and WARDROBE[key]['slot']==slot and inventory.get(key)}
+ inventory=user.get('inventory') or {};result={};used=set()
+ # Full outfits win over incompatible legacy combinations; inventory is never removed.
+ for slot,key in sorted(raw.items(),key=lambda pair:0 if pair[0]=='body' else 1):
+  if slot not in SLOTS or not isinstance(key,str) or key not in WARDROBE or WARDROBE[key]['slot']!=slot or not inventory.get(key):continue
+  occupied=occupied_slots(key)
+  if occupied&used:continue
+  result[slot]=key;used|=occupied
+ return result
+
+
+def slot_locks(user):
+ current=active_outfit(user);locks={}
+ for slot,key in current.items():
+  for occupied in occupied_slots(key)-{slot}:locks[occupied]=key
+ return locks
+
 
 def equip(user,key,level,slot=None):
  if slot is not None and (not isinstance(slot,str) or slot not in SLOTS):raise ValueError('Unknown slot')
@@ -93,8 +112,12 @@ def equip(user,key,level,slot=None):
   if item.get('catalog_only'):raise ValueError('Этот предмет пока только в каталоге. Применение к фото ещё не подключено.')
   if not item['slot']:raise ValueError('Этот предмет хранится в инвентаре, его нельзя надеть')
   slot=item['slot']
-  if slot=='body':current.pop('top',None);current.pop('bottom',None)
-  if slot in ('top','bottom'):current.pop('body',None)
+  occupied=occupied_slots(key)
+  conflicts=[other for other,old in current.items() if other!=slot and occupied_slots(old)&occupied]
+  if slot!='body' and conflicts:
+   blocker=WARDROBE[current[conflicts[0]]]
+   raise ValueError('Сначала сними «'+blocker['ru']+'»: этот комплект занимает выбранное место')
+  for other in conflicts:current.pop(other,None)
   current[slot]=key
  user['active_outfit']=current
  user['wardrobe_outfit']=current.get('body') # old clients retain their single outfit field
@@ -170,3 +193,18 @@ for _key,_item in WARDROBE.items():
  _item['image']='catalog_'+_key
  if _key in OUTFIT_FACTS:
   _item.update(fact=OUTFIT_FACTS[_key],catalog_only=False)
+
+# Slot occupancy is a wardrobe rule, independent of image tags.
+for _key,_item in WARDROBE.items():
+ _item['occupies']=[_item['slot']] if _item.get('slot') else []
+ if _item.get('slot')=='body':_item['occupies']=['body','top','bottom','legs','outerwear']
+for _key in ('police_male','police_female','firefighter_male','firefighter_female'):
+ WARDROBE[_key]['occupies']=list(SLOTS)
+
+
+def occupancy_label(key,lang='ru'):
+ slots=occupied_slots(key)
+ if len(slots)<2:return ''
+ if slots==set(SLOTS):return {'ru':'Занимает весь образ','de':'Belegt das gesamte Outfit'}.get(lang,'Occupies the entire outfit')
+ free=[labels[{'ru':0,'en':1,'de':2}.get(lang,1)] for slot,labels in SLOTS.items() if slot not in slots]
+ return {'ru':'Свободно: ','de':'Frei: '}.get(lang,'Free: ')+', '.join(free)

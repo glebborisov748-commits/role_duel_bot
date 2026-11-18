@@ -24,26 +24,34 @@ CATALOG = (
  ('plant5','plant',5,'energy',60,('Посади 5 растений','Plant 5 crops','Pflanze 5 Pflanzen')),
  ('harvest5','harvest',5,'bucks',650,('Собери урожай с 5 грядок','Harvest 5 plots','Ernte 5 Beete')),
 
+ ('pipes3','pipes',3,'bucks',300,('Соедини 3 трубопровода','Connect 3 pipelines','Verbinde 3 Rohrleitungen')),
+ ('dig4','dig',4,'bucks',350,('Принеси 4 находки из раскопок','Bring back 4 finds','Bringe 4 Fundstücke zurück')),
+ ('mine6','mine',6,'bucks',400,('Подними 6 находок из шахты','Haul out 6 ore finds','Bringe 6 Erzfundstücke hoch')),
+
 )
 BY_ID = {q[0]:q for q in CATALOG}
 
 
-def ensure(user, day, *, allow_farm=True):
+def ensure(user, day, *, allow_farm=True,allowed_events=None):
     current = user.get('daily_quests')
-    if isinstance(current, dict) and current.get('day') == day and len(current.get('items', [])) == 2:
-        return False
+    allowed=lambda q: (allow_farm or q[1] not in ('plant','water','harvest')) and (allowed_events is None or q[1] in allowed_events)
+    same_day=isinstance(current,dict) and current.get('day')==day and len(current.get('items',[]))==2
+    if same_day and all(i.get('claimed') or i['id'] in BY_ID and (allowed_events is None or BY_ID[i['id']][1] in allowed_events) for i in current['items']):return False
     seed = user.setdefault('quest_seed', secrets.token_hex(16))
     rng = random.Random(hashlib.sha256((seed+':'+day).encode()).digest())
-    pool = [q for q in CATALOG if allow_farm or q[1] not in ('plant','water','harvest')]
+    pool = [q for q in CATALOG if allowed(q)]
     previous = {i.get('id') for i in (current or {}).get('items', [])} if isinstance(current, dict) else set()
     fresh = [q for q in pool if q[0] not in previous]
     if len({q[1] for q in fresh}) >= 2:
         pool = fresh
     rng.shuffle(pool)
-    first = pool[0]
-    second = next(q for q in pool[1:] if q[1] != first[1])
-    user['daily_quests'] = {'day':day,'items':[
-        {'id':q[0],'progress':0,'claimed':False} for q in (first,second)]}
+    kept=[i for i in current['items'] if i.get('claimed') or i['id'] in BY_ID and (allowed_events is None or BY_ID[i['id']][1] in allowed_events)] if same_day else []
+    items=list(kept);used={BY_ID[i['id']][1] for i in items if i['id'] in BY_ID}
+    for q in pool:
+        if len(items)==2:break
+        if q[1] in used:continue
+        items.append({'id':q[0],'progress':0,'claimed':False});used.add(q[1])
+    user['daily_quests']={'day':day,'items':items}
     return True
 
 

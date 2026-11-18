@@ -9,6 +9,8 @@ import time
 import copy
 import online_games
 import online_ui
+import work_rotation
+import mine
 import archaeology
 import companion_initiative
 import photo_wallet
@@ -3024,13 +3026,21 @@ def work_double_active(user):
     return bool(until) and datetime.now().isoformat() < until
 
 
+def work_is_open(game):
+    return work_rotation.is_open(game,local_today())
+
+
+def work_closed_reply(user):
+    return web.json_response({'ok':False,'code':'work_closed','error':'Эта работа сегодня закрыта. Выбери одну из трёх работ дня.','state':serialize_work_state(user)})
+
+
 def register_work_hit(user, game, tip=False):
     """Одно засчитанное попадание в одной из мгновенных игр — сразу начисляет баксы (см.
     WORK_HIT_BUCKS), без таймера и без сессии. Возвращает фактически начисленную сумму, 0 если
     попадание отклонено анти-спамом (см. WORK_MIN_HIT_INTERVAL_SECONDS), None при неизвестной
     игре. Один общий таймер последнего попадания на все игры — играть в две сразу руками всё
     равно нельзя, упрощение не меняет защиту."""
-    if game not in WORK_HIT_BUCKS:
+    if game not in WORK_HIT_BUCKS or not work_is_open(game):
         return None
     now = datetime.now()
     last_hit_raw = user.get("work_last_hit_at")
@@ -3079,6 +3089,7 @@ def register_work_failure(user, game):
     ограничивают по частоте, отдельный спам-вектор тут бессмысленен. Баланс никогда не уходит в
     минус. Возвращает фактически списанную сумму, None при неизвестной игре. courier — особый
     случай с бОльшим штрафом (см. COURIER_CRASH_PENALTY_BUCKS)."""
+    if not work_is_open(game):return 0
     if game not in WORK_HIT_BUCKS:
         return None
     base = WORK_PENALTY_BUCKS.get(game, WORK_FAILURE_PENALTY_BUCKS)
@@ -9339,9 +9350,9 @@ def serialize_shop_state(user):
             image='/assets/'+item['image']+'.webp' if os.path.isfile(os.path.join(ASSETS_DIR,item['image']+'.webp')) else None
             items.append({'key':key,'category':category,'name':item.get(lang,item['name']),'price':item['price'],
                 'emoji':item['emoji'],'image':image,'ready_in':None,'refuse':False,'owned':bool(inventory.get(key)),
-                'slot':item['slot'],'gender':item.get('gender','unisex'),'catalog_only':bool(item.get('catalog_only')),'tags':item.get('tags',''),'locked_level':5 if locked else None,
+                'slot':item['slot'],'occupies':sorted(profile_options.occupied_slots(key)),'gender':item.get('gender','unisex'),'catalog_only':bool(item.get('catalog_only')),'tags':item.get('tags',''),'locked_level':5 if locked else None,
                 'owned_label':{'ru':'В гардеробе','de':'Im Inventar'}.get(lang,'Owned'),
-                'effects':({'ru':'Новинка для коллекции. Применение к фото пока не подключено.','de':'Neu für die Sammlung. Noch nicht für Fotos verfügbar.'}.get(lang,'New collectible. Not connected to photos yet.') if item.get('catalog_only') else {'ru':'Остаётся в инвентаре','de':'Bleibt im Inventar'}.get(lang,'Kept in inventory'))})
+                'effects':({'ru':'Новинка для коллекции. Применение к фото пока не подключено.','de':'Neu für die Sammlung. Noch nicht für Fotos verfügbar.'}.get(lang,'New collectible. Not connected to photos yet.') if item.get('catalog_only') else {'ru':'Остаётся в инвентаре','de':'Bleibt im Inventar'}.get(lang,'Kept in inventory')) + (' · '+profile_options.occupancy_label(key,lang) if len(profile_options.occupied_slots(key))>1 else '')})
         categories.append({'key':category,'name':title,'items':items,'locked':locked,'required_level':5 if adult else None})
 
     categories.append({'key':'exchange','name':gt(user,'shop_cat_exchange'),'items':[
@@ -9410,6 +9421,7 @@ def serialize_shop_state(user):
         "categories": categories,
         "wardrobe_pending":bool(user.get("avatar_job")),"wardrobe_gender":user.get("gender","female"),"photo_balance":photo_wallet.balance(user),
         "wardrobe_preview":"/avatars/"+user["avatar_fullbody"] if user.get("avatar_fullbody") else None,
+        "slot_locks":profile_options.slot_locks(user),
         "active_outfit":profile_options.active_outfit(user),"outfit_slots":profile_options.choices(profile_options.SLOTS,lang),
         "wardrobe_outfit":user.get("wardrobe_outfit"),
         "medicine": medicine,
@@ -13087,7 +13099,7 @@ SHOP_PAGE_HTML = r"""<!doctype html>
 .wardrobe-room label{display:flex;flex-direction:column;gap:5px;font-size:12px;margin-top:10px}.wardrobe-empty{padding:18px 10px;display:flex;align-items:center;text-align:center;min-height:200px;background:radial-gradient(ellipse,#47364d,#221c2c);border-radius:18px;color:#cdbed6;font-size:12px;line-height:1.5}.wardrobe-room img[hidden]{display:none!important}.wardrobe-room .wardrobe-model{height:330px!important;object-fit:contain!important}.wardrobe-lock{padding:15px;text-align:center;font-size:14px;color:#d3b4e8}.wardrobe-room select{min-height:40px!important}.wardrobe-room .wardrobe-product{display:none}
 del,.old-price{position:relative;text-decoration:none!important}del:after,.old-price:after{content:'';position:absolute;left:0;right:0;height:2px;top:50%;background:#ed5965;transform:rotate(-8deg)}.card{box-shadow:inset 0 1px 0 #fff08,0 8px 22px #0003}
 .wardrobe-room{grid-template-columns:minmax(0,1fr)!important;padding:16px!important;background:radial-gradient(ellipse at 50% 20%,#50354d55,#1d192b 70%)}.fitting-stage{height:320px;max-width:230px;width:100%;margin:0 auto;position:relative;isolation:isolate;border-radius:20px;background:radial-gradient(ellipse at 50% 85%,#d8a3c233,transparent 60%)}.wardrobe-room .tailor-base{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:.85}.wardrobe-room .outfit-layer{position:absolute!important;object-fit:contain!important;margin:0!important;max-height:none!important;pointer-events:none;filter:drop-shadow(0 3px 3px #0004)}.outfit-body{left:8%;top:4%;width:84%!important;height:80%!important;z-index:2}.outfit-top,.outfit-outerwear{left:13%;top:12%;width:74%!important;height:43%!important;z-index:3}.outfit-bottom{left:22%;top:48%;width:56%!important;height:35%!important;z-index:2}.outfit-head{left:28%;top:0;width:44%!important;height:18%!important;z-index:5}.outfit-neck{left:37%;top:12%;width:26%!important;height:12%!important;z-index:5}.outfit-legs{left:25%;top:60%;width:50%!important;height:30%!important;z-index:1}.outfit-shoes{left:25%;top:83%;width:50%!important;height:16%!important;z-index:4}.fitting-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.fitting-controls h3,.fitting-note,#wardrobe-generate,.wardrobe-result{grid-column:1/-1}.fitting-controls select{width:100%;box-sizing:border-box}.wardrobe-room .wardrobe-result{width:100%;height:auto;max-height:460px;object-fit:contain;border-radius:16px;margin:auto}.wardrobe-lightbox{position:fixed;inset:0;z-index:10000;background:#090712ed;display:grid;place-items:center;touch-action:pinch-zoom}.wardrobe-lightbox img{max-width:98vw;max-height:95dvh}
-</style>
+.slot-occupied{color:#b9a9c5!important}.slot-occupied select{opacity:.7;border-style:dashed!important}.slot-occupied:before{content:"🔒";font-size:11px}</style>
 </head>
 <body>
   <div id="stats"></div>
@@ -13235,8 +13247,8 @@ del,.old-price{position:relative;text-decoration:none!important}del:after,.old-p
     var items=s.categories.filter(function(c){return c.key==='wardrobe'||c.key==='adult_shop';}).reduce(function(all,c){return all.concat(c.items);},[]),active=s.active_outfit||{};
     Object.keys(active).forEach(function(slot){var item=items.find(function(i){return i.key===active[slot];});if(!item||!item.image)return;var im=document.createElement('img');im.src=item.image;im.alt=item.name;im.className='outfit-layer outfit-'+slot;stage.appendChild(im);});
     room.appendChild(stage);
-    (s.outfit_slots||[]).forEach(function(slot){var label=document.createElement('label');label.textContent=slot.label;var select=document.createElement('select');select.dataset.slot=slot.key;select.disabled=!!s.wardrobe_pending;var empty=document.createElement('option');empty.value='';empty.textContent=s.lang==='ru'?'Не выбрано':'None';select.appendChild(empty);items.filter(function(item){return item.slot===slot.key&&item.owned&&!item.catalog_only;}).forEach(function(item){var option=document.createElement('option');option.value=item.key;option.textContent=item.name;option.disabled=!!item.locked_level;select.appendChild(option);});select.value=active[slot.key]||'';select.onchange=function(){select.disabled=true;api('/api/wardrobe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({outfit:select.value||null,slot:slot.key})}).then(function(res){if(res.state)state=res.state;if(!res.ok)alert(res.error);render();});};label.appendChild(select);controls.appendChild(label);});
-    var note=document.createElement('p');note.className='fitting-note';note.textContent=s.lang==='ru'?'Примерка бесплатна. На стойке — приблизительная посадка; на фото одежда подстроится под персонажа.':'Free fitting. Display is approximate; generated clothes fit your character.';controls.appendChild(note);
+    (s.outfit_slots||[]).forEach(function(slot){var label=document.createElement('label');label.textContent=slot.label;var select=document.createElement('select');select.dataset.slot=slot.key;var blocked=(s.slot_locks||{})[slot.key];select.disabled=!!s.wardrobe_pending||!!blocked;var empty=document.createElement('option');empty.value='';var owner=items.find(function(i){return i.key===blocked;});empty.textContent=owner?('Занято: '+owner.name):(s.lang==='ru'?'Не выбрано':'None');select.appendChild(empty);items.filter(function(item){return item.slot===slot.key&&item.owned&&!item.catalog_only;}).forEach(function(item){var option=document.createElement('option');option.value=item.key;option.textContent=item.name;option.disabled=!!item.locked_level;select.appendChild(option);});select.value=active[slot.key]||'';select.onchange=function(){select.disabled=true;api('/api/wardrobe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({outfit:select.value||null,slot:slot.key})}).then(function(res){if(res.state)state=res.state;if(!res.ok)alert(res.error);render();});};if(blocked){label.classList.add('slot-occupied');label.title=owner?owner.name:'';}label.appendChild(select);controls.appendChild(label);});
+    var note=document.createElement('p');note.className='fitting-note';note.textContent=s.lang==='ru'?'Примерка бесплатна. Комплекты занимают несколько мест. Чтобы изменить занятую деталь, сначала сними комплект. Посадка на стойке приблизительная.':'Free fitting. Display is approximate; generated clothes fit your character.';controls.appendChild(note);
     var generate=document.createElement('button');generate.type='button';generate.id='wardrobe-generate';generate.textContent=s.wardrobe_pending?'Создаю образ…':'Показать на персонаже · 1 фото ('+s.photo_balance+')';generate.disabled=!!s.wardrobe_pending;
     generate.onclick=function(){if(s.photo_balance<1){window.parent.postMessage({type:'rd-open-purchases'},location.origin);return;}if(!confirm('Создать фото в выбранной одежде? Будет потрачена 1 попытка.'))return;generate.disabled=true;api('/api/app/avatar-generate',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(function(res){if(!res.ok)alert(res.error);load();});};controls.appendChild(generate);
     if(s.wardrobe_preview){var preview=document.createElement('img');preview.src=s.wardrobe_preview;preview.className='wardrobe-result';preview.alt='Фото персонажа';preview.onclick=function(){var modal=document.createElement('div');modal.className='wardrobe-lightbox';var im=document.createElement('img');im.src=s.wardrobe_preview;modal.appendChild(im);modal.onclick=function(){modal.remove();};document.body.appendChild(modal);};controls.appendChild(preview);}
@@ -15143,6 +15155,8 @@ def serialize_work_state(user):
         "hit_bucks": WORK_HIT_BUCKS,
         "failure_penalty": WORK_FAILURE_PENALTY_BUCKS,
         "courier_crash_penalty": COURIER_CRASH_PENALTY_BUCKS,
+        "rotation":work_rotation.state(local_today(),daily_reset_timestamp()),
+        "mine":mine.snapshot(user),
         "farm_market":farm_market(),
         "dig":archaeology.snapshot(user),
         "farm": farm_state(user),
@@ -15876,7 +15890,9 @@ WORK_PAGE_HTML = r"""<!doctype html>
 #tabs{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;flex-wrap:nowrap!important}#tabs .tab-btn{flex:0 0 auto;white-space:nowrap;padding:11px 14px}#game-dig{padding:16px;border:1px solid #79634c;border-radius:22px;background:radial-gradient(ellipse at top,#4b3740,#1c1a2b 70%)}#game-dig p{font-size:13px;line-height:1.5;color:#cfc2ba}.dig-board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin:14px 0}.dig-cell{aspect-ratio:1;border:1px solid #a88a65;border-radius:10px;background:linear-gradient(140deg,#8d684c,#49342b);color:#ead4af;font-size:18px;box-shadow:inset 0 2px 0 #ffffff18,0 3px 5px #0003}.dig-cell.found{color:#ffe596;background:#725240}.dig-cell:disabled{opacity:.55}.dig-button{padding:11px 14px;border:1px solid #9d7d93;border-radius:12px;background:#4a374d;color:white;margin:4px 2px;min-height:42px}.dig-button.on{background:#9b638e}.dig-tools{display:flex;justify-content:space-between}.dig-tools button{flex:1;min-width:0;padding:10px 5px}.dig-meta{font-size:13px;color:#f1d6af}.dig-bag{border:1px solid #7c6551;border-radius:12px;padding:8px}
 
 .avenue-cone{width:46px!important;height:54px!important;border-radius:7px;box-shadow:0 3px 7px #0005;overflow:hidden}.hazard-barrier{background:repeating-linear-gradient(135deg,#d78e57 0 9px,#3c3440 9px 18px);border:3px solid #ba9c86}.hazard-puddle{background:radial-gradient(ellipse,#90bbd4aa,#41617d77 65%,transparent 70%);box-shadow:none;transform:translateX(-50%) scaleX(1.3)}.hazard-bump{background:repeating-linear-gradient(0deg,#b6a575 0 7px,#514536 7px 14px);height:24px!important;border-radius:50%}.hazard-crosswalk{background:repeating-linear-gradient(0deg,#e7ded7cc 0 7px,transparent 7px 14px);box-shadow:none;height:58px!important}.hazard-traffic{background:linear-gradient(90deg,#67598e,#b8a4cf,#67598e);border:2px solid #ccbddd}.hazard-traffic:before{content:'';display:block;margin:8px;height:15px;background:#272733;border-radius:4px}#hacker-wires{height:260px!important}.hacker-wire-end,.hacker-wire-socket{border:2px solid #d2c3d6!important;box-shadow:inset 0 2px 0 #ffffff55,0 2px 8px #0005}.hacker-wire-end.tracing{outline:3px solid #f2ca85;outline-offset:3px}
-.farm-demand{padding:12px;margin-bottom:10px;border:1px solid #b79d67;border-radius:14px;background:linear-gradient(120deg,#65502f88,#392946);color:#f5dfa8;font-size:12px;line-height:1.5}#tabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;overflow:visible!important}#tabs .tab-btn{width:100%;min-width:0;box-sizing:border-box;white-space:nowrap;padding:12px 5px;font-size:12px!important}</style>
+.farm-demand{padding:12px;margin-bottom:10px;border:1px solid #b79d67;border-radius:14px;background:linear-gradient(120deg,#65502f88,#392946);color:#f5dfa8;font-size:12px;line-height:1.5}#tabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;overflow:visible!important}#tabs .tab-btn{width:100%;min-width:0;box-sizing:border-box;white-space:nowrap;padding:12px 5px;font-size:12px!important}
+#tabs{grid-template-columns:repeat(2,minmax(0,1fr))!important}#tabs .finish-only{border:1px dashed #d4b987!important}#work-schedule{font-size:11px;color:#b8a7c8;padding:0 6px 12px;text-align:center}#game-mine{padding:16px;border:1px solid #6b647b;border-radius:22px;background:radial-gradient(ellipse at top,#39404e,#181722 70%)}#game-mine h3{margin-top:0;text-align:center}#game-mine p{font-size:13px;line-height:1.5;color:#c9becf}.mine-meta{text-align:center;font-size:13px;color:#e6d7bc;margin:12px 0}.mine-gas{height:9px;border-radius:9px;background:#272b35;margin:7px 0 15px;overflow:hidden}.mine-gas i{display:block;height:100%;background:linear-gradient(90deg,#78b8a4,#e4c36f,#ef7582);transition:width .25s}.mine-veins{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.mine-vein{min-width:0;background:linear-gradient(150deg,#424756,#242631);border:1px solid #778196;border-radius:16px;padding:9px 5px;color:white;display:flex;flex-direction:column;gap:8px;align-items:center;box-shadow:inset 0 2px 0 #fff1,0 6px 10px #0004}.mine-vein strong{font-size:12px}.mine-vein small{font-size:10px;line-height:1.4}.mine-vein:disabled{opacity:.5}.mine-vein.danger{border-color:#ee6e7c}.tunnel-arch{height:80px;width:100%;border:7px solid #666271;border-bottom:0;border-radius:50% 50% 5px 5px;background:radial-gradient(ellipse at bottom,#36434b,#0a0b13 65%);box-sizing:border-box;position:relative}.ore-glint{position:absolute;left:32%;top:30%;color:#ebc885;text-shadow:0 0 12px #f2c278;font-size:26px}.ore-1 .ore-glint{color:#b6d5e6}.ore-2 .ore-glint{color:#c59ced}.mine-button{padding:12px;border:1px solid #9d8ba6;border-radius:13px;background:linear-gradient(135deg,#66506d,#3f354f);color:#fff;width:100%;margin:8px 0;font-weight:650}.mine-button:disabled{opacity:.45}.mine-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mine-bag{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.mine-bag span{padding:6px 9px;background:#ffffff09;border-radius:10px;font-size:11px}.mine-danger{color:#f1a7aa!important}
+</style>
 </head>
 <body>
   <div id="topbar">
@@ -15889,7 +15905,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
     <button id="tab-clicker" class="tab-btn"></button>
     <button id="tab-catch" class="tab-btn"></button>
     <button id="tab-courier" class="tab-btn"></button>
-    <button id="tab-workshop" class="tab-btn"></button><button id="tab-dig" class="tab-btn">Раскопки</button><button id="tab-farm" class="tab-btn"></button>
+    <button id="tab-workshop" class="tab-btn"></button><button id="tab-dig" class="tab-btn">Раскопки</button><button id="tab-mine" class="tab-btn">Шахта</button><button id="tab-farm" class="tab-btn"></button>
   </div>
 
   <div id="game-clicker" class="game-panel">
@@ -15933,7 +15949,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
     <div id="courier-feedback"></div>
   </div>
 
-  <div id="game-dig" class="game-panel"></div><div id="game-farm" class="game-panel"></div><div id="game-workshop" class="game-panel"></div>
+  <div id="game-dig" class="game-panel"></div><div id="game-mine" class="game-panel"></div><div id="game-farm" class="game-panel"></div><div id="game-workshop" class="game-panel"></div>
 
   <div id="gameover">
     <div id="gameover-title"></div>
@@ -15962,7 +15978,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
 
   var state = null;
   var requestedGame=new URLSearchParams(location.search).get("game");
-  var activeGame = ["clicker","catch","courier","farm","workshop","dig"].indexOf(requestedGame)>=0?requestedGame:(/[?&]tab=farm\b/.test(location.search)?"farm":"clicker"); // пуш "урожай созрел" открывает сразу ферму
+  var activeGame = ["clicker","catch","courier","farm","workshop","dig","mine"].indexOf(requestedGame)>=0?requestedGame:(/[?&]tab=farm\b/.test(location.search)?"farm":"clicker"); // пуш "урожай созрел" открывает сразу ферму
   var catchSpawnInterval = null;
   var catchRafId = null;
   var courierRafId = null;
@@ -16176,7 +16192,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
     opts.signal = controller.signal;
     return fetch(path, opts).then(function (r) {
       clearTimeout(timeoutId);
-      return r.json();
+      return r.json().then(function(res){if(res.code==='work_closed'&&res.state){state=res.state;applyWorkSchedule();}return res;});
     }, function (e) {
       clearTimeout(timeoutId);
       throw e;
@@ -16458,7 +16474,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
   function retryAfterGameOver() {
     document.getElementById("gameover").classList.remove("shown");
     debuffState.catch = debuffState.courier = debuffState.clicker = false;
-    switchGame(activeGame);
+    applyWorkSchedule();switchGame(activeGame);
   }
 
   function clearDebuff(game) {
@@ -16914,6 +16930,35 @@ WORK_PAGE_HTML = r"""<!doctype html>
     road.addEventListener('pointerdown',function(e){e.preventDefault();start={x:e.clientX,y:e.clientY};try{road.setPointerCapture(e.pointerId);}catch(err){}});
     road.addEventListener('pointerup',function(e){e.preventDefault();if(!start||!courierRun)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;start=null;if(Math.max(Math.abs(dx),Math.abs(dy))>18){if(Math.abs(dx)>Math.abs(dy))setCourierDirection(dx>0?1:-1,0);else setCourierDirection(0,dy>0?1:-1);lastTap=0;}else{var now=Date.now();if(now-lastTap<360){pressCourierStopline();lastTap=0;}else lastTap=now;}});road.addEventListener('pointercancel',function(){start=null;});}
 
+  function jobOpen(name){return name==='farm'||!state||!state.rotation||state.rotation.active.indexOf(name)>=0;}
+  function canFinishJob(name){return !!(state&&(name==='dig'&&state.dig&&state.dig.run||name==='mine'&&state.mine&&state.mine.run));}
+  function applyWorkSchedule(){
+    if(!state)return;var jobs=['clicker','catch','courier','workshop','dig','mine','farm'];jobs.forEach(function(name){var tab=document.getElementById('tab-'+name);if(tab){tab.style.display=jobOpen(name)||canFinishJob(name)?'':'none';tab.classList.toggle('finish-only',!jobOpen(name));}});
+    var banner=document.getElementById('work-schedule');if(!banner){banner=document.createElement('div');banner.id='work-schedule';document.getElementById('tabs').after(banner);}if(state.rotation){banner.textContent='Работы дня · смена в 00:00 МСК. Ферма доступна всегда.';}else banner.hidden=true;
+    if(activeGame&&!jobOpen(activeGame)&&!canFinishJob(activeGame))switchGame((state.rotation&&state.rotation.active[0])||'farm');
+  }
+  var mineBusy=false,mineNextAt=0;
+  function mineAction(body){if(mineBusy||performance.now()<mineNextAt)return;mineBusy=true;renderMine();api('/api/work/mine',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){mineBusy=false;if(res.state){state=res.state;setBalance(state.bucks);applyWorkSchedule();}if(res.mine)state.mine=res.mine;var run=state.mine&&state.mine.run;mineNextAt=performance.now()+(run&&run.ready_ms||0);renderMine();if(!res.ok)document.getElementById('mine-note').textContent=res.error||'Попробуй ещё раз';else if(body.action==='strike'){fx('impact');haptic('light');}if(mineNextAt>performance.now())setTimeout(function(){if(activeGame==='mine')renderMine();},Math.max(0,mineNextAt-performance.now())+25);}).catch(function(){mineBusy=false;renderMine();document.getElementById('mine-note').textContent='Нет связи. Попробуй ещё раз.';});}
+  function renderMine(){
+    var panel=document.getElementById('game-mine');panel.innerHTML='';var data=state.mine||{},run=data.run;
+    function node(tag,text,cls){var e=document.createElement(tag);e.textContent=text||'';if(cls)e.className=cls;return e;}
+    function button(text,body,cls){var b=node('button',text,cls||'mine-button');b.disabled=mineBusy||performance.now()<mineNextAt;b.onclick=function(){mineAction(body);};return b;}
+    panel.appendChild(node('h3','Шахта · смена добытчика'));panel.appendChild(node('p','Выбирай жилу, разбивай породу и следи за газом. Проветривай тоннель или поднимай вагонетку, пока добыча цела.'));
+    var note=node('p','','mine-note');note.id='mine-note';panel.appendChild(note);
+    if(!jobOpen('mine')){panel.appendChild(node('p','Шахта сегодня закрыта. Добычу прошлой смены можно забрать.'));if(run)panel.appendChild(button('Поднять добычу · '+run.bag_value,{action:'haul',id:run.id}));return;}
+    if(!run){var start=button(data.ready_in?'До новой смены '+data.ready_in+' сек.':'Спуститься в шахту',{action:'start'});start.disabled=mineBusy||data.ready_in>0;panel.appendChild(start);if(data.ready_in>0)setTimeout(function(){if(activeGame==='mine')load();},(data.ready_in+1)*1000);}
+    else{
+      panel.appendChild(node('div','Глубина '+run.depth+'/10 · Вагонетка '+run.bag_value+' баксов','mine-meta'));
+      var bar=node('div','','mine-gas');var fill=node('i');fill.style.width=run.gas+'%';bar.appendChild(fill);bar.setAttribute('role','meter');bar.setAttribute('aria-valuenow',run.gas);bar.setAttribute('aria-valuemin','0');bar.setAttribute('aria-valuemax','100');panel.appendChild(node('strong','Газ: '+run.gas+'%'));panel.appendChild(bar);
+      if(run.collapsed)panel.appendChild(node('p','Обвал! Половина груза потеряна. Подними оставшееся и начни новую смену.','mine-danger'));
+      if(!run.closed){var veins=node('div','','mine-veins');run.veins.forEach(function(vein,index){var b=button('',{action:'strike',id:run.id,vein:index},'mine-vein ore-'+index);b.disabled=b.disabled||vein.done||run.selected!==null&&run.selected!==index&&!run.veins[run.selected].done;var arch=node('span','','tunnel-arch');arch.appendChild(node('span','✦','ore-glint'));b.appendChild(arch);b.appendChild(node('strong',vein.ore));b.appendChild(node('small',vein.done?'Выработана':'Порода '+vein.left+'/'+vein.hardness));b.appendChild(node('small','Газ за удар +'+vein.gas+'%'));if(run.gas+vein.gas>=100)b.classList.add('danger');veins.appendChild(b);});panel.appendChild(veins);
+        var actions=node('div','','mine-actions');var vent=button('Проветрить −35%',{action:'vent',id:run.id});vent.disabled=vent.disabled||run.gas===0;actions.appendChild(vent);var down=button('Спуститься глубже',{action:'descend',id:run.id});down.disabled=down.disabled||run.depth>=10||!run.veins.some(function(v){return v.done;});actions.appendChild(down);panel.appendChild(actions);}
+      panel.appendChild(button('Поднять добычу · '+run.bag_value,{action:'haul',id:run.id}));
+      var bag=node('div','','mine-bag');run.bag.forEach(function(ore){bag.appendChild(node('span',ore.name+' · '+ore.value));});panel.appendChild(bag);
+    }
+    if(data.upgrade_price)panel.appendChild(button('Улучшить кирку · '+data.upgrade_price+' баксов · ур. '+data.rank,{action:'upgrade'}));
+    panel.appendChild(node('small','Руда: '+(data.ores||[]).map(function(o){return o.name+' '+o.chance+'%';}).join(' · ')));
+  }
   var digBusy=false,digTool='brush';
   function digAction(body){if(digBusy)return;digBusy=true;api('/api/work/dig',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){digBusy=false;if(res.state){state=res.state;setBalance(state.bucks);}if(res.dig)state.dig=res.dig;if(!res.ok)alert(res.error);else if(res.awarded)fx('win');renderDig();}).catch(function(){digBusy=false;});}
   function renderDig(){
@@ -16922,6 +16967,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
     function button(text,body){var b=node('button',text,'dig-button');b.disabled=digBusy;b.onclick=function(){digAction(body);};return b;}
     panel.appendChild(node('h3',courierWords('Раскопки · экспедиция','Archaeology expedition','Ausgrabung')));
     panel.appendChild(node('p',courierWords('Кисть бережёт находки. Кирка быстрее, но повреждает лут. Забери добычу или рискни и копай глубже.','Brush preserves finds. Pickaxe is fast but damages loot. Cash out or risk another layer.','Pinsel schont Funde. Spitzhacke ist schnell, aber riskant.')));
+    if(!jobOpen('dig')){panel.appendChild(node('p','Раскопки сегодня закрыты. Можно забрать находки прошлой экспедиции.'));if(run)panel.appendChild(button('Забрать добычу · '+run.bag_value,{action:'cashout',id:run.id}));return;}
     if(!run){panel.appendChild(button(d.ready_in?'Отдых · '+d.ready_in+' сек.':'Начать экспедицию',{action:'start'}));}
     else{
       panel.appendChild(node('div','Слой '+run.depth+' · Добыча '+run.bag_value+' · Риск '+run.damage+'/8','dig-meta'));
@@ -17212,12 +17258,13 @@ WORK_PAGE_HTML = r"""<!doctype html>
 
   var originalRenderFarm=renderFarm;renderFarm=function(){originalRenderFarm();var f=document.getElementById('game-farm');if(state&&state.farm_market&&f){var banner=document.createElement('div');banner.className='farm-demand';banner.textContent='Спрос дня: '+state.farm_market.name+' · урожай +50%. Цена закрепляется при посадке.';f.prepend(banner);}};
   function switchGame(name) {
+    if(!jobOpen(name)&&!canFinishJob(name))name=(state.rotation&&state.rotation.active[0])||"farm";
     activeGame = name;
     pausedGame = null;
     var pov = document.getElementById("pause-ov");
     if (pov) pov.style.display = "none";
     stopAllGames();
-    ["clicker", "catch", "courier", "workshop", "farm", "dig"].forEach(function (g) {
+    ["clicker", "catch", "courier", "workshop", "farm", "dig", "mine"].forEach(function (g) {
       document.getElementById("game-" + g).style.display = g === name ? "block" : "none";
       document.getElementById("tab-" + g).classList.toggle("active", g === name);
     });
@@ -17226,7 +17273,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
     if (name === "courier") startCourier();
     if (name === "farm") renderFarm();
     if (name === "workshop") startPipes();
-    if(name==='dig')renderDig();
+    if(name==='dig')renderDig();if(name==='mine'){renderMine();load();}
   }
 
   function render() {
@@ -17244,9 +17291,10 @@ WORK_PAGE_HTML = r"""<!doctype html>
     document.getElementById("tab-catch").textContent = state.ui.tab_catch;
     document.getElementById("tab-courier").textContent = state.ui.tab_courier;
     document.getElementById("tab-farm").textContent = state.ui.tab_farm;
+    document.getElementById('tab-mine').onclick=function(){switchGame('mine');};
     document.getElementById('tab-dig').onclick=function(){switchGame('dig');};
     document.getElementById("tab-workshop").textContent=courierWords("Трубы","Pipes","Rohre");document.getElementById("tab-workshop").onclick=function(){switchGame("workshop");};
-    document.getElementById("clicker-hint").textContent = courierWords("Запомни код, проследи провод или вскрой замок.","Remember the code, trace a cable or open a lock.","Code merken, Kabel verfolgen oder Schloss öffnen.");
+    document.getElementById("clicker-hint").textContent = courierWords("Запомни код, соедини контакты или найди провод для обрезки.","Remember the code, trace a cable or open a lock.","Code merken, Kabel verfolgen oder Schloss öffnen.");
     document.getElementById("catch-hint").textContent = state.ui.catch_hint;
     document.getElementById("courier-hint").textContent = state.ui.courier_hint;
 
@@ -17259,7 +17307,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
     bindCourierControls();
     document.getElementById("gameover-retry").onclick = retryAfterGameOver;
 
-    switchGame(activeGame);
+    applyWorkSchedule();switchGame(activeGame);
   }
 
   function load() {
@@ -17270,19 +17318,19 @@ WORK_PAGE_HTML = r"""<!doctype html>
         return;
       }
       var first = !state;
-      state = res.state;
+      state = res.state;applyWorkSchedule();
       if (first) {
         render();
       } else {
         setBalance(state.bucks);
-        if (activeGame === "farm") renderFarm();
+        if (activeGame === "farm") renderFarm();if(activeGame==='mine')renderMine();if(activeGame==='dig')renderDig();
       }
     }).catch(function (e) {
       showFullScreen("Network error: " + (e && (e.name === "AbortError" ? "timeout" : e.message) || "unknown") + "\n\n" + diag());
     });
   }
 
-  var marketRefreshAt=0;setInterval(function(){if(state&&state.farm_market&&Date.now()>=state.farm_market.until*1000&&Date.now()-marketRefreshAt>10000){marketRefreshAt=Date.now();load();}},1000);
+  var marketRefreshAt=0;setInterval(function(){if(state&&((state.farm_market&&Date.now()>=state.farm_market.until*1000)||(state.rotation&&Date.now()>=state.rotation.reset_at*1000))&&Date.now()-marketRefreshAt>10000){marketRefreshAt=Date.now();load();}},1000);
   load();
   }
 
@@ -19173,7 +19221,7 @@ def serialize_app_state(user):
     user["app_seen"] = datetime.now().isoformat()
     if not user.get("personality_ready"):
         ui = {k: v for k, v in APP_TEXTS.get(user.get("lang", "ru"), APP_TEXTS["en"]).items() if isinstance(v, str)}
-        return {"release":"20261118b", "onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
+        return {"release":"20261118c", "onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
     app_unstick(user)
     if migrate_character_appearance(user):save_data(user_data)
     if user.get('appearance'):
@@ -19206,7 +19254,7 @@ def serialize_app_state(user):
         "content_settings":profile_options.state(user),
         "photos":photo_wallet.snapshot(user),
         "purchase_products":[{"payload":k,"amount":v[0],"stars":product_stars(k,user),"rub":product_rub(k,user),"image":"/assets/photo_pack_"+str(v[0])+".webp"} for k,v in photo_wallet.PACKS.items()],
-        "release":"20261118b",
+        "release":"20261118c",
         "reply_choices": serialize_reply_choices(user),
         "pending": bool(user.get("app_pending")),"photo_pending":bool(user.get("photo_pending")),
         "notices": notices,
@@ -19901,7 +19949,7 @@ setTimeout(function () { if (window.__tgSdkOnSettle) window.__tgSdkOnSettle(); }
 _SDK_TAG_RE = re.compile(r'<script src="/tg-sdk\.js"[^>]*>\s*</script>', re.S)
 
 
-SFX_TAG = '<script src="/sfx.js?v=20261118b"></script>'
+SFX_TAG = '<script src="/sfx.js?v=20261118c"></script>'
 
 
 async def sfx_js_handler(request):
@@ -20082,7 +20130,7 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
 @media(prefers-reduced-motion:reduce){.btn::after,.buy-btn::after,.action-btn::after,.rd-premium,.rd-spark{animation:none!important;}}
 
 '''
-APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261118b">'
+APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261118c">'
 
 
 async def theme_css_handler(request):
@@ -20095,8 +20143,8 @@ def page_response(request, html):
         html = html.replace("</head>", APP_THEME_TAG + "</head>", 1)
     if request.query.get("embed") == "1":
         html = _SDK_TAG_RE.sub(lambda m: EMBED_BRIDGE, html, count=1)
-        return web.Response(text=html, content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118b"})
-    return web.Response(text=with_app_back(html), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118b"})
+        return web.Response(text=html, content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118c"})
+    return web.Response(text=with_app_back(html), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118c"})
 
 
 def refund_scene_photo(user, job_id):
@@ -20312,7 +20360,7 @@ def serialize_referral(user):
 
 
 async def app_page_handler(request):
-    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118b"})
+    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261118c"})
 
 # Нативная кнопка «Назад» Telegram на внутренних страницах (магазин, колесо, игры, работа, гайд) --
 # возвращает в главное приложение /app, так что всё выглядит как одно мини-приложение.
@@ -20481,7 +20529,7 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
   function loadSample(kind){
     if(sampleBuffers[kind])return Promise.resolve(sampleBuffers[kind]);
     if(sampleLoads[kind])return sampleLoads[kind];
-    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261118b').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
+    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261118c').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
     return sampleLoads[kind];
   }
   function sample(kind){
@@ -21145,7 +21193,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     layer.addEventListener('touchend',function(e){if(scale===1&&e.changedTouches[0].clientY-startY>120)layer.remove();});layer.appendChild(im);layer.appendChild(close);document.body.appendChild(layer);
   }
 
-  function reactionArt(button,emoji){var names={'💖':'heart','✨':'star','🔥':'flame','🎉':'party'},name=names[emoji];if(!name)return;button.textContent='';button.setAttribute('aria-label',emoji);var image=el('img','reaction-art reaction-'+name);image.src='/assets/reaction_'+name+'.webp?v=20261118b';image.alt=emoji;button.appendChild(image);}
+  function reactionArt(button,emoji){var names={'💖':'heart','✨':'star','🔥':'flame','🎉':'party'},name=names[emoji];if(!name)return;button.textContent='';button.setAttribute('aria-label',emoji);var image=el('img','reaction-art reaction-'+name);image.src='/assets/reaction_'+name+'.webp?v=20261118c';image.alt=emoji;button.appendChild(image);}
   function renderChat() {
     var s = state, box = $("msgs"), previousScroll=box.scrollTop;
     var stick = nearBottom() || lastCount < 0;
@@ -21400,7 +21448,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       button.disabled=!!q.claimed;
       button.onclick=function(){
         if(ready&&energyBlocked){setTab('chat');$('input').focus();return;}
-        if(!ready){if(q.event==='share'){var link=state.referral&&state.referral.link;if(!link){toast(tr('Попробуй позже','Try again later','Versuche es später'));return;}shareTelegram(link,'');api('/api/app/task',{action:'share',day:stateQuests.day}).then(function(res){if(res.state)state=res.state;render();});return;}if(q.event==='chat'){setTab('chat');$('input').focus();}else{setTab('work','/work?game='+({courier:'courier',catch:'catch',hack:'clicker',plant:'farm',water:'farm',harvest:'farm'}[q.event]||'clicker'));}return;}
+        if(!ready){if(q.event==='share'){var link=state.referral&&state.referral.link;if(!link){toast(tr('Попробуй позже','Try again later','Versuche es später'));return;}shareTelegram(link,'');api('/api/app/task',{action:'share',day:stateQuests.day}).then(function(res){if(res.state)state=res.state;render();});return;}if(q.event==='chat'){setTab('chat');$('input').focus();}else{setTab('work','/work?game='+({courier:'courier',catch:'catch',hack:'clicker',pipes:'workshop',dig:'dig',mine:'mine',plant:'farm',water:'farm',harvest:'farm'}[q.event]||'clicker'));}return;}
         button.disabled=true;api('/api/app/task',{id:q.id,day:stateQuests.day}).then(function(res){if(res.state)state=res.state;if(res.ok){haptic('reward');toast(tr('🎉 Награда получена!','🎉 Reward collected!','🎉 Belohnung erhalten!'));if(window.RDSFX){RDSFX.burst(innerWidth/2,innerHeight/2);RDSFX.effect(label,innerWidth/2,innerHeight/2);}}else toast(res.error||'Error');render();}).catch(function(){button.disabled=false;});
       };row.appendChild(button);card.appendChild(row);
     });v.appendChild(card);
@@ -22039,12 +22087,28 @@ async def api_work_state_handler(request):
     return web.json_response({"ok": True, "state": serialize_work_state(user)})
 
 
+async def api_work_mine_handler(request):
+    uid,user,body,err=await _play_request(request)
+    if err:return err
+    if not work_is_open('mine') and body.get('action')!='haul':return work_closed_reply(user)
+    try:
+        payout,count=mine.action(user,body)
+        awarded=credit_work_bucks(user,payout) if payout else 0
+        if count:quest_event(user,'mine',count)
+        save_data(user_data)
+        return web.json_response({'ok':True,'mine':mine.snapshot(user),'awarded':awarded,'state':serialize_work_state(user)})
+    except mine.MineError as exc:return web.json_response({'ok':False,'error':str(exc),'mine':mine.snapshot(user)})
+
+
 async def api_work_dig_handler(request):
     uid,user,body,err=await _play_request(request)
     if err:return err
+    if not work_is_open('dig') and body.get('action')!='cashout':return work_closed_reply(user)
     try:
+        count=len((user.get('dig_run') or {}).get('bag',[])) if body.get('action')=='cashout' else 0
         payout=archaeology.action(user,body)
         awarded=credit_work_bucks(user,payout) if payout else 0
+        if payout and count:quest_event(user,'dig',count)
         save_data(user_data)
         return web.json_response({'ok':True,'dig':archaeology.snapshot(user),'awarded':awarded,'state':serialize_work_state(user)})
     except archaeology.DigError as exc:return web.json_response({'ok':False,'error':str(exc),'dig':archaeology.snapshot(user)})
@@ -22053,6 +22117,7 @@ async def api_work_dig_handler(request):
 async def api_work_workshop_handler(request):
     _,user,error=resolve_webapp_user(request.headers.get('X-Telegram-Init-Data',''))
     if error:return web.json_response(error,status=401 if error['error']=='auth' else 200)
+    if not work_is_open('workshop'):return work_closed_reply(user)
     try:body=await request.json()
     except Exception:body={}
     if not isinstance(body,dict):body={}
@@ -22061,6 +22126,7 @@ async def api_work_workshop_handler(request):
         return web.json_response({'ok':True,'job':workshop.public(job)})
     if body.get('action')!='complete' or not workshop.complete(user,body.get('id'),body.get('values')):
         return web.json_response({'ok':False,'error':'not_calibrated'})
+    quest_event(user,'pipes')
     amount=credit_work_bucks(user,35*(2 if work_double_active(user) else 1))
     save_data(user_data)
     return web.json_response({'ok':True,'awarded':amount,'state':serialize_work_state(user)})
@@ -22079,6 +22145,7 @@ async def api_work_hit_handler(request):
     except Exception:
         body = {}
     game = body.get("game") if isinstance(body, dict) else None
+    if not work_is_open(game):return work_closed_reply(user)
     tip = bool(body.get("tip")) if isinstance(body, dict) else False
     hit_id=body.get('hit_id') if isinstance(body,dict) else None
     if hit_id is not None and (not isinstance(hit_id,str) or not re.fullmatch(r'[a-z0-9-]{8,64}',hit_id)):
@@ -22105,6 +22172,7 @@ async def api_work_powerup_handler(request):
     user_id, user, error = resolve_webapp_user(init_data)
     if error:
         return web.json_response(error, status=401 if error["error"] == "auth" else 200)
+    if not work_is_open('catch'):return work_closed_reply(user)
     now = datetime.now()
     ready_raw = user.get("work_double_next_at")
     granted = False
@@ -22256,6 +22324,7 @@ async def run_webapp_server():
     app_web.router.add_get("/api/spin/paid/result", api_spin_paid_result_handler)
     app_web.router.add_post("/api/spin/reminder", api_spin_reminder_handler)
     app_web.router.add_post("/api/work/dig", api_work_dig_handler)
+    app_web.router.add_post("/api/work/mine", api_work_mine_handler)
     app_web.router.add_post("/api/work/workshop", api_work_workshop_handler)
     app_web.router.add_get("/work", work_page_handler)
     app_web.router.add_get("/api/work/state", api_work_state_handler)
@@ -22606,7 +22675,7 @@ def daily_reset_timestamp():
 
 def ensure_quests(user):
     # Late arrivals never receive farming missions they cannot finish before midnight.
-    changed = daily_quests.ensure(user, local_today().isoformat(), allow_farm=local_now().hour < 16)
+    changed = daily_quests.ensure(user, local_today().isoformat(), allow_farm=local_now().hour < 16,allowed_events=work_rotation.events(local_today()))
     return changed
 
 

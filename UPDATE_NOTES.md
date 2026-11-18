@@ -277,3 +277,11 @@ Validation for this follow-up: **104 unit tests passed**. Real signed requests w
 - Separate archaeology expeditions with hidden randomized loot, careful/fast tools, persistent upgrades, run choices, collection and cashout. Courier acceleration/braking and varied hazards; restored cable connection plus timed cable cutting.
 - Daily +50% crop demand locked at planting; recorded CC0 drops; wheel photo/bundle/wardrobe rewards, exact probabilities and varied outcome sound/visual effects. Consistent game cards, expanded clothing and online own-skin selection.
 - Restart/cancellation refunds checked, including legacy avatar attempts and duplicate recovery. 119 unit tests plus signed API and mobile checks. See IMPLEMENTATION_PLAN.md for exact prices, limitations and admin commands.
+
+## 2026-11-18 — mining, daily work rotation and outfit occupancy
+
+- New standalone mine: three veins, ore extraction, gas/ventilation, deeper shafts, upgradeable pickaxe, cargo collection and server-owned payouts. One-minute rest between shifts. Loot and tool progress persist in JSON; clients cannot submit award amounts.
+- Three shared active jobs per Moscow calendar day, farm always open. The randomized two-day blocks cover all six active jobs. HTTP and legacy income paths reject closed jobs; old excavation/mining cargo can still be collected once. Client refreshes the schedule at midnight.
+- Daily quests are filtered by the open jobs. New pipeline/excavation/mining quests are credited from server-confirmed completion/cashout. Valid existing progress and claimed tasks survive same-day migration.
+- Outfit occupancy: dresses and full outfits occupy body/top/bottom/legs/outerwear, leaving head/shoes/neckwear free; complete police and firefighter outfits occupy all slots. UI locks occupied controls, server rejects incompatible additions, and legacy conflicting combinations are filtered without deleting inventory. Remove the full outfit to unlock its slots.
+- Verification: 127 unit tests; signed endpoint integration covering rotation, closed payout rejection, midnight cashout idempotence, farming, slots and persistence; 320/390/430px browser checks covering mining actions/gas, exactly three work tabs plus farm, midnight transitions and dress/police locks. No live payments, notifications or provider jobs were executed.

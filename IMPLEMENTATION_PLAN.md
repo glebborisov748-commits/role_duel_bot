@@ -43,3 +43,10 @@ Paid provider jobs, real Telegram payments and production notifications are not 
 - Broadcast: /broadcast → send content → preview → explicit Send. /cancel_broadcast cancels a draft. /setlevel ID_or_@username 1–10 adjusts intimacy XP. Existing /grant ID_or_@username energizers AMOUNT remains available.
 - Water-drop recordings: CC0 Water drops by CeoxBlackj; provenance in assets/audio/SOURCES.md. Audio cache version updated.
 - Release verification: 119 unit tests, real signed API integrations with fake accounts and providers, JavaScript syntax checks, mobile 320/390/430 smoke checks. Production hosting restart, real invoices, paid provider jobs, motion permissions on physical iOS devices and a live broadcast were not exercised.
+
+## Follow-up — mining and daily rotation (implemented)
+- Standalone mine with ore veins, gas, ventilation, pickaxe upgrades and persistent cargo.
+- Three active works daily, common schedule, 00:00 Moscow reset; farm is always open.
+- Same-day quest migration, server-side income gates and recovery of old cargo.
+- Multi-slot outfits with visible locks and server validation; all inventory retained.
+- New tests: tests/test_mine_rotation.py, tests/check_mine_rotation_runtime.py, tests/check_mine_rotation_ui.py.

@@ -9,11 +9,13 @@ class OutfitTests(unittest.TestCase):
  def user(self):return {'inventory':{k:1 for k in wardrobe.WARDROBE},'preferences':{}}
  def test_combining_and_mutually_exclusive_slots(self):
   u=self.user()
-  for key in ('dress','stockings','heels','hat'):wardrobe.equip(u,key,5)
-  self.assertEqual(wardrobe.active_outfit(u),{'body':'dress','legs':'stockings','shoes':'heels','head':'hat'})
+  for key in ('dress','heels','hat'):wardrobe.equip(u,key,5)
+  self.assertEqual(wardrobe.active_outfit(u),{'body':'dress','shoes':'heels','head':'hat'})
   prompt=wardrobe.clothing_facts(u,1)
-  for word in ('dress','stockings','heeled shoes'):self.assertIn(word,prompt)
-  wardrobe.equip(u,'shirt',5);self.assertNotIn('body',u['active_outfit'])
+  for word in ('dress','heeled shoes'):self.assertIn(word,prompt)
+  with self.assertRaises(ValueError):wardrobe.equip(u,'stockings',5)
+  with self.assertRaises(ValueError):wardrobe.equip(u,'shirt',5)
+  wardrobe.equip(u,None,5,'body');wardrobe.equip(u,'shirt',5);self.assertNotIn('body',u['active_outfit'])
   wardrobe.equip(u,'trousers',5);self.assertEqual(u['active_outfit']['top'],'shirt')
   wardrobe.equip(u,'pajamas',5);self.assertNotIn('top',u['active_outfit']);self.assertNotIn('bottom',u['active_outfit'])
   wardrobe.equip(u,None,5,'shoes');self.assertNotIn('shoes',u['active_outfit'])
