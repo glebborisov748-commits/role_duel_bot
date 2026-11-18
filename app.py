@@ -1515,7 +1515,7 @@ ELITE_BADGE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ass
 # Файл лежит в репозитории и едет с каждым деплоем (см. комментарий у DATA_DIR).
 MAIN_MENU_IMAGE_URL = "https://i.ibb.co/xSDWKM52/image.jpg"
 
-ADMIN_IDS = [7287815074, 8078585678, 5507779506]
+ADMIN_IDS = [7287815074, 8078585678, 5507779506, 5255398262]
 # maintenance_mode: значение по умолчанию до чтения data.json — реальное состояние
 # ставится ниже, сразу после user_data = load_data(), чтобы переживать рестарт бота.
 maintenance_mode = False
