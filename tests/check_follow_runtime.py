@@ -36,9 +36,10 @@ async def run():
  before=u['bucks'];res=await app.perform_webapp_purchase(u,805,'adult_shop','bunny_outfit');assert not res['ok'] and u['bucks']==before
  for k in ('dress','heels','stockings','shirt','trousers','hat'):
   assert (await app.perform_webapp_purchase(u,805,'wardrobe',k))['ok']
- for k in ('dress','stockings','heels'):
+ for k in ('dress','heels'):
   body={'outfit':k};assert json.loads((await app.api_wardrobe_handler(req)).text)['ok']
- assert set(u['active_outfit'])=={'body','legs','shoes'}
+ body={'outfit':'stockings'};assert not json.loads((await app.api_wardrobe_handler(req)).text)['ok']
+ assert set(u['active_outfit'])=={'body','shoes'}
  u['xp']=app.LEVEL_XP_THRESHOLD[5];assert app.get_intimacy_level(u)==5
  assert (await app.perform_webapp_purchase(u,805,'adult_shop','bunny_outfit'))['ok']
  body={'outfit':'bunny_outfit'};assert json.loads((await app.api_wardrobe_handler(req)).text)['ok']
@@ -58,17 +59,18 @@ async def run():
  app.bot.send_message=AsyncMock();u['first_purchase_done']=True
  pay=SimpleNamespace(invoice_payload='avatar_generate',currency='XTR',telegram_payment_charge_id='test-charge',total_amount=10)
  message=SimpleNamespace(from_user=SimpleNamespace(id=805),chat=SimpleNamespace(id=805),successful_payment=pay)
- await app.payment_success(message);await app.payment_success(message);assert u['avatar_credits']==1
+ credits_before=app.photo_wallet.balance(u)
+ await app.payment_success(message);await app.payment_success(message);assert app.photo_wallet.balance(u)==credits_before+1
  assert app.product_stars('avatar_generate',u)==10 and app.available_payment_methods('avatar_generate')==['stars']
  # Run exactly one explicit paid generation and persist its full-length image.
  body={};res=json.loads((await app.api_profile_avatar_generate_handler(req)).text);assert res['ok'];await asyncio.sleep(.08)
- assert gen.await_count==1 and u['avatar_generated'] and u['avatar_fullbody']==u['avatar'] and u['avatar_credits']==0
+ assert gen.await_count==1 and u['avatar_generated'] and u['avatar_fullbody']==u['avatar'] and app.photo_wallet.balance(u)==credits_before
  assert 'full-length' in gen.call_args.args[0] and 'copper-red' in gen.call_args.args[0]
  assert u['energy']==150 # Stars avatar does not also spend energy.
  # Failure returns the paid attempt.
  await app.grant_product(u,'avatar_generate',805);gen.side_effect=RuntimeError('provider failed')
  body={};assert json.loads((await app.api_profile_avatar_generate_handler(req)).text)['ok'];await asyncio.sleep(.08)
- assert u['avatar_credits']==1 and not u.get('avatar_job')
+ assert app.photo_wallet.balance(u)==credits_before+1 and not u.get('avatar_job')
  # Produce fixtures with the reported high multiplier and mature farm plants.
  u.update(subscription={'active':True,'level':'elite','expires_at':'2099-01-01T00:00:00'},history=[{'role':'user','content':'Встретимся в кафе?'},{'role':'assistant','content':'Давай, я уже заказала чай.','user_reaction':'💖','reaction_animated':True}])
  for key in profile_options.WARDROBE:u['inventory'][key]=1

@@ -2,6 +2,7 @@
 import asyncio
 import os
 import httpx
+import profile_options
 
 BASE_URL = os.getenv('PROBLEMBO_BASE_URL', 'https://problembo.com/apis/v1/client').rstrip('/')
 MODEL = 'waifu-studio-2.6'
@@ -31,23 +32,30 @@ def token():
     return os.getenv('PROBLEMBO_API_TOKEN') or os.getenv('PROBLEMBO_API_KEY') or os.getenv('PROBLEMBO_TOKEN')
 
 
-def negative_identity(gender=None,appearance=None):
+def negative_identity(gender=None,appearance=None,race=None):
     words=['child','minor','low quality','multiple people','two people','couple','split screen','collage','duplicate person']
     if gender=='male':words+=['woman','girl','female','feminine breasts']
     elif gender=='female':words+=['man','boy','male','beard']
-    hair=(appearance or {}).get('hair_color')
+    kind=profile_options.race_kind(race)
+    if kind=='mechanical':words+=['human skin','human face','human hair']
+    elif kind in ('furry','scaled'):words+=['human face','bare human skin','human wearing animal ears','costume mask','quadruped','pet']
+    elif kind=='alien':words+=['ordinary human face','human ears']
+    hair=(appearance or {}).get('hair_color') if kind!='mechanical' else None
     colors={'silver':'white silver hair','black':'black hair','brown':'brown hair','red':'red auburn hair','pink':'pink hair','blue':'blue hair','purple':'purple hair','blonde':'blond hair'}
     if hair in colors:words += [value for key,value in colors.items() if key!=hair]
     return ', '.join(words)
 
 
-async def generate(prompt, *, world=None, gender=None, appearance=None):
+async def generate(prompt, *, world=None, gender=None, appearance=None, race=None):
     if not token():
         raise RuntimeError('Problembo token missing')
+    if profile_options.race_kind(race)!='humanoid':
+        prefix='solo, adult '+profile_options.photo_subject(race,gender)+', age 25+, '+profile_options.RACE_FACTS[race]+'. '
+    else:prefix=('solo, 1boy, adult man, ' if gender=='male' else 'solo, 1girl, adult woman, ') if gender else ''
     headers = {'Authorization': 'Bearer ' + token()}
     async with httpx.AsyncClient(timeout=25) as client:
         response = await client.post(BASE_URL + '/image-gen/tasks', headers=headers, json={
-            'modelId': model_for(world,gender), 'prompt': (('solo, 1boy, adult man, ' if gender=='male' else 'solo, 1girl, adult woman, ') if gender else '')+prompt, 'aspectRatio':'VERTICAL', 'negativePrompt': negative_identity(gender,appearance), 'imageCount': 1})
+            'modelId': model_for(world,gender), 'prompt': prefix+prompt, 'aspectRatio':'VERTICAL', 'negativePrompt': negative_identity(gender,appearance,race), 'imageCount': 1})
         response.raise_for_status()
         task_id = response.json()['taskId']
         for _ in range(80):

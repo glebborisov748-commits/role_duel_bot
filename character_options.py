@@ -46,10 +46,36 @@ def selected(options,k):return next(r for r in OPTIONS[k] if r[0]==options[k])
 
 def appearance(user,lang='en'):
  raw=user.get('appearance')
- if not raw:return None
+ if not raw and user.get('race','human')=='human':return None
+ raw=raw or {}
  o=validate(raw,user.get('gender'))
- if lang=='ru':return profile_options.RACES.get(user.get('race','human'),profile_options.RACES['human'])[0]+', '+', '.join(FIELDS[k][0]+': '+selected(o,k)[1].lower() for k in VISUAL_KEYS if k!='species')
- return profile_options.RACE_FACTS.get(user.get('race') or {'cat':'catfolk','elf':'elf'}.get(o.get('species'),'human'),'human')+', '+selected(o,'hair_color')[4]+' '+selected(o,'hair_style')[4]+', '+', '.join(selected(o,k)[4] for k in ('skin','eyes','accessory'))
+ if lang=='ru':
+  race=user.get('race','human');kind=profile_options.race_kind(race)
+  labels={k:FIELDS[k][0] for k in VISUAL_KEYS if k!='species'}
+  if kind in ('mechanical','alien'):labels={k:v for k,v in labels.items() if k not in ('hair_style','hair_color')}
+  if kind=='mechanical':labels.update(skin='Покрытие корпуса',eyes='Цвет оптики')
+  elif kind=='furry':labels['skin']='Цвет шерсти'
+  elif kind=='scaled':labels['skin']='Цвет чешуи'
+  descriptions={k:selected(o,k)[1].lower() for k in labels}
+  if kind=='mechanical':descriptions['skin']={'fair':'слоновая кость','light':'жемчужное','olive':'оливковый металл','tan':'бронза','brown':'медь','dark':'графит'}[o['skin']]
+  elif kind=='alien':descriptions['skin']={'fair':'светло-сиреневая','light':'бирюзовая','olive':'зелёная','tan':'янтарная','brown':'фиолетовая','dark':'тёмно-синяя'}[o['skin']]
+  return profile_options.RACES.get(race,profile_options.RACES['human'])[0]+', '+', '.join(label+': '+descriptions[k] for k,label in labels.items())
+ race=user.get('race') or {'cat':'catfolk','elf':'elf'}.get(o.get('species'),'human')
+ kind=profile_options.race_kind(race);facts=[profile_options.RACE_FACTS.get(race,'human')]
+ if kind=='mechanical':
+  finishes={'fair':'ivory','light':'pearl white','olive':'olive metal','tan':'bronze','brown':'copper','dark':'graphite'}
+  facts += [finishes[o['skin']]+' shell finish',selected(o,'eyes')[4].replace('eyes','illuminated optics'),selected(o,'accessory')[4]]
+ elif kind=='alien':
+  colors={'fair':'pale lavender','light':'turquoise','olive':'green','tan':'amber','brown':'violet','dark':'midnight blue'}
+  facts += [colors[o['skin']]+' alien skin',selected(o,'eyes')[4],selected(o,'accessory')[4]]
+ else:
+  facts += [selected(o,'hair_color')[4]+' '+selected(o,'hair_style')[4]]
+  surface=selected(o,'skin')[4]
+  if kind=='furry':surface=surface.replace('skin','fur')
+  elif kind=='scaled':surface=surface.replace('skin','scales')
+  facts += [surface,selected(o,'eyes')[4],selected(o,'accessory')[4]]
+ return ', '.join(facts)
+
 
 def traits(user):
  if not user.get('appearance') or not any(k in user['appearance'] for k in ('interest','pace','detail')):return ''
@@ -119,7 +145,7 @@ def visual_from_description(raw, text):
  return {k:o[k] for k in VISUAL_KEYS}
 
 def identity(user):
- gender='man' if user.get('gender')=='male' else 'woman'
+ gender=profile_options.photo_subject(user.get('race','human'),user.get('gender'))
  return 'Exactly ONE adult '+gender+', age 25 or older, solo portrait. '+(appearance(user) or 'human')+'. Keep the same gender and every listed visual attribute in every picture. No second person, no couple, no split view. '
 
 

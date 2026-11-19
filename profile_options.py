@@ -13,7 +13,54 @@ RACES={
  'angel':('Ангел','Angel','Engel'), 'succubus':('Демон','Demon','Dämon'),
  'android':('Андроид','Android','Android'), 'dragonborn':('Драконий народ','Dragonfolk','Drachenmensch'),
 }
-RACE_FACTS={'human':'human','elf':'elf with pointed ears','catfolk':'human face with cat ears','foxfolk':'human face with fox ears','wolffolk':'human face with wolf ears','vampire':'adult vampire with subtle fangs','angel':'adult human with a subtle golden halo','succubus':'adult humanoid with small curved horns','android':'humanoid android with discreet metallic temples','dragonborn':'adult humanoid with small horns and subtle temple scales'}
+RACE_FACTS={'human':'human','elf':'elf with pointed ears','catfolk':'human face with cat ears','foxfolk':'human face with fox ears','wolffolk':'human face with wolf ears','vampire':'adult vampire with subtle fangs','angel':'adult winged humanoid with white feathered wings and a subtle golden halo','succubus':'adult humanoid with small curved horns','android':'humanoid android with discreet metallic temples','dragonborn':'adult humanoid with small horns and subtle temple scales'}
+# Full non-human species stay distinct from human-faced folk with accessory ears.
+RACES.update({
+ 'robot':('Робот','Robot','Roboter'),
+ 'alien':('Инопланетянин','Alien','Außerirdischer'),
+ 'furry_fox':('Фурри — лиса','Anthropomorphic fox','Anthropomorpher Fuchs'),
+ 'furry_wolf':('Фурри — волк','Anthropomorphic wolf','Anthropomorpher Wolf'),
+ 'furry_cat':('Фурри — кошка','Anthropomorphic cat','Anthropomorphe Katze'),
+ 'furry_dragon':('Драконид','Anthropomorphic dragon','Anthropomorpher Drache'),
+})
+RACE_FACTS.update({
+ 'android':'humanoid android with a visibly synthetic face, porcelain shell panels and mechanical seams',
+ 'robot':'fully mechanical humanoid robot with a robotic face, articulated metal limbs and illuminated optics',
+ 'alien':'extraterrestrial humanoid with an elongated smooth head, large eyes, distinct alien facial anatomy and smooth extraterrestrial skin',
+ 'furry_fox':'upright bipedal anthropomorphic fox with a fox muzzle, fur-covered face and body, fox ears, paw-like hands and a fluffy fox tail',
+ 'furry_wolf':'upright bipedal anthropomorphic wolf with a wolf muzzle, fur-covered face and body, wolf ears, paw-like hands and a wolf tail',
+ 'furry_cat':'upright bipedal anthropomorphic cat with a feline muzzle, fur-covered face and body, cat ears, whiskers, paw-like hands and a cat tail',
+ 'furry_dragon':'upright bipedal anthropomorphic dragon with a draconic muzzle, scales, horns, clawed hands and a long dragon tail',
+})
+
+def race_kind(race):
+ if race in ('robot','android'):return 'mechanical'
+ if race in ('furry_fox','furry_wolf','furry_cat'):return 'furry'
+ if race=='furry_dragon':return 'scaled'
+ if race=='alien':return 'alien'
+ return 'humanoid'
+
+def photo_subject(race,gender):
+ sex='male' if gender=='male' else 'female'
+ species={'robot':'humanoid robot','android':'humanoid android','alien':'extraterrestrial humanoid',
+          'furry_fox':'anthropomorphic fox','furry_wolf':'anthropomorphic wolf','furry_cat':'anthropomorphic cat','furry_dragon':'anthropomorphic dragon'}
+ return sex+' '+species[race] if race in species else ('man' if gender=='male' else 'woman')
+
+def anatomy_fit(race):
+ kind=race_kind(race)
+ if kind=='mechanical':return 'Tailor clothing over the mechanical torso and articulated limbs; preserve the robotic head, hands and visible shell panels.'
+ if kind in ('furry','scaled'):return 'Tailor clothing to the upright humanoid torso; allow an opening for the natural tail. Preserve the muzzle, ears, fur or scales and paw-like or clawed hands. Omit duplicate costume ears or tails when natural ones already exist. This is an anthropomorphic adult character, not a human wearing an animal costume.'
+ if race=='alien':return 'Tailor clothing to the humanoid alien body; preserve its extraterrestrial head, face and hands.'
+ if race=='angel':return 'Fit clothing around the angel wings and preserve the halo.'
+ if race in ('catfolk','foxfolk','wolffolk','dragonborn','succubus'):return 'Preserve the selected non-human ears or horns; fit headwear around them instead of removing them.'
+ return ''
+
+def catalog_image(key,gender):
+ # Full unisex garments have separate existing illustrations, rather than a shared feminine cut.
+ previews={'tracksuit':{'male':6,'female':1},'pajamas':{'male':7,'female':2}}
+ if key in previews:return 'fitting_'+('male' if gender=='male' else 'female')+'_'+str(previews[key]['male' if gender=='male' else 'female'])
+ return WARDROBE[key]['image']
+
 WARDROBE={
  'bunny_outfit':{'name':'Bunny Outfit','ru':'Костюм «Зайка»','de':'Hasenkostüm','price':500,'emoji':'👗','image':'wardrobe_bunny','fact':'opaque black stage costume, tuxedo jacket, bow tie and rabbit-ear headband'},
  'latex_bodysuit':{'name':'Latex Bodysuit','ru':'Латексный комбинезон','de':'Latex-Overall','price':750,'emoji':'🖤','image':'wardrobe_latex','fact':'opaque full-length high-neck long-sleeved charcoal fashion jumpsuit'},
@@ -137,6 +184,8 @@ def clothing_facts(user,level):
  if not any(i['slot'] in ('body','top','bottom') for i in items):facts.insert(0,'an opaque casual shirt and full-length trousers')
  elif any(i['slot']=='top' for i in items) and not any(i['slot']=='bottom' for i in items):facts.append('full-length casual trousers')
  elif any(i['slot']=='bottom' for i in items) and not any(i['slot']=='top' for i in items):facts.append('an opaque casual shirt')
+ fit=anatomy_fit(user.get('race','human'))
+ if fit:facts.append(fit)
  return ', '.join(facts)
 WARDROBE['scarf']=dict(name='Scarf',ru='Шарф',de='Schal',price=200,slot='neck',adult=False,emoji='🧣',image='wardrobe_scarf',fact='a soft lavender scarf')
 

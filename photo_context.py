@@ -19,12 +19,13 @@ def instruction(user,level,appearance,pov_tags=''):
          +explicit_rule
          +('At intimacy levels 1–4, use ordinary opaque clothing only. ' if level<5 else 'Fashion or stage costumes are allowed, while keeping the person clothed. ')
          +'The explicitly selected appearance overrides any older photograph or dialogue description: '+appearance+'. '
+         +('Retain the selected non-human species and its anatomy; never substitute a human wearing a costume. ' if profile_options.race_kind(user.get('race'))!='humanoid' else '')
          +'Clothing: '+clothes+'. Return JSON only: {"allowed":true,"prompt":"English image description"}.')
 
 
 def avatar_prompt(user,appearance,context,level):
  world='natural realistic photograph' if user.get('world')=='realism' else 'highly detailed anime illustration'
- return (world+'. Exactly one adult '+('man' if user.get('gender')=='male' else 'woman')+', age 25+. '
+ return (world+'. Exactly one adult '+profile_options.photo_subject(user.get('race','human'),user.get('gender'))+', age 25+. '
          'Complete full-length character, head and shoes fully visible, standing naturally, generous margins, face clearly visible. '
          'Selected appearance: '+appearance+'. '+profile_options.clothing_facts(user,level)+'. '+context+
          '. Neutral non-explicit fashion image, no second person, no collage, no lettering.')

@@ -47,10 +47,10 @@ with sync_playwright() as p:
   assert page.get_by_role('heading',name='Твой герой',exact=True).count()==0
   page.get_by_role('button',name=next(w['label'] for w in state['onboarding']['worlds'] if w['key']=='anime'),exact=False).click()
   page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click();page.get_by_role('button',name=state['onboarding']['genders'][0]['label'],exact=True).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click()
-  page.get_by_role('button',name='Рыжие волосы · зелёные глаза',exact=True).click();assert page.locator('#view-onb img').count()==0
+  page.locator('[data-appearance=hair_color]').select_option('red');page.locator('[data-appearance=eyes]').select_option('green');assert page.locator('#view-onb img').count()==0
   page.screenshot(path=f'/tmp/rd-simple-creation-{width}.png')
   page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click();page.get_by_role('button',name='Нежный',exact=False).click();page.get_by_role('button',name=state['ui']['ob_next'],exact=True).click();page.get_by_role('button',name='Переписка',exact=False).click();page.get_by_role('button',name=state['ui']['ob_done'],exact=True).click();page.wait_for_timeout(100)
-  assert next(b for path,b in calls if path=='/api/app/create')['appearance_preset']=='red'
+  assert next(b for path,b in calls if path=='/api/app/create')['appearance']['hair_color']=='red'
   assert page.locator('#nav button').last.inner_text().endswith('Профиль')
   assert page.locator('#nav button').nth(5).locator('img').get_attribute('src')=='/assets/nav_wardrobe.webp'
   # Reactions occupy their own row below actual message text.

@@ -29,11 +29,13 @@ with sync_playwright() as p:
    page.route('**/*',route);page.goto('https://fixture.test/shop?wardrobe=1')
    category=next(c for c in state['categories'] if c['key']=='adult_shop')
    page.get_by_role('button',name=category['name'],exact=True).click()
+   assert page.locator('.wardrobe-audience').inner_text().startswith('♂' if gender=='male' else '♀')
    expected=[key for key,item in ADULT_CATALOG_ITEMS.items() if item['gender']==gender]
    page.wait_for_function('()=>Array.from(document.querySelectorAll("#items .card-img")).every(im=>im.complete&&im.naturalWidth>0)')
    for key in expected:
     card=page.locator('#items .card').filter(has=page.locator('.card-name').get_by_text(ADULT_CATALOG_ITEMS[key]['ru'],exact=True))
     assert card.count()==1,(gender,key)
+    assert card.locator('.catalog-gender').inner_text().startswith('♂' if gender=='male' else '♀')
     image=card.locator('.card-img');assert image.get_attribute('src')=='/assets/catalog_'+key+'.webp'
     assert image.evaluate('im=>im.complete&&im.naturalWidth>0')
    assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
