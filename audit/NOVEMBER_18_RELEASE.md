@@ -17,13 +17,22 @@
 
 140 unit tests. Signed real-handler tests for billing, rotation, mining payouts and wardrobe restrictions. Browser tests at 320, 390 and 430 px for the cabinet, energizer gestures/one-time consumption, mining, slot conflicts and wheel geometry. No live payments, user broadcasts or Problembo generations were used for these checks. Outfit preview artwork was generated once during development.
 
-## Remaining from the broader request
+## Follow-up shipped on 19 November 2026
 
-- Term-preserving priced upgrades through ELITE; active subscription purchase presentation; new photo packs 3/8/20, dedicated 5-Star portrait generation and profile pencil menu.
-- Larger paid-section entry and contextual wake/defibrillator purchase placement; two-photo bucks exchange.
-- Enforce channel quest as the prerequisite within daily quests.
-- Notification controls by tier and ELITE hunger/water setting; subscription copy and additional requested styles.
-- Free trait selectors in onboarding rather than presets, ELITE custom prose character decision.
-- Side-view archaeology, dark maze mining, new wire modes and further farm events.
+- Prorated PRO → SUPER PRO → ELITE upgrades preserve the existing expiry and period. Active subscribers see upgrades instead of new subscription purchase cards. Stale Stars upgrades are refunded with a persisted retry queue.
+- Photo packs are 3/8/20 with decreasing unit cost. The two-photo bucks exchange uses its own 72-hour cooldown. New product images are compact square anime/realistic character prints, without numeric badges, ribbons or landscapes.
+- A large Premium Store entry opens from the profile. Standalone scenes, wake and defibrillator offers are removed from that sheet; existing contextual sleep/death flows remain.
+- Avatar editing opens with a pencil overlay. New portrait generations cost 5 Stars and grant a separate portrait entitlement, not common chat-photo credits.
+- Channel verification lives within daily quests and gates other quest rewards. Work/chat remain accessible.
+- PRO can disable wheel reminders; only ELITE can disable companion initiative and hunger/thirst. The retired global notification toggle and sound-off controls are removed.
+- SUPER PRO adds Accommodating; ELITE adds Enigmatic and the non-graphic, text-only Temptation personality. Custom character prose requires ELITE.
+- The energizer uses an opened-state image of the same can. Pulling must sustain tension for at least 2.2 seconds before opening. Motion permission is remembered; no item is consumed by ordinary taps.
+- Mining has server-owned, fogged random mazes, movement, discovered ore, mining and extraction. Side-view excavation requires digging top soil first. Rain can double the watering bonus, locked at planting; tomorrow's demand is shown.
+- Wires support pointer dragging to matching shapes. The harder plug mode adds removable obstructing cables and a traced connection.
+- Free trait/species setup and the chief-admin rules from the preceding release remain in place.
 
-These remaining items are not claimed as shipped by this release.
+### Validation and limits
+
+156 unit tests; signed-handler checks for billing, upgrades, entitlements, tier settings and quest gates; mobile flows at 320/390/430 px, including ring resistance, wire dragging, map/strata rendering, avatar menu and purchase visibility. No real payments or Problembo requests were sent by these tests. Physical motion permission still depends on the device/browser.
+
+The 32 newer adult-shop items remain catalog-only as previously requested; their art is product imagery, not chat references or fully combined character outfits. The cabinet uses prepared principal-outfit previews; arbitrary accessory combinations are not pre-rendered exhaustively.

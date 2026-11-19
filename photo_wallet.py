@@ -3,7 +3,9 @@ from datetime import datetime, timedelta
 import secrets
 MONTHLY={'pro':45,'super_pro':90,'elite':200}
 WEEKLY={'pro':10,'super_pro':20,'elite':45}
-PACKS={'photo_1':(1,10),'photo_5':(5,45),'photo_15':(15,120)}
+PACKS={'photo_3':(3,25),'photo_8':(8,60),'photo_20':(20,140)}
+LEGACY_PACKS={'photo_1':(1,10),'photo_5':(5,45),'photo_15':(15,120)}
+ALL_PACKS={**LEGACY_PACKS,**PACKS}
 
 def now():return datetime.now()
 def ensure(user):
@@ -48,7 +50,8 @@ def finish(user,key,refund=False):
  if refund:
   # Failed jobs remain retryable even if the subscription expired in flight.
   target=next((g for g in user.get('photo_grants',[]) if g['id']==entry.get('grant_id') and g['expires_at']>now().isoformat()),None)
-  if target:target['remaining']+=1
+  if entry.get('portrait_credit'):user['portrait_credits']=user.get('portrait_credits',0)+1
+  elif target:target['remaining']+=1
   else:grant(user,1)
  return True
 
@@ -88,3 +91,12 @@ def repair_admin_subscription(user):
  if not user.get('ever_subscribed') and not user.get('photo_grants') and not user.get('photo_reservations'):
   grant(user,max(1,int(MONTHLY[sub['level']]*min(30,remaining)/30)),sub['expires_at'])
  user['subscription_photo_granted_at']=now().isoformat()
+
+
+def reserve_portrait(user):
+ ensure(user)
+ if 'avatar' in user['photo_reservations']:return False
+ if user.get('portrait_credits',0)<=0:return False
+ user['portrait_credits']-=1
+ user['photo_reservations']['avatar']={'portrait_credit':True,'started':now().isoformat()}
+ return True

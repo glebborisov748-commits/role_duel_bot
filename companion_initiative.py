@@ -16,7 +16,10 @@ def signature(user):
  return hashlib.sha256(str(messages).encode()).hexdigest() if messages else None
 
 def due(user,local_time):
- if user.get('initiative_enabled') is False or user.get('notifications_muted') or user.get('dead') or user.get('sleep_until') or user.get('app_pending') or user.get('hot_pending'):return False
+ sub=user.get('subscription') or {}
+ try:elite=sub.get('active') and sub.get('level')=='elite' and datetime.fromisoformat(sub.get('expires_at',''))>datetime.now()
+ except (TypeError,ValueError):elite=False
+ if (elite and user.get('initiative_enabled') is False) or user.get('dead') or user.get('sleep_until') or user.get('app_pending') or user.get('hot_pending'):return False
  if not 9<=local_time.hour<22:return False
  sig=signature(user)
  if not sig or user.get('initiative_signature')==sig:return False

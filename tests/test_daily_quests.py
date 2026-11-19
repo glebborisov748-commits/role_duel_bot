@@ -11,7 +11,7 @@ class DailyQuestTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.now=datetime(2026,11,14,12)
         self.body={}
-        self.user={'quest_seed':'test-seed','bucks':10,'energy':20,'tier':None}
+        self.user={'quest_seed':'test-seed','bucks':10,'energy':20,'tier':None,'channel_quest_completed':True}
         self.ns=dict(work_rotation=SimpleNamespace(events=lambda day:{q[1] for q in daily_quests.CATALOG}),CHANNEL_URL='https://t.me/duel_dev_channel',daily_quests=daily_quests,datetime=datetime,timedelta=timedelta,re=re,
             local_today=lambda:self.now.date(),local_now=lambda:self.now,BOT_TZ=timezone(timedelta(hours=3)),
             has_active_subscription=lambda u:u.get('tier') in ('pro','super_pro','elite'),

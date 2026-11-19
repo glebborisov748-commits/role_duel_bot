@@ -23,6 +23,8 @@ TREE = ast.parse(SOURCE.read_text())
 
 def load_functions(names, namespace):
     namespace.setdefault("work_rotation", __import__("work_rotation"))
+    namespace.setdefault("premium_rules", __import__("premium_rules"))
+    namespace.setdefault("get_display_style",lambda u:u.get("style","warm"))
     namespace.setdefault("photo_wallet", __import__("photo_wallet"))
     namespace.setdefault("companion_initiative", __import__("companion_initiative"))
     for node in TREE.body:

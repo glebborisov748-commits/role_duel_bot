@@ -83,7 +83,7 @@ class PaidAvatarTests(unittest.IsolatedAsyncioTestCase):
   ns={'_play_request':request,'avatar_unstick':lambda u:None,'photo_generation':types.SimpleNamespace(token=lambda:'test'),'_app_reply':lambda u,ok=True,error=None:{'ok':ok},'at':lambda *a:'wait','secrets':secrets,'datetime':datetime,'asyncio':types.SimpleNamespace(create_task=spawn),'generate_profile_avatar':AsyncMock(),'save_data':lambda d:None,'user_data':{}}
   load_functions({'api_profile_avatar_generate_handler'},ns)
   self.assertFalse((await ns['api_profile_avatar_generate_handler'](None))['ok']);self.assertFalse(tasks)
-  photo_wallet.grant(u,1);self.assertTrue((await ns['api_profile_avatar_generate_handler'](None))['ok'])
-  self.assertEqual(photo_wallet.balance(u),0);self.assertEqual(len(tasks),1)
+  u['portrait_credits']=1;self.assertTrue((await ns['api_profile_avatar_generate_handler'](None))['ok'])
+  self.assertEqual(u['portrait_credits'],0);self.assertEqual(len(tasks),1)
   self.assertFalse((await ns['api_profile_avatar_generate_handler'](None))['ok']);self.assertEqual(len(tasks),1)
   tasks[0].close()

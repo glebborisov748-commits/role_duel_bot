@@ -115,7 +115,7 @@ CANDID='Ты «Без фильтра»: общительный, добродуш
 
 
 # Public copy is separate from model instructions. Retired choices have stable migrations.
-ALIASES={'passionate':'playful','magnetic':'calm','melancholic':'calm','naive':'shy','compliant':'warm','unflappable':'calm','enigmatic':'calm','seduction':'playful'}
+ALIASES={'passionate':'playful','magnetic':'calm','melancholic':'calm','naive':'shy','unflappable':'calm','seduction':'playful'}
 PUBLIC={
 'warm':('Заботливый, мягкий и внимательный. Любит тёплые разговоры.','Caring, gentle and attentive. Enjoys warm conversations.','Fürsorglich, sanft und aufmerksam.'),
 'daring':('Уверенный, смелый, с добрыми подколами и лёгким флиртом.','Confident and bold, with teasing and light flirting.','Selbstbewusst, frech und leicht flirtend.'),
@@ -165,3 +165,12 @@ def creation_presets(lang,gender):
        ('cat',('Кошачьи уши · тёмные волосы','Cat ears · dark hair','Katzenohren · dunkle Haare'),'black','amber','catfolk')]
  ix={'ru':0,'en':1,'de':2}.get(lang,1)
  return [{'key':key,'label':label[ix],'race':race,'appearance':{'hair_style':'short' if gender=='male' else 'waves','hair_color':color,'eyes':eyes,'skin':'light','accessory':'none','species':'human'}} for key,label,color,eyes,race in rows]
+
+# Additional paid personalities, separate from photo generation.
+ELITE['temptation']=style('Искушение','Temptation','Versuchung','Ты взрослый романтичный собеседник 25+. Флиртуй уверенно: тонкие двусмысленные намёки, остроумные подколы, выразительные комплименты и романтическое напряжение. Без графических сексуальных описаний и давления. Уважай границы и просьбу остановиться.',adult=True)
+PUBLIC.update({
+ 'compliant':('Мягкий, уступчивый, охотно поддерживает твою инициативу. Со своими границами.','Gentle and accommodating; follows your lead while respecting boundaries.','Sanft und entgegenkommend, mit eigenen Grenzen.'),
+ 'enigmatic':('Интригующий характер, тонкий юмор и постепенное раскрытие личности.','Intriguing, dry humor and a personality that unfolds gradually.','Geheimnisvoll, mit feinem Humor.'),
+ 'temptation':('18+ · уверенный флирт, двусмысленные намёки и романтическое напряжение. Только переписка, без фото.','18+ · confident flirting and romantic tension. Text only, no photos.','18+ · Flirt und romantische Spannung. Nur Text, keine Fotos.'),
+})
+STYLE_EMOJI.update(compliant='🕊️',enigmatic='🌒',temptation='💋')

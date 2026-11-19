@@ -60,6 +60,7 @@ def action(user,body):
  delay=max(.2,.65-.1*r['upgrades'].get('speed',0)-.05*user.get('dig_tool_rank',0))
  if time.time()-r['last_action']<delay:raise DigError('Инструмент ещё в движении')
  cell=r['cells'][i]
+ if i>=5 and r['cells'][i-5]['earth']>0:raise DigError('Сначала сними грунт сверху — раскоп идёт послойно')
  if cell['earth']<=0:raise DigError('Здесь уже раскопано')
  r['last_action']=time.time();r['actions']+=1
  targets=[i]
