@@ -41,7 +41,7 @@ class CatalogExpansionTests(unittest.TestCase):
   wardrobe.equip(user,'tracksuit',5)
   self.assertIn('comfortable opaque matching tracksuit',wardrobe.clothing_facts(user,5))
   wardrobe.equip(user,'latex_bodysuit',5)
-  self.assertIn('opaque full-length high-neck',wardrobe.clothing_facts(user,5))
+  self.assertIn('skin-tight glossy black latex',wardrobe.clothing_facts(user,5))
 
  def test_removed_costumes_are_unavailable_but_inventory_is_preserved(self):
   for key in ('firefighter_male','firefighter_female','boxer_outfit'):
@@ -50,12 +50,12 @@ class CatalogExpansionTests(unittest.TestCase):
    self.assertEqual(wardrobe.active_outfit(user),{})
    with self.assertRaises(ValueError):wardrobe.equip(user,key,10)
    self.assertEqual(user['inventory'],{key:1})
- def test_adult_additions_are_gender_specific_catalog_items_only(self):
+ def test_adult_additions_have_non_explicit_wearable_facts(self):
   self.assertEqual(len(wardrobe.ADULT_CATALOG_ITEMS),32)
   for key,item in wardrobe.ADULT_CATALOG_ITEMS.items():
    with self.subTest(item=key):
-    self.assertTrue(item['adult']);self.assertTrue(item['catalog_only'])
-    self.assertEqual(item['fact'],'');self.assertTrue(item['tags'])
+    self.assertTrue(item['adult']);self.assertFalse(item['catalog_only'])
+    self.assertTrue(item['fact']);self.assertTrue(item['tags'])
     from pathlib import Path
     self.assertTrue((Path(__file__).resolve().parents[1]/'assets'/(item['image']+'.webp')).is_file())
     self.assertNotIn(key,wardrobe.OUTFIT_FACTS)
@@ -63,9 +63,7 @@ class CatalogExpansionTests(unittest.TestCase):
     self.assertTrue(wardrobe.gender_matches({'gender':own_gender},key))
     self.assertFalse(wardrobe.gender_matches({'gender':other},key))
     user={'gender':own_gender,'inventory':{key:1}}
-    with self.assertRaisesRegex(ValueError,'каталоге'):wardrobe.equip(user,key,10)
-    # Even a stale or injected outfit cannot turn catalog metadata into photo instructions.
-    user['active_outfit']={'body':key}
-    facts=wardrobe.clothing_facts(user,10)
-    self.assertNotIn(item['tags'],facts)
-    self.assertIn('opaque casual shirt',facts)
+    with self.assertRaises(ValueError):wardrobe.equip(user,key,4)
+    wardrobe.equip(user,key,5)
+    self.assertIn(item['fact'],wardrobe.clothing_facts(user,5))
+    self.assertNotIn(item['fact'],wardrobe.clothing_facts(user,4))

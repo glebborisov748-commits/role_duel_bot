@@ -1,4 +1,7 @@
 import profile_options
+import fandom_catalog
+import fitting_looks
+import roleplay_voice
 import workshop
 import photo_context
 import player_avatar
@@ -2322,6 +2325,7 @@ def free_intim_field(user):
 
 
 def intim_scenes_available(user):
+    if fandom_catalog.selected(user):return 0
     total = user.get("intim_scenes", 0)
     if user.get("intim_scene_unlocked") and not user.get("intim_scene_used"):
         total += 1
@@ -3604,6 +3608,7 @@ LOOKS = {
 
 
 def look_rule(user):
+    if fandom_catalog.selected(user):return fandom_catalog.prompt_rule(user)+'\n'
     custom=character_options.appearance(user,'ru')
     if custom:
         return 'Внешность взрослого персонажа: '+custom+'. '+character_options.traits(user)+'\n'
@@ -3633,11 +3638,11 @@ def migrate_character_appearance(user):
 
 
 def photo_appearance(user):
-    return character_options.identity(user)
+    return fandom_catalog.identity(user) or character_options.identity(user)
 
 
 def look_image(user):
-    return None  # Only explicitly uploaded or paid generated avatars appear in the UI.
+    return fandom_catalog.avatar_url(user)
 
 
 def casual_chat_rule(user):
@@ -3649,7 +3654,7 @@ def casual_chat_rule(user):
 def character_behavior_rule(user):
     style=STYLES.get(get_display_style(user),{})
     tone=' Текущий характер общения: '+style.get('description','')
-    return character_options.traits(user)+tone+' Актуальная внешность взрослого персонажа 25+: '+(character_options.appearance(user,'ru') or '')+'. Если старое описание противоречит этим параметрам внешности, используй актуальные параметры. '+' Язык ответа строго соответствует выбранному языку пользователя, без случайных иностранных вставок. '
+    return fandom_catalog.prompt_rule(user)+roleplay_voice.instruction(fandom_catalog.character_name(user))+character_options.traits(user)+tone+' Актуальная внешность взрослого персонажа 25+: '+(fandom_catalog.identity(user) or character_options.appearance(user,'ru') or '')+'. Если старое описание противоречит этим параметрам внешности, используй актуальные параметры. '+' Язык ответа строго соответствует выбранному языку пользователя, без случайных иностранных вставок. '
 
 
 def conversation_mode_rule(user):
@@ -3661,6 +3666,7 @@ def conversation_mode_rule(user):
 
 def clean_chat_reply(text, user):
     if user.get('scene','phone') != 'phone':
+        text=roleplay_voice.normalize(text,fandom_catalog.character_name(user))
         return '\n'.join(line.strip() for line in re.sub(r'\n{3,}','\n\n',re.sub(r'(?<!\*)\*([^*\n]+)\*(?!\*)',lambda m:'\n\n*'+m.group(1).strip()+'*\n\n',text)).strip().splitlines())
     text = re.sub(r'(?<!\w)\*[^*]+\*', '', text)
     text = re.sub(r'(?m)^\s*\((?:улыба|сме|вздыха|смотр|пожима|кива|smil|laugh|sigh)[^)]*\)\s*', '', text, flags=re.I)
@@ -3671,10 +3677,11 @@ def build_prompt(user):
     no_explicit_rule = get_content_rule(get_display_style(user))
 
     char_name = (user.get("char_name") or "").strip()
-    if user.get("custom_character"):
+    if user.get("custom_character") or fandom_catalog.selected(user):
+        persona=user.get("custom_character") or fandom_catalog.selected(user)["persona"]
         return (
             (f"Тебя зовут {char_name}. " if char_name else "") + look_rule(user) + conversation_mode_rule(user) +
-            f"Ты — {user['custom_character']}. Полностью вживись в эту личность и её характер: если "
+            f"Ты — {persona}. Полностью вживись в эту личность и её характер: если "
             f"персонаж узнаваем (из фильма, игры, аниме, книги и т.п.), веди себя как он — с его "
             f"характерными чертами, манерой речи и взглядами, а не обезличенно и уклончиво. Можешь "
             f"свободно называть себя по имени и упоминать свою личность, когда это естественно по ходу "
@@ -6710,7 +6717,7 @@ async def reset_all_confirm(call: types.CallbackQuery):
     await call.answer()
 
 
-@dp.message(Command("tehwork"))
+@dp.message(Command("tehwork", "tehwork_all"))
 async def maintenance_cmd(message: types.Message):
     global maintenance_mode
     if message.from_user.id != MAIN_ADMIN_ID:
@@ -9354,7 +9361,7 @@ def serialize_shop_state(user):
 
     inventory=user.get('inventory') or {}
     for adult,category,title in ((False,'wardrobe',{'ru':'👗 Гардероб','de':'Garderobe'}.get(lang,'Wardrobe')),(True,'adult_shop',{'ru':'🔞 Секс-шоп','de':'18+ Shop'}.get(lang,'18+ shop'))):
-        level=get_intimacy_level(user);locked=adult and level<5;items=[]
+        level=get_intimacy_level(user);locked=adult and (level<5 or fandom_catalog.family_friendly(user));items=[]
         for key,item in profile_options.WARDROBE.items():
             if item['adult']!=adult or not profile_options.gender_matches(user,key):continue
             image_key=profile_options.catalog_image(key,user.get('gender','female'))
@@ -9364,7 +9371,7 @@ def serialize_shop_state(user):
                 'slot':item['slot'],'occupies':sorted(profile_options.occupied_slots(key)),'gender':item.get('gender','unisex'),'catalog_only':bool(item.get('catalog_only')),'tags':item.get('tags',''),'locked_level':5 if locked else None,
                 'owned_label':{'ru':'В гардеробе','de':'Im Inventar'}.get(lang,'Owned'),
                 'effects':({'ru':'Новинка для коллекции. Применение к фото пока не подключено.','de':'Neu für die Sammlung. Noch nicht für Fotos verfügbar.'}.get(lang,'New collectible. Not connected to photos yet.') if item.get('catalog_only') else {'ru':'Остаётся в инвентаре','de':'Bleibt im Inventar'}.get(lang,'Kept in inventory')) + (' · '+profile_options.occupancy_label(key,lang) if len(profile_options.occupied_slots(key))>1 else '')})
-        categories.append({'key':category,'name':title,'items':items,'locked':locked,'required_level':5 if adult else None})
+        categories.append({'key':category,'name':title,'items':items,'locked':locked,'lock_reason':'Этому герою доступна обычная одежда' if fandom_catalog.family_friendly(user) else None,'required_level':5 if adult else None})
 
     categories.append({'key':'exchange','name':gt(user,'shop_cat_exchange'),'items':[
         {'key':key,'category':'exchange','image':shop_item_image('exchange',key),'emoji':offer['emoji'],
@@ -9430,7 +9437,7 @@ def serialize_shop_state(user):
         "illness": illness_label,
         "asleep": is_asleep(user),
         "categories": categories,
-        "wardrobe_race":user.get("race","human"),"wardrobe_fitting":profile_options.fitting_preview(user),"wardrobe_pending":bool(user.get("avatar_job")),"wardrobe_gender":user.get("gender","female"),"photo_balance":photo_wallet.balance(user),
+        "complete_looks":fitting_looks.choices(user,lang,level),"fitting_layers":profile_options.fitting_state(user)["layers"],"wardrobe_race":user.get("race","human"),"wardrobe_fitting":profile_options.fitting_preview(user),"wardrobe_pending":bool(user.get("avatar_job")),"wardrobe_gender":user.get("gender","female"),"photo_balance":photo_wallet.balance(user),
         "wardrobe_preview":"/avatars/"+user["avatar_fullbody"] if user.get("avatar_fullbody") else None,
         "slot_locks":profile_options.slot_locks(user),
         "active_outfit":profile_options.active_outfit(user),"outfit_slots":profile_options.choices(profile_options.SLOTS,lang),
@@ -9455,6 +9462,7 @@ async def perform_webapp_purchase(user, user_id, category, key, note=None):
         item=profile_options.WARDROBE.get(key)
         if not item or bool(item['adult'])!=(category=='adult_shop'):return {'ok':False,'error':'Not found'}
         if not profile_options.gender_matches(user,key):return {'ok':False,'error':'Этот предмет предназначен для другого пола персонажа'}
+        if item['adult'] and fandom_catalog.family_friendly(user):return {'ok':False,'error':'Этому герою доступна обычная одежда'}
         if item['adult'] and get_intimacy_level(user)<5:return {'ok':False,'error':'🔒 Откроется на 5 уровне близости'}
         inventory=user.get('inventory') or {}
         if inventory.get(key,0):return {'ok':False,'error':{'ru':'Этот предмет уже в гардеробе','de':'Dieser Artikel ist bereits im Kleiderschrank'}.get(user.get('lang'),'Already owned')}
@@ -13115,7 +13123,7 @@ del,.old-price{position:relative;text-decoration:none!important}del:after,.old-p
 .fitting-stage{overflow:hidden;background:#211329;box-shadow:inset 0 0 0 5px #715069,inset 0 0 22px #0008,0 12px 24px #0005}.wardrobe-room .tailor-base{opacity:1;object-fit:cover}.cabinet-doors{position:absolute;inset:0;z-index:10;border:0;background:transparent;perspective:800px;padding:0;cursor:pointer}.cabinet-doors::before,.cabinet-doors::after{content:"";position:absolute;top:0;bottom:0;width:50%;background:linear-gradient(100deg,#493043,#7b5369 50%,#3c293b);border:2px solid #ae80976b;box-sizing:border-box;box-shadow:inset 0 0 0 8px #302231,inset 0 0 0 10px #97708580;transition:transform .75s cubic-bezier(.2,.7,.2,1)}.cabinet-doors::before{left:0;transform-origin:left}.cabinet-doors::after{right:0;transform-origin:right}.cabinet-doors span{position:absolute;z-index:2;left:10%;right:10%;bottom:18px;background:#201626d9;padding:10px;border-radius:20px;color:#f0d8e9;font-size:13px}.cabinet-open .cabinet-doors::before{transform:rotateY(-105deg)}.cabinet-open .cabinet-doors::after{transform:rotateY(105deg)}.cabinet-open .cabinet-doors span{opacity:.8;bottom:4px;padding:5px}.cabinet-open .cabinet-doors{background:transparent}
 
 .wardrobe-audience{grid-column:1/-1;text-align:center;color:#dfc8ed;font-size:13px;margin:2px 0 10px}.catalog-gender{display:block;color:#cbb6da;font-size:11px;line-height:1.4;margin:0 0 7px}
-</style>
+.fitting-stage{aspect-ratio:320/512;height:auto!important;max-width:250px!important;overflow:hidden!important}.wardrobe-room .tailor-base,.wardrobe-room .fitting-detail{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:contain!important;opacity:0!important;visibility:hidden;pointer-events:none;margin:0!important;max-height:none!important}.cabinet-open .tailor-base,.cabinet-open .fitting-detail{opacity:1!important;visibility:visible}.wardrobe-room .fitting-detail{z-index:4}.fitting-stage .cabinet-doors{inset:0!important}.fitting-stage .cabinet-doors span{font-size:12px}.fitting-controls label{min-width:0}.fitting-controls select{font-size:13px;min-width:0}.complete-looks{grid-column:1/-1;min-width:0}.complete-looks summary{cursor:pointer;padding:12px;background:#38283f;border-radius:12px}.complete-look-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px}.complete-look{padding:5px!important;min-width:0;background:#241c30;border:1px solid #70516c;border-radius:12px}.complete-look img{width:100%;height:130px;object-fit:contain;display:block}.complete-look span{display:block;font-size:10px;line-height:1.3;max-height:39px;overflow:hidden}.fitting-note+button{grid-column:1/-1}</style>
 </head>
 <body>
   <div id="stats"></div>
@@ -13258,7 +13266,7 @@ del,.old-price{position:relative;text-decoration:none!important}del:after,.old-p
   var fittingItem=null;
   function fittingRoom(s){
     var room=document.createElement('div');room.className='wardrobe-room';
-    var stage=document.createElement('div');stage.className='fitting-stage';var base=document.createElement('img');base.className='tailor-base';base.src=s.wardrobe_fitting||('/assets/fitting_'+(s.wardrobe_gender==='male'?'male':'female')+'_13.webp');base.alt='';stage.appendChild(base);
+    var stage=document.createElement('div');stage.className='fitting-stage';var base=document.createElement('img');base.className='tailor-base';base.src=s.wardrobe_fitting||('/assets/fitting_'+(s.wardrobe_gender==='male'?'male':'female')+'_13.webp');base.alt='';stage.appendChild(base);(s.fitting_layers||[]).forEach(function(layer){var image=document.createElement('img');image.className='fitting-detail';image.src=layer.url;image.alt=layer.slot;image.dataset.slot=layer.slot;stage.appendChild(image);});
     var controls=document.createElement('div');controls.className='fitting-controls';var title=document.createElement('h3');title.textContent=s.lang==='ru'?'Примерочная':'Fitting room';controls.appendChild(title);
     var items=s.categories.filter(function(c){return c.key==='wardrobe'||c.key==='adult_shop';}).reduce(function(all,c){return all.concat(c.items);},[]),active=s.active_outfit||{};
     var cabinet=document.createElement('button');cabinet.type='button';cabinet.className='cabinet-doors';cabinet.setAttribute('aria-label',s.lang==='ru'?'Открыть шкаф':'Open wardrobe');cabinet.setAttribute('aria-expanded','false');
@@ -13267,11 +13275,14 @@ del,.old-price{position:relative;text-decoration:none!important}del:after,.old-p
     cabinet.onclick=function(){var open=stage.classList.toggle('cabinet-open');cabinet.setAttribute('aria-expanded',String(open));cabinetLabel.textContent=open?(s.lang==='ru'?'Закрыть шкаф':'Close wardrobe'):(s.lang==='ru'?'Открыть шкаф':'Open wardrobe');try{sessionStorage.setItem(cabinetKey,open?'1':'0');}catch(e){}};
     room.appendChild(stage);
     (s.outfit_slots||[]).forEach(function(slot){var label=document.createElement('label');label.textContent=slot.label;var select=document.createElement('select');select.dataset.slot=slot.key;var blocked=(s.slot_locks||{})[slot.key];select.disabled=!!s.wardrobe_pending||!!blocked;var empty=document.createElement('option');empty.value='';var owner=items.find(function(i){return i.key===blocked;});empty.textContent=owner?('Занято: '+owner.name):(s.lang==='ru'?'Не выбрано':'None');select.appendChild(empty);items.filter(function(item){return item.slot===slot.key&&item.owned&&!item.catalog_only;}).forEach(function(item){var option=document.createElement('option');option.value=item.key;option.textContent=item.name;option.disabled=!!item.locked_level;select.appendChild(option);});select.value=active[slot.key]||'';select.onchange=function(){select.disabled=true;api('/api/wardrobe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({outfit:select.value||null,slot:slot.key})}).then(function(res){if(res.state)state=res.state;if(!res.ok)alert(res.error);render();});};if(blocked){label.classList.add('slot-occupied');label.title=owner?owner.name:'';}label.appendChild(select);controls.appendChild(label);});
-    var note=document.createElement('p');note.className='fitting-note';note.textContent=s.lang==='ru'?'Примерка бесплатна. Комплекты занимают несколько мест. Чтобы изменить занятую деталь, сначала сними комплект. Стойка показывает основной комплект одежды. Раса и анатомия персонажа учитываются при создании фото. Новинки с пометкой «только каталог» пока не применяются.':'Free fitting. The stand shows the main outfit. Character photos include all equipped details.';controls.appendChild(note);
+    var note=document.createElement('p');note.className='fitting-note';note.textContent=s.lang==='ru'?'Примерка бесплатна. Комплекты занимают несколько мест. Чтобы изменить занятую деталь, сначала сними комплект. На стойке — пример сочетания одежды. Фото учитывает все выбранные детали, расу и внешность. Изображения остаются неоткровенными.':'Free fitting. The stand shows the main outfit. Character photos include all equipped details.';controls.appendChild(note);
     var generate=document.createElement('button');generate.type='button';generate.id='wardrobe-generate';generate.textContent=s.wardrobe_pending?'Создаю образ…':'Показать на персонаже · 5 ⭐';generate.disabled=!!s.wardrobe_pending;
     generate.onclick=function(){window.parent.postMessage({type:'rd-generate-avatar'},location.origin);};controls.appendChild(generate);
     if(s.wardrobe_preview){var preview=document.createElement('img');preview.src=s.wardrobe_preview;preview.className='wardrobe-result';preview.alt='Фото персонажа';preview.onclick=function(){var modal=document.createElement('div');modal.className='wardrobe-lightbox';var im=document.createElement('img');im.src=s.wardrobe_preview;modal.appendChild(im);modal.onclick=function(){modal.remove();};document.body.appendChild(modal);};controls.appendChild(preview);}
-    room.appendChild(controls);return room;
+    var ready=document.createElement('details');ready.className='complete-looks';var summary=document.createElement('summary');summary.textContent=(s.lang==='ru'?'Готовые сочетания · ':'Complete looks · ')+(s.complete_looks||[]).length;ready.appendChild(summary);
+    var lookGrid=document.createElement('div');lookGrid.className='complete-look-grid';var status=document.createElement('p');status.className='fitting-note';var wear=document.createElement('button');wear.type='button';wear.className='btn';wear.hidden=true;
+    (s.complete_looks||[]).forEach(function(look){var card=document.createElement('button');card.type='button';card.className='complete-look';card.title=look.label;var art=document.createElement('img');art.src=look.image;art.loading='lazy';art.alt=look.label;card.appendChild(art);var caption=document.createElement('span');caption.textContent=look.label;card.appendChild(caption);card.onclick=function(){base.src=look.image;generate.disabled=true;generate.textContent=s.lang==='ru'?'Сначала надень выбранный комплект':'Wear this look first';try{sessionStorage.setItem(cabinetKey,'1');}catch(e){}stage.querySelectorAll('.fitting-detail').forEach(function(i){i.hidden=true;i.style.setProperty('display','none','important');});stage.classList.add('cabinet-open');cabinet.setAttribute('aria-expanded','true');cabinetLabel.textContent=s.lang==='ru'?'Закрыть шкаф':'Close wardrobe';status.textContent=(s.lang==='ru'?'Предпросмотр: ':'Preview: ')+look.label;wear.hidden=false;wear.disabled=!look.owned||s.wardrobe_pending;wear.textContent=look.owned?(s.lang==='ru'?'Надеть комплект':'Wear this look'):(s.lang==='ru'?'Сначала купи вещи этого комплекта':'Buy the items first');wear.onclick=function(){wear.disabled=true;api('/api/wardrobe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({look:look.key})}).then(function(res){if(res.state)state=res.state;if(!res.ok)alert(res.error);render();});};stage.scrollIntoView({block:'center',behavior:'smooth'});};lookGrid.appendChild(card);});
+    ready.appendChild(lookGrid);controls.appendChild(ready);controls.appendChild(status);controls.appendChild(wear);room.appendChild(controls);return room;
   }
 
   function makeCard(s, item) {
@@ -19207,13 +19218,13 @@ async def _app_request(request):
 
 
 def serialize_onboarding(user):
-    lang = user.get("lang", "ru")
+    lang = user.get("lang") or "ru"
     sub = get_subscription_level(user)
     styles = []
     for key in STYLES:
         tier = None if is_style_unlocked(key, user) else (style_required_tier(key))
         styles.append({"key": key, "label": style_display_label(key, user), "desc": (STYLES[key].get("summary") or (STYLES[key]["description"],STYLES[key]["label_en"],STYLES[key]["label_de"]))[{"ru":0,"en":1,"de":2}.get(lang,1)], "locked": tier})
-    return {"creation_presets":{g:character_options.creation_presets(lang,g) for g in ("male","female")},"appearance_fields_by_gender":{g:character_options.choices(lang,g) for g in ("male","female")},"races":profile_options.choices(profile_options.RACES,lang),"portrait_enabled":False,"appearance_fields":character_options.choices(lang,user.get("gender")),"appearance_defaults":dict(character_options.DEFAULT),"worlds": [{"key": "realism", "label": get_text(user, "realism"), "desc": at(user, "ob_realism")},
+    return {"templates":fandom_catalog.choices(lang),"avatar_presets":fandom_catalog.avatar_choices(lang),"creation_presets":{g:character_options.creation_presets(lang,g) for g in ("male","female")},"appearance_fields_by_gender":{g:character_options.choices(lang,g) for g in ("male","female")},"races":profile_options.choices(profile_options.RACES,lang),"portrait_enabled":False,"appearance_fields":character_options.choices(lang,user.get("gender")),"appearance_defaults":dict(character_options.DEFAULT),"worlds": [{"key": "realism", "label": get_text(user, "realism"), "desc": at(user, "ob_realism")},
                        {"key": "anime", "label": get_text(user, "anime"), "desc": at(user, "ob_anime")}],
             "genders": [{"key": "female", "label": at(user, "ob_female")}, {"key": "male", "label": at(user, "ob_male")}],
             "default_gender": "female" if user.get("user_gender") != "female" else "male",
@@ -19285,7 +19296,7 @@ def serialize_app_state(user):
     avatar_unstick(user)
     user["app_seen"] = datetime.now().isoformat()
     if not user.get("personality_ready"):
-        ui = {k: v for k, v in APP_TEXTS.get(user.get("lang", "ru"), APP_TEXTS["en"]).items() if isinstance(v, str)}
+        ui = {k: v for k, v in APP_TEXTS.get(user.get("lang") or "ru", APP_TEXTS["en"]).items() if isinstance(v, str)}
         return {"release":"20261118d", "onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
     app_unstick(user)
     if migrate_character_appearance(user):save_data(user_data)
@@ -19316,7 +19327,7 @@ def serialize_app_state(user):
                      for m in history],
         "onboarding": None,
         "initiative_enabled":user.get("initiative_enabled",True) if sub_level=="elite" else True,"ever_subscribed":bool(user.get("ever_subscribed")),
-        "content_settings":profile_options.state(user),
+        "content_settings":profile_options.state(user),"avatar_presets":fandom_catalog.avatar_choices(lang),
         "photos":photo_wallet.snapshot(user),
         "purchase_products":[{"payload":k,"amount":v[0],"stars":product_stars(k,user),"rub":product_rub(k,user),"image":"/assets/photo_pack_"+str(v[0])+".webp"} for k,v in photo_wallet.PACKS.items()],
         "release":"20261118d",
@@ -19336,7 +19347,7 @@ def serialize_app_state(user):
             "looks": [{"key": k, "img": f"/assets/avatar_{k}.jpg", "label": v["label_ru"] if lang == "ru" else v["label_en"]}
                       for k, v in LOOKS.items() if v["world"] == (user.get("world") or "realism") and v["gender"] == (user.get("gender") or "female")],
             "name": user.get("char_name"),
-            "can_avatar": True,"can_edit_appearance":sub_level in ("super_pro","elite"),"avatar_credits":user.get("portrait_credits",0),"avatar_pending":bool(user.get("avatar_job")),"avatar_error":user.get("avatar_error"),"avatar_generated":bool(user.get("avatar_generated")),
+            "character_template":user.get("character_template"),"appearance_locked_reason":"Канонический образ героя. Для своей внешности выбери своего персонажа." if fandom_catalog.selected(user) else None,"can_avatar": True,"can_edit_appearance":sub_level in ("super_pro","elite") and not fandom_catalog.selected(user),"avatar_credits":user.get("portrait_credits",0),"avatar_pending":bool(user.get("avatar_job")),"avatar_error":user.get("avatar_error"),"avatar_generated":bool(user.get("avatar_generated")),
             "title": user.get("char_name") or at(user, "char_female" if (user.get("gender") or "female") == "female" else "char_male"),
             "subtitle": f"{world_display_name(user.get('world') or 'realism', user).capitalize()} · "
                         f"{style_display_label(get_display_style(user), user)}",
@@ -19487,32 +19498,21 @@ async def app_photo_generate(user_id, user, request_text):
             user.setdefault('app_notices',[]).append('Пока нет контекста для фото. Сначала пообщайтесь.')
             return
 
-        # POV логика: если в контексте или запросе интим, добавляем POV теги
-        history_text = ' '.join(str(m.get('content',''))[:500] for m in context[:3])
-        combined = (history_text + ' ' + request_text).lower()
-        user_gender = user.get('user_gender', 'male')
-        hands = 'male hands visible' if user_gender == 'male' else 'female hands visible'
-        pov_tags = ''
-        if any(w in combined for w in ('kiss', 'touch', 'hug', 'sex', 'целу', 'трога', 'обнима', 'секс', 'küss', 'berühr', 'umar')):
-            pov_tags = f' POV, {hands}, interacting with viewer, close-up.'
-        if any(w in combined for w in ('oral', 'looking up', 'снизу вверх', 'von unten', 'blick nach oben')):
-            pov_tags = ' POV, looking up at viewer, close-up.'
-
-        instruction = photo_context.instruction(user,get_intimacy_level(user),photo_appearance(user),pov_tags)
-        if pov_tags:
-            instruction += f' IMPORTANT: Add these camera tags to the end of the generated prompt: {pov_tags.strip()}.'
+        instruction=photo_context.instruction(user,get_intimacy_level(user),photo_appearance(user))
         response = await asyncio.wait_for(asyncio.to_thread(call_ai, AI_MODEL, 'ai',
             messages=[{'role':'system','content':instruction}, {'role':'user','content':json.dumps({'conversation':context,'request':request_text},ensure_ascii=False)}],
             temperature=0.5, max_tokens=350), timeout=35)
         plan = json.loads(response.choices[0].message.content.strip().removeprefix('```json').removesuffix('```').strip())
-        if plan.get('allowed') is not True or not isinstance(plan.get('prompt'), str):
+        if plan.get('allowed') is False:
             user.setdefault('history', []).append({'role':'assistant','content': 'Могу прислать портрет или фото в одежде. Напиши, какой образ хочешь.' if user.get('lang') == 'ru' else 'I can send a portrait or a clothed photo. Tell me which outfit you would like.'})
             return
         if not photo_wallet.reserve(user,'chat'):raise RuntimeError('No photo attempts')
         charged = True
         save_data(user_data)
-        render_style=('Natural realistic photograph, natural human proportions and skin texture. ' if profile_options.race_kind(user.get('race','human'))=='humanoid' else 'Physically realistic character render, detailed materials matching the selected species. ') if user.get('world')=='realism' else 'Anime illustration. '
-        raw, ext = await asyncio.wait_for(photo_generation.generate(render_style + plan['prompt'][:2200] + '. Mandatory selected appearance: ' + photo_appearance(user) + '. Single person, face clearly visible.', world=user.get('world'),gender=user.get('gender'),appearance=user.get('appearance'),race=user.get('race','human')), timeout=280)
+        latest='\n'.join(m['text'] for m in context[-4:])+'\n'+request_text
+        prompt=photo_context.render_prompt(user,photo_appearance(user),json.dumps(plan),latest,get_intimacy_level(user))
+        user['last_photo_plan']=scene_photos.plan(json.dumps(plan),latest,not fandom_catalog.family_friendly(user))
+        raw,ext=await asyncio.wait_for(photo_generation.generate(prompt,world=user.get('world'),gender=user.get('gender'),appearance=user.get('appearance'),race=user.get('race','human')),timeout=280)
         os.makedirs(AVATAR_DIR, exist_ok=True)
         name = os.urandom(12).hex() + '.' + ext
         with open(os.path.join(AVATAR_DIR,name),'wb') as output:
@@ -19559,8 +19559,10 @@ async def api_wardrobe_handler(request):
     _,user,body,err=await _play_request(request)
     if err:return err
     if user.get('avatar_job'):return web.json_response({'ok':False,'error':'Дождись готового образа'})
-    if 'outfit' not in body:return web.json_response({'ok':False,'error':'Bad request'})
-    try:profile_options.equip(user,body.get('outfit'),get_intimacy_level(user),body.get('slot'))
+    if 'outfit' not in body and 'look' not in body:return web.json_response({'ok':False,'error':'Bad request'})
+    try:
+        if 'look' in body:fitting_looks.equip(user,body['look'],get_intimacy_level(user))
+        else:profile_options.equip(user,body.get('outfit'),get_intimacy_level(user),body.get('slot'))
     except ValueError as exc:return web.json_response({'ok':False,'error':str(exc)})
     save_data(user_data)
     return web.json_response({'ok':True,'state':serialize_shop_state(user)})
@@ -19802,6 +19804,9 @@ async def api_app_avatar_handler(request):
     if err:
         return err
     if user.get('photo_pending') or user.get('avatar_job'):return _app_reply(user,False,at(user,'wait_reply'))
+    if body.get('preset'):
+        if body['preset'] not in fandom_catalog.AVATARS:return _app_reply(user,False,'Неизвестная аватарка')
+        user.pop('avatar',None);user.pop('avatar_fullbody',None);user.pop('avatar_generated',None);user.pop('identity_reference',None);user['avatar_preset']=body['preset'];save_data(user_data);return _app_reply(user)
     if body.get("remove"):
         old = user.pop("avatar", None)
         if old:
@@ -19827,6 +19832,8 @@ async def api_app_create_handler(request):
         return err
     if user.get('personality_ready'):
         return _app_reply(user,False,'Для нового персонажа сначала подтверди сброс истории в профиле.')
+    try:body,template=fandom_catalog.configure(body)
+    except ValueError:return _app_reply(user,False,'Неизвестный персонаж')
     world, gender, style, scene = body.get("world"), body.get("gender"), body.get("style"), body.get("scene", "phone")
     if scene not in ("phone", "live"):
         return web.json_response({"ok": False, "error": "Bad scene"})
@@ -19857,11 +19864,15 @@ async def api_app_create_handler(request):
     look = body.get("look")
     user["look"] = look if look in LOOKS and LOOKS[look]["world"] == world and LOOKS[look]["gender"] == gender else None
     if not body.get("avatar"):user.pop("avatar",None)
-    if body.get("avatar") and get_subscription_level(user) in ("super_pro", "elite"):
+    if body.get("avatar"):
         error = save_avatar(user, body.get("avatar"))
         if error:
             return web.json_response({"ok": False, "error": error})
     user.pop('identity_reference',None)
+    if body.get('avatar_preset') not in (None,'') and body['avatar_preset'] not in fandom_catalog.AVATARS:return _app_reply(user,False,'Неизвестная аватарка')
+    user['avatar_preset']=body.get('avatar_preset')
+    user['character_template']=template
+    if template and not body.get('name'):user['char_name']=fandom_catalog.TEMPLATES[template]['ru' if user.get('lang','ru')=='ru' else 'en']
     user.update(appearance_race_v2=True,race=race,appearance=character_options.visual_from_description(appearance,custom),portrait_url=None,world=world, gender=gender, style=style, scene=scene, custom_character=custom[:2000] or None,
                 personality_ready=True, history=[], relationship={}, reply_choices={}, reply_choices_turns=0,
                 reply_choices_next=random.randint(5, 8), creating_character=False, switching_personality=False,
@@ -19894,10 +19905,10 @@ def avatar_unstick(user):
 async def generate_profile_avatar(user,job_id):
     try:
         context=photo_context.recent(user)
-        background='Simple softly lit studio background'
+        background='a simple softly lit neutral backdrop'
         if context:
             res=await asyncio.wait_for(asyncio.to_thread(call_ai,AI_MODEL,'ai',messages=[{'role':'system','content':scene_photos.INSTRUCTION},{'role':'user','content':json.dumps(context,ensure_ascii=False)}],temperature=0,max_tokens=90),timeout=35)
-            background=scene_photos.environment(res.choices[0].message.content)
+            background=scene_photos.details(res.choices[0].message.content,'\n'.join(m['text'] for m in context[-4:]),not fandom_catalog.family_friendly(user))
         prompt=photo_context.avatar_prompt(user,photo_appearance(user),background,get_intimacy_level(user))
         raw,ext=await asyncio.wait_for(photo_generation.generate(prompt,world=user.get('world'),gender=user.get('gender'),appearance=user.get('appearance'),race=user.get('race','human')),timeout=280)
         if (user.get('avatar_job') or {}).get('id')!=job_id:return
@@ -19986,6 +19997,7 @@ async def app_couple_photo_generate(user_id,user,action):
 async def api_app_appearance_handler(request):
     _,user,body,err=await _play_request(request)
     if err:return err
+    if fandom_catalog.selected(user):return _app_reply(user,False,'У готового героя канонический образ. Для свободной внешности создай своего персонажа.')
     if get_subscription_level(user) not in ('super_pro','elite'):return _app_reply(user,False,'Изменение внешности · SUPER PRO / ELITE')
     if user.get('photo_pending') or user.get('avatar_job'):return _app_reply(user,False,at(user,'wait_reply'))
     try:appearance={k:v for k,v in character_options.validate(body.get('appearance'),user.get('gender')).items() if k in character_options.VISUAL_KEYS}
@@ -20212,7 +20224,8 @@ button:focus-visible {outline:2px solid #e9b7ff;outline-offset:3px;}
 
 
 #sound-toggle{display:none!important}
-"""
+
+.avatar-presets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:12px 0}.avatar-preset{padding:3px!important;border-radius:16px;overflow:hidden;border:2px solid transparent;background:#272139}.avatar-preset.on{border-color:#c89cff}.avatar-preset img{display:block;width:100%;aspect-ratio:1;object-fit:cover}#send,#send:active,#send.press-pop{animation:none!important;transform:none!important}"""
 APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261118d">'
 
 
@@ -20254,7 +20267,7 @@ async def generate_scene_photo(user, scene, job_id):
             messages=[{'role':'system','content':scene_photos.INSTRUCTION},
                       {'role':'user','content':json.dumps({'text':scene.get('text','')[:12000]},ensure_ascii=False)}],
             temperature=0,max_tokens=90),timeout=35)
-        prompt=scene_photos.portrait_prompt(appearance,gender,response.choices[0].message.content,world=user.get('world'),outfit=profile_options.clothing_facts(user,get_intimacy_level(user)),race=user.get('race','human'))
+        prompt=scene_photos.portrait_prompt(appearance,gender,response.choices[0].message.content,world=user.get('world'),outfit=profile_options.clothing_facts(user,get_intimacy_level(user)),race=user.get('race','human'),context=scene.get('text',''),allow_romance=not fandom_catalog.family_friendly(user))
         raw,ext=await asyncio.wait_for(photo_generation.generate(prompt,world=user.get('world'),gender=gender,appearance=user.get('appearance'),race=user.get('race','human')),timeout=280)
         if (user.get('scene_photo_job') or {}).get('id')!=job_id:
             return
@@ -20352,6 +20365,7 @@ async def api_app_hot_start_handler(request):
         if t not in INTIM_SCENES or loc not in intim_compatible_locations(t) or dom not in INTIM_DOMINANTS:
             return web.json_response({"ok": False, "error": "Bad request"})
         kw = {"scene_type": t, "location": loc, "dominant": dom}
+    if fandom_catalog.selected(user):return _app_reply(user,False,'Готовые герои доступны для обычного общения и приключений.')
     want_photo=body.get('photo') is True
     if want_photo and get_display_style(user)=='temptation':return _app_reply(user,False,'«Искушение» — только переписка, без фото.')
     if want_photo and not photo_generation.token():
@@ -21246,7 +21260,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     hint.textContent=tr('Встряхни банку','Shake the can','Schüttle die Dose');
     function later(fn,ms){timers.push(setTimeout(fn,ms));}
     function cleanup(){timers.forEach(clearTimeout);if(tensionFrame)cancelAnimationFrame(tensionFrame);window.removeEventListener('devicemotion',motion);layer.remove();energizerBusy=false;}
-    function shake(){if(finished||charge>=3)return;var t=Date.now();if(t-lastShake<180)return;lastShake=t;charge++;can.classList.remove('shake');void can.offsetWidth;can.classList.add('shake');haptic('light');if(charge>=3){ring.disabled=false;hint.textContent=tr('Потяни кольцо вверх до щелчка','Pull the ring upwards until it clicks','Zieh den Ring bis zum Klicken hoch');hint.classList.add('pull-hint');}}
+    function shake(){if(finished||charge>=7)return;var t=Date.now();if(t-lastShake<320)return;lastShake=t;charge++;can.classList.remove('shake');void can.offsetWidth;can.classList.add('shake');canWrap.animate([{transform:'translateX(0) rotate(0deg)'},{transform:'translateX(-9px) rotate(-5deg)',offset:.3},{transform:'translateX(8px) rotate(4deg)',offset:.65},{transform:'translateX(0) rotate(0deg)'}],{duration:480,easing:'ease-in-out'});for(var d=0;d<5;d++){var drop=el('i','can-droplet');drop.style.cssText='position:absolute;left:'+(30+Math.random()*40)+'%;top:'+(20+Math.random()*40)+'%;width:5px;height:8px;border-radius:60%;background:#d8bef1b0;pointer-events:none';canWrap.appendChild(drop);(function(p,n){p.animate([{transform:'translate(0,0)',opacity:.8},{transform:'translate('+((n%2?1:-1)*(45+Math.random()*55))+'px,'+(20+Math.random()*65)+'px)',opacity:0}],{duration:600+Math.random()*300,easing:'ease-out'}).onfinish=function(){p.remove();};})(drop,d);}haptic('light');if(charge>=7){ring.disabled=false;hint.textContent=tr('Потяни кольцо вверх до щелчка','Pull the ring upwards until it clicks','Zieh den Ring bis zum Klicken hoch');hint.classList.add('pull-hint');}}
     function motion(e){var v=e.acceleration||e.accelerationIncludingGravity;if(v&&Math.abs(v.x||0)+Math.abs(v.y||0)+Math.abs(v.z||0)>24)shake();}
     can.onpointerdown=function(e){canX=e.clientX;canY=e.clientY;can.setPointerCapture(e.pointerId);};
     can.onpointermove=function(e){if(e.buttons&&(Math.abs(e.clientX-canX)>24||Math.abs(e.clientY-canY)>24)){shake();canX=e.clientX;canY=e.clientY;}};
@@ -21265,7 +21279,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       later(function(){layer.classList.add('ritual-finish');api('/api/app/wake',{method:'energizer'}).then(function(res){cleanup();if(res.state)state=res.state;render();if(res.ok){energyGainAnimation(state.stats.energy-before);if(sndOn()&&window.RDSFX)RDSFX.care('drink','sparkling_water');toast(tr('Персонаж выпил энергетик','Your companion had an energy drink','Dein Charakter hat den Energydrink getrunken'));}else toast(res.error);}).catch(function(){cleanup();toast('Network error');load(true);});},850);
     }
     close.onclick=cleanup;layer.appendChild(close);canWrap.appendChild(can);canWrap.appendChild(opened);canWrap.appendChild(ring);layer.appendChild(canWrap);layer.appendChild(hint);document.body.appendChild(layer);tensionFrame=requestAnimationFrame(tension);
-    later(function(){if(charge<3){hint.textContent=tr('↔ Потряси телефон или проведи пальцем по банке влево-вправо','↔ Shake your phone or swipe the can left and right','↔ Schüttle das Handy oder wische über die Dose');hint.classList.add('shake-hint');var gesture=el('div','energy-gesture','📱 ↔ 👆');layer.appendChild(gesture);}},4500);
+    later(function(){if(charge<7){hint.textContent=tr('↔ Потряси телефон или проведи пальцем по банке влево-вправо','↔ Shake your phone or swipe the can left and right','↔ Schüttle das Handy oder wische über die Dose');hint.classList.add('shake-hint');var gesture=el('div','energy-gesture','📱 ↔ 👆');layer.appendChild(gesture);}},4500);
     function allowMotion(){return DeviceMotionEvent.requestPermission().then(function(answer){if(answer==='granted'){try{localStorage.setItem('rd_motion','granted');}catch(e){}window.addEventListener('devicemotion',motion);if(enable)enable.remove();}else{try{localStorage.removeItem('rd_motion');}catch(e){}}}).catch(function(){});}
     if(window.DeviceMotionEvent&&typeof DeviceMotionEvent.requestPermission==='function'){
       var remembered=false;try{remembered=localStorage.getItem('rd_motion')==='granted';}catch(e){}
@@ -21301,7 +21315,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       }
       var option=el('option',null,itemLabel);option.value=item.key;select.appendChild(option);});select.value=values[field.key]||field.items[0].key;if(!select.value)select.value=field.items[0].key;values[field.key]=select.value;select.onchange=function(){values[field.key]=select.value;if(onchange)onchange();};label.appendChild(select);grid.appendChild(label);});container.appendChild(grid);container.appendChild(el('p','note',tr('Описание для следующих фото. Изображения-заготовки не используются.','Details for future photos. No preset reference images.','Angaben für neue Fotos. Keine Bildvorlagen.')));
   }
-  document.addEventListener('pointerdown',function(e){var b=e.target.closest('button');if(!b||b.disabled)return;b.classList.remove('press-pop');void b.offsetWidth;b.classList.add('press-pop');setTimeout(function(){b.classList.remove('press-pop');},300);});
+  document.addEventListener('pointerdown',function(e){var b=e.target.closest('button');if(!b||b.disabled||b.id==='send')return;b.classList.remove('press-pop');void b.offsetWidth;b.classList.add('press-pop');setTimeout(function(){b.classList.remove('press-pop');},300);});
   function shareTelegram(url,text){
     if(!url)return;
     var share='https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent(text||'');
@@ -21389,13 +21403,21 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   function send() {
     var inp = $("input"), text = inp.value.trim();
     if (!text || sending || state.pending) return;
-    messageArrival={text:text,until:performance.now()+1350};
-    var inputRect=inp.getBoundingClientRect(),sendNode=$("send"),shell=inp.parentNode;sendNode.classList.remove("send-bounce");shell.classList.remove("send-sweep");void sendNode.offsetWidth;sendNode.classList.add("send-bounce");shell.classList.add("send-sweep");setTimeout(function(){sendNode.classList.remove("send-bounce");shell.classList.remove("send-sweep");},2100);
+    messageArrival={text:text,until:performance.now()+700};
+    var inputRect=inp.getBoundingClientRect();
     sending = true; haptic("light"); if (sndOn() && window.RDSFX) window.RDSFX.sent();
     // сразу показываем своё сообщение и «печатает…», не дожидаясь сервера
     state.messages.push({ role: "user", text: text }); state.pending = true; state.can_reroll = false;
     inp.value = ""; autosize();ghostComplete(); renderChat(); renderHead(); scrollBottom(true);
-    requestAnimationFrame(function(){if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;var fly=el('div','message-flight',text);fly.style.cssText='position:fixed;left:'+inputRect.left+'px;top:'+inputRect.top+'px;width:'+Math.min(inputRect.width,260)+'px;max-height:100px;overflow:hidden;z-index:5000;pointer-events:none;padding:12px 14px;border-radius:22px;background:linear-gradient(115deg,#8851a9,#b84c9c);color:white;white-space:pre-wrap;box-sizing:border-box';document.body.appendChild(fly);var motion=fly.animate([{transform:'translate(0,0)',opacity:1},{transform:'translate(0,-12px)',opacity:.9,offset:.45},{transform:'translate(0,-22px) scale(.98)',opacity:.35,offset:.8},{transform:'translate(0,-28px) scale(.98)',opacity:0}],{duration:1300,easing:'cubic-bezier(.25,.5,.35,1)'});motion.onfinish=function(){fly.remove();};setTimeout(function(){fly.remove();},2100);});
+    requestAnimationFrame(function(){
+      if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+      var fly=el('div','message-flight',text),source=document.querySelector('#msgs .row.me:last-of-type .bub')||Array.from(document.querySelectorAll('#msgs .row.me .bub')).pop();
+      fly.style.cssText='position:fixed;left:'+inputRect.left+'px;top:'+inputRect.top+'px;width:'+Math.min(inputRect.width,300)+'px;max-height:90px;overflow:hidden;z-index:5000;pointer-events:none;padding:12px 14px;border-radius:22px;white-space:pre-wrap;box-sizing:border-box';
+      if(source){var skin=getComputedStyle(source);fly.style.background=skin.background;fly.style.color=skin.color;fly.style.border=skin.border;fly.style.boxShadow=skin.boxShadow;}
+      document.body.appendChild(fly);
+      fly.animate([{transform:'translateY(0)',opacity:.96,filter:'blur(0)'},{transform:'translateY(-5px)',opacity:.75,filter:'blur(0)',offset:.4},{transform:'translateY(-10px)',opacity:.28,filter:'blur(3px)',offset:.75},{transform:'translateY(-12px)',opacity:0,filter:'blur(9px)'}],{duration:2100,easing:'ease-out'}).onfinish=function(){fly.remove();};
+      for(var i=0;i<8;i++){var bubble=el('i','send-mist');bubble.style.cssText='position:fixed;pointer-events:none;z-index:5001;left:'+(inputRect.left+16+Math.random()*Math.min(inputRect.width-32,250))+'px;top:'+(inputRect.top+8+Math.random()*25)+'px;width:5px;height:5px;border-radius:50%;background:'+fly.style.color+';opacity:0';document.body.appendChild(bubble);(function(p){p.animate([{opacity:0,transform:'translateY(0) scale(.2)',filter:'blur(0)'},{opacity:.28,transform:'translateY(-5px) scale(1)',filter:'blur(0)',offset:.35},{opacity:0,transform:'translateY(-13px) scale(2)',filter:'blur(5px)'}],{delay:400+Math.random()*300,duration:1500,easing:'ease-out'}).onfinish=function(){p.remove();};})(bubble);}
+    });
     api("/api/app/send", { text: text }).then(function (res) {
       sending = false;
       if (res.state) state = res.state;
@@ -21640,7 +21662,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   function showContentSettings(){
     var current=state.content_settings||{},values=Object.assign({},current.preferences||{}),box=$('sheet-box');box.innerHTML='';box.appendChild(el('h4',null,tr('Настройки контента','Content settings','Inhaltseinstellungen')));
     (current.preference_options||[]).forEach(function(option){var row=el('label');row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:44px';row.appendChild(el('span',null,option.label));var check=el('input');check.type='checkbox';check.dataset.preference=option.key;check.checked=values[option.key]===true;check.style.cssText='width:21px;height:21px;accent-color:#bd80de';check.onchange=function(){values[option.key]=check.checked;};row.appendChild(check);box.appendChild(row);});
-    var label=el('label','rd-field',tr('Раса персонажа','Character race','Charaktervolk')),race=el('select','rd-style-select');race.id='content-race';(current.races||[]).forEach(function(option){var node=el('option',null,option.label);node.value=option.key;race.appendChild(node);});race.value=current.race||'human';if(!state.character.can_edit_appearance){race.disabled=true;label.appendChild(el('small',null,'🔒 SUPER PRO / ELITE'));}label.appendChild(race);box.appendChild(label);
+    var label=el('label','rd-field',tr('Раса персонажа','Character race','Charaktervolk')),race=el('select','rd-style-select');race.id='content-race';(current.races||[]).forEach(function(option){var node=el('option',null,option.label);node.value=option.key;race.appendChild(node);});race.value=current.race||'human';if(!state.character.can_edit_appearance){race.disabled=true;label.appendChild(el('small',null,state.character.appearance_locked_reason||'🔒 SUPER PRO / ELITE'));}label.appendChild(race);box.appendChild(label);
     var save=el('button','btn',tr('Сохранить','Save','Speichern'));save.id='content-save';save.onclick=function(){save.disabled=true;api('/api/app/settings',{preferences:values,race:race.value}).then(function(res){if(res.state)state=res.state;if(res.ok){$('sheet').classList.remove('on');render();}else{toast(res.error);save.disabled=false;}}).catch(function(){save.disabled=false;toast('Network error');});};box.appendChild(save);$('sheet').classList.add('on');
   }
   var avatarAfterPayment=false;
@@ -21677,7 +21699,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     if (s.character.appearance_fields || s.character.looks && s.character.looks.length) {
       var lk = el("button", null, ui.look_btn);
       lk.onclick = function () {
-        if(s.character.appearance_fields){var box=$('sheet-box');box.innerHTML='';box.appendChild(el('h4',null,ui.look_title));var values=Object.assign({},s.character.appearance||{});values.race=(s.content_settings||{}).race||'human';var fieldsHost=el('div');raceField(box,values.race,(s.content_settings||{}).races||[],function(value){values.race=value;fieldsHost.innerHTML='';appearanceFields(fieldsHost,values,s.character.appearance_fields);});box.appendChild(fieldsHost);appearanceFields(fieldsHost,values,s.character.appearance_fields);if(!s.character.can_edit_appearance){box.classList.add('appearance-locked');box.appendChild(el('p','note',tr('🔒 Изменения доступны с SUPER PRO и ELITE. Предпросмотр бесплатный.','🔒 Changes require SUPER PRO or ELITE. Preview is free.','🔒 Änderungen mit SUPER PRO oder ELITE. Vorschau kostenlos.')));}else box.classList.remove('appearance-locked');var save=el('button','btn',tr('Сохранить внешность','Save appearance','Aussehen speichern'));save.disabled=!s.character.can_edit_appearance;if(save.disabled)save.textContent='🔒 SUPER PRO / ELITE';save.onclick=function(){save.disabled=true;api('/api/app/appearance',{appearance:values,race:values.race}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);else $('sheet').classList.remove('on');render();});};box.appendChild(save);$('sheet').classList.add('on');return;}
+        if(s.character.appearance_fields){var box=$('sheet-box');box.innerHTML='';box.appendChild(el('h4',null,ui.look_title));var values=Object.assign({},s.character.appearance||{});values.race=(s.content_settings||{}).race||'human';var fieldsHost=el('div');raceField(box,values.race,(s.content_settings||{}).races||[],function(value){values.race=value;fieldsHost.innerHTML='';appearanceFields(fieldsHost,values,s.character.appearance_fields);});box.appendChild(fieldsHost);appearanceFields(fieldsHost,values,s.character.appearance_fields);if(!s.character.can_edit_appearance){box.classList.add('appearance-locked');box.appendChild(el('p','note',s.character.appearance_locked_reason||tr('🔒 Изменения доступны с SUPER PRO и ELITE. Предпросмотр бесплатный.','🔒 Changes require SUPER PRO or ELITE. Preview is free.','🔒 Änderungen mit SUPER PRO oder ELITE. Vorschau kostenlos.')));}else box.classList.remove('appearance-locked');var save=el('button','btn',tr('Сохранить внешность','Save appearance','Aussehen speichern'));save.disabled=!s.character.can_edit_appearance;if(save.disabled)save.textContent='🔒 SUPER PRO / ELITE';save.onclick=function(){save.disabled=true;api('/api/app/appearance',{appearance:values,race:values.race}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);else $('sheet').classList.remove('on');render();});};box.appendChild(save);$('sheet').classList.add('on');return;}
         var box = $("sheet-box"); box.innerHTML = ""; box.appendChild(el("h4", null, ui.look_title));
         var g2 = el("div", "looks");
         s.character.looks.forEach(function (L) {
@@ -21697,7 +21719,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     };
     av.textContent=tr('Поставить своё фото · бесплатно','Upload photo · free','Foto hochladen · kostenlos');
     var pencil=el('button','avatar-pencil','✎');pencil.setAttribute('aria-label',tr('Изменить аватарку','Edit avatar','Avatar ändern'));ava.style.position='relative';ava.appendChild(pencil);
-    pencil.onclick=function(){var box=$('sheet-box');box.innerHTML='';box.appendChild(el('h3',null,tr('Аватар персонажа','Character avatar','Avatar')));av.className='btn ghost';box.appendChild(av);var generate=el('button','btn',s.character.avatar_pending?tr('Создаю…','Creating…','Erstellen…'):s.character.avatar_credits>0?tr('Использовать оплаченную генерацию','Use paid generation','Bezahlte Erstellung nutzen'):tr('Сгенерировать · 5 ⭐','Generate · 5 ⭐','Erstellen · 5 ⭐'));generate.id='generate-avatar';generate.disabled=s.character.avatar_pending;generate.onclick=function(){$('sheet').classList.remove('on');requestProfileAvatar();};box.appendChild(generate);if(s.character.custom_photo){var rm=el('button','btn ghost',ui.avatar_remove);rm.onclick=function(){api('/api/app/avatar',{remove:true}).then(function(res){if(res.state)state=res.state;$('sheet').classList.remove('on');render();});};box.appendChild(rm);}if(s.character.avatar_error)box.appendChild(el('p','note',tr('Не получилось. Оплаченная попытка сохранена.','Failed. Your paid attempt is preserved.','Bezahlter Versuch bleibt erhalten.')));$('sheet').classList.add('on');};
+    pencil.onclick=function(){var box=$('sheet-box');box.innerHTML='';box.appendChild(el('h3',null,tr('Аватар персонажа','Character avatar','Avatar')));var presets=el('div','avatar-presets');(s.avatar_presets||[]).forEach(function(a){var b=el('button','avatar-preset'),im=el('img');im.src=a.image;im.alt=a.label;b.appendChild(im);b.onclick=function(){api('/api/app/avatar',{preset:a.key}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);else $('sheet').classList.remove('on');render();});};presets.appendChild(b);});box.appendChild(presets);box.appendChild(el('p','note',tr('Аватарка не меняет внешность на генерируемых фото.','Avatar does not change generated appearance.','Das Profilbild beeinflusst generierte Bilder nicht.')));av.className='btn ghost';box.appendChild(av);var generate=el('button','btn',s.character.avatar_pending?tr('Создаю…','Creating…','Erstellen…'):s.character.avatar_credits>0?tr('Использовать оплаченную генерацию','Use paid generation','Bezahlte Erstellung nutzen'):tr('Сгенерировать · 5 ⭐','Generate · 5 ⭐','Erstellen · 5 ⭐'));generate.id='generate-avatar';generate.disabled=s.character.avatar_pending;generate.onclick=function(){$('sheet').classList.remove('on');requestProfileAvatar();};box.appendChild(generate);if(s.character.custom_photo){var rm=el('button','btn ghost',ui.avatar_remove);rm.onclick=function(){api('/api/app/avatar',{remove:true}).then(function(res){if(res.state)state=res.state;$('sheet').classList.remove('on');render();});};box.appendChild(rm);}if(s.character.avatar_error)box.appendChild(el('p','note',tr('Не получилось. Оплаченная попытка сохранена.','Failed. Your paid attempt is preserved.','Bezahlter Versuch bleibt erhalten.')));$('sheet').classList.add('on');};
     hero.appendChild(hb2);if(s.character.portrait_pending)hero.appendChild(el('p','note',tr('Создаю персональный портрет…','Creating your portrait…','Dein Porträt entsteht…')));
     if(s.character.portrait_error){var retry=el('button','btn ghost',tr('Портрет не получился · повторить','Portrait failed · retry','Porträt fehlgeschlagen · erneut'));retry.onclick=function(){api('/api/app/appearance',{appearance:s.character.appearance}).then(function(res){if(res.state)state=res.state;render();schedulePoll();});};hero.appendChild(retry);}
     hero.appendChild(el("div", "lvl", "❤️ " + ui.level.replace("{n}", st.level)));
@@ -21969,11 +21991,14 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     var step = [["world", o.worlds, ui.ob_world], ["gender", o.genders, ui.ob_gender], ["look", looks, ui.ob_look], ["style", o.styles, ui.ob_style], ["scene", o.scenes, tr("Как будем общаться?", "How shall we chat?")]][obStep];
     v.appendChild(el("div", "ob-q", step[2]));
     if(step[0]==='look'&&o.appearance_fields_by_gender){
+      var chooser=el('select','ob-in');chooser.id='character-template';var own=el('option',null,tr('Свой персонаж','My own character','Eigener Charakter'));own.value='';chooser.appendChild(own);(o.templates||[]).forEach(function(t){var item=el('option',null,t.label+' · '+t.source);item.value=t.key;chooser.appendChild(item);});chooser.value=ob.character_template||'';chooser.onchange=function(){ob.character_template=chooser.value;var t=(o.templates||[]).find(function(x){return x.key===chooser.value;});if(t){ob.gender=t.gender;ob.name=t.label;}else ob.name='';renderOnb();};v.appendChild(chooser);
+      if(ob.character_template){ob.look='custom';v.appendChild(el('p','note',tr('Канонический образ героя. Имя можно изменить. Аватарка ниже — только иконка профиля.','Canonical character appearance. You can change the name. The avatar is only a profile icon.','Kanonisches Aussehen. Der Avatar ist nur ein Profilbild.')));}else{
       ob.appearance=Object.assign({},o.appearance_defaults||{},ob.appearance||{});
       if(ob.appearance_gender!==ob.gender){ob.appearance.hair_style=ob.gender==='male'?'short':'waves';ob.appearance.accessory='none';ob.appearance_gender=ob.gender;}
       ob.race=ob.race||'human';ob.look='custom';delete ob.appearance_preset;
       raceField(v,ob.race,o.races||[],function(value){ob.race=value;renderOnb();});
       ob.appearance.race=ob.race;appearanceFields(v,ob.appearance,o.appearance_fields_by_gender[ob.gender]);
+      }
     } else if (step[0] === "look") {
       var lw = el("div", "looks");
       looks.forEach(function (L) {
@@ -21993,17 +22018,12 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       v.appendChild(el("div", "ob-q", ui.ob_name));
       var ni = el("input", "ob-in"); ni.maxLength = o.name_max || 24; ni.placeholder = ui.ob_name_hint; ni.value = ob.name || "";
       ni.oninput = function () { ob.name = ni.value; }; v.appendChild(ni);
-      if (false && o.can_custom) {
-        v.appendChild(el("div", "ob-q", ui.ob_avatar));
-        var row = el("div", "ob-av"), pv = el("div", "ava"); pv.appendChild(el("span", null, ob.gender === "male" ? "👨🏻" : "👩🏻"));
-        var lk0 = looks.filter(function (L) { return L.key === ob.look; })[0];
-        setAvatar(pv, ob.avatar || ('/api/appearance-preview.svg?'+new URLSearchParams(Object.assign({gender:ob.gender,world:ob.world},ob.appearance||{})).toString()));
-        var pb = el("button", "btn ghost", ob.avatar ? ui.ob_avatar_change : ui.ob_avatar_pick);
-        pb.onclick = function () { pickImage(function (data) { ob.avatar = data; renderOnb(); }); };
-        row.appendChild(pv); row.appendChild(pb); v.appendChild(row);
-      }
+      v.appendChild(el('div','ob-q',tr('Аватарка','Avatar','Profilbild')));
+      var avatars=el('div','avatar-presets');(o.avatar_presets||[]).forEach(function(a){var b=el('button','avatar-preset'+(ob.avatar_preset===a.key?' on':'')),img=el('img');b.type='button';img.src=a.image;img.alt=a.label;b.appendChild(img);b.onclick=function(){ob.avatar_preset=a.key;ob.avatar=null;renderOnb();};avatars.appendChild(b);});v.appendChild(avatars);
+      v.appendChild(el('p','note',tr('Иконка не меняет внешность персонажа на фото. Можно бесплатно поставить свою.','This icon does not change generated appearance. Upload your own for free.','Das Symbol beeinflusst generierte Bilder nicht.')));
+      var upload=el('button','btn ghost',ob.avatar?tr('Фото выбрано · изменить','Photo selected · change','Foto gewählt · ändern'):tr('Загрузить свою аватарку','Upload avatar','Profilbild hochladen'));upload.onclick=function(){pickImage(function(data){ob.avatar=data;ob.avatar_preset=null;renderOnb();});};v.appendChild(upload);
     }
-    if (obStep === 2 && o.can_custom) {
+    if (obStep === 2 && o.can_custom && !ob.character_template) {
       v.appendChild(el("div", "ob-q", ui.ob_custom));
       var ta = el("textarea"); ta.id = "ob-custom"; ta.placeholder = ui.ob_custom_hint; ta.value = ob.custom || "";
       ta.oninput = function () { ob.custom = ta.value;var text=ta.value.toLowerCase().split(/характер\s*:|история\s*:/)[0];if(/кошк|кошач|неко|cat[ -]?(girl|boy|ears)/.test(text))ob.appearance.species='cat';else if(/эльф|elf/.test(text))ob.appearance.species='elf';if(/бел(?:ые|ыми|ых) волос|white hair|серебрист|silver hair/.test(text))ob.appearance.hair_color='silver';Object.keys(ob.appearance).forEach(function(k){var select=v.querySelector('[data-appearance="'+k+'"]');if(select)select.value=ob.appearance[k];});var preview=v.querySelector('.appearance-live');if(preview)preview.src='/api/appearance-preview.svg?'+new URLSearchParams(Object.assign({gender:ob.gender,world:ob.world},ob.appearance)).toString();}; v.appendChild(ta);
@@ -22015,7 +22035,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     nx.onclick = function () {
       if (!last) { obStep++; haptic("light"); renderOnb(); v.scrollTop = 0; return; }
       nx.disabled = true;
-      api("/api/app/create", { world: ob.world, gender: ob.gender, look: ob.look, style: ob.style, scene: ob.scene, race:ob.race||'human', appearance:ob.appearance, appearance_preset:ob.appearance_preset, custom: ob.custom || "", name: ob.name || "", avatar: ob.avatar || null }).then(function (res) {
+      api("/api/app/create", { character_template:ob.character_template||null,avatar_preset:ob.avatar_preset||null,world: ob.world, gender: ob.gender, look: ob.look, style: ob.style, scene: ob.scene, race:ob.race||'human', appearance:ob.appearance, appearance_preset:ob.appearance_preset, custom: ob.custom || "", name: ob.name || "", avatar: ob.avatar || null }).then(function (res) {
         if (!res.ok) { nx.disabled = false; toast(res.error || "Error"); haptic("error"); return; }
         haptic("success"); state = res.state; tab = "chat"; render(); schedulePoll();
       }).catch(function () { nx.disabled = false; toast("Network error"); });
@@ -22896,6 +22916,7 @@ async def api_app_settings_handler(request):
         preferences=profile_options.validate_preferences(body['preferences'],profile_options.preferences(user)) if 'preferences' in body else None
         race=profile_options.validate_race(body['race']) if 'race' in body else None
     except ValueError as exc:return _app_reply(user,False,str(exc))
+    if race is not None and race!=user.get('race','human') and fandom_catalog.selected(user):return _app_reply(user,False,'У готового героя канонический образ.')
     if race is not None and race!=user.get('race','human') and get_subscription_level(user) not in ('super_pro','elite'):
         return _app_reply(user,False,'Изменение внешности · SUPER PRO / ELITE')
     if race is not None and race!=user.get('race','human') and (user.get('photo_pending') or user.get('avatar_job')):return _app_reply(user,False,at(user,'wait_reply'))

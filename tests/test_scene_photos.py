@@ -29,7 +29,7 @@ class ScenePhotoTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn('INJECTED',prompt)
         self.assertIn('opaque casual outfit',prompt)
         self.assertNotIn('fully clothed',prompt)
-        self.assertIn('simple photo studio',prompt)
+        self.assertIn('simple neutral backdrop',prompt)
         self.assertIn('brown hair',prompt)
 
     async def test_one_photo_attached_to_scene_without_chat_message(self):

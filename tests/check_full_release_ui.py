@@ -53,7 +53,7 @@ with sync_playwright() as p:
   page.locator('#nav button').first.click();page.locator('#energy-action').click()
   can=page.locator('.energy-ritual-can');box=can.bounding_box();x=box['x']+box['width']/2;y=box['y']+box['height']/2
   page.mouse.move(x,y);page.mouse.down()
-  for i in range(6):page.mouse.move(x+(45 if i%2==0 else -45),y,steps=3);page.wait_for_timeout(210)
+  for i in range(12):page.mouse.move(x+(45 if i%2==0 else -45),y,steps=3);page.wait_for_timeout(340)
   page.mouse.up();ring=page.locator('.energy-ring');assert ring.is_enabled()
   ring.click();assert not any(path=='/api/app/wake' for path,_ in calls)
   box=ring.bounding_box();x=box['x']+box['width']/2;y=box['y']+box['height']/2

@@ -8,9 +8,12 @@ STARTERS={
  'playful':['С чего начнём: вопрос или маленький спор?','Угадай, какой у меня сегодня настрой.','Расскажешь о себе то, чего не угадать с первого взгляда?','Давай обменяемся неожиданными фактами?'],
  'default':['Привет! Чем сейчас занят?','Что тебе в последнее время интересно?','Какое место тебе хочется посетить?','Какой фильм стоит посмотреть вместе?','Что у тебя сегодня случилось необычного?','Какую песню поставим первой?']}
 def starters(user):
- if user.get('lang','ru')!='ru':return ['Hey! How has your day been?','What have you been into lately?','What song should we play first?'] if user.get('lang')!='de' else ['Hey! Wie war dein Tag?','Was interessiert dich gerade?','Welches Lied hören wir zuerst?']
+ if user.get('lang','ru')!='ru':return ['Hey! How has your day been?','What have you been into lately?','What song should we play first?','What would make today better?'] if user.get('lang')!='de' else ['Hey! Wie war dein Tag?','Was interessiert dich gerade?','Welches Lied hören wir zuerst?','Was würde deinen Tag schöner machen?']
  key=user.setdefault('starter_seed',random.getrandbits(64));rng=random.Random(str(key)+str(user.get('style'))+str(user.get('gender')))
- pool=STARTERS.get(user.get('style'),STARTERS['default']);return rng.sample(pool,3)
+ pool=STARTERS.get(user.get('style'),STARTERS['default']);items=rng.sample(pool,min(4,len(pool)))
+ if len(items)<4:items+=rng.sample([x for x in STARTERS['default'] if x not in items],4-len(items))
+ if user.get('gender')=='female':items=[x.replace('занят?','занята?').replace('провёл','провела').replace('готов отстаивать','готова отстаивать') for x in items]
+ return items
 def signature(user):
  messages=[m for m in user.get('history',[]) if m.get('role')=='user']
  return hashlib.sha256(str(messages).encode()).hexdigest() if messages else None

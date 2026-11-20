@@ -22,6 +22,8 @@ TREE = ast.parse(SOURCE.read_text())
 
 
 def load_functions(names, namespace):
+    for module in ("fandom_catalog","roleplay_voice","scene_photos"):
+        namespace.setdefault(module,__import__(module))
     namespace.setdefault("work_rotation", __import__("work_rotation"))
     namespace.setdefault("premium_rules", __import__("premium_rules"))
     namespace.setdefault("get_display_style",lambda u:u.get("style","warm"))

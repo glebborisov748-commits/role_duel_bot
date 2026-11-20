@@ -33,7 +33,7 @@ def token():
 
 
 def negative_identity(gender=None,appearance=None,race=None):
-    words=['child','minor','low quality','multiple people','two people','couple','split screen','collage','duplicate person']
+    words=['child','minor','low quality','multiple people','two people','couple','split screen','collage','duplicate person','camera device','tripod','camera lens in frame','picture in picture','inset portrait','contact sheet','text','watermark','logo']
     if gender=='male':words+=['woman','girl','female','feminine breasts']
     elif gender=='female':words+=['man','boy','male','beard']
     kind=profile_options.race_kind(race)

@@ -40,8 +40,8 @@ class OccupancyTests(unittest.TestCase):
  def user(self):return {'inventory':{key:1 for key in wardrobe.WARDROBE}}
  def test_dress_only_head_shoes_jewelry_free(self):
   u=self.user();wardrobe.equip(u,'dress',5)
-  self.assertEqual(set(wardrobe.SLOTS)-set(wardrobe.slot_locks(u))-{'body'},{'head','shoes','neck'})
-  for key in ('hat','heels','scarf'):wardrobe.equip(u,key,5)
+  self.assertEqual(set(wardrobe.SLOTS)-set(wardrobe.slot_locks(u))-{'body'},{'head','neck','face','ears','wrist'})
+  for key in ('hat','scarf'):wardrobe.equip(u,key,5)
   for key in ('shirt','trousers','stockings','leather_jacket'):
    with self.assertRaises(ValueError):wardrobe.equip(u,key,5)
  def test_police_occupies_all_and_clears_old_layers(self):

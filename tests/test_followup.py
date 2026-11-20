@@ -9,8 +9,8 @@ class OutfitTests(unittest.TestCase):
  def user(self):return {'inventory':{k:1 for k in wardrobe.WARDROBE},'preferences':{}}
  def test_combining_and_mutually_exclusive_slots(self):
   u=self.user()
-  for key in ('dress','heels','hat'):wardrobe.equip(u,key,5)
-  self.assertEqual(wardrobe.active_outfit(u),{'body':'dress','shoes':'heels','head':'hat'})
+  for key in ('dress','hat'):wardrobe.equip(u,key,5)
+  self.assertEqual(wardrobe.active_outfit(u),{'body':'dress','head':'hat'})
   prompt=wardrobe.clothing_facts(u,1)
   for word in ('dress','heeled shoes'):self.assertIn(word,prompt)
   with self.assertRaises(ValueError):wardrobe.equip(u,'stockings',5)
@@ -47,11 +47,11 @@ class OutfitTests(unittest.TestCase):
   for level in (1,5,10):
    instruction=photo_context.instruction({},level,'red hair')
    self.assertIn('red hair',instruction);self.assertIn('most recent',instruction)
-   self.assertIn('Do not depict sexual activity or nudity',instruction)
+   self.assertIn('Never copy sexual acts or explicit body descriptions',instruction)
  def test_scene_realism_and_invalid_environment_fallback(self):
   prompt=scene_photos.portrait_prompt('red hair','female','not JSON',world='realism')
-  self.assertIn('realistic photograph',prompt);self.assertNotIn('anime',prompt)
-  self.assertIn('photo studio',prompt);self.assertNotIn('not JSON',prompt)
+  self.assertIn('realistic character image',prompt);self.assertNotIn('anime',prompt)
+  self.assertIn('neutral backdrop',prompt);self.assertNotIn('not JSON',prompt)
 
 class PaidAvatarTests(unittest.IsolatedAsyncioTestCase):
  async def test_success_failure_cancellation_credit_and_stale_recovery(self):

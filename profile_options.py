@@ -1,4 +1,6 @@
 """Stored profile preferences, race choices and permanent wardrobe purchases."""
+import fandom_catalog
+
 PREFERENCES={
  'foot_focus':('Акцент на стопах','Foot focus','Fokus auf Füße'),
  'bdsm_theme':('Тема BDSM','BDSM theme','BDSM-Thema'),
@@ -16,6 +18,7 @@ RACES={
 RACE_FACTS={'human':'human','elf':'elf with pointed ears','catfolk':'human face with cat ears','foxfolk':'human face with fox ears','wolffolk':'human face with wolf ears','vampire':'adult vampire with subtle fangs','angel':'adult winged humanoid with white feathered wings and a subtle golden halo','succubus':'adult humanoid with small curved horns','android':'humanoid android with discreet metallic temples','dragonborn':'adult humanoid with small horns and subtle temple scales'}
 # Full non-human species stay distinct from human-faced folk with accessory ears.
 RACES.update({
+ 'animatronic':('Аниматроник','Animatronic','Animatronik'),
  'robot':('Робот','Robot','Roboter'),
  'alien':('Инопланетянин','Alien','Außerirdischer'),
  'furry_fox':('Фурри — лиса','Anthropomorphic fox','Anthropomorpher Fuchs'),
@@ -24,6 +27,7 @@ RACES.update({
  'furry_dragon':('Драконид','Anthropomorphic dragon','Anthropomorpher Drache'),
 })
 RACE_FACTS.update({
+ 'animatronic':'non-human humanoid animatronic mascot with a painted shell, a non-human face and articulated mechanical joints',
  'android':'humanoid android with a visibly synthetic face, porcelain shell panels and mechanical seams',
  'robot':'fully mechanical humanoid robot with a robotic face, articulated metal limbs and illuminated optics',
  'alien':'extraterrestrial humanoid with an elongated smooth head, large eyes, distinct alien facial anatomy and smooth extraterrestrial skin',
@@ -34,7 +38,7 @@ RACE_FACTS.update({
 })
 
 def race_kind(race):
- if race in ('robot','android'):return 'mechanical'
+ if race in ('robot','android','animatronic'):return 'mechanical'
  if race in ('furry_fox','furry_wolf','furry_cat'):return 'furry'
  if race=='furry_dragon':return 'scaled'
  if race=='alien':return 'alien'
@@ -42,7 +46,7 @@ def race_kind(race):
 
 def photo_subject(race,gender):
  sex='male' if gender=='male' else 'female'
- species={'robot':'humanoid robot','android':'humanoid android','alien':'extraterrestrial humanoid',
+ species={'animatronic':'humanoid animatronic','robot':'humanoid robot','android':'humanoid android','alien':'extraterrestrial humanoid',
           'furry_fox':'anthropomorphic fox','furry_wolf':'anthropomorphic wolf','furry_cat':'anthropomorphic cat','furry_dragon':'anthropomorphic dragon'}
  return sex+' '+species[race] if race in species else ('man' if gender=='male' else 'woman')
 
@@ -63,7 +67,7 @@ def catalog_image(key,gender):
 
 WARDROBE={
  'bunny_outfit':{'name':'Bunny Outfit','ru':'Костюм «Зайка»','de':'Hasenkostüm','price':500,'emoji':'👗','image':'wardrobe_bunny','fact':'opaque black stage costume, tuxedo jacket, bow tie and rabbit-ear headband'},
- 'latex_bodysuit':{'name':'Latex Bodysuit','ru':'Латексный комбинезон','de':'Latex-Overall','price':750,'emoji':'🖤','image':'wardrobe_latex','fact':'opaque full-length high-neck long-sleeved charcoal fashion jumpsuit'},
+ 'latex_bodysuit':{'name':'Latex Bodysuit','ru':'Латексный комбинезон','de':'Latex-Overall','price':750,'emoji':'🖤','image':'wardrobe_latex','fact':'opaque, skin-tight glossy black latex full-length catsuit, fitted waist, fitted sleeves and fitted legs, reflective latex highlights, no loose fabric'},
  'stockings':{'name':'Stockings','ru':'Чулки','de':'Strümpfe','price':200,'emoji':'🧦','image':'wardrobe_stockings','fact':'opaque dark fashion stockings with a modest skirt and top'},
  'dress':{'name':'Evening dress','ru':'Вечернее платье','de':'Abendkleid','price':1200,'emoji':'👗','image':'gift_dress','fact':'elegant opaque evening dress'},
  'heels':{'name':'Heeled shoes','ru':'Туфли на каблуке','de':'Pumps','price':900,'emoji':'👠','image':'gift_heels','fact':'elegant heeled shoes with a modest everyday outfit'},
@@ -160,6 +164,7 @@ def equip(user,key,level,slot=None):
  else:
   if not isinstance(key,str) or key not in WARDROBE:raise ValueError('Unknown item')
   item=WARDROBE[key]
+  if fandom_catalog.family_friendly(user) and item['adult']:raise ValueError('Этому герою доступна обычная одежда')
   if not gender_matches(user,key):raise ValueError('Этот предмет предназначен для другого пола персонажа')
   if not (user.get('inventory') or {}).get(key):raise ValueError('Сначала купи этот предмет')
   if item['adult'] and level<5:raise ValueError('Раздел 18+ доступен с 5 уровня близости')
@@ -181,7 +186,7 @@ def clothing_facts(user,level):
  items=[WARDROBE[k] for k in active_outfit(user).values()]
  items=[i for i in items if not i.get('catalog_only') and (not i['adult'] or level>=5)]
  facts=[i['fact'] for i in items if i['fact']]
- if not any(i['slot'] in ('body','top','bottom') for i in items):facts.insert(0,'an opaque casual shirt and full-length trousers')
+ if not any(i['slot'] in ('body','top','bottom') for i in items):facts.insert(0,(fandom_catalog.selected(user) or {}).get('clothes','an opaque casual shirt and full-length trousers'))
  elif any(i['slot']=='top' for i in items) and not any(i['slot']=='bottom' for i in items):facts.append('full-length casual trousers')
  elif any(i['slot']=='bottom' for i in items) and not any(i['slot']=='top' for i in items):facts.append('an opaque casual shirt')
  fit=anatomy_fit(user.get('race','human'))
@@ -189,7 +194,7 @@ def clothing_facts(user,level):
  return ', '.join(facts)
 WARDROBE['scarf']=dict(name='Scarf',ru='Шарф',de='Schal',price=200,slot='neck',adult=False,emoji='🧣',image='wardrobe_scarf',fact='a soft lavender scarf')
 
-# Catalog expansion only. New tags are stored metadata, not image-generation facts.
+# Catalog tags are metadata; provider descriptions below stay non-explicit.
 # Keep the existing body/neck/legs slot names so old purchases remain compatible.
 SLOTS['outerwear']=('Верхняя одежда','Outerwear','Oberbekleidung')
 WARDROBE['tracksuit'].update(price=600,tags='tracksuit')
@@ -222,7 +227,7 @@ WARDROBE.update({
  'police_male':_catalog_item('Police outfit — male','Полицейская форма — мужская','Polizeikostüm — Herren',1500,'body',True,'sexy police uniform','👮','male'),
  'police_female':_catalog_item('Police outfit — female','Полицейская форма — женская','Polizeikostüm — Damen',1500,'body',True,'sexy police uniform','👮','female'),
 })
-# New adult-shop collection is catalog-only: no artwork jobs or photo prompt changes.
+# Product metadata is declared here; SAFE_ADULT_FACTS below supplies non-explicit wearable descriptions.
 ADULT_CATALOG_ITEMS={
  'male_leather_harness':_catalog_item('Leather harness and trousers','Кожаная портупея с брюками','Lederharness mit Hose',1800,'body',True,'mens leather harness, leather trousers','🖤','male'),
  'male_leather_bodysuit':_catalog_item('Leather bodysuit — male','Кожаный комбинезон — мужской','Leder-Overall — Herren',2400,'body',True,'mens leather bodysuit','🖤','male'),
@@ -328,3 +333,114 @@ def fitting_preview(user):
    index=11 if top=='crop_top' else 12 if bottom=='pencil_skirt' else 10 if top=='oversized_shirt' or bottom=='denim_shorts' else 13
   else:index=12 if top=='oversized_shirt' or bottom=='denim_shorts' else 8
  return '/assets/fitting_'+gender+'_'+str(index)+'.webp'
+
+
+# Opaque fashion versions of adult-shop products. Raw tags never become provider prompts.
+SAFE_ADULT_FACTS={
+ 'male_leather_harness':'a black leather fashion harness over an opaque fitted black shirt and trousers',
+ 'male_leather_bodysuit':'an opaque skin-tight black leather full-length suit with fitted limbs',
+ 'male_mesh_outfit':'a mesh-textured black shirt with opaque lining and tailored trousers',
+ 'male_bdsm_outfit':'an opaque fitted black leather fashion suit with decorative straps and buckles',
+ 'female_corset_skirt':'an opaque fitted corset-style top with a knee-length skirt',
+ 'female_harness_bodysuit':'an opaque full-coverage bodysuit with decorative fashion straps and opaque tights',
+ 'female_leather_outfit':'an opaque fitted black leather jacket and fitted trousers',
+ 'female_mesh_dress':'an opaque lined mesh-textured knee-length dress',
+ 'female_wetlook_catsuit':'an opaque skin-tight glossy black latex full-length catsuit, reflective rubber highlights, fitted waist and limbs, no loose cloth',
+ 'female_ribbed_tights_black':'opaque black ribbed tights',
+ 'female_ribbed_tights_cream':'opaque cream ribbed tights',
+ 'female_bodycon_jumpsuit':'an opaque close-fitting full-length jumpsuit with fitted waist and legs',
+ 'female_leather_miniskirt':'an opaque leather mini skirt worn over opaque tights',
+ 'female_pleated_miniskirt':'an opaque pleated mini skirt worn over opaque tights',
+ 'female_neckline_dress':'an opaque fitted dress with a tasteful V-neckline and covered torso',
+ 'female_fox_cosplay':'an opaque fox-themed costume dress, decorative fox-ear headband and boots',
+ 'female_satin_robe':'a belted satin robe closed securely over an opaque outfit',
+ 'female_kimono_robe':'a closed belted kimono robe with opaque lining',
+ 'female_strappy_lingerie':'an opaque full-coverage strappy fashion bodysuit with opaque tights',
+ 'female_stewardess':'an opaque flight-attendant uniform with scarf, cap, skirt and shoes',
+ 'female_teacher':'an opaque blouse, tailored knee-length skirt and a fitted blazer',
+ 'female_angel':'an opaque white angel-inspired dress with decorative wings and halo',
+ 'female_devil':'an opaque red devil-inspired fitted dress with decorative horns',
+ 'female_onepiece_swimsuit':'an opaque full-coverage one-piece swimsuit',
+ 'female_bikini':'an opaque two-piece swimsuit with full-coverage bottoms',
+ 'female_lace_bodystocking':'an opaque lined lace-textured full-length bodystocking',
+ 'female_bandage_dress':'an opaque fitted bandage-style knee-length dress',
+ 'female_openback_dress':'an opaque elegant dress with a small upper-back cutout',
+ 'male_wetlook_catsuit':'an opaque skin-tight glossy black latex full-length catsuit, reflective rubber highlights, fitted waist and limbs, no loose cloth',
+ 'male_bodycon_jumpsuit':'an opaque close-fitting full-length jumpsuit with fitted waist and legs',
+ 'male_satin_robe':'a closed belted satin robe over an opaque shirt and trousers',
+ 'male_fox_cosplay':'an opaque fox-themed jacket and trousers, decorative fox-ear headband and boots',
+}
+for _key,_fact in SAFE_ADULT_FACTS.items():
+ WARDROBE[_key].update(fact=_fact,catalog_only=False)
+
+ORDINARY_ITEMS=[
+ ('cotton_tshirt','Cotton T-shirt','Хлопковая футболка','Baumwoll-T-Shirt',250,'top','an opaque white cotton T-shirt','unisex'),
+ ('denim_jeans','Jeans','Джинсы','Jeans',400,'bottom','blue full-length denim jeans','unisex'),
+ ('hoodie','Hoodie','Худи','Hoodie',450,'top','an opaque lavender pullover hoodie','unisex'),
+ ('knit_sweater','Knitted sweater','Вязаный свитер','Strickpullover',450,'top','an opaque cream knitted sweater','unisex'),
+ ('linen_shirt','Linen shirt','Льняная рубашка','Leinenhemd',400,'top','an opaque pale blue linen shirt','unisex'),
+ ('chino_trousers','Chinos','Брюки чинос','Chinohose',450,'bottom','beige full-length chino trousers','unisex'),
+ ('casual_shorts','Casual shorts','Повседневные шорты','Freizeitshorts',300,'bottom','navy knee-length casual shorts','unisex'),
+ ('pleated_skirt','Pleated skirt','Плиссированная юбка','Faltenrock',450,'bottom','an opaque burgundy knee-length pleated skirt','female'),
+ ('cardigan','Cardigan','Кардиган','Strickjacke',500,'outerwear','a lavender cardigan over the selected top','unisex'),
+ ('bomber_jacket','Bomber jacket','Бомбер','Bomberjacke',600,'outerwear','a black bomber jacket','unisex'),
+ ('sneakers','Trainers','Кроссовки','Sneaker',350,'shoes','white trainers','unisex'),
+ ('ankle_boots','Ankle boots','Ботинки','Stiefeletten',500,'shoes','black ankle boots','unisex'),
+ ('beanie','Beanie','Шапка бини','Mütze',200,'head','a purple knitted beanie','unisex'),
+ ('beret','Beret','Берет','Baskenmütze',300,'head','a burgundy beret','female'),
+ ('sunglasses','Sunglasses','Солнцезащитные очки','Sonnenbrille',300,'face','black sunglasses','unisex'),
+ ('pendant','Pendant','Кулон','Anhänger',300,'neck','a delicate silver pendant necklace','unisex'),
+]
+SLOTS['face']=('Очки','Eyewear','Brille')
+for _key,_name,_ru,_de,_price,_slot,_fact,_gender in ORDINARY_ITEMS:
+ WARDROBE[_key]=dict(name=_name,ru=_ru,de=_de,price=_price,slot=_slot,fact=_fact,gender=_gender,adult=False,catalog_only=False,emoji='👗',image='catalog_'+_key,tags=_fact,occupies=[_slot])
+
+# These prepared complete looks already contain footwear. Preserve purchases, block duplicate shoes.
+INCLUDED_FOOTWEAR={'dress':'heeled shoes','tracksuit':'trainers','pajamas':'slippers','qipao':'heeled shoes','maid_outfit':'black shoes','nurse_outfit':'white shoes','latex_bodysuit':'black ankle boots','bunny_outfit':'black heeled shoes','business_suit':'dress shoes','casual_outfit':'trainers','sportswear':'trainers','stripper_outfit':'dress shoes','police_male':'black boots','police_female':'black boots','female_fox_cosplay':'boots','male_fox_cosplay':'boots','female_stewardess':'black shoes'}
+for _key,_shoes in INCLUDED_FOOTWEAR.items():
+ WARDROBE[_key]['includes_footwear']=True
+ WARDROBE[_key]['occupies']=sorted(set(WARDROBE[_key]['occupies'])|{'shoes'})
+ WARDROBE[_key]['fact']+=', with '+_shoes
+for _key in ('police_male','police_female'):WARDROBE[_key]['occupies']=list(SLOTS)
+
+FITTING_ATLAS={'female':{'dress':0,'latex_bodysuit':1,'bunny_outfit':2,'tracksuit':3,'pajamas':4,'maid_outfit':5,'nurse_outfit':6,'qipao':7,'police_female':13},'male':{'business_suit':8,'casual_outfit':9,'sportswear':10,'stripper_outfit':11,'police_male':12}}
+
+def fitting_state(user):
+ gender='male' if user.get('gender')=='male' else 'female';current=active_outfit(user);body=current.get('body')
+ import fitting_looks
+ complete=fitting_looks.matching(user,current)
+ if complete:return dict(base=complete,layers=[])
+ index=FITTING_ATLAS[gender].get(body)
+ base='/assets/fitting_v2_'+str(index if index is not None else (15 if gender=='male' else 14))+'.webp'
+ layers=[]
+ order={'legs':0,'bottom':1,'top':2,'body':3,'outerwear':4,'shoes':5,'neck':6,'head':7,'face':8,'ears':9,'wrist':10}
+ for slot,key in sorted(current.items(),key=lambda pair:order.get(pair[0],0)):
+  if slot=='body' and index is not None:continue
+  layers.append(dict(slot=slot,url='/assets/fitting_layer_'+key+'.webp'))
+ return dict(base=base,layers=layers)
+
+# Override old preview selection with a fixed common coordinate system.
+def fitting_preview(user):return fitting_state(user)['base']
+
+ACCESSORY_ITEMS=[
+ ('round_glasses','Round glasses','Круглые очки','Runde Brille',250,'face','thin round silver glasses','unisex'),
+ ('aviator_glasses','Aviator sunglasses','Очки-авиаторы','Pilotenbrille',350,'face','gold-framed aviator sunglasses','unisex'),
+ ('pearl_necklace','Pearl necklace','Жемчужное ожерелье','Perlenkette',500,'neck','a short pearl necklace fitted around the neck','female'),
+ ('silver_chain','Silver chain','Серебряная цепочка','Silberkette',350,'neck','a fine silver chain necklace','unisex'),
+ ('velvet_choker','Velvet choker','Бархатный чокер','Samtchoker',300,'neck','a burgundy velvet fashion choker','female'),
+ ('silk_neckerchief','Silk neckerchief','Шёлковый платок','Seidentuch',350,'neck','a lavender silk neckerchief tied around the neck','unisex'),
+ ('hoop_earrings','Hoop earrings','Серьги-кольца','Creolen',300,'ears','small silver hoop earrings','female'),
+ ('stud_earrings','Stud earrings','Серьги-гвоздики','Ohrstecker',200,'ears','small silver stud earrings','unisex'),
+ ('wristwatch','Wristwatch','Наручные часы','Armbanduhr',600,'wrist','a silver wristwatch','unisex'),
+ ('bracelet','Bracelet','Браслет','Armband',250,'wrist','a delicate silver bracelet','unisex'),
+ ('leather_cuff','Leather cuff','Кожаный браслет','Lederarmband',250,'wrist','a simple black leather wrist cuff','unisex'),
+ ('ribbon','Hair ribbon','Лента для волос','Haarschleife',200,'head','a burgundy hair ribbon bow','female'),
+ ('flower_clip','Flower hairclip','Заколка с цветком','Blumenhaarspange',200,'head','a small purple flower hairclip','female'),
+ ('crown','Tiara','Диадема','Diadem',700,'head','a small silver tiara resting on the head','unisex'),
+ ('plain_headband','Headband','Ободок','Haarreif',200,'head','a simple lavender headband','unisex'),
+ ('bow_tie','Bow tie','Галстук-бабочка','Fliege',250,'neck','a black formal bow tie','unisex'),
+]
+SLOTS.update(ears=('Серьги','Earrings','Ohrringe'),wrist=('На запястье','Wristwear','Armschmuck'))
+for _key,_name,_ru,_de,_price,_slot,_fact,_gender in ACCESSORY_ITEMS:
+ WARDROBE[_key]=dict(name=_name,ru=_ru,de=_de,price=_price,slot=_slot,fact=_fact,gender=_gender,adult=False,catalog_only=False,emoji='✨',image='catalog_'+_key,tags=_fact,occupies=[_slot])
+for _key in ('police_male','police_female'):WARDROBE[_key]['occupies']=list(SLOTS)

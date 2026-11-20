@@ -43,8 +43,9 @@ async def run():
   body={'outfit':chosen}
   async def request(_):return uid,u,body,None
   app._play_request=request
-  assert not json.loads((await app.api_wardrobe_handler(None)).text)['ok']
-  assert not wardrobe.active_outfit(u)
+  assert json.loads((await app.api_wardrobe_handler(None)).text)['ok']
+  assert wardrobe.active_outfit(u)['body']==chosen
+  assert wardrobe.WARDROBE[chosen]['fact'] in wardrobe.clothing_facts(u,5)
   body['outfit']='police_'+gender
   assert json.loads((await app.api_wardrobe_handler(None)).text)['ok']
   assert wardrobe.active_outfit(u)['body']=='police_'+gender
@@ -55,5 +56,5 @@ async def run():
  for uid,u in users.items():
   assert disk[str(uid)]['inventory']==u['inventory']
  app.photo_generation.generate.assert_not_awaited()
- print('Both genders: catalog-only additions, level gates, removed products, purchases, persistence, equip restrictions and no image-generation calls passed')
+ print('Both genders: non-explicit wardrobe additions, level gates, removed products, purchases, persistence, equip restrictions and no image-generation calls passed')
 with asyncio.Runner(loop_factory=LocalLoop) as runner:runner.run(run())
