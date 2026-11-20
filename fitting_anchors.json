@@ -1,0 +1,794 @@
+{
+  "body_view_female_angel.webp": {
+    "x": 159.7,
+    "top": 35,
+    "neck": 98,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 0.948
+  },
+  "body_view_female_teacher.webp": {
+    "x": 158.9,
+    "top": 17,
+    "neck": 59,
+    "head_width": 39,
+    "head_scale": 1.083,
+    "body_scale": 1.04
+  },
+  "body_view_sportswear.webp": {
+    "x": 159.6,
+    "top": 16,
+    "neck": 69,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 1.017
+  },
+  "body_view_female_leather_outfit.webp": {
+    "x": 159.5,
+    "top": 16,
+    "neck": 69,
+    "head_width": 39,
+    "head_scale": 1.083,
+    "body_scale": 1.017
+  },
+  "body_view_female_devil.webp": {
+    "x": 158.7,
+    "top": 28,
+    "neck": 80,
+    "head_width": 38,
+    "head_scale": 1.056,
+    "body_scale": 0.991
+  },
+  "body_view_female_bodycon_jumpsuit.webp": {
+    "x": 159.6,
+    "top": 16,
+    "neck": 69,
+    "head_width": 40,
+    "head_scale": 1.111,
+    "body_scale": 1.017
+  },
+  "body_view_tracksuit.webp": {
+    "x": 160.0,
+    "top": 17,
+    "neck": 72,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.009
+  },
+  "body_view_female_onepiece_swimsuit.webp": {
+    "x": 158.5,
+    "top": 17,
+    "neck": 71,
+    "head_width": 40,
+    "head_scale": 1.111,
+    "body_scale": 1.012
+  },
+  "body_view_female_stewardess.webp": {
+    "x": 160.0,
+    "top": 40,
+    "neck": 76,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.0
+  },
+  "body_view_mix_sweater.webp": {
+    "x": 159.8,
+    "top": 17,
+    "neck": 70,
+    "head_width": 40,
+    "head_scale": 1.111,
+    "body_scale": 1.014
+  },
+  "body_view_mix_hoodie.webp": {
+    "x": 159.9,
+    "top": 17,
+    "neck": 69,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 1.017
+  },
+  "body_view_mix_tshirt.webp": {
+    "x": 158.9,
+    "top": 18,
+    "neck": 71,
+    "head_width": 40,
+    "head_scale": 1.111,
+    "body_scale": 1.012
+  },
+  "body_view_female_harness_bodysuit.webp": {
+    "x": 159.6,
+    "top": 15,
+    "neck": 69,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 1.017
+  },
+  "body_view_maid_outfit.webp": {
+    "x": 160.8,
+    "top": 32,
+    "neck": 85,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.979
+  },
+  "body_view_qipao.webp": {
+    "x": 159.1,
+    "top": 16,
+    "neck": 70,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.014
+  },
+  "body_view_female_wetlook_catsuit.webp": {
+    "x": 159.7,
+    "top": 16,
+    "neck": 68,
+    "head_width": 39,
+    "head_scale": 1.083,
+    "body_scale": 1.019
+  },
+  "body_view_stripper_outfit.webp": {
+    "x": 160.1,
+    "top": 16,
+    "neck": 68,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.019
+  },
+  "body_view_female_lace_bodystocking.webp": {
+    "x": 158.7,
+    "top": 16,
+    "neck": 69,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 1.017
+  },
+  "body_view_female_fox_cosplay.webp": {
+    "x": 149.1,
+    "top": 39,
+    "neck": 84,
+    "head_width": 37,
+    "head_scale": 1.028,
+    "body_scale": 0.981
+  },
+  "body_view_male_latex_catsuit.webp": {
+    "x": 160.1,
+    "top": 17,
+    "neck": 75,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 1.002
+  },
+  "body_view_female_neckline_dress.webp": {
+    "x": 159.8,
+    "top": 17,
+    "neck": 71,
+    "head_width": 39,
+    "head_scale": 1.083,
+    "body_scale": 1.012
+  },
+  "body_view_casual_outfit.webp": {
+    "x": 160.2,
+    "top": 17,
+    "neck": 69,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 1.017
+  },
+  "body_view_mix_cardigan.webp": {
+    "x": 159.8,
+    "top": 17,
+    "neck": 69,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 1.017
+  },
+  "body_view_mix_bomber.webp": {
+    "x": 160.0,
+    "top": 17,
+    "neck": 91,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 0.965
+  },
+  "body_view_female_bandage_dress.webp": {
+    "x": 159.4,
+    "top": 18,
+    "neck": 70,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 1.014
+  },
+  "body_view_nurse_outfit.webp": {
+    "x": 159.6,
+    "top": 36,
+    "neck": 86,
+    "head_width": 40,
+    "head_scale": 1.111,
+    "body_scale": 0.976
+  },
+  "body_view_police_female.webp": {
+    "x": 159.5,
+    "top": 24,
+    "neck": 111,
+    "head_width": 13,
+    "head_scale": 0.7,
+    "body_scale": 0.917
+  },
+  "body_view_male_leather_bodysuit.webp": {
+    "x": 160.1,
+    "top": 17,
+    "neck": 75,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 1.002
+  },
+  "body_view_male_leather_harness.webp": {
+    "x": 159.5,
+    "top": 17,
+    "neck": 72,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 1.009
+  },
+  "body_view_pajamas_male.webp": {
+    "x": 160.2,
+    "top": 17,
+    "neck": 70,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 1.014
+  },
+  "body_view_male_wetlook_catsuit.webp": {
+    "x": 159.5,
+    "top": 15,
+    "neck": 68,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 1.019
+  },
+  "body_view_female_openback_dress.webp": {
+    "x": 159.2,
+    "top": 17,
+    "neck": 70,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 1.014
+  },
+  "body_view_male_mesh_outfit.webp": {
+    "x": 159.9,
+    "top": 14,
+    "neck": 68,
+    "head_width": 40,
+    "head_scale": 1.111,
+    "body_scale": 1.019
+  },
+  "body_view_male_bdsm_outfit.webp": {
+    "x": 161.3,
+    "top": 18,
+    "neck": 68,
+    "head_width": 39,
+    "head_scale": 1.083,
+    "body_scale": 1.019
+  },
+  "body_view_mix_linen.webp": {
+    "x": 160.2,
+    "top": 17,
+    "neck": 69,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 1.017
+  },
+  "body_view_female_strappy_lingerie.webp": {
+    "x": 159.2,
+    "top": 16,
+    "neck": 70,
+    "head_width": 39,
+    "head_scale": 1.083,
+    "body_scale": 1.014
+  },
+  "body_view_pajamas.webp": {
+    "x": 160.2,
+    "top": 17,
+    "neck": 72,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.009
+  },
+  "body_view_latex_bodysuit.webp": {
+    "x": 159.2,
+    "top": 17,
+    "neck": 71,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.012
+  },
+  "body_view_dress.webp": {
+    "x": 159.6,
+    "top": 17,
+    "neck": 72,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 1.009
+  },
+  "body_view_male_fox_cosplay.webp": {
+    "x": 159.2,
+    "top": 17,
+    "neck": 80,
+    "head_width": 36,
+    "head_scale": 1.0,
+    "body_scale": 0.991
+  },
+  "body_view_female_corset_skirt.webp": {
+    "x": 159.7,
+    "top": 15,
+    "neck": 69,
+    "head_width": 40,
+    "head_scale": 1.111,
+    "body_scale": 1.017
+  },
+  "body_view_male_bodycon_jumpsuit.webp": {
+    "x": 158.8,
+    "top": 16,
+    "neck": 70,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 1.014
+  },
+  "body_view_bunny_outfit.webp": {
+    "x": 159.7,
+    "top": 56,
+    "neck": 104,
+    "head_width": 40,
+    "head_scale": 1.111,
+    "body_scale": 0.934
+  },
+  "body_view_police_male.webp": {
+    "x": 158.9,
+    "top": 22,
+    "neck": 85,
+    "head_width": 22,
+    "head_scale": 0.7,
+    "body_scale": 0.979
+  },
+  "body_view_female_bikini.webp": {
+    "x": 159.7,
+    "top": 16,
+    "neck": 70,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 1.014
+  },
+  "body_view_tracksuit_male.webp": {
+    "x": 160.2,
+    "top": 16,
+    "neck": 66,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 1.024
+  },
+  "body_view_female_mesh_dress.webp": {
+    "x": 159.1,
+    "top": 16,
+    "neck": 69,
+    "head_width": 38,
+    "head_scale": 1.056,
+    "body_scale": 1.017
+  },
+  "body_view_mix_robe.webp": {
+    "x": 159.7,
+    "top": 17,
+    "neck": 71,
+    "head_width": 40,
+    "head_scale": 1.111,
+    "body_scale": 1.012
+  },
+  "body_view_business_suit.webp": {
+    "x": 159.5,
+    "top": 18,
+    "neck": 72,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 1.009
+  },
+  "mannequin_base_male.webp": {
+    "x": 161.1,
+    "top": 17,
+    "neck": 71,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 1.012
+  },
+  "mannequin_base_female.webp": {
+    "x": 161.8,
+    "top": 17,
+    "neck": 77,
+    "head_width": 38,
+    "head_scale": 1.056,
+    "body_scale": 0.998
+  },
+  "complete_clean_male_8.webp": {
+    "x": 160.7,
+    "top": 19,
+    "neck": 90,
+    "head_width": 36,
+    "head_scale": 1.0,
+    "body_scale": 0.967
+  },
+  "complete_clean_female_9.webp": {
+    "x": 159.4,
+    "top": 32,
+    "neck": 76,
+    "head_width": 54,
+    "head_scale": 1.25,
+    "body_scale": 1.0
+  },
+  "complete_clean_male_12.webp": {
+    "x": 159.3,
+    "top": 19,
+    "neck": 92,
+    "head_width": 38,
+    "head_scale": 1.056,
+    "body_scale": 0.962
+  },
+  "complete_clean_male_14.webp": {
+    "x": 159.8,
+    "top": 21,
+    "neck": 108,
+    "head_width": 40,
+    "head_scale": 1.111,
+    "body_scale": 0.925
+  },
+  "complete_clean_female_12.webp": {
+    "x": 158.8,
+    "top": 39,
+    "neck": 86,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.976
+  },
+  "complete_clean_male_6.webp": {
+    "x": 160.3,
+    "top": 42,
+    "neck": 78,
+    "head_width": 39,
+    "head_scale": 1.083,
+    "body_scale": 0.995
+  },
+  "complete_clean_extra_6.webp": {
+    "x": 160.3,
+    "top": 12,
+    "neck": 68,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 1.019
+  },
+  "complete_clean_male_11.webp": {
+    "x": 159.4,
+    "top": 18,
+    "neck": 61,
+    "head_width": 36,
+    "head_scale": 1.0,
+    "body_scale": 1.035
+  },
+  "complete_clean_female_7.webp": {
+    "x": 159.7,
+    "top": 17,
+    "neck": 79,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.993
+  },
+  "complete_clean_female_3.webp": {
+    "x": 158.8,
+    "top": 43,
+    "neck": 89,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.969
+  },
+  "complete_clean_extra_14.webp": {
+    "x": 160.1,
+    "top": 53,
+    "neck": 106,
+    "head_width": 39,
+    "head_scale": 1.083,
+    "body_scale": 0.929
+  },
+  "complete_clean_female_8.webp": {
+    "x": 157.2,
+    "top": 28,
+    "neck": 81,
+    "head_width": 55,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "complete_clean_male_9.webp": {
+    "x": 160.7,
+    "top": 55,
+    "neck": 99,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 0.946
+  },
+  "complete_clean_extra_15.webp": {
+    "x": 160.0,
+    "top": 28,
+    "neck": 82,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.986
+  },
+  "complete_clean_male_15.webp": {
+    "x": 159.9,
+    "top": 19,
+    "neck": 82,
+    "head_width": 40,
+    "head_scale": 1.111,
+    "body_scale": 0.986
+  },
+  "complete_clean_female_1.webp": {
+    "x": 160.1,
+    "top": 40,
+    "neck": 86,
+    "head_width": 51,
+    "head_scale": 1.25,
+    "body_scale": 0.976
+  },
+  "complete_clean_female_10.webp": {
+    "x": 159.1,
+    "top": 16,
+    "neck": 80,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.991
+  },
+  "complete_clean_female_14.webp": {
+    "x": 158.8,
+    "top": 24,
+    "neck": 77,
+    "head_width": 53,
+    "head_scale": 1.25,
+    "body_scale": 0.998
+  },
+  "complete_clean_female_0.webp": {
+    "x": 159.2,
+    "top": 29,
+    "neck": 83,
+    "head_width": 53,
+    "head_scale": 1.25,
+    "body_scale": 0.983
+  },
+  "complete_clean_extra_8.webp": {
+    "x": 159.8,
+    "top": 12,
+    "neck": 70,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.014
+  },
+  "complete_clean_extra_7.webp": {
+    "x": 159.8,
+    "top": 12,
+    "neck": 68,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.019
+  },
+  "complete_clean_extra_13.webp": {
+    "x": 159.5,
+    "top": 14,
+    "neck": 59,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 1.04
+  },
+  "complete_clean_extra_0.webp": {
+    "x": 159.1,
+    "top": 13,
+    "neck": 72,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 1.009
+  },
+  "complete_clean_extra_4.webp": {
+    "x": 159.1,
+    "top": 12,
+    "neck": 68,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.019
+  },
+  "complete_clean_male_5.webp": {
+    "x": 161.2,
+    "top": 42,
+    "neck": 84,
+    "head_width": 38,
+    "head_scale": 1.056,
+    "body_scale": 0.981
+  },
+  "complete_clean_extra_11.webp": {
+    "x": 160.1,
+    "top": 12,
+    "neck": 69,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.017
+  },
+  "complete_clean_male_13.webp": {
+    "x": 159.9,
+    "top": 17,
+    "neck": 77,
+    "head_width": 38,
+    "head_scale": 1.056,
+    "body_scale": 0.998
+  },
+  "complete_clean_female_5.webp": {
+    "x": 160.8,
+    "top": 37,
+    "neck": 82,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.986
+  },
+  "complete_clean_male_0.webp": {
+    "x": 161.5,
+    "top": 18,
+    "neck": 62,
+    "head_width": 36,
+    "head_scale": 1.0,
+    "body_scale": 1.033
+  },
+  "complete_clean_male_7.webp": {
+    "x": 160.0,
+    "top": 18,
+    "neck": 61,
+    "head_width": 35,
+    "head_scale": 0.972,
+    "body_scale": 1.035
+  },
+  "complete_clean_extra_3.webp": {
+    "x": 159.8,
+    "top": 13,
+    "neck": 72,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.009
+  },
+  "complete_clean_extra_9.webp": {
+    "x": 149.1,
+    "top": 39,
+    "neck": 84,
+    "head_width": 37,
+    "head_scale": 1.028,
+    "body_scale": 0.981
+  },
+  "complete_clean_male_10.webp": {
+    "x": 160.4,
+    "top": 17,
+    "neck": 83,
+    "head_width": 38,
+    "head_scale": 1.056,
+    "body_scale": 0.983
+  },
+  "complete_clean_female_6.webp": {
+    "x": 158.2,
+    "top": 36,
+    "neck": 81,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "complete_clean_male_4.webp": {
+    "x": 160.4,
+    "top": 18,
+    "neck": 81,
+    "head_width": 37,
+    "head_scale": 1.028,
+    "body_scale": 0.988
+  },
+  "complete_clean_female_15.webp": {
+    "x": 158.7,
+    "top": 16,
+    "neck": 59,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 1.04
+  },
+  "complete_clean_extra_10.webp": {
+    "x": 159.0,
+    "top": 12,
+    "neck": 69,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.017
+  },
+  "complete_clean_extra_12.webp": {
+    "x": 159.8,
+    "top": 42,
+    "neck": 77,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.998
+  },
+  "complete_clean_male_2.webp": {
+    "x": 160.5,
+    "top": 43,
+    "neck": 78,
+    "head_width": 39,
+    "head_scale": 1.083,
+    "body_scale": 0.995
+  },
+  "complete_clean_female_13.webp": {
+    "x": 160.7,
+    "top": 36,
+    "neck": 82,
+    "head_width": 50,
+    "head_scale": 1.25,
+    "body_scale": 0.986
+  },
+  "complete_clean_extra_5.webp": {
+    "x": 159.5,
+    "top": 12,
+    "neck": 68,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.019
+  },
+  "complete_clean_extra_1.webp": {
+    "x": 159.6,
+    "top": 13,
+    "neck": 71,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.012
+  },
+  "complete_clean_female_2.webp": {
+    "x": 159.5,
+    "top": 17,
+    "neck": 62,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 1.033
+  },
+  "complete_clean_female_4.webp": {
+    "x": 158.3,
+    "top": 23,
+    "neck": 76,
+    "head_width": 53,
+    "head_scale": 1.25,
+    "body_scale": 1.0
+  },
+  "complete_clean_female_11.webp": {
+    "x": 158.4,
+    "top": 40,
+    "neck": 89,
+    "head_width": 51,
+    "head_scale": 1.25,
+    "body_scale": 0.969
+  },
+  "complete_clean_extra_2.webp": {
+    "x": 160.0,
+    "top": 13,
+    "neck": 59,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.04
+  },
+  "complete_clean_male_3.webp": {
+    "x": 161.5,
+    "top": 19,
+    "neck": 61,
+    "head_width": 36,
+    "head_scale": 1.0,
+    "body_scale": 1.035
+  },
+  "complete_clean_male_1.webp": {
+    "x": 162.2,
+    "top": 17,
+    "neck": 88,
+    "head_width": 38,
+    "head_scale": 1.056,
+    "body_scale": 0.972
+  }
+}

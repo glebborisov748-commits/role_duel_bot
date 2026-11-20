@@ -1,5 +1,8 @@
 """Stored profile preferences, race choices and permanent wardrobe purchases."""
 import fandom_catalog
+import json
+from pathlib import Path
+FITTING_ANCHORS=json.loads(Path(__file__).with_name("fitting_anchors.json").read_text())
 
 PREFERENCES={
  'foot_focus':('Акцент на стопах','Foot focus','Fokus auf Füße'),
@@ -59,11 +62,6 @@ def anatomy_fit(race):
  if race in ('catfolk','foxfolk','wolffolk','dragonborn','succubus'):return 'Preserve the selected non-human ears or horns; fit headwear around them instead of removing them.'
  return ''
 
-def catalog_image(key,gender):
- # Full unisex garments have separate existing illustrations, rather than a shared feminine cut.
- previews={'tracksuit':{'male':6,'female':1},'pajamas':{'male':7,'female':2}}
- if key in previews:return 'fitting_'+('male' if gender=='male' else 'female')+'_'+str(previews[key]['male' if gender=='male' else 'female'])
- return WARDROBE[key]['image']
 
 WARDROBE={
  'bunny_outfit':{'name':'Bunny Outfit','ru':'Костюм «Зайка»','de':'Hasenkostüm','price':500,'emoji':'👗','image':'wardrobe_bunny','fact':'opaque black stage costume, tuxedo jacket, bow tie and rabbit-ear headband'},
@@ -300,12 +298,6 @@ for _key,_extra in {'bunny_outfit':['head'],'business_suit':['neck'],'stripper_o
  WARDROBE[_key]['occupies']=list(set(WARDROBE[_key]['occupies'])|set(_extra))
 
 
-def occupancy_label(key,lang='ru'):
- slots=occupied_slots(key)
- if len(slots)<2:return ''
- if slots==set(SLOTS):return {'ru':'Занимает весь образ','de':'Belegt das gesamte Outfit'}.get(lang,'Occupies the entire outfit')
- free=[labels[{'ru':0,'en':1,'de':2}.get(lang,1)] for slot,labels in SLOTS.items() if slot not in slots]
- return {'ru':'Свободно: ','de':'Frei: '}.get(lang,'Free: ')+', '.join(free)
 
 
 # Catalog suitability is enforced for both purchase and equip, not just hidden in the UI.
@@ -316,23 +308,6 @@ def gender_matches(user,key):
  gender=user.get('gender')
  return gender not in ('male','female') or WARDROBE[key].get('gender','unisex') in ('unisex',gender)
 
-def fitting_preview(user):
- """A static, coherent full outfit illustration; selecting clothes makes no provider call.
- These previews show the principal outfit; photo generation uses every equipped slot.
- """
- gender='male' if user.get('gender')=='male' else 'female'
- current=active_outfit(user);body=current.get('body')
- indices={
- 'female':{'dress':0,'tracksuit':1,'pajamas':2,'qipao':3,'maid_outfit':4,'nurse_outfit':5,'latex_bodysuit':6,'bunny_outfit':7,'police_female':8,'casual_outfit':14,'sportswear':15},
- 'male':{'business_suit':0,'casual_outfit':1,'sportswear':3,'police_male':4,'tracksuit':6,'pajamas':7,'stripper_outfit':10}}
- index=indices[gender].get(body)
- if index is None:
-  top=current.get('top');bottom=current.get('bottom')
-  if current.get('outerwear')=='leather_jacket':index=17 if gender=='female' else 2
-  elif gender=='female':
-   index=11 if top=='crop_top' else 12 if bottom=='pencil_skirt' else 10 if top=='oversized_shirt' or bottom=='denim_shorts' else 13
-  else:index=12 if top=='oversized_shirt' or bottom=='denim_shorts' else 8
- return '/assets/fitting_'+gender+'_'+str(index)+'.webp'
 
 
 # Opaque fashion versions of adult-shop products. Raw tags never become provider prompts.
@@ -405,19 +380,6 @@ for _key in ('police_male','police_female'):WARDROBE[_key]['occupies']=list(SLOT
 
 FITTING_ATLAS={'female':{'dress':0,'latex_bodysuit':1,'bunny_outfit':2,'tracksuit':3,'pajamas':4,'maid_outfit':5,'nurse_outfit':6,'qipao':7,'police_female':13},'male':{'business_suit':8,'casual_outfit':9,'sportswear':10,'stripper_outfit':11,'police_male':12}}
 
-def fitting_state(user):
- gender='male' if user.get('gender')=='male' else 'female';current=active_outfit(user);body=current.get('body')
- import fitting_looks
- complete=fitting_looks.matching(user,current)
- if complete:return dict(base=complete,layers=[])
- index=FITTING_ATLAS[gender].get(body)
- base='/assets/fitting_v2_'+str(index if index is not None else (15 if gender=='male' else 14))+'.webp'
- layers=[]
- order={'legs':0,'bottom':1,'top':2,'body':3,'outerwear':4,'shoes':5,'neck':6,'head':7,'face':8,'ears':9,'wrist':10}
- for slot,key in sorted(current.items(),key=lambda pair:order.get(pair[0],0)):
-  if slot=='body' and index is not None:continue
-  layers.append(dict(slot=slot,url='/assets/fitting_layer_'+key+'.webp'))
- return dict(base=base,layers=layers)
 
 # Override old preview selection with a fixed common coordinate system.
 def fitting_preview(user):return fitting_state(user)['base']
@@ -444,3 +406,82 @@ SLOTS.update(ears=('Серьги','Earrings','Ohrringe'),wrist=('На запяс
 for _key,_name,_ru,_de,_price,_slot,_fact,_gender in ACCESSORY_ITEMS:
  WARDROBE[_key]=dict(name=_name,ru=_ru,de=_de,price=_price,slot=_slot,fact=_fact,gender=_gender,adult=False,catalog_only=False,emoji='✨',image='catalog_'+_key,tags=_fact,occupies=[_slot])
 for _key in ('police_male','police_female'):WARDROBE[_key]['occupies']=list(SLOTS)
+
+
+# Explicitly distinguish human-faced folk from fully anthropomorphic species in the picker.
+RACES.update(catfolk=('Нэко: человек с кошачьими ушами','Neko: human with cat ears','Neko: Mensch mit Katzenohren'),foxfolk=('Человек с лисьими ушами','Human with fox ears','Mensch mit Fuchsohren'),wolffolk=('Человек с волчьими ушами','Human with wolf ears','Mensch mit Wolfsohren'),furry_cat=('Антрокот: морда и шерсть','Anthro cat: muzzle and fur','Anthro-Katze: Schnauze und Fell'),furry_fox=('Антролис: морда и шерсть','Anthro fox: muzzle and fur','Anthro-Fuchs: Schnauze und Fell'),furry_wolf=('Антроволк: морда и шерсть','Anthro wolf: muzzle and fur','Anthro-Wolf: Schnauze und Fell'))
+for _key,_gender in (('female_wetlook_catsuit','female'),('male_wetlook_catsuit','male')):
+ WARDROBE[_key].update(ru='Промокший комплект — '+('женский' if _gender=='female' else 'мужской'),name='Rain-soaked outfit — '+_gender,de='Regennasses Outfit',tags='rain soaked opaque shirt, wet fabric, water droplets',fact='a rain-soaked white shirt with visible water droplets and damp clinging folds, completely opaque lining and covered torso, dark tailored full-length trousers; damp wrinkled cotton fabric over a completely opaque white undershirt',includes_footwear=True)
+ WARDROBE[_key]['occupies']=sorted(set(WARDROBE[_key]['occupies'])|{'shoes'})
+WARDROBE['female_fox_cosplay']['fact']='an opaque orange fox-themed dress with a clean plain orange front, white collar and hem trim, fox-ear headband and boots; any decorative tail is behind the body'
+
+WARDROBE['male_latex_catsuit']=dict(name='Latex catsuit — male',ru='Латексный комбинезон — мужской',de='Latex-Catsuit — Herren',price=2000,slot='body',adult=True,gender='male',catalog_only=False,emoji='🖤',image='catalog_male_latex_catsuit',tags='skin tight glossy latex catsuit',fact='an opaque skin-tight glossy black latex full-length catsuit, fitted waist and limbs, reflective rubber highlights, black ankle boots',includes_footwear=True,occupies=['body','top','bottom','legs','outerwear','shoes'])
+# Complete mannequin illustrations include their footwear; prevent a second pair.
+for _key,_item in WARDROBE.items():
+ if _item.get('slot')=='body':
+  _item['includes_footwear']=True;_item['occupies']=sorted(set(_item['occupies'])|{'shoes'})
+
+def body_preview(key,gender):
+ suffix=key+'_male' if key in ('tracksuit','pajamas') and gender=='male' else key
+ return '/assets/body_view_'+suffix+'.webp'
+
+def catalog_image(key,gender):
+ if key in ('tracksuit','pajamas'):return body_preview(key,gender).split('/')[-1].removesuffix('.webp')
+ return WARDROBE[key]['image']
+
+def fitting_state(user):
+ import fitting_looks
+ gender='male' if user.get('gender')=='male' else 'female';current=active_outfit(user);body=current.get('body')
+ complete=fitting_looks.matching(user,current)
+ if complete:return dict(base=complete,layers=[])
+ prepared=fitting_looks.best_base(user,current)
+ consumed=set(prepared['slots']) if prepared else {'body'}
+ base=prepared['image'] if prepared else body_preview(body,gender) if body else '/assets/mannequin_base_'+gender+'.webp'
+ order={'legs':0,'bottom':1,'top':2,'outerwear':4,'shoes':5,'neck':6,'head':7,'face':8,'ears':9,'wrist':10}
+ layers=[dict(slot=slot,url='/assets/layer_v2_'+key+'.webp') for slot,key in sorted(current.items(),key=lambda pair:order.get(pair[0],0)) if slot not in consumed]
+ target=FITTING_ANCHORS.get(base.split('/')[-1],{});reference=FITTING_ANCHORS.get('mannequin_base_'+gender+'.webp',{})
+ for layer in layers:
+  slot=layer['slot']
+  if slot not in ('head','face','ears','neck','wrist'):continue
+  head=slot in ('head','face','ears');origin=reference.get('top',17) if head else reference.get('neck',76)
+  offset=(target.get('top',origin) if head else target.get('neck',origin))-origin
+  scale=(target.get('head_width',36)/max(1,reference.get('head_width',36))) if head else target.get('body_scale',1)/max(.1,reference.get('body_scale',1))
+  layer.update(offset_x=round((target.get('x',160)-reference.get('x',160))/320*100,3),offset_y=round(offset/512*100,3),scale=round(max(.7,min(1.25,scale)),3),origin_y=round(origin/512*100,3))
+ return dict(base=base,layers=layers)
+for _key in ('maid_outfit','nurse_outfit'):
+ WARDROBE[_key]['occupies']=sorted(set(WARDROBE[_key]['occupies'])|{'head'})
+WARDROBE['female_teacher']['occupies']=sorted(set(WARDROBE['female_teacher']['occupies'])|{'face'})
+
+def occupancy_label(key,lang='ru'):
+ item=WARDROBE[key]
+ if item.get('slot')=='body':
+  return {'ru':'Комплект с обувью','de':'Komplettes Outfit mit Schuhen'}.get(lang,'Complete outfit with shoes')
+ return ''
+
+# New names bypass caches containing the old contaminated atlas crops.
+for _key,_item in WARDROBE.items():_item['image']='clean_catalog_'+_key
+
+def migrate_materials(user):
+ """Preserve previously bought glossy wet-look costumes as latex after the material split."""
+ if user.get('wardrobe_material_version')==2:return False
+ inventory=user.get('inventory') or {};active=user.get('active_outfit') or {};changed=False
+ for old,new in (('female_wetlook_catsuit','latex_bodysuit'),('male_wetlook_catsuit','male_latex_catsuit')):
+  if inventory.get(old):
+   inventory[new]=max(1,inventory.get(new,0));changed=True
+   if active.get('body')==old:active['body']=new;user['wardrobe_outfit']=new
+ if changed:user['inventory']=inventory;user['active_outfit']=active
+ user['wardrobe_material_version']=2
+ return True
+# Facts match the footwear and built-in accessories visible in the complete outfit art.
+for _key,_shoes in {
+ 'male_leather_harness':'black boots','male_leather_bodysuit':'black boots','male_mesh_outfit':'black shoes','male_bdsm_outfit':'black boots',
+ 'female_corset_skirt':'black heeled shoes','female_harness_bodysuit':'black ankle boots','female_leather_outfit':'black ankle boots','female_mesh_dress':'black heeled shoes',
+ 'female_wetlook_catsuit':'black ankle boots','female_bodycon_jumpsuit':'black ankle boots','female_neckline_dress':'heeled shoes','female_strappy_lingerie':'black ankle boots',
+ 'female_teacher':'black heeled shoes','female_angel':'white shoes','female_devil':'black boots','female_onepiece_swimsuit':'blue sandals','female_bikini':'green sandals',
+ 'female_lace_bodystocking':'black heeled shoes','female_bandage_dress':'black heeled shoes','female_openback_dress':'red heeled shoes','male_wetlook_catsuit':'dark shoes','male_bodycon_jumpsuit':'black boots'
+}.items():
+ if not any(v in WARDROBE[_key]['fact'] for v in ('boots','shoes','sandals')):WARDROBE[_key]['fact']+=', with '+_shoes
+WARDROBE['female_teacher']['fact']+=', with thin round glasses'
+WARDROBE['nurse_outfit']['fact']+=', with a matching nurse cap'
+WARDROBE['maid_outfit']['fact']+=', with a matching maid headpiece'
+for _key in ('police_male','police_female'):WARDROBE[_key]['fact']+=', with a matching police cap'

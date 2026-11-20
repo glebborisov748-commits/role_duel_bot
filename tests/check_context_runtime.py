@@ -21,10 +21,10 @@ async def run():
  app.bot.send_message=AsyncMock();app.photo_generation.token=lambda:'mock';app.photo_generation.generate=AsyncMock(return_value=(b'\xff\xd8\xffmock','jpg'))
  app.call_ai=lambda *a,**kw:SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content='{"allowed":true,"setting":"home","lighting":"soft","pose":"standing"}'))])
  for i,key in enumerate(fandom_catalog.TEMPLATES):
-  uid=1200+i;u=app.get_user(uid);u.update(lang='ru',verified=True,agreement_accepted=True)
+  uid=1300+i;u=app.get_user(uid);u.update(lang='ru',verified=True,agreement_accepted=True)
   result=await call(app.api_app_create_handler,uid,world='anime',style='warm',scene='live',character_template=key,avatar_preset='male_2')
   assert result['ok'],result
-  assert result['state']['character']['avatar_url'].endswith('male_2.webp')
+  assert result['state']['character']['avatar_url'] is None
   assert u['char_name']==fandom_catalog.TEMPLATES[key]['ru']
   assert u['race']==fandom_catalog.TEMPLATES[key]['race'] and not u.get('avatar_job')
  app.photo_generation.generate.assert_not_awaited()
@@ -34,12 +34,13 @@ async def run():
  result=await call(app.api_app_create_handler,uid,world='anime',gender='female',style='warm',scene='live',appearance=dict(app.character_options.DEFAULT),avatar='data:image/png;base64,'+png,name='Аля')
  assert result['ok'] and u.get('avatar')
  identity=app.photo_appearance(u)
- assert (await call(app.api_app_avatar_handler,uid,preset='female_2'))['ok']
+ assert not (await call(app.api_app_avatar_handler,uid,preset='female_2'))['ok']
+ assert (await call(app.api_app_avatar_handler,uid,remove=True))['ok']
  assert app.photo_appearance(u)==identity and not u.get('avatar')
  app.photo_wallet.grant(u,4)
  u['history']=[{'role':'assistant','content':'*Аля подходит ближе и наклоняется к тебе.*'}]
  await app.app_photo_generate(uid,u,'Фото по беседе')
- prompt=app.photo_generation.generate.call_args.args[0];assert 'visibly bent at the waist' in prompt and 'inset portrait' in prompt
+ prompt=app.photo_generation.generate.call_args.args[0];assert 'visibly bent at the waist' in prompt and 'one continuous uninterrupted scene' in prompt.lower()
  u['history']=[{'role':'assistant','content':'*Аля целует тебя.*'}]
  await app.app_photo_generate(uid,u,'Фото по беседе');assert 'one face directed at the viewer' in app.photo_generation.generate.call_args.args[0]
  u['inventory']={k:1 for k in w.WARDROBE};w.equip(u,'latex_bodysuit',5)
@@ -51,5 +52,5 @@ async def run():
  u['inventory']['pendant']=1
  fixture={'state':app.serialize_app_state(u),'shop':app.serialize_shop_state(u),'onboarding':app.serialize_app_state(app.get_user(1211))}
  Path('/tmp/rd-context-fixtures.json').write_text(json.dumps(fixture,ensure_ascii=False))
- print('Signed APIs: six canonical characters, free upload/presets, avatar identity independence, recent leaning pose and one-face POV kiss passed')
+ print('Signed APIs: canonical character references, free upload, removed preset avatars, avatar identity independence, recent leaning pose and one-face POV kiss passed')
 with asyncio.Runner(loop_factory=Loop) as runner:runner.run(run())

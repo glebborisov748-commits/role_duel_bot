@@ -33,7 +33,7 @@ def token():
 
 
 def negative_identity(gender=None,appearance=None,race=None):
-    words=['child','minor','low quality','multiple people','two people','couple','split screen','collage','duplicate person','camera device','tripod','camera lens in frame','picture in picture','inset portrait','contact sheet','text','watermark','logo']
+    words=['child','minor','low quality','multiple people','two people','couple','split screen','collage','duplicate person','camera device','tripod','camera lens in frame','picture in picture','inset portrait','contact sheet','headshot inset','corner face overlay','extra portrait','character reference sheet','multiple panels','photo border','portrait and body side by side','text','watermark','logo']
     if gender=='male':words+=['woman','girl','female','feminine breasts']
     elif gender=='female':words+=['man','boy','male','beard']
     kind=profile_options.race_kind(race)
@@ -46,6 +46,13 @@ def negative_identity(gender=None,appearance=None,race=None):
     return ', '.join(words)
 
 
+def material_negative(prompt):
+ text=prompt.lower()
+ if 'rain-soaked' in text:return ', latex, rubber, latex catsuit, glossy rubber suit, transparent skin exposure'
+ if 'latex' in text:return ', oversized clothes, baggy jumpsuit, loose fabric, cotton catsuit'
+ return ''
+
+
 async def generate(prompt, *, world=None, gender=None, appearance=None, race=None):
     if not token():
         raise RuntimeError('Problembo token missing')
@@ -55,7 +62,7 @@ async def generate(prompt, *, world=None, gender=None, appearance=None, race=Non
     headers = {'Authorization': 'Bearer ' + token()}
     async with httpx.AsyncClient(timeout=25) as client:
         response = await client.post(BASE_URL + '/image-gen/tasks', headers=headers, json={
-            'modelId': model_for(world,gender), 'prompt': prefix+prompt, 'aspectRatio':'VERTICAL', 'negativePrompt': negative_identity(gender,appearance,race), 'imageCount': 1})
+            'modelId': model_for(world,gender), 'prompt': prefix+prompt, 'aspectRatio':'VERTICAL', 'negativePrompt': negative_identity(gender,appearance,race)+material_negative(prompt), 'imageCount': 1})
         response.raise_for_status()
         task_id = response.json()['taskId']
         for _ in range(80):

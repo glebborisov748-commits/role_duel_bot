@@ -32,7 +32,7 @@ with sync_playwright() as p:
   page.wait_for_function('()=>Array.from(document.querySelectorAll(".fitting-stage img")).every(x=>x.complete&&x.naturalWidth>0)')
   assert page.locator('.fitting-stage:not(.cabinet-open) .tailor-base').evaluate('e=>getComputedStyle(e).visibility')=='hidden'
   assert page.locator('.fitting-detail').count()==0
-  assert page.locator('.tailor-base').get_attribute('src').endswith('complete_female_0.webp')
+  assert page.locator('.tailor-base').get_attribute('src').endswith('complete_clean_female_0.webp')
   assert page.locator('select[data-slot="shoes"]').is_disabled()
   page.screenshot(path=f'/tmp/context-closed-{width}.png')
   page.locator('.cabinet-doors').click();page.wait_for_timeout(850)
@@ -43,16 +43,14 @@ with sync_playwright() as p:
    b=layer.bounding_box();assert abs(b['x']-box['x'])<1 and abs(b['width']-box['width'])<1
   assert page.evaluate('document.documentElement.scrollWidth<=innerWidth')
   page.screenshot(path=f'/tmp/context-fitting-{width}.png')
-  page.locator('.complete-looks summary').click();page.locator('.complete-look').nth(1).click();assert page.locator('.tailor-base').get_attribute('src').endswith('complete_female_1.webp')
+  page.locator('.complete-looks summary').click();page.locator('.complete-look').nth(1).click();assert page.locator('.tailor-base').get_attribute('src').endswith('complete_clean_female_1.webp')
   state=copy.deepcopy(fixture['onboarding'])
   page.goto('https://fixture.test/app');page.wait_for_selector('.ob-nav .btn')
   for _ in range(2):
    page.locator('.opt:not(.locked)').first.click();page.locator('.ob-nav .btn').last.click()
-  page.wait_for_selector('#character-template');assert page.locator('.avatar-preset').count()==4
+  page.wait_for_selector('#onb-generate-avatar');assert page.locator('.avatar-presets,#character-template').count()==0
   assert page.locator('[data-appearance]').count()>0
-  page.locator('#character-template').select_option('ada_wong');assert page.locator('[data-appearance]').count()==0
-  assert page.locator('.avatar-preset img').count()==4
-  page.locator('.avatar-preset').nth(2).click();page.screenshot(path=f'/tmp/context-onboarding-{width}.png')
+  page.screenshot(path=f'/tmp/context-onboarding-{width}.png')
   state=copy.deepcopy(release['states']['super_pro']);state['settings']['tour_seen']=True;state['messages']=[];state['reply_choices']=['Привет! Чем сейчас занята?','Что тебя порадовало?','Какой фильм посмотрим?','Какую музыку включим?'];state['pending']=False
   page.goto('https://fixture.test/app');page.wait_for_selector('.rd-choice');assert page.locator('.rd-choice').count()==4
   page.locator('#input').fill('Проверяем плавное сообщение');page.locator('#send').click();page.wait_for_selector('.message-flight')

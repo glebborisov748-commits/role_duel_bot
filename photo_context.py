@@ -10,4 +10,4 @@ def render_prompt(user,appearance,raw,context,level):
 def avatar_prompt(user,appearance,context,level):
  world='natural realistic character image' if user.get('world')=='realism' else 'highly detailed anime illustration'
  return (world+'. Exactly one adult '+profile_options.photo_subject(user.get('race','human'),user.get('gender'))+', age 25+. Complete full-length character, head and shoes fully visible, generous margins. Selected appearance: '+appearance+'. '+profile_options.clothing_facts(user,level)+'. '+context+
- '. Neutral non-explicit fashion image. One coherent view, no separate face inset, no reference sheet, no visible photographic equipment, no text, no watermark.')
+ '. Non-explicit fashion scene in one continuous uninterrupted composition. Depict this character exactly once, face and body in the same scene.')

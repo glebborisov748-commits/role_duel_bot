@@ -21,7 +21,7 @@ class NonhumanIdentityTests(unittest.TestCase):
      prompt=options.identity(u)
      self.assertIn(profile.RACE_FACTS[race],prompt)
      self.assertIn(profile.photo_subject(race,gender),prompt)
-     self.assertIn('No second person',prompt)
+     self.assertIn('One continuous depiction',prompt)
   self.assertIn('human face',profile.RACE_FACTS['foxfolk'])
   self.assertIn('fox muzzle',profile.RACE_FACTS['furry_fox'])
  def test_nonhuman_surfaces_do_not_become_human_skin(self):

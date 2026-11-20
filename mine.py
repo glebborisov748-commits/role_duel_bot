@@ -16,7 +16,7 @@ def new_veins(run):
 def start(user):
  if user.get('mine_run'):return
  if user.get('mine_ready_at',0)>time.time():raise MineError('Смена закончена. Перед новым спуском нужен короткий отдых.')
- run={'id':secrets.token_hex(12),'depth':1,'gas':0,'bag':[],'strikes':0,'last':0,'closed':False,'collapsed':False};new_veins(run);user['mine_run']=run
+ run={'id':secrets.token_hex(12),'depth':1,'gas':0,'bag':[],'strikes':0,'last':0,'closed':False,'collapsed':False,'revision':0};new_veins(run);user['mine_run']=run
 
 def snapshot(user):
  run=user.get('mine_run');rank=min(len(UPGRADE_COSTS),user.get('mine_rank',0))
@@ -25,6 +25,7 @@ def snapshot(user):
  if not run:return result
  result['run']={k:run[k] for k in ('id','depth','gas','strikes','closed','collapsed','selected')}
  result['run'].update(ready_ms=max(0,int((run['last']+(.15 if run.get('last_kind')=='move' else max(.25,.7-.08*rank))-time.time())*1000)),bag_value=sum(x['value'] for x in run['bag']),bag=list(run['bag']),veins=[{'hardness':v['hardness'],'left':v['left'],'gas':v['gas'],'done':v['done'],'ore':ORES[v['ore']][1]} for v in run['veins']])
+ result['run']['revision']=run.get('revision',0)
  result['run']['maze']=mine_maze.snapshot(run,rank)
  return result
 
@@ -43,18 +44,20 @@ def action(user,body):
   amount=sum(x['value'] for x in run['bag']);count=len(run['bag']);collection=user.setdefault('mine_collection',{})
   for ore in run['bag']:collection[ore['key']]=collection.get(ore['key'],0)+1
   user.pop('mine_run');user['mine_ready_at']=time.time()+60;return amount,count
+ if kind=='aim':
+  mine_maze.aim(run,body.get('angle'),MineError);run['revision']=run.get('revision',0)+1;return 0,0
  if run['closed']:raise MineError('Поднимись с оставшейся добычей')
- now=time.time();delay=.15 if kind=='move' else max(.25,.7-.08*user.get('mine_rank',0))
+ now=time.time();delay=.15 if kind=='move' or run.get('last_kind')=='move' else max(.25,.7-.08*user.get('mine_rank',0))
  if now-run['last']<delay:raise MineError('Дождись следующего удара')
  if kind=='vent':
   if not run['gas']:raise MineError('Воздух уже чистый')
-  run['gas']=max(0,run['gas']-35);run['last']=now+1.0;return 0,0
+  run['gas']=max(0,run['gas']-35);run['last']=now+1.0;run['last_kind']='vent';run['revision']=run.get('revision',0)+1;return 0,0
  if kind=='descend':
   if not mine_maze.at_exit(run) and not any(v['done'] for v in run['veins']):raise MineError('Сначала добудь хотя бы одну жилу')
   if run['depth']>=10:raise MineError('Достигнут предел спуска — поднимай добычу')
-  run['depth']+=1;run['gas']=min(100,run['gas']+8);run['last']=now;new_veins(run);return 0,0
+  run['depth']+=1;run['gas']=min(100,run['gas']+8);run['last']=now;new_veins(run);run['revision']=run.get('revision',0)+1;return 0,0
  if kind in ('move','excavate'):
-  mine_maze.action(run,body,user.get('mine_rank',0),ORES,MineError);run['last']=now;run['last_kind']=kind;return 0,0
+  mine_maze.action(run,body,user.get('mine_rank',0),ORES,MineError);run['last']=now;run['last_kind']=kind;run['revision']=run.get('revision',0)+1;return 0,0
  if kind!='strike':raise MineError('Неизвестное действие')
  index=body.get('vein')
  if type(index) is not int or index not in range(3):raise MineError('Выбери одну из трёх жил')

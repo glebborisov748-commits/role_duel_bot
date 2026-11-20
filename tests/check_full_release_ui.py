@@ -57,19 +57,19 @@ with sync_playwright() as p:
   page.mouse.up();ring=page.locator('.energy-ring');assert ring.is_enabled()
   ring.click();assert not any(path=='/api/app/wake' for path,_ in calls)
   box=ring.bounding_box();x=box['x']+box['width']/2;y=box['y']+box['height']/2
-  page.mouse.move(x,y);page.mouse.down();page.mouse.move(x,y-95,steps=8);page.wait_for_timeout(1400)
+  page.mouse.move(x,y);page.mouse.down();page.mouse.move(x,y-95,steps=8);page.wait_for_timeout(350)
   assert page.locator('.can-opened').count()==0
-  page.wait_for_timeout(1000);assert page.locator('.can-opened').count()==1
+  page.wait_for_timeout(650);assert page.locator('.can-opened').count()==1
   assert page.locator('.energy-can-open').evaluate('im=>im.complete&&im.naturalWidth>0')
   assert page.locator('.energy-ritual .btn.ghost').count()==0
   page.screenshot(path=f'/tmp/release-open-can-{width}.png')
   page.mouse.up();page.wait_for_timeout(1000)
   assert sum(path=='/api/app/wake' for path,_ in calls)==1
-  page.goto('https://fixture.test/work?game=mine');page.wait_for_selector('.mine-maze');assert page.locator('#sound-toggle').is_hidden()
-  assert page.locator('.maze-cell').count()==81 and page.locator('.maze-cell.fog').count()>0
+  page.goto('https://fixture.test/work?game=mine');page.wait_for_selector('.mine-world-canvas');assert page.locator('#sound-toggle').is_hidden()
+  assert page.locator('.mine-world-canvas').count()==1 and page.locator('.mine-aim').count()==1
   page.screenshot(path=f'/tmp/release-maze-{width}.png')
-  page.locator('#tab-dig').click();page.wait_for_selector('.dig-cutaway')
-  assert page.locator('.dig-cell').count()==25 and page.locator('.dig-cell.buried:disabled').count()==20
+  page.locator('#tab-dig').click();page.wait_for_selector('.dig-world-canvas')
+  assert page.locator('.dig-world-canvas').count()==1 and page.locator('#game-dig .work-dpad').count()==1
   page.screenshot(path=f'/tmp/release-dig-{width}.png')
   page.goto('https://fixture.test/work?game=clicker');page.wait_for_selector('.hacker-wire-end')
   for _ in range(4):

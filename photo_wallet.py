@@ -52,6 +52,8 @@ def finish(user,key,refund=False):
   target=next((g for g in user.get('photo_grants',[]) if g['id']==entry.get('grant_id') and g['expires_at']>now().isoformat()),None)
   if entry.get('portrait_credit'):user['portrait_credits']=user.get('portrait_credits',0)+1
   elif target:target['remaining']+=1
+  elif entry.get('grant_id') and entry.get('expires_at','')>now().isoformat():
+   user.setdefault('photo_grants',[]).append({'id':entry['grant_id'],'remaining':1,'expires_at':entry['expires_at']})
   else:grant(user,1)
  return True
 
@@ -96,7 +98,7 @@ def repair_admin_subscription(user):
 def reserve_portrait(user):
  ensure(user)
  if 'avatar' in user['photo_reservations']:return False
- if user.get('portrait_credits',0)<=0:return False
+ if user.get('portrait_credits',0)<=0:return reserve(user,'avatar')
  user['portrait_credits']-=1
  user['photo_reservations']['avatar']={'portrait_credit':True,'started':now().isoformat()}
  return True

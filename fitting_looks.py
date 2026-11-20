@@ -85,3 +85,44 @@ def equip(user,key,level):
  for slot,item in look['slots'].items():w.equip(trial,item,level,slot)
  user['active_outfit']=trial['active_outfit'];user['wardrobe_outfit']=trial.get('wardrobe_outfit')
  return user['active_outfit']
+
+# Every full outfit has a whole-body illustration, even before adding accessories.
+import profile_options as _wardrobe
+for _look in LOOKS.values():
+ if 'body' in _look['slots']:
+  _look['slots'].pop('shoes',None)
+  if len(_look['slots'])==1:_look['image']=_wardrobe.body_preview(_look['slots']['body'],_look['gender'])
+for _key,_item in _wardrobe.WARDROBE.items():
+ if _item.get('slot')!='body':continue
+ for _gender in ('male','female'):
+  if _item.get('gender','unisex') not in ('unisex',_gender):continue
+  LOOKS['body_'+_gender+'_'+_key]=dict(gender=_gender,slots={'body':_key},image=_wardrobe.body_preview(_key,_gender))
+
+# A prepared look must obey the same occupancy rules as manual selection.
+for _key,_look in list(LOOKS.items()):
+ _test={'gender':_look['gender'],'inventory':{item:1 for item in _look['slots'].values()}}
+ try:
+  for _slot,_item in _look['slots'].items():_wardrobe.equip(_test,_item,5,_slot)
+ except ValueError:LOOKS.pop(_key);continue
+ if '/complete_' in _look['image']:_look['image']=_look['image'].replace('/complete_','/complete_clean_')
+# Old glossy ready combinations now belong to latex, not rain-soaked fabric.
+for _key,_look in LOOKS.items():
+ _body=_look['slots'].get('body')
+ if not _key.startswith('body_') and _body in ('female_wetlook_catsuit','male_wetlook_catsuit'):
+  _look['slots']['body']='latex_bodysuit' if _body.startswith('female') else 'male_latex_catsuit'
+for _key,_gender,_slots in (
+ ('mix_tshirt','female',{'top':'cotton_tshirt','bottom':'denim_jeans','shoes':'sneakers'}),
+ ('mix_hoodie','female',{'top':'hoodie','bottom':'denim_jeans','shoes':'sneakers'}),
+ ('mix_linen','male',{'top':'linen_shirt','bottom':'chino_trousers','shoes':'sneakers'}),
+ ('mix_bomber','male',{'outerwear':'bomber_jacket','top':'cotton_tshirt','bottom':'denim_jeans','shoes':'sneakers'})
+):LOOKS[_key]=dict(gender=_gender,slots=_slots,image='/assets/body_view_'+_key+'.webp')
+
+def best_base(user,current):
+ """Reuse a coherent clothing render when only extra accessories differ."""
+ main={'body','top','bottom','legs','outerwear','shoes'};selected_main={k:v for k,v in current.items() if k in main};candidates=[]
+ for look in LOOKS.values():
+  if look['gender']!=user.get('gender','female'):continue
+  if {k:v for k,v in look['slots'].items() if k in main}!=selected_main:continue
+  if not all(current.get(k)==v for k,v in look['slots'].items()):continue
+  candidates.append(look)
+ return max(candidates,key=lambda v:len(v['slots'])) if candidates else None

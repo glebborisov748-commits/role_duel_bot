@@ -36,4 +36,4 @@ def details(raw,context=None,allow_romance=True):
 def portrait_prompt(appearance,gender,raw,world=None,outfit=None,race=None,context=None,allow_romance=True):
  style='Natural realistic character image' if world=='realism' else 'Highly detailed anime illustration'
  return (style+'. Exactly one adult '+profile_options.photo_subject(race,gender)+', age 25+. Selected appearance: '+appearance+'. Clothing: '+(outfit or 'an opaque casual outfit')+'. '+details(raw,context,allow_romance)+
- '. One coherent image, one character, natural anatomy. Non-explicit, clothing stays on. No visible photographic equipment, no inset portrait, no collage, no sheet of multiple views, no lettering or watermark.')
+ '. One continuous uninterrupted scene with one depiction of the character, the face belongs to the same visible body, natural anatomy. Non-explicit, clothing stays on.')

@@ -33,18 +33,60 @@ def configure(body):
 
 def character_name(user):
  return user.get('char_name') or (selected(user) or {}).get('ru' if user.get('lang','ru')=='ru' else 'en') or ('Персонаж' if user.get('lang','ru')=='ru' else 'Character')
-def identity(user):
- v=selected(user)
- return ('Exactly one '+v['identity']+'. One coherent person, not a costume display or character sheet. ') if v else None
 
-def prompt_rule(user):
- v=selected(user)
- if not v:return ''
- return ('Ты — самостоятельная вымышленная интерпретация '+v['ru']+' из '+v['source']+'. '+v['persona']+
-         ' Узнаваемый образ: '+v['identity']+'. Это обычное общение и неоткровенные приключения. Не создавай сексуальные сцены и не заявляй, что это официальный персонаж или сервис. ')
-def family_friendly(user):return bool((selected(user) or {}).get('family_friendly'))
 def avatar_url(user):
  key=user.get('avatar_preset');key=key if key in AVATARS else ('male_1' if user.get('gender')=='male' else 'female_1')
  return '/assets/default_avatar_'+key+'.webp'
 def avatar_choices(lang='ru'):
  return [dict(key=k,label=v[0 if lang=='ru' else 1],image='/assets/default_avatar_'+k+'.webp') for k,v in AVATARS.items()]
+
+ALIASES={'ada_wong':('ада вонг','ada wong','аля вонг'),'two_b':('2b','2б','nier automata','nier: automata'),'diane_foxington':('диана фоксингтон','диана фокс','diane foxington'),'chica':('чика','chica'),'nico_robin':('нико робин','nico robin'),'spike_spiegel':('спайк шпигель','spike spiegel')}
+def detect(text):
+ import re
+ value=str(text or '').lower()
+ return next((key for key,names in ALIASES.items() if any(re.search(r'(?<!\w)'+re.escape(n)+r'(?!\w)',value) for n in names)),None)
+
+# Additional adult references resolve free text; the UI no longer imposes preset cards.
+for _key,_ru,_en,_source,_gender,_hair,_eyes,_persona in [
+ ('lara_croft','Лара Крофт','Lara Croft','Tomb Raider','female','brown','brown','Взрослая исследовательница, смелая и любознательная; любит историю и загадки.'),
+ ('jill_valentine','Джилл Валентайн','Jill Valentine','Resident Evil','female','brown','blue','Собранная, решительная и заботливая взрослая героиня приключений.'),
+ ('leon_kennedy','Леон Кеннеди','Leon Kennedy','Resident Evil','male','blonde','blue','Спокойный взрослый агент с сухим юмором и чувством ответственности.'),
+ ('geralt','Геральт','Geralt','The Witcher','male','silver','amber','Немногословный взрослый странник с ироничным юмором и вниманием к поступкам.'),
+ ('yennefer','Йеннифэр','Yennefer','The Witcher','female','black','violet','Уверенная взрослая чародейка с острым умом, достоинством и тонкой иронией.'),
+ ('bayonetta','Байонетта','Bayonetta','Bayonetta','female','black','grey','Элегантная взрослая героиня с театральным юмором и уверенной манерой общения.'),
+ ('chun_li','Чунь Ли','Chun-Li','Street Fighter','female','brown','brown','Дисциплинированная взрослая спортсменка, дружелюбная и уверенная.'),
+ ('samus','Самус Аран','Samus Aran','Metroid','female','blonde','blue','Сдержанная взрослая космическая исследовательница, наблюдательная и самостоятельная.')]:
+ TEMPLATES[_key]=dict(ru=_ru,en=_en,source=_source,gender=_gender,race='human',hair_style='medium' if _gender=='male' else 'long',hair_color=_hair,eyes=_eyes,skin='light',identity='adult '+_en+'-inspired fictional '+('man' if _gender=='male' else 'woman')+' from '+_source,clothes='an opaque practical adventure outfit with full-length trousers and boots',persona=_persona)
+ ALIASES[_key]=(_ru.lower(),_en.lower())
+
+
+def has_reference(user):return bool(selected(user) or user.get('character_reference'))
+def photo_disabled(user):return bool((user.get('character_reference') or {}).get('photo_disabled'))
+def family_friendly(user):return bool((selected(user) or user.get('character_reference') or {}).get('family_friendly'))
+def identity(user):
+ v=selected(user);reference=user.get('character_reference') or {}
+ if reference or v and user.get('custom_character'):
+  import character_options
+  name=reference.get('name') or v['en'];source=reference.get('source') or v['source']
+  return 'Adult fictional '+name+' from '+source+'. '+character_options.identity(user)
+ return ('Exactly one '+v['identity']+'. One continuous depiction of this character. ') if v else None
+
+def prompt_rule(user):
+ v=selected(user);reference=user.get('character_reference') or {}
+ if not v and not reference:return ''
+ name=reference.get('name') or v['ru'];source=reference.get('source') or v['source'];persona=(v or {}).get('persona','')
+ return ('Это вымышленная интерпретация персонажа '+name+' из '+source+'. '+persona+
+ ' Учитывай его вселенную, историю и узнаваемую манеру общения. Это обычное общение и неоткровенные приключения. Не заявляй, что сервис официальный. '
+ 'Описание пользователя задаёт изменения образа; актуальные выбранные параметры внешности важнее исходного канона. '+('Только семейное общение без романтических и сексуальных сцен. ' if family_friendly(user) else ''))
+
+for _key,_clothes in {
+ 'lara_croft':'an opaque teal sleeveless top, brown cargo shorts and practical boots',
+ 'jill_valentine':'an opaque blue tank top, dark practical trousers and boots',
+ 'leon_kennedy':'a dark leather jacket over an opaque shirt, tactical trousers and boots',
+ 'geralt':'an opaque weathered armored tunic, practical dark trousers and leather boots',
+ 'yennefer':'an opaque black and white sorceress outfit, fitted trousers and boots',
+ 'bayonetta':'an opaque fitted black full-length fashion suit and dark glasses',
+ 'chun_li':'an opaque blue qipao-style outfit over opaque leggings and white boots',
+ 'samus':'opaque orange science-fiction power armor with a full helmet and arm cannon'
+}.items():TEMPLATES[_key]['clothes']=_clothes
+TEMPLATES['samus']['hair_style']='ponytail'

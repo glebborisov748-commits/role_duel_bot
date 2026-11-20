@@ -44,7 +44,7 @@ class NewWorkTests(unittest.TestCase):
   public=mine.snapshot(u)['run']['maze'];self.assertTrue(any(c is None for c in public['cells']))
   self.assertTrue(all('ore' not in c or c['ore'] is None for c in public['cells'] if c and not c['lit']))
  def test_maze_mining_and_haul_are_server_owned_and_once_only(self):
-  u={};mine.start(u);run=u['mine_run'];cell=run['maze']['cells'][10];cell.update(ore=3,left=1)
+  u={};mine.start(u);run=u['mine_run'];cell=run['maze']['cells'][mine_maze.SIZE+1];cell.update(ore=3,left=1)
   with patch.object(mine.time,'time',return_value=100):mine.action(u,{'action':'excavate','id':run['id']})
   self.assertEqual(run['bag'][0]['key'],'gold');self.assertIsNone(cell['ore'])
   with patch.object(mine.time,'time',return_value=101):

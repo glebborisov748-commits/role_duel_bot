@@ -17,6 +17,7 @@ OPTIONS={
  'detail':[('balanced','Средние ответы','Balanced replies','Mittlere Antworten','balanced'),('short','Лаконично','Concise','Kurz','concise'),('detailed','Развёрнуто','Detailed','Ausführlich','detailed')],
 }
 OPTIONS['species']=[('human','Человек','Human','Mensch','human'),('cat','Кошачьи уши','Cat ears','Katzenohren','human with cat ears, human face'),('elf','Эльфийские уши','Elf ears','Elfenohren','human with pointed elf ears')]
+OPTIONS['eyes'].append(('red','Красные','Red','Rot','red eyes'))
 VISUAL_KEYS=('hair_style','hair_color','skin','eyes','accessory','species')
 MALE_HAIR=[('short','Короткая','Short','Kurz','short textured hair'),('undercut','Андеркат','Undercut','Undercut','an undercut hairstyle'),('fade','Фейд','Fade','Fade','a clean fade haircut'),('crop','Кроп','Crop','Crop','a short crop haircut'),('sidepart','С пробором','Side part','Seitenscheitel','a short side-part haircut'),('slicked','Зачёс назад','Slicked back','Zurückgekämmt','slicked-back short hair'),('curls_short','Короткие кудри','Short curls','Kurze Locken','short curly hair'),('medium','Средняя длина','Medium','Mittellang','medium-length masculine layered hair')]
 OPTIONS['hair_style']+= [r for r in MALE_HAIR if r[0] not in {v[0] for v in OPTIONS['hair_style']}]
@@ -146,7 +147,7 @@ def visual_from_description(raw, text):
 
 def identity(user):
  gender=profile_options.photo_subject(user.get('race','human'),user.get('gender'))
- return 'Exactly ONE adult '+gender+', age 25 or older, solo portrait. '+(appearance(user) or 'human')+'. Keep the same gender and every listed visual attribute in every picture. No second person, no couple, no split view. '
+ return 'Exactly ONE adult '+gender+', age 25 or older. '+(appearance(user) or 'human')+'. Keep the same gender and every listed visual attribute in every picture. One continuous depiction of this character. '
 
 
 def preview_url(user):

@@ -50,3 +50,20 @@ The 32 newer adult-shop items remain catalog-only as previously requested; their
 - /tehwork_all is an alias for chief-only /tehwork; maintenance continues to block all other users, including regular administrators.
 
 Validation: 166 unit regressions; signed creation, avatar, photo-context, catalog and preset-equip APIs with providers mocked; JavaScript syntax checks; mobile 320/390/430px checks covering cabinet clipping, complete-look switching, avatar/template onboarding, four suggestions, subscription colors, purchase/upgrade flows and the energy ritual. No live Problembo generation or real Stars payments were used for validation. Upstream provider output remains probabilistic; composition/material constraints cannot guarantee every returned image.
+
+
+## November 20: mobile repairs and playable excavation
+
+This follow-up supersedes the preceding avatar picker, custom-character tier, material previews and ring-hold details.
+
+- Fixed actual app-route styles: horizontal red discount strikes (including energy packs), left reactions outside text, smooth full-width photo shimmer, and a short tier-colored outgoing effect anchored to the live input while the keyboard changes size. Clothing purchases stay silent.
+- Re-exported product crops without neighbouring atlas rows. All complete body outfits, including bikinis and other adult-shop clothing, have coherent whole-mannequin views. Shared registration, calibrated accessory anchors, clipped cabinet doors and whole-look matching replace detached product torsos. Prepared combinations are finite; arbitrary combinations still use registered accessory/separate-garment layers. The fox dress has a plain front and its tail behind.
+- Latex uses the glossy fitted material; Wet Look now means rain-soaked cotton with opaque coverage. Existing owners of the former Wet Look keep their glossy outfit through a one-time latex migration.
+- Removed free preset avatars from creation: own upload or explicitly requested generation. General photo attempts can fund wardrobe/avatar generation; dedicated 5-Star portrait credits remain separate from chat photos. Failed jobs refund their reserved attempt, including concurrent subscription-grant cases.
+- SUPER PRO and ELITE can describe a custom character. Fourteen curated adult references and a bounded optional identity resolver connect recognized fiction to dialogue and validated appearance. Uncertain-age references stay family-friendly; no explicit photo mode is introduced. Species labels distinguish human cat ears from an anthropomorphic feline.
+- Strengthened single-scene image composition and material constraints; profile-avatar framing no longer inherits a kissing close-up. Provider output remains probabilistic.
+- Smaller, lower energizer with generated hand gestures and a resistant 0.85-second ring pull after shaking; existing sound, foam and opened-can art retained.
+- Mining now uses textured top-down terrain, ores, movement and a separately aimed narrow flashlight with wall occlusion. New worlds are 15×15; older worlds remain supported. Archaeology is a manual side-view digging game with a character, descending soil layers, tunnels, finds and upgrades; new digs are 9×12. Rewards and movement remain server-owned.
+- Updated the guide and hosted agreement/privacy explanations.
+
+Validation: 181 unit tests; signed creation, species, clothing, billing, upgrades and refund checks; actual app/shop/work routes and APIs at 320/390/430 px, including keyboard movement, standalone wardrobe generation, silent purchases, bikini fitting, ring resistance, mine aiming and side-view excavation. Image and Telegram providers were mocked; no real Stars payments or live Problembo calls were made.

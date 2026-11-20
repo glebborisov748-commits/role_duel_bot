@@ -32,7 +32,7 @@ class SceneContextTests(unittest.TestCase):
     u['avatar_preset']=avatar;self.assertEqual(fandom_catalog.identity(u),identity)
     self.assertTrue(Path('.'+fandom_catalog.avatar_url(u)).is_file())
  def test_latex_material_and_fit_survive_prompt(self):
-  for key in ('latex_bodysuit','female_wetlook_catsuit','male_wetlook_catsuit'):
+  for key in ('latex_bodysuit','male_latex_catsuit'):
    u={'inventory':{key:1},'gender':w.WARDROBE[key]['gender']};w.equip(u,key,5)
    facts=w.clothing_facts(u,5);self.assertIn('skin-tight',facts);self.assertIn('glossy',facts);self.assertIn('latex',facts)
  def test_fitting_fixed_canvas_and_every_wearable_asset_exists(self):

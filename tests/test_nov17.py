@@ -16,7 +16,7 @@ class AppearanceIdentityTests(unittest.TestCase):
   self.assertIn('cat ears',prompt);self.assertIn('silver',prompt);self.assertNotIn('игнорируй',prompt)
  def test_gender_and_single_person_are_explicit(self):
   self.assertIn('ONE adult man',options.identity({'gender':'male','appearance':{}}))
-  self.assertIn('No second person',options.identity({'gender':'male','appearance':{}}))
+  self.assertIn('One continuous depiction',options.identity({'gender':'male','appearance':{}}))
   negative=photo_generation.negative_identity('male',{'hair_color':'silver'})
   self.assertIn('woman',negative);self.assertIn('red auburn hair',negative);self.assertNotIn('white silver hair',negative)
  def test_preview_keeps_source_intact_and_rejects_markup(self):
