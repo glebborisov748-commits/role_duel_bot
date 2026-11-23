@@ -41,7 +41,7 @@ async def run():
  for payload,(amount,price) in photo_wallet.PACKS.items():
   before=photo_wallet.balance(u);await app.grant_product(u,payload,960);assert photo_wallet.balance(u)==before+amount
   assert app.product_stars(payload,u)==price
- assert app.buy_exchange(u,'photos')[0];before=photo_wallet.balance(u);assert not app.buy_exchange(u,'photos')[0] and photo_wallet.balance(u)==before
+ offer=app.exchange_today();assert app.buy_exchange(u,offer)[0];before=u['bucks'];assert not app.buy_exchange(u,offer)[0] and u['bucks']==before
  app.bot.get_chat_member=AsyncMock(return_value=SimpleNamespace(status='member'))
  assert (await call(app.api_app_task_handler,action='channel_check'))['ok'];assert not app.daily_quest_state(u)['locked']
  # Standard photo receipts are also idempotent.

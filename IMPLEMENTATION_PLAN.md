@@ -1,3 +1,20 @@
+# November 23 scope update
+
+The November 18 checklist below is historical. Current behavior and limits are recorded in [the first-pass audit](audit/NOVEMBER_23_FIRST_PASS.md).
+
+Completed in this pass: room joining, death recovery, action-based onboarding, can proportions/shorter pull/delayed gestures, message flash/desktop width, currency/avatar shortcuts, single 48-hour calendar offer, compact doorless wardrobe, starter/base clothing (including the final white male T-shirt correction), replacement police keys, level-9 preview-only toys catalog, two classic wire variants, admin help and isolated staging setup.
+
+Next agreed stages, still outstanding:
+- Choose models after the user supplies their available model/provider price list; benchmark Russian roleplay quality, context, latency and cost.
+- Deploy the separate test bot using a dedicated token/domain/storage. An outage status page needs independent hosting.
+- Replace mine/archaeology with two small 2D games; overhaul four-lane courier intersections, pedestrian crossings, speed rules, varied hazards, deliveries/tips and generated city art; order basket/freeze/additional bonus.
+- Add crops, a lateral droplet splash and single-plant fertilizer with a use-triggered two-hour refill and optional 5-Star purchase.
+- Build the crimson curtain/podium generation scene, expanded coherent whole-look art and better underwear/accessory fitting. Add further adult-shop wearable accessories.
+- Deliver recognizable neutral product cards for the toys catalog after an allowed art approach is available; define toy interactions before enabling any purchases.
+- Subscriber-only appearance extraction from an uploaded photo plus editable description.
+
+---
+
 # Approved release plan — 2026-11-18
 
 The user authorized implementation and pushes in stages. Preserve existing purchases and progress.

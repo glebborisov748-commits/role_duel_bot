@@ -32,7 +32,7 @@ def configure(body):
  return {**body,'gender':v['gender'],'race':v['race'],'appearance':appearance,'appearance_preset':None},key
 
 def character_name(user):
- return user.get('char_name') or (selected(user) or {}).get('ru' if user.get('lang','ru')=='ru' else 'en') or ('Персонаж' if user.get('lang','ru')=='ru' else 'Character')
+ return user.get('char_name') or (selected(user) or {}).get('ru' if user.get('lang','ru')=='ru' else 'en') or ({'ru':('Он' if user.get('gender')=='male' else 'Она'),'de':('Er' if user.get('gender')=='male' else 'Sie')}.get(user.get('lang','ru'),'He' if user.get('gender')=='male' else 'She'))
 
 def avatar_url(user):
  key=user.get('avatar_preset');key=key if key in AVATARS else ('male_1' if user.get('gender')=='male' else 'female_1')

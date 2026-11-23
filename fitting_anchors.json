@@ -790,5 +790,69 @@
     "head_width": 38,
     "head_scale": 1.056,
     "body_scale": 0.972
+  },
+  "nov23_police_female.webp": {
+    "x": 159.3,
+    "top": 100,
+    "neck": 131,
+    "head_width": 39,
+    "head_scale": 1.083,
+    "body_scale": 0.87
+  },
+  "nov23_police_male.webp": {
+    "x": 159.2,
+    "top": 98,
+    "neck": 129,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.875
+  },
+  "nov23_tshirt_male.webp": {
+    "x": 159.4,
+    "top": 71,
+    "neck": 121,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.894
+  },
+  "nov23_denim_female.webp": {
+    "x": 159.5,
+    "top": 74,
+    "neck": 124,
+    "head_width": 40,
+    "head_scale": 1.111,
+    "body_scale": 0.887
+  },
+  "nov23_starter_female.webp": {
+    "x": 160.2,
+    "top": 73,
+    "neck": 123,
+    "head_width": 40,
+    "head_scale": 1.111,
+    "body_scale": 0.889
+  },
+  "nov23_denim_male.webp": {
+    "x": 158.7,
+    "top": 72,
+    "neck": 120,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.896
+  },
+  "nov23_tshirt_female.webp": {
+    "x": 160.6,
+    "top": 71,
+    "neck": 119,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 0.899
+  },
+  "nov23_starter_male.webp": {
+    "x": 158.7,
+    "top": 69,
+    "neck": 118,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.901
   }
 }

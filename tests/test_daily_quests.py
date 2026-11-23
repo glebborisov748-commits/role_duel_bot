@@ -106,4 +106,4 @@ class DailyQuestTests(unittest.IsolatedAsyncioTestCase):
     def test_phone_strips_actions_but_roleplay_keeps_them(self):
         clean=self.ns['clean_chat_reply']
         self.assertEqual(clean('*улыбаюсь* Привет!',{'scene':'phone'}),'Привет!')
-        self.assertEqual(clean('*улыбаюсь* Привет!',{'scene':'live'}),'*Персонаж улыбается*\n\nПривет!')
+        self.assertEqual(clean('*улыбаюсь* Привет!',{'scene':'live'}),'*Она улыбается*\n\nПривет!')

@@ -87,7 +87,7 @@ def validate_race(value):
 
 def choices(mapping,lang):
  ix={'ru':0,'en':1,'de':2}.get(lang,1)
- return [{'key':key,'label':labels[ix]} for key,labels in mapping.items()]
+ return [{'key':key,'label':labels[ix]} for key,labels in mapping.items() if mapping is not RACES or key not in globals().get('HIDDEN_RACES',())]
 
 def state(user):
  lang=user.get('lang','ru')
@@ -184,9 +184,11 @@ def clothing_facts(user,level):
  items=[WARDROBE[k] for k in active_outfit(user).values()]
  items=[i for i in items if not i.get('catalog_only') and (not i['adult'] or level>=5)]
  facts=[i['fact'] for i in items if i['fact']]
- if not any(i['slot'] in ('body','top','bottom') for i in items):facts.insert(0,(fandom_catalog.selected(user) or {}).get('clothes','an opaque casual shirt and full-length trousers'))
- elif any(i['slot']=='top' for i in items) and not any(i['slot']=='bottom' for i in items):facts.append('full-length casual trousers')
- elif any(i['slot']=='bottom' for i in items) and not any(i['slot']=='top' for i in items):facts.append('an opaque casual shirt')
+ slots={i['slot'] for i in items}
+ if 'body' not in slots:
+  if 'top' not in slots:facts.append('a plain opaque white T-shirt' if user.get('gender')=='male' else 'a plain opaque white tank top')
+  if 'bottom' not in slots:facts.append('plain opaque white shorts')
+
  fit=anatomy_fit(user.get('race','human'))
  if fit:facts.append(fit)
  return ', '.join(facts)
@@ -423,7 +425,7 @@ for _key,_item in WARDROBE.items():
 
 def body_preview(key,gender):
  suffix=key+'_male' if key in ('tracksuit','pajamas') and gender=='male' else key
- return '/assets/body_view_'+suffix+'.webp'
+ return '/assets/'+('nov23_'+key if key in ('police_male','police_female') else 'body_view_'+suffix)+'.webp'
 
 def catalog_image(key,gender):
  if key in ('tracksuit','pajamas'):return body_preview(key,gender).split('/')[-1].removesuffix('.webp')
@@ -436,7 +438,10 @@ def fitting_state(user):
  if complete:return dict(base=complete,layers=[])
  prepared=fitting_looks.best_base(user,current)
  consumed=set(prepared['slots']) if prepared else {'body'}
- base=prepared['image'] if prepared else body_preview(body,gender) if body else '/assets/mannequin_base_'+gender+'.webp'
+ base=prepared['image'] if prepared else body_preview(body,gender) if body else '/assets/nov23_starter_'+gender+'.webp'
+ if not body and set(current.values())<= {'cotton_tshirt','denim_shorts','cap','collar','collar_leash'}:
+  if current.get('bottom')=='denim_shorts' and not current.get('top'):base='/assets/nov23_denim_'+gender+'.webp';consumed.add('bottom')
+  elif current.get('top')=='cotton_tshirt' and not current.get('bottom'):base='/assets/nov23_tshirt_'+gender+'.webp';consumed.add('top')
  order={'legs':0,'bottom':1,'top':2,'outerwear':4,'shoes':5,'neck':6,'head':7,'face':8,'ears':9,'wrist':10}
  layers=[dict(slot=slot,url='/assets/layer_v2_'+key+'.webp') for slot,key in sorted(current.items(),key=lambda pair:order.get(pair[0],0)) if slot not in consumed]
  target=FITTING_ANCHORS.get(base.split('/')[-1],{});reference=FITTING_ANCHORS.get('mannequin_base_'+gender+'.webp',{})
@@ -485,3 +490,42 @@ WARDROBE['female_teacher']['fact']+=', with thin round glasses'
 WARDROBE['nurse_outfit']['fact']+=', with a matching nurse cap'
 WARDROBE['maid_outfit']['fact']+=', with a matching maid headpiece'
 for _key in ('police_male','police_female'):WARDROBE[_key]['fact']+=', with a matching police cap'
+
+
+# Nov 23: friendly labels, legacy species retained only for already saved characters.
+HIDDEN_RACES=frozenset(('android','animatronic','dragonborn'))
+RACES['robot']=('Робот','Robot','Roboter')
+RACES['furry_dragon']=('Дракон','Dragon','Drache')
+RACES['furry_fox']=('Фурри — лиса','Furry — fox','Furry — Fuchs')
+RACES['furry_wolf']=('Фурри — волк','Furry — wolf','Furry — Wolf')
+RACES['furry_cat']=('Фурри — кошка','Furry — cat','Furry — Katze')
+RACE_FACTS['robot']='a fully mechanical adult humanoid robot with elegant sculpted metallic shell panels, a distinct robotic face, articulated metal limbs and illuminated optics'
+TOYS_LEVEL=9
+TOYS={
+ 'vibrator':('Вибратор','Vibrator','Vibrator','vibrator'),
+ 'anal_plug':('Анальная пробка','Anal plug','Analplug','plug'),
+ 'dildo':('Дилдо','Dildo','Dildo','dildo'),
+ 'padded_cuffs':('Мягкие наручники','Padded cuffs','Gepolsterte Handschellen','cuffs'),
+ 'ball_gag':('Кляп-шар','Ball gag','Ballknebel','gag'),
+ 'male_stroker':('Мужской мастурбатор','Male stroker','Masturbator','stroker'),
+ 'prostate_massager':('Массажёр простаты','Prostate massager','Prostatamassagegerät','massager'),
+}
+WARDROBE['vibrator'].update(group='toys',catalog_only=True,slot=None)
+for _key,_labels in TOYS.items():
+ if _key not in WARDROBE:
+  WARDROBE[_key]=dict(ru=_labels[0],name=_labels[1],de=_labels[2],price=0,slot=None,adult=True,gender='unisex',catalog_only=True,group='toys',emoji='◇',image='toy_'+_labels[3],fact='')
+WARDROBE['lace_panties']['fact']='opaque modest underwear shorts, replacing the lower base garment; covered by any selected outer clothing'
+for _key in ('police_male','police_female'):
+ WARDROBE[_key].update(ru='Латексная полицейская форма — '+('мужская' if _key.endswith('male') and not _key.endswith('female') else 'женская'),name='Latex police uniform',de='Latex-Polizeiuniform',fact='a completely opaque fitted glossy navy-black latex police jacket with long sleeves and matching full-length fitted trousers, a modest fashion harness over the jacket, matching police cap and black boots',image='nov23_'+_key)
+
+def seed_starter_clothes(user):
+ """One starter grant; existing paid inventory and selected clothes remain unchanged."""
+ if user.get('starter_clothes_v1'):return False
+ inventory=user.setdefault('inventory',{})
+ for key in ('cotton_tshirt','cap'):inventory[key]=max(1,inventory.get(key,0))
+ user['starter_clothes_v1']=True
+ return True
+
+OUTFIT_FACTS['lace_panties']=WARDROBE['lace_panties']['fact']
+
+for _key in ('police_male','police_female'):OUTFIT_FACTS[_key]=WARDROBE[_key]['fact']

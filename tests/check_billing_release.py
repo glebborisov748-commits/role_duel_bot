@@ -23,10 +23,10 @@ async def run():
  assert app.product_rub('subscribe_pro',u)==300 and app.product_rub('subscribe_super',u)==800
  assert app.product_rub('subscribe_pro_week',u)==120
  assert app.PRODUCTS['intim_scene']['stars']==15 and app.PRODUCTS['scene_photo']['stars']==25
- # Independent server-enforced 72h gates.
- for key in app.BUCKS_EXCHANGE:
+ # One shared calendar offer, one purchase per 48h period.
+ for key in (app.exchange_today(),):
   assert app.buy_exchange(u,key)[0];before=u['bucks'];assert not app.buy_exchange(u,key)[0] and before==u['bucks']
-  assert app.exchange_ready_in(u,key)>71*3600
+  assert app.exchange_ready_in(u,key)>0
  st=app.serialize_app_state(u);shop=app.serialize_shop_state(u);work=app.serialize_work_state(u)
  assert st['photos']['total']>0 and len(st['purchase_products'])==3
  # Signed channel validation and exactly-once reward.
@@ -43,5 +43,5 @@ async def run():
  Path('/tmp/rd-billing-fixture.json').write_text(json.dumps({'app':app.serialize_app_state(u),'shop':shop,'work':work},ensure_ascii=False))
  app.save_data(app.user_data);disk=json.loads(Path(app.DATA_FILE).read_text())['910'];assert disk['photo_credits']==u['photo_credits'] and disk['channel_reward_claimed']
  app.photo_generation.generate.assert_not_awaited()
- print('Billing: live serializers, package grants, first bonus, prices, 72h gates, signed channel check, once-only reward, durable JSON passed')
+ print('Billing: live serializers, package grants, first bonus, prices, 48h calendar offer, signed channel check, once-only reward, durable JSON passed')
 with asyncio.Runner(loop_factory=Loop) as runner:runner.run(run())

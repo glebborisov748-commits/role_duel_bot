@@ -1327,7 +1327,10 @@ def is_button(text, key):
 # ============================================================
 #  НАСТРОЙКА
 # ============================================================
-load_dotenv()
+load_dotenv(os.getenv('RD_ENV_FILE') or None)
+import deployment
+STAGING_MODE=deployment.configure()
+STAGING_TESTER_IDS={7287815074}|{int(v.strip()) for v in os.getenv('STAGING_TESTER_IDS','').split(',') if v.strip()}
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 PROVOD_API_KEY = os.getenv("PROVOD_API_KEY")
 
@@ -1362,12 +1365,20 @@ async def remember_username_middleware(handler, event, data):
         or getattr(getattr(event, "callback_query", None), "from_user", None)
         or getattr(getattr(event, "edited_message", None), "from_user", None)
     )
+    if STAGING_MODE and from_user and from_user.id not in STAGING_TESTER_IDS:return
     if from_user and from_user.username:
         user = get_user(from_user.id)
         if user.get("username") != from_user.username:
             user["username"] = from_user.username
             save_data(user_data)
     return await handler(event, data)
+
+async def staging_payment_guard(make_request, bot, method):
+    if STAGING_MODE and method.__api_method__ in ('createInvoiceLink','sendInvoice'):
+        raise RuntimeError('Real payments are disabled in staging; use chief-admin grants')
+    return await make_request(bot,method)
+
+bot.session.middleware.register(staging_payment_guard)
 
 # Пусто = не задано вручную -> модель ищется сама в каталоге provod.ai (см. resolve_model).
 # Явно заданное значение (переменная окружения AI_MODEL/INTIM_MODEL) всегда в приоритете.
@@ -6400,7 +6411,7 @@ async def grant_product(user, payload, chat_id):
     elif payload == "defibrillator":
         # Ничего не восстанавливаем — "смерть" была лишь флагом, ничего физически не стёрлось
         # (см. kill_character), так что просто снимаем блокировку чата.
-        user["dead"] = False
+        user.update(dead=False,energy=ENERGY_MAX,satiety=SATIETY_MAX,water=WATER_MAX,sleep_until=None,water_zero_since=None,illness=None,illness_since=None)
         save_data(user_data)
         await bot.send_message(chat_id, get_text(user, "defibrillator_success"))
     elif payload == "spin_luck":
@@ -6717,6 +6728,14 @@ async def reset_all_confirm(call: types.CallbackQuery):
     await call.answer()
 
 
+@dp.message(Command('admin_help'))
+async def admin_help_cmd(message: types.Message):
+    if message.from_user.id not in ADMIN_IDS and message.from_user.id!=MAIN_ADMIN_ID:return
+    common='/admin_help — команды\n/stats — статистика\n/support — поддержка'
+    chief='\n/tehwork on причина | off — техработы\n/tehwork preview on | off — проверить экран только у себя\n/giveenergizers ID количество — энергетики\n/givebucks ID количество — баксы\n/grant ID тип количество — выдать ресурс или подписку\n/grant_me тип количество — выдать себе\n/setlevel ID уровень — сближение\n/revoke_subscription ID — снять подписку\n/models — список моделей\n/broadcast — рассылка\n/cancel_broadcast — отмена рассылки\n/giveaway_all — массовая выдача\n/reset_me — сброс своего профиля\n/reset_all — сброс всех профилей'
+    await message.answer(common+(chief if message.from_user.id==MAIN_ADMIN_ID else '\nВыдачи ресурсов и техработы доступны только главному админу.'),parse_mode=None)
+
+
 @dp.message(Command("tehwork", "tehwork_all"))
 async def maintenance_cmd(message: types.Message):
     global maintenance_mode
@@ -6726,6 +6745,12 @@ async def maintenance_cmd(message: types.Message):
     args = (message.text or "").split(maxsplit=2)
     if len(args) < 2:
         await message.answer(f"Текущий режим: {'ВКЛ' if maintenance_mode else 'ВЫКЛ'}")
+        return
+    if args[1].lower() == "preview":
+        user=get_user(message.from_user.id)
+        user["maintenance_preview"]=len(args)<3 or args[2].lower()!="off"
+        save_data(user_data)
+        await message.answer("Просмотр техработ: "+("ВКЛ. Выход: /tehwork preview off" if user["maintenance_preview"] else "ВЫКЛ"))
         return
     if args[1].lower() == "on":
         maintenance_mode = True
@@ -8361,20 +8386,32 @@ BUCKS_EXCHANGE = {
 }
 # Что продаётся сегодня: каждый день что-то одно и купить можно один раз -- глоток бесплатного удовольствия,
 # после которого хочется ещё (а дальше -- только за звёзды). Энергетик чаще остальных.
-EXCHANGE_ROTATION = ["energizer", "defib", "energizer", "scene", "energizer", "defib", "energizer"]
+EXCHANGE_ROTATION = ["energizer", "energizer", "defib", "scene", "photos"]
+
+
+def exchange_period():
+    return local_today().toordinal() // 2
 
 
 def exchange_today():
-    return EXCHANGE_ROTATION[local_today().toordinal() % len(EXCHANGE_ROTATION)]
+    # Shared deterministic draw: repeatable after a restart and identical for all users.
+    seed=hashlib.sha256(('role-duel-offer-v2:'+str(exchange_period())).encode()).digest()
+    return random.Random(seed).choice(EXCHANGE_ROTATION)
+
+
+def exchange_reset_seconds():
+    now=local_now()
+    days=2-local_today().toordinal()%2
+    end=(now+timedelta(days=days)).replace(hour=0,minute=0,second=0,microsecond=0)
+    return max(1,int((end-now).total_seconds()))
 
 
 def exchange_ready_in(user,key):
-    try:return max(0,int((datetime.fromisoformat((user.get('exchange_cooldowns') or {})[key])+timedelta(hours=72)-datetime.now()).total_seconds()))
-    except (KeyError,ValueError,TypeError):return 0
+    return exchange_reset_seconds() if key!=exchange_today() or user.get('exchange_period_bought')==exchange_period() else 0
 
 
 def exchange_left(user,key):
-    return int(key in BUCKS_EXCHANGE and not exchange_ready_in(user,key))
+    return int(key in BUCKS_EXCHANGE and key==exchange_today() and user.get('exchange_period_bought')!=exchange_period())
 
 
 def exchange_name(user, key):
@@ -8385,10 +8422,10 @@ def exchange_name(user, key):
 def buy_exchange(user, key):
     """(ok, error_text). Сегодняшний товар за баксы, один раз в день."""
     offer = BUCKS_EXCHANGE.get(key)
-    if not offer:
+    if not offer or key != exchange_today():
         return False, gt(user, "ex_not_today")
     if exchange_left(user, key) <= 0:
-        return False, "Этот предмет можно купить раз в 72 часа. Осталось: "+str((exchange_ready_in(user,key)+3599)//3600)+" ч."
+        return False, "Предложение уже куплено. Новый товар через "+str((exchange_reset_seconds()+3599)//3600)+" ч."
     if not spend_bucks(user, offer["price"]):
         return False, get_text(user, "not_enough_bucks", n=offer["price"] - user.get("bucks", 0))
     if key == "energizer":
@@ -8401,7 +8438,7 @@ def buy_exchange(user, key):
         else:
             user["defib_stock"] = user.get("defib_stock", 0) + 1  # иначе лежит в запасе до случая
     if key=='photos':photo_wallet.ensure(user);photo_wallet.grant(user,2)
-    user.setdefault("exchange_cooldowns",{})[key]=datetime.now().isoformat()
+    user["exchange_period_bought"]=exchange_period()
     save_data(user_data)
     return True, None
 
@@ -8483,7 +8520,9 @@ async def game_ai_line(chat_id, user, instruction, tail=None, max_tokens=1200):
     """Короткая реплика персонажа в образе по инструкции игры; тратит энергию как обычное сообщение."""
     if game_ai_lines_left(user) <= 0:
         return None  # дневной лимит реплик исчерпан -- партию можно доиграть без комментариев ИИ
-    system_prompt = build_prompt(user) + "\n**ИГРА:** " + instruction + " Ответь 1-3 короткими предложениями, без списков.\n"
+    narrative=(user.get("play") or {}).get("mode")=="strip"
+    direction=(" Напиши 2–3 связных абзаца: движения с одеждой, выражение лица и естественная реплика в характере. Не описывай интимные части тела или сексуальные действия. Не называй камень, ножницы, бумагу и комбинацию ходов: результат уже показан интерфейсом. Не решай действия пользователя за него." if narrative else " Ответь 1-3 короткими предложениями, без списков.")
+    system_prompt = build_prompt(user) + "\n**ИГРА:** " + instruction + direction + "\n"
     messages = [{"role": "system", "content": system_prompt}] + (tail or []) + [{"role": "user", "content": "Твой ход."}]
     typing = asyncio.create_task(_keep_typing(chat_id))
     try:
@@ -9313,8 +9352,9 @@ def resolve_webapp_user(init_data):
     if not user_id:
         return None, None, {"ok": False, "error": "auth", "message": "Missing user id"}
     user_id = int(user_id)
+    if STAGING_MODE and user_id not in STAGING_TESTER_IDS:return None,None,{'ok':False,'error':'staging','message':'Тестовая версия доступна только участникам проверки'}
     user = get_user(user_id)
-    if maintenance_mode and user_id != MAIN_ADMIN_ID:
+    if (maintenance_mode and user_id != MAIN_ADMIN_ID) or (user_id==MAIN_ADMIN_ID and user.get('maintenance_preview')):
         return None, None, {"ok": False, "error": "maintenance", "message": get_text(user, "maintenance"), "lang":user.get("lang","ru")}
     if not (user["verified"] and user["agreement_accepted"] and user["personality_ready"]):
         return None, None, {"ok": False, "error": "not_ready", "message": get_text(user, "webapp_character_not_ready")}
@@ -9327,7 +9367,7 @@ def serialize_shop_state(user):
     """Полный снимок магазина + статов персонажа для Mini App — JSON-сериализуемый dict.
     Названия/эффекты уже локализованы под user["lang"] (та же логика, что и в get_shop_kb),
     фронтенду не нужна своя i18n-логика для содержимого каталога."""
-    if profile_options.migrate_materials(user):save_data(user_data)
+    if profile_options.migrate_materials(user) | profile_options.seed_starter_clothes(user):save_data(user_data)
     lang = user.get("lang", "ru")
 
     def serialize_item(mapping, key, is_gift):
@@ -9364,7 +9404,7 @@ def serialize_shop_state(user):
     for adult,category,title in ((False,'wardrobe',{'ru':'👗 Гардероб','de':'Garderobe'}.get(lang,'Wardrobe')),(True,'adult_shop',{'ru':'🔞 Секс-шоп','de':'18+ Shop'}.get(lang,'18+ shop'))):
         level=get_intimacy_level(user);locked=adult and (level<5 or fandom_catalog.family_friendly(user));items=[]
         for key,item in profile_options.WARDROBE.items():
-            if item['adult']!=adult or not profile_options.gender_matches(user,key):continue
+            if item.get('group')=='toys' or item['adult']!=adult or not profile_options.gender_matches(user,key):continue
             image_key=profile_options.catalog_image(key,user.get('gender','female'))
             image='/assets/'+image_key+'.webp' if os.path.isfile(os.path.join(ASSETS_DIR,image_key+'.webp')) else None
             items.append({'key':key,'category':category,'name':item.get(lang,item['name']),'price':item['price'],
@@ -9374,11 +9414,20 @@ def serialize_shop_state(user):
                 'effects':({'ru':'Новинка для коллекции. Применение к фото пока не подключено.','de':'Neu für die Sammlung. Noch nicht für Fotos verfügbar.'}.get(lang,'New collectible. Not connected to photos yet.') if item.get('catalog_only') else {'ru':'Остаётся в инвентаре','de':'Bleibt im Inventar'}.get(lang,'Kept in inventory')) + (' · '+profile_options.occupancy_label(key,lang) if len(profile_options.occupied_slots(key))>1 else '')})
         categories.append({'key':category,'name':title,'items':items,'locked':locked,'lock_reason':'Этому герою доступна обычная одежда' if fandom_catalog.family_friendly(user) else None,'required_level':5 if adult else None})
 
+    toys_locked=get_intimacy_level(user)<profile_options.TOYS_LEVEL or not user.get('verified') or fandom_catalog.family_friendly(user)
+    toy_items=[]
+    if not toys_locked:
+        for key,labels in profile_options.TOYS.items():
+            image_name='nov23_toy_'+key
+            image='/assets/'+image_name+'.webp' if os.path.isfile(os.path.join(ASSETS_DIR,image_name+'.webp')) else None
+            toy_items.append(dict(key=key,category='toys',name=labels[{'ru':0,'en':1,'de':2}.get(lang,1)],image=image,emoji='◇',catalog_only=True,preview_only=True,price=0,effects={'ru':'Каталог · взаимодействия появятся позже','de':'Katalog · Interaktionen folgen'}.get(lang,'Catalog · interactions coming later')))
+    categories.append(dict(key='toys',name={'ru':'🔞 Игрушки 18+','de':'🔞 Spielzeuge 18+'}.get(lang,'🔞 Toys 18+'),locked=toys_locked,required_level=profile_options.TOYS_LEVEL,items=toy_items))
+
     categories.append({'key':'exchange','name':gt(user,'shop_cat_exchange'),'items':[
         {'key':key,'category':'exchange','image':shop_item_image('exchange',key),'emoji':offer['emoji'],
-         'name':exchange_name(user,key),'price':offer['price'],'effects':'Покупка раз в 72 часа',
+         'name':exchange_name(user,key),'price':offer['price'],'effects':'Один товар на 48 часов · смена через '+str((exchange_reset_seconds()+3599)//3600)+' ч.',
          'ready_in':(str((exchange_ready_in(user,key)+3599)//3600)+' ч.') if exchange_ready_in(user,key) else None,
-         'refuse':False} for key,offer in BUCKS_EXCHANGE.items()]})
+         'refuse':False} for key,offer in BUCKS_EXCHANGE.items() if key==exchange_today()]})
 
     medicine = []
     if user.get("illness"):
@@ -9436,6 +9485,8 @@ def serialize_shop_state(user):
         "mood_emoji": mood_emoji(user.get("mood", 0)),
         "mood_value": int(round(user.get("mood", 0))),
         "illness": illness_label,
+        "dead": bool(user.get("dead")),
+        "recovery": {"stock":user.get("defib_stock",0),"stars":product_stars("defibrillator",user)},
         "asleep": is_asleep(user),
         "categories": categories,
         "complete_looks":fitting_looks.choices(user,lang,level),"fitting_layers":profile_options.fitting_state(user)["layers"],"wardrobe_race":user.get("race","human"),"wardrobe_fitting":profile_options.fitting_preview(user),"wardrobe_generation_credits":user.get("portrait_credits",0),"wardrobe_pending":bool(user.get("avatar_job")),"wardrobe_gender":user.get("gender","female"),"photo_balance":photo_wallet.balance(user),
@@ -9455,11 +9506,13 @@ def serialize_shop_state(user):
 
 
 async def perform_webapp_purchase(user, user_id, category, key, note=None):
-    if profile_options.migrate_materials(user):save_data(user_data)
+    if profile_options.migrate_materials(user) | profile_options.seed_starter_clothes(user):save_data(user_data)
     """Та же последовательность проверок, что в buy_food/buy_gift/buy_medicine и в
     writing_item_note-ветке handle_message — просто вызывается из API, а не из
     callback-хендлера. Содержательная логика по-прежнему только в execute_item_purchase."""
     if category=='gift' and key in ('dress','heels'):return {'ok':False,'error':'Этот товар перенесён в гардероб'}
+    if category=='toys' or (key in profile_options.TOYS and category in ('wardrobe','adult_shop')):
+        return {'ok':False,'error':'🔒 Игрушки доступны с 9 уровня сближения' if get_intimacy_level(user)<9 else 'Пока только каталог: покупка и взаимодействия ещё не открыты'}
     if category in ('wardrobe','adult_shop'):
         item=profile_options.WARDROBE.get(key)
         if not item or bool(item['adult'])!=(category=='adult_shop'):return {'ok':False,'error':'Not found'}
@@ -13127,7 +13180,8 @@ del,.old-price{position:relative;text-decoration:none!important}del:after,.old-p
 .wardrobe-audience{grid-column:1/-1;text-align:center;color:#dfc8ed;font-size:13px;margin:2px 0 10px}.catalog-gender{display:block;color:#cbb6da;font-size:11px;line-height:1.4;margin:0 0 7px}
 .fitting-stage{aspect-ratio:320/512;height:auto!important;max-width:250px!important;overflow:hidden!important}.wardrobe-room .tailor-base,.wardrobe-room .fitting-detail{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:contain!important;opacity:0!important;visibility:hidden;pointer-events:none;margin:0!important;max-height:none!important}.cabinet-open .tailor-base,.cabinet-open .fitting-detail{opacity:1!important;visibility:visible}.wardrobe-room .fitting-detail{z-index:4}.fitting-stage .cabinet-doors{inset:0!important}.fitting-stage .cabinet-doors span{font-size:12px}.fitting-controls label{min-width:0}.fitting-controls select{font-size:13px;min-width:0}.complete-looks{grid-column:1/-1;min-width:0}.complete-looks summary{cursor:pointer;padding:12px;background:#38283f;border-radius:12px}.complete-look-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:8px}.complete-look{padding:5px!important;min-width:0;background:#241c30;border:1px solid #70516c;border-radius:12px}.complete-look img{width:100%;height:130px;object-fit:contain;display:block}.complete-look span{display:block;font-size:10px;line-height:1.3;max-height:39px;overflow:hidden}.fitting-note+button{grid-column:1/-1}
 del,.old-price,s.old-price{display:inline-block!important;width:max-content!important;max-width:100%;position:relative;white-space:nowrap;text-decoration:none!important}del:after,.old-price:after{left:0!important;right:0!important;top:50%!important;height:2px!important;transform:translateY(-50%)!important;background:#ef606c!important;pointer-events:none}.price-row .price{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.old-price{margin-right:5px}
-.fitting-stage{width:100%!important;max-width:300px!important;aspect-ratio:320/512!important;box-shadow:inset 0 0 0 4px #715069,0 8px 22px #0005!important;border:0!important}.cabinet-doors{outline:0!important}.cabinet-open .cabinet-doors span{left:auto!important;right:6px!important;top:6px!important;bottom:auto!important;width:27px;height:27px;padding:0!important;line-height:27px;font-size:20px!important}.complete-look img{aspect-ratio:320/512;height:auto!important;width:100%!important;object-fit:contain!important}.fitting-stage .cabinet-doors{background:transparent!important;border:0!important;outline:0!important;box-shadow:none!important;padding:0!important}.cabinet-open .cabinet-doors:before,.cabinet-open .cabinet-doors:after{opacity:0;transition:transform .75s,opacity .65s}.old-price{opacity:1!important;color:#9791a2!important}.preview-actions{grid-column:1/-1;margin:8px 0}.preview-actions:has(button[hidden]){display:none}.preview-actions button{width:100%}</style>
+.fitting-stage{width:100%!important;max-width:300px!important;aspect-ratio:320/512!important;box-shadow:inset 0 0 0 4px #715069,0 8px 22px #0005!important;border:0!important}.cabinet-doors{outline:0!important}.cabinet-open .cabinet-doors span{left:auto!important;right:6px!important;top:6px!important;bottom:auto!important;width:27px;height:27px;padding:0!important;line-height:27px;font-size:20px!important}.complete-look img{aspect-ratio:320/512;height:auto!important;width:100%!important;object-fit:contain!important}.fitting-stage .cabinet-doors{background:transparent!important;border:0!important;outline:0!important;box-shadow:none!important;padding:0!important}.cabinet-open .cabinet-doors:before,.cabinet-open .cabinet-doors:after{opacity:0;transition:transform .75s,opacity .65s}.old-price{opacity:1!important;color:#9791a2!important}.preview-actions{grid-column:1/-1;margin:8px 0}.preview-actions:has(button[hidden]){display:none}.preview-actions button{width:100%}.clothing-filter{grid-column:1/-1;display:flex;gap:10px;position:sticky;top:0;z-index:5;padding:10px 0;background:#111020}.clothing-filter select{min-width:0;flex:1;background:#292037;color:#f4eaf8;border:1px solid #72577f;border-radius:12px;padding:10px}.wardrobe-empty{grid-column:1/-1;color:#b9a9c5;font-size:13px}.outfit-picker{grid-column:1/-1}.outfit-picker summary{cursor:pointer;padding:12px;background:#3a2b47;border-radius:12px}.outfit-picker[open]{display:grid;grid-template-columns:1fr 1fr;gap:12px}.outfit-picker summary{grid-column:1/-1}.outfit-picker label{display:block;margin:10px 0}.outfit-picker select{width:100%;min-height:42px}.cabinet-doors{display:none!important}.fitting-stage{border:0!important;box-shadow:inset 0 0 0 2px #71506966!important}.complete-look:disabled{opacity:.45}.preview-only{min-height:230px}.preview-only .card-emoji{height:130px}.wardrobe-room{grid-column:1/-1}
+</style>
 </head>
 <body>
   <div id="stats"></div>
@@ -13218,7 +13272,7 @@ del,.old-price,s.old-price{display:inline-block!important;width:max-content!impo
     // Энергетики -- первой вкладкой (и выделены отдельным стилем, см. .tab-energizer/.card-energizer
     // в CSS): по просьбе сделать их самым заметным, приоритетным разделом магазина. Лекарства всё
     // равно важнее при болезни -- unshift ниже их всё равно выносит перед энергетиками.
-    var list = [];var wardrobe=s.categories.find(function(c){return c.key==='wardrobe';});if(wardrobeOnly)return s.categories.filter(function(c){return c.key==='wardrobe'||c.key==='adult_shop';});
+    var list = [];var wardrobe=s.categories.find(function(c){return c.key==='wardrobe';});if(wardrobeOnly)return s.categories.filter(function(c){return c.key==='wardrobe'||c.key==='adult_shop'||c.key==='toys';});
     if (s.energizer_packs && s.energizer_packs.length) {
       list.push({
         key: "energizer",
@@ -13272,13 +13326,14 @@ del,.old-price,s.old-price{display:inline-block!important;width:max-content!impo
     var room=document.createElement('div');room.className='wardrobe-room';
     var stage=document.createElement('div');stage.className='fitting-stage';var base=document.createElement('img');base.className='tailor-base';base.src=s.wardrobe_fitting||('/assets/fitting_'+(s.wardrobe_gender==='male'?'male':'female')+'_13.webp');base.alt='';stage.appendChild(base);(s.fitting_layers||[]).forEach(function(layer){var image=document.createElement('img');image.className='fitting-detail';image.src=layer.url;image.alt=layer.slot;image.dataset.slot=layer.slot;image.style.transform='translate('+(Number(layer.offset_x)||0)+'%,'+(Number(layer.offset_y)||0)+'%) scale('+(Number(layer.scale)||1)+')';image.style.transformOrigin='50% '+(Number(layer.origin_y)||0)+'%';stage.appendChild(image);});
     var controls=document.createElement('div');controls.className='fitting-controls';var title=document.createElement('h3');title.textContent=s.lang==='ru'?'Примерочная':'Fitting room';controls.appendChild(title);
-    var items=s.categories.filter(function(c){return c.key==='wardrobe'||c.key==='adult_shop';}).reduce(function(all,c){return all.concat(c.items);},[]),active=s.active_outfit||{};
+    var items=s.categories.filter(function(c){return c.key==='wardrobe'||c.key==='adult_shop'||c.key==='toys';}).reduce(function(all,c){return all.concat(c.items);},[]),active=s.active_outfit||{};
     var cabinet=document.createElement('button');cabinet.type='button';cabinet.className='cabinet-doors';cabinet.setAttribute('aria-label',s.lang==='ru'?'Открыть шкаф':'Open wardrobe');cabinet.setAttribute('aria-expanded','false');
-    var cabinetLabel=document.createElement('span');cabinetLabel.textContent=s.lang==='ru'?'Открыть шкаф':'Open wardrobe';cabinet.appendChild(cabinetLabel);stage.appendChild(cabinet);
+    var cabinetLabel=document.createElement('span');cabinetLabel.textContent=s.lang==='ru'?'Открыть шкаф':'Open wardrobe';cabinet.appendChild(cabinetLabel);stage.classList.add('cabinet-open');cabinet.hidden=true;
     var cabinetKey='rd-cabinet-open';try{if(sessionStorage.getItem(cabinetKey)==='1'){stage.classList.add('cabinet-open');cabinet.setAttribute('aria-expanded','true');cabinetLabel.textContent='×';}}catch(e){}
     cabinet.onclick=function(){var open=stage.classList.toggle('cabinet-open');cabinet.setAttribute('aria-expanded',String(open));cabinetLabel.textContent=open?'×':(s.lang==='ru'?'Открыть шкаф':'Open wardrobe');try{sessionStorage.setItem(cabinetKey,open?'1':'0');}catch(e){}};
     room.appendChild(stage);
-    (s.outfit_slots||[]).forEach(function(slot){var label=document.createElement('label');label.textContent=slot.label;var select=document.createElement('select');select.dataset.slot=slot.key;var blocked=(s.slot_locks||{})[slot.key];select.disabled=!!s.wardrobe_pending||!!blocked;var empty=document.createElement('option');empty.value='';var owner=items.find(function(i){return i.key===blocked;});empty.textContent=owner?('Занято: '+owner.name):(s.lang==='ru'?'Не выбрано':'None');select.appendChild(empty);items.filter(function(item){return item.slot===slot.key&&item.owned&&!item.catalog_only;}).forEach(function(item){var option=document.createElement('option');option.value=item.key;option.textContent=item.name;option.disabled=!!item.locked_level;select.appendChild(option);});select.value=active[slot.key]||'';select.onchange=function(){select.disabled=true;api('/api/wardrobe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({outfit:select.value||null,slot:slot.key})}).then(function(res){if(res.state)state=res.state;if(!res.ok)alert(res.error);render();});};if(blocked){label.classList.add('slot-occupied');label.title=owner?owner.name:'';}label.appendChild(select);controls.appendChild(label);});
+    var slotsBox=document.createElement('details');slotsBox.className='outfit-picker';var slotsSummary=document.createElement('summary');slotsSummary.textContent=s.lang==='ru'?'Выбрать одежду по категориям':'Choose clothing by category';slotsBox.appendChild(slotsSummary);controls.appendChild(slotsBox);
+    (s.outfit_slots||[]).forEach(function(slot){var label=document.createElement('label');label.textContent=slot.label;var select=document.createElement('select');select.dataset.slot=slot.key;var blocked=(s.slot_locks||{})[slot.key];select.disabled=!!s.wardrobe_pending||!!blocked;var empty=document.createElement('option');empty.value='';var owner=items.find(function(i){return i.key===blocked;});empty.textContent=owner?('Занято: '+owner.name):(s.lang==='ru'?'Не выбрано':'None');select.appendChild(empty);items.filter(function(item){return item.slot===slot.key&&item.owned&&!item.catalog_only;}).forEach(function(item){var option=document.createElement('option');option.value=item.key;option.textContent=item.name;option.disabled=!!item.locked_level;select.appendChild(option);});select.value=active[slot.key]||'';select.onchange=function(){select.disabled=true;api('/api/wardrobe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({outfit:select.value||null,slot:slot.key})}).then(function(res){if(res.state)state=res.state;if(!res.ok)alert(res.error);render();});};if(blocked){label.classList.add('slot-occupied');label.title=owner?owner.name:'';}label.appendChild(select);slotsBox.appendChild(label);});
     var note=document.createElement('p');note.className='fitting-note';note.textContent=s.lang==='ru'?'Примерка бесплатна. Комплекты занимают несколько мест. Чтобы изменить занятую деталь, сначала сними комплект. На стойке — пример сочетания одежды. Фото учитывает все выбранные детали, расу и внешность. Изображения остаются неоткровенными.':'Free fitting. The stand shows the main outfit. Character photos include all equipped details.';controls.appendChild(note);
     var generate=document.createElement('button');generate.type='button';generate.id='wardrobe-generate';generate.textContent=s.wardrobe_pending?'Создаю образ…':(s.wardrobe_generation_credits>0?'Показать на персонаже · оплачено':s.photo_balance>0?'Показать на персонаже · 1 фото':'Показать на персонаже · 5 ⭐');generate.disabled=!!s.wardrobe_pending;
     generate.onclick=function(){
@@ -13289,9 +13344,9 @@ del,.old-price,s.old-price{display:inline-block!important;width:max-content!impo
       api('/api/app/invoice',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({payload:'avatar_generate',method:'stars'})}).then(function(res){if(!res.ok){alert(res.error);generate.disabled=false;return;}if(!tg||!tg.openInvoice){location.href=res.invoice_url;return;}tg.openInvoice(res.invoice_url,function(status){generate.disabled=false;if(status!=='paid'&&status!=='pending')return;var tries=0;function check(){api('/api/app/state').then(function(reply){var c=reply.state&&reply.state.character;if(c&&c.avatar_credits>0){run();return;}if(++tries<12)setTimeout(check,900);else load();});}check();});}).catch(function(){generate.disabled=false;});
     };controls.appendChild(generate);
     if(s.wardrobe_preview){var preview=document.createElement('img');preview.src=s.wardrobe_preview;preview.className='wardrobe-result';preview.alt='Фото персонажа';preview.onclick=function(){var modal=document.createElement('div');modal.className='wardrobe-lightbox';var im=document.createElement('img');im.src=s.wardrobe_preview;modal.appendChild(im);modal.onclick=function(){modal.remove();};document.body.appendChild(modal);};controls.appendChild(preview);}
-    var ready=document.createElement('details');ready.className='complete-looks';var summary=document.createElement('summary');summary.textContent=(s.lang==='ru'?'Готовые сочетания · ':'Complete looks · ')+(s.complete_looks||[]).length;ready.appendChild(summary);
+    var ready=document.createElement('details');ready.className='complete-looks';var summary=document.createElement('summary');summary.textContent=(s.lang==='ru'?'Сочетания моей одежды · ':'Complete looks · ')+(s.complete_looks||[]).length;ready.appendChild(summary);
     var lookGrid=document.createElement('div');lookGrid.className='complete-look-grid';var status=document.createElement('p');status.className='fitting-note';var wear=document.createElement('button');wear.type='button';wear.className='btn';wear.hidden=true;
-    (s.complete_looks||[]).forEach(function(look){var card=document.createElement('button');card.type='button';card.className='complete-look';card.title=look.label;var art=document.createElement('img');art.src=look.image;art.loading='lazy';art.alt=look.label;card.appendChild(art);var caption=document.createElement('span');caption.textContent=look.label;card.appendChild(caption);card.onclick=function(){base.src=look.image;generate.disabled=true;generate.textContent=s.lang==='ru'?'Сначала надень выбранный комплект':'Wear this look first';try{sessionStorage.setItem(cabinetKey,'1');}catch(e){}stage.querySelectorAll('.fitting-detail').forEach(function(i){i.hidden=true;i.style.setProperty('display','none','important');});stage.classList.add('cabinet-open');cabinet.setAttribute('aria-expanded','true');cabinetLabel.textContent='×';status.textContent=(s.lang==='ru'?'Предпросмотр: ':'Preview: ')+look.label;wear.hidden=false;wear.disabled=!look.owned||s.wardrobe_pending;wear.textContent=look.owned?(s.lang==='ru'?'Надеть комплект':'Wear this look'):(s.lang==='ru'?'Сначала купи вещи этого комплекта':'Buy the items first');wear.onclick=function(){wear.disabled=true;api('/api/wardrobe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({look:look.key})}).then(function(res){if(res.state)state=res.state;if(!res.ok)alert(res.error);render();});};stage.scrollIntoView({block:'center',behavior:'smooth'});};lookGrid.appendChild(card);});
+    (s.complete_looks||[]).filter(function(look){return look.owned;}).forEach(function(look){var card=document.createElement('button');card.type='button';card.className='complete-look';card.title=look.label;card.disabled=!look.owned;if(!look.owned)card.title='🔒 '+look.label;var art=document.createElement('img');art.src=look.image;art.loading='lazy';art.alt=look.label;card.appendChild(art);var caption=document.createElement('span');caption.textContent=look.label;card.appendChild(caption);card.onclick=function(){base.src=look.image;generate.disabled=true;generate.textContent=s.lang==='ru'?'Сначала надень выбранный комплект':'Wear this look first';try{sessionStorage.setItem(cabinetKey,'1');}catch(e){}stage.querySelectorAll('.fitting-detail').forEach(function(i){i.hidden=true;i.style.setProperty('display','none','important');});stage.classList.add('cabinet-open');cabinet.setAttribute('aria-expanded','true');cabinetLabel.textContent='×';status.textContent=(s.lang==='ru'?'Предпросмотр: ':'Preview: ')+look.label;wear.hidden=false;wear.disabled=!look.owned||s.wardrobe_pending;wear.textContent=look.owned?(s.lang==='ru'?'Надеть комплект':'Wear this look'):(s.lang==='ru'?'Сначала купи вещи этого комплекта':'Buy the items first');wear.onclick=function(){wear.disabled=true;api('/api/wardrobe',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({look:look.key})}).then(function(res){if(res.state)state=res.state;if(!res.ok)alert(res.error);render();});};stage.scrollIntoView({block:'center',behavior:'smooth'});};lookGrid.appendChild(card);});
     ready.appendChild(lookGrid);controls.appendChild(ready);var previewActions=document.createElement('div');previewActions.className='preview-actions';previewActions.appendChild(status);previewActions.appendChild(wear);room.appendChild(previewActions);room.appendChild(controls);return room;
   }
 
@@ -13315,7 +13370,7 @@ del,.old-price,s.old-price{display:inline-block!important;width:max-content!impo
     top.appendChild(emoji);
 
     var noteBox = null;
-    if (["wardrobe", "adult_shop", "medicine", "energizer", "game", "event", "exchange", "play"].indexOf(item.category) < 0) {
+    if (["wardrobe", "adult_shop", "toys", "medicine", "energizer", "game", "event", "exchange", "play"].indexOf(item.category) < 0) {
       var toggle = document.createElement("button");
       toggle.className = "note-toggle";
       toggle.textContent = "✍️";
@@ -13337,7 +13392,7 @@ del,.old-price,s.old-price{display:inline-block!important;width:max-content!impo
     name.textContent = item.name;
     card.appendChild(name);
 
-    if(item.category==='wardrobe'||item.category==='adult_shop'){
+    if(item.category==='wardrobe'||item.category==='adult_shop'||item.category==='toys'){
       var audience=document.createElement('small');audience.className='catalog-gender';audience.textContent=item.gender==='male'?'♂ '+(s.lang==='ru'?'Для мужского персонажа':'Male character'):item.gender==='female'?'♀ '+(s.lang==='ru'?'Для женского персонажа':'Female character'):(s.lang==='ru'?'Унисекс':'Unisex');card.appendChild(audience);
     }
     var effects = document.createElement("div");
@@ -13348,6 +13403,7 @@ del,.old-price,s.old-price{display:inline-block!important;width:max-content!impo
 
     if (noteBox) card.appendChild(noteBox);
 
+    if(item.preview_only){card.classList.add("preview-only");return card;}
     var footer = document.createElement("div");
     footer.className = "card-footer";
     var itemKey = item.category + ":" + item.key;
@@ -13466,8 +13522,17 @@ del,.old-price,s.old-price{display:inline-block!important;width:max-content!impo
     var el = document.getElementById("items");
     el.innerHTML = "";
     if (!current) return;
-    if(current.key==='wardrobe'||current.key==='adult_shop'){var who=document.createElement('p');who.className='wardrobe-audience';who.textContent=s.wardrobe_gender==='male'?(s.lang==='ru'?'♂ Одежда для твоего мужского персонажа':'♂ Clothes for your male character'):(s.lang==='ru'?'♀ Одежда для твоего женского персонажа':'♀ Clothes for your female character');el.appendChild(who);}
-    if(current.key==='wardrobe')el.appendChild(fittingRoom(s));if(current.key==='adult_shop'&&current.locked){var lock=document.createElement('p');lock.className='wardrobe-lock';lock.textContent=s.lang==='ru'?'🔒 Доступ с 5 уровня близости':'🔒 Available from intimacy level 5';el.appendChild(lock);return;}
+    var clothing=current.key==='wardrobe'||current.key==='adult_shop';
+    if(current.locked&&(current.key==='adult_shop'||current.key==='toys')){var lock=document.createElement('p');lock.className='wardrobe-lock';lock.textContent=current.lock_reason||(s.lang==='ru'?'🔒 Откроется с '+current.required_level+' уровня сближения':'🔒 Unlocks at relationship level '+current.required_level);el.appendChild(lock);return;}
+    if(current.key==='wardrobe')el.appendChild(fittingRoom(s));
+    if(clothing){
+      var filter=document.createElement('div');filter.className='clothing-filter';
+      var mode=document.createElement('select');mode.setAttribute('aria-label','Показать одежду');[['owned',s.lang==='ru'?'Моя одежда':'My clothes'],['shop',s.lang==='ru'?'Купить одежду':'Shop clothes']].forEach(function(v){var o=document.createElement('option');o.value=v[0];o.textContent=v[1];mode.appendChild(o);});mode.value=window.rdClothesMode||'owned';
+      var group=document.createElement('select');group.setAttribute('aria-label','Категория одежды');[['all','Все категории'],['body','Комплекты'],['top','Верх'],['bottom','Низ'],['shoes','Обувь'],['accessories','Аксессуары']].forEach(function(v){var o=document.createElement('option');o.value=v[0];o.textContent=v[1];group.appendChild(o);});group.value=window.rdClothesGroup||'all';
+      mode.onchange=function(){window.rdClothesMode=mode.value;renderItems(state);};group.onchange=function(){window.rdClothesGroup=group.value;renderItems(state);};filter.appendChild(mode);filter.appendChild(group);el.appendChild(filter);
+      current=Object.assign({},current,{items:current.items.filter(function(item){var chosen=group.value,match=chosen==='all'||chosen===item.slot||(chosen==='accessories'&&['body','top','bottom','shoes'].indexOf(item.slot)<0)||(chosen==='top'&&item.slot==='outerwear');return match&&(mode.value==='owned'?item.owned:!item.owned);})});
+      if(!current.items.length){var empty=document.createElement('p');empty.className='wardrobe-empty';empty.textContent=s.lang==='ru'?'Здесь пока пусто. Переключи «Моя одежда» на «Купить одежду» или выбери другую категорию.':'Nothing here yet. Change the category or switch to Shop clothes.';el.appendChild(empty);}
+    }
     if (current.custom) {
       el.appendChild(makeCustomGiftCard(s));
       return;
@@ -13504,7 +13569,7 @@ del,.old-price,s.old-price{display:inline-block!important;width:max-content!impo
       cnote.style.display = state.coupon_note ? "block" : "none";
       renderTabs(state);
       renderItems(state);
-      document.getElementById("footer-hint").textContent = (activeTab==='wardrobe'||activeTab==='adult_shop')?'':state.ui.webapp_open_chat_hint;
+      document.getElementById("footer-hint").textContent = (activeTab==='wardrobe'||activeTab==='adult_shop'||activeTab==='toys')?'':state.ui.webapp_open_chat_hint;
     } catch (e) {
       showFullScreen("Render error: " + (e && e.message || e));
     }
@@ -14049,7 +14114,7 @@ async def site_page_handler(request):
 
 
 # Гайд прямо на сайте бота (/guide) -- его легко держать в актуальном состоянии вместе с кодом, в отличие от Telegraph.
-GUIDE_HTML = {'ru': '<h1>Быстрый гид по Role Duel</h1>\n<h2>💬 Персонаж и общение</h2><p>При создании выбери внешность, характер и имя. С SUPER PRO и ELITE можно описать своего героя, его вселенную и историю. «Переписка» — обычный чат, «Ролеплей» — общение с описаниями действий. Стартовые подсказки появляются только в начале беседы.</p>\n<h2>📷 Фото и аватарка</h2><p>Камера создаёт фото по последнему контексту: сначала немного пообщайтесь. Готовую фотографию можно открыть нажатием. Через карандаш возле аватарки можно бесплатно загрузить своё изображение или запустить генерацию. Доступная попытка фото подходит и для аватарки, и для образа в гардеробе. Отдельная генерация аватара стоит 5 ⭐, если попыток нет. Неудачная генерация возвращает попытку.</p>\n<h2>👗 Шкаф</h2><p>Купленные вещи остаются в инвентаре. Открой дверцы, выбери одежду по местам или посмотри готовые сочетания. Цельный костюм занимает несколько мест: чтобы сменить занятую деталь, сними комплект. Просмотр и переодевание бесплатны. «Показать на персонаже» создаёт новое фото за попытку либо отдельную оплату. Раздел 18+ открывается с 5-го уровня близости; изображения остаются неоткровенными.</p>\n<h2>⚡ Потребности и энергетик</h2><p>Сообщения расходуют энергию. Еда и напитки поддерживают сытость и воду. Для энергетика встряхни банку пальцем или телефоном, затем потяни кольцо вверх. Подсказки показывают жесты. Во время сна и критического состояния доступны соответствующие способы помощи. В ELITE можно отключить расход голода и воды.</p>\n<h2>⛏ Работа и задания</h2><p>Ежедневно доступны три активные работы, ферма работает всегда. В шахте ходи стрелками, поворачивай фонарь круговым регулятором или свайпом, ищи руду и поднимай добычу. В раскопках стрелки ведут археолога и прокапывают землю; инструменты влияют на скорость и сохранность находок. Забирай добычу или выбирай улучшение для продолжения. Задания открываются после проверки подписки на канал внутри списка заданий.</p>\n<h2>💎 Покупки и помощь</h2><p>В профиле открой «Премиум-магазин»: подписки, улучшение тарифа и пакеты фото находятся там. Стоимость и срок видны перед оплатой. Подписки не продлеваются автоматически. Энергетики находятся в магазине. Вопросы и ошибки — /support. Условия — <a href="/agreement">соглашение</a>.</p>', 'en': '<h1>Role Duel quick guide</h1><h2>Character and chat</h2><p>Choose appearance, name and personality. SUPER PRO and ELITE support a custom character description and fictional universe. Messages mode is ordinary chat; roleplay includes action captions. Opening suggestions appear only at the beginning.</p><h2>Photos and wardrobe</h2><p>The camera follows your recent conversation. Tap a photo to enlarge it. The avatar pencil offers free upload or generation. Any available photo attempt can create an avatar or wardrobe image; a separate avatar generation costs 5 Stars when no attempts remain. Failed generation refunds the attempt. Owned outfits stay in inventory. Free prepared previews and outfit changes use no photo attempts. Full outfits lock occupied slots. The adult shop unlocks at intimacy level 5; images remain non-explicit.</p><h2>Care and work</h2><p>Messages use energy. Feed and give water to your companion. Shake an energizer and pull its tab; graphic gestures show how. Three active jobs rotate daily and the farm stays open. Mine: move with arrows, aim the flashlight using the round control or a swipe, find ore and haul it out. Excavation: arrows move the explorer and dig, tools trade speed for artifact condition. Cash out or pick an expedition upgrade.</p><h2>Purchases and support</h2><p>Open Premium Store through Profile for subscriptions, upgrades and photo packs. Price and duration appear before payment; subscriptions do not renew automatically. Energizers are in Shop. Daily quests include the channel subscription check. Support: /support.</p>', 'de': '<h1>Role Duel — Kurzanleitung</h1><h2>Charakter und Chat</h2><p>Wähle Aussehen, Namen und Persönlichkeit. SUPER PRO und ELITE erlauben eine eigene Beschreibung und ein fiktives Universum. Nachrichten sind normaler Chat; Rollenspiel enthält Handlungen. Startvorschläge erscheinen nur zu Beginn.</p><h2>Fotos und Kleidung</h2><p>Die Kamera berücksichtigt das letzte Gespräch. Ein Foto lässt sich antippen und vergrößern. Der Stift am Avatar bietet kostenlosen Upload oder Erstellung. Ein verfügbarer Fotoversuch kann auch Avatar oder Kleidungsbild erstellen; separat kostet die Avatar-Erstellung 5 Sterne. Bei technischen Fehlern wird der Versuch erstattet. Gekaufte Kleidung bleibt im Inventar. Vorschau und Umziehen kosten keine Fotoversuche. Komplette Outfits sperren belegte Plätze. Der 18+-Shop öffnet ab Nähe-Stufe 5; Bilder bleiben nicht explizit.</p><h2>Pflege und Arbeit</h2><p>Nachrichten benötigen Energie. Essen und Wasser versorgen den Charakter. Energydrink schütteln und den Ring hochziehen; Gesten zeigen die Bedienung. Täglich wechseln drei Arbeiten, die Farm bleibt offen. Mine: Pfeile bewegen, Rundregler oder Wischen richtet die Taschenlampe aus. Ausgrabung: Pfeile bewegen und graben, Werkzeuge beeinflussen Geschwindigkeit und Fundzustand. Beute abgeben oder Expedition verbessern.</p><h2>Käufe und Hilfe</h2><p>Der Premium-Shop im Profil enthält Abos, Upgrades und Fotopakete. Preis und Laufzeit stehen vor der Zahlung fest; keine automatische Verlängerung. Energydrinks gibt es im Shop. Der Kanal-Check steht bei den Tagesaufgaben. Hilfe: /support.</p>'}
+GUIDE_HTML = {'ru': '<h1>Быстрый гид по Role Duel</h1>\n<h2>💬 Персонаж и общение</h2><p>При создании выбери внешность, характер и имя. С SUPER PRO и ELITE можно описать своего героя, его вселенную и историю. «Переписка» — обычный чат, «Ролеплей» — общение с описаниями действий. Стартовые подсказки появляются только в начале беседы.</p>\n<h2>📷 Фото и аватарка</h2><p>Камера создаёт фото по последнему контексту: сначала немного пообщайтесь. Готовую фотографию можно открыть нажатием. Через карандаш возле аватарки можно бесплатно загрузить своё изображение или запустить генерацию. Доступная попытка фото подходит и для аватарки, и для образа в гардеробе. Отдельная генерация аватара стоит 5 ⭐, если попыток нет. Неудачная генерация возвращает попытку.</p>\n<h2>👗 Гардероб</h2><p>Купленные вещи остаются в инвентаре. Открой категории купленной одежды или готовые сочетания. Базовые белые верх и шорты заменяются только в выбранных местах. Цельный костюм занимает несколько мест: чтобы сменить занятую деталь, сними комплект. Просмотр и переодевание бесплатны. «Показать на персонаже» создаёт новое фото за попытку либо отдельную оплату. Одежда 18+ открывается с 5-го уровня близости, каталог игрушек — с 9-го. Игрушки пока не продаются и не участвуют в фото. Изображения остаются неоткровенными.</p>\n<h2>⚡ Потребности и энергетик</h2><p>Сообщения расходуют энергию. Еда и напитки поддерживают сытость и воду. Для энергетика встряхни банку пальцем или телефоном, затем потяни кольцо вверх. Подсказки показывают жесты. Во время сна и критического состояния доступны соответствующие способы помощи. В ELITE можно отключить расход голода и воды.</p>\n<h2>⛏ Работа и задания</h2><p>Ежедневно доступны три активные работы, ферма работает всегда. В шахте ходи стрелками, поворачивай фонарь круговым регулятором или свайпом, ищи руду и поднимай добычу. В раскопках стрелки ведут археолога и прокапывают землю; инструменты влияют на скорость и сохранность находок. Забирай добычу или выбирай улучшение для продолжения. Задания открываются после проверки подписки на канал внутри списка заданий.</p>\n<h2>💎 Покупки и помощь</h2><p>В профиле открой «Премиум-магазин»: подписки, улучшение тарифа и пакеты фото находятся там. Стоимость и срок видны перед оплатой. Подписки не продлеваются автоматически. Энергетики находятся в магазине. Обучение в профиле проведёт по первым действиям и дождётся нажатий. За баксы доступен один товар на общий период 48 часов, купить его можно один раз. Вопросы и ошибки — /support. Условия — <a href="/agreement">соглашение</a>.</p>', 'en': '<h1>Role Duel quick guide</h1><h2>Character and chat</h2><p>Choose appearance, name and personality. SUPER PRO and ELITE support a custom character description and fictional universe. Messages mode is ordinary chat; roleplay includes action captions. Opening suggestions appear only at the beginning.</p><h2>Photos and wardrobe</h2><p>The camera follows your recent conversation. Tap a photo to enlarge it. The avatar pencil offers free upload or generation. Any available photo attempt can create an avatar or wardrobe image; a separate avatar generation costs 5 Stars when no attempts remain. Failed generation refunds the attempt. Owned outfits stay in inventory. Clothing categories show owned items first. Base white clothes remain in empty slots. Free prepared previews and outfit changes use no photo attempts. Full outfits lock occupied slots. Adult clothing unlocks at intimacy level 5; the toys catalog unlocks at level 9 and has no purchases or photo generation. Images remain non-explicit.</p><h2>Care and work</h2><p>Messages use energy. Feed and give water to your companion. Shake an energizer and pull its tab; graphic gestures show how. Three active jobs rotate daily and the farm stays open. Mine: move with arrows, aim the flashlight using the round control or a swipe, find ore and haul it out. Excavation: arrows move the explorer and dig, tools trade speed for artifact condition. Cash out or pick an expedition upgrade.</p><h2>Purchases and support</h2><p>Open Premium Store through Profile for subscriptions, upgrades and photo packs. Price and duration appear before payment; subscriptions do not renew automatically. Energizers are in Shop. Daily quests include the channel subscription check. Support: /support.</p>', 'de': '<h1>Role Duel — Kurzanleitung</h1><h2>Charakter und Chat</h2><p>Wähle Aussehen, Namen und Persönlichkeit. SUPER PRO und ELITE erlauben eine eigene Beschreibung und ein fiktives Universum. Nachrichten sind normaler Chat; Rollenspiel enthält Handlungen. Startvorschläge erscheinen nur zu Beginn.</p><h2>Fotos und Kleidung</h2><p>Die Kamera berücksichtigt das letzte Gespräch. Ein Foto lässt sich antippen und vergrößern. Der Stift am Avatar bietet kostenlosen Upload oder Erstellung. Ein verfügbarer Fotoversuch kann auch Avatar oder Kleidungsbild erstellen; separat kostet die Avatar-Erstellung 5 Sterne. Bei technischen Fehlern wird der Versuch erstattet. Gekaufte Kleidung bleibt im Inventar. Weiße Basiskleidung bleibt an freien Plätzen. Vorschau und Umziehen kosten keine Fotoversuche. Komplette Outfits sperren belegte Plätze. 18+-Kleidung öffnet ab Nähe-Stufe 5; der Spielzeugkatalog ab Stufe 9, ohne Kauf oder Fotogenerierung. Bilder bleiben nicht explizit.</p><h2>Pflege und Arbeit</h2><p>Nachrichten benötigen Energie. Essen und Wasser versorgen den Charakter. Energydrink schütteln und den Ring hochziehen; Gesten zeigen die Bedienung. Täglich wechseln drei Arbeiten, die Farm bleibt offen. Mine: Pfeile bewegen, Rundregler oder Wischen richtet die Taschenlampe aus. Ausgrabung: Pfeile bewegen und graben, Werkzeuge beeinflussen Geschwindigkeit und Fundzustand. Beute abgeben oder Expedition verbessern.</p><h2>Käufe und Hilfe</h2><p>Der Premium-Shop im Profil enthält Abos, Upgrades und Fotopakete. Preis und Laufzeit stehen vor der Zahlung fest; keine automatische Verlängerung. Energydrinks gibt es im Shop. Der Kanal-Check steht bei den Tagesaufgaben. Hilfe: /support.</p>'}
 
 
 async def guide_page_handler(request):
@@ -15958,13 +16023,13 @@ WORK_PAGE_HTML = r"""<!doctype html>
   var hackerWiresBound = false;
   var SVG_NS = "http://www.w3.org/2000/svg";
 
-  var hackerWireVariant="trace",wireSelected=0,wireObstacles=0;
+  var hackerWireVariant="connect",wireUseShapes=false,wireSelected=0,wireObstacles=0;
   var WIRE_SHAPES=["●","▲","■","◆","✚"];
   var wireDeadline=0,wireClock=null,wireTarget=0;
   function startHackerWires(){
-    hackerWireVariant=hackerMode==='cut'?'cut':'connect';wireObstacles=hackerWireVariant==='cut'?3:0;hackerWires=HACKER_WIRE_COLORS.slice(0,hackerWireVariant==='cut'?5:4);hackerWireRightOrder=shuffleArray(hackerWires.slice());hackerWireLinks={};hackerWireConnected=0;hackerWireDrag=null;wireSelected=0;wireTarget=Math.floor(Math.random()*hackerWires.length);wireDeadline=performance.now()+(hackerWireVariant==='cut'?22000:45000);
+    hackerWireVariant='connect';wireUseShapes=hackerMode==='cut';wireObstacles=0;hackerWires=HACKER_WIRE_COLORS.slice(0,wireUseShapes?5:4);hackerWireRightOrder=shuffleArray(hackerWires.slice());hackerWireLinks={};hackerWireConnected=0;hackerWireDrag=null;wireSelected=0;wireTarget=Math.floor(Math.random()*hackerWires.length);wireDeadline=performance.now()+(hackerWireVariant==='cut'?22000:45000);
     document.getElementById('hacker-wires').classList.add('active');document.getElementById('hacker-keyboard').style.display='none';renderHackerWires();bindHackerWires();clearInterval(wireClock);
-    wireClock=setInterval(function(){if(activeGame!=='clicker'||(hackerMode!=='wires'&&hackerMode!=='cut')){clearInterval(wireClock);return;}var left=Math.ceil((wireDeadline-performance.now())/1000);document.getElementById('hacker-mode').textContent=(hackerWireVariant==='cut'?courierWords('Убери мешающие кабели, проследи провод и подключи вилку','Remove blockers, trace the cable and plug it in','Kabel freimachen, verfolgen und einstecken'):courierWords('Протяни провода к одинаковым фигурам','Drag cables to matching shapes','Kabel zu gleichen Formen ziehen'))+' · '+Math.max(0,left)+' сек.';if(left<=0){clearInterval(wireClock);fx('loss');startHacker();}},150);
+    wireClock=setInterval(function(){if(activeGame!=='clicker'||(hackerMode!=='wires'&&hackerMode!=='cut')){clearInterval(wireClock);return;}var left=Math.ceil((wireDeadline-performance.now())/1000);document.getElementById('hacker-mode').textContent=(wireUseShapes?courierWords('Соедини одинаковые фигуры','Connect matching shapes','Gleiche Formen verbinden'):courierWords('Соедини провода одинакового цвета','Connect matching colors','Gleiche Farben verbinden'))+' · '+Math.max(0,left)+' сек.';if(left<=0){clearInterval(wireClock);fx('loss');startHacker();}},150);
   }
 
   function shuffleArray(arr) {
@@ -16000,8 +16065,8 @@ WORK_PAGE_HTML = r"""<!doctype html>
 
   function renderHackerWires(){
     var left=document.getElementById('hacker-wires-left'),right=document.getElementById('hacker-wires-right'),svg=document.getElementById('hacker-wires-svg');left.innerHTML='';right.innerHTML='';svg.innerHTML='';
-    hackerWires.forEach(function(color,i){var button=document.createElement('button');button.type='button';button.className='hacker-wire-end'+(hackerWireLinks[i]!==undefined?' connected':'');button.dataset.index=i;button.setAttribute('aria-label','Вход '+(i+1));button.style.setProperty('background',i===wireTarget&&hackerWireVariant==='cut'?'#f6c675':'#534760','important');button.textContent=hackerWireVariant==='connect'?WIRE_SHAPES[i]:'⏚';button.classList.toggle('tracing',i===wireSelected);left.appendChild(button);});
-    hackerWireRightOrder.forEach(function(color,i){var button=document.createElement('button');button.type='button';button.className='hacker-wire-socket';button.dataset.socket=i;button.setAttribute('aria-label','Контакт '+(i+1));button.style.setProperty('background','#534760','important');button.textContent=hackerWireVariant==='connect'?WIRE_SHAPES[hackerWires.indexOf(color)]:'◉';right.appendChild(button);});
+    hackerWires.forEach(function(color,i){var button=document.createElement('button');button.type='button';button.className='hacker-wire-end'+(hackerWireLinks[i]!==undefined?' connected':'');button.dataset.index=i;button.setAttribute('aria-label','Вход '+(i+1));button.style.setProperty('background',wireUseShapes?'#534760':color,'important');button.textContent=wireUseShapes?WIRE_SHAPES[i]:'';button.classList.toggle('tracing',i===wireSelected);left.appendChild(button);});
+    hackerWireRightOrder.forEach(function(color,i){var button=document.createElement('button');button.type='button';button.className='hacker-wire-socket';button.dataset.socket=i;button.setAttribute('aria-label','Контакт '+(i+1));button.style.setProperty('background',wireUseShapes?'#534760':color,'important');button.textContent=wireUseShapes?WIRE_SHAPES[hackerWires.indexOf(color)]:'';right.appendChild(button);});
     var field=document.getElementById('hacker-wires');field.querySelectorAll('.wire-obstacle').forEach(function(n){n.remove();});for(var k=0;k<wireObstacles;k++){var blocker=document.createElement('button');blocker.type='button';blocker.className='wire-obstacle';blocker.textContent='⌁';blocker.style.top=(25+k*23)+'%';blocker.style.left=(38+(k%2)*15)+'%';blocker.setAttribute('aria-label','Убрать мешающий провод');blocker.onclick=function(e){e.stopPropagation();wireObstacles--;fx('wire');renderHackerWires();};field.appendChild(blocker);}
     requestAnimationFrame(function(){if(!left.isConnected)return;svg.innerHTML='';hackerWires.forEach(function(color,i){var j=hackerWireRightOrder.indexOf(color);if(hackerWireVariant==='connect'&&hackerWireLinks[i]===undefined)return;var a=wirePoint(left.children[i],'left'),b=wirePoint(right.children[j],'right'),w=b.x-a.x;var d='M'+a.x+','+a.y+' C'+(a.x+w*.28)+','+(a.y+(i%2?100:-90))+' '+(b.x-w*.32)+','+(b.y+(i%2?-90:100))+' '+b.x+','+b.y;
       [10,5].forEach(function(weight){var path=document.createElementNS(SVG_NS,'path');path.setAttribute('d',d);path.setAttribute('fill','none');path.setAttribute('stroke-width',weight);path.setAttribute('stroke-linecap','round');path.setAttribute('stroke',weight===10?'#17121c':hackerWireVariant==='connect'?color:'#ac96ba');svg.appendChild(path);});});});
@@ -17791,6 +17856,7 @@ def play_round_facts(user, play):
     last = play.get("last")
     if not last:
         return ""
+    if play.get('mode')=='strip':return 'Раунд уже сыгран. Продолжай только текущий момент с одеждой и реакцией персонажа; не пересказывай игровые ходы. '
     names = GAME_TEXTS["ru"]["rps_names"]
     return (f"В этом раунде ты показал(а) «{names[last['theirs']]}», а собеседник — «{names[last['mine']]}». "
             "Раунд уже сыгран: не придумывай и не описывай других ходов, не выбрасывай новую фигуру и не говори о "
@@ -19126,18 +19192,18 @@ def app_request_user(init_data):
     if not parsed or not (parsed.get("user") or {}).get("id"):
         return None, None, {"ok": False, "error": "auth", "message": "Invalid Telegram signature"}
     user_id = int(parsed["user"]["id"])
+    if STAGING_MODE and user_id not in STAGING_TESTER_IDS:return None,None,{'ok':False,'error':'staging','message':'Тестовая версия доступна только участникам проверки'}
     user = get_user(user_id)
-    if maintenance_mode and user_id != MAIN_ADMIN_ID:
+    if (maintenance_mode and user_id != MAIN_ADMIN_ID) or (user_id==MAIN_ADMIN_ID and user.get('maintenance_preview')):
         return None, None, {"ok": False, "error": "maintenance", "message": get_text(user, "maintenance"), "lang":user.get("lang","ru")}
     if not (user["verified"] and user["agreement_accepted"]):
         return None, None, {"ok": False, "error": "not_ready", "message": get_text(user, "webapp_character_not_ready")}
-    if user.get("dead"):
-        return None, None, {"ok": False, "error": "dead", "message": get_text(user, "character_died")}
     return user_id, user, None
 
 
-async def _app_request(request):
+async def _app_request(request, allow_dead=False):
     user_id, user, error = app_request_user(request.headers.get("X-Telegram-Init-Data", ""))
+    if not error and user.get("dead") and not allow_dead:error={"ok":False,"error":"dead","message":get_text(user,"character_died")}
     if error:
         return None, None, None, web.json_response(error, status=401 if error["error"] == "auth" else 200)
     try:
@@ -19221,14 +19287,14 @@ CHANNEL_URL = "https://t.me/duel_dev_channel"
 
 
 def serialize_app_state(user):
-    if profile_options.migrate_materials(user):save_data(user_data)
+    if profile_options.migrate_materials(user) | profile_options.seed_starter_clothes(user):save_data(user_data)
     photo_wallet.ensure(user)
     user["style"]=character_options.ALIASES.get(user.get("style"),user.get("style","warm"))
     avatar_unstick(user)
     user["app_seen"] = datetime.now().isoformat()
     if not user.get("personality_ready"):
         ui = {k: v for k, v in APP_TEXTS.get(user.get("lang") or "ru", APP_TEXTS["en"]).items() if isinstance(v, str)}
-        return {"release":"20261120f", "onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
+        return {"release":"20261123a", "onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
     app_unstick(user)
     if migrate_character_appearance(user):save_data(user_data)
     if user.get('appearance'):
@@ -19261,7 +19327,7 @@ def serialize_app_state(user):
         "content_settings":profile_options.state(user),"avatar_presets":[],
         "photos":photo_wallet.snapshot(user),
         "purchase_products":[{"payload":k,"amount":v[0],"stars":product_stars(k,user),"rub":product_rub(k,user),"image":"/assets/photo_pack_"+str(v[0])+".webp"} for k,v in photo_wallet.PACKS.items()],
-        "release":"20261120f",
+        "release":"20261123a",
         "reply_choices": serialize_reply_choices(user),
         "pending": bool(user.get("app_pending")),"photo_pending":bool(user.get("photo_pending")),
         "notices": notices,
@@ -19279,7 +19345,7 @@ def serialize_app_state(user):
                       for k, v in LOOKS.items() if v["world"] == (user.get("world") or "realism") and v["gender"] == (user.get("gender") or "female")],
             "name": user.get("char_name"),
             "character_template":user.get("character_template"),"appearance_locked_reason":"Канонический образ героя. Для своей внешности выбери своего персонажа." if fandom_catalog.selected(user) and not user.get("custom_character") else None,"can_avatar": True,"can_edit_appearance":sub_level in ("super_pro","elite") and (not fandom_catalog.selected(user) or bool(user.get("custom_character"))),"avatar_credits":user.get("portrait_credits",0),"avatar_pending":bool(user.get("avatar_job")),"avatar_error":user.get("avatar_error"),"avatar_generated":bool(user.get("avatar_generated")),
-            "title": user.get("char_name") or at(user, "char_female" if (user.get("gender") or "female") == "female" else "char_male"),
+            "title": fandom_catalog.character_name(user),
             "subtitle": f"{world_display_name(user.get('world') or 'realism', user).capitalize()} · "
                         f"{style_display_label(get_display_style(user), user)}",
         },
@@ -19291,6 +19357,8 @@ def serialize_app_state(user):
             "scenes": intim_scenes_available(user),
             "level": level, "xp": get_xp_progress(user), "xp_cost": get_xp_cost(level),
         },
+        "dead": bool(user.get("dead")),
+        "recovery": {"stock":user.get("defib_stock",0),"stars":product_stars("defibrillator",user)},
         "asleep": is_asleep(user),
         "wake": {"energizers": user.get("energizers", 0), "elite": elite_free_wake_available(user),
                  "price": product_stars("wake_now", user)},
@@ -19523,7 +19591,7 @@ async def api_app_share_handler(request):
 
 
 async def api_app_state_handler(request):
-    user_id, user, body, err = await _app_request(request)
+    user_id, user, body, err = await _app_request(request, allow_dead=True)
     if err:
         return err
     await bot_username()
@@ -19578,6 +19646,17 @@ async def api_app_reroll_handler(request):
     return _app_reply(user)
 
 
+async def api_app_revive_handler(request):
+    _,user,body,err=await _app_request(request, allow_dead=True)
+    if err:return err
+    if not user.get('dead'):return _app_reply(user,False,'Персонаж уже жив')
+    if user.get('defib_stock',0)<1:return _app_reply(user,False,'Нет дефибриллятора в запасе')
+    user['defib_stock']-=1
+    user.update(dead=False,energy=ENERGY_MAX,satiety=SATIETY_MAX,water=WATER_MAX,sleep_until=None,water_zero_since=None,illness=None,illness_since=None)
+    save_data(user_data)
+    return _app_reply(user)
+
+
 async def api_app_wake_handler(request):
     user_id, user, body, err = await _play_request(request)
     if err:
@@ -19606,10 +19685,11 @@ async def api_app_wake_handler(request):
 
 async def api_app_invoice_handler(request):
     """Счёт за подписку / пробуждение / сцену прямо из приложения: звёздами (openInvoice) или картой (Platega)."""
-    user_id, user, body, err = await _play_request(request)
+    user_id, user, body, err = await _app_request(request, allow_dead=True)
     if err:
         return err
     payload, method = body.get("payload"), body.get("method") or "stars"
+    if user.get("dead") and payload != "defibrillator":return _app_reply(user,False,get_text(user,"character_died"))
     if payload not in (set(APP_INVOICE_PAYLOADS)|set(photo_wallet.PACKS)|{'scene_photo'}) or method not in available_payment_methods(payload) \
             or method not in ("stars", "platega"):
         return web.json_response({"ok": False, "error": "Bad request"})
@@ -19985,12 +20065,14 @@ async def api_app_appearance_handler(request):
 
 async def api_app_reset_handler(request):
     """«Создать нового персонажа» из профиля -- как кнопка смены персонажа в меню: история удаляется."""
-    user_id, user, body, err = await _play_request(request)
+    user_id, user, body, err = await _app_request(request, allow_dead=True)
     if err:
         return err
     if user.get('app_pending') or user.get('avatar_job'):return _app_reply(user,False,at(user,'wait_reply'))
-    if is_asleep(user):
+    if is_asleep(user) and not user.get("dead"):
         return web.json_response({"ok": False, "error": at(user, "asleep_no_new")})
+    if user.get("dead"):
+        user.update(dead=False,xp=0,last_level=0,relationship={},satiety=SATIETY_MAX,water=WATER_MAX,energy=ENERGY_MAX,sleep_until=None,illness=None,illness_since=None,tipsy_until=None,tipsy_level=None,water_zero_since=None,overfeed_strikes=0,intim_scene_unlocked=False,last_hot_scene=None)
     user["personality_ready"] = False
     user["custom_character"] = None
     user["history"] = []
@@ -20013,7 +20095,7 @@ setTimeout(function () { if (window.__tgSdkOnSettle) window.__tgSdkOnSettle(); }
 _SDK_TAG_RE = re.compile(r'<script src="/tg-sdk\.js"[^>]*>\s*</script>', re.S)
 
 
-SFX_TAG = '<script src="/sfx.js?v=20261120f"></script>'
+SFX_TAG = '<script src="/sfx.js?v=20261123a"></script>'
 
 
 async def sfx_js_handler(request):
@@ -20201,7 +20283,7 @@ del,.old-price,s.old-price{display:inline-block!important;width:max-content!impo
 
 #msgs .bw{display:block!important;max-width:86%!important;min-width:0;position:relative}#msgs .bw>.bub{max-width:100%;box-sizing:border-box}#msgs .message-reactions{position:absolute!important;left:8px!important;right:auto!important;bottom:-12px!important;margin:0!important;width:max-content!important;max-width:calc(100% - 16px);z-index:2}#msgs .has-reactions{margin-bottom:19px!important}#msgs .has-reactions>.bub{padding-bottom:23px!important}.photo-loading:before{inset:0!important;background:linear-gradient(105deg,transparent 35%,#ffffff12 50%,transparent 65%);transform:translateX(-150%);animation:loading-scan 3.6s linear infinite!important;will-change:transform}@keyframes loading-scan{0%{transform:translateX(-150%)}100%{transform:translateX(150%)}}.energy-ritual{justify-content:center!important;padding-top:90px!important;padding-bottom:10px!important}.energy-can-wrap{width:min(65vw,270px)!important;height:min(44dvh,350px)!important}.energy-hint{position:absolute!important;width:1px;height:1px;clip-path:inset(50%);overflow:hidden}.energy-gesture{position:absolute;bottom:10%;right:8%;width:90px;height:90px;object-fit:contain;pointer-events:none}.energy-gesture.pulling-guide{bottom:auto;top:21%;right:20%;width:74px;height:74px}.energy-ritual>.btn.ghost{position:absolute;bottom:22px;min-height:44px;width:80px;font-size:27px}.cabinet-open .cabinet-doors span{left:auto!important;right:6px!important;top:6px!important;bottom:auto!important;width:27px;height:27px;padding:0!important;line-height:27px;font-size:20px!important}.fitting-stage{border:0!important;outline:0!important;box-shadow:inset 0 0 0 4px #715069,0 8px 22px #0005!important}.cabinet-doors:focus{outline:0!important}.fitting-stage .cabinet-doors{outline:0!important}.complete-look img{aspect-ratio:320/512;height:auto!important;width:100%!important;object-fit:contain!important}
 """
-APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261120f">'
+APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261123a">'
 
 
 async def theme_css_handler(request):
@@ -20214,8 +20296,8 @@ def page_response(request, html):
         html = html.replace("</head>", APP_THEME_TAG + "</head>", 1)
     if request.query.get("embed") == "1":
         html = _SDK_TAG_RE.sub(lambda m: EMBED_BRIDGE, html, count=1)
-        return web.Response(text=html, content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261120f"})
-    return web.Response(text=with_app_back(html), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261120f"})
+        return web.Response(text=html, content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261123a"})
+    return web.Response(text=with_app_back(html), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261123a"})
 
 
 def refund_scene_photo(user, job_id):
@@ -20430,7 +20512,7 @@ def serialize_referral(user):
 
 
 async def app_page_handler(request):
-    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261120f"})
+    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261123a"})
 
 # Нативная кнопка «Назад» Telegram на внутренних страницах (магазин, колесо, игры, работа, гайд) --
 # возвращает в главное приложение /app, так что всё выглядит как одно мини-приложение.
@@ -20599,7 +20681,7 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
   function loadSample(kind){
     if(sampleBuffers[kind])return Promise.resolve(sampleBuffers[kind]);
     if(sampleLoads[kind])return sampleLoads[kind];
-    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261120f').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
+    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261123a').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
     return sampleLoads[kind];
   }
   function sample(kind){
@@ -21032,7 +21114,10 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 /* Real app mobile repair */del,.old-price,s.old-price{display:inline-block!important;width:max-content!important;max-width:100%;position:relative;white-space:nowrap;text-decoration:none!important}del:after,.old-price:after{left:0!important;right:0!important;top:50%!important;height:2px!important;transform:translateY(-50%)!important;background:#ef606c!important;pointer-events:none}.price-row .price{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.old-price{margin-right:5px}
 
 #msgs .bw{display:block!important;max-width:86%!important;min-width:0;position:relative}#msgs .bw>.bub{max-width:100%;box-sizing:border-box}#msgs .message-reactions{position:absolute!important;left:8px!important;right:auto!important;bottom:-12px!important;margin:0!important;width:max-content!important;max-width:calc(100% - 16px);z-index:2}#msgs .has-reactions{margin-bottom:19px!important}#msgs .has-reactions>.bub{padding-bottom:23px!important}.photo-loading:before{inset:0!important;background:linear-gradient(105deg,transparent 35%,#ffffff12 50%,transparent 65%);transform:translateX(-150%);animation:loading-scan 3.6s linear infinite!important;will-change:transform}@keyframes loading-scan{0%{transform:translateX(-150%)}100%{transform:translateX(150%)}}.energy-ritual{justify-content:center!important;padding-top:90px!important;padding-bottom:10px!important}.energy-can-wrap{width:min(65vw,270px)!important;height:min(44dvh,350px)!important}.energy-hint{position:absolute!important;width:1px;height:1px;clip-path:inset(50%);overflow:hidden}.energy-gesture{position:absolute;bottom:10%;right:8%;width:90px;height:90px;object-fit:contain;pointer-events:none}.energy-gesture.pulling-guide{bottom:auto;top:21%;right:20%;width:74px;height:74px}.energy-ritual>.btn.ghost{position:absolute;bottom:22px;min-height:44px;width:80px;font-size:27px}.cabinet-open .cabinet-doors span{left:auto!important;right:6px!important;top:6px!important;bottom:auto!important;width:27px;height:27px;padding:0!important;line-height:27px;font-size:20px!important}.fitting-stage{border:0!important;outline:0!important;box-shadow:inset 0 0 0 4px #715069,0 8px 22px #0005!important}.cabinet-doors:focus{outline:0!important}.fitting-stage .cabinet-doors{outline:0!important}.complete-look img{aspect-ratio:320/512;height:auto!important;width:100%!important;object-fit:contain!important}
-.onb-own-avatar{width:76px;height:76px;object-fit:cover;border-radius:20px;margin:12px auto;display:block}#onb-generate-avatar.selected{background:linear-gradient(135deg,#8054ac,#ba4c9c)!important;border-color:#e0a5e8!important}</style>
+.onb-own-avatar{width:76px;height:76px;object-fit:cover;border-radius:20px;margin:12px auto;display:block}#onb-generate-avatar.selected{background:linear-gradient(135deg,#8054ac,#ba4c9c)!important;border-color:#e0a5e8!important}
+/* Nov 23: invariant can proportions and delayed, target-bound gesture coaching. */
+.energy-can-wrap{width:min(80vw,360px)!important;height:auto!important;aspect-ratio:1!important;margin-top:28px}.energy-can-wrap .energy-ritual-can,.energy-can-wrap .energy-can-open{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:contain!important}.energy-can-wrap .energy-ring{top:7%!important;left:44%!important;width:15%!important;height:12%!important}.energy-gesture{opacity:0!important;transition:opacity .18s;animation:none!important;position:absolute!important;bottom:auto!important;top:40%!important;right:9%!important;width:78px!important;height:78px!important;transform:none!important}.energy-gesture.guide-visible{opacity:1!important;animation:guide-swipe .8s ease-in-out!important}.energy-gesture.pulling-guide{top:0%!important;right:28%!important;animation:guide-pull .8s ease-in-out!important}.energy-motion-symbol{position:absolute;left:12%;top:45%;font-size:36px;opacity:0;pointer-events:none}.guide-visible~.energy-motion-symbol{opacity:1;animation:guide-swipe .6s ease-in-out infinite}.energy-motion-symbol[hidden]{display:none!important}@keyframes guide-swipe{50%{transform:translateX(18px) rotate(10deg)}}@keyframes guide-pull{to{transform:translateY(-24px)}}#h-bucks{cursor:pointer}#h-bucks:after{content:'+';display:inline-grid;place-items:center;width:17px;height:17px;background:#238657;border-radius:50%;font-weight:900;color:#c5ffda;margin-left:4px}#h-ava{cursor:pointer}.read-eye{color:#fff;opacity:.8;font-size:16px;margin:2px 12px 6px auto;width:max-content}.channel-profile{display:flex;gap:12px;align-items:center;width:100%;padding:16px;text-align:left}.channel-profile img{width:44px;height:44px;border-radius:14px;object-fit:contain}.channel-chat{display:block;width:100%;border:0;background:#5f3d7c22;color:#dac0ed;padding:7px 12px;font-size:12px;border-radius:12px;margin-bottom:10px}.death-panel{max-width:440px;margin:15vh auto;padding:20px;display:grid;gap:12px;text-align:center}.rd-tour{pointer-events:none!important}.rd-tour .rd-tour-panel{pointer-events:auto}.rd-tour .rd-ring{pointer-events:none}.tour-pointer{position:fixed;width:68px;height:68px;object-fit:contain;pointer-events:none;z-index:10002;transform:rotate(180deg);filter:drop-shadow(0 3px 6px #0008);animation:tour-point 1s ease-in-out infinite}.tour-action{outline:3px solid #dbb5ef!important;outline-offset:4px;position:relative;z-index:10001!important}@keyframes tour-point{50%{translate:0 7px}}.tour-wait{font-size:12px;color:#d8c8e1}.message-arriving{animation:none!important;opacity:1!important}
+</style>
 </head>
 <body>
 <div id="bgfx"></div>
@@ -21171,7 +21256,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     TABS.forEach(function (t) {
       var b = el("button", t[0] === tab ? "on" : "");
       var ic = el("span", "ic"); if(t[0]==="wardrobe"){var wardrobeIcon=el("img");wardrobeIcon.src="/assets/nav_wardrobe.webp";wardrobeIcon.alt="";wardrobeIcon.style.cssText="width:28px;height:28px;object-fit:contain";ic.appendChild(wardrobeIcon);}else ic.appendChild(icon(t[3], t[1], "")); b.appendChild(ic); b.appendChild(el("span", null, t[0]==='wardrobe'?tr('Гардероб','Wardrobe','Kleidung'):state.ui["tab_" + t[0]]));
-      b.onclick = function () { haptic("select"); setTab(t[0]); };
+      b.dataset.tab=t[0];b.onclick = function () { haptic("select"); setTab(t[0]); };
       nav.appendChild(b);
     });
   }
@@ -21188,13 +21273,15 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     $("h-tier").textContent = { pro: "PRO", super_pro: "SUPER", elite: "ELITE" }[lvl] || "";
     var st = $("h-status");
     st.className = "status" + ((s.pending||c.avatar_pending) ? " typing" : "");
-    st.textContent = c.avatar_pending ? tr('создаёт аватарку…','creating avatar…','Avatar entsteht…') : s.photo_pending ? tr('отправляет фото…','sending a photo…','sendet ein Foto…') : s.pending ? s.ui.typing : (s.asleep ? s.ui.asleep : (s.illness ? s.illness + " · " + s.ui.sick : s.ui.online));
+    st.textContent = c.avatar_pending ? tr('создаёт аватарку…','creating avatar…','Avatar entsteht…') : s.photo_pending ? tr('отправляет фото…','sending a photo…','sendet ein Foto…') : s.pending ? (Date.now()-(window.rdReadSince||0)<1000?tr('читает…','reading…','liest…'):s.ui.typing) : (s.asleep ? s.ui.asleep : (s.illness ? s.illness + " · " + s.ui.sick : s.ui.online));
     withIcon($("h-bucks"), "icon_bucks", "💵", s.stats.bucks);
     withIcon($("h-hot"), "icon_hot", "🔥", s.hot.available);
     withIcon($("h-en"), "icon_energy", "⚡", s.stats.energy);$("photo-action").title=tr("Фото · осталось ","Photos remaining · ","Fotos übrig · ")+(s.photos||{}).total;
 
   }
 
+  $('h-ava').onclick=function(){if(state.character.avatar_url)openPhoto(state.character.avatar_url);};
+  $('h-bucks').onclick=function(){var box=$('sheet-box');box.innerHTML='';renderEconomy(box);$('sheet').classList.add('on');};
   // ---- чат ----
   function nearBottom() { var m = $("msgs"); return m.scrollHeight - m.scrollTop - m.clientHeight < 140; }
   function updateChatControls(){var vv=window.visualViewport;$('jump-latest').hidden=nearBottom();$('hide-keyboard').hidden=document.activeElement!==$('input');$('hide-keyboard').style.bottom=($('composer').offsetHeight+8)+'px';$('jump-latest').style.bottom=($('composer').offsetHeight+42)+'px';}
@@ -21235,17 +21322,17 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     can.draggable=false;can.ondragstart=function(e){e.preventDefault();};can.src='/assets/energy_can.webp';can.alt=tr('Энергетик','Energy drink','Energydrink');ring.setAttribute('aria-label',tr('Потянуть кольцо вверх','Pull ring upwards','Ring nach oben ziehen'));ring.disabled=true;
     ring.textContent='';ring.title=tr('Тяни кольцо и удерживай натяжение','Pull and keep tension','Ziehen und halten');
 
-    hint.setAttribute('aria-live','polite');var gesture=el('img','energy-gesture');gesture.src='/assets/gesture_swipe.webp';gesture.alt='';layer.appendChild(gesture);hint.textContent=tr('Встряхни банку','Shake the can','Schüttle die Dose');
+    hint.setAttribute('aria-live','polite');var gesture=el('img','energy-gesture');gesture.src='/assets/gesture_swipe.webp';gesture.alt='';canWrap.appendChild(gesture);var motionSymbol=el('span','energy-motion-symbol','📱↔');motionSymbol.hidden=true;canWrap.appendChild(motionSymbol);var guideLast=Date.now(),guideFrame=0;hint.textContent=tr('Встряхни банку','Shake the can','Schüttle die Dose');
     function later(fn,ms){timers.push(setTimeout(fn,ms));}
-    function cleanup(){timers.forEach(clearTimeout);if(tensionFrame)cancelAnimationFrame(tensionFrame);window.removeEventListener('devicemotion',motion);layer.remove();energizerBusy=false;}
-    function shake(){if(finished||charge>=7)return;var t=Date.now();if(t-lastShake<320)return;lastShake=t;charge++;can.classList.remove('shake');void can.offsetWidth;can.classList.add('shake');canWrap.animate([{transform:'translateX(0) rotate(0deg)'},{transform:'translateX(-9px) rotate(-5deg)',offset:.3},{transform:'translateX(8px) rotate(4deg)',offset:.65},{transform:'translateX(0) rotate(0deg)'}],{duration:480,easing:'ease-in-out'});for(var d=0;d<5;d++){var drop=el('i','can-droplet');drop.style.cssText='position:absolute;left:'+(30+Math.random()*40)+'%;top:'+(20+Math.random()*40)+'%;width:5px;height:8px;border-radius:60%;background:#d8bef1b0;pointer-events:none';canWrap.appendChild(drop);(function(p,n){p.animate([{transform:'translate(0,0)',opacity:.8},{transform:'translate('+((n%2?1:-1)*(45+Math.random()*55))+'px,'+(20+Math.random()*65)+'px)',opacity:0}],{duration:600+Math.random()*300,easing:'ease-out'}).onfinish=function(){p.remove();};})(drop,d);}haptic('light');if(charge>=7){gesture.src='/assets/gesture_pull.webp';gesture.classList.add('pulling-guide');ring.disabled=false;hint.textContent=tr('Потяни кольцо вверх до щелчка','Pull the ring upwards until it clicks','Zieh den Ring bis zum Klicken hoch');hint.classList.add('pull-hint');}}
+    function cleanup(){cancelAnimationFrame(guideFrame);timers.forEach(clearTimeout);if(tensionFrame)cancelAnimationFrame(tensionFrame);window.removeEventListener('devicemotion',motion);layer.remove();energizerBusy=false;}
+    function activeGesture(){guideLast=Date.now();gesture.classList.remove('guide-visible');}function coach(){if(finished)return;var idle=Date.now()-guideLast;gesture.classList.toggle('guide-visible',!pulling&&idle>2500&&((idle-2500)%3800)<1000);var target=canWrap.getBoundingClientRect();if(charge>=7){var tabRect=ring.getBoundingClientRect();gesture.style.setProperty('left',(tabRect.left-target.left+tabRect.width/2-39)+'px','important');gesture.style.setProperty('right','auto','important');gesture.style.setProperty('top',(tabRect.top-target.top+tabRect.height/2+6)+'px','important');}guideFrame=requestAnimationFrame(coach);}guideFrame=requestAnimationFrame(coach);function shake(){if(finished||charge>=7)return;activeGesture();var t=Date.now();if(t-lastShake<320)return;lastShake=t;charge++;can.classList.remove('shake');void can.offsetWidth;can.classList.add('shake');canWrap.animate([{transform:'translateX(0) rotate(0deg)'},{transform:'translateX(-9px) rotate(-5deg)',offset:.3},{transform:'translateX(8px) rotate(4deg)',offset:.65},{transform:'translateX(0) rotate(0deg)'}],{duration:480,easing:'ease-in-out'});for(var d=0;d<5;d++){var drop=el('i','can-droplet');drop.style.cssText='position:absolute;left:'+(30+Math.random()*40)+'%;top:'+(20+Math.random()*40)+'%;width:5px;height:8px;border-radius:60%;background:#d8bef1b0;pointer-events:none';canWrap.appendChild(drop);(function(p,n){p.animate([{transform:'translate(0,0)',opacity:.8},{transform:'translate('+((n%2?1:-1)*(45+Math.random()*55))+'px,'+(20+Math.random()*65)+'px)',opacity:0}],{duration:600+Math.random()*300,easing:'ease-out'}).onfinish=function(){p.remove();};})(drop,d);}haptic('light');if(charge>=7){gesture.src='/assets/gesture_pull.webp';gesture.classList.add('pulling-guide');guideLast=Date.now();motionSymbol.hidden=true;ring.disabled=false;hint.textContent=tr('Потяни кольцо вверх до щелчка','Pull the ring upwards until it clicks','Zieh den Ring bis zum Klicken hoch');hint.classList.add('pull-hint');}}
     function motion(e){var v=e.acceleration||e.accelerationIncludingGravity;if(v&&Math.abs(v.x||0)+Math.abs(v.y||0)+Math.abs(v.z||0)>24)shake();}
-    can.onpointerdown=function(e){canX=e.clientX;canY=e.clientY;can.setPointerCapture(e.pointerId);};
+    can.onpointerdown=function(e){activeGesture();canX=e.clientX;canY=e.clientY;can.setPointerCapture(e.pointerId);};
     can.onpointermove=function(e){if(e.buttons&&(Math.abs(e.clientX-canX)>24||Math.abs(e.clientY-canY)>24)){shake();canX=e.clientX;canY=e.clientY;}};
-    ring.onpointerdown=function(e){if(ring.disabled||finished)return;pulling=true;ringY=e.clientY;pull=0;held=0;ring.classList.add('pulling');ring.setPointerCapture(e.pointerId);};
+    ring.onpointerdown=function(e){if(ring.disabled||finished)return;activeGesture();pulling=true;ringY=e.clientY;pull=0;held=0;ring.classList.add('pulling');ring.setPointerCapture(e.pointerId);};
     ring.onpointermove=function(e){if(!pulling)return;pull=Math.max(0,ringY-e.clientY);canWrap.style.setProperty('--strain',Math.min(1,pull/90));};
     function tension(now){var dt=tensionLast?Math.min(.05,(now-tensionLast)/1000):0;tensionLast=now;
-      if(pulling&&!finished){if(pull>=45)held+=dt;else held=Math.max(0,held-dt*2);var progress=Math.min(1,held/.85);ring.style.setProperty('--pull-progress',progress);canWrap.style.setProperty('--pull-progress',progress);hint.textContent=tr('Кольцо держится… тяни и удерживай · ','Keep pulling… hold tension · ','Weiter ziehen… Spannung halten · ')+Math.floor(progress*100)+'%';if(held>=.85&&pull>=50)openCan();}
+      if(pulling&&!finished){if(pull>=45)held+=dt;else held=Math.max(0,held-dt*2);var progress=Math.min(1,held/.35);ring.style.setProperty('--pull-progress',progress);canWrap.style.setProperty('--pull-progress',progress);hint.textContent=tr('Кольцо держится… тяни и удерживай · ','Keep pulling… hold tension · ','Weiter ziehen… Spannung halten · ')+Math.floor(progress*100)+'%';if(held>=.35&&pull>=50)openCan();}
       if(!finished)tensionFrame=requestAnimationFrame(tension);
     }
     function release(){if(!pulling)return;pulling=false;ring.classList.remove('pulling');if(finished)return;held=0;pull=0;canWrap.style.setProperty('--strain',0);ring.style.setProperty('--pull-progress',0);hint.textContent=tr('Потяни кольцо вверх и держи пару секунд','Pull up and hold for a couple of seconds','Hochziehen und einige Sekunden halten');}
@@ -21258,12 +21345,12 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     }
     close.onclick=cleanup;layer.appendChild(close);canWrap.appendChild(can);canWrap.appendChild(opened);canWrap.appendChild(ring);layer.appendChild(canWrap);layer.appendChild(hint);document.body.appendChild(layer);tensionFrame=requestAnimationFrame(tension);
     later(function(){if(charge<7){hint.textContent=tr('↔ Потряси телефон или проведи пальцем по банке влево-вправо','↔ Shake your phone or swipe the can left and right','↔ Schüttle das Handy oder wische über die Dose');hint.classList.add('shake-hint');gesture.classList.add('gesture-attention');}},4500);
-    function allowMotion(){return DeviceMotionEvent.requestPermission().then(function(answer){if(answer==='granted'){try{localStorage.setItem('rd_motion','granted');}catch(e){}window.addEventListener('devicemotion',motion);if(enable)enable.remove();}else{try{localStorage.removeItem('rd_motion');}catch(e){}}}).catch(function(){});}
+    function allowMotion(){return DeviceMotionEvent.requestPermission().then(function(answer){if(answer==='granted'){motionSymbol.hidden=false;try{localStorage.setItem('rd_motion','granted');}catch(e){}window.addEventListener('devicemotion',motion);motionSymbol.hidden=false;if(enable)enable.remove();}else{try{localStorage.removeItem('rd_motion');}catch(e){}}}).catch(function(){});}
     if(window.DeviceMotionEvent&&typeof DeviceMotionEvent.requestPermission==='function'){
       var remembered=false;try{remembered=localStorage.getItem('rd_motion')==='granted';}catch(e){}
       if(remembered){window.addEventListener('devicemotion',motion);allowMotion();}
       else{enable=el('button','btn ghost','📱 ↔');enable.setAttribute('aria-label',tr('Разрешить встряхивание телефона','Allow phone motion','Handybewegung erlauben'));enable.onclick=allowMotion;layer.appendChild(enable);}
-    }else window.addEventListener('devicemotion',motion);
+    }else{window.addEventListener('devicemotion',motion);motionSymbol.hidden=false;}
   }
 
   function requestComposerPhoto(){
@@ -21318,7 +21405,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     layer.addEventListener('touchend',function(e){if(scale===1&&e.changedTouches[0].clientY-startY>120)layer.remove();});layer.appendChild(im);layer.appendChild(close);document.body.appendChild(layer);
   }
 
-  function reactionArt(button,emoji){var names={'💖':'heart','✨':'star','🔥':'flame','🎉':'party'},name=names[emoji];if(!name)return;button.textContent='';button.setAttribute('aria-label',emoji);var image=el('img','reaction-art reaction-'+name);image.src='/assets/reaction_'+name+'.webp?v=20261120f';image.alt=emoji;button.appendChild(image);}
+  function reactionArt(button,emoji){var names={'💖':'heart','✨':'star','🔥':'flame','🎉':'party'},name=names[emoji];if(!name)return;button.textContent='';button.setAttribute('aria-label',emoji);var image=el('img','reaction-art reaction-'+name);image.src='/assets/reaction_'+name+'.webp?v=20261123a';image.alt=emoji;button.appendChild(image);}
   function renderChat() {
     var s = state, box = $("msgs"), previousScroll=box.scrollTop;
     var stick = nearBottom() || lastCount < 0;
@@ -21327,6 +21414,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     if (!s.messages.length && !s.pending) box.appendChild(el("div", "empty", s.ui.empty));
     if(!s.messages.length&&!s.pending){var discover=el('button','hot-feature');discover.appendChild(icon('icon_hot',''));discover.appendChild(el('strong',null,s.ui.hot_btn));discover.appendChild(el('span','feature-arrow','›'));discover.onclick=function(){setTab('hot');};box.appendChild(discover);}
 
+    var bannerSeen=0;try{bannerSeen=Number(localStorage.getItem('rd-channel-banner-at'))||0;}catch(e){}if(s.messages.length>=8&&Date.now()-bannerSeen>7*86400000){var banner=el('button','channel-chat',tr('Новости и обновления · наш канал ↗','News and updates · channel ↗','Neuigkeiten · Kanal ↗'));banner.onclick=function(){try{localStorage.setItem('rd-channel-banner-at',Date.now());}catch(e){}banner.remove();if(tg&&tg.openTelegramLink)tg.openTelegramLink(state.channel);else window.open(state.channel,'_blank','noopener');};box.appendChild(banner);}
     var prev = null;
     s.messages.forEach(function (m, i) {
       if (m.role === "assistant" && /^💢/.test(m.text)) { var sy = el("div", "sys"); sy.appendChild(el("span", null, m.text)); box.appendChild(sy); prev = null; return; }
@@ -21338,7 +21426,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
         if (m.card.note) gt.appendChild(el("div", "gnote", "«" + m.card.note + "»"));
         b.appendChild(gt);
       } else { b = el("div", "bub"); if(m.photo){var photo=el("img");photo.src=m.photo;photo.onclick=function(){openPhoto(m.photo);};photo.alt=tr("Фото персонажа","Character photo","Charakterfoto");photo.style.cssText="display:block;max-width:100%;border-radius:14px";b.appendChild(photo);}else richText(b, m.text); }
-      if(messageArrival&&m.role==='user'&&m.text===messageArrival.text&&performance.now()<messageArrival.until){b.classList.add('message-arriving');b.style.animationDelay=Math.max(0,messageArrival.until-performance.now()-150)+'ms';}
+
       if (!m.card) bindMessageMenu(b, m);
       w.appendChild(b);
       if (m.edited) w.appendChild(el("div", "rd-edited", tr("изменено", "edited")));
@@ -21350,7 +21438,8 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       prev = m.role;
     });
     if(s.photo_pending){var ph=el('div','photo-loading');ph.appendChild(el('div','photo-orb'));ph.appendChild(el('span',null,tr('Создаёт фото…','Creating photo…','Foto entsteht…')));box.appendChild(ph);}
-    if (s.pending&&!s.photo_pending) { var r = el("div", "row ai gap"); var t = el("div", "bub typing-bub"); if(s.photo_pending)t.textContent=tr('Отправляет фото…','Sending a photo…','Foto wird gesendet…');else t.innerHTML = "<i></i><i></i><i></i>"; r.appendChild(t); box.appendChild(r); }
+    if(s.pending&&!s.photo_pending&&Date.now()-(window.rdReadSince||0)<1000){var eye=el('div','read-eye');eye.innerHTML='<svg width=18 height=13 viewBox="0 0 24 16" aria-hidden=true><path d="M1 8 Q12 -5 23 8 Q12 21 1 8Z" fill=none stroke=white stroke-width=1.7 /><circle cx=12 cy=8 r=3 fill=white /></svg>';eye.setAttribute('aria-label',tr('Прочитано','Read','Gelesen'));box.appendChild(eye);setTimeout(function(){if(state&&state.pending&&tab==='chat'){renderHead();renderChat();}},1050);}
+    if (s.pending&&!s.photo_pending&&Date.now()-(window.rdReadSince||0)>=1000) { var r = el("div", "row ai gap"); var t = el("div", "bub typing-bub"); if(s.photo_pending)t.textContent=tr('Отправляет фото…','Sending a photo…','Foto wird gesendet…');else t.innerHTML = "<i></i><i></i><i></i>"; r.appendChild(t); box.appendChild(r); }
     else if (s.can_reroll && !s.asleep) { var rr = el("button", "reroll", s.ui.reroll); rr.onclick = reroll; box.appendChild(rr); }
     if (stick) scrollBottom(true);else box.scrollTop=previousScroll;
     lastCount = s.messages.length;requestAnimationFrame(updateChatControls);
@@ -21383,8 +21472,8 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     anchor.style.cssText='position:fixed;z-index:5000;pointer-events:none';fly.style.cssText='position:relative;width:100%;max-height:90px;overflow:hidden;padding:12px 14px;border-radius:22px;white-space:pre-wrap;box-sizing:border-box';
     if(source){var skin=getComputedStyle(source);fly.style.background=skin.background;fly.style.color=skin.color;fly.style.border=skin.border;fly.style.boxShadow=skin.boxShadow;}
     anchor.appendChild(fly);document.body.appendChild(anchor);
-    function follow(){if(!alive)return;var r=$('input').getBoundingClientRect();anchor.style.left=r.left+'px';anchor.style.top=r.top+'px';anchor.style.width=Math.min(r.width,300)+'px';frame=requestAnimationFrame(follow);}follow();
-    fly.animate([{transform:'translateY(0)',opacity:.95,filter:'blur(0)'},{transform:'translateY(-4px)',opacity:.65,filter:'blur(0)',offset:.45},{transform:'translateY(-8px)',opacity:0,filter:'blur(9px)'}],{duration:1800,easing:'ease-out'});
+    function follow(){if(!alive)return;var r=$('input').getBoundingClientRect();anchor.style.left=r.left+'px';anchor.style.top=r.top+'px';anchor.style.width=r.width+'px';frame=requestAnimationFrame(follow);}follow();
+    fly.animate([{transform:'translateY(0)',opacity:.95,filter:'blur(0)'},{transform:'translateY(-9px)',opacity:.65,filter:'blur(0)',offset:.45},{transform:'translateY(-20px)',opacity:0,filter:'blur(9px)'}],{duration:1800,easing:'ease-out',fill:'forwards'});
     for(var i=0;i<8;i++){var b=el('i','send-mist');b.style.cssText='position:absolute;left:'+(8+Math.random()*80)+'%;top:'+(8+Math.random()*22)+'px;width:5px;height:5px;border-radius:50%;background:'+fly.style.color+';opacity:0';anchor.appendChild(b);b.animate([{opacity:0,transform:'scale(.3)'},{opacity:.25,transform:'translateY(-3px) scale(1)',offset:.4},{opacity:0,transform:'translateY(-10px) scale(2)',filter:'blur(5px)'}],{delay:350+Math.random()*200,duration:1300,easing:'ease-out'});}
     setTimeout(function(){alive=false;cancelAnimationFrame(frame);anchor.remove();},2100);
   }
@@ -21395,6 +21484,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     if (!text || sending || state.pending) return;
     messageArrival={text:text,until:performance.now()+700};
 
+    window.rdReadSince=Date.now();document.dispatchEvent(new CustomEvent('rd-tutorial-send'));
     sending = true; haptic("light"); if (sndOn() && window.RDSFX) window.RDSFX.sent();
     // сразу показываем своё сообщение и «печатает…», не дожидаясь сервера
     state.messages.push({ role: "user", text: text }); state.pending = true; state.can_reroll = false;
@@ -21590,55 +21680,28 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       };row.appendChild(button);card.appendChild(row);
     });v.appendChild(card);
   }
-  var tourStarted = false, tourOpen = false;
-  function startTour() {
-    if (tourOpen) return;
-    if(document.activeElement && document.activeElement.blur)document.activeElement.blur();
-    tourOpen = true; tourStarted = true; setTab('chat');
-    var overlay = el('div', 'rd-tour'), ring = el('div', 'rd-ring'), panel = el('div', 'rd-tour-panel card');
-    overlay.appendChild(ring); overlay.appendChild(panel); document.body.appendChild(overlay);
-    var index = 0, targets = [
-      ['#head', tr('Твой персонаж и баланс', 'Your character and balance'), tr('Здесь видны состояние персонажа, энергия и баксы.', 'See your character status, energy and bucks here.')],
-      ['#composer', tr('Переписка', 'Chat'), tr('Напиши сообщение. Зажми своё сообщение для правки, чужое — для реакции.', 'Send a message. Hold your message to edit, or a character reply to react.')],
-      ['#nav button:nth-child(3)', tr('Магазин', 'Shop'), tr('Здесь можно накормить и напоить персонажа или выбрать подарок.', 'Food, drinks and gifts for your character live here.')],
-      ['#nav button:nth-child(5)', tr('Работа и ферма', 'Work and farm'), tr('Зарабатывай баксы и собирай урожай.', 'Earn bucks and harvest crops.')],
-      ['#nav button:nth-child(2)', tr('Игры', 'Games'), tr('Выбери игру и прочитай её правила перед началом.', 'Choose a game and read its rules before starting.')],
-      ['#nav button:nth-child(4)', tr('Колесо фортуны', 'Fortune wheel'), tr('Проверь доступные прокрутки и список призов. Размер сектора не равен шансу выигрыша.', 'Check available spins and prizes. Sector size does not represent winning odds.')],
-      ['#nav button:nth-child(7)', tr('Профиль и настройки', 'Profile and settings'), tr('Отношения, преимущества подписки, язык, режим общения и справка.', 'Relationships, subscription benefits, language, chat mode and help.')],
-      ['#view-profile .hero .hero-btns', tr('Имя и внешность', 'Name and appearance', 'Name und Aussehen'), tr('Здесь можно изменить имя и внешность.', 'Change the name and appearance here.', 'Hier änderst du Namen und Aussehen.'), 'profile'],
-      ['#view-profile select', tr('Язык', 'Language'), tr('Переключай интерфейс между русским, английским и немецким.', 'Switch between Russian, English and German.'), 'profile'],
-      ['#view-profile .rd-field:has(select option[value=live])', tr('Режим общения', 'Conversation mode'), tr('Это поле выбирает переписку без действий или ролевую историю с действиями. Начни разговор сам — персонаж дождётся тебя.', 'This field chooses messages without actions or a roleplay story. Start the conversation when ready; your character will wait.'), 'profile'],
-      ['#nav button:nth-child(7)', tr('Справка всегда рядом', 'Help is always nearby'), tr('Открой справку в профиле, чтобы прочитать правила и повторить это обучение.', 'Open help in your profile to read the rules or replay this tour.')]
-
-    ];
-    function position() {
-      var target = document.querySelector(targets[index][0]) || $('head'), rect = target.getBoundingClientRect();
-      ring.style.cssText = 'left:' + Math.max(4, rect.left - 5) + 'px;top:' + Math.max(4, rect.top - 5) + 'px;width:' + Math.min(innerWidth - 8, rect.width + 10) + 'px;height:' + (rect.height + 10) + 'px';
-      var gap=14, height=panel.offsetHeight, top=rect.bottom+gap;
-      if(top+height>innerHeight-12)top=rect.top-height-gap;
-      if(top<12){top=innerHeight-height-12;}
-      panel.style.top=Math.max(12,top)+'px';
-      panel.style.maxHeight=(innerHeight-24)+'px';
-
+  var tourStarted=false,tourOpen=false;
+  function startTour(){
+    if(tourOpen||!state||state.onboarding||state.dead)return;tourOpen=true;tourStarted=true;setTab('chat');
+    var overlay=el('div','rd-tour'),ring=el('div','rd-ring'),panel=el('div','rd-tour-panel card'),finger=el('img','tour-pointer');finger.src='/assets/gesture_pull.webp';finger.alt='';overlay.appendChild(ring);overlay.appendChild(panel);overlay.appendChild(finger);document.body.appendChild(overlay);
+    var steps=[
+      {target:'#input',title:tr('Начнём с сообщения','Start with a message','Beginne mit einer Nachricht'),text:tr('Нажми на поле и напиши приветствие. Можно выбрать подсказку.','Tap the input and write a greeting. You can use a suggestion.','Tippe auf das Eingabefeld und schreibe eine Begrüßung.'),event:'input'},
+      {target:'#send',title:tr('Отправь сообщение','Send your message','Nachricht senden'),text:tr('Нажми отправку. Это настоящее сообщение персонажу.','Tap send. This sends a real message to your companion.','Sende die Nachricht an deinen Charakter.'),event:'send'},
+      {target:'#h-en',title:tr('Энергия','Energy','Energie'),text:tr('Здесь запас энергии. Сообщения расходуют её. Нажми на показатель.','Messages use energy. Tap the energy indicator.','Nachrichten verbrauchen Energie. Tippe auf den Wert.'),event:'click'},
+      {target:'#nav button[data-tab="shop"]',title:tr('Еда и напитки','Food and drinks','Essen und Getränke'),text:tr('Открой магазин. Здесь пополняют воду и сытость.','Open Shop for food and water.','Öffne den Shop für Essen und Wasser.'),event:'click'},
+      {target:'#nav button[data-tab="work"]',title:tr('Заработок','Earn bucks','Bucks verdienen'),text:tr('Открой работу: активные задания и пассивная ферма.','Open Work: active jobs and the passive farm.','Öffne Arbeit und Farm.'),event:'click'},
+      {target:'#nav button[data-tab="wardrobe"]',title:tr('Твой гардероб','Your wardrobe','Deine Garderobe'),text:tr('Открой гардероб. Примерка купленной одежды бесплатна.','Open Wardrobe. Trying on owned clothes is free.','Öffne die Garderobe. Anprobieren ist kostenlos.'),event:'click'},
+      {target:'#nav button[data-tab="profile"]',title:tr('Профиль и помощь','Profile and help','Profil und Hilfe'),text:tr('Открой профиль: здесь задания, подписки, настройки и повтор обучения.','Open Profile for quests, subscriptions, settings and this tutorial.','Öffne das Profil für Aufgaben, Einstellungen und diese Einführung.'),event:'click'}
+    ],index=0,target=null,cleanupAction=function(){};
+    function position(){if(!target||!target.isConnected)return;var r=target.getBoundingClientRect();ring.style.cssText='left:'+Math.max(4,r.left-5)+'px;top:'+Math.max(4,r.top-5)+'px;width:'+(r.width+10)+'px;height:'+(r.height+10)+'px';finger.style.left=Math.max(0,Math.min(innerWidth-68,r.left+r.width/2-25))+'px';finger.style.top=Math.min(innerHeight-70,r.bottom+4)+'px';var h=panel.offsetHeight,top=r.top-h-30;if(top<12)top=r.bottom+76;if(top+h>innerHeight-10)top=Math.max(12,innerHeight-h-10);panel.style.top=top+'px';}
+    function close(){cleanupAction();overlay.remove();tourOpen=false;window.removeEventListener('resize',position);if(window.visualViewport)visualViewport.removeEventListener('resize',position);updateSetting({tour_seen:true});}
+    function next(){if(!tourOpen)return;cleanupAction();if(++index>=steps.length){close();return;}show();}
+    function show(){var step=steps[index];target=document.querySelector(step.target);if(!target){next();return;}target.classList.add('tour-action');panel.innerHTML='';panel.appendChild(el('div','note',(index+1)+' / '+steps.length));panel.appendChild(el('h3',null,step.title));panel.appendChild(el('p',null,step.text));panel.appendChild(el('p','tour-wait',tr('Выполни действие, чтобы продолжить','Complete the action to continue','Führe die Aktion aus')));var skip=el('button','btn ghost',tr('Пропустить обучение','Skip tutorial','Einführung überspringen'));skip.onclick=close;panel.appendChild(skip);
+      var event=step.event==='send'?'rd-tutorial-send':step.event==='input'?'input':'click',node=step.event==='send'?document:target;
+      function done(){if(step.event==='input'&&!target.value.trim())return;node.removeEventListener(event,done);setTimeout(next,180);}
+      node.addEventListener(event,done);cleanupAction=function(){node.removeEventListener(event,done);if(target)target.classList.remove('tour-action');};requestAnimationFrame(position);
     }
-    function close() {
-      overlay.remove(); tourOpen = false; window.removeEventListener('resize', position);
-      setTab('chat'); updateSetting({tour_seen: true});
-    }
-    function show() {
-      setTab(targets[index][3] || 'chat');
-      var focusTarget = document.querySelector(targets[index][0]);
-      if (focusTarget) focusTarget.scrollIntoView({block:'center'});
-      panel.innerHTML = ''; panel.appendChild(el('div', 'note', (index + 1) + ' / ' + targets.length));
-      panel.appendChild(el('h3', null, targets[index][1])); panel.appendChild(el('p', null, targets[index][2]));
-      var next = el('button', 'btn', index === targets.length - 1 ? tr('Понятно', 'Done') : tr('Далее', 'Next'));
-      next.onclick = function () { if (++index === targets.length) close(); else show(); }; panel.appendChild(next);
-      var footer=el('div','rd-tour-footer');panel.appendChild(footer);
-      if (index > 0) { var back = el('button','btn ghost',tr('Назад','Back')); back.onclick=function(){index--;show();};footer.appendChild(back); }
-      var skip = el('button', 'btn ghost', tr('Пропустить', 'Skip')); skip.onclick = close; footer.appendChild(skip); requestAnimationFrame(position); next.focus();
-    }
-    overlay.onkeydown = function (event) { if (event.key === 'Escape') close(); };
-    window.addEventListener('resize', position); show();
+    window.addEventListener('resize',position);if(window.visualViewport)visualViewport.addEventListener('resize',position);show();
   }
 
   function showContentSettings(){
@@ -21943,7 +22006,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     sup.appendChild(sb); v.appendChild(sup);
     var ch = el("button", "btn ghost", ui.channel_btn);
     ch.onclick = function () { if (tg && tg.openTelegramLink) safe(function () { tg.openTelegramLink(state.channel); }); else window.open(state.channel); };
-    var c = el("div", "card"); c.appendChild(ch); v.appendChild(c);
+    var c = el('div','card');ch.className='btn ghost channel-profile';ch.textContent='';var channelIcon=el('img');channelIcon.src='/assets/nav_chat.webp';channelIcon.alt='';ch.appendChild(channelIcon);var channelName=(state.channel||'').split('/').filter(Boolean).pop();ch.appendChild(el('span',null,channelName?'@'+channelName:ui.channel_btn));ch.appendChild(el('span',null,'›'));c.appendChild(ch);v.appendChild(c);
   }
 
   $("sheet").onclick = function (e) { if (e.target.id === "sheet") $("sheet").classList.remove("on"); };
@@ -22021,8 +22084,16 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     nav.appendChild(nx); v.appendChild(nav);
   }
 
+  function renderRecovery(){
+    var box=$('full');box.style.display='block';box.innerHTML='';var card=el('div','death-panel');card.appendChild(el('h2',null,tr('💔 Персонажу нужна помощь','💔 Your companion needs help','💔 Dein Charakter braucht Hilfe')));card.appendChild(el('p',null,tr('Воскрешение сохранит историю и уровень. Новый персонаж начнёт отношения заново; покупки и подписка сохранятся.','Reviving keeps your chat and level. A new companion resets the relationship; purchases remain.','Wiederbeleben erhält Verlauf und Stufe. Käufe bleiben auch bei einem neuen Charakter.')));
+    function action(path){api(path,{}).then(function(res){if(res.state)state=res.state;if(!res.ok)toast(res.error);render();}).catch(function(){toast('Network error');});}
+    if(state.recovery.stock>0){var revive=el('button','btn',tr('Использовать дефибриллятор из запаса','Use stored defibrillator','Defibrillator benutzen'));revive.onclick=function(){action('/api/app/revive');};card.appendChild(revive);}
+    var buy=el('button','btn',tr('Воскресить · ','Revive · ','Wiederbeleben · ')+state.recovery.stars+' ⭐');buy.onclick=function(){pay('defibrillator','stars');};card.appendChild(buy);
+    var reset=el('button','btn ghost',tr('Начать с новым персонажем','Start with a new companion','Neuer Charakter'));reset.onclick=function(){var yes=function(ok){if(ok)action('/api/app/reset');};if(tg&&tg.showConfirm)tg.showConfirm(tr('История и сближение будут сброшены. Продолжить?','Reset chat and relationship?','Verlauf und Beziehung zurücksetzen?'),yes);else yes(confirm('Reset chat and relationship?'));};card.appendChild(reset);box.appendChild(card);
+  }
   function render() {
     var root = $("root");
+    if(state.dead){renderRecovery();return;}if(!maintenanceVisible)$("full").style.display="none";
     root.classList.toggle("onb", !!state.onboarding);
     ["chat", "profile", "games", "shop", "spin", "work", "wardrobe", "onb", "hot"].forEach(function (n) { $("view-" + n).classList.remove("on"); });
     if (state.onboarding) { $("view-onb").classList.add("on"); renderOnb(); return; }
@@ -22439,6 +22510,7 @@ async def run_webapp_server():
     app_web.router.add_get("/avatars/{name}", avatar_file_handler)
     app_web.router.add_post("/api/app/create", api_app_create_handler)
     app_web.router.add_post("/api/app/reset", api_app_reset_handler)
+    app_web.router.add_post("/api/app/revive", api_app_revive_handler)
     app_web.router.add_get("/api/play/state", api_play_state_handler)
     app_web.router.add_post("/api/play/start", api_play_start_handler)
     app_web.router.add_post("/api/play/outfit", api_play_outfit_handler)
