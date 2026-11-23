@@ -4,6 +4,8 @@ The November 18 checklist below is historical. Current behavior and limits are r
 
 Completed in this pass: room joining, death recovery, action-based onboarding, can proportions/shorter pull/delayed gestures, message flash/desktop width, currency/avatar shortcuts, single 48-hour calendar offer, compact doorless wardrobe, starter/base clothing (including the final white male T-shirt correction), replacement police keys, level-9 preview-only toys catalog, two classic wire variants, admin help and isolated staging setup.
 
+Model comparison tooling is ready via chief-only `/model_test`; see [comparison workflow](audit/MODEL_COMPARISON.md). Live candidate responses and production model selection remain pending the authenticated host-side run.
+
 Next agreed stages, still outstanding:
 - Choose models after the user supplies their available model/provider price list; benchmark Russian roleplay quality, context, latency and cost.
 - Deploy the separate test bot using a dedicated token/domain/storage. An outage status page needs independent hosting.

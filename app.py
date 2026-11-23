@@ -1,3 +1,4 @@
+import model_benchmark
 import profile_options
 import fandom_catalog
 import fitting_looks
@@ -6732,7 +6733,7 @@ async def reset_all_confirm(call: types.CallbackQuery):
 async def admin_help_cmd(message: types.Message):
     if message.from_user.id not in ADMIN_IDS and message.from_user.id!=MAIN_ADMIN_ID:return
     common='/admin_help — команды\n/stats — статистика\n/support — поддержка'
-    chief='\n/tehwork on причина | off — техработы\n/tehwork preview on | off — проверить экран только у себя\n/giveenergizers ID количество — энергетики\n/givebucks ID количество — баксы\n/grant ID тип количество — выдать ресурс или подписку\n/grant_me тип количество — выдать себе\n/setlevel ID уровень — сближение\n/revoke_subscription ID — снять подписку\n/models — список моделей\n/broadcast — рассылка\n/cancel_broadcast — отмена рассылки\n/giveaway_all — массовая выдача\n/reset_me — сброс своего профиля\n/reset_all — сброс всех профилей'
+    chief='\n/tehwork on причина | off — техработы\n/tehwork preview on | off — проверить экран только у себя\n/giveenergizers ID количество — энергетики\n/givebucks ID количество — баксы\n/grant ID тип количество — выдать ресурс или подписку\n/grant_me тип количество — выдать себе\n/setlevel ID уровень — сближение\n/revoke_subscription ID — снять подписку\n/models — список моделей\n/model_test — сравнить кандидатов (расчётный бюджет 15 ₽)\n/broadcast — рассылка\n/cancel_broadcast — отмена рассылки\n/giveaway_all — массовая выдача\n/reset_me — сброс своего профиля\n/reset_all — сброс всех профилей'
     await message.answer(common+(chief if message.from_user.id==MAIN_ADMIN_ID else '\nВыдачи ресурсов и техработы доступны только главному админу.'),parse_mode=None)
 
 
@@ -7073,6 +7074,88 @@ async def broadcast_send_handler(call: types.CallbackQuery):
     if token!=job.get('token') or job.get('status') not in ('draft','interrupted'):return await call.answer('Этот черновик уже отправлен или устарел.')
     job['status']='sending';save_data(user_data)
     asyncio.create_task(deliver_broadcast(call.from_user.id,job));await call.answer('Начинаю отправку')
+
+
+MODEL_TEST_JOB = {}
+
+
+def model_test_system(case):
+    return build_prompt(model_benchmark.synthetic_profile(case))
+
+
+async def model_test_deliver(message, directory):
+    """Reports are synthetic; only the chief's private chat can request delivery."""
+    report_path=os.path.join(directory,'results.json')
+    if not directory or not os.path.isfile(report_path):
+        await message.answer('Отчёта ещё нет. Запусти /model_test',parse_mode=None)
+        return
+    with open(report_path,encoding='utf-8') as source:report=json.load(source)
+    from pathlib import Path
+    model_benchmark.write_html(report,Path(directory)/'comparison.html')
+    await message.answer(model_benchmark.summary(report),parse_mode=None)
+    for name in ('comparison.html','results.json'):
+        path=os.path.join(directory,name)
+        if os.path.isfile(path):await message.answer_document(FSInputFile(path),caption='Открой HTML в браузере и оцени ответы, затем раскрой названия.' if name.endswith('.html') else 'Исходные ответы, использованные промпты и расход токенов. Ключей и переписок игроков здесь нет.')
+
+
+async def model_test_run(message, status, job, full):
+    last_update=[0.0]
+    async def progress(done,total,report):
+        job.update(done=done,total=total)
+        if time.monotonic()-last_update[0]<4:return
+        last_update[0]=time.monotonic()
+        try:await status.edit_text(f'Сравниваю модели: {done}/{total}. Расчётно {report["estimated_spend_rub"]:.2f} ₽.\n/model_test status · /model_test cancel',parse_mode=None)
+        except Exception:pass
+    try:
+        from pathlib import Path
+        report=await model_benchmark.run(PROVOD_API_KEY,output_dir=Path(job['directory']),system_factory=model_test_system,
+                                         full=full,budget_rub=15,progress=progress,stop=job['stop'])
+        job['status']='done'
+        await model_test_deliver(message,job['directory'])
+    except asyncio.CancelledError:
+        job['status']='interrupted'
+        raise
+    except Exception as exc:
+        job['status']='error'
+        logging.warning('Model comparison failed: %s',type(exc).__name__)
+        await message.answer('Тест прерван. Ключ не выводится в лог. Частичный отчёт можно получить: /model_test result',parse_mode=None)
+    finally:
+        job['task']=None
+
+
+@dp.message(Command('model_test','model_compare'))
+async def model_test_cmd(message: types.Message):
+    if message.from_user.id!=MAIN_ADMIN_ID:
+        await message.answer('⛔ Только для главного админа.');return
+    if message.chat.type!='private':
+        await message.answer('Запусти эту команду в личном чате с ботом.');return
+    args=(message.text or '').split();action=args[1].lower() if len(args)>1 else 'start'
+    if len(args)>2 or action not in ('start','full','status','cancel','result'):
+        await message.answer('/model_test — 8 моделей × 3 примера\n/model_test full — 8 × 6 примеров\n/model_test status | cancel | result',parse_mode=None);return
+    job=MODEL_TEST_JOB;task=job.get('task');running=bool(job.get('status')=='starting' or task and not task.done())
+    if action=='status':
+        await message.answer(f'Статус: {job.get("status","ещё не запускался")}. Готово {job.get("done",0)}/{job.get("total",0)}.',parse_mode=None);return
+    if action=='cancel':
+        if running:job['stop'].set()
+        await message.answer('Остановлю после текущего запроса и сохраню частичный отчёт. Текущий запрос уже мог быть оплачен.' if running else 'Активного теста нет.',parse_mode=None);return
+    if action=='result':
+        directory=job.get('directory')
+        if not directory:
+            from pathlib import Path
+            files=sorted((Path(DATA_DIR)/'model-tests').glob('*/results.json'),key=lambda p:p.stat().st_mtime)
+            directory=str(files[-1].parent) if files else ''
+        await model_test_deliver(message,directory);return
+    if running:
+        await message.answer('Тест уже идёт. /model_test status · /model_test cancel',parse_mode=None);return
+    directory=os.path.join(DATA_DIR,'model-tests',datetime.now().strftime('%Y%m%d-%H%M%S')+'-'+secrets.token_hex(3))
+    full=action=='full'
+    job.clear();job.update(directory=directory,status='starting',done=0,total=8*(6 if full else 3),stop=asyncio.Event())
+    try:status=await message.answer(f'Начинаю: 8 кандидатов × {6 if full else 3} одинаковых вымышленных примера, с текущими промптами бота.\nРасчётный бюджет до 15 ₽ по присланным ценам; фактическое списание зависит от Provod. Без повторных платных запросов. Основная модель не меняется.\n/model_test status · /model_test cancel',parse_mode=None)
+    except Exception:
+        job['status']='error'
+        raise
+    job['status']='running'
+    job['task']=asyncio.create_task(model_test_run(message,status,job,full))
 
 
 @dp.message(Command("models"))
