@@ -1,4 +1,6 @@
 """Whole generated looks: clothes and accessories drawn together, no runtime image cost."""
+import mannequin_catalog as _catalog
+
 # Rows correspond exactly to the exported 4x4 atlases.
 FEMALE=[
  {'body':'dress','head':'cat_ears_headband','neck':'pendant'},
@@ -73,7 +75,7 @@ def choices(user,lang='ru',level=0):
   values=[w.WARDROBE[k] for k in look['slots'].values()]
   if any(i['adult'] for i in values) and (level<5 or __import__('fandom_catalog').family_friendly(user)):continue
   label=' + '.join(i.get(lang,i['name']) for i in values)
-  result.append(dict(key=key,image=look['image'],label=label,owned=all((user.get('inventory') or {}).get(k) for k in look['slots'].values()),adult=any(i['adult'] for i in values)))
+  result.append(dict(key=key,image=look['image'],label=label,owned=all((user.get('inventory') or {}).get(k) for k in look['slots'].values()),adult=any(i['adult'] for i in values),group=_catalog.group(look['slots']),kind='item' if key.startswith('catalog_') else 'look'))
  return result
 
 def equip(user,key,level):
@@ -81,6 +83,9 @@ def equip(user,key,level):
  if not isinstance(key,str) or key not in LOOKS:raise ValueError('Неизвестный комплект')
  look=LOOKS[key]
  if look['gender']!=user.get('gender','female'):raise ValueError('Комплект для другого пола персонажа')
+ if key.startswith('catalog_'):
+  slot,item=next(iter(look['slots'].items()));w.equip(user,item,level,slot)
+  return user['active_outfit']
  trial={**user,'active_outfit':{}}
  for slot,item in look['slots'].items():w.equip(trial,item,level,slot)
  user['active_outfit']=trial['active_outfit'];user['wardrobe_outfit']=trial.get('wardrobe_outfit')
@@ -155,3 +160,14 @@ for _newkey in list(LOOKS):
  for _oldkey,_oldlook in list(LOOKS.items()):
   if not _oldkey.startswith("nov24_") and _oldlook["gender"]==_newlook["gender"] and _oldlook["slots"]==_newlook["slots"]:
    _oldlook["image"]=_newlook["image"];del LOOKS[_newkey];break
+
+# Complete catalog coverage: individual clothing, headwear and accessory views.
+# Existing look keys remain stable; body-only looks reuse the new catalog picture.
+for _look in LOOKS.values():
+ if len(_look['slots'])==1:
+  _item=next(iter(_look['slots'].values()))
+  _image=_catalog.image(_look['gender'],_item)
+  if _image:_look['image']=_image
+for (_gender,_item),_row in _catalog.VIEWS.items():
+ if _row['slot']=='body':continue
+ LOOKS['catalog_'+_gender+'_'+_item]=dict(gender=_gender,slots={_row['slot']:_item},image=_catalog.image(_gender,_item))

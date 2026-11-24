@@ -982,5 +982,1093 @@
     "head_width": 48,
     "head_scale": 1.25,
     "body_scale": 1.012
+  },
+  "fitting_catalog_female_stockings.webp": {
+    "x": 160.3,
+    "top": 26,
+    "neck": 81,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_female_heels.webp": {
+    "x": 159.2,
+    "top": 26,
+    "neck": 81,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_female_collar.webp": {
+    "x": 158.7,
+    "top": 26,
+    "neck": 81,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_male_collar.webp": {
+    "x": 159.4,
+    "top": 27,
+    "neck": 82,
+    "head_width": 50,
+    "head_scale": 1.25,
+    "body_scale": 0.986
+  },
+  "fitting_catalog_female_hat.webp": {
+    "x": 158.7,
+    "top": 49,
+    "neck": 82,
+    "head_width": 73,
+    "head_scale": 1.25,
+    "body_scale": 0.986
+  },
+  "fitting_catalog_male_hat.webp": {
+    "x": 160.4,
+    "top": 51,
+    "neck": 82,
+    "head_width": 77,
+    "head_scale": 1.25,
+    "body_scale": 0.986
+  },
+  "fitting_catalog_male_scarf.webp": {
+    "x": 159.9,
+    "top": 27,
+    "neck": 84,
+    "head_width": 50,
+    "head_scale": 1.25,
+    "body_scale": 0.981
+  },
+  "fitting_catalog_female_crop_top.webp": {
+    "x": 159.9,
+    "top": 27,
+    "neck": 81,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_female_oversized_shirt.webp": {
+    "x": 159.0,
+    "top": 26,
+    "neck": 80,
+    "head_width": 47,
+    "head_scale": 1.25,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_male_oversized_shirt.webp": {
+    "x": 158.9,
+    "top": 27,
+    "neck": 104,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.934
+  },
+  "fitting_catalog_female_pencil_skirt.webp": {
+    "x": 158.6,
+    "top": 27,
+    "neck": 80,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_male_cat_ears_headband.webp": {
+    "x": 158.3,
+    "top": 35,
+    "neck": 84,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 0.981
+  },
+  "fitting_catalog_female_lace_panties.webp": {
+    "x": 158.8,
+    "top": 27,
+    "neck": 81,
+    "head_width": 47,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_male_collar_leash.webp": {
+    "x": 159.1,
+    "top": 26,
+    "neck": 102,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 0.939
+  },
+  "fitting_catalog_female_garter_stockings.webp": {
+    "x": 158.7,
+    "top": 27,
+    "neck": 80,
+    "head_width": 47,
+    "head_scale": 1.25,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_male_hoodie.webp": {
+    "x": 159.8,
+    "top": 26,
+    "neck": 88,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 0.972
+  },
+  "fitting_catalog_female_casual_shorts.webp": {
+    "x": 158.6,
+    "top": 26,
+    "neck": 85,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.979
+  },
+  "fitting_catalog_male_casual_shorts.webp": {
+    "x": 159.2,
+    "top": 27,
+    "neck": 90,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.967
+  },
+  "fitting_catalog_male_cardigan.webp": {
+    "x": 159.5,
+    "top": 27,
+    "neck": 109,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.922
+  },
+  "fitting_catalog_female_bomber_jacket.webp": {
+    "x": 159.0,
+    "top": 26,
+    "neck": 83,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.983
+  },
+  "fitting_catalog_female_round_glasses.webp": {
+    "x": 158.2,
+    "top": 26,
+    "neck": 83,
+    "head_width": 47,
+    "head_scale": 1.25,
+    "body_scale": 0.983
+  },
+  "fitting_catalog_male_round_glasses.webp": {
+    "x": 159.1,
+    "top": 27,
+    "neck": 85,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 0.979
+  },
+  "fitting_catalog_female_aviator_glasses.webp": {
+    "x": 156.8,
+    "top": 26,
+    "neck": 59,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.04
+  },
+  "fitting_catalog_male_aviator_glasses.webp": {
+    "x": 158.8,
+    "top": 27,
+    "neck": 60,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.038
+  },
+  "fitting_catalog_female_pearl_necklace.webp": {
+    "x": 160.1,
+    "top": 27,
+    "neck": 83,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 0.983
+  },
+  "fitting_catalog_female_silver_chain.webp": {
+    "x": 160.1,
+    "top": 26,
+    "neck": 84,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.981
+  },
+  "fitting_catalog_female_velvet_choker.webp": {
+    "x": 160.2,
+    "top": 26,
+    "neck": 84,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.981
+  },
+  "fitting_catalog_female_silk_neckerchief.webp": {
+    "x": 159.5,
+    "top": 26,
+    "neck": 85,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.979
+  },
+  "fitting_catalog_male_silk_neckerchief.webp": {
+    "x": 159.8,
+    "top": 26,
+    "neck": 93,
+    "head_width": 50,
+    "head_scale": 1.25,
+    "body_scale": 0.96
+  },
+  "fitting_catalog_female_hoop_earrings.webp": {
+    "x": 160.3,
+    "top": 26,
+    "neck": 87,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.974
+  },
+  "fitting_catalog_female_stud_earrings.webp": {
+    "x": 160.3,
+    "top": 26,
+    "neck": 83,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 0.983
+  },
+  "fitting_catalog_male_stud_earrings.webp": {
+    "x": 157.6,
+    "top": 26,
+    "neck": 111,
+    "head_width": 50,
+    "head_scale": 1.25,
+    "body_scale": 0.917
+  },
+  "fitting_catalog_female_wristwatch.webp": {
+    "x": 158.7,
+    "top": 26,
+    "neck": 79,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.993
+  },
+  "fitting_catalog_female_bracelet.webp": {
+    "x": 159.6,
+    "top": 27,
+    "neck": 79,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.993
+  },
+  "fitting_catalog_male_bracelet.webp": {
+    "x": 159.0,
+    "top": 26,
+    "neck": 105,
+    "head_width": 47,
+    "head_scale": 1.25,
+    "body_scale": 0.932
+  },
+  "fitting_catalog_female_leather_cuff.webp": {
+    "x": 159.7,
+    "top": 26,
+    "neck": 79,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.993
+  },
+  "fitting_catalog_male_leather_cuff.webp": {
+    "x": 158.3,
+    "top": 26,
+    "neck": 82,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.986
+  },
+  "fitting_catalog_female_ribbon.webp": {
+    "x": 158.8,
+    "top": 33,
+    "neck": 83,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.983
+  },
+  "fitting_catalog_female_flower_clip.webp": {
+    "x": 158.5,
+    "top": 26,
+    "neck": 78,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.995
+  },
+  "fitting_catalog_female_crown.webp": {
+    "x": 159.7,
+    "top": 35,
+    "neck": 87,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.974
+  },
+  "fitting_catalog_male_crown.webp": {
+    "x": 160.2,
+    "top": 33,
+    "neck": 96,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.953
+  },
+  "fitting_catalog_female_plain_headband.webp": {
+    "x": 159.8,
+    "top": 38,
+    "neck": 87,
+    "head_width": 50,
+    "head_scale": 1.25,
+    "body_scale": 0.974
+  },
+  "fitting_catalog_male_plain_headband.webp": {
+    "x": 159.3,
+    "top": 36,
+    "neck": 90,
+    "head_width": 51,
+    "head_scale": 1.25,
+    "body_scale": 0.967
+  },
+  "fitting_catalog_female_bow_tie.webp": {
+    "x": 158.9,
+    "top": 27,
+    "neck": 89,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.969
+  },
+  "fitting_catalog_male_bow_tie.webp": {
+    "x": 160.2,
+    "top": 27,
+    "neck": 104,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.934
+  },
+  "fitting_catalog_female_cotton_tshirt.webp": {
+    "x": 159.0,
+    "top": 26,
+    "neck": 86,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.976
+  },
+  "fitting_catalog_male_cotton_tshirt.webp": {
+    "x": 159.5,
+    "top": 27,
+    "neck": 113,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 0.913
+  },
+  "fitting_catalog_female_trousers.webp": {
+    "x": 159.6,
+    "top": 26,
+    "neck": 88,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.972
+  },
+  "fitting_catalog_female_bunny_outfit.webp": {
+    "x": 159.5,
+    "top": 66,
+    "neck": 114,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.91
+  },
+  "fitting_catalog_female_latex_bodysuit.webp": {
+    "x": 158.0,
+    "top": 52,
+    "neck": 102,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 0.939
+  },
+  "fitting_catalog_female_dress.webp": {
+    "x": 158.6,
+    "top": 52,
+    "neck": 103,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.936
+  },
+  "fitting_catalog_female_tracksuit.webp": {
+    "x": 159.2,
+    "top": 53,
+    "neck": 103,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 0.936
+  },
+  "fitting_catalog_male_tracksuit.webp": {
+    "x": 158.8,
+    "top": 26,
+    "neck": 105,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.932
+  },
+  "fitting_catalog_female_pajamas.webp": {
+    "x": 159.2,
+    "top": 27,
+    "neck": 79,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.993
+  },
+  "fitting_catalog_male_pajamas.webp": {
+    "x": 159.7,
+    "top": 27,
+    "neck": 80,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_female_shirt.webp": {
+    "x": 157.7,
+    "top": 26,
+    "neck": 79,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 0.993
+  },
+  "fitting_catalog_male_shirt.webp": {
+    "x": 159.1,
+    "top": 26,
+    "neck": 80,
+    "head_width": 47,
+    "head_scale": 1.25,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_male_trousers.webp": {
+    "x": 158.6,
+    "top": 27,
+    "neck": 80,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_female_scarf.webp": {
+    "x": 158.3,
+    "top": 27,
+    "neck": 81,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_female_denim_shorts.webp": {
+    "x": 159.2,
+    "top": 27,
+    "neck": 81,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_male_denim_shorts.webp": {
+    "x": 159.4,
+    "top": 26,
+    "neck": 81,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_female_qipao.webp": {
+    "x": 159.2,
+    "top": 27,
+    "neck": 79,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.993
+  },
+  "fitting_catalog_female_cap.webp": {
+    "x": 159.3,
+    "top": 28,
+    "neck": 84,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.981
+  },
+  "fitting_catalog_male_cap.webp": {
+    "x": 158.6,
+    "top": 50,
+    "neck": 84,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.981
+  },
+  "fitting_catalog_female_cat_ears_headband.webp": {
+    "x": 160.1,
+    "top": 40,
+    "neck": 93,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.96
+  },
+  "fitting_catalog_female_maid_outfit.webp": {
+    "x": 158.9,
+    "top": 44,
+    "neck": 93,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.96
+  },
+  "fitting_catalog_female_nurse_outfit.webp": {
+    "x": 159.3,
+    "top": 43,
+    "neck": 93,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.96
+  },
+  "fitting_catalog_female_collar_leash.webp": {
+    "x": 159.3,
+    "top": 26,
+    "neck": 81,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_male_business_suit.webp": {
+    "x": 159.4,
+    "top": 26,
+    "neck": 82,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.986
+  },
+  "fitting_catalog_male_sportswear.webp": {
+    "x": 158.9,
+    "top": 26,
+    "neck": 82,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.986
+  },
+  "fitting_catalog_male_casual_outfit.webp": {
+    "x": 159.5,
+    "top": 26,
+    "neck": 80,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_male_leather_jacket.webp": {
+    "x": 159.0,
+    "top": 26,
+    "neck": 80,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_male_stripper_outfit.webp": {
+    "x": 158.8,
+    "top": 28,
+    "neck": 98,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.948
+  },
+  "fitting_catalog_male_police_male.webp": {
+    "x": 159.3,
+    "top": 57,
+    "neck": 99,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.946
+  },
+  "fitting_catalog_female_police_female.webp": {
+    "x": 159.1,
+    "top": 63,
+    "neck": 95,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 0.955
+  },
+  "fitting_catalog_male_male_leather_harness.webp": {
+    "x": 158.4,
+    "top": 29,
+    "neck": 109,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 0.922
+  },
+  "fitting_catalog_male_male_leather_bodysuit.webp": {
+    "x": 159.0,
+    "top": 26,
+    "neck": 95,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 0.955
+  },
+  "fitting_catalog_male_male_mesh_outfit.webp": {
+    "x": 158.1,
+    "top": 27,
+    "neck": 107,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 0.927
+  },
+  "fitting_catalog_male_male_bdsm_outfit.webp": {
+    "x": 159.5,
+    "top": 26,
+    "neck": 95,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.955
+  },
+  "fitting_catalog_female_female_corset_skirt.webp": {
+    "x": 158.2,
+    "top": 26,
+    "neck": 83,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 0.983
+  },
+  "fitting_catalog_female_female_harness_bodysuit.webp": {
+    "x": 159.0,
+    "top": 26,
+    "neck": 77,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 0.998
+  },
+  "fitting_catalog_female_female_leather_outfit.webp": {
+    "x": 159.5,
+    "top": 26,
+    "neck": 76,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 1.0
+  },
+  "fitting_catalog_female_female_mesh_dress.webp": {
+    "x": 159.6,
+    "top": 26,
+    "neck": 77,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.998
+  },
+  "fitting_catalog_female_female_wetlook_catsuit.webp": {
+    "x": 158.9,
+    "top": 26,
+    "neck": 77,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.998
+  },
+  "fitting_catalog_female_female_ribbed_tights_black.webp": {
+    "x": 158.4,
+    "top": 26,
+    "neck": 77,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.998
+  },
+  "fitting_catalog_female_female_ribbed_tights_cream.webp": {
+    "x": 159.2,
+    "top": 26,
+    "neck": 75,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.002
+  },
+  "fitting_catalog_female_female_bodycon_jumpsuit.webp": {
+    "x": 158.0,
+    "top": 26,
+    "neck": 76,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.0
+  },
+  "fitting_catalog_female_female_leather_miniskirt.webp": {
+    "x": 157.0,
+    "top": 26,
+    "neck": 76,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.0
+  },
+  "fitting_catalog_female_female_pleated_miniskirt.webp": {
+    "x": 158.6,
+    "top": 30,
+    "neck": 83,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.983
+  },
+  "fitting_catalog_female_female_neckline_dress.webp": {
+    "x": 158.5,
+    "top": 28,
+    "neck": 80,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_female_female_fox_cosplay.webp": {
+    "x": 158.3,
+    "top": 34,
+    "neck": 93,
+    "head_width": 38,
+    "head_scale": 1.056,
+    "body_scale": 0.96
+  },
+  "fitting_catalog_female_female_satin_robe.webp": {
+    "x": 159.5,
+    "top": 29,
+    "neck": 81,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_female_female_kimono_robe.webp": {
+    "x": 159.5,
+    "top": 28,
+    "neck": 81,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_female_female_strappy_lingerie.webp": {
+    "x": 159.1,
+    "top": 28,
+    "neck": 80,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_female_female_stewardess.webp": {
+    "x": 159.7,
+    "top": 48,
+    "neck": 86,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 0.976
+  },
+  "fitting_catalog_female_female_teacher.webp": {
+    "x": 158.5,
+    "top": 28,
+    "neck": 82,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.986
+  },
+  "fitting_catalog_female_female_angel.webp": {
+    "x": 159.6,
+    "top": 41,
+    "neck": 91,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.965
+  },
+  "fitting_catalog_female_female_devil.webp": {
+    "x": 159.3,
+    "top": 39,
+    "neck": 92,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.962
+  },
+  "fitting_catalog_female_female_onepiece_swimsuit.webp": {
+    "x": 158.8,
+    "top": 27,
+    "neck": 81,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_female_female_bikini.webp": {
+    "x": 159.0,
+    "top": 27,
+    "neck": 80,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_female_female_lace_bodystocking.webp": {
+    "x": 159.0,
+    "top": 26,
+    "neck": 80,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_female_female_bandage_dress.webp": {
+    "x": 159.4,
+    "top": 26,
+    "neck": 80,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_female_female_openback_dress.webp": {
+    "x": 159.1,
+    "top": 27,
+    "neck": 81,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_male_male_wetlook_catsuit.webp": {
+    "x": 158.9,
+    "top": 27,
+    "neck": 81,
+    "head_width": 47,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_male_male_bodycon_jumpsuit.webp": {
+    "x": 159.9,
+    "top": 26,
+    "neck": 81,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_male_male_satin_robe.webp": {
+    "x": 158.1,
+    "top": 26,
+    "neck": 79,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 0.993
+  },
+  "fitting_catalog_male_male_fox_cosplay.webp": {
+    "x": 159.7,
+    "top": 34,
+    "neck": 83,
+    "head_width": 52,
+    "head_scale": 1.25,
+    "body_scale": 0.983
+  },
+  "fitting_catalog_female_denim_jeans.webp": {
+    "x": 158.7,
+    "top": 27,
+    "neck": 78,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.995
+  },
+  "fitting_catalog_male_denim_jeans.webp": {
+    "x": 158.3,
+    "top": 26,
+    "neck": 80,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_female_hoodie.webp": {
+    "x": 159.2,
+    "top": 27,
+    "neck": 78,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 0.995
+  },
+  "fitting_catalog_female_knit_sweater.webp": {
+    "x": 159.6,
+    "top": 27,
+    "neck": 80,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_male_knit_sweater.webp": {
+    "x": 159.6,
+    "top": 26,
+    "neck": 89,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.969
+  },
+  "fitting_catalog_female_linen_shirt.webp": {
+    "x": 159.5,
+    "top": 26,
+    "neck": 79,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.993
+  },
+  "fitting_catalog_male_linen_shirt.webp": {
+    "x": 159.6,
+    "top": 26,
+    "neck": 82,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.986
+  },
+  "fitting_catalog_female_chino_trousers.webp": {
+    "x": 160.0,
+    "top": 26,
+    "neck": 80,
+    "head_width": 47,
+    "head_scale": 1.25,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_male_chino_trousers.webp": {
+    "x": 158.8,
+    "top": 27,
+    "neck": 81,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_female_pleated_skirt.webp": {
+    "x": 159.4,
+    "top": 26,
+    "neck": 79,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.993
+  },
+  "fitting_catalog_female_cardigan.webp": {
+    "x": 159.5,
+    "top": 26,
+    "neck": 80,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.991
+  },
+  "fitting_catalog_male_bomber_jacket.webp": {
+    "x": 159.9,
+    "top": 26,
+    "neck": 96,
+    "head_width": 47,
+    "head_scale": 1.25,
+    "body_scale": 0.953
+  },
+  "fitting_catalog_female_sneakers.webp": {
+    "x": 160.0,
+    "top": 26,
+    "neck": 81,
+    "head_width": 47,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_male_sneakers.webp": {
+    "x": 160.0,
+    "top": 27,
+    "neck": 81,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_female_ankle_boots.webp": {
+    "x": 158.9,
+    "top": 26,
+    "neck": 81,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_male_ankle_boots.webp": {
+    "x": 158.7,
+    "top": 27,
+    "neck": 81,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 0.988
+  },
+  "fitting_catalog_female_beanie.webp": {
+    "x": 159.9,
+    "top": 57,
+    "neck": 97,
+    "head_width": 38,
+    "head_scale": 1.056,
+    "body_scale": 0.95
+  },
+  "fitting_catalog_male_beanie.webp": {
+    "x": 159.2,
+    "top": 54,
+    "neck": 116,
+    "head_width": 39,
+    "head_scale": 1.083,
+    "body_scale": 0.906
+  },
+  "fitting_catalog_female_beret.webp": {
+    "x": 161.2,
+    "top": 50,
+    "neck": 90,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 0.967
+  },
+  "fitting_catalog_female_sunglasses.webp": {
+    "x": 159.3,
+    "top": 26,
+    "neck": 65,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.026
+  },
+  "fitting_catalog_male_sunglasses.webp": {
+    "x": 158.7,
+    "top": 26,
+    "neck": 65,
+    "head_width": 42,
+    "head_scale": 1.167,
+    "body_scale": 1.026
+  },
+  "fitting_catalog_female_pendant.webp": {
+    "x": 159.4,
+    "top": 26,
+    "neck": 82,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.986
+  },
+  "fitting_catalog_male_pendant.webp": {
+    "x": 159.8,
+    "top": 27,
+    "neck": 84,
+    "head_width": 50,
+    "head_scale": 1.25,
+    "body_scale": 0.981
+  },
+  "fitting_catalog_male_silver_chain.webp": {
+    "x": 160.1,
+    "top": 27,
+    "neck": 84,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 0.981
+  },
+  "fitting_catalog_male_wristwatch.webp": {
+    "x": 157.2,
+    "top": 27,
+    "neck": 84,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 0.981
+  },
+  "fitting_catalog_male_male_latex_catsuit.webp": {
+    "x": 159.5,
+    "top": 27,
+    "neck": 85,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.979
+  },
+  "fitting_catalog_female___base__.webp": {
+    "x": 159.0,
+    "top": 27,
+    "neck": 83,
+    "head_width": 47,
+    "head_scale": 1.25,
+    "body_scale": 0.983
+  },
+  "fitting_catalog_male___base__.webp": {
+    "x": 159.3,
+    "top": 26,
+    "neck": 85,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.979
+  },
+  "fitting_catalog_female___reference__.webp": {
+    "x": 158.3,
+    "top": 26,
+    "neck": 82,
+    "head_width": 47,
+    "head_scale": 1.25,
+    "body_scale": 0.986
   }
 }

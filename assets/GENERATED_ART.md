@@ -46,3 +46,11 @@ Generated one transparent three-cell sheet containing a muted wicker basket, an 
 Generated an arrow-free lilac hand cursor and three states of an ordinary shipping carton (closed, intact/open, damaged), source atlas `exec-98155086-4584-4e53-971e-fc3bb8cc0b42.png`. The exported cursor uses a 96×112 canvas with its fingertip registered at (48, 8), shared by the tour and energizer. Swipe trails, fades and tap motion are UI animations, not baked arrows. Generated decorative ceramic commission `exec-33e4301e-e3d4-4f1f-a7db-7002b4ed9e11.png` supplies the mosaic reference and tile fragments.
 
 Export: `python scripts/export_coach_assets.py cursor-cartons-atlas.png mosaic.png`. This only crops, registers and scales the original images; source originals remain in the workspace image library. Assets: `coach_finger.webp`, `work_crate_{closed,open,damaged}.webp`, `work_mosaic_order.webp`.
+
+## Complete wearable catalog — 24 November 2026
+
+Generated 17 eight-cell atlases covering all **96 wearable catalog keys** and every supported sex/item pair: **133 whole mannequin views**, plus two neutral white-shirt/white-shorts bases and one registration reference. This includes full outfits, separate clothes, footwear, hats, glasses, necklaces, earrings and wrist accessories. These are neutral store mannequin renders; toys have no wearable slot and remain separate product cards.
+
+`fitting_catalog.json` records each cell's item, sex, slot, description and original source filename. One atlas with a partly opaque studio backdrop was corrected with the image generator; the manifest points to the corrected source. Originals remain in `/workspace/generated_images`. `python scripts/export_fitting_catalog.py` only crops, registers and resizes generated figures, exports 320×512 WebPs and measures fitting anchors. Use `--force-sheet N` to re-export a corrected sheet. Export rejects atlases without transparent source backgrounds. No runtime AI call or payment is required for these previews.
+
+Existing prepared combination keys remain valid. Each single wearable has a whole render; combinations without an exact prepared render still use generated clothing/accessory layers registered to the chosen mannequin. This is catalog coverage, not a pre-render of every possible combination of 96 clothes.

@@ -1,5 +1,6 @@
 """Stored profile preferences, race choices and permanent wardrobe purchases."""
 import fandom_catalog
+import mannequin_catalog
 import json
 from pathlib import Path
 FITTING_ANCHORS=json.loads(Path(__file__).with_name("fitting_anchors.json").read_text())
@@ -424,12 +425,13 @@ for _key,_item in WARDROBE.items():
   _item['includes_footwear']=True;_item['occupies']=sorted(set(_item['occupies'])|{'shoes'})
 
 def body_preview(key,gender):
+ if mannequin_catalog.image(gender,key):return mannequin_catalog.image(gender,key)
  suffix=key+'_male' if key in ('tracksuit','pajamas') and gender=='male' else key
  return '/assets/'+('nov23_'+key if key in ('police_male','police_female') else 'body_view_'+suffix)+'.webp'
 
 def catalog_image(key,gender):
- if key in ('tracksuit','pajamas'):return body_preview(key,gender).split('/')[-1].removesuffix('.webp')
- return WARDROBE[key]['image']
+ preview=mannequin_catalog.image(gender,key)
+ return preview.split('/')[-1].removesuffix('.webp') if preview else WARDROBE[key]['image']
 
 def fitting_state(user):
  import fitting_looks
@@ -438,16 +440,17 @@ def fitting_state(user):
  if complete:return dict(base=complete,layers=[])
  prepared=fitting_looks.best_base(user,current)
  consumed=set(prepared['slots']) if prepared else {'body'}
- base=prepared['image'] if prepared else body_preview(body,gender) if body else '/assets/nov23_starter_'+gender+'.webp'
- if not body and set(current.values())<= {'cotton_tshirt','denim_shorts','cap','collar','collar_leash'}:
-  if current.get('bottom')=='denim_shorts' and not current.get('top'):base='/assets/nov23_denim_'+gender+'.webp';consumed.add('bottom')
-  elif current.get('top')=='cotton_tshirt' and not current.get('bottom'):base='/assets/nov23_tshirt_'+gender+'.webp';consumed.add('top')
+ if prepared:base=prepared['image']
+ elif body:base=body_preview(body,gender)
+ else:
+  primary=next((slot for slot in ('bottom','top','legs','shoes','outerwear','head','face','neck','ears','wrist') if slot in current),None)
+  base=mannequin_catalog.image(gender,current[primary]) if primary else mannequin_catalog.base(gender)
+  consumed={primary} if primary else set()
  order={'legs':0,'bottom':1,'top':2,'outerwear':4,'shoes':5,'neck':6,'head':7,'face':8,'ears':9,'wrist':10}
  layers=[dict(slot=slot,url='/assets/layer_v2_'+key+'.webp') for slot,key in sorted(current.items(),key=lambda pair:order.get(pair[0],0)) if slot not in consumed]
  target=FITTING_ANCHORS.get(base.split('/')[-1],{});reference=FITTING_ANCHORS.get('mannequin_base_'+gender+'.webp',{})
  for layer in layers:
   slot=layer['slot']
-  if slot not in ('head','face','ears','neck','wrist'):continue
   head=slot in ('head','face','ears');origin=reference.get('top',17) if head else reference.get('neck',76)
   offset=(target.get('top',origin) if head else target.get('neck',origin))-origin
   scale=(target.get('head_width',36)/max(1,reference.get('head_width',36))) if head else target.get('body_scale',1)/max(.1,reference.get('body_scale',1))

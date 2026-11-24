@@ -27,12 +27,12 @@ with sync_playwright() as p:
   page.get_by_role('button',name='💧 Напитки',exact=True).click();page.wait_for_selector('.card .old-price');old=page.locator('.old-price').first
   assert old.evaluate("e=>getComputedStyle(e,'::after').transform").startswith('matrix(1, 0, 0, 1')
   reset('wardrobe');page.goto(BASE+'/shop?wardrobe=1');page.wait_for_selector('.fitting-stage');page.locator('.cabinet-doors').click();page.wait_for_timeout(800)
-  assert page.locator('.tailor-base').get_attribute('src').endswith('body_view_female_corset_skirt.webp')
+  assert page.locator('.tailor-base').get_attribute('src').endswith('fitting_catalog_female_female_corset_skirt.webp')
   assert page.locator('.fitting-detail[data-slot="body"]').count()==0
   page.wait_for_function('()=>document.querySelector(".tailor-base").naturalWidth>0');page.screenshot(path=f'/tmp/repair-wardrobe-{width}.png')
   page.locator('#wardrobe-generate').click();page.wait_for_timeout(400);assert page.request.get(BASE+'/audit/report').json()['photos']==0
   page.locator('select[data-slot="body"]').select_option('female_bikini');page.wait_for_timeout(350)
-  assert page.locator('.tailor-base').get_attribute('src').endswith('body_view_female_bikini.webp')
+  assert page.locator('.tailor-base').get_attribute('src').endswith('fitting_catalog_female_female_bikini.webp')
   page.screenshot(path=f'/tmp/repair-bikini-{width}.png')
   page.locator('.complete-looks summary').click();assert page.locator('.complete-look').count()>50
   # Buying clothes changes only inventory/balance; no popup or character reply.

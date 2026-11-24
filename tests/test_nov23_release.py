@@ -49,13 +49,13 @@ class WardrobeNov23Tests(unittest.TestCase):
   u={'gender':'female','inventory':{'denim_shorts':1,'cotton_tshirt':1}}
   self.assertIn('white tank top',w.clothing_facts(u,5));self.assertIn('white shorts',w.clothing_facts(u,5))
   w.equip(u,'denim_shorts',5);fact=w.clothing_facts(u,5);self.assertIn('white tank top',fact);self.assertNotIn('white shorts',fact)
-  self.assertIn('nov23_denim_female',w.fitting_state(u)['base'])
+  self.assertIn('fitting_catalog_female_denim_shorts',w.fitting_state(u)['base'])
   w.equip(u,'cotton_tshirt',5);self.assertNotIn('white tank top',w.clothing_facts(u,5));self.assertNotIn('white shorts',w.clothing_facts(u,5))
  def test_male_base_is_white_tshirt_and_shorts(self):
   fact=w.clothing_facts({'gender':'male'},1);self.assertIn('white shorts',fact);self.assertNotIn('tank top',fact);self.assertIn('white T-shirt',fact)
  def test_police_replaces_existing_keys(self):
   for g in ('female','male'):
-   key='police_'+g;self.assertIn('latex',w.WARDROBE[key]['fact']);self.assertIn('nov23_police_',w.body_preview(key,g))
+   key='police_'+g;self.assertIn('latex',w.WARDROBE[key]['fact']);self.assertIn('fitting_catalog_'+g+'_police_',w.body_preview(key,g))
  def test_toys_no_photo_or_equip(self):
   self.assertEqual(w.TOYS_LEVEL,9)
   for k in w.TOYS:
