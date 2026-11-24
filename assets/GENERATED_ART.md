@@ -40,3 +40,9 @@ Generated a 4×4 sheet of sixteen opaque everyday mannequin outfit combinations 
 ## Work preview icons — 24 November 2026
 
 Generated one transparent three-cell sheet containing a muted wicker basket, an ice snowflake, and a basket-with-expansion-arrows powerup. `scripts/export_work_v2_assets.py` only crops, registers and scales its source into `work_basket_v2.webp`, `work_freeze_v2.webp` and `work_wide_v2.webp`. The new work UI selects these assets; public legacy work retains its current visuals until release.
+
+## Coaching and work orders — 24 November 2026
+
+Generated an arrow-free lilac hand cursor and three states of an ordinary shipping carton (closed, intact/open, damaged), source atlas `exec-98155086-4584-4e53-971e-fc3bb8cc0b42.png`. The exported cursor uses a 96×112 canvas with its fingertip registered at (48, 8), shared by the tour and energizer. Swipe trails, fades and tap motion are UI animations, not baked arrows. Generated decorative ceramic commission `exec-33e4301e-e3d4-4f1f-a7db-7002b4ed9e11.png` supplies the mosaic reference and tile fragments.
+
+Export: `python scripts/export_coach_assets.py cursor-cartons-atlas.png mosaic.png`. This only crops, registers and scales the original images; source originals remain in the workspace image library. Assets: `coach_finger.webp`, `work_crate_{closed,open,damaged}.webp`, `work_mosaic_order.webp`.
