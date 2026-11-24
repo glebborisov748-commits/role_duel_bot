@@ -1,3 +1,4 @@
+import courier_city
 import casual_work
 import work_preview
 import model_routing
@@ -6693,7 +6694,7 @@ async def reset_all_confirm(call: types.CallbackQuery):
 async def admin_help_cmd(message: types.Message):
     if message.from_user.id not in ADMIN_IDS and message.from_user.id!=MAIN_ADMIN_ID:return
     common='/admin_help — команды\n/stats — статистика\n/support_queue — очередь обращений\n/support — поддержка'
-    chief='\n/tehwork on причина | off — техработы\n/tehwork preview on | off — проверить экран только у себя\n/giveenergizers ID количество — энергетики\n/givebucks ID количество — баксы\n/grant ID тип количество — выдать ресурс или подписку\n/grant_me тип количество — выдать себе\n/setlevel ID уровень — сближение\n/revoke_subscription ID — снять подписку\n/test_mode on|off|reset — тестовая работа с отдельным балансом\n/work_release on|off — новые игры для всех / откат\n/ai_models — переключение моделей без перезапуска\n/ai_model chat|hot ID — точный выбор модели\n/ai_model hot same — для сцен как в переписке\n/models — список моделей\n/model_test — сравнить кандидатов (расчётный бюджет 15 ₽)\n/broadcast — рассылка\n/cancel_broadcast — отмена рассылки\n/giveaway_all — массовая выдача\n/reset_me — сброс своего профиля\n/reset_all — сброс всех профилей'
+    chief='\n/tehwork on причина | off — техработы\n/tehwork preview on | off — проверить экран только у себя\n/giveenergizers ID количество — энергетики\n/givebucks ID количество — баксы\n/grant ID тип количество — выдать ресурс или подписку\n/grant_me тип количество — выдать себе\n/setlevel ID уровень — сближение\n/revoke_subscription ID — снять подписку\n/test_mode on|off|reset — тестовая работа с отдельным балансом\n/work_release on|off — новые игры для всех / откат\n/courier_release on|off — новый курьер для всех / откат\n/ai_models — переключение моделей без перезапуска\n/ai_model chat|hot ID — точный выбор модели\n/ai_model hot same — для сцен как в переписке\n/models — список моделей\n/model_test — сравнить кандидатов (расчётный бюджет 15 ₽)\n/broadcast — рассылка\n/cancel_broadcast — отмена рассылки\n/giveaway_all — массовая выдача\n/reset_me — сброс своего профиля\n/reset_all — сброс всех профилей'
     await message.answer(common+(chief if message.from_user.id==MAIN_ADMIN_ID else '\nВыдачи ресурсов и техработы доступны только главному админу.'),parse_mode=None)
 
 
@@ -15429,6 +15430,7 @@ def serialize_work_state(user):
         "bucks": user.get("bucks", 0),
         "multiplier": _multiplier,
         "work_v2":work_v2(user),"sandbox":bool(user.get('_work_sandbox')),
+        "courier_v2":courier_v2(user),"courier":courier_city.snapshot(user),
         "puzzle":casual_work.snapshot(user,'puzzle'),"warehouse":casual_work.snapshot(user,'warehouse'),
         "hit_bucks": WORK_HIT_BUCKS,
         "failure_penalty": WORK_FAILURE_PENALTY_BUCKS,
@@ -16181,7 +16183,8 @@ WORK_PAGE_HTML = r"""<!doctype html>
 #hacker-wires{touch-action:none;position:relative}.hacker-wire-end,.hacker-wire-socket{font-size:24px;color:#f5e9ff;touch-action:none}.wire-obstacle{position:absolute;z-index:5;width:72px;height:32px;padding:0;background:#272131;border:3px solid #a793b9;border-radius:40%;font-size:42px;line-height:18px;color:#d6c59b;transform:rotate(-28deg);box-shadow:0 5px 8px #0007;touch-action:none}
 .mine-world,.dig-world{width:100%;position:relative;border-radius:22px;overflow:hidden;background:#140e0b;box-shadow:inset 0 2px 0 #e5b68533,0 12px 25px #0006;border:1px solid #6f533d}.mine-world-canvas,.dig-world-canvas{display:block;width:100%;height:auto;aspect-ratio:342/420;touch-action:none}.mine-world-controls,.dig-world-controls{display:flex;align-items:center;justify-content:space-around;padding:14px 0}.work-dpad{display:grid;grid-template-columns:repeat(3,42px);grid-template-rows:repeat(2,40px);gap:5px;touch-action:none}.work-dpad button{border:1px solid #aa916c88;background:linear-gradient(#62513d,#342a27);border-radius:12px;color:#fff0c7;font-size:24px;box-shadow:inset 0 1px 0 #ffe6b644,0 3px 0 #17120f;touch-action:none}.pad-up{grid-column:2;grid-row:1}.pad-left{grid-column:1;grid-row:2}.pad-down{grid-column:2;grid-row:2}.pad-right{grid-column:3;grid-row:2}.mine-aim{width:88px;height:88px;border-radius:50%;background:radial-gradient(#746143,#211c23);border:2px solid #aa976b;box-shadow:inset 0 0 15px #0008;display:grid;place-items:center;position:relative;touch-action:none}.mine-aim span{font-size:24px;pointer-events:none}.mine-aim-knob{position:absolute;left:calc(50% - 9px);top:calc(50% - 9px);width:18px;height:18px;border-radius:50%;background:#ffe7a3;box-shadow:0 0 14px #e5c976;pointer-events:none}.dig-world-controls{justify-content:center}.mine-actions{flex-wrap:wrap}
 .casual-panel{max-width:480px;margin:12px auto;padding:16px;border:1px solid #625078;border-radius:22px;background:linear-gradient(145deg,#241d34,#15121f)}.casual-panel h3{font-size:22px;margin:0 0 10px}.casual-help,.casual-odds,.casual-status,.casual-note{font-size:13px;line-height:1.5;color:#c6bdd2}.casual-note{min-height:20px;color:#ffbfc8}.casual-reward{padding:10px 12px;background:#32273d;border-radius:12px;margin:12px 0;font-weight:750}.casual-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;max-width:330px;margin:18px auto}.casual-tile,.casual-crate{aspect-ratio:1;min-width:0;min-height:44px;border-radius:15px;border:1px solid #b19bc4;background:linear-gradient(145deg,#8a70a9,#5d466e);color:#fff;font-size:30px;font-weight:800;touch-action:manipulation;box-shadow:0 3px 0 #38273f;transition:transform .12s,background .2s}.casual-tile:active,.casual-crate:active{transform:scale(.95)}.casual-tile:disabled{opacity:.68}.casual-tile.empty{background:#100d18;box-shadow:inset 0 0 0 1px #54435e;border-color:transparent;opacity:1}.casual-crate{background:#33283b;border:1px solid #695276;font-size:22px}.casual-crate img{width:80%;height:80%;object-fit:contain;display:block;margin:auto}.casual-crate.opened{background:#294239;border-color:#527d66}.casual-crate.damaged{background:#50323c;border-color:#966070}.casual-start,.casual-collect,.legacy-cargo{width:100%;min-height:46px;border:1px solid #9979b3;border-radius:13px;background:#70518c;color:#fff;font-size:15px;font-weight:750;margin:7px 0}.casual-start:disabled,.casual-collect:disabled{opacity:.45}.legacy-cargo{background:#423440;font-size:13px}.work-sandbox-banner{margin:10px 0;padding:10px 12px;border-radius:12px;border:1px dashed #9074a5;color:#d7c4e4;background:#30243c;font-size:12px;line-height:1.5}.work-sandbox-banner[hidden]{display:none}#catch-basket.wide-active{width:38%;filter:drop-shadow(0 0 6px #9dc4df66)}#catch-basket .sprite{max-width:100%}.work-v2 #catch-basket{height:56px}.work-v2 #catch-basket>.sprite{width:100%;height:56px;object-fit:contain}.work-v2 #catch-field.slow-active{box-shadow:inset 0 0 22px #9ddaf233}.work-v2 #catch-field.slow-active:before{content:'❄';position:absolute;left:10px;top:10px;color:#b4e8fa;font-size:22px;pointer-events:none}
-#catch-basket.wide-active:before{content:'';position:absolute;inset:12px 0 0;border:1px dashed #abd4ea88;border-radius:16px;background:#a7d6f50c;pointer-events:none}.work-v2 #catch-basket{width:70px!important}.work-v2 #catch-basket.wide-active{width:102px!important}.work-v2 #catch-basket.wide-active>.sprite{transform:scaleX(1.4)}.work-v2 .catch-item .sprite{width:36px;height:36px}.work-v2 #tabs{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}.work-v2 .casual-grid{max-width:270px}.work-v2 .warehouse-grid{max-width:258px}.work-v2 .casual-collect{position:sticky;bottom:8px;z-index:5;box-shadow:0 5px 18px #100d18bb}.work-v2 .casual-panel{padding:14px}.work-v2 .casual-help{font-size:12px}@media(max-width:340px){.work-v2 #tabs{grid-template-columns:repeat(3,minmax(0,1fr))!important}.work-v2 .casual-grid{max-width:240px}}</style>
+#catch-basket.wide-active:before{content:'';position:absolute;inset:12px 0 0;border:1px dashed #abd4ea88;border-radius:16px;background:#a7d6f50c;pointer-events:none}.work-v2 #catch-basket{width:70px!important}.work-v2 #catch-basket.wide-active{width:102px!important}.work-v2 #catch-basket.wide-active>.sprite{transform:scaleX(1.4)}.work-v2 .catch-item .sprite{width:36px;height:36px}.work-v2 #tabs{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}.work-v2 .casual-grid{max-width:270px}.work-v2 .warehouse-grid{max-width:258px}.work-v2 .casual-collect{position:sticky;bottom:8px;z-index:5;box-shadow:0 5px 18px #100d18bb}.work-v2 .casual-panel{padding:14px}.work-v2 .casual-help{font-size:12px}@media(max-width:340px){.work-v2 #tabs{grid-template-columns:repeat(3,minmax(0,1fr))!important}.work-v2 .casual-grid{max-width:240px}}.courier-city-active #courier-road:before,.courier-city-active #courier-road:after{display:none!important;content:none!important}.courier-city-active #courier-road{height:clamp(300px,calc(100dvh - 190px),480px)!important;min-height:260px!important;position:relative!important;overflow:clip!important;border:1px solid #655b74!important;border-radius:18px!important;background:#23222b!important;touch-action:none;box-shadow:inset 0 0 35px #0005}.city-asphalt{position:absolute;inset:0 18%;background:linear-gradient(90deg,#ece5cd 0 1px,transparent 1px calc(100% - 1px),#ece5cd calc(100% - 1px)),repeating-linear-gradient(0deg,#d8d2c299 0 28px,transparent 28px 66px) 25% 0/1px 66px repeat-y,repeating-linear-gradient(0deg,#d8d2c299 0 28px,transparent 28px 66px) 50% 0/1px 66px repeat-y,repeating-linear-gradient(0deg,#d8d2c299 0 28px,transparent 28px 66px) 75% 0/1px 66px repeat-y,#34333d;background-position:0 0,25% var(--city-travel),50% var(--city-travel),75% var(--city-travel);z-index:0}.city-sidewalk{position:absolute;top:0;bottom:0;width:7%;background:repeating-linear-gradient(0deg,#8d8191 0 1px,#655e6d 1px 32px);background-position-y:var(--city-travel);z-index:1}.city-sidewalk.left{left:11%}.city-sidewalk.right{right:11%}.city-house{position:absolute;width:20%;height:115px;z-index:2;pointer-events:none}.city-house.left{left:-5%}.city-house.right{right:-5%}.city-house img{width:100%;height:100%;object-fit:contain}.city-house.right img{transform:scaleX(-1)}.courier-city-active #courier-rider{position:absolute!important;width:42px!important;height:62px!important;left:42%;top:78%!important;bottom:auto!important;margin:0!important;transform:translate(-50%,-50%)!important;transition:left .16s ease!important;z-index:7!important;filter:drop-shadow(0 3px 3px #0008)}.courier-city-active #courier-rider img{width:100%!important;height:100%!important;object-fit:contain}.city-event{position:absolute;pointer-events:none;z-index:4;transform:translate(-50%,-50%)}.city-event:not(.city-intersection):not(.city-crossing){width:42px;height:40px}.city-event img.city-hazard{width:100%;height:100%;object-fit:contain}.city-event.city-limit{width:25px!important;height:48px!important;z-index:5}.city-intersection,.city-crossing{left:50%;width:100%;height:95px;z-index:3}.city-cross-road{position:absolute;top:15px;left:0;right:0;height:60px;background:linear-gradient(0deg,#aaa498 0 1px,transparent 1px calc(100% - 1px),#aaa498 calc(100% - 1px)),#3a3943;box-shadow:0 0 0 5px #77707a}.city-crossing .city-cross-road{background:transparent;box-shadow:none}.city-zebra{position:absolute;left:18%;width:64%;height:54px;top:22px;object-fit:fill;opacity:.8}.city-intersection .city-zebra{height:22px;top:70px;opacity:.5}.city-stopline{position:absolute;left:18%;width:64%;height:28px;top:calc(50% + 40px);object-fit:fill;z-index:4}.city-light{position:absolute;left:84%;width:20px;height:65px;top:calc(50% + 10px);object-fit:contain;z-index:6}.city-cross-car{position:absolute;width:46px;height:28px;object-fit:contain;z-index:4;top:37%}.city-cross-car.second{top:63%}.city-ped{position:absolute;width:22px;height:30px;object-fit:contain;top:49%;z-index:5;animation:cityWalk .4s ease-in-out infinite alternate}.city-ped[hidden]{display:none}.city-ped.second{top:58%;animation-delay:.2s}.city-delivery{position:absolute;width:42px;height:56px;z-index:4;transform:translate(-50%,-50%);border:2px dashed #e7c675;border-radius:12px;background:#e7c67522;box-shadow:0 0 0 3px #211e2a66}.city-delivery:after{content:'';position:absolute;bottom:2px;left:2px;height:3px;background:#b9f3bf;width:calc(var(--handoff,0)*90%);border-radius:2px}.city-delivery img{width:34px;height:40px;object-fit:contain;position:absolute;left:calc(50% - 17px);top:7px}.city-delivery.city-handoff{background:#b1e0b7aa;box-shadow:0 0 15px #b1e0b7}.courier-city-active #courier-hint{opacity:1!important;color:#d6ccdf!important}.city-hud{color:#e7dced!important;margin:8px 0!important;padding:10px!important;background:#211c2e;border:1px solid #655172;border-radius:14px;font-size:12px!important;min-height:0!important;text-align:left}.city-meter{display:flex;gap:12px;align-items:center;float:left;margin-right:12px;min-width:100px}.city-meter strong{font-size:27px;font-variant-numeric:tabular-nums}.city-meter img{width:27px;height:45px;object-fit:contain}.city-meter .over-limit{color:#ff9a9e}.city-notice{clear:both;min-height:30px;padding-top:6px;line-height:1.35;color:#dbd0e6;font-size:12px}.city-notice.reward{color:#b6edc6}#city-cargo{color:#b1a7bf;font-size:11px;margin-top:4px}#city-address{font-weight:700;padding-top:5px}.courier-city-active #courier-controls{display:grid!important;grid-template-columns:1fr 1fr 1.8fr 1fr 1fr!important;gap:6px!important;margin:10px 0!important;position:sticky;bottom:5px;z-index:12;background:#17131fe8;border-radius:12px;padding:5px}.courier-city-active #courier-controls button{min-width:0!important;min-height:46px!important;padding:6px 3px!important;border:1px solid #85699e;border-radius:10px;background:#584167;color:#fff;font-weight:750;font-size:17px}.courier-city-active #courier-controls #city-stop{font-size:12px;background:#6c4763}.courier-city-active #courier-controls button:disabled{opacity:.4}.city-start-overlay{position:absolute;inset:16%;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;padding:16px;border-radius:20px;background:#181320ee;color:#e5dbea;z-index:10;font-size:13px;line-height:1.45;box-shadow:0 8px 25px #0008}.city-start-overlay button{min-height:46px;padding:10px 16px;border-radius:12px;border:1px solid #a387b5;background:#71518c;color:white;font-size:15px;font-weight:750}.city-start-overlay p{margin:0}.city-test-controls{padding:10px;border:1px dashed #826895;border-radius:12px;font-size:12px}.city-test-controls summary{cursor:pointer;color:#d7c4e4;padding:4px}.city-test-controls button{min-height:36px;padding:7px 9px;margin:4px;border-radius:9px;border:1px solid #80698e;background:#3f304d;color:#eee3f5;font-size:12px}.city-wet:after{content:'';position:absolute;inset:0;pointer-events:none;border:2px solid #8dcae577;box-shadow:inset 0 0 25px #6ba8cb44;z-index:8}.city-hit{animation:cityImpact .3s ease}.city-tip-burst{position:absolute;left:50%;top:43%;z-index:15;transform:translate(-50%,-50%);pointer-events:none;animation:cityTip 2s ease-out both}.city-tip-burst strong{display:block;white-space:nowrap;padding:12px 16px;background:linear-gradient(130deg,#9b7840,#e8c975);color:#2b2116;border-radius:18px;box-shadow:0 0 25px #f3c86a99;font-size:18px}.city-tip-burst i{position:absolute;left:50%;top:50%;color:#ffe5a2;font-size:23px;font-style:normal;animation:citySpark 1.5s ease-out both}@keyframes citySpark{to{transform:translate(var(--dx),var(--dy)) rotate(100deg);opacity:0}}@keyframes cityTip{0%{opacity:0;scale:.8}15%,70%{opacity:1;scale:1}100%{opacity:0;translate:0 -28px}}@keyframes cityImpact{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}@keyframes cityWalk{to{margin-top:2px}}@media(prefers-reduced-motion:reduce){.city-hit,.city-tip-burst,.city-tip-burst i,.city-ped{animation:none}.city-tip-burst{opacity:1}.city-tip-burst i{display:none}}
+</style>
 </head>
 <body>
   <div id="topbar">
@@ -16501,7 +16504,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
     opts.signal = controller.signal;
     return fetch(path, opts).then(function (r) {
       clearTimeout(timeoutId);
-      return r.json().then(function(res){if(res.state&&state&&(opts.method||'GET')!=='GET'&&res.code!=='work_scope_changed'&&!!res.state.sandbox!==!!state.sandbox)return {ok:false,error:'Режим изменился. Повтори действие.'};if(res.state&&state&&(res.code==='work_scope_changed'||!!res.state.work_v2!==!!state.work_v2)){hitQueue=[];if(hitDrainTimer)clearTimeout(hitDrainTimer);hitDrainTimer=null;state=res.state;render();}if(res.code==='work_closed'&&res.state){state=res.state;applyWorkSchedule();}return res;});
+      return r.json().then(function(res){if(res.state&&state&&(opts.method||'GET')!=='GET'&&res.code!=='work_scope_changed'&&!!res.state.sandbox!==!!state.sandbox)return {ok:false,error:'Режим изменился. Повтори действие.'};if(res.state&&state&&(res.code==='work_scope_changed'||!!res.state.work_v2!==!!state.work_v2||!!res.state.courier_v2!==!!state.courier_v2)){hitQueue=[];if(hitDrainTimer)clearTimeout(hitDrainTimer);hitDrainTimer=null;state=res.state;render();}if(res.code==='work_closed'&&res.state){state=res.state;applyWorkSchedule();}return res;});
     }, function (e) {
       clearTimeout(timeoutId);
       throw e;
@@ -16716,6 +16719,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
   }
 
   function stopAllGames() {
+    stopCityCourier();
     stopWorkInput(true);mineSceneDraw=null;digSceneDraw=null;
     courierRun=null;
     stopLockpick();
@@ -17253,11 +17257,11 @@ WORK_PAGE_HTML = r"""<!doctype html>
   function startCourier(){if(courierRafId)cancelAnimationFrame(courierRafId);var road=document.getElementById('courier-road');road.className='courier-avenue';road.innerHTML='<div class="courier-markings"></div><div id="courier-destination"></div><div id="courier-delivery"><img src="/assets/work_parcel.webp" alt=""><span></span></div><div id="courier-rider"><img src="/assets/courier_top.webp" alt=""></div>';var r={lane:1,speed:.3,targetSpeed:1,emergency:false,wet:Math.random()<.3,stopped:false,delivered:0,last:performance.now(),travel:0,hold:0,obstacles:[]};for(var i=0;i<2;i++){var node=document.createElement('div');node.className='avenue-cone';node.textContent='';road.appendChild(node);r.obstacles.push({node:node,y:-200-i*250,lane:i===0?0:2,hit:false,kind:i?'puddle':'barrier'});}courierRun=r;courierNextAddress();courierDraw();courierCollisionTick(performance.now());document.getElementById('courier-hint').textContent=courierWords('Свайп ← →: полоса. ↑ быстрее, ↓ медленнее. Двойной тап: экстренное торможение / старт. Тормози заранее: остановись у посылки. Перед переходом и неровностями снижай скорость.','Swipe ← → to steer, ↑ faster, ↓ slower. Double tap: emergency brake / start. Brake early to park beside the parcel. Slow down at crossings and bumps.','← → Spur, ↑ schneller, ↓ langsamer. Doppeltippen: Halt / Fahrt. Am Paket anhalten.');}
   var courierControlsBound=false;
   function bindCourierControls(){document.getElementById('courier-controls').hidden=true;if(courierControlsBound)return;courierControlsBound=true;var road=document.getElementById('courier-road'),start=null,lastTap=0;road.style.touchAction='none';
-    road.addEventListener('pointerdown',function(e){e.preventDefault();start={x:e.clientX,y:e.clientY};try{road.setPointerCapture(e.pointerId);}catch(err){}});
-    road.addEventListener('pointerup',function(e){e.preventDefault();if(!start||!courierRun)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;start=null;if(Math.max(Math.abs(dx),Math.abs(dy))>18){if(Math.abs(dx)>Math.abs(dy))setCourierDirection(dx>0?1:-1,0);else setCourierDirection(0,dy>0?1:-1);lastTap=0;}else{var now=Date.now();if(now-lastTap<360){pressCourierStopline();lastTap=0;}else lastTap=now;}});road.addEventListener('pointercancel',function(){start=null;});}
+    road.addEventListener('pointerdown',function(e){if(state&&state.courier_v2)return;e.preventDefault();start={x:e.clientX,y:e.clientY};try{road.setPointerCapture(e.pointerId);}catch(err){}});
+    road.addEventListener('pointerup',function(e){if(state&&state.courier_v2)return;e.preventDefault();if(!start||!courierRun)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;start=null;if(Math.max(Math.abs(dx),Math.abs(dy))>18){if(Math.abs(dx)>Math.abs(dy))setCourierDirection(dx>0?1:-1,0);else setCourierDirection(0,dy>0?1:-1);lastTap=0;}else{var now=Date.now();if(now-lastTap<360){pressCourierStopline();lastTap=0;}else lastTap=now;}});road.addEventListener('pointercancel',function(){start=null;});}
 
   function jobOpen(name){return name==='farm'||!state||!state.rotation||state.rotation.active.indexOf(name)>=0;}
-  function canFinishJob(name){if(state&&state.work_v2){var r=name==='mine'?state.puzzle.run:name==='dig'?state.warehouse.run:null,old=state[name]&&state[name].run;return !!(r&&(name==='mine'?r.status==='active':r.pending>0&&(r.status==='active'||r.status==='ready'))||old&&old.bag&&old.bag.length);}return !!(state&&(name==='dig'&&state.dig&&state.dig.run||name==='mine'&&state.mine&&state.mine.run));}
+  function canFinishJob(name){if(state&&name==='courier'&&state.courier_v2)return !!(state.courier&&state.courier.status==='active');if(state&&state.work_v2){var r=name==='mine'?state.puzzle.run:name==='dig'?state.warehouse.run:null,old=state[name]&&state[name].run;return !!(r&&(name==='mine'?r.status==='active':r.pending>0&&(r.status==='active'||r.status==='ready'))||old&&old.bag&&old.bag.length);}return !!(state&&(name==='dig'&&state.dig&&state.dig.run||name==='mine'&&state.mine&&state.mine.run));}
   function applyWorkSchedule(){
     if(!state)return;var jobs=['clicker','catch','courier','workshop','dig','mine','farm'];jobs.forEach(function(name){var tab=document.getElementById('tab-'+name);if(tab){tab.style.display=jobOpen(name)||canFinishJob(name)?'':'none';tab.classList.toggle('finish-only',!jobOpen(name));}});
     var banner=document.getElementById('work-schedule');if(!banner){banner=document.createElement('div');banner.id='work-schedule';document.getElementById('tabs').after(banner);}if(state.rotation){banner.textContent=(state.rotation.bypass?'Главный админ · доступны все работы. ':'Работы дня · смена в 00:00 МСК. ')+(state.rotation.next_active?'Завтра: '+state.rotation.next_active.map(function(k){return state.rotation.names[k]||k;}).join(', ')+'. ':'')+'Ферма доступна всегда.';}else banner.hidden=true;
@@ -17613,6 +17617,101 @@ WORK_PAGE_HTML = r"""<!doctype html>
   var oldRenderMine=renderMine,oldRenderDig=renderDig;
   renderMine=function(){if(state&&state.work_v2)renderCasual('puzzle');else oldRenderMine();};
   renderDig=function(){if(state&&state.work_v2)renderCasual('warehouse');else oldRenderDig();};
+
+  // Four-lane city courier. The server owns motion and money; frames interpolate snapshots.
+  var cityRun=null,cityEpoch=0,cityTimer=null,cityBusy=false,cityReceived=0,cityTarget=0,citySteer=0,cityBrake=false,cityInput=0,citySeen=0,cityNodes={},cityScenarioQueue=null;
+  function stopCityCourier(){if(cityTimer)clearInterval(cityTimer);cityTimer=null;cityEpoch++;cityBusy=false;cityRun=null;cityNodes={};cityScenarioQueue=null;document.body.classList.remove('courier-city-active');}
+  function cityEl(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;}
+  function cityImage(key,cls){var e=cityEl('img',cls);e.src='/assets/city_'+key+'.webp';e.alt='';e.draggable=false;return e;}
+  function cityText(ru,en,de){return courierWords(ru,en,de);}
+  function cityNotice(n){
+    var copy={start_before_steer:['Сначала тронься — на остановке полосу не сменить.','Start moving before changing lanes.','Zum Spurwechsel zuerst anfahren.'],puddle:['Лужа: тормозной путь длиннее 8 секунд.','Puddle: weaker brakes for 8 seconds.','Pfütze: längerer Bremsweg für 8 Sekunden.'],bump:['Быстро на неровности: посылка повреждена, скорость упала.','Fast over a bump: damaged parcel and reduced speed.','Zu schnell über die Schwelle: Paket beschädigt, langsamer.'],pothole:['Выбоина: управление и разгон затруднены 4 секунды.','Pothole: handling and speed limited for 4 seconds.','Schlagloch: Lenkung und Tempo für 4 Sekunden eingeschränkt.'],barrier:['Столкновение с ограждением: остановка и штраф.','Barrier collision: stopped and fined.','Absperrung getroffen: Halt und Strafe.'],red_light:['Красный сигнал: остановись перед стоп-линией.','Red light: stop before the line.','Rot: vor der Haltelinie stoppen.'],pedestrian:['Пешеходы на переходе: пропусти их.','Pedestrians crossing: give way.','Fußgänger: Vorfahrt gewähren.'],speeding:['Превышение скорости: штраф, сброс скорости до лимита.','Speeding: fine and target speed reduced to the limit.','Zu schnell: Strafe und Zieltempo auf das Limit reduziert.'],missed:['Адрес пропущен. Следующий заказ впереди.','Missed the address. Another order is ahead.','Adresse verpasst. Der nächste Auftrag wartet.']};
+    var message=n.kind==='limit'?cityText('Ограничение: ','Speed limit: ','Tempolimit: ')+n.limit+' km/h':n.kind==='delivered'?cityText('Доставлено! +','Delivered! +','Geliefert! +')+(n.base_awarded===undefined?Math.round(n.base*state.multiplier):n.base_awarded)+' 💵':copy[n.kind]?cityText.apply(null,copy[n.kind]):'';
+    if(n.actual_penalty)message+=' −'+n.actual_penalty+' 💵';var note=document.getElementById('city-notice');if(note){note.textContent=message;note.className='city-notice '+(n.kind==='delivered'?'reward':'');}
+    var road=document.getElementById('courier-road');if(['barrier','bump','pothole'].indexOf(n.kind)>=0){road.classList.add('city-hit');setTimeout(function(){road.classList.remove('city-hit');},350);haptic('impact');fx('impact');}
+    if(n.kind==='delivered'){haptic('success');fx('deliver');if(n.tip_awarded||n.tip)cityTipBurst(n.tip_awarded||Math.round(n.tip*state.multiplier));}
+  }
+  function cityTipBurst(amount){var road=document.getElementById('courier-road'),burst=cityEl('div','city-tip-burst');burst.appendChild(cityEl('strong',null,cityText('Чаевые +','Tip +','Trinkgeld +')+amount+' 💵'));for(var i=0;i<12;i++){var coin=cityEl('i',null,'✦');coin.style.setProperty('--dx',(-100+Math.random()*200)+'px');coin.style.setProperty('--dy',(-90+Math.random()*130)+'px');coin.style.animationDelay=(Math.random()*.15)+'s';burst.appendChild(coin);}road.appendChild(burst);setTimeout(function(){burst.remove();},2100);}
+  function cityReceive(res,initial,inputVersion){
+    if(res.sandbox!==undefined&&!!res.sandbox!==!!state.sandbox)return;
+    if(res.courier){if(cityRun&&res.courier.id===cityRun.id&&res.courier.revision<cityRun.revision)return;if(cityRun&&res.courier.id!==cityRun.id){Object.keys(cityNodes).forEach(function(id){cityNodes[id].remove();});cityNodes={};}cityRun=res.courier;state.courier=res.courier;cityReceived=performance.now();if(initial){citySeen=cityRun.notice_seq;cityTarget=cityRun.target_speed;citySteer=0;cityBrake=false;}else if(inputVersion===cityInput){cityTarget=cityRun.target_speed;cityBrake=false;}
+      cityRun.notices.forEach(function(n){if(n.id>citySeen){cityNotice(n);citySeen=n.id;}});
+    }
+    if(typeof res.bucks==='number'){state.bucks=res.bucks;setBalance(state.bucks);}
+    var overlay=document.getElementById('city-start-overlay');if(overlay&&cityRun)overlay.remove();
+    if(!res.ok&&res.error){var note=document.getElementById('city-notice');if(note)note.textContent=res.error;}
+    cityDraw();
+  }
+  function cityRequest(action,scenario){
+    if(cityBusy){if(action==='scenario')cityScenarioQueue=scenario;return;}if(activeGame!=='courier'||!state.courier_v2)return;var epoch=cityEpoch,version=cityInput,body={action:action};
+    if(action==='step'){if(!cityRun||cityRun.status!=='active')return;body.id=cityRun.id;body.revision=cityRun.revision;body.target_speed=cityTarget;body.steer=citySteer;body.brake=cityBrake;citySteer=0;}
+    if(action==='scenario')body.scenario=scenario;cityBusy=true;
+    api('/api/work/courier',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){if(epoch!==cityEpoch)return;cityBusy=false;cityReceive(res,action!=='step',version);if(cityScenarioQueue){var queued=cityScenarioQueue;cityScenarioQueue=null;cityRequest('scenario',queued);}else if(action==='step'&&cityInput!==version){cityRequest('step');}if(res.ok&&cityRun&&!cityTimer)cityTimer=setInterval(function(){cityRequest('step');},250);}).catch(function(){if(epoch!==cityEpoch)return;cityBusy=false;var note=document.getElementById('city-notice');if(note)note.textContent=cityText('Связь прервалась. Синхронизируем смену…','Connection lost. Synchronizing…','Verbindung unterbrochen. Synchronisierung…');});
+  }
+  function cityControl(kind){if(!cityRun||cityRun.status!=='active')return;if(kind==='left'||kind==='right'){if(cityRun.speed<3){cityNotice({kind:'start_before_steer'});return;}citySteer=kind==='left'?-1:1;}else if(kind==='up'){cityTarget=Math.min(60,cityTarget+10);cityBrake=false;}else if(kind==='down'){cityTarget=Math.max(0,cityTarget-10);cityBrake=false;}else{if(cityRun.speed>1||cityTarget>0){cityTarget=0;cityBrake=true;}else{cityTarget=Math.max(20,cityRun.limit);cityBrake=false;}}cityInput++;haptic('select');cityRequest('step');cityDraw();}
+  function cityEventNode(e,road){var node=cityNodes[e.id];if(node)return node;node=cityEl('div','city-event city-'+e.kind);node.dataset.eventId=e.id;
+    if(e.kind==='intersection'||e.kind==='crossing'){
+      node.appendChild(cityEl('div','city-cross-road'));node.appendChild(cityImage('zebra','city-zebra'));if(e.kind==='intersection')node.appendChild(cityImage('stopline','city-stopline'));
+      if(e.kind==='intersection'){node.appendChild(cityImage('light_red','city-light'));node.appendChild(cityImage('car_blue','city-cross-car first'));node.appendChild(cityImage('car_gray','city-cross-car second'));}
+      else{node.appendChild(cityImage('ped_blue','city-ped first'));node.appendChild(cityImage('ped_rust','city-ped second'));}
+    }else node.appendChild(cityImage(e.kind==='limit'?'limit_'+e.limit:e.kind,'city-hazard'));
+    cityNodes[e.id]=node;road.appendChild(node);return node;
+  }
+  function cityDraw(){
+    var road=document.getElementById('courier-road');if(!road||!road.classList.contains('courier-city'))return;road.scrollTop=0;road.scrollLeft=0;var r=cityRun,h=road.clientHeight,player=h*.78;
+    if(!r){road.dataset.speed='0';return;}
+    var delta=r.status==='active'?Math.min(.45,Math.max(0,(performance.now()-cityReceived)/1000)):0,desired=cityTarget,speed=r.speed;
+    if(r.elapsed<r.stun_until)desired=0;if(r.elapsed<r.slow_until)desired=Math.min(desired,25);
+    var rate=desired>speed?12:(cityBrake?45:18)*(r.elapsed<r.wet_until?.55:1),predicted=Math.max(0,speed+Math.max(-rate*delta,Math.min(rate*delta,desired-speed))),distance=r.distance+(speed+predicted)/2/3.6*delta,elapsed=r.elapsed+delta,travel=distance*5;
+    road.style.setProperty('--city-travel',(travel%80)+'px');road.dataset.speed=Math.round(predicted);road.classList.toggle('city-wet',elapsed<r.wet_until);
+    var rider=document.getElementById('courier-rider');rider.style.left=(26+r.lane*16)+'%';rider.style.top=player+'px';rider.classList.toggle('is-stopped',predicted<1);
+    road.querySelectorAll('.city-house').forEach(function(house){var k=Number(house.dataset.slot);house.style.top=(((k*128+travel*.65)%(h+180))-140)+'px';});
+    var live={};r.events.forEach(function(e){live[e.id]=true;var node=cityEventNode(e,road),y=player-(e.s-distance)*5;node.style.top=y+'px';node.style.left=(e.kind==='limit'?87:e.lane!==undefined?26+e.lane*16:50)+'%';node.style.opacity=e.done&&e.kind!=='intersection'&&e.kind!=='crossing'?'.35':'1';
+      if(e.kind==='intersection'){
+        var phase=(elapsed+e.offset)%20,signal=e.done&&distance<e.s+12?'green':phase<10?'red':phase<12?'amber':'green';node.dataset.light=signal;var lamp=node.querySelector('.city-light');var url='/assets/city_light_'+signal+'.webp';if(lamp.getAttribute('src')!==url)lamp.src=url;
+        node.querySelectorAll('.city-cross-car').forEach(function(car,i){var x=signal==='green'?(i?93:7):signal==='amber'?(i?-12:112):(i?112-(elapsed*.4%1)*124:-12+(elapsed*.4%1)*124);car.style.left=x+'%';car.style.transform='translate(-50%,-50%)'+(i?' scaleX(-1)':'');});
+      }else if(e.kind==='crossing'){
+        var walking=e.people&&e.walk_until&&elapsed<e.walk_until;node.dataset.walking=walking?'true':'false';node.querySelectorAll('.city-ped').forEach(function(p,i){p.hidden=!walking;var t=Math.max(0,Math.min(1,(elapsed-(e.walk_from||0))/6));p.style.left=(i?82-t*64:18+t*64)+'%';p.style.transform='translate(-50%,-50%)'+(i?' scaleX(-1)':'');});
+      }
+    });Object.keys(cityNodes).forEach(function(id){if(!live[id]){cityNodes[id].remove();delete cityNodes[id];}});
+    var d=r.delivery,marker=document.getElementById('city-delivery');marker.hidden=false;marker.style.left=(26+d.lane*16)+'%';marker.style.top=(player-(d.s-distance)*5)+'px';marker.style.setProperty('--handoff',Math.min(1,r.hold/.8));marker.classList.toggle('city-handoff',r.hold>0);
+    document.getElementById('city-speed').textContent=Math.round(predicted);document.getElementById('city-speed-box').classList.toggle('over-limit',predicted>r.limit+5);
+    var sign=document.getElementById('city-limit');var signUrl='/assets/city_limit_'+r.limit+'.webp';if(sign.getAttribute('src')!==signUrl)sign.src=signUrl;sign.alt=cityText('Ограничение ','Speed limit ','Tempolimit ')+r.limit;
+    document.getElementById('city-address').textContent=(d.lane===0?'← ':'→ ')+cityText('Дом ','House ','Haus ')+d.number+' · '+Math.max(0,Math.round(d.s-distance))+' '+cityText('м','m','m')+' · '+Math.round(d.base*(.6+.4*r.integrity/100)*state.multiplier)+' 💵';
+    document.getElementById('city-cargo').textContent=cityText('Посылка ','Parcel ','Paket ')+r.integrity+'% · '+cityText('доставлено ','delivered ','geliefert ')+r.delivered;
+    var stop=document.getElementById('city-stop');if(stop){stop.disabled=r.status!=='active';}if(stop)stop.textContent=predicted<1&&cityTarget===0?cityText('▶ Ехать','▶ Go','▶ Fahrt'):cityText('⏹ Тормоз','⏹ Brake','⏹ Bremsen');
+    ['city-up','city-down'].forEach(function(id){var b=document.getElementById(id);if(b)b.disabled=r.status!=='active';});
+    ['city-left','city-right'].forEach(function(id){var b=document.getElementById(id);if(b)b.disabled=r.speed<3||r.status!=='active';});
+    if(r.status==='complete'){var note=document.getElementById('city-notice');if(note)note.textContent=cityText('Смена завершена: работа сегодня закрыта.','Shift complete: this job is closed today.','Schicht beendet: heute geschlossen.');}
+  }
+  function cityFrame(){if(!cityRun&&activeGame!=='courier')return;cityDraw();courierRafId=requestAnimationFrame(cityFrame);}
+  var cityTouchBound=false;
+  function bindCityControls(){
+    if(cityTouchBound)return;cityTouchBound=true;var road=document.getElementById('courier-road'),touch=null;road.addEventListener('pointerdown',function(e){if(!state||!state.courier_v2||activeGame!=='courier'||e.target.closest('button,details'))return;e.preventDefault();touch={x:e.clientX,y:e.clientY};try{road.setPointerCapture(e.pointerId);}catch(err){}});
+    road.addEventListener('pointerup',function(e){if(!state||!state.courier_v2||!touch)return;e.preventDefault();var dx=e.clientX-touch.x,dy=e.clientY-touch.y;touch=null;if(Math.max(Math.abs(dx),Math.abs(dy))>18)cityControl(Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy<0?'up':'down');else cityControl('stop');});road.addEventListener('pointercancel',function(){touch=null;});
+  }
+  document.addEventListener('keydown',function(e){if(!state||!state.courier_v2||activeGame!=='courier'||e.repeat||e.target.closest('input,textarea,select'))return;var key={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',ArrowDown:'down',' ':'stop'}[e.key];if(key){e.preventDefault();cityControl(key);}});
+  function startCityCourier(){
+    var road=document.getElementById('courier-road');document.body.classList.add('courier-city-active');road.className='courier-city';road.dataset.lanes='4';road.innerHTML='';cityNodes={};
+    road.appendChild(cityEl('div','city-asphalt'));road.appendChild(cityEl('div','city-sidewalk left'));road.appendChild(cityEl('div','city-sidewalk right'));
+    for(var side=0;side<2;side++)for(var i=0;i<6;i++){var house=cityEl('div','city-house '+(side?'right':'left'));house.dataset.slot=i;house.style.top=(i*128-120)+'px';house.appendChild(cityImage(['house_brick','house_shop','house_office','house_plum'][(i+side)%4]));road.appendChild(house);}
+    var delivery=cityEl('div','city-delivery');delivery.id='city-delivery';delivery.hidden=true;var parcel=cityEl('img');parcel.src='/assets/work_parcel.webp';parcel.alt='';delivery.appendChild(parcel);road.appendChild(delivery);
+    var rider=cityEl('div','city-rider');rider.id='courier-rider';var riderImage=cityEl('img');riderImage.src='/assets/courier_top.webp';riderImage.alt=cityText('Курьер','Courier','Kurier');rider.appendChild(riderImage);road.appendChild(rider);
+    var hud=document.getElementById('courier-feedback');hud.className='city-hud';hud.innerHTML='<div class="city-meter"><div id="city-speed-box"><strong id="city-speed">0</strong> km/h</div><img id="city-limit" src="/assets/city_limit_40.webp" alt="40"></div><div id="city-address"></div><div id="city-cargo"></div><div id="city-notice" class="city-notice"></div>';
+    road.before(hud);
+    var controls=document.getElementById('courier-controls');controls.hidden=false;controls.innerHTML='';[['left','←','city-left'],['down','−','city-down'],['stop',cityText('▶ Ехать','▶ Go','▶ Fahrt'),'city-stop'],['up','+','city-up'],['right','→','city-right']].forEach(function(item){var button=cityEl('button',null,item[1]);button.type='button';button.id=item[2];button.setAttribute('aria-label',cityText('Управление: ','Control: ','Steuerung: ')+item[0]);button.onclick=function(){cityControl(item[0]);};controls.appendChild(button);});road.after(controls);
+    var previous=document.getElementById('city-test-controls');if(previous)previous.remove();
+    if(state.sandbox){var tests=cityEl('details','city-test-controls');tests.id='city-test-controls';tests.appendChild(cityEl('summary',null,cityText('🧪 Проверить ситуацию','🧪 Test a situation','🧪 Situation testen')));var labels={red:['Красный','Red','Rot'],green:['Зелёный','Green','Grün'],pedestrians:['Пешеходы','Pedestrians','Fußgänger'],empty_crossing:['Пустой переход','Empty crossing','Leerer Übergang'],puddle:['Лужа','Puddle','Pfütze'],bump:['Неровность','Bump','Schwelle'],barrier:['Ограждение','Barrier','Absperrung'],pothole:['Выбоина','Pothole','Schlagloch'],speeding:['Скорость','Speeding','Tempo'],delivery:['Доставка','Delivery','Lieferung'],tips:['Чаевые','Tip','Trinkgeld']};Object.keys(labels).forEach(function(key){var button=cityEl('button',null,cityText.apply(null,labels[key]));button.type='button';button.dataset.scenario=key;button.onclick=function(){cityRequest('scenario',key);};tests.appendChild(button);});controls.after(tests);}
+    document.getElementById('courier-hint').textContent=cityText('← → полоса · + − скорость · ⏹ тормоз / старт. Свайпы и стрелки ПК тоже работают. На остановке полосу не сменить. Доставляй у нужного края дороги после полной остановки.','← → lane · + − speed · ⏹ brake / start. Swipes and keyboard arrows also work. No lane changes at rest. Stop beside the address to deliver.','← → Spur · + − Tempo · ⏹ Halt / Fahrt. Wischen und Pfeiltasten möglich. Kein Spurwechsel im Stand. Am Ziel vollständig anhalten.');
+    bindCityControls();cityEpoch++;cityBusy=false;cityRun=null;citySeen=0;cityTarget=0;citySteer=0;cityBrake=false;
+    var overlay=cityEl('div','city-start-overlay');overlay.id='city-start-overlay';overlay.appendChild(cityEl('p',null,cityText('Соблюдай знаки, пропускай людей и привози посылки целыми. Заказы редкие, оплата выше; чаевые выпадают отдельно.','Follow signs, yield to people and protect the parcel. Deliveries are rarer and pay more; tips are random.','Beachte Schilder und Fußgänger. Pakete sicher liefern: seltener, aber höher bezahlt; Trinkgeld ist zufällig.')));var begin=cityEl('button',null,cityText('Начать смену','Start shift','Schicht starten'));begin.type='button';begin.id='city-begin';begin.onclick=function(){cityRequest('start');};overlay.appendChild(begin);road.appendChild(overlay);
+    if(state.courier&&state.courier.status==='active')cityRequest('start');
+    requestAnimationFrame(function(){if(activeGame==='courier'&&state.courier_v2)hud.scrollIntoView({block:'start',behavior:'smooth'});});
+    cityFrame();
+  }
+  var legacyStartCourier=startCourier,legacyBindCourier=bindCourierControls;
+  startCourier=function(){if(state.courier_v2)startCityCourier();else{var hud=document.getElementById('courier-feedback');hud.className='';document.getElementById('game-courier').appendChild(hud);var tests=document.getElementById('city-test-controls');if(tests)tests.remove();legacyStartCourier();}};
+  bindCourierControls=function(){if(state&&state.courier_v2){document.getElementById('courier-controls').hidden=false;bindCityControls();}else legacyBindCourier();};
 
   // ---------- Tabs ----------
   // Пауза: свернули приложение или ушли на другую вкладку -- игра не идёт дальше без игрока.
@@ -22619,20 +22718,21 @@ async def _work_request(request):
     return uid,user,body if isinstance(body,dict) else {},None
 
 
-@dp.message(Command('test_mode', 'work_release'))
+@dp.message(Command('test_mode', 'work_release', 'courier_release'))
 async def work_testing_cmd(message: types.Message):
     if message.from_user.id!=MAIN_ADMIN_ID or message.chat.type!='private':
         return
     args=(message.text or '').split()
     if len(args)!=2 or args[1] not in ('on','off','reset'):
-        await message.answer('/test_mode on|off — тестовая работа с отдельным балансом\n/test_mode reset — сбросить тестовые задания и баланс\n/work_release on|off — новые игры для всех или откат',parse_mode=None)
+        await message.answer('/test_mode on|off — тестовая работа с отдельным балансом\n/test_mode reset — сбросить тестовые задания и баланс\n/work_release on|off — новые игры для всех или откат\n/courier_release on|off — новый курьер для всех или откат',parse_mode=None)
         return
     user=get_user(message.from_user.id)
-    if args[0].split('@')[0]=='/work_release':
+    if args[0].split('@')[0] in ('/work_release','/courier_release'):
         if args[1]=='reset':
             await message.answer('Для публикации: /work_release on или /work_release off')
             return
-        user_data.setdefault('__settings__',{})['work_games_v2']=args[1]=='on'
+        key='courier_city_v2' if args[0].split('@')[0]=='/courier_release' else 'work_games_v2'
+        user_data.setdefault('__settings__',{})[key]=args[1]=='on'
         text='Новые игры включены для всех.' if args[1]=='on' else 'Для пользователей возвращены прежние игры. Состояния и покупки сохранены.'
     else:
         if args[1]=='reset':
@@ -22642,8 +22742,55 @@ async def work_testing_cmd(message: types.Message):
             user['work_preview_enabled']=args[1]=='on'
         text=('Тестовый режим работы включён. Баланс, ферма, награды и задания работы отдельные; основные ресурсы не меняются.'
               if user['work_preview_enabled'] else 'Тестовый режим выключен. В работе виден основной профиль.')
+    if args[0].split('@')[0]=='/courier_release':text='Новый курьер включён для пользователей.' if args[1]=='on' else 'Для пользователей возвращён прежний курьер.'
     save_data(user_data)
     await message.answer(text+' Открой работу заново.',parse_mode=None)
+
+
+def courier_v2(user):
+    return bool(user.get('_work_sandbox') or user_data.get('__settings__',{}).get('courier_city_v2'))
+
+
+async def api_work_courier_handler(request):
+    uid,user,body,error=await _work_request(request)
+    if error:return error
+    if not courier_v2(user):
+        return web.json_response({'ok':False,'code':'work_version_changed','error':'Новый курьер пока не опубликован.','state':serialize_work_state(user)})
+    try:
+        kind=body.get('action')
+        if kind not in ('start','step','scenario'):raise courier_city.CourierError('Неизвестное действие.')
+        run=user.get('courier_city')
+        opened=work_is_open('courier',user)
+        if not opened and not (run and run['status']=='active' and kind in ('start','step')):
+            return work_closed_reply(user)
+        now=time.time();before_notice=(run or {}).get('notice_seq',0);finance=dict(base=0,tip=0,penalty=0)
+        if not opened and run:run['close_after_delivery']=True
+        if kind=='scenario':
+            if uid!=MAIN_ADMIN_ID or not user.get('_work_sandbox'):raise courier_city.CourierError('Сценарии доступны только в песочнице.')
+            run=courier_city.scenario(user,body.get('scenario'),now)
+        elif kind=='start':run=courier_city.start(user,now)
+        else:finance=courier_city.step(user,body,now)
+        run=user['courier_city']
+        if not opened:run['close_after_delivery']=True
+        awarded=credit_work_bucks(user,finance['base']+finance['tip']) if finance['base'] else 0
+        penalty=min(max(0,user.get('bucks',0)),finance['penalty']);user['bucks']=user.get('bucks',0)-penalty
+        tip_awarded=min(awarded,round(finance['tip']*work_earnings_multiplier(user)))
+        if awarded:
+            quest_event(user,'courier')
+            for notice in reversed(run['notices']):
+                if notice['kind']=='delivered':notice.update(awarded=awarded,base_awarded=awarded-tip_awarded,tip_awarded=tip_awarded);break
+        remaining=penalty
+        for notice in run['notices']:
+            if notice['id']>before_notice and notice.get('penalty'):
+                notice['actual_penalty']=min(remaining,notice['penalty']);remaining-=notice['actual_penalty']
+        # Financial changes are durable before responding; motion checkpoints are batched.
+        if kind!='step' or awarded or penalty or now-run.get('_checkpoint_at',0)>=5 or run['status']!='active':
+            run['_checkpoint_at']=now;save_data(user_data)
+        return web.json_response({'ok':True,'courier':courier_city.snapshot(user),'awarded':awarded,'tip':tip_awarded,'penalty':penalty,
+                                  'bucks':user.get('bucks',0),'sandbox':bool(user.get('_work_sandbox')),'courier_v2':True})
+    except (ValueError,courier_city.CourierError) as exc:
+        return web.json_response({'ok':False,'error':str(exc),'courier':courier_city.snapshot(user),
+                                  'bucks':user.get('bucks',0),'sandbox':bool(user.get('_work_sandbox')),'courier_v2':True})
 
 
 async def api_work_casual_handler(request):
@@ -22748,6 +22895,7 @@ async def api_work_hit_handler(request):
         body = {}
     game = body.get("game") if isinstance(body, dict) else None
     if not work_is_open(game, user):return work_closed_reply(user)
+    if game=='courier' and courier_v2(user):return web.json_response({'ok':False,'code':'work_version_changed','error':'Используй новый маршрут курьера.','state':serialize_work_state(user)})
     tip = bool(body.get("tip")) if isinstance(body, dict) else False
     hit_id=body.get('hit_id') if isinstance(body,dict) else None
     if hit_id is not None and (not isinstance(hit_id,str) or not re.fullmatch(r'[a-z0-9-]{8,64}',hit_id)):
@@ -22800,6 +22948,7 @@ async def api_work_penalty_handler(request):
     except Exception:
         body = {}
     game = body.get("game") if isinstance(body, dict) else None
+    if game=='courier' and courier_v2(user):return web.json_response({'ok':False,'code':'work_version_changed','error':'Штрафы нового курьера проверяет сервер.','state':serialize_work_state(user)})
     penalty = register_work_failure(user, game)
     if penalty is None:
         return web.json_response({"ok": False, "error": "bad_game", "state": serialize_work_state(user)})
@@ -22930,6 +23079,7 @@ async def run_webapp_server():
     app_web.router.add_post("/api/work/mine", api_work_mine_handler)
     app_web.router.add_post("/api/work/workshop", api_work_workshop_handler)
     app_web.router.add_get("/work", work_page_handler)
+    app_web.router.add_post("/api/work/courier", api_work_courier_handler)
     app_web.router.add_post("/api/work/casual", api_work_casual_handler)
     app_web.router.add_get("/api/work/state", api_work_state_handler)
     app_web.router.add_post("/api/work/hit", api_work_hit_handler)

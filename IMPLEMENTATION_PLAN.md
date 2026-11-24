@@ -78,3 +78,9 @@ Paid provider jobs, real Telegram payments and production notifications are not 
 - Same-day quest migration, server-side income gates and recovery of old cargo.
 - Multi-slot outfits with visible locks and server validation; all inventory retained.
 - New tests: tests/test_mine_rotation.py, tests/check_mine_rotation_runtime.py, tests/check_mine_rotation_ui.py.
+
+## 2026-11-24: city courier
+- Implemented server-owned four-lane route, speed limits, distinct hazards, intersections and pedestrian crossings. Rare deliveries pay more; weighted tips are credited once.
+- Generated 20 city sprites; private scenario controls cover traffic, hazards, deliveries and tips. Chief work wallet remains isolated.
+- Independent `/courier_release on|off` rollout, off by default; legacy payout routes reject city-mode requests.
+- Verified: 253 unit checks, signed runtime API checks, Chromium mobile 320/390/430 checks (controls, traffic, pedestrians, payouts, scope, rollback). No live hosting assertion.
