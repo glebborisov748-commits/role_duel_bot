@@ -1,3 +1,4 @@
+import model_routing
 import support_queue
 import model_benchmark
 import profile_options
@@ -1382,8 +1383,8 @@ async def staging_payment_guard(make_request, bot, method):
 
 bot.session.middleware.register(staging_payment_guard)
 
-# Пусто = не задано вручную -> модель ищется сама в каталоге provod.ai (см. resolve_model).
-# Явно заданное значение (переменная окружения AI_MODEL/INTIM_MODEL) всегда в приоритете.
+# Legacy environment values: hot-scene configuration is migrated once.
+# Persisted model routes now control both channels; normal chat starts on DeepSeek V3.2.
 AI_MODEL = os.getenv("AI_MODEL", "")
 INTIM_MODEL = os.getenv("INTIM_MODEL", "")
 
@@ -1391,11 +1392,7 @@ INTIM_MODEL = os.getenv("INTIM_MODEL", "")
 # до видимого ответа и могут не уложиться в короткий таймаут по умолчанию — даём с запасом.
 AI_REQUEST_TIMEOUT = 100
 
-# Резерв на случай, если сам каталог /v1/models недоступен (сеть, ключ и т.п.) —
-# лучшее предположение по конвенции OpenRouter-подобных агрегаторов, а не проверенное
-# значение. Основной путь — живой поиск в каталоге ниже.
-FALLBACK_MODEL = "anthropic/claude-sonnet-5"
-
+# Kept for backwards-compatible diagnostic snapshots; routing itself is uncached.
 _model_cache = {}
 
 
@@ -1407,46 +1404,9 @@ def _fetch_model_catalog():
         return []
 
 
-def _pick_claude_sonnet(model_ids):
-    candidates = [m for m in model_ids if "claude" in m.lower() and "sonnet" in m.lower()]
-    if not candidates:
-        return None
-    for m in candidates:
-        if re.search(r"sonnet[^a-z0-9]?5\b", m.lower()):
-            return m
-    return sorted(candidates)[-1]
-
-
-def _pick_deepseek_flash(model_ids):
-    """DeepSeek Flash — быстрее и без "невидимых" reasoning-токенов V4 Pro, которые были
-    вероятной причиной таймаутов. Точный ID в каталоге provod.ai заранее не известен —
-    ищем по паттерну в живом каталоге, а не угадываем строку в коде."""
-    candidates = [m for m in model_ids if "deepseek" in m.lower() and "flash" in m.lower()]
-    return sorted(candidates)[-1] if candidates else None
-
-
-def _pick_deepseek_v4_pro(model_ids):
-    """Резерв, если Flash не нашёлся в каталоге — сама reasoning-модель, из-за которой,
-    собственно, и была просьба попробовать Flash."""
-    candidates = [m for m in model_ids if "deepseek" in m.lower() and "v4" in m.lower() and "pro" in m.lower()]
-    if candidates:
-        return sorted(candidates)[-1]
-    candidates = [m for m in model_ids if "deepseek" in m.lower() and re.search(r"v4|(?<!\d)4[.\-]", m.lower())]
-    return sorted(candidates)[-1] if candidates else None
-
-
 def resolve_model(cache_key):
-    """Модель для cache_key ("ai"/"intim"), если она не задана явно через переменную
-    окружения: сперва ищем DeepSeek Flash в живом каталоге provod.ai, потом DeepSeek V4 Pro,
-    потом Claude Sonnet, и запоминаем результат на время работы процесса."""
-    if cache_key in _model_cache:
-        return _model_cache[cache_key]
-    catalog = _fetch_model_catalog()
-    found = _pick_deepseek_flash(catalog) or _pick_deepseek_v4_pro(catalog) or _pick_claude_sonnet(catalog)
-    resolved = found or FALLBACK_MODEL
-    _model_cache[cache_key] = resolved
-    logging.info(f"Автоопределение модели ({cache_key}): {resolved}")
-    return resolved
+    """Read the saved route for each new request, with no cached/fuzzy fallback."""
+    return model_routing.selected(user_data.get('__settings__', {}), cache_key)
 
 
 def invalidate_model_cache(cache_key):
@@ -1454,11 +1414,12 @@ def invalidate_model_cache(cache_key):
 
 
 def call_ai(explicit_model, cache_key, **kwargs):
-    """Обёртка над client.chat.completions.create с автоподбором модели, явным таймаутом
-    (иначе reasoning-модели вроде DeepSeek иногда не укладываются в таймаут SDK по
-    умолчанию) и одной повторной попыткой — если провайдер вдруг снял именно эту модель
-    с каталога (как уже случилось с deepseek/deepseek-chat), или если запрос просто не
-    успел за отведённое время (транзиентная задержка на стороне провайдера)."""
+    """Freeze the saved model for this turn, including timeout/language retries.
+
+    Model changes affect subsequent requests, never an answer already in flight.
+    """
+    if cache_key in model_routing.ROUTES:
+        explicit_model = resolve_model(cache_key)
     if kwargs.get("messages"):
         # В истории бывают служебные поля для мини-приложения (реакция, карточка подарка) -- в ИИ только роль и текст.
         kwargs["messages"] = [{"role": m["role"], "content": m["content"]} for m in kwargs["messages"]]
@@ -1516,12 +1477,6 @@ def _call_ai_raw(explicit_model, cache_key, **kwargs):
     try:
         return client.chat.completions.create(model=model, **kwargs)
     except Exception as e:
-        if not explicit_model and getattr(e, "status_code", None) == 404:
-            invalidate_model_cache(cache_key)
-            retry_model = resolve_model(cache_key)
-            if retry_model != model:
-                logging.warning(f"Модель {model} недоступна (404), пробуем {retry_model}")
-                return client.chat.completions.create(model=retry_model, **kwargs)
         if isinstance(e, APITimeoutError):
             logging.warning(f"Таймаут запроса к {model} ({AI_REQUEST_TIMEOUT}с), пробуем ещё раз")
             return client.chat.completions.create(model=model, **kwargs)
@@ -1634,6 +1589,8 @@ def sync_data():
 
 
 user_data = load_data()
+if model_routing.initialize(user_data.setdefault('__settings__', {}), INTIM_MODEL):
+    save_data(user_data)
 # __settings__ — служебная запись внутри того же data.json (не профиль пользователя),
 # чтобы режим техработ переживал рестарт бота: раньше maintenance_mode был чистой
 # переменной в памяти процесса и при каждом передеплое (пересборка контейнера из
@@ -6734,7 +6691,7 @@ async def reset_all_confirm(call: types.CallbackQuery):
 async def admin_help_cmd(message: types.Message):
     if message.from_user.id not in ADMIN_IDS and message.from_user.id!=MAIN_ADMIN_ID:return
     common='/admin_help — команды\n/stats — статистика\n/support_queue — очередь обращений\n/support — поддержка'
-    chief='\n/tehwork on причина | off — техработы\n/tehwork preview on | off — проверить экран только у себя\n/giveenergizers ID количество — энергетики\n/givebucks ID количество — баксы\n/grant ID тип количество — выдать ресурс или подписку\n/grant_me тип количество — выдать себе\n/setlevel ID уровень — сближение\n/revoke_subscription ID — снять подписку\n/models — список моделей\n/model_test — сравнить кандидатов (расчётный бюджет 15 ₽)\n/broadcast — рассылка\n/cancel_broadcast — отмена рассылки\n/giveaway_all — массовая выдача\n/reset_me — сброс своего профиля\n/reset_all — сброс всех профилей'
+    chief='\n/tehwork on причина | off — техработы\n/tehwork preview on | off — проверить экран только у себя\n/giveenergizers ID количество — энергетики\n/givebucks ID количество — баксы\n/grant ID тип количество — выдать ресурс или подписку\n/grant_me тип количество — выдать себе\n/setlevel ID уровень — сближение\n/revoke_subscription ID — снять подписку\n/ai_models — переключение моделей без перезапуска\n/ai_model chat|hot ID — точный выбор модели\n/ai_model hot same — для сцен как в переписке\n/models — список моделей\n/model_test — сравнить кандидатов (расчётный бюджет 15 ₽)\n/broadcast — рассылка\n/cancel_broadcast — отмена рассылки\n/giveaway_all — массовая выдача\n/reset_me — сброс своего профиля\n/reset_all — сброс всех профилей'
     await message.answer(common+(chief if message.from_user.id==MAIN_ADMIN_ID else '\nВыдачи ресурсов и техработы доступны только главному админу.'),parse_mode=None)
 
 
@@ -7159,6 +7116,162 @@ async def model_test_cmd(message: types.Message):
     job['task']=asyncio.create_task(model_test_run(message,status,job,full))
 
 
+def apply_ai_model(route, target):
+    settings = user_data.setdefault('__settings__', {})
+    previous = settings.get(model_routing.KEY)
+    model_routing.update(settings, route, target)
+    try:
+        save_data(user_data)
+    except Exception:
+        if previous is None:
+            settings.pop(model_routing.KEY, None)
+        else:
+            settings[model_routing.KEY] = previous
+        raise
+
+
+def ai_model_settings_text():
+    settings = user_data.get('__settings__', {})
+    chat = model_routing.selected(settings, 'ai')
+    scene = model_routing.selected(settings, 'intim')
+    same = (settings.get(model_routing.KEY) or {}).get('intim', 'same') == 'same'
+    return (f"🧠 Модели бота\n\nОбычная переписка: {chat}\n"
+            f"Горячие сцены: {scene}{' (как в чате)' if same else ''}\n\n"
+            "Изменения действуют со следующего запроса и сохраняются после перезапуска. "
+            "Уже начатый ответ завершится на прежней модели. Выбор в меню не запускает платный тест.")
+
+
+def ai_model_keyboard():
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text='💬 Модель переписки', callback_data='ai_models:open:ai')],
+        [InlineKeyboardButton(text='🔥 Модель горячих сцен', callback_data='ai_models:open:intim')],
+        [InlineKeyboardButton(text='🔗 Для сцен — как в переписке', callback_data='ai_models:same')],
+    ])
+
+
+def _ai_model_admin(actor, chat):
+    return actor.id == MAIN_ADMIN_ID and chat.type == 'private'
+
+
+async def ai_model_catalog():
+    # Only /models: no completions or paid trial requests.
+    def fetch():
+        return [dict(id=m.id, canonical_slug=getattr(m, 'canonical_slug', None),
+                     available=getattr(m, 'available', True)) for m in client.models.list(timeout=20).data]
+    return await asyncio.to_thread(fetch)
+
+
+AI_MODEL_MENUS = {}
+
+
+@dp.message(Command('ai_models', 'ai_model'))
+async def ai_models_cmd(message: types.Message):
+    if not _ai_model_admin(message.from_user, message.chat):
+        await message.answer('⛔ Переключение моделей доступно главному админу в личном чате с ботом.')
+        return
+    sync_data()
+    args = (message.text or '').split()
+    if len(args) == 1:
+        await message.answer(ai_model_settings_text(), reply_markup=ai_model_keyboard(), parse_mode=None)
+        return
+    if len(args) != 3 or args[1] not in ('chat', 'hot'):
+        await message.answer('/ai_models — меню\n/ai_model chat ID — модель переписки\n/ai_model hot ID — модель сцен\n/ai_model hot same — сцены используют модель переписки', parse_mode=None)
+        return
+    route = 'ai' if args[1] == 'chat' else 'intim'
+    try:
+        target = 'same' if route == 'intim' and args[2] == 'same' else model_routing.catalog_id(await ai_model_catalog(), args[2])
+        apply_ai_model(route, target)
+    except ValueError as exc:
+        await message.answer(str(exc), parse_mode=None)
+        return
+    except Exception:
+        await message.answer('Не удалось получить каталог или сохранить настройку. Проверь текущее состояние через /ai_models.', parse_mode=None)
+        return
+    await message.answer(ai_model_settings_text(), reply_markup=ai_model_keyboard(), parse_mode=None)
+
+
+def ai_model_menu_page(token, page):
+    menu = AI_MODEL_MENUS[token]
+    entries = menu['entries']
+    pages = max(1, (len(entries) + 9) // 10)
+    page = min(max(0, page), pages - 1)
+    rows = [[InlineKeyboardButton(text=e['id'][:60], callback_data=f'ai_models:pick:{token}:{i}')]
+            for i, e in enumerate(entries[page*10:(page+1)*10], page*10)]
+    navigation = []
+    if page:
+        navigation.append(InlineKeyboardButton(text='‹ Назад', callback_data=f'ai_models:page:{token}:{page-1}'))
+    if page+1 < pages:
+        navigation.append(InlineKeyboardButton(text='Дальше ›', callback_data=f'ai_models:page:{token}:{page+1}'))
+    if navigation:
+        rows.append(navigation)
+    rows.append([InlineKeyboardButton(text='К настройкам', callback_data='ai_models:status')])
+    route = 'переписки' if menu['route'] == 'ai' else 'горячих сцен'
+    return (f'Модель {route} · страница {page+1}/{pages}\nВыбирай точную версию. Модель влияет на стоимость API.\n\n'
+            + ai_model_settings_text(), InlineKeyboardMarkup(inline_keyboard=rows))
+
+
+@dp.callback_query(lambda c: bool(c.data and c.data.startswith('ai_models:')))
+async def ai_models_cb(call: types.CallbackQuery):
+    if not call.message or not _ai_model_admin(call.from_user, call.message.chat):
+        await call.answer('Только для главного админа в личном чате.', show_alert=True)
+        return
+    sync_data()
+    parts = call.data.split(':')
+    action = parts[1] if len(parts) > 1 else ''
+    if action not in ('open', 'page', 'pick', 'same', 'status'):
+        await call.answer('Неизвестное действие.', show_alert=True)
+        return
+    # Acknowledge before the network lookup; slow /models must not expire the callback.
+    await call.answer()
+    try:
+        if action == 'status':
+            text, keyboard = ai_model_settings_text(), ai_model_keyboard()
+        elif action == 'same':
+            apply_ai_model('intim', 'same')
+            text, keyboard = ai_model_settings_text(), ai_model_keyboard()
+        elif action == 'open':
+            if len(parts) != 3 or parts[2] not in model_routing.ROUTES:
+                return
+            catalog = await ai_model_catalog()
+            entries = sorted({e['id']:e for e in catalog if e.get('available', True) is not False}.values(),
+                             key=lambda e:(e['id']!='deepseek-v3.2', e['id'].lower()))
+            if not entries:
+                await call.message.answer('Каталог недоступен. Текущие модели сохранены.', parse_mode=None)
+                return
+            for token, menu in list(AI_MODEL_MENUS.items()):
+                if time.monotonic()-menu['created']>1200:
+                    del AI_MODEL_MENUS[token]
+            while len(AI_MODEL_MENUS)>=20:
+                AI_MODEL_MENUS.pop(next(iter(AI_MODEL_MENUS)))
+            token = secrets.token_hex(4)
+            AI_MODEL_MENUS[token] = dict(entries=entries, route=parts[2], created=time.monotonic())
+            text, keyboard = ai_model_menu_page(token, 0)
+        else:
+            if len(parts)!=4 or not parts[3].isdigit():
+                return
+            token, index = parts[2], int(parts[3])
+            menu = AI_MODEL_MENUS.get(token)
+            if not menu or time.monotonic()-menu['created']>1200:
+                await call.message.answer('Меню устарело. Открой /ai_models заново.', parse_mode=None)
+                return
+            if action == 'page':
+                text, keyboard = ai_model_menu_page(token, index)
+            else:
+                if index>=len(menu['entries']):
+                    return
+                target = model_routing.catalog_id(await ai_model_catalog(), menu['entries'][index]['id'])
+                apply_ai_model(menu['route'], target)
+                AI_MODEL_MENUS.pop(token, None)
+                text, keyboard = ai_model_settings_text(), ai_model_keyboard()
+        if call.message.text != text or call.message.reply_markup != keyboard:
+            await call.message.edit_text(text, reply_markup=keyboard, parse_mode=None)
+    except ValueError as exc:
+        await call.message.answer(str(exc), parse_mode=None)
+    except Exception:
+        logging.warning('AI model menu action failed: %s', action)
+        await call.message.answer('Не удалось обновить меню. Проверь текущее состояние через /ai_models.', parse_mode=None)
+
+
 @dp.message(Command("models"))
 async def models_cmd(message: types.Message):
     """Точный ID модели в каталоге provod.ai нельзя узнать из кода без живого запроса —
@@ -7169,7 +7282,7 @@ async def models_cmd(message: types.Message):
         return
     invalidate_model_cache("ai")
     invalidate_model_cache("intim")
-    catalog = _fetch_model_catalog()
+    catalog = await asyncio.to_thread(_fetch_model_catalog)
     if not catalog:
         await message.answer("❌ Не удалось получить каталог моделей — см. логи бота (сеть/ключ).")
         return
@@ -23193,7 +23306,7 @@ async def api_app_message_handler(request):
 
 async def main():
     print("🚀 Role Duel запущен!")
-    print(f"🧠 Модель: {AI_MODEL or resolve_model('ai')} | интим-сцены: {INTIM_MODEL or resolve_model('intim')}")
+    print(f"🧠 Модель: {resolve_model('ai')} | интим-сцены: {resolve_model('intim')}")
     print(f"💾 Данные сохраняются в {os.path.abspath(DATA_FILE)}")
     print(f"👥 Загружено профилей: {len([k for k in user_data if k != '__settings__'])}")
     print(f"💳 Способы оплаты: {', '.join(available_payment_methods())}")
