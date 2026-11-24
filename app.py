@@ -9235,8 +9235,26 @@ def _support_settings():
     return user_data.setdefault('__settings__', {})
 
 
+def refresh_support_priorities():
+    def lookup(uid):
+        record = user_data.get(str(uid))
+        if not isinstance(record, dict):
+            return None
+        try:
+            return bool(get_subscription_level(record))
+        except (TypeError, ValueError, KeyError):
+            return None
+    if support_queue.refresh_priorities(_support_settings(), lookup):
+        save_data(user_data)
+
+
+def support_snapshot(uid):
+    refresh_support_priorities()
+    return support_queue.snapshot(_support_settings(), uid)
+
+
 def support_status_text(user, uid):
-    status = support_queue.snapshot(_support_settings(), uid)
+    status = support_snapshot(uid)
     ru = user.get('lang','ru') == 'ru'
     note = 'Подписчикам отвечаем в приоритетном порядке.' if ru else 'Subscribers receive priority support.'
     if not status:
@@ -9275,6 +9293,7 @@ async def submit_support(uid, user, text):
 async def support_queue_cmd(message: types.Message):
     if message.from_user.id not in SUPPORT_ADMIN_IDS:
         return
+    refresh_support_priorities()
     queue = support_queue.active(_support_settings())
     if not queue:
         await message.answer('Очередь поддержки пуста.')
@@ -9303,6 +9322,7 @@ async def support_admin_reply(message: types.Message):
     key = f'{message.from_user.id}:{message.reply_to_message.message_id}'
     target_id = _support_threads()[key]
     ident = _support_settings().get('support_ticket_refs', {}).get(key)
+    refresh_support_priorities()
     if ident and not support_queue.claim(_support_settings(), ident, message.from_user.id):
         await message.answer('Обращение закрыто, уже в работе у другого администратора или ещё не подошла очередь. /support_queue')
         return
@@ -19742,7 +19762,7 @@ def serialize_app_state(user):
         coupon = at(user, "coupon", n=int(user["coupon"]["discount"] * 100), h=left)
     ui = {k: v for k, v in APP_TEXTS.get(lang, APP_TEXTS["en"]).items() if isinstance(v, str)}
     return {
-        "support":support_queue.snapshot(_support_settings(),user.get("_telegram_id",0)),
+        "support":support_snapshot(user.get("_telegram_id",0)),
         "messages": [{"id": m["id"], "role": m["role"], "text": m["content"], "reaction": m.get("reaction"), "user_reaction": m.get("user_reaction"), "reaction_animated": bool(m.get("reaction_animated")), "edited": bool(m.get("edited")), "card": m.get("card"), "photo": m.get("photo")}
                      for m in history],
         "onboarding": None,
@@ -20897,7 +20917,7 @@ async def api_app_support_handler(request):
     if len(text) < 3:
         return web.json_response({"ok": False, "error": at(user, "support_short")})
     toast = await submit_support(user_id, user, text)
-    return web.json_response({"ok": True, "toast": toast, "support":support_queue.snapshot(_support_settings(),user_id)})
+    return web.json_response({"ok": True, "toast": toast, "support":support_snapshot(user_id)})
 
 
 _BOT_USERNAME = {"v": None}
@@ -21526,7 +21546,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 #msgs .bw{display:block!important;max-width:86%!important;min-width:0;position:relative}#msgs .bw>.bub{max-width:100%;box-sizing:border-box}#msgs .message-reactions{position:absolute!important;left:8px!important;right:auto!important;bottom:-12px!important;margin:0!important;width:max-content!important;max-width:calc(100% - 16px);z-index:2}#msgs .has-reactions{margin-bottom:19px!important}#msgs .has-reactions>.bub{padding-bottom:23px!important}.photo-loading:before{inset:0!important;background:linear-gradient(105deg,transparent 35%,#ffffff12 50%,transparent 65%);transform:translateX(-150%);animation:loading-scan 3.6s linear infinite!important;will-change:transform}@keyframes loading-scan{0%{transform:translateX(-150%)}100%{transform:translateX(150%)}}.energy-ritual{justify-content:center!important;padding-top:90px!important;padding-bottom:10px!important}.energy-can-wrap{width:min(65vw,270px)!important;height:min(44dvh,350px)!important}.energy-hint{position:absolute!important;width:1px;height:1px;clip-path:inset(50%);overflow:hidden}.energy-gesture{position:absolute;bottom:10%;right:8%;width:90px;height:90px;object-fit:contain;pointer-events:none}.energy-gesture.pulling-guide{bottom:auto;top:21%;right:20%;width:74px;height:74px}.energy-ritual>.btn.ghost{position:absolute;bottom:22px;min-height:44px;width:80px;font-size:27px}.cabinet-open .cabinet-doors span{left:auto!important;right:6px!important;top:6px!important;bottom:auto!important;width:27px;height:27px;padding:0!important;line-height:27px;font-size:20px!important}.fitting-stage{border:0!important;outline:0!important;box-shadow:inset 0 0 0 4px #715069,0 8px 22px #0005!important}.cabinet-doors:focus{outline:0!important}.fitting-stage .cabinet-doors{outline:0!important}.complete-look img{aspect-ratio:320/512;height:auto!important;width:100%!important;object-fit:contain!important}
 .onb-own-avatar{width:76px;height:76px;object-fit:cover;border-radius:20px;margin:12px auto;display:block}#onb-generate-avatar.selected{background:linear-gradient(135deg,#8054ac,#ba4c9c)!important;border-color:#e0a5e8!important}
 /* Nov 23: invariant can proportions and delayed, target-bound gesture coaching. */
-.energy-can-wrap{width:min(80vw,360px)!important;height:auto!important;aspect-ratio:1!important;margin-top:28px}.energy-can-wrap .energy-ritual-can,.energy-can-wrap .energy-can-open{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:contain!important}.energy-can-wrap .energy-ring{top:7%!important;left:44%!important;width:15%!important;height:12%!important}.energy-gesture{opacity:0!important;transition:opacity .18s;animation:none!important;position:absolute!important;bottom:auto!important;top:40%!important;right:9%!important;width:78px!important;height:78px!important;transform:none!important}.energy-gesture.guide-visible{opacity:1!important;animation:guide-swipe .8s ease-in-out!important}.energy-gesture.pulling-guide{top:0%!important;right:28%!important;animation:guide-pull .8s ease-in-out!important}.energy-motion-symbol{position:absolute;left:12%;top:45%;font-size:36px;opacity:0;pointer-events:none}.guide-visible~.energy-motion-symbol{opacity:1;animation:guide-swipe .6s ease-in-out infinite}.energy-motion-symbol[hidden]{display:none!important}@keyframes guide-swipe{50%{transform:translateX(18px) rotate(10deg)}}@keyframes guide-pull{to{transform:translateY(-24px)}}#h-bucks{cursor:pointer}#h-bucks:after{content:'+';display:inline-grid;place-items:center;width:17px;height:17px;background:#238657;border-radius:50%;font-weight:900;color:#c5ffda;margin-left:4px}#h-ava{cursor:pointer}.read-eye{color:#fff;opacity:.8;font-size:16px;margin:2px 12px 6px auto;width:max-content}.channel-profile{display:flex;gap:12px;align-items:center;width:100%;padding:16px;text-align:left}.channel-profile img{width:44px;height:44px;border-radius:14px;object-fit:contain}.channel-chat{display:block;width:100%;border:0;background:#5f3d7c22;color:#dac0ed;padding:7px 12px;font-size:12px;border-radius:12px;margin-bottom:10px}.death-panel{max-width:440px;margin:15vh auto;padding:20px;display:grid;gap:12px;text-align:center}.rd-tour{pointer-events:none!important}.rd-tour .rd-tour-panel{pointer-events:auto}.rd-tour .rd-ring{pointer-events:none}.tour-pointer{position:fixed;width:68px;height:68px;object-fit:contain;pointer-events:none;z-index:10002;transform:rotate(180deg);filter:drop-shadow(0 3px 6px #0008);animation:tour-point 1s ease-in-out infinite}.tour-action{outline:3px solid #dbb5ef!important;outline-offset:4px;position:relative;z-index:10001!important}@keyframes tour-point{50%{translate:0 7px}}.tour-wait{font-size:12px;color:#d8c8e1}.message-arriving{animation:none!important;opacity:1!important}
+.energy-can-wrap{width:min(80vw,360px)!important;height:auto!important;aspect-ratio:1!important;margin-top:28px}.energy-can-wrap .energy-ritual-can,.energy-can-wrap .energy-can-open{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:contain!important}.energy-can-wrap .energy-ring{top:7%!important;left:44%!important;width:15%!important;height:12%!important}.energy-gesture{opacity:0!important;transition:opacity .18s;animation:none!important;position:absolute!important;bottom:auto!important;top:40%!important;right:9%!important;width:78px!important;height:78px!important;transform:none!important}.energy-gesture.guide-visible{opacity:1!important;animation:guide-swipe .8s ease-in-out!important}.energy-gesture.pulling-guide{top:0%!important;right:28%!important;animation:guide-pull .8s ease-in-out!important}.energy-motion-symbol{position:absolute;left:12%;top:45%;font-size:36px;opacity:0;pointer-events:none}.guide-visible~.energy-motion-symbol{opacity:1;animation:guide-swipe .6s ease-in-out infinite}.energy-motion-symbol[hidden]{display:none!important}@keyframes guide-swipe{50%{transform:translateX(18px) rotate(10deg)}}@keyframes guide-pull{to{transform:translateY(-24px)}}#h-bucks{cursor:pointer}#h-bucks:after{content:'+';display:inline-grid;place-items:center;width:17px;height:17px;background:#238657;border-radius:50%;font-weight:900;color:#c5ffda;margin-left:4px}#h-ava{cursor:pointer}.read-eye{color:#fff;opacity:.9;font-size:16px;margin:2px 12px 6px auto;width:22px;height:16px}.read-eye svg{display:block}.read-eye.open svg{transform-origin:center;animation:read-blink 4.5s ease-in-out infinite}@keyframes read-blink{0%,6%,88%,94%,100%{transform:scaleY(1)}3%,91%{transform:scaleY(.12)}}@media(prefers-reduced-motion:reduce){.read-eye.open svg{animation:none}}.support-status{padding:12px;border-radius:14px;background:#a16cce15;margin:12px 0;display:grid;gap:6px}.support-status strong{font-size:16px;color:#eee1ff}.support-status span{font-size:12px;color:#bfb2d1}.channel-profile{display:flex;gap:12px;align-items:center;width:100%;padding:16px;text-align:left}.channel-profile img{width:44px;height:44px;border-radius:14px;object-fit:contain}.channel-chat{display:block;width:100%;border:0;background:#5f3d7c22;color:#dac0ed;padding:7px 12px;font-size:12px;border-radius:12px;margin-bottom:10px}.death-panel{max-width:440px;margin:15vh auto;padding:20px;display:grid;gap:12px;text-align:center}.rd-tour{pointer-events:none!important}.rd-tour .rd-tour-panel{pointer-events:auto}.rd-tour .rd-ring{pointer-events:none}.tour-pointer{position:fixed;width:68px;height:68px;object-fit:contain;pointer-events:none;z-index:10002;transform:rotate(180deg);filter:drop-shadow(0 3px 6px #0008);animation:tour-point 1s ease-in-out infinite}.tour-action{outline:3px solid #dbb5ef!important;outline-offset:4px;position:relative;z-index:10001!important}@keyframes tour-point{50%{translate:0 7px}}.tour-wait{font-size:12px;color:#d8c8e1}.message-arriving{animation:none!important;opacity:1!important}
 .reply-enter{animation:replyArrival .3s ease-out both;transform-origin:left bottom}@keyframes replyArrival{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}@media(prefers-reduced-motion:reduce){.reply-enter{animation:none}}</style>
 </head>
 <body>
@@ -21683,7 +21703,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     $("h-tier").textContent = { pro: "PRO", super_pro: "SUPER", elite: "ELITE" }[lvl] || "";
     var st = $("h-status");
     st.className = "status" + ((s.pending||c.avatar_pending) ? " typing" : "");
-    st.textContent = c.avatar_pending ? tr('создаёт аватарку…','creating avatar…','Avatar entsteht…') : s.photo_pending ? tr('отправляет фото…','sending a photo…','sendet ein Foto…') : s.pending ? (Date.now()-(window.rdReadSince||0)<1000?'':Date.now()-(window.rdReadSince||0)<1600?tr('читает…','reading…','liest…'):s.ui.typing) : (s.asleep ? s.ui.asleep : (s.illness ? s.illness + " · " + s.ui.sick : s.ui.online));
+    st.textContent = c.avatar_pending ? tr('создаёт аватарку…','creating avatar…','Avatar entsteht…') : s.photo_pending ? tr('отправляет фото…','sending a photo…','sendet ein Foto…') : s.pending ? (readElapsed()<400?tr('заходит…','connecting…','verbindet…'):readElapsed()<750?s.ui.online:s.ui.typing) : (s.asleep ? s.ui.asleep : (s.illness ? s.illness + " · " + s.ui.sick : s.ui.online));
     withIcon($("h-bucks"), "icon_bucks", "💵", s.stats.bucks);
     withIcon($("h-hot"), "icon_hot", "🔥", s.hot.available);
     withIcon($("h-en"), "icon_energy", "⚡", s.stats.energy);$("photo-action").title=tr("Фото · осталось ","Photos remaining · ","Fotos übrig · ")+(s.photos||{}).total;
@@ -21851,8 +21871,18 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       prev = m.role;
     });
     if(s.photo_pending){var ph=el('div','photo-loading');ph.appendChild(el('div','photo-orb'));ph.appendChild(el('span',null,tr('Создаёт фото…','Creating photo…','Foto entsteht…')));box.appendChild(ph);}
-    if(s.pending&&!s.photo_pending&&Date.now()-(window.rdReadSince||0)>=1000&&Date.now()-(window.rdReadSince||0)<1600){var eye=el('div','read-eye');eye.innerHTML='<svg width=18 height=13 viewBox="0 0 24 16" aria-hidden=true><path d="M1 8 Q12 -5 23 8 Q12 21 1 8Z" fill=none stroke=white stroke-width=1.7 /><circle cx=12 cy=8 r=3 fill=white /></svg>';eye.setAttribute('aria-label',tr('Прочитано','Read','Gelesen'));box.appendChild(eye);setTimeout(function(){if(state&&state.pending&&tab==='chat'){renderHead();renderChat();}},Math.max(30,1600-(Date.now()-(window.rdReadSince||0))));}
-    if (s.pending&&!s.photo_pending&&Date.now()-(window.rdReadSince||0)>=1600) { var r = el("div", "row ai gap"); var t = el("div", "bub typing-bub"); if(s.photo_pending)t.textContent=tr('Отправляет фото…','Sending a photo…','Foto wird gesendet…');else t.innerHTML = "<i></i><i></i><i></i>"; r.appendChild(t); box.appendChild(r); }
+    if(readPhaseTimer){clearTimeout(readPhaseTimer);readPhaseTimer=null;}
+    if(s.pending&&!s.photo_pending){
+      var elapsed=readElapsed(),opened=elapsed>=750,eye=el('div','read-eye '+(opened?'open':'closed'));
+      eye.dataset.readState=opened?'read':'sent';eye.setAttribute('role','img');
+      eye.setAttribute('aria-label',opened?tr('Прочитано','Read','Gelesen'):tr('Отправлено','Sent','Gesendet'));
+      eye.innerHTML=opened?'<svg width="22" height="16" viewBox="0 0 24 16" aria-hidden="true"><path d="M1 8 Q12 -5 23 8 Q12 21 1 8Z" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="8" r="3" fill="currentColor"/></svg>':'<svg width="22" height="16" viewBox="0 0 24 16" aria-hidden="true"><path d="M2 5 Q12 15 22 5 M5 8 L3 11 M12 10 L12 14 M19 8 L21 11" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
+      if(opened)eye.firstChild.style.animationDelay=(-(elapsed-750)/1000)+'s';
+      box.appendChild(eye);
+      var boundary=elapsed<400?400:elapsed<750?750:elapsed<751?751:0;
+      if(boundary)readPhaseTimer=setTimeout(function(){readPhaseTimer=null;if(state&&state.pending&&tab==='chat'){renderHead();renderChat();}},Math.max(1,boundary-elapsed));
+    }
+    if (s.pending&&!s.photo_pending&&readElapsed()>=751) { var r = el("div", "row ai gap"); var t = el("div", "bub typing-bub");t.innerHTML = "<i></i><i></i><i></i>"; r.appendChild(t); box.appendChild(r); }
     else if (s.can_reroll && !s.asleep) { var rr = el("button", "reroll", s.ui.reroll); rr.onclick = reroll; box.appendChild(rr); }
     if (stick) scrollBottom(true);else box.scrollTop=previousScroll;
     chatInitialized=true;lastCount = s.messages.length;requestAnimationFrame(updateChatControls);
@@ -21891,15 +21921,16 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     setTimeout(function(){alive=false;cancelAnimationFrame(frame);anchor.remove();},2650);
   }
   $('send').addEventListener('pointerdown',function(e){if(document.activeElement===$('input'))e.preventDefault();});
-  var messageArrival=null;
+  var messageArrival=null,readPhaseTimer=null;
+  function readElapsed(){return Math.max(0,Date.now()-(window.rdReadSince||0));}
   function send() {
     var inp = $("input"), text = inp.value.trim();
     if (!text || sending || state.pending) return;
     messageArrival={text:text,until:performance.now()+700};
 
-    window.rdReadSince=Date.now();setTimeout(function(){if(state&&state.pending&&tab==='chat'){renderHead();renderChat();}},1010);document.dispatchEvent(new CustomEvent('rd-tutorial-send'));
+    window.rdReadSince=Date.now();document.dispatchEvent(new CustomEvent('rd-tutorial-send'));
     sending = true; haptic("light"); if (sndOn() && window.RDSFX) window.RDSFX.sent();
-    // сразу показываем своё сообщение и «печатает…», не дожидаясь сервера
+    // Сразу показываем отправленное сообщение; этапы прочтения не задерживают ответ сервера.
     state.messages.push({ role: "user", text: text }); state.pending = true; state.can_reroll = false;
     inp.value = ""; autosize();ghostComplete(); renderChat(); renderHead(); scrollBottom(true);
     setTimeout(function(){animateOutgoing(text);},120);
@@ -22396,6 +22427,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   }
 
   // ---- профиль: друзья, поддержка, канал ----
+  var supportDraft="";
   function renderExtras(v) {
     var ui = state.ui, r = state.referral;
     var ref = el("div", "card"); ref.appendChild(el("h4", null, ui.ref_title)); ref.appendChild(el("div", "note", r.text));
@@ -22412,13 +22444,18 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     v.appendChild(ref);
     var sup = el("div", "card"); sup.appendChild(el("h4", null, ui.support_title)); sup.appendChild(el("div", "note", ui.support_hint));
     var status=el('div','note support-status');
-    function showSupport(q){status.textContent=(q?(q.status==='in_progress'?tr('Обращение в работе. ','Your request is being handled. '):tr('Твоя очередь: ','Queue position: ')+q.position+'. '):'')+tr('Подписчикам отвечаем в приоритетном порядке.','Subscribers receive priority support.');}
+    function showSupport(q){
+      status.textContent='';
+      if(q)status.appendChild(el('strong',null,q.status==='in_progress'?tr('Обращение в работе','Your request is being handled'):tr('Твоя очередь: ','Queue position: ')+q.position));
+      if(q)status.appendChild(el('span',null,tr('Обращение №','Request #')+q.id+(q.priority?tr(' · Приоритет подписчика',' · Subscriber priority'):'')));
+      status.appendChild(el('span',null,tr('Подписчики получают приоритет в очереди. Место обновляется автоматически.','Subscribers receive queue priority. Your position updates automatically.')));
+    }
     showSupport(state.support);sup.appendChild(status);
-    var ta = el("textarea"); ta.id = "sup-text"; sup.appendChild(ta);
+    var ta = el("textarea"); ta.id = "sup-text";ta.value=supportDraft;ta.oninput=function(){supportDraft=ta.value;}; sup.appendChild(ta);
     var sb = el("button", "btn ghost", ui.support_send);
     sb.onclick = function () { var t = ta.value.trim(); if (!t) return; sb.disabled = true;
       api("/api/app/support", { text: t }).then(function (res) { sb.disabled = false; toast(res.toast || res.error || "");
-        if (res.ok) { state.support=res.support;showSupport(res.support);ta.value = ""; haptic("success"); } }).catch(function () { sb.disabled = false; }); };
+        if (res.ok) { state.support=res.support;showSupport(res.support);supportDraft="";ta.value = ""; haptic("success"); } }).catch(function () { sb.disabled = false; }); };
     sup.appendChild(sb); v.appendChild(sup);
     var ch = el("button", "btn ghost", ui.channel_btn);
     ch.onclick = function () { if (tg && tg.openTelegramLink) safe(function () { tg.openTelegramLink(state.channel); }); else window.open(state.channel); };

@@ -84,3 +84,8 @@ Paid provider jobs, real Telegram payments and production notifications are not 
 - Generated 20 city sprites; private scenario controls cover traffic, hazards, deliveries and tips. Chief work wallet remains isolated.
 - Independent `/courier_release on|off` rollout, off by default; legacy payout routes reject city-mode requests.
 - Verified: 253 unit checks, signed runtime API checks, Chromium mobile 320/390/430 checks (controls, traffic, pedestrians, payouts, scope, rollback). No live hosting assertion.
+
+## 2026-11-24: read receipts and support positions
+- Chat receipt sequence: closed eye on send, connecting → online, eye opens/blinks at 750 ms, typing immediately afterwards. Open eye stays until the response; no artificial provider delay. Reduced motion disables blinking.
+- Support shows prominent current position, ticket number and subscriber priority. Queue follows current subscription state; claimed requests and the existing 24-hour anti-starvation rule are preserved. Profile polling retains an unsent support draft.
+- Verified: 256 unit checks; signed support API (priority expiry, merging, durable delivery, replay prevention); Chromium chat sequence and shop/profile regressions. Dedicated two-session queue browser check covers automatic position updates and draft retention.

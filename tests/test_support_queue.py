@@ -28,6 +28,15 @@ class QueueTests(unittest.TestCase):
   with patch('support_queue.time.time',return_value=100):
    for uid in range(12):q.submit(s,uid,'help')
    self.assertEqual([t['user_id'] for t in q.active(s)],list(range(12)))
+ def test_priority_changes_follow_subscription_and_preserve_fifo(self):
+  s={};a=q.submit(s,1,'first');b=q.submit(s,2,'second')
+  self.assertTrue(q.refresh_priorities(s,lambda uid:uid==2));self.assertEqual(q.active(s)[0],b)
+  self.assertFalse(q.refresh_priorities(s,lambda uid:uid==2))
+  self.assertTrue(q.refresh_priorities(s,lambda uid:False));self.assertEqual(q.active(s)[0],a)
+ def test_refresh_preserves_claimed_and_unknown_priority(self):
+  s={};a=q.submit(s,1,'first',True);b=q.submit(s,2,'second');self.assertTrue(q.claim(s,a['id'],5))
+  q.refresh_priorities(s,lambda uid:None if uid==1 else True)
+  self.assertTrue(a['priority']);self.assertEqual(q.active(s)[0],a)
  def test_message_limit(self):
   s={}
   for i in range(30):t=q.submit(s,1,'x'*4000)
@@ -38,8 +47,14 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
   self.settings={};self.sent=[]
   bot=SimpleNamespace(send_message=AsyncMock(return_value=SimpleNamespace(message_id=123)))
   ns=dict(support_queue=q,user_data={'__settings__':self.settings},SUPPORT_ADMIN_IDS=[5],SUPPORT_REPLY_IN_FLIGHT=set(),bot=bot,logging=logging,save_data=lambda d:self.sent.append(copy.deepcopy(d)),get_subscription_level=lambda u:u.get('tier'),get_user=lambda uid:{'lang':'ru'},get_text=lambda u,k,**v:v.get('text','reply'))
-  load_functions({'_support_settings','_support_threads','support_status_text','submit_support','support_admin_reply'},ns)
+  load_functions({'_support_settings','refresh_support_priorities','support_snapshot','_support_threads','support_status_text','submit_support','support_admin_reply'},ns)
   return ns
+ async def test_app_snapshot_refreshes_subscription_and_saves_only_changes(self):
+  ns=self.setup_ns();q.submit(self.settings,1,'first');q.submit(self.settings,2,'second')
+  ns['user_data'].update({'1':{},'2':{'tier':'super_pro'}})
+  self.assertEqual(ns['support_snapshot'](2)['position'],1);self.assertTrue(self.sent)
+  count=len(self.sent);ns['support_snapshot'](2);self.assertEqual(len(self.sent),count)
+  ns['user_data']['2']['tier']=None;self.assertEqual(ns['support_snapshot'](1)['position'],1)
  async def test_failed_notification_keeps_durable_ticket(self):
   ns=self.setup_ns();ns['bot'].send_message.side_effect=RuntimeError('offline')
   text=await ns['submit_support'](1,{'lang':'ru'},'help')

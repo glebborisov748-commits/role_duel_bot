@@ -47,8 +47,12 @@ with sync_playwright() as pw:
  p.route('**/api/app/send',send);p.route('**/api/app/state',poll)
  p.evaluate("window.replyEntrances=[];new MutationObserver(ms=>ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1&&n.classList.contains('reply-enter'))window.replyEntrances.push(n.dataset.messageId);}))).observe(document.querySelector('#msgs'),{childList:true});")
  p.locator('#input').fill('Проверяю новую анимацию ответа');p.locator('#send').click();p.wait_for_selector('.send-flight-anchor')
- p.wait_for_timeout(300);assert p.locator('.read-eye').count()==0;assert p.locator('.typing-bub').count()==0
- p.wait_for_selector('.read-eye',timeout=1800);p.wait_for_selector('.typing-bub',timeout=1800);p.wait_for_function('window.replyEntrances.length===1',timeout=5000)
- p.wait_for_timeout(1700);assert p.locator('.reply-enter').count()==0;assert p.evaluate('window.replyEntrances.length')==1;assert p.locator('.send-flight-anchor').count()==0
+ p.wait_for_selector('.read-eye.closed');assert p.locator('.typing-bub').count()==0
+ p.wait_for_timeout(430);assert p.locator('.read-eye.closed').count()==1;assert p.locator('.typing-bub').count()==0
+ assert 'в сети' in p.locator('#h-status').inner_text()
+ p.wait_for_selector('.read-eye.open',timeout=1800);p.wait_for_selector('.typing-bub',timeout=1800);assert p.locator('.read-eye.open').count()==1
+ p.wait_for_timeout(700);assert p.locator('.read-eye.open').count()==1;assert p.locator('.read-eye svg').evaluate('(e)=>getComputedStyle(e).animationName')=='read-blink'
+ p.wait_for_function('window.replyEntrances.length===1',timeout=5000)
+ p.wait_for_timeout(1700);assert p.locator('.reply-enter').count()==0;assert p.locator('.read-eye').count()==0;assert p.evaluate('window.replyEntrances.length')==1;assert p.locator('.send-flight-anchor').count()==0
  assert not errors,errors
  b.close();print('Nov24 browser: 320/390/430 layouts, countdown/purchase, generated looks, creation fields, support queue, maintenance, eye/typing/entrance passed')

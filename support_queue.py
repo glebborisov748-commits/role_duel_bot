@@ -25,6 +25,19 @@ def submit(settings, uid, text, priority=False):
     return ticket
 
 
+def refresh_priorities(settings, lookup):
+    """Refresh active tickets from current subscriptions; unknown users retain priority."""
+    changed = False
+    for ticket in tickets(settings).values():
+        if ticket['status'] == 'resolved':
+            continue
+        current = lookup(ticket['user_id'])
+        if current is not None and ticket['priority'] != bool(current):
+            ticket['priority'] = bool(current)
+            changed = True
+    return changed
+
+
 def snapshot(settings, uid):
     for i, ticket in enumerate(active(settings)):
         if ticket['user_id'] == int(uid):
