@@ -34,5 +34,13 @@ async def main():
  key=f'{ADMIN}:123';app._support_threads()[key]=FREE;app._support_settings()['support_ticket_refs'][key]=first['support']['id']
  app.bot.send_message.reset_mock();await app.support_admin_reply(message);assert app.support_snapshot(FREE) is None;assert app.support_snapshot(PAID)['position']==1
  calls=app.bot.send_message.await_count;await app.support_admin_reply(message);assert app.bot.send_message.await_count==calls
+ # Delivered replies have a real reopen button; ownership and replay are enforced.
+ markup=app.bot.send_message.await_args.kwargs['reply_markup'];assert markup.inline_keyboard[0][0].callback_data=='support_reopen:'+first['support']['id']
+ callback=SimpleNamespace(from_user=SimpleNamespace(id=PAID),data='support_reopen:'+first['support']['id'],answer=AsyncMock(),message=SimpleNamespace(answer=AsyncMock(),edit_reply_markup=AsyncMock()))
+ await app.support_reopen_callback(callback);assert app.support_snapshot(FREE) is None
+ callback.from_user.id=FREE;await app.support_reopen_callback(callback);reopened=app.support_snapshot(FREE);assert reopened and reopened['id']!=first['support']['id']
+ count=len(app.support_queue.active(app._support_settings()));await app.support_reopen_callback(callback);assert len(app.support_queue.active(app._support_settings()))==count
+ assert callback.message.edit_reply_markup.await_count==1
+ saved=json.loads(Path(app.DATA_FILE).read_text());assert saved['__settings__']['support_tickets_v1'][first['support']['id']]['reopened_as']==reopened['id']
  print('Support API: authenticated submit, current subscription priority, FIFO, merged follow-ups, durable queue, real reply lifecycle and replay prevention passed')
 asyncio.run(main())

@@ -11,7 +11,7 @@ class CatalogTests(unittest.TestCase):
   expected={(g,k) for k,item in wardrobe.WARDROBE.items() if item.get('slot') for g in ('female','male') if item.get('gender','unisex') in ('unisex',g)}
   self.assertEqual(set(catalog.VIEWS),expected)
   for g,k in expected:
-   self.assertEqual(wardrobe.catalog_image(k,g),catalog.image(g,k).split('/')[-1][:-5])
+   self.assertEqual(wardrobe.catalog_image(k,g),wardrobe.WARDROBE[k]['image']);self.assertNotIn('fitting_catalog_',wardrobe.catalog_image(k,g));self.assertTrue((ROOT/'assets'/(wardrobe.catalog_image(k,g)+'.webp')).is_file())
    path=ROOT/catalog.image(g,k).lstrip('/')
    self.assertGreater(path.stat().st_size,128);self.assertEqual(path.read_bytes()[8:12],b'WEBP')
    self.assertIn(path.name,wardrobe.FITTING_ANCHORS)

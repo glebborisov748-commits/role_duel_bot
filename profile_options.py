@@ -430,8 +430,7 @@ def body_preview(key,gender):
  return '/assets/'+('nov23_'+key if key in ('police_male','police_female') else 'body_view_'+suffix)+'.webp'
 
 def catalog_image(key,gender):
- preview=mannequin_catalog.image(gender,key)
- return preview.split('/')[-1].removesuffix('.webp') if preview else WARDROBE[key]['image']
+ return WARDROBE[key]['image']
 
 def fitting_state(user):
  import fitting_looks
@@ -543,3 +542,6 @@ def collection_memory(user):
  if not owned:return ''
  favorite=user.get('favorite_collection_item');label=TOYS.get(favorite,('',))[0] if favorite in TOYS and (user.get('inventory') or {}).get(favorite) else ''
  return ' В твоей коллекции подарков: '+', '.join(owned)+'. '+('Любимый коллекционный подарок: '+label+'. ' if label else '')+'Упоминай коллекцию только при разговоре о подарках; без описания, инструкций или сцен использования предметов. '
+
+# Explicitly retain equipped headwear when portrait appearance describes hair.
+WARDROBE["cap"]["fact"]="a casual cap (baseball cap) worn securely on the head, brim above the forehead; keep the entire cap visible, hair stays beneath the cap"

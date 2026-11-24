@@ -9,10 +9,14 @@ with sync_playwright() as pw:
  for width in (320,390,430):
   p.set_viewport_size({'width':width,'height':844});p.request.post(BASE+'/audit/control',data={'mode':'chat','tour':True,'work_preview':True,'inventory':{'cotton_tshirt':1,'cap':1}});p.goto(BASE+'/app');at(0)
   assert p.locator('.rd-tour-panel').bounding_box()['height']<210
+  p.locator('#nav [data-tab="profile"]').click();p.wait_for_timeout(80);assert p.locator('.rd-tour').get_attribute('data-step')=='0';assert p.locator('#view-chat').get_attribute('class').endswith('on')
   assert p.locator('.rd-tour').get_attribute('data-backdrop')=='blur';assert p.locator('.tour-pointer').is_hidden()
   next(1);next(2);assert p.locator('.rd-tour').get_attribute('data-backdrop')=='dim'
-  p.wait_for_timeout(80);finger=p.locator('.tour-pointer');target=p.locator('#nav [data-tab="shop"]');r=target.bounding_box();anchor=finger.evaluate('(e)=>({x:Number(e.dataset.tipX),y:Number(e.dataset.tipY)})');assert abs(anchor['x']-(r['x']+r['width']/2))<2;assert abs(anchor['y']-(r['y']+r['height']/2))<2
+  p.locator('#h-bucks').click();assert 'on' not in (p.locator('#sheet').get_attribute('class') or '')
+  p.wait_for_timeout(80);finger=p.locator('.tour-pointer');target=p.locator('#nav [data-tab="shop"]');r=target.bounding_box();assert finger.bounding_box()['width']<=40;anchor=finger.evaluate('(e)=>({x:Number(e.dataset.tipX),y:Number(e.dataset.tipY)})');assert abs(anchor['x']-(r['x']+r['width']/2))<2;assert abs(anchor['y']-(r['y']+r['height']/2))<2
   tab('shop',3);shop=p.frame_locator('#view-shop iframe');shop.locator('[data-category="drinks"]').click();at(4)
+  shop.locator('[data-category="food"]').first.evaluate('(e)=>e.click()') if shop.locator('[data-category="food"]').count() else None
+  assert p.locator('.rd-tour').get_attribute('data-step')=='4'
   if width==390:p.screenshot(path='/tmp/coach-shop.png')
   next(5);tab('work',6);work=p.frame_locator('#view-work iframe');work.locator('#tab-farm').click();at(7);next(8);next(9);tab('wardrobe',10)
   room=p.frame_locator('#view-wardrobe iframe');room.locator('.outfit-picker>summary').click();at(11)
@@ -24,7 +28,7 @@ with sync_playwright() as pw:
   assert not p.locator('.rd-tour .tour-next').count();chosen.select_option(options[0]);at(12)
   p.wait_for_timeout(120);cr=p.locator('.rd-ring').bounding_box();rr=room.locator('#wardrobe-generate').bounding_box();assert abs(cr['width']-rr['width']-6)<2,(cr,rr,p.locator('.rd-ring').evaluate('(e)=>({style:e.style.cssText,transition:getComputedStyle(e).transition,viewport:visualViewport.width})'))
   if width==390:p.screenshot(path='/tmp/coach-wardrobe.png')
-  next(13);tab('profile',14);next(15);next(16);p.locator('#nav [data-tab="chat"]').click()
+  next(13);tab('profile',14);p.wait_for_timeout(100);ring=p.locator('.rd-ring').bounding_box();nav=p.locator('#nav').bounding_box();assert ring['y']>=0 and ring['y']+ring['height']<=nav['y'];panel=p.locator('.rd-tour-panel').bounding_box();assert panel['y']>=0 and panel['y']+panel['height']<=nav['y'];next(15);next(16);p.locator('#nav [data-tab="chat"]').click()
   p.wait_for_selector('.rd-tour',state='detached');p.wait_for_function("document.querySelector('#input')&&document.querySelector('#composer').offsetHeight>0")
   report=p.request.get(BASE+'/audit/report').json();assert report['app']['settings']['tour_seen'];assert report['app']['stats']['bucks']==100000;assert len(report['history'])==2
   assert not errors,errors

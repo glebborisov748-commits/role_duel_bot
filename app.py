@@ -9285,8 +9285,8 @@ def support_status_text(user, uid):
     return prefix + '. ' + note
 
 
-async def submit_support(uid, user, text):
-    ticket = support_queue.submit(_support_settings(), uid, text, bool(get_subscription_level(user)))
+async def submit_support(uid, user, text, ticket=None):
+    ticket = ticket or support_queue.submit(_support_settings(), uid, text, bool(get_subscription_level(user)))
     # Persist before contacting Telegram: delivery failure never loses the ticket.
     save_data(user_data)
     header = (f"📩 Поддержка #{ticket['id']} · пользователь {uid}\n"
@@ -9331,6 +9331,21 @@ async def support_queue_cmd(message: types.Message):
         save_data(user_data)
 
 
+@dp.callback_query(lambda call: bool(call.data) and call.data.startswith('support_reopen:'))
+async def support_reopen_callback(call: types.CallbackQuery):
+    uid=call.from_user.id;user=get_user(uid)
+    ticket=support_queue.reopen(_support_settings(),call.data.split(':',1)[1],uid,bool(get_subscription_level(user)))
+    if not ticket:
+        await call.answer('Обращение уже возвращено в очередь или недоступно.',show_alert=True)
+        return
+    save_data(user_data)
+    await call.answer('Возвращаем обращение в очередь')
+    status=await submit_support(uid,user,ticket['messages'][-1],ticket=ticket)
+    await call.message.answer('Обращение снова в очереди.\n'+status)
+    try:await call.message.edit_reply_markup(reply_markup=None)
+    except Exception:pass
+
+
 async def forward_to_support(message: types.Message, user):
     user['support_mode'] = False
     text = await submit_support(message.from_user.id, user, message.text)
@@ -9356,7 +9371,8 @@ async def support_admin_reply(message: types.Message):
         SUPPORT_REPLY_IN_FLIGHT.add(ident)
     save_data(user_data)
     try:
-        await bot.send_message(target_id, get_text(get_user(target_id), 'support_reply', text=message.text))
+        await bot.send_message(target_id, get_text(get_user(target_id), 'support_reply', text=message.text),
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Проблема не решена',callback_data='support_reopen:'+str(ident))]]) if ident else None)
         if ident:
             support_queue.resolve(_support_settings(), ident, message.from_user.id)
         save_data(user_data)
@@ -21731,7 +21747,8 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 .rd-tour-panel .tour-close{border:0;background:transparent;color:#d2c3df;min-width:34px;min-height:30px;font-size:20px;margin:-6px -7px -6px 0;padding:0}
 .rd-tour-panel h3{font-size:15px;margin:5px 0!important;line-height:1.3}.rd-tour-panel p{font-size:13px!important;line-height:1.45!important;margin:6px 0!important}
 .rd-tour-panel .tour-wait{font-size:11px!important;color:#bda9cc}.rd-tour-panel .tour-next{width:auto;min-width:94px;min-height:36px;padding:6px 18px;margin-top:5px;font-size:13px;float:right}.tour-action{outline:0!important;z-index:auto!important}
-.tour-pointer{position:fixed;width:56px;height:65.333px;pointer-events:none;z-index:2;transform:none!important;animation:none!important;filter:drop-shadow(0 2px 3px #0005);transition:opacity .22s;object-fit:contain}
+.tour-pointer{position:fixed;width:38px;height:44.333px;pointer-events:none;z-index:2;transform:none!important;animation:none!important;filter:drop-shadow(0 2px 3px #0005);transition:opacity .22s;object-fit:contain}
+.tour-pointer:before{content:"";position:absolute;left:calc(50% - 7px);top:-4px;width:14px;height:14px;border:1px solid #dcacff;border-radius:50%;animation:tour-tap-halo 1.6s ease-out infinite;pointer-events:none}@keyframes tour-tap-halo{0%,35%,100%{opacity:0;scale:.5}18%{opacity:.7;scale:1.4}}
 .tour-pointer.is-down{transform:rotate(180deg)!important}.tour-pointer img{width:100%;height:100%;display:block;transform-origin:50% 7.14%;animation:coach-press 1.6s ease-in-out infinite}
 @keyframes coach-press{0%,35%,100%{transform:scale(1)}18%{transform:scale(.91)}}
 .energy-ritual .energy-can-wrap{width:min(92vw,420px,calc(100dvh - 180px))!important;height:auto!important;aspect-ratio:1;margin-top:28px}
@@ -21743,7 +21760,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 .energy-guide.swipe .energy-guide-trail{opacity:.75;animation:coach-trail 1.2s ease-in-out infinite}
 @keyframes coach-swipe{0%,100%{transform:translateX(-23px)}50%{transform:translateX(23px)}}@keyframes coach-trail{0%,100%{transform:scaleX(-1);transform-origin:right}50%{transform:scaleX(1);transform-origin:right}}
 @keyframes coach-pull{0%,100%{transform:translateY(0)}60%{transform:translateY(-22px)}}
-@media(prefers-reduced-motion:reduce){.tour-pointer img,.energy-guide.swipe,.energy-guide.pull{animation:none!important}.energy-guide-trail{display:none}.tour-scrim{backdrop-filter:none!important}}
+@media(prefers-reduced-motion:reduce){.tour-pointer:before,.tour-pointer img,.energy-guide.swipe,.energy-guide.pull{animation:none!important}.energy-guide-trail{display:none}.tour-scrim{backdrop-filter:none!important}}
 
 
 .energy-ritual>.btn.ghost{width:auto!important;max-width:calc(100% - 48px);min-height:44px;font-size:13px!important;padding:8px 16px!important}.rd-tour .rd-ring{box-sizing:border-box;max-width:none!important;max-height:none!important;transition:none!important;animation:none!important}
@@ -21751,6 +21768,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 .reference-review{display:block;width:96px;max-height:140px;object-fit:contain;margin:10px auto;border-radius:12px}.photo-reference-button{font-size:12px!important;margin:10px 0;min-height:40px;width:100%}#photo-reference-description{width:100%;min-height:90px;box-sizing:border-box}
 
 .ava.offline .dot{background:#79808c!important;box-shadow:none!important}.ava .dot{transition:background .3s ease}.read-footer{height:70px;flex:none}.read-footer .read-eye{height:16px;margin:2px 12px 4px auto}.receipt-typing-slot{height:48px;visibility:hidden}.receipt-typing-slot.visible{visibility:visible}.receipt-typing-slot .row{margin-top:6px}#msgs{overflow-anchor:none;scroll-behavior:auto!important;min-height:0}#msgs .bub{animation:none!important}#msgs .row:not(.reply-enter) .bub img{animation:none!important}#input{font-size:16px!important}#h-status{white-space:nowrap;min-height:16px;line-height:16px}.who{min-width:0}
+#composer{position:relative}#hide-keyboard{left:auto!important;right:8px!important;top:-30px!important;bottom:auto!important;width:32px;height:24px} .hero.t-super_pro::after,.hero.t-elite::after{display:none!important} .hero .fxp{opacity:.35;filter:none;text-shadow:none!important}
 </style>
 </head>
 <body>
@@ -21766,9 +21784,9 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     <div class="view on" id="view-chat">
       <div id="msgs"></div>
       <div id="sleep"></div>
-      <button id="jump-latest" type="button" aria-label="Последнее сообщение" hidden>↓</button><button id="hide-keyboard" type="button" aria-label="Свернуть клавиатуру" hidden>⌄</button>
+      <button id="jump-latest" type="button" aria-label="Последнее сообщение" hidden>↓</button>
       <section id="reply-choices" aria-label="Reply suggestions" hidden></section>
-      <div id="composer">
+      <div id="composer"><button id="hide-keyboard" type="button" aria-label="Свернуть клавиатуру" hidden>⌄</button>
         <button id="energy-action" class="composer-action" type="button"><img src="/assets/ui_energizer.webp" alt=""><span id="energy-count"></span></button>
         <button id="photo-action" class="composer-action" type="button" aria-label="Photo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5l2-2h4l2 2h4v15H4V5z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button>
         <div class="input-shell"><div id="input-ghost" aria-hidden="true"></div><textarea id="input" rows="1"></textarea></div>
@@ -21917,7 +21935,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
   $('h-bucks').onclick=function(){var box=$('sheet-box');box.innerHTML='';renderEconomy(box);$('sheet').classList.add('on');};
   // ---- чат ----
   function nearBottom() { var m = $("msgs"); return m.scrollHeight - m.scrollTop - m.clientHeight < 140; }
-  function updateChatControls(){var vv=window.visualViewport;$('jump-latest').hidden=nearBottom();$('hide-keyboard').hidden=document.activeElement!==$('input');$('hide-keyboard').style.bottom=($('composer').offsetHeight+8)+'px';$('jump-latest').style.bottom=($('composer').offsetHeight+42)+'px';}
+  function updateChatControls(){var vv=window.visualViewport;$('jump-latest').hidden=nearBottom();$('hide-keyboard').hidden=document.activeElement!==$('input');$('jump-latest').style.bottom=($('composer').offsetHeight+42)+'px';}
   $('jump-latest').onclick=function(){$('msgs').scrollTo({top:$('msgs').scrollHeight,behavior:'smooth'});};$('hide-keyboard').onclick=function(){$('input').blur();this.hidden=true;};$('msgs').addEventListener('scroll',updateChatControls);$('input').addEventListener('focus',updateChatControls);$('input').addEventListener('blur',updateChatControls);if(window.visualViewport)visualViewport.addEventListener('resize',updateChatControls);
   function scrollBottom(force) { var m = $("msgs"); if (force || nearBottom()){if(chatScrollFrame)cancelAnimationFrame(chatScrollFrame);chatScrollFrame=requestAnimationFrame(function () {chatScrollFrame=null;m.scrollTop = m.scrollHeight;});} }
   function renderReplyChoices() {
@@ -22410,32 +22428,33 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       step('.outfit-picker select',tr('Попробуй надеть вещь','Try equipping an item','Probiere ein Kleidungsstück'),tr('Открой подсвеченный список и выбери любую доступную вещь. Примерка уже купленной одежды бесплатна. Продолжим после успешного надевания.','Open the highlighted list and choose an available item. Trying on owned clothes is free. Continue after it is equipped.','Öffne die markierte Liste und wähle ein verfügbares Teil. Eigene Kleidung anzuprobieren ist kostenlos.'),'equip','wardrobe'),
       step('#wardrobe-generate',tr('Фото в выбранной одежде','A photo in your outfit','Foto im gewählten Outfit'),tr('Эта кнопка создаёт фото персонажа в надетом образе. Стоимость написана на кнопке. Примерка выше бесплатна, а генерацию ты запускаешь отдельно.','This creates a photo in the equipped outfit. The button shows the cost. Fitting is free; generation is a separate action.','Hier entsteht ein Foto im gewählten Outfit. Der Preis steht auf der Taste. Anprobieren ist kostenlos, Generieren startest du separat.'),null,'wardrobe'),
       step('#nav [data-tab="profile"]',tr('Задания и помощь','Quests and help','Aufgaben und Hilfe'),tr('Открой профиль: посмотрим, где забирать награды и обращаться за помощью.','Open Profile to find quest rewards and support.','Öffne das Profil für Aufgabenbelohnungen und Hilfe.'),'click'),
-      step('#daily-quests',tr('Выполняй задания дня','Complete daily quests','Tagesaufgaben erledigen'),tr('Здесь виден прогресс и награда за каждое задание. Когда оно выполнено, награду нужно забрать его кнопкой.','See progress and rewards here. When a quest is complete, claim its reward with its button.','Hier siehst du Fortschritt und Belohnungen. Hole erledigte Aufgaben über ihre Taste ab.')),
+      step('#daily-quests > .rd-quest:not(.channel-mission)',tr('Выполняй задания дня','Complete daily quests','Tagesaufgaben erledigen'),tr('Здесь виден прогресс и награда за каждое задание. Когда оно выполнено, награду нужно забрать его кнопкой.','See progress and rewards here. When a quest is complete, claim its reward with its button.','Hier siehst du Fortschritt und Belohnungen. Hole erledigte Aufgaben über ihre Taste ab.')),
       step('#sup-text',tr('Если нужна помощь','When you need help','Wenn du Hilfe brauchst'),tr('Опиши проблему в этом поле и отправь обращение. После отправки здесь появится твоё место в очереди; подписчики получают приоритет.','Describe your issue and send a request. Your queue position appears here; subscribers receive priority.','Beschreibe dein Problem und sende die Anfrage. Dann erscheint dein Warteschlangenplatz; Abonnenten haben Vorrang.')),
       step('#nav [data-tab="chat"]',tr('Вернись к персонажу','Back to your companion','Zurück zum Charakter'),tr('Нажми «Чат» — обучение закончится, а дальше решай сам, что делать.','Tap Chat to finish the tutorial. Then choose what to do next.','Tippe auf Chat, um das Tutorial abzuschließen. Danach entscheidest du selbst.'),'click')
     ],index=0,target=null,frame=null,frameId=0,advanceTimer=0,startedAt=0,waiting=false,scrolled=null,watchedDocs=new Set([document]);
     function doc(){frame=steps[index].frame&&frames[steps[index].frame];try{return frame?frame.contentDocument:document;}catch(e){return null;}}
-    function locate(){var d=doc();if(!d)return null;if(!watchedDocs.has(d)){d.addEventListener('click',onClick,true);watchedDocs.add(d);}var list=d.querySelectorAll(steps[index].target);if(steps[index].action==='equip')return Array.from(list).find(function(n){return !n.disabled&&Array.from(n.options).some(function(o){return o.value&&!o.disabled;});})||null;return list[0]||null;}
+    function locate(){var d=doc();if(!d)return null;if(!watchedDocs.has(d)){['pointerdown','click','keydown','focusin'].forEach(function(type){d.addEventListener(type,guard,true);});d.addEventListener('click',onClick,true);watchedDocs.add(d);}var list=d.querySelectorAll(steps[index].target);if(steps[index].action==='equip')return Array.from(list).find(function(n){return !n.disabled&&Array.from(n.options).some(function(o){return o.value&&!o.disabled;});})||null;return list[0]||null;}
     function position(){
-      if(!tourOpen)return;target=locate();var vp=window.visualViewport,top=vp?vp.offsetTop:0,height=vp?vp.height:innerHeight,width=vp?vp.width:innerWidth;
+      if(!tourOpen)return;target=locate();var vp=window.visualViewport,top=vp?vp.offsetTop:0,height=vp?vp.height:innerHeight,width=vp?vp.width:innerWidth;var safe=Math.max(Number(tg&&tg.contentSafeAreaInset&&tg.contentSafeAreaInset.top)||0,Number(tg&&tg.safeAreaInset&&tg.safeAreaInset.top)||0);top+=safe;height-=safe;var navTop=$('nav').getBoundingClientRect().top,limit=target&&target.closest('#nav')?top+height-6:Math.min(top+height-10,navTop-7);height=Math.max(120,limit-top);
       if(!target){ring.hidden=true;finger.hidden=true;panel.style.top=(top+18)+'px';if(Date.now()-startedAt>5000&&!waiting){waiting=true;panel.appendChild(el('p','tour-wait',tr('Элемент пока недоступен. Можно пропустить этот шаг.','This element is unavailable. You can skip this step.','Dieses Element ist noch nicht verfügbar. Du kannst diesen Schritt überspringen.')));var skip=el('button','btn ghost tour-next',tr('Далее','Next','Weiter'));skip.onclick=next;panel.appendChild(skip);}frameId=requestAnimationFrame(position);return;}
       if(scrolled!==target){scrolled=target;target.scrollIntoView({block:'center',behavior:'instant'});}
       var r=target.getBoundingClientRect(),f=frame&&frame.getBoundingClientRect(),left=r.left+(f?f.left:0),right=r.right+(f?f.left:0),y=r.top+(f?f.top:0),bottom=r.bottom+(f?f.top:0);
-      if(f){y=Math.max(y,f.top);bottom=Math.min(bottom,f.bottom);}y=Math.max(top+4,y);bottom=Math.min(top+height-4,bottom);left=Math.max(4,left);right=Math.min(width-4,right);
+      if(f){y=Math.max(y,f.top);bottom=Math.min(bottom,f.bottom);}else if(target.closest('.view')){var vr=target.closest('.view').getBoundingClientRect();y=Math.max(y,vr.top);bottom=Math.min(bottom,vr.bottom);}y=Math.max(top+8,y);bottom=Math.min(top+height-8,bottom);left=Math.max(4,left);right=Math.min(width-4,right);
       ring.hidden=bottom<=y;ring.style.cssText='left:'+(left-3)+'px;top:'+(y-3)+'px;width:'+(right-left+6)+'px;height:'+(bottom-y+6)+'px';
       var L=left-5,R=right+5,T=y-5,B=bottom+5;scrim.style.clipPath='polygon(evenodd,0 0,100% 0,100% 100%,0 100%,0 0,'+L+'px '+T+'px,'+L+'px '+B+'px,'+R+'px '+B+'px,'+R+'px '+T+'px,'+L+'px '+T+'px)';
-      var action=steps[index].action;finger.hidden=!action||action==='equip';var cx=Math.max(left,Math.min(right,r.left+(f?f.left:0)+r.width/2)),cy=Math.max(y,Math.min(bottom,r.top+(f?f.top:0)+r.height/2)),down=cy+62>top+height;finger.classList.toggle('is-down',down);finger.style.left=(cx-28)+'px';finger.style.top=(cy-(down?60.666:4.666))+'px';finger.dataset.tipX=cx;finger.dataset.tipY=cy;
+      var action=steps[index].action;finger.hidden=!action||action==='equip';var cx=Math.max(left,Math.min(right,r.left+(f?f.left:0)+r.width/2)),cy=Math.max(y,Math.min(bottom,r.top+(f?f.top:0)+r.height/2)),down=cy+62>top+height;finger.classList.toggle('is-down',down);finger.style.left=(cx-19)+'px';finger.style.top=(cy-(down?41.166:3.166))+'px';finger.dataset.tipX=cx;finger.dataset.tipY=cy;
       var ph=panel.offsetHeight,above=y-ph-18,below=bottom+18,py=above>=top+10?above:below+ph<top+height-10?below:top+10;panel.style.top=py+'px';
       frameId=requestAnimationFrame(position);
     }
-    function close(completed){if(!tourOpen)return;tourOpen=false;cancelAnimationFrame(frameId);clearTimeout(advanceTimer);document.removeEventListener('click',onClick,true);window.removeEventListener('message',onMessage);watchedDocs.forEach(function(d){d.removeEventListener('click',onClick,true);});watchedDocs.clear();overlay.remove();updateSetting({tour_seen:true});if(completed)toast(tr('А теперь можешь написать сообщение персонажу — или выбрать любое другое занятие.','Now you can message your companion — or choose anything else.','Jetzt kannst du deinem Charakter schreiben — oder etwas anderes machen.'));}
+    function close(completed){if(!tourOpen)return;tourOpen=false;cancelAnimationFrame(frameId);clearTimeout(advanceTimer);document.removeEventListener('click',onClick,true);window.removeEventListener('message',onMessage);watchedDocs.forEach(function(d){d.removeEventListener('click',onClick,true);['pointerdown','click','keydown','focusin'].forEach(function(type){d.removeEventListener(type,guard,true);});});watchedDocs.clear();overlay.remove();updateSetting({tour_seen:true});if(completed)toast(tr('А теперь можешь написать сообщение персонажу — или выбрать любое другое занятие.','Now you can message your companion — or choose anything else.','Jetzt kannst du deinem Charakter schreiben — oder etwas anderes machen.'));}
     function next(){if(!tourOpen)return;clearTimeout(advanceTimer);if(++index>=steps.length){close(true);return;}show();}
+    function guard(e){if(!tourOpen)return;var node=e.target;if(panel.contains(node))return;target=locate();var action=steps[index].action;if(action&&target&&(node===target||target.contains(node)))return;if(e.cancelable)e.preventDefault();e.stopImmediatePropagation();if(e.type==='focusin'&&node.blur)node.blur();}
     function onClick(e){if(!tourOpen||steps[index].action!=='click'||!target||!(e.target===target||target.contains(e.target)))return;advanceTimer=setTimeout(next,220);}
     function onMessage(e){if(tourOpen&&steps[index].action==='equip'&&e.origin===location.origin&&frames.wardrobe&&e.source===frames.wardrobe.contentWindow&&e.data&&e.data.type==='rd-tutorial-equipped')next();}
     function show(){startedAt=Date.now();waiting=false;scrolled=null;target=null;overlay.dataset.step=index;overlay.dataset.backdrop=steps[index].action?'dim':'blur';panel.innerHTML='';var bar=el('div','tour-top',tr('Обучение','Tutorial','Einführung')+' · '+(index+1)+' / '+steps.length),exit=el('button','tour-close','×');exit.setAttribute('aria-label',tr('Закончить обучение','Close tutorial','Einführung schließen'));exit.onclick=function(){close(false);};bar.appendChild(exit);panel.appendChild(bar);panel.appendChild(el('h3',null,steps[index].title));panel.appendChild(el('p',null,steps[index].text));if(!steps[index].action){var button=el('button','btn tour-next',tr('Далее','Next','Weiter'));button.onclick=next;panel.appendChild(button);}else panel.appendChild(el('p','tour-wait',tr('Попробуй — продолжим после действия','Try it to continue','Probiere es aus, um fortzufahren')));
       cancelAnimationFrame(frameId);frameId=requestAnimationFrame(position);
     }
-    document.addEventListener('click',onClick,true);window.addEventListener('message',onMessage);show();
+    ['pointerdown','click','keydown','focusin'].forEach(function(type){document.addEventListener(type,guard,true);});document.addEventListener('click',onClick,true);window.addEventListener('message',onMessage);show();
   }
 
   function showContentSettings(){

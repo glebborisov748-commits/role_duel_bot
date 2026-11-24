@@ -68,3 +68,16 @@ def resolve(settings, ident, admin):
             del tickets(settings)[old['id']]
         return True
     return False
+
+
+def reopen(settings, ident, uid, priority=False):
+    """A resolved request can rejoin once; only its owner may reopen it."""
+    old = tickets(settings).get(str(ident))
+    if not old or old['user_id'] != int(uid) or old['status'] != 'resolved':
+        return None
+    if old.get('reopened_as'):
+        return None
+    text = 'Проблема не решена · обращение #' + str(ident) + '\n\n' + '\n\n'.join(old['messages'])[-2400:]
+    ticket = submit(settings, uid, text, priority)
+    old['reopened_as'] = ticket['id']
+    return ticket

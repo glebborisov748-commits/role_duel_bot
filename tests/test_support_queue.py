@@ -2,6 +2,7 @@
 import copy,json,logging,unittest
 from unittest.mock import patch,AsyncMock
 from types import SimpleNamespace
+from aiogram.types import InlineKeyboardMarkup,InlineKeyboardButton
 import support_queue as q
 from test_core import load_functions
 
@@ -37,6 +38,12 @@ class QueueTests(unittest.TestCase):
   s={};a=q.submit(s,1,'first',True);b=q.submit(s,2,'second');self.assertTrue(q.claim(s,a['id'],5))
   q.refresh_priorities(s,lambda uid:None if uid==1 else True)
   self.assertTrue(a['priority']);self.assertEqual(q.active(s)[0],a)
+ def test_reopen_is_owned_once_and_rejoins_tail(self):
+  s={};a=q.submit(s,1,'first');q.claim(s,a['id'],5);q.resolve(s,a['id'],5);b=q.submit(s,2,'other')
+  self.assertIsNone(q.reopen(s,a['id'],3));r=q.reopen(s,a['id'],1);self.assertNotEqual(r['id'],a['id']);self.assertEqual(q.snapshot(s,1)['position'],2);self.assertIn('first',r['messages'][0]);self.assertIsNone(q.reopen(s,a['id'],1));self.assertEqual(len(q.active(s)),2)
+ def test_reopen_merges_existing_active_request(self):
+  s={};a=q.submit(s,1,'first');q.claim(s,a['id'],5);q.resolve(s,a['id'],5);b=q.submit(s,1,'second')
+  r=q.reopen(s,a['id'],1,True);self.assertEqual(r['id'],b['id']);self.assertEqual(len(q.active(s)),1);self.assertTrue(r['priority'])
  def test_message_limit(self):
   s={}
   for i in range(30):t=q.submit(s,1,'x'*4000)
@@ -46,7 +53,7 @@ class DeliveryTests(unittest.IsolatedAsyncioTestCase):
  def setup_ns(self):
   self.settings={};self.sent=[]
   bot=SimpleNamespace(send_message=AsyncMock(return_value=SimpleNamespace(message_id=123)))
-  ns=dict(support_queue=q,user_data={'__settings__':self.settings},SUPPORT_ADMIN_IDS=[5],SUPPORT_REPLY_IN_FLIGHT=set(),bot=bot,logging=logging,save_data=lambda d:self.sent.append(copy.deepcopy(d)),get_subscription_level=lambda u:u.get('tier'),get_user=lambda uid:{'lang':'ru'},get_text=lambda u,k,**v:v.get('text','reply'))
+  ns=dict(InlineKeyboardMarkup=InlineKeyboardMarkup,InlineKeyboardButton=InlineKeyboardButton,support_queue=q,user_data={'__settings__':self.settings},SUPPORT_ADMIN_IDS=[5],SUPPORT_REPLY_IN_FLIGHT=set(),bot=bot,logging=logging,save_data=lambda d:self.sent.append(copy.deepcopy(d)),get_subscription_level=lambda u:u.get('tier'),get_user=lambda uid:{'lang':'ru'},get_text=lambda u,k,**v:v.get('text','reply'))
   load_functions({'_support_settings','refresh_support_priorities','support_snapshot','_support_threads','support_status_text','submit_support','support_admin_reply'},ns)
   return ns
  async def test_app_snapshot_refreshes_subscription_and_saves_only_changes(self):

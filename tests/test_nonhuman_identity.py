@@ -51,7 +51,7 @@ class NonhumanIdentityTests(unittest.TestCase):
   self.assertEqual((female['gender'],male['gender']),('female','male'))
   self.assertNotEqual(female['image'],male['image'])
   for key in ('tracksuit','pajamas'):
-   self.assertNotEqual(profile.catalog_image(key,'male'),profile.catalog_image(key,'female'))
+   self.assertNotEqual(profile.body_preview(key,'male'),profile.body_preview(key,'female'))
 
 class NonhumanProviderTests(unittest.IsolatedAsyncioTestCase):
  async def test_provider_preserves_nonhuman_identity_in_positive_and_negative_prompts(self):

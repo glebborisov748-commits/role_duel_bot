@@ -1,3 +1,13 @@
+# Tutorial and mobile fixes — 24 November 2026
+
+Validation: 272 unit tests; mobile tutorial and composer/catalog checks at 320/390/430 px; signed support lifecycle tests including owner-only reopening, persistence and replay prevention. Telegram delivery and image generation use local mocks.
+
+- Tutorial permits only the current action and its own controls. Capture guards also cover same-origin embedded sections and keyboard/focus interaction; explanation steps cannot trigger highlighted purchases or navigate away. Closing the tutorial restores ordinary interaction.
+- Smaller anchored finger with a light tap halo. Daily-quest step highlights a single quest; highlight and teaching card respect the visible viewport, Telegram safe area and bottom navigation.
+- Store product cards use the existing isolated item art again. Whole mannequin views remain in fitting. The equipped cap has an explicit headwear-preservation instruction in image prompts; a mock provider verifies delivery of that instruction, not real image-model compliance.
+- Keyboard-hide control sits above the composer, outside multiline text. Removed the broad animated hero sheen while retaining subscription styling.
+- Delivered support replies include an owner-only “Проблема не решена” button. Reopens once into the current queue, retains the issue text and subscription priority, merges with an already active request, and persists replay protection. Paid queue boosts remain unimplemented because price/terms were not selected.
+
 # Current checkpoint — 24 November 2026
 
 Completed and locally verified in this stage:
