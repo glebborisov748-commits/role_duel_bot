@@ -126,3 +126,32 @@ def best_base(user,current):
   if not all(current.get(k)==v for k,v in look['slots'].items()):continue
   candidates.append(look)
  return max(candidates,key=lambda v:len(v['slots'])) if candidates else None
+
+# Whole generated everyday combinations, November 24. Only owned items can be equipped.
+_NOV24 = [
+ ('female',{'top':'cotton_tshirt','head':'cap','shoes':'sneakers'}),
+ ('female',{'top':'cotton_tshirt','bottom':'denim_shorts','head':'cap','shoes':'sneakers'}),
+ ('female',{'top':'shirt','bottom':'trousers','shoes':'ankle_boots','neck':'pendant'}),
+ ('female',{'top':'hoodie','bottom':'denim_jeans','shoes':'sneakers','head':'beanie'}),
+ ('female',{'top':'knit_sweater','bottom':'pleated_skirt','shoes':'ankle_boots','head':'beret'}),
+ ('female',{'outerwear':'cardigan','bottom':'denim_jeans','shoes':'sneakers','neck':'pendant'}),
+ ('female',{'body':'dress','neck':'pendant'}),
+ ('female',{'body':'pajamas','neck':'pendant'}),
+ ('male',{'top':'cotton_tshirt','head':'cap','shoes':'sneakers'}),
+ ('male',{'bottom':'denim_shorts','head':'cap','shoes':'sneakers'}),
+ ('male',{'top':'shirt','bottom':'trousers','shoes':'ankle_boots','neck':'silver_chain'}),
+ ('male',{'body':'casual_outfit','head':'beanie'}),
+ ('male',{'body':'business_suit','wrist':'wristwatch'}),
+ ('male',{'outerwear':'bomber_jacket','top':'cotton_tshirt','bottom':'denim_jeans','shoes':'sneakers','head':'cap'}),
+ ('male',{'top':'knit_sweater','bottom':'chino_trousers','shoes':'sneakers','wrist':'wristwatch'}),
+ ('male',{'body':'pajamas'}),
+]
+LOOKS={**{f'nov24_{i}':dict(gender=g,slots=slots,image=f'/assets/nov24_look_{i}.webp') for i,(g,slots) in enumerate(_NOV24)},**LOOKS}
+
+# Replace older pictures of identical combinations, retaining their public keys.
+for _newkey in list(LOOKS):
+ if not _newkey.startswith("nov24_"):continue
+ _newlook=LOOKS[_newkey]
+ for _oldkey,_oldlook in list(LOOKS.items()):
+  if not _oldkey.startswith("nov24_") and _oldlook["gender"]==_newlook["gender"] and _oldlook["slots"]==_newlook["slots"]:
+   _oldlook["image"]=_newlook["image"];del LOOKS[_newkey];break

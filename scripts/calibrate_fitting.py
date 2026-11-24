@@ -22,6 +22,6 @@ def anchors(path):
  neck=max(59,min(153,bottom+9));head_scale=max(.7,min(1.25,peak/36));body_scale=(500-neck)/(500-76)
  return dict(x=round(cx,1),top=top,neck=round(neck,1),head_width=peak,head_scale=round(head_scale,3),body_scale=round(body_scale,3))
 if __name__=='__main__':
- data={p.name:anchors(p) for p in list((ROOT/'assets').glob('body_view_*.webp'))+list((ROOT/'assets').glob('mannequin_base_*.webp'))+list((ROOT/'assets').glob('complete_clean_*.webp'))+list((ROOT/'assets').glob('nov23_*.webp'))}
+ data={p.name:anchors(p) for p in list((ROOT/'assets').glob('body_view_*.webp'))+list((ROOT/'assets').glob('mannequin_base_*.webp'))+list((ROOT/'assets').glob('complete_clean_*.webp'))+list((ROOT/'assets').glob('nov23_*.webp'))+list((ROOT/'assets').glob('nov24_look_*.webp'))}
  (ROOT/'fitting_anchors.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
  print('Registered accessory anchors for',len(data),'complete mannequins.')

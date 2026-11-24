@@ -1,3 +1,4 @@
+import support_queue
 import model_benchmark
 import profile_options
 import fandom_catalog
@@ -6732,7 +6733,7 @@ async def reset_all_confirm(call: types.CallbackQuery):
 @dp.message(Command('admin_help'))
 async def admin_help_cmd(message: types.Message):
     if message.from_user.id not in ADMIN_IDS and message.from_user.id!=MAIN_ADMIN_ID:return
-    common='/admin_help — команды\n/stats — статистика\n/support — поддержка'
+    common='/admin_help — команды\n/stats — статистика\n/support_queue — очередь обращений\n/support — поддержка'
     chief='\n/tehwork on причина | off — техработы\n/tehwork preview on | off — проверить экран только у себя\n/giveenergizers ID количество — энергетики\n/givebucks ID количество — баксы\n/grant ID тип количество — выдать ресурс или подписку\n/grant_me тип количество — выдать себе\n/setlevel ID уровень — сближение\n/revoke_subscription ID — снять подписку\n/models — список моделей\n/model_test — сравнить кандидатов (расчётный бюджет 15 ₽)\n/broadcast — рассылка\n/cancel_broadcast — отмена рассылки\n/giveaway_all — массовая выдача\n/reset_me — сброс своего профиля\n/reset_all — сброс всех профилей'
     await message.answer(common+(chief if message.from_user.id==MAIN_ADMIN_ID else '\nВыдачи ресурсов и техработы доступны только главному админу.'),parse_mode=None)
 
@@ -9087,7 +9088,6 @@ async def movie_react_cb(call: types.CallbackQuery):
 #  ПОДДЕРЖКА: /support -> сообщение уходит админам, ответ админа (reply) возвращается пользователю
 # ============================================================
 SUPPORT_ADMIN_IDS = [int(x) for x in os.getenv("SUPPORT_ADMIN_IDS", "").replace(" ", "").split(",") if x] or ADMIN_IDS
-SUPPORT_THREADS_LIMIT = 500
 
 
 def _support_threads():
@@ -9113,40 +9113,102 @@ async def support_cancel_cb(call: types.CallbackQuery):
     await call.answer()
 
 
-async def forward_to_support(message: types.Message, user):
-    """Следующее сообщение пользователя после /support -- одно обращение (флаг гасим сразу, чтобы
-    обычный чат не залип в режиме поддержки)."""
-    user["support_mode"] = False
-    uname = f"@{message.from_user.username}" if message.from_user.username else "без username"
-    header = (f"📩 Обращение #{message.from_user.id} ({uname}, {message.from_user.full_name})\n"
-              f"Подписка: {get_subscription_level(user) or 'нет'}\n\n{message.text}\n\n"
-              f"↩️ Ответь reply на это сообщение — ответ уйдёт пользователю.")
-    delivered = 0
-    threads = _support_threads()
+SUPPORT_REPLY_IN_FLIGHT = set()
+
+def _support_settings():
+    return user_data.setdefault('__settings__', {})
+
+
+def support_status_text(user, uid):
+    status = support_queue.snapshot(_support_settings(), uid)
+    ru = user.get('lang','ru') == 'ru'
+    note = 'Подписчикам отвечаем в приоритетном порядке.' if ru else 'Subscribers receive priority support.'
+    if not status:
+        return note
+    prefix = ('Обращение в работе' if ru else 'Your request is being handled') if status['status']=='in_progress' else (f"Твоя очередь: {status['position']}" if ru else f"Queue position: {status['position']}")
+    return prefix + '. ' + note
+
+
+async def submit_support(uid, user, text):
+    ticket = support_queue.submit(_support_settings(), uid, text, bool(get_subscription_level(user)))
+    # Persist before contacting Telegram: delivery failure never loses the ticket.
+    save_data(user_data)
+    header = (f"📩 Поддержка #{ticket['id']} · пользователь {uid}\n"
+              f"Подписка: {get_subscription_level(user) or 'нет'}\n\n{text[:3000]}\n\n"
+              "↩️ Ответь reply — ответ закроет обращение. /support_queue — очередь.")
+    refs = _support_settings().setdefault('support_ticket_refs', {})
     for admin_id in SUPPORT_ADMIN_IDS:
         try:
             sent = await bot.send_message(admin_id, header)
-            threads[f"{admin_id}:{sent.message_id}"] = message.from_user.id
-            delivered += 1
-        except Exception as e:
-            logging.warning(f"support: не доставлено админу {admin_id}: {e}")
-    while len(threads) > SUPPORT_THREADS_LIMIT:
-        threads.pop(next(iter(threads)))
+            key = f'{admin_id}:{sent.message_id}'
+            _support_threads()[key] = int(uid)
+            refs[key] = ticket['id']
+        except Exception:
+            logging.warning('support: admin notification failed for %s', admin_id)
+    # Remove stale references only; active ticket replies must remain usable.
+    for key, ident in list(refs.items()):
+        old = support_queue.tickets(_support_settings()).get(ident)
+        if not old or old['status']=='resolved':
+            refs.pop(key, None)
+            _support_threads().pop(key, None)
     save_data(user_data)
-    await message.answer(get_text(user, "support_sent" if delivered else "support_failed"))
+    return support_status_text(user, uid)
+
+
+@dp.message(Command('support_queue'))
+async def support_queue_cmd(message: types.Message):
+    if message.from_user.id not in SUPPORT_ADMIN_IDS:
+        return
+    queue = support_queue.active(_support_settings())
+    if not queue:
+        await message.answer('Очередь поддержки пуста.')
+        return
+    lines = [f"{i+1}. #{t['id']} · {t['user_id']} · {'⭐ ' if t['priority'] else ''}{'в работе' if t['status']=='in_progress' else 'ожидает'}" for i,t in enumerate(queue[:20])]
+    await message.answer('Очередь поддержки:\n'+'\n'.join(lines))
+    ticket = next((t for t in queue if t['status']=='waiting' or t.get('admin')==message.from_user.id), None)
+    if ticket:
+        sent = await message.answer(f"📩 Обращение #{ticket['id']}\n\n"+'\n\n'.join(ticket['messages'])[-3000:]+'\n\nОтветь reply — ответ будет доставлен пользователю.')
+        key = f'{message.from_user.id}:{sent.message_id}'
+        _support_threads()[key] = ticket['user_id']
+        _support_settings().setdefault('support_ticket_refs', {})[key] = ticket['id']
+        save_data(user_data)
+
+
+async def forward_to_support(message: types.Message, user):
+    user['support_mode'] = False
+    text = await submit_support(message.from_user.id, user, message.text)
+    await message.answer(text)
 
 
 @dp.message(lambda m: m.reply_to_message is not None and m.text is not None
             and m.from_user.id in SUPPORT_ADMIN_IDS
             and f"{m.from_user.id}:{m.reply_to_message.message_id}" in _support_threads())
 async def support_admin_reply(message: types.Message):
-    target_id = _support_threads()[f"{message.from_user.id}:{message.reply_to_message.message_id}"]
-    target = get_user(target_id)
+    key = f'{message.from_user.id}:{message.reply_to_message.message_id}'
+    target_id = _support_threads()[key]
+    ident = _support_settings().get('support_ticket_refs', {}).get(key)
+    if ident and not support_queue.claim(_support_settings(), ident, message.from_user.id):
+        await message.answer('Обращение закрыто, уже в работе у другого администратора или ещё не подошла очередь. /support_queue')
+        return
+    # An in-flight reply owns the ticket, preventing duplicate parallel sends.
+    if ident and ident in SUPPORT_REPLY_IN_FLIGHT:
+        await message.answer('Ответ уже отправляется.')
+        return
+    if ident:
+        SUPPORT_REPLY_IN_FLIGHT.add(ident)
+    save_data(user_data)
     try:
-        await bot.send_message(target_id, get_text(target, "support_reply", text=message.text))
-        await message.answer("✅ Отправлено")
-    except Exception as e:
-        await message.answer(f"❌ Не удалось отправить: {e}")
+        await bot.send_message(target_id, get_text(get_user(target_id), 'support_reply', text=message.text))
+        if ident:
+            support_queue.resolve(_support_settings(), ident, message.from_user.id)
+        save_data(user_data)
+        await message.answer('✅ Ответ доставлен, обращение закрыто. /support_queue — следующее.')
+    except Exception:
+        await message.answer('❌ Не удалось доставить. Обращение осталось открытым — попробуй ответить ещё раз.')
+    finally:
+        if ident:
+            SUPPORT_REPLY_IN_FLIGHT.discard(ident)
+        save_data(user_data)
 
 
 # ============================================================
@@ -9508,7 +9570,7 @@ def serialize_shop_state(user):
 
     categories.append({'key':'exchange','name':gt(user,'shop_cat_exchange'),'items':[
         {'key':key,'category':'exchange','image':shop_item_image('exchange',key),'emoji':offer['emoji'],
-         'name':exchange_name(user,key),'price':offer['price'],'effects':'Один товар на 48 часов · смена через '+str((exchange_reset_seconds()+3599)//3600)+' ч.',
+         'name':exchange_name(user,key),'price':offer['price'],'effects':{'ru':'Один товар на 48 часов · смена в 00:00 МСК','de':'Ein Angebot für 48 Stunden · Wechsel um 00:00 Moskauer Zeit'}.get(lang,'One offer for 48 hours · changes at 00:00 Moscow time'),
          'ready_in':(str((exchange_ready_in(user,key)+3599)//3600)+' ч.') if exchange_ready_in(user,key) else None,
          'refuse':False} for key,offer in BUCKS_EXCHANGE.items() if key==exchange_today()]})
 
@@ -9571,6 +9633,7 @@ def serialize_shop_state(user):
         "dead": bool(user.get("dead")),
         "recovery": {"stock":user.get("defib_stock",0),"stars":product_stars("defibrillator",user)},
         "asleep": is_asleep(user),
+        "exchange_clock": {"server_time":time.time(),"reset_at":time.time()+exchange_reset_seconds(),"period":exchange_period()},
         "categories": categories,
         "complete_looks":fitting_looks.choices(user,lang,level),"fitting_layers":profile_options.fitting_state(user)["layers"],"wardrobe_race":user.get("race","human"),"wardrobe_fitting":profile_options.fitting_preview(user),"wardrobe_generation_credits":user.get("portrait_credits",0),"wardrobe_pending":bool(user.get("avatar_job")),"wardrobe_gender":user.get("gender","female"),"photo_balance":photo_wallet.balance(user),
         "wardrobe_preview":"/avatars/"+user["avatar_fullbody"] if user.get("avatar_fullbody") else None,
@@ -13264,13 +13327,14 @@ del,.old-price{position:relative;text-decoration:none!important}del:after,.old-p
 .fitting-stage{aspect-ratio:320/512;height:auto!important;max-width:250px!important;overflow:hidden!important}.wardrobe-room .tailor-base,.wardrobe-room .fitting-detail{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:contain!important;opacity:0!important;visibility:hidden;pointer-events:none;margin:0!important;max-height:none!important}.cabinet-open .tailor-base,.cabinet-open .fitting-detail{opacity:1!important;visibility:visible}.wardrobe-room .fitting-detail{z-index:4}.fitting-stage .cabinet-doors{inset:0!important}.fitting-stage .cabinet-doors span{font-size:12px}.fitting-controls label{min-width:0}.fitting-controls select{font-size:13px;min-width:0}.complete-looks{grid-column:1/-1;min-width:0}.complete-looks summary{cursor:pointer;padding:12px;background:#38283f;border-radius:12px}.complete-look-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:8px}.complete-look{padding:5px!important;min-width:0;background:#241c30;border:1px solid #70516c;border-radius:12px}.complete-look img{width:100%;height:130px;object-fit:contain;display:block}.complete-look span{display:block;font-size:10px;line-height:1.3;max-height:39px;overflow:hidden}.fitting-note+button{grid-column:1/-1}
 del,.old-price,s.old-price{display:inline-block!important;width:max-content!important;max-width:100%;position:relative;white-space:nowrap;text-decoration:none!important}del:after,.old-price:after{left:0!important;right:0!important;top:50%!important;height:2px!important;transform:translateY(-50%)!important;background:#ef606c!important;pointer-events:none}.price-row .price{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.old-price{margin-right:5px}
 .fitting-stage{width:100%!important;max-width:300px!important;aspect-ratio:320/512!important;box-shadow:inset 0 0 0 4px #715069,0 8px 22px #0005!important;border:0!important}.cabinet-doors{outline:0!important}.cabinet-open .cabinet-doors span{left:auto!important;right:6px!important;top:6px!important;bottom:auto!important;width:27px;height:27px;padding:0!important;line-height:27px;font-size:20px!important}.complete-look img{aspect-ratio:320/512;height:auto!important;width:100%!important;object-fit:contain!important}.fitting-stage .cabinet-doors{background:transparent!important;border:0!important;outline:0!important;box-shadow:none!important;padding:0!important}.cabinet-open .cabinet-doors:before,.cabinet-open .cabinet-doors:after{opacity:0;transition:transform .75s,opacity .65s}.old-price{opacity:1!important;color:#9791a2!important}.preview-actions{grid-column:1/-1;margin:8px 0}.preview-actions:has(button[hidden]){display:none}.preview-actions button{width:100%}.clothing-filter{grid-column:1/-1;display:flex;gap:10px;position:sticky;top:0;z-index:5;padding:10px 0;background:#111020}.clothing-filter select{min-width:0;flex:1;background:#292037;color:#f4eaf8;border:1px solid #72577f;border-radius:12px;padding:10px}.wardrobe-empty{grid-column:1/-1;color:#b9a9c5;font-size:13px}.outfit-picker{grid-column:1/-1}.outfit-picker summary{cursor:pointer;padding:12px;background:#3a2b47;border-radius:12px}.outfit-picker[open]{display:grid;grid-template-columns:1fr 1fr;gap:12px}.outfit-picker summary{grid-column:1/-1}.outfit-picker label{display:block;margin:10px 0}.outfit-picker select{width:100%;min-height:42px}.cabinet-doors{display:none!important}.fitting-stage{border:0!important;box-shadow:inset 0 0 0 2px #71506966!important}.complete-look:disabled{opacity:.45}.preview-only{min-height:230px}.preview-only .card-emoji{height:130px}.wardrobe-room{grid-column:1/-1}
-</style>
+.price-row{flex-wrap:wrap!important;justify-content:flex-start!important;min-width:0}.price-row .price{width:100%;font-size:19px}.save-badge{max-width:100%;box-sizing:border-box;white-space:normal!important;font-size:12px!important;overflow:visible!important}.save-badge:after{display:none!important}.exchange-feature{margin:14px 0 18px;padding:14px;border:1px solid #6c588c;border-radius:22px;background:linear-gradient(130deg,#24203a,#151322)}.exchange-feature[hidden]{display:none}.exchange-heading{display:flex;gap:12px;align-items:center;margin-bottom:8px}.exchange-heading img{width:48px;height:48px;object-fit:contain}.exchange-clock{font-variant-numeric:tabular-nums;font-size:24px;font-weight:800;letter-spacing:2px}.exchange-feature .card{display:grid;grid-template-columns:80px minmax(0,1fr);gap:8px;padding:10px;box-shadow:none;border:0;background:transparent}.exchange-feature .card>img{grid-row:1/5;width:80px;height:100px;object-fit:contain}.exchange-feature .card .footer{grid-column:2}.exchange-feature .card h3{margin:0}.exchange-feature .card .effects{margin:0}.exchange-feature .card .footer{flex-wrap:wrap}.exchange-feature .card .btn{min-height:40px}.exchange-feature .card-top{grid-row:1/5;grid-column:1}.exchange-feature .card-name,.exchange-feature .card-effects,.exchange-feature .card-footer{grid-column:2;min-width:0}.exchange-feature .card-emoji{margin:0}.exchange-feature .card-img{width:76px;height:96px}.exchange-feature .card-footer{flex-wrap:wrap;gap:8px}.exchange-feature .card-effects{font-size:12px}.exchange-feature .card{align-items:center}.exchange-feature .card-name{font-size:17px}.exchange-feature .card-footer .btn{padding:8px 12px;min-width:0}</style>
 </head>
 <body>
   <div id="stats"></div>
   <div id="illness-badge"></div>
   <div id="promo-banner"></div>
   <div id="coupon-note"></div>
+  <section id="exchange-feature" class="exchange-feature" hidden></section>
   <div id="tabs"></div>
   <div id="items">Loading…</div>
   <div id="footer-hint"></div>
@@ -13367,7 +13431,7 @@ del,.old-price,s.old-price{display:inline-block!important;width:max-content!impo
       });
     }
     s.categories.forEach(function(c){
-      if(c.key==='wardrobe'||c.key==='adult_shop')return;
+      if(c.key==='wardrobe'||c.key==='adult_shop'||c.key==='exchange')return;
       if(c.key!=='food'){list.push({key:c.key,name:c.name,items:c.items});return;}
       var groups=[['drinks','💧 Напитки','💧 Drinks',['water','sparkling_water','coconut_water','beer','fine_wine']],['food','🍽 Еда','🍽 Food',null]];
       groups.forEach(function(g){var items=c.items.filter(function(i){return g[3]?g[3].indexOf(i.key)>=0:groups[0][3].indexOf(i.key)<0;});if(items.length)list.push({key:g[0],name:s.lang==='ru'?g[1]:(s.lang==='de'?({'drinks':'💧 Getränke','food':'🍽 Essen'}[g[0]]):g[2]),items:items});});
@@ -13623,10 +13687,15 @@ del,.old-price,s.old-price{display:inline-block!important;width:max-content!impo
     current.items.forEach(function (item) { el.appendChild(makeCard(s, item)); });
   }
 
+  var exchangeOffset=0,exchangeReset=0,exchangeRefreshAt=0,exchangeServerTime=null;
+  function updateExchangeClock(){var clock=document.getElementById('exchange-clock');if(!clock||!exchangeReset)return;var left=Math.max(0,Math.ceil(exchangeReset-(Date.now()/1000+exchangeOffset)));clock.textContent=[Math.floor(left/3600),Math.floor(left/60)%60,left%60].map(function(n){return String(n).padStart(2,'0');}).join(':');if(left===0&&Date.now()>exchangeRefreshAt){exchangeRefreshAt=Date.now()+10000;load();}}
+  setInterval(updateExchangeClock,250);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden){updateExchangeClock();load();}});
+  function renderExchange(s){var host=document.getElementById('exchange-feature');host.innerHTML='';var cat=s.categories.find(function(c){return c.key==='exchange';});host.hidden=wardrobeOnly||!cat||!cat.items.length;if(host.hidden)return;var head=document.createElement('div');head.className='exchange-heading';var icon=document.createElement('img');icon.src='/assets/offer_calendar_nov24.webp';icon.alt='';head.appendChild(icon);var text=document.createElement('div');var label=document.createElement('strong');label.textContent=s.lang==='ru'?'Товар за баксы · до смены':s.lang==='de'?'Angebot · Wechsel in':'Bucks offer · changes in';text.appendChild(label);var clock=document.createElement('div');clock.id='exchange-clock';clock.className='exchange-clock';text.appendChild(clock);head.appendChild(text);host.appendChild(head);host.appendChild(makeCard(s,cat.items[0]));if(s.exchange_clock&&s.exchange_clock.server_time!==exchangeServerTime){exchangeServerTime=s.exchange_clock.server_time;exchangeOffset=exchangeServerTime-Date.now()/1000;exchangeReset=s.exchange_clock.reset_at;}updateExchangeClock();}
   function render() {
     if (!state) return;
     try {
-      renderStats(state);
+      renderStats(state);renderExchange(state);
       var banner = document.getElementById("promo-banner");
       banner.innerHTML = "";
       if (state.promo_max) {
@@ -19303,7 +19372,7 @@ def serialize_onboarding(user):
     for key in STYLES:
         tier = None if is_style_unlocked(key, user) else (style_required_tier(key))
         styles.append({"key": key, "label": style_display_label(key, user), "desc": (STYLES[key].get("summary") or (STYLES[key]["description"],STYLES[key]["label_en"],STYLES[key]["label_de"]))[{"ru":0,"en":1,"de":2}.get(lang,1)], "locked": tier})
-    return {"photos":photo_wallet.balance(user),"avatar_attempts":photo_wallet.balance(user)+user.get("portrait_credits",0),"templates":[],"avatar_presets":[],"creation_presets":{g:character_options.creation_presets(lang,g) for g in ("male","female")},"appearance_fields_by_gender":{g:character_options.choices(lang,g) for g in ("male","female")},"races":profile_options.choices(profile_options.RACES,lang),"portrait_enabled":False,"appearance_fields":character_options.choices(lang,user.get("gender")),"appearance_defaults":{k:v for k,v in character_options.DEFAULT.items() if k in character_options.VISUAL_KEYS},"worlds": [{"key": "realism", "label": get_text(user, "realism"), "desc": at(user, "ob_realism")},
+    return {"photos":photo_wallet.balance(user),"avatar_attempts":photo_wallet.balance(user)+user.get("portrait_credits",0),"templates":[],"avatar_presets":[],"creation_presets":{g:character_options.creation_presets(lang,g) for g in ("male","female")},"appearance_fields_by_gender":{g:[f for f in character_options.choices(lang,g) if f["key"]!="accessory"] for g in ("male","female")},"races":profile_options.choices(profile_options.RACES,lang),"portrait_enabled":False,"appearance_fields":[f for f in character_options.choices(lang,user.get("gender")) if f["key"]!="accessory"],"appearance_defaults":{k:v for k,v in character_options.DEFAULT.items() if k in character_options.VISUAL_KEYS},"worlds": [{"key": "realism", "label": get_text(user, "realism"), "desc": at(user, "ob_realism")},
                        {"key": "anime", "label": get_text(user, "anime"), "desc": at(user, "ob_anime")}],
             "genders": [{"key": "female", "label": at(user, "ob_female")}, {"key": "male", "label": at(user, "ob_male")}],
             "default_gender": "female" if user.get("user_gender") != "female" else "male",
@@ -19377,7 +19446,7 @@ def serialize_app_state(user):
     user["app_seen"] = datetime.now().isoformat()
     if not user.get("personality_ready"):
         ui = {k: v for k, v in APP_TEXTS.get(user.get("lang") or "ru", APP_TEXTS["en"]).items() if isinstance(v, str)}
-        return {"release":"20261123a", "onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
+        return {"release":"20261124a", "onboarding": serialize_onboarding(user), "ui": ui, "messages": [], "pending": False, "notices": []}
     app_unstick(user)
     if migrate_character_appearance(user):save_data(user_data)
     if user.get('appearance'):
@@ -19403,6 +19472,7 @@ def serialize_app_state(user):
         coupon = at(user, "coupon", n=int(user["coupon"]["discount"] * 100), h=left)
     ui = {k: v for k, v in APP_TEXTS.get(lang, APP_TEXTS["en"]).items() if isinstance(v, str)}
     return {
+        "support":support_queue.snapshot(_support_settings(),user.get("_telegram_id",0)),
         "messages": [{"id": m["id"], "role": m["role"], "text": m["content"], "reaction": m.get("reaction"), "user_reaction": m.get("user_reaction"), "reaction_animated": bool(m.get("reaction_animated")), "edited": bool(m.get("edited")), "card": m.get("card"), "photo": m.get("photo")}
                      for m in history],
         "onboarding": None,
@@ -19410,7 +19480,7 @@ def serialize_app_state(user):
         "content_settings":profile_options.state(user),"avatar_presets":[],
         "photos":photo_wallet.snapshot(user),
         "purchase_products":[{"payload":k,"amount":v[0],"stars":product_stars(k,user),"rub":product_rub(k,user),"image":"/assets/photo_pack_"+str(v[0])+".webp"} for k,v in photo_wallet.PACKS.items()],
-        "release":"20261123a",
+        "release":"20261124a",
         "reply_choices": serialize_reply_choices(user),
         "pending": bool(user.get("app_pending")),"photo_pending":bool(user.get("photo_pending")),
         "notices": notices,
@@ -19421,7 +19491,7 @@ def serialize_app_state(user):
             "avatar": "👤",
             "avatar_url": f"/avatars/{user['avatar']}" if user.get("avatar") else look_image(user),
             "look": user.get("look"),
-            "world":user.get("world"),"gender":user.get("gender"),"custom_photo": bool(user.get("avatar")),"appearance":user.get("appearance"),"appearance_fields":character_options.choices(lang,user.get("gender")),"portrait_pending":bool(user.get("portrait_pending")),"portrait_error":bool(user.get("portrait_error")),
+            "world":user.get("world"),"gender":user.get("gender"),"custom_photo": bool(user.get("avatar")),"appearance":user.get("appearance"),"appearance_fields":[f for f in character_options.choices(lang,user.get("gender")) if f["key"]!="accessory"],"portrait_pending":bool(user.get("portrait_pending")),"portrait_error":bool(user.get("portrait_error")),
             "styles": [{"key": k, "label": style_display_label(k, user),"locked":not is_style_unlocked(k,user),"tier":style_required_tier(k)} for k in STYLES],
             "style": user.get("style"),
             "looks": [{"key": k, "img": f"/assets/avatar_{k}.jpg", "label": v["label_ru"] if lang == "ru" else v["label_en"]}
@@ -19975,6 +20045,7 @@ async def api_app_create_handler(request):
         appearance={k:v for k,v in character_options.validate(body.get('appearance',{}),gender).items() if k in character_options.VISUAL_KEYS or k in (body.get('appearance') or {})}
     except ValueError:
         return web.json_response({'ok':False,'error':'Invalid appearance'})
+    if not template and not reference:appearance['accessory']='none'
     try:race=profile_options.validate_race(body.get('race','human'))
     except ValueError:return web.json_response({'ok':False,'error':'Invalid race'})
     custom = str(body.get("custom") or "").strip()[:2000]
@@ -20178,7 +20249,7 @@ setTimeout(function () { if (window.__tgSdkOnSettle) window.__tgSdkOnSettle(); }
 _SDK_TAG_RE = re.compile(r'<script src="/tg-sdk\.js"[^>]*>\s*</script>', re.S)
 
 
-SFX_TAG = '<script src="/sfx.js?v=20261123a"></script>'
+SFX_TAG = '<script src="/sfx.js?v=20261124a"></script>'
 
 
 async def sfx_js_handler(request):
@@ -20366,7 +20437,7 @@ del,.old-price,s.old-price{display:inline-block!important;width:max-content!impo
 
 #msgs .bw{display:block!important;max-width:86%!important;min-width:0;position:relative}#msgs .bw>.bub{max-width:100%;box-sizing:border-box}#msgs .message-reactions{position:absolute!important;left:8px!important;right:auto!important;bottom:-12px!important;margin:0!important;width:max-content!important;max-width:calc(100% - 16px);z-index:2}#msgs .has-reactions{margin-bottom:19px!important}#msgs .has-reactions>.bub{padding-bottom:23px!important}.photo-loading:before{inset:0!important;background:linear-gradient(105deg,transparent 35%,#ffffff12 50%,transparent 65%);transform:translateX(-150%);animation:loading-scan 3.6s linear infinite!important;will-change:transform}@keyframes loading-scan{0%{transform:translateX(-150%)}100%{transform:translateX(150%)}}.energy-ritual{justify-content:center!important;padding-top:90px!important;padding-bottom:10px!important}.energy-can-wrap{width:min(65vw,270px)!important;height:min(44dvh,350px)!important}.energy-hint{position:absolute!important;width:1px;height:1px;clip-path:inset(50%);overflow:hidden}.energy-gesture{position:absolute;bottom:10%;right:8%;width:90px;height:90px;object-fit:contain;pointer-events:none}.energy-gesture.pulling-guide{bottom:auto;top:21%;right:20%;width:74px;height:74px}.energy-ritual>.btn.ghost{position:absolute;bottom:22px;min-height:44px;width:80px;font-size:27px}.cabinet-open .cabinet-doors span{left:auto!important;right:6px!important;top:6px!important;bottom:auto!important;width:27px;height:27px;padding:0!important;line-height:27px;font-size:20px!important}.fitting-stage{border:0!important;outline:0!important;box-shadow:inset 0 0 0 4px #715069,0 8px 22px #0005!important}.cabinet-doors:focus{outline:0!important}.fitting-stage .cabinet-doors{outline:0!important}.complete-look img{aspect-ratio:320/512;height:auto!important;width:100%!important;object-fit:contain!important}
 """
-APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261123a">'
+APP_THEME_TAG = '<link rel="stylesheet" href="/theme.css?v=20261124a">'
 
 
 async def theme_css_handler(request):
@@ -20379,8 +20450,8 @@ def page_response(request, html):
         html = html.replace("</head>", APP_THEME_TAG + "</head>", 1)
     if request.query.get("embed") == "1":
         html = _SDK_TAG_RE.sub(lambda m: EMBED_BRIDGE, html, count=1)
-        return web.Response(text=html, content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261123a"})
-    return web.Response(text=with_app_back(html), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261123a"})
+        return web.Response(text=html, content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261124a"})
+    return web.Response(text=with_app_back(html), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261124a"})
 
 
 def refund_scene_photo(user, job_id):
@@ -20555,22 +20626,8 @@ async def api_app_support_handler(request):
     text = (body.get("text") or "").strip()[:3000]
     if len(text) < 3:
         return web.json_response({"ok": False, "error": at(user, "support_short")})
-    header = (f"📩 Обращение #{user_id} (@{user.get('username') or '—'}) из приложения\n"
-              f"Подписка: {get_subscription_level(user) or 'нет'}\n\n{text}\n\n"
-              f"↩️ Ответь reply на это сообщение — ответ уйдёт пользователю.")
-    delivered = 0
-    threads = _support_threads()
-    for admin_id in SUPPORT_ADMIN_IDS:
-        try:
-            sent = await bot.send_message(admin_id, header)
-            threads[f"{admin_id}:{sent.message_id}"] = user_id
-            delivered += 1
-        except Exception as e:
-            logging.warning(f"support (app): не доставлено админу {admin_id}: {e}")
-    while len(threads) > SUPPORT_THREADS_LIMIT:
-        threads.pop(next(iter(threads)))
-    save_data(user_data)
-    return web.json_response({"ok": bool(delivered), "toast": get_text(user, "support_sent" if delivered else "support_failed")})
+    toast = await submit_support(user_id, user, text)
+    return web.json_response({"ok": True, "toast": toast, "support":support_queue.snapshot(_support_settings(),user_id)})
 
 
 _BOT_USERNAME = {"v": None}
@@ -20595,7 +20652,7 @@ def serialize_referral(user):
 
 
 async def app_page_handler(request):
-    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261123a"})
+    return web.Response(text=with_sfx(APP_PAGE_HTML), content_type="text/html",headers={"Cache-Control":"no-store","X-RoleDuel-Release":"20261124a"})
 
 # Нативная кнопка «Назад» Telegram на внутренних страницах (магазин, колесо, игры, работа, гайд) --
 # возвращает в главное приложение /app, так что всё выглядит как одно мини-приложение.
@@ -20764,7 +20821,7 @@ SFX_JS = r'''// Общий звуковой движок мини-приложе
   function loadSample(kind){
     if(sampleBuffers[kind])return Promise.resolve(sampleBuffers[kind]);
     if(sampleLoads[kind])return sampleLoads[kind];
-    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261123a').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
+    sampleLoads[kind]=fetch('/assets/audio/'+kind+'.wav?v=20261124a').then(function(r){if(!r.ok)throw Error('sample');return r.arrayBuffer();}).then(function(b){var c=init();return c?c.decodeAudioData(b):null;}).then(function(b){if(b)sampleBuffers[kind]=b;return b;}).catch(function(){delete sampleLoads[kind];return null;});
     return sampleLoads[kind];
   }
   function sample(kind){
@@ -21021,7 +21078,7 @@ APP_PAGE_HTML = r"""<!doctype html>
   .sys span { display: inline-block; font-size: 12.5px; color: #e9d5ff; background: rgba(139,92,246,.16); border: 1px solid rgba(139,92,246,.3);
     padding: 6px 11px; border-radius: 12px; max-width: 90%; white-space: pre-wrap; }
   .typing-bub { display: inline-flex; gap: 4px; padding: 13px 14px; }
-  .typing-bub i { width: 7px; height: 7px; border-radius: 50%; background: #a5a7c8; animation: blink 1.2s infinite ease-in-out; }
+  .typing-bub i { width: 7px; height: 7px; border-radius: 50%; background: #a5a7c8; animation: blink .75s infinite ease-in-out; }
   .typing-bub i:nth-child(2) { animation-delay: .15s; } .typing-bub i:nth-child(3) { animation-delay: .3s; }
   @keyframes blink { 0%, 80%, 100% { opacity: .25; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
   .reroll { margin: 4px 0 2px 4px; border: none; background: transparent; color: var(--hint); font-size: 12.5px; font-weight: 700; padding: 4px 6px; }
@@ -21171,7 +21228,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 #nav button{min-width:0!important;padding:7px 0!important;flex:1 1 0!important;font-size:9px!important}#nav .ic{font-size:23px!important}#nav button>span:last-child{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .appearance-swatches{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 0 16px}.appearance-swatches span{display:flex;align-items:center;gap:5px;font-size:11px;background:#2a243b;padding:5px 8px;border-radius:20px}.appearance-swatches i{width:13px;height:13px;border:1px solid #fff4;border-radius:50%}.appearance-locked .rd-field:after{content:'🔒';position:absolute;right:10px;top:0;font-size:11px}.appearance-locked .rd-field{position:relative;padding-top:4px}.appearance-locked .rd-field>select{padding-right:24px!important}.player-selfie{display:block;width:150px;height:175px;object-fit:cover;border-radius:18px;margin:16px auto}.player-consent{display:flex;align-items:flex-start;gap:10px;line-height:1.5;font-size:12px;margin:15px 0}.player-consent input{width:20px;height:20px;flex:none}#view-onb{overflow-x:hidden}#view-onb>.ob-in{width:100%;box-sizing:border-box;margin:12px 0}#view-onb>.btn{width:100%;margin:7px 0}
 .send-bounce{animation:send-hop .6s cubic-bezier(.2,.7,.3,1)!important}.input-shell.send-sweep:after{content:'';position:absolute;inset:-2px;pointer-events:none;border:2px solid #c590f8;border-radius:inherit;z-index:3;animation:send-edge .7s ease-out!important}.reaction-art{display:block;width:34px;height:34px;object-fit:contain;border-radius:10px}.rd-user-react .reaction-art{width:29px;height:29px}.rd-premium{animation:none!important}.reaction-heart{animation:heart-beat 1.5s ease-in-out infinite}.reaction-star{animation:star-rock 2s ease-in-out infinite}.reaction-flame{animation:flame-dance 1.2s ease-in-out infinite;transform-origin:50% 85%}.reaction-party{animation:party-pop 1.7s ease-in-out infinite}
-@keyframes send-hop{35%{transform:translateY(-9px) rotate(-12deg)}70%{transform:translateY(2px) rotate(5deg)}}@keyframes send-edge{0%{clip-path:inset(0 100% 0 0);opacity:1}70%{clip-path:inset(0 0 0 75%);opacity:1}100%{clip-path:inset(0 0 0 100%);opacity:0}}@keyframes heart-beat{35%{transform:scale(1.13)}55%{transform:scale(.98)}70%{transform:scale(1.07)}}@keyframes star-rock{50%{transform:translate(2px,-3px) rotate(15deg);filter:brightness(1.2)}}@keyframes flame-dance{50%{transform:scaleX(.9) scaleY(1.08) rotate(-3deg)}}@keyframes party-pop{45%{transform:scale(1.12) rotate(7deg)}75%{transform:rotate(-4deg)}}@media(prefers-reduced-motion:reduce){.reaction-art,.send-bounce,.input-shell.send-sweep:after{animation:none!important}}
+@keyframes send-hop{35%{transform:translateY(-15px) rotate(-12deg)}70%{transform:translateY(2px) rotate(5deg)}}@keyframes send-edge{0%{clip-path:inset(0 100% 0 0);opacity:1}70%{clip-path:inset(0 0 0 75%);opacity:1}100%{clip-path:inset(0 0 0 100%);opacity:0}}@keyframes heart-beat{35%{transform:scale(1.13)}55%{transform:scale(.98)}70%{transform:scale(1.07)}}@keyframes star-rock{50%{transform:translate(2px,-3px) rotate(15deg);filter:brightness(1.2)}}@keyframes flame-dance{50%{transform:scaleX(.9) scaleY(1.08) rotate(-3deg)}}@keyframes party-pop{45%{transform:scale(1.12) rotate(7deg)}75%{transform:rotate(-4deg)}}@media(prefers-reduced-motion:reduce){.reaction-art,.send-bounce,.input-shell.send-sweep:after{animation:none!important}}
 
 .message-reactions{display:flex;align-items:center;gap:5px;position:static;margin:10px 0 -1px;min-height:28px;clear:both}.bub:has(.message-reactions){padding-bottom:12px!important}.bub .message-reactions .rd-user-react,.bub .message-reactions .react{position:static!important;inset:auto!important;display:inline-flex;align-items:center;justify-content:center;background:transparent!important;border:0!important;padding:0!important;min-height:28px!important;box-shadow:none!important}.message-reactions .reaction-art{width:30px!important;height:30px!important;border-radius:0!important;background:transparent!important}.rd-premium-picker button{background:transparent!important;border:0!important;box-shadow:none!important}.reaction-art{background:transparent!important;border-radius:0!important}
 #send.send-bounce{animation:send-merge 1.15s ease-in-out!important;transform-origin:left center;box-shadow:0 0 24px #b974df88!important}.input-shell.send-sweep:after{animation:send-travel 1.1s ease-in-out!important;border-color:#d5a8ff!important}.message-arriving{opacity:0;animation-name:message-arrived!important;animation-duration:.15s!important;animation-timing-function:ease!important;animation-fill-mode:forwards!important}.input-shell{transition:border-radius .35s ease}.input-shell:has(+.send-bounce){border-top-right-radius:14px;border-bottom-right-radius:14px}
@@ -21200,7 +21257,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
 .onb-own-avatar{width:76px;height:76px;object-fit:cover;border-radius:20px;margin:12px auto;display:block}#onb-generate-avatar.selected{background:linear-gradient(135deg,#8054ac,#ba4c9c)!important;border-color:#e0a5e8!important}
 /* Nov 23: invariant can proportions and delayed, target-bound gesture coaching. */
 .energy-can-wrap{width:min(80vw,360px)!important;height:auto!important;aspect-ratio:1!important;margin-top:28px}.energy-can-wrap .energy-ritual-can,.energy-can-wrap .energy-can-open{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:contain!important}.energy-can-wrap .energy-ring{top:7%!important;left:44%!important;width:15%!important;height:12%!important}.energy-gesture{opacity:0!important;transition:opacity .18s;animation:none!important;position:absolute!important;bottom:auto!important;top:40%!important;right:9%!important;width:78px!important;height:78px!important;transform:none!important}.energy-gesture.guide-visible{opacity:1!important;animation:guide-swipe .8s ease-in-out!important}.energy-gesture.pulling-guide{top:0%!important;right:28%!important;animation:guide-pull .8s ease-in-out!important}.energy-motion-symbol{position:absolute;left:12%;top:45%;font-size:36px;opacity:0;pointer-events:none}.guide-visible~.energy-motion-symbol{opacity:1;animation:guide-swipe .6s ease-in-out infinite}.energy-motion-symbol[hidden]{display:none!important}@keyframes guide-swipe{50%{transform:translateX(18px) rotate(10deg)}}@keyframes guide-pull{to{transform:translateY(-24px)}}#h-bucks{cursor:pointer}#h-bucks:after{content:'+';display:inline-grid;place-items:center;width:17px;height:17px;background:#238657;border-radius:50%;font-weight:900;color:#c5ffda;margin-left:4px}#h-ava{cursor:pointer}.read-eye{color:#fff;opacity:.8;font-size:16px;margin:2px 12px 6px auto;width:max-content}.channel-profile{display:flex;gap:12px;align-items:center;width:100%;padding:16px;text-align:left}.channel-profile img{width:44px;height:44px;border-radius:14px;object-fit:contain}.channel-chat{display:block;width:100%;border:0;background:#5f3d7c22;color:#dac0ed;padding:7px 12px;font-size:12px;border-radius:12px;margin-bottom:10px}.death-panel{max-width:440px;margin:15vh auto;padding:20px;display:grid;gap:12px;text-align:center}.rd-tour{pointer-events:none!important}.rd-tour .rd-tour-panel{pointer-events:auto}.rd-tour .rd-ring{pointer-events:none}.tour-pointer{position:fixed;width:68px;height:68px;object-fit:contain;pointer-events:none;z-index:10002;transform:rotate(180deg);filter:drop-shadow(0 3px 6px #0008);animation:tour-point 1s ease-in-out infinite}.tour-action{outline:3px solid #dbb5ef!important;outline-offset:4px;position:relative;z-index:10001!important}@keyframes tour-point{50%{translate:0 7px}}.tour-wait{font-size:12px;color:#d8c8e1}.message-arriving{animation:none!important;opacity:1!important}
-</style>
+.reply-enter{animation:replyArrival .3s ease-out both;transform-origin:left bottom}@keyframes replyArrival{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}@media(prefers-reduced-motion:reduce){.reply-enter{animation:none}}</style>
 </head>
 <body>
 <div id="bgfx"></div>
@@ -21280,11 +21337,11 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     maintenanceLocale=lang||'ru';
     if(maintenanceVisible)return;maintenanceVisible=true;var f=$('full');f.style.display='block';f.innerHTML='';f.classList.add('maintenance-screen');
     f.appendChild(el('div','maintenance-orb','✦'));f.appendChild(el('h2',null,tr('⚠️ Технические работы','⚠️ Maintenance','⚠️ Wartungsarbeiten')));f.appendChild(el('p',null,tr('Обновляем бота. Пока ждёшь — повтори световую последовательность.','We are updating the bot. While you wait, repeat the light sequence.','Wir aktualisieren den Bot. Wiederhole in der Zwischenzeit die Lichtfolge.')));
-    if(message)f.appendChild(el('p',null,message));
+    if(message){var detail=String(message).replace(/^\s*(?:⚠️?\s*)?(?:Технические работы|Maintenance|Wartungsarbeiten)\s*\n?/i,'').trim();if(detail)f.appendChild(el('p',null,detail));}
     var score=el('p'),grid=el('div','maintenance-grid'),buttons=[],sequence=[],index=0,accepting=false,round=0,active=true;grid.setAttribute('aria-label',tr('Игра на память','Memory game','Gedächtnisspiel'));
     function later(fn,ms){var id=setTimeout(function(){if(active)fn();},ms);maintenanceTimers.push(id);}
     function flash(i){buttons[i].classList.add('lit');later(function(){buttons[i].classList.remove('lit');},320);}
-    function play(){accepting=false;index=0;score.textContent=tr('Запомни · уровень ','Watch · level ','Merken · Stufe ')+round;sequence.forEach(function(i,n){later(function(){flash(i);},450+n*560);});later(function(){accepting=true;score.textContent=tr('Твоя очередь · ','Your turn · ','Du bist dran · ')+round;},500+sequence.length*560);}
+    function play(){accepting=false;index=0;score.textContent=tr('Запомни · уровень ','Watch · level ','Merken · Stufe ')+round;sequence.forEach(function(i,n){later(function(){flash(i);},450+n*560);});later(function(){accepting=true;score.textContent=tr('Твой ход · уровень ','Your turn · ','Du bist dran · ')+round;},500+sequence.length*560);}
     for(var i=0;i<9;i++){(function(i){var b=el('button');b.type='button';b.setAttribute('aria-label',tr('Плитка ','Tile ','Feld ')+(i+1));b.onclick=function(){if(!accepting)return;flash(i);if(i!==sequence[index]){accepting=false;score.textContent=tr('Почти! Нажми «Начать» и попробуй ещё.','Almost! Press Start and try again.','Fast! Starte erneut.');return;}index++;if(index===sequence.length){accepting=false;later(function(){round++;sequence.push(Math.floor(Math.random()*9));play();},600);}};buttons.push(b);grid.appendChild(b);})(i);}
     f.appendChild(score);f.appendChild(grid);var start=el('button','btn',tr('Начать','Start','Starten'));start.onclick=function(){maintenanceTimers.forEach(clearTimeout);maintenanceTimers=[];buttons.forEach(function(b){b.classList.remove('lit');});round=1;sequence=[Math.floor(Math.random()*9)];play();};f.appendChild(start);var retry=el('button','btn ghost',tr('Проверить готовность','Check availability','Verfügbarkeit prüfen'));retry.onclick=function(){load(false);};f.appendChild(retry);start.click();
     f._stopMaintenance=function(){active=false;maintenanceTimers.forEach(clearTimeout);maintenanceTimers=[];maintenanceVisible=false;f.classList.remove('maintenance-screen');};
@@ -21356,7 +21413,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     $("h-tier").textContent = { pro: "PRO", super_pro: "SUPER", elite: "ELITE" }[lvl] || "";
     var st = $("h-status");
     st.className = "status" + ((s.pending||c.avatar_pending) ? " typing" : "");
-    st.textContent = c.avatar_pending ? tr('создаёт аватарку…','creating avatar…','Avatar entsteht…') : s.photo_pending ? tr('отправляет фото…','sending a photo…','sendet ein Foto…') : s.pending ? (Date.now()-(window.rdReadSince||0)<1000?tr('читает…','reading…','liest…'):s.ui.typing) : (s.asleep ? s.ui.asleep : (s.illness ? s.illness + " · " + s.ui.sick : s.ui.online));
+    st.textContent = c.avatar_pending ? tr('создаёт аватарку…','creating avatar…','Avatar entsteht…') : s.photo_pending ? tr('отправляет фото…','sending a photo…','sendet ein Foto…') : s.pending ? (Date.now()-(window.rdReadSince||0)<1000?'':Date.now()-(window.rdReadSince||0)<1600?tr('читает…','reading…','liest…'):s.ui.typing) : (s.asleep ? s.ui.asleep : (s.illness ? s.illness + " · " + s.ui.sick : s.ui.online));
     withIcon($("h-bucks"), "icon_bucks", "💵", s.stats.bucks);
     withIcon($("h-hot"), "icon_hot", "🔥", s.hot.available);
     withIcon($("h-en"), "icon_energy", "⚡", s.stats.energy);$("photo-action").title=tr("Фото · осталось ","Photos remaining · ","Fotos übrig · ")+(s.photos||{}).total;
@@ -21488,7 +21545,8 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     layer.addEventListener('touchend',function(e){if(scale===1&&e.changedTouches[0].clientY-startY>120)layer.remove();});layer.appendChild(im);layer.appendChild(close);document.body.appendChild(layer);
   }
 
-  function reactionArt(button,emoji){var names={'💖':'heart','✨':'star','🔥':'flame','🎉':'party'},name=names[emoji];if(!name)return;button.textContent='';button.setAttribute('aria-label',emoji);var image=el('img','reaction-art reaction-'+name);image.src='/assets/reaction_'+name+'.webp?v=20261123a';image.alt=emoji;button.appendChild(image);}
+  function reactionArt(button,emoji){var names={'💖':'heart','✨':'star','🔥':'flame','🎉':'party'},name=names[emoji];if(!name)return;button.textContent='';button.setAttribute('aria-label',emoji);var image=el('img','reaction-art reaction-'+name);image.src='/assets/reaction_'+name+'.webp?v=20261124a';image.alt=emoji;button.appendChild(image);}
+  var seenReplies=new Set(),chatInitialized=false;
   function renderChat() {
     var s = state, box = $("msgs"), previousScroll=box.scrollTop;
     var stick = nearBottom() || lastCount < 0;
@@ -21517,15 +21575,17 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       if (m.user_reaction) { var ur = el("button", "rd-user-react"+(m.reaction_animated?" rd-premium":""), m.user_reaction); ur.onclick = function () { messageAction(m, "react", {emoji: m.user_reaction}); }; if(m.reaction_animated)reactionArt(ur,m.user_reaction);reactionBar.appendChild(ur); }
       if (m.reaction) reactionBar.appendChild(el("span", "react", m.reaction));
       if(reactionBar.childNodes.length){w.classList.add('has-reactions');w.appendChild(reactionBar);}
+      row.dataset.messageId=m.id;
+      if(m.role==='assistant'){if(chatInitialized&&!seenReplies.has(String(m.id))){row.classList.add('reply-enter');setTimeout(function(){row.classList.remove('reply-enter');},350);}seenReplies.add(String(m.id));}
       row.appendChild(w); box.appendChild(row);
       prev = m.role;
     });
     if(s.photo_pending){var ph=el('div','photo-loading');ph.appendChild(el('div','photo-orb'));ph.appendChild(el('span',null,tr('Создаёт фото…','Creating photo…','Foto entsteht…')));box.appendChild(ph);}
-    if(s.pending&&!s.photo_pending&&Date.now()-(window.rdReadSince||0)<1000){var eye=el('div','read-eye');eye.innerHTML='<svg width=18 height=13 viewBox="0 0 24 16" aria-hidden=true><path d="M1 8 Q12 -5 23 8 Q12 21 1 8Z" fill=none stroke=white stroke-width=1.7 /><circle cx=12 cy=8 r=3 fill=white /></svg>';eye.setAttribute('aria-label',tr('Прочитано','Read','Gelesen'));box.appendChild(eye);setTimeout(function(){if(state&&state.pending&&tab==='chat'){renderHead();renderChat();}},1050);}
-    if (s.pending&&!s.photo_pending&&Date.now()-(window.rdReadSince||0)>=1000) { var r = el("div", "row ai gap"); var t = el("div", "bub typing-bub"); if(s.photo_pending)t.textContent=tr('Отправляет фото…','Sending a photo…','Foto wird gesendet…');else t.innerHTML = "<i></i><i></i><i></i>"; r.appendChild(t); box.appendChild(r); }
+    if(s.pending&&!s.photo_pending&&Date.now()-(window.rdReadSince||0)>=1000&&Date.now()-(window.rdReadSince||0)<1600){var eye=el('div','read-eye');eye.innerHTML='<svg width=18 height=13 viewBox="0 0 24 16" aria-hidden=true><path d="M1 8 Q12 -5 23 8 Q12 21 1 8Z" fill=none stroke=white stroke-width=1.7 /><circle cx=12 cy=8 r=3 fill=white /></svg>';eye.setAttribute('aria-label',tr('Прочитано','Read','Gelesen'));box.appendChild(eye);setTimeout(function(){if(state&&state.pending&&tab==='chat'){renderHead();renderChat();}},Math.max(30,1600-(Date.now()-(window.rdReadSince||0))));}
+    if (s.pending&&!s.photo_pending&&Date.now()-(window.rdReadSince||0)>=1600) { var r = el("div", "row ai gap"); var t = el("div", "bub typing-bub"); if(s.photo_pending)t.textContent=tr('Отправляет фото…','Sending a photo…','Foto wird gesendet…');else t.innerHTML = "<i></i><i></i><i></i>"; r.appendChild(t); box.appendChild(r); }
     else if (s.can_reroll && !s.asleep) { var rr = el("button", "reroll", s.ui.reroll); rr.onclick = reroll; box.appendChild(rr); }
     if (stick) scrollBottom(true);else box.scrollTop=previousScroll;
-    lastCount = s.messages.length;requestAnimationFrame(updateChatControls);
+    chatInitialized=true;lastCount = s.messages.length;requestAnimationFrame(updateChatControls);
     // сон: вместо поля ввода -- способы разбудить
     var sl = $("sleep"), comp = $("composer");
     if (s.asleep) {
@@ -21556,9 +21616,9 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     if(source){var skin=getComputedStyle(source);fly.style.background=skin.background;fly.style.color=skin.color;fly.style.border=skin.border;fly.style.boxShadow=skin.boxShadow;}
     anchor.appendChild(fly);document.body.appendChild(anchor);
     function follow(){if(!alive)return;var r=$('input').getBoundingClientRect();anchor.style.left=r.left+'px';anchor.style.top=r.top+'px';anchor.style.width=r.width+'px';frame=requestAnimationFrame(follow);}follow();
-    fly.animate([{transform:'translateY(0)',opacity:.95,filter:'blur(0)'},{transform:'translateY(-9px)',opacity:.65,filter:'blur(0)',offset:.45},{transform:'translateY(-20px)',opacity:0,filter:'blur(9px)'}],{duration:1800,easing:'ease-out',fill:'forwards'});
-    for(var i=0;i<8;i++){var b=el('i','send-mist');b.style.cssText='position:absolute;left:'+(8+Math.random()*80)+'%;top:'+(8+Math.random()*22)+'px;width:5px;height:5px;border-radius:50%;background:'+fly.style.color+';opacity:0';anchor.appendChild(b);b.animate([{opacity:0,transform:'scale(.3)'},{opacity:.25,transform:'translateY(-3px) scale(1)',offset:.4},{opacity:0,transform:'translateY(-10px) scale(2)',filter:'blur(5px)'}],{delay:350+Math.random()*200,duration:1300,easing:'ease-out'});}
-    setTimeout(function(){alive=false;cancelAnimationFrame(frame);anchor.remove();},2100);
+    fly.animate([{transform:'translateY(0)',opacity:.95,filter:'blur(0)'},{transform:'translateY(-15px)',opacity:.65,filter:'blur(0)',offset:.45},{transform:'translateY(-34px)',opacity:0,filter:'blur(9px)'}],{duration:2400,easing:'ease-out',fill:'forwards'});
+    for(var i=0;i<8;i++){var b=el('i','send-mist');b.style.cssText='position:absolute;left:'+(8+Math.random()*80)+'%;top:'+(8+Math.random()*22)+'px;width:5px;height:5px;border-radius:50%;background:'+fly.style.color+';opacity:0';anchor.appendChild(b);b.animate([{opacity:0,transform:'scale(.3)'},{opacity:.25,transform:'translateY(-3px) scale(1)',offset:.4},{opacity:0,transform:'translateY(-10px) scale(2)',filter:'blur(5px)'}],{delay:450+Math.random()*250,duration:1750,easing:'ease-out'});}
+    setTimeout(function(){alive=false;cancelAnimationFrame(frame);anchor.remove();},2650);
   }
   $('send').addEventListener('pointerdown',function(e){if(document.activeElement===$('input'))e.preventDefault();});
   var messageArrival=null;
@@ -21567,7 +21627,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     if (!text || sending || state.pending) return;
     messageArrival={text:text,until:performance.now()+700};
 
-    window.rdReadSince=Date.now();document.dispatchEvent(new CustomEvent('rd-tutorial-send'));
+    window.rdReadSince=Date.now();setTimeout(function(){if(state&&state.pending&&tab==='chat'){renderHead();renderChat();}},1010);document.dispatchEvent(new CustomEvent('rd-tutorial-send'));
     sending = true; haptic("light"); if (sndOn() && window.RDSFX) window.RDSFX.sent();
     // сразу показываем своё сообщение и «печатает…», не дожидаясь сервера
     state.messages.push({ role: "user", text: text }); state.pending = true; state.can_reroll = false;
@@ -22081,11 +22141,14 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     ref.appendChild(el("div", "note", ui.ref_stats.replace("{n}", r.count).replace("{b}", r.earned_bucks).replace("{e}", r.earned_energizers)));
     v.appendChild(ref);
     var sup = el("div", "card"); sup.appendChild(el("h4", null, ui.support_title)); sup.appendChild(el("div", "note", ui.support_hint));
+    var status=el('div','note support-status');
+    function showSupport(q){status.textContent=(q?(q.status==='in_progress'?tr('Обращение в работе. ','Your request is being handled. '):tr('Твоя очередь: ','Queue position: ')+q.position+'. '):'')+tr('Подписчикам отвечаем в приоритетном порядке.','Subscribers receive priority support.');}
+    showSupport(state.support);sup.appendChild(status);
     var ta = el("textarea"); ta.id = "sup-text"; sup.appendChild(ta);
     var sb = el("button", "btn ghost", ui.support_send);
     sb.onclick = function () { var t = ta.value.trim(); if (!t) return; sb.disabled = true;
       api("/api/app/support", { text: t }).then(function (res) { sb.disabled = false; toast(res.toast || res.error || "");
-        if (res.ok) { ta.value = ""; haptic("success"); } }).catch(function () { sb.disabled = false; }); };
+        if (res.ok) { state.support=res.support;showSupport(res.support);ta.value = ""; haptic("success"); } }).catch(function () { sb.disabled = false; }); };
     sup.appendChild(sb); v.appendChild(sup);
     var ch = el("button", "btn ghost", ui.channel_btn);
     ch.onclick = function () { if (tg && tg.openTelegramLink) safe(function () { tg.openTelegramLink(state.channel); }); else window.open(state.channel); };
@@ -22123,7 +22186,7 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
       if(ob.appearance_gender!==ob.gender){ob.appearance.hair_style=ob.gender==='male'?'short':'waves';ob.appearance.accessory='none';ob.appearance_gender=ob.gender;}
       ob.race=ob.race||'human';ob.look='custom';delete ob.appearance_preset;
       raceField(v,ob.race,o.races||[],function(value){ob.race=value;renderOnb();});
-      ob.appearance.race=ob.race;appearanceFields(v,ob.appearance,o.appearance_fields_by_gender[ob.gender]);
+      ob.appearance.accessory='none';ob.appearance.race=ob.race;appearanceFields(v,ob.appearance,o.appearance_fields_by_gender[ob.gender]);
     } else if (step[0] === "look") {
       var lw = el("div", "looks");
       looks.forEach(function (L) {
@@ -22202,12 +22265,12 @@ input,textarea,[contenteditable=true]{-webkit-user-select:text;user-select:text;
     return api("/api/app/state").then(function (res) {
       if (!res.state) { if(res.error==='maintenance')maintenanceScreen(res.lang,res.message);else full(res.message || res.error || "Error", res.error === "not_ready" ? "✨" : "⚠️"); return; }
       if(maintenanceVisible){if($("full")._stopMaintenance)$("full")._stopMaintenance();$("full").style.display="none";}
-      var before = state ? JSON.stringify([state.messages, state.reply_choices,state.quests,state.server_day,state.hot,state.character,state.photo_pending]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) : "";
+      var before = state ? JSON.stringify([state.messages, state.reply_choices,state.quests,state.support,state.server_day,state.hot,state.character,state.photo_pending]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) : "";
       state = res.state;
       if(avatarAfterPayment&&state.character&&state.character.avatar_credits>0&&!state.character.avatar_pending){avatarAfterPayment=false;requestProfileAvatar();}
       document.documentElement.lang = (state.settings && state.settings.lang) || (state.onboarding && state.onboarding.lang) || 'ru';
       if (state.onboarding) { if (!quiet) render(); return; }
-      if (!quiet || before !== JSON.stringify([state.messages, state.reply_choices,state.quests,state.server_day,state.hot,state.character,state.photo_pending]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) || state.notices.length) { if (!FRAME_PATH[tab]) render(); else if (state.notices.length) { toast(state.notices.join("\n\n")); state.notices = []; } }
+      if (!quiet || before !== JSON.stringify([state.messages, state.reply_choices,state.quests,state.support,state.server_day,state.hot,state.character,state.photo_pending]) + "|" + state.pending + "|" + (state.hot && state.hot.pending) || state.notices.length) { if (!FRAME_PATH[tab]) render(); else if (state.notices.length) { toast(state.notices.join("\n\n")); state.notices = []; } }
       else if (!FRAME_PATH[tab]) renderHead();
     }).catch(function (e) { if (!quiet) full("Network error: " + (e && e.message || "unknown"), "⚠️"); });
   }

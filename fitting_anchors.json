@@ -854,5 +854,133 @@
     "head_width": 42,
     "head_scale": 1.167,
     "body_scale": 0.901
+  },
+  "nov24_look_7.webp": {
+    "x": 159.5,
+    "top": 14,
+    "neck": 72,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 1.009
+  },
+  "nov24_look_3.webp": {
+    "x": 159.0,
+    "top": 41,
+    "neck": 80,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 0.991
+  },
+  "nov24_look_6.webp": {
+    "x": 158.9,
+    "top": 12,
+    "neck": 68,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 1.019
+  },
+  "nov24_look_1.webp": {
+    "x": 159.4,
+    "top": 46,
+    "neck": 77,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 0.998
+  },
+  "nov24_look_4.webp": {
+    "x": 160.5,
+    "top": 32,
+    "neck": 73,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.007
+  },
+  "nov24_look_11.webp": {
+    "x": 159.7,
+    "top": 36,
+    "neck": 101,
+    "head_width": 41,
+    "head_scale": 1.139,
+    "body_scale": 0.941
+  },
+  "nov24_look_13.webp": {
+    "x": 158.8,
+    "top": 38,
+    "neck": 71,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 1.012
+  },
+  "nov24_look_12.webp": {
+    "x": 160.2,
+    "top": 12,
+    "neck": 88,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 0.972
+  },
+  "nov24_look_15.webp": {
+    "x": 158.8,
+    "top": 12,
+    "neck": 75,
+    "head_width": 44,
+    "head_scale": 1.222,
+    "body_scale": 1.002
+  },
+  "nov24_look_2.webp": {
+    "x": 159.4,
+    "top": 16,
+    "neck": 72,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.009
+  },
+  "nov24_look_14.webp": {
+    "x": 159.7,
+    "top": 13,
+    "neck": 71,
+    "head_width": 46,
+    "head_scale": 1.25,
+    "body_scale": 1.012
+  },
+  "nov24_look_8.webp": {
+    "x": 157.6,
+    "top": 40,
+    "neck": 71,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 1.012
+  },
+  "nov24_look_5.webp": {
+    "x": 159.5,
+    "top": 12,
+    "neck": 68,
+    "head_width": 43,
+    "head_scale": 1.194,
+    "body_scale": 1.019
+  },
+  "nov24_look_10.webp": {
+    "x": 158.9,
+    "top": 14,
+    "neck": 71,
+    "head_width": 45,
+    "head_scale": 1.25,
+    "body_scale": 1.012
+  },
+  "nov24_look_0.webp": {
+    "x": 159.7,
+    "top": 47,
+    "neck": 78,
+    "head_width": 49,
+    "head_scale": 1.25,
+    "body_scale": 0.995
+  },
+  "nov24_look_9.webp": {
+    "x": 158.8,
+    "top": 39,
+    "neck": 71,
+    "head_width": 48,
+    "head_scale": 1.25,
+    "body_scale": 1.012
   }
 }

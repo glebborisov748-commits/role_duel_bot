@@ -32,3 +32,7 @@ Local SVG compositing adds selected hair/skin/iris colors, race details and acce
 `wardrobe_bunny.webp`, `wardrobe_latex.webp`, `wardrobe_stockings.webp` come from the clothing-only atlas `exec-7baf6727-6112-414f-ae47-7dd45ede9df9.png`. Dress and heels reuse their existing matching shop illustrations. The fitting room is a free local, fully clothed outfit preview.
 
 Build with `python scripts/export_avatar_presets.py anime-atlas.png realism-atlas.png wardrobe-atlas.png`. Source PNGs remain unchanged in the workspace image library; mobile WebP exports are committed.
+
+## 24 November 2026
+
+Generated a 4×4 sheet of sixteen opaque everyday mannequin outfit combinations and a separate plum/ivory calendar-and-clock icon. `scripts/export_nov24_assets.py` only crops/registers/resizes these originals into `nov24_look_0.webp` through `nov24_look_15.webp` and `offer_calendar_nov24.webp`. New complete looks are catalog/inventory gated; existing public look keys with identical clothes now use the newer art. `scripts/calibrate_fitting.py` includes the new whole mannequins for accessory registration. This is an expanded set of examples, not an exhaustive rendering of all clothing permutations.
