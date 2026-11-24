@@ -36,3 +36,7 @@ Build with `python scripts/export_avatar_presets.py anime-atlas.png realism-atla
 ## 24 November 2026
 
 Generated a 4×4 sheet of sixteen opaque everyday mannequin outfit combinations and a separate plum/ivory calendar-and-clock icon. `scripts/export_nov24_assets.py` only crops/registers/resizes these originals into `nov24_look_0.webp` through `nov24_look_15.webp` and `offer_calendar_nov24.webp`. New complete looks are catalog/inventory gated; existing public look keys with identical clothes now use the newer art. `scripts/calibrate_fitting.py` includes the new whole mannequins for accessory registration. This is an expanded set of examples, not an exhaustive rendering of all clothing permutations.
+
+## Work preview icons — 24 November 2026
+
+Generated one transparent three-cell sheet containing a muted wicker basket, an ice snowflake, and a basket-with-expansion-arrows powerup. `scripts/export_work_v2_assets.py` only crops, registers and scales its source into `work_basket_v2.webp`, `work_freeze_v2.webp` and `work_wide_v2.webp`. The new work UI selects these assets; public legacy work retains its current visuals until release.

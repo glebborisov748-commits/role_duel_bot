@@ -24,6 +24,11 @@ TREE = ast.parse(SOURCE.read_text())
 def load_functions(names, namespace):
     for module in ("fandom_catalog","roleplay_voice","scene_photos"):
         namespace.setdefault(module,__import__(module))
+    namespace.setdefault("casual_work", __import__("casual_work"))
+    namespace.setdefault("work_profile",lambda u:u)
+    namespace.setdefault("work_v2",lambda u:False)
+    namespace.setdefault("resolve_workapp_user",lambda data,request=None:namespace['resolve_webapp_user'](data))
+    namespace.setdefault("_work_request",lambda request:namespace['_play_request'](request))
     namespace.setdefault("work_rotation", __import__("work_rotation"))
     namespace.setdefault("premium_rules", __import__("premium_rules"))
     namespace.setdefault("get_display_style",lambda u:u.get("style","warm"))

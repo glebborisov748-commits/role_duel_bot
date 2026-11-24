@@ -1,3 +1,5 @@
+import casual_work
+import work_preview
 import model_routing
 import support_queue
 import model_benchmark
@@ -6691,7 +6693,7 @@ async def reset_all_confirm(call: types.CallbackQuery):
 async def admin_help_cmd(message: types.Message):
     if message.from_user.id not in ADMIN_IDS and message.from_user.id!=MAIN_ADMIN_ID:return
     common='/admin_help — команды\n/stats — статистика\n/support_queue — очередь обращений\n/support — поддержка'
-    chief='\n/tehwork on причина | off — техработы\n/tehwork preview on | off — проверить экран только у себя\n/giveenergizers ID количество — энергетики\n/givebucks ID количество — баксы\n/grant ID тип количество — выдать ресурс или подписку\n/grant_me тип количество — выдать себе\n/setlevel ID уровень — сближение\n/revoke_subscription ID — снять подписку\n/ai_models — переключение моделей без перезапуска\n/ai_model chat|hot ID — точный выбор модели\n/ai_model hot same — для сцен как в переписке\n/models — список моделей\n/model_test — сравнить кандидатов (расчётный бюджет 15 ₽)\n/broadcast — рассылка\n/cancel_broadcast — отмена рассылки\n/giveaway_all — массовая выдача\n/reset_me — сброс своего профиля\n/reset_all — сброс всех профилей'
+    chief='\n/tehwork on причина | off — техработы\n/tehwork preview on | off — проверить экран только у себя\n/giveenergizers ID количество — энергетики\n/givebucks ID количество — баксы\n/grant ID тип количество — выдать ресурс или подписку\n/grant_me тип количество — выдать себе\n/setlevel ID уровень — сближение\n/revoke_subscription ID — снять подписку\n/test_mode on|off|reset — тестовая работа с отдельным балансом\n/work_release on|off — новые игры для всех / откат\n/ai_models — переключение моделей без перезапуска\n/ai_model chat|hot ID — точный выбор модели\n/ai_model hot same — для сцен как в переписке\n/models — список моделей\n/model_test — сравнить кандидатов (расчётный бюджет 15 ₽)\n/broadcast — рассылка\n/cancel_broadcast — отмена рассылки\n/giveaway_all — массовая выдача\n/reset_me — сброс своего профиля\n/reset_all — сброс всех профилей'
     await message.answer(common+(chief if message.from_user.id==MAIN_ADMIN_ID else '\nВыдачи ресурсов и техработы доступны только главному админу.'),parse_mode=None)
 
 
@@ -15418,6 +15420,7 @@ def serialize_work_state(user):
     farm_watered_label, farm_payout_preview, farm_crop_stats) нарочно не отформатированы --
     get_text без kwargs отдаёт сырой шаблон, фронтенд сам подставляет актуальные числа после
     каждого действия, без нового похода на сервер."""
+    user = work_profile(user)
     lang = user.get("lang", "ru")
     _multiplier = work_earnings_multiplier(user)
     _multiplier_display = str(int(_multiplier)) if _multiplier == int(_multiplier) else str(_multiplier)
@@ -15425,10 +15428,13 @@ def serialize_work_state(user):
         "lang": lang,
         "bucks": user.get("bucks", 0),
         "multiplier": _multiplier,
+        "work_v2":work_v2(user),"sandbox":bool(user.get('_work_sandbox')),
+        "puzzle":casual_work.snapshot(user,'puzzle'),"warehouse":casual_work.snapshot(user,'warehouse'),
         "hit_bucks": WORK_HIT_BUCKS,
         "failure_penalty": WORK_FAILURE_PENALTY_BUCKS,
         "courier_crash_penalty": COURIER_CRASH_PENALTY_BUCKS,
-        "rotation":work_rotation.state(local_today(), daily_reset_timestamp(), bypass=user.get("_telegram_id") == MAIN_ADMIN_ID),
+        "rotation":{**work_rotation.state(local_today(), daily_reset_timestamp(), bypass=user.get("_telegram_id") == MAIN_ADMIN_ID),
+                    "names":{**work_rotation.NAMES,**({'mine':'Мозаика','dig':'Склад находок'} if work_v2(user) else {})}},
         "mine":mine.snapshot(user),
         "farm_market":farm_market(),
         "dig":archaeology.snapshot(user),
@@ -15461,7 +15467,9 @@ def serialize_work_state(user):
             "gameover_title": get_text(user, "work_gameover_title"),
             "gameover_lost": get_text(user, "work_gameover_lost", amount="{amount}"),
             "retry_btn": get_text(user, "work_retry_btn"),
-            "catch_hint": get_text(user, "work_catch_hint"),
+            "catch_hint": ({'ru':'Лови предметы и избегай бомб. ❄️ Заморозка замедляет падение, 🧲 магнит притягивает, 💰 удваивает доход, 🛡️ щит защищает, ↔️ расширение увеличивает корзину на 8 секунд.',
+                           'en':'Catch items and dodge bombs. Freeze slows the fall, magnet attracts, x2 doubles income, shield protects, and wide basket lasts 8 seconds.',
+                           'de':'Fange Gegenstände und weiche Bomben aus. Eis verlangsamt, Magnet zieht an, x2 verdoppelt, Schild schützt; breiter Korb für 8 Sekunden.'}.get(lang) if work_v2(user) else get_text(user,'work_catch_hint')),
             "courier_hint": get_text(user, "work_rhythm_hint"),
             "courier_arrived": get_text(user, "work_courier_arrived"),
             "courier_arrived_tip": get_text(user, "work_courier_arrived_tip"),
@@ -16171,7 +16179,9 @@ WORK_PAGE_HTML = r"""<!doctype html>
 .mine-maze{display:grid;gap:3px;background:#05060b;border:2px solid #584a35;padding:5px;border-radius:12px;box-shadow:inset 0 0 25px #000}.maze-cell{aspect-ratio:1;border:0;border-radius:4px;padding:0;background:#0a0c12;color:#efd59b;font-size:19px;min-width:0;opacity:1!important}.maze-cell.fog{background:#020308}.maze-cell.rock{background:repeating-linear-gradient(145deg,#292630 0 5px,#1b1922 6px 9px)}.maze-cell.seen{background:#14141c}.maze-cell.lit{background:#484130;box-shadow:inset 0 0 10px #c5a75b18}.maze-cell.player{background:#8b7041;box-shadow:0 0 22px #e8cd7166;position:relative;z-index:1}.dig-cutaway{background:linear-gradient(#58533a,#473727 20%,#30241e);padding:0 8px 10px;border-radius:18px;box-shadow:inset 0 2px 0 #adc98577,0 10px 22px #0005}.dig-surface{border-bottom:5px solid #84955b;padding:13px 0 5px;color:#e0e6c4;font-size:11px;text-align:center}.dig-cutaway .dig-board{gap:3px;background:transparent;position:relative;padding-top:5px}.dig-cutaway .dig-cell{height:44px;border-radius:3px;background:linear-gradient(0deg,#35241e66,#b28b6444);border:1px solid #b4946755;box-shadow:inset 0 2px 0 #c49b7144;font-size:18px}.dig-cell.buried{opacity:1;color:transparent;background:#493527}.dig-cell.found{color:#ffd277;box-shadow:0 0 15px #efbe5b55}
 
 #hacker-wires{touch-action:none;position:relative}.hacker-wire-end,.hacker-wire-socket{font-size:24px;color:#f5e9ff;touch-action:none}.wire-obstacle{position:absolute;z-index:5;width:72px;height:32px;padding:0;background:#272131;border:3px solid #a793b9;border-radius:40%;font-size:42px;line-height:18px;color:#d6c59b;transform:rotate(-28deg);box-shadow:0 5px 8px #0007;touch-action:none}
-.mine-world,.dig-world{width:100%;position:relative;border-radius:22px;overflow:hidden;background:#140e0b;box-shadow:inset 0 2px 0 #e5b68533,0 12px 25px #0006;border:1px solid #6f533d}.mine-world-canvas,.dig-world-canvas{display:block;width:100%;height:auto;aspect-ratio:342/420;touch-action:none}.mine-world-controls,.dig-world-controls{display:flex;align-items:center;justify-content:space-around;padding:14px 0}.work-dpad{display:grid;grid-template-columns:repeat(3,42px);grid-template-rows:repeat(2,40px);gap:5px;touch-action:none}.work-dpad button{border:1px solid #aa916c88;background:linear-gradient(#62513d,#342a27);border-radius:12px;color:#fff0c7;font-size:24px;box-shadow:inset 0 1px 0 #ffe6b644,0 3px 0 #17120f;touch-action:none}.pad-up{grid-column:2;grid-row:1}.pad-left{grid-column:1;grid-row:2}.pad-down{grid-column:2;grid-row:2}.pad-right{grid-column:3;grid-row:2}.mine-aim{width:88px;height:88px;border-radius:50%;background:radial-gradient(#746143,#211c23);border:2px solid #aa976b;box-shadow:inset 0 0 15px #0008;display:grid;place-items:center;position:relative;touch-action:none}.mine-aim span{font-size:24px;pointer-events:none}.mine-aim-knob{position:absolute;left:calc(50% - 9px);top:calc(50% - 9px);width:18px;height:18px;border-radius:50%;background:#ffe7a3;box-shadow:0 0 14px #e5c976;pointer-events:none}.dig-world-controls{justify-content:center}.mine-actions{flex-wrap:wrap}</style>
+.mine-world,.dig-world{width:100%;position:relative;border-radius:22px;overflow:hidden;background:#140e0b;box-shadow:inset 0 2px 0 #e5b68533,0 12px 25px #0006;border:1px solid #6f533d}.mine-world-canvas,.dig-world-canvas{display:block;width:100%;height:auto;aspect-ratio:342/420;touch-action:none}.mine-world-controls,.dig-world-controls{display:flex;align-items:center;justify-content:space-around;padding:14px 0}.work-dpad{display:grid;grid-template-columns:repeat(3,42px);grid-template-rows:repeat(2,40px);gap:5px;touch-action:none}.work-dpad button{border:1px solid #aa916c88;background:linear-gradient(#62513d,#342a27);border-radius:12px;color:#fff0c7;font-size:24px;box-shadow:inset 0 1px 0 #ffe6b644,0 3px 0 #17120f;touch-action:none}.pad-up{grid-column:2;grid-row:1}.pad-left{grid-column:1;grid-row:2}.pad-down{grid-column:2;grid-row:2}.pad-right{grid-column:3;grid-row:2}.mine-aim{width:88px;height:88px;border-radius:50%;background:radial-gradient(#746143,#211c23);border:2px solid #aa976b;box-shadow:inset 0 0 15px #0008;display:grid;place-items:center;position:relative;touch-action:none}.mine-aim span{font-size:24px;pointer-events:none}.mine-aim-knob{position:absolute;left:calc(50% - 9px);top:calc(50% - 9px);width:18px;height:18px;border-radius:50%;background:#ffe7a3;box-shadow:0 0 14px #e5c976;pointer-events:none}.dig-world-controls{justify-content:center}.mine-actions{flex-wrap:wrap}
+.casual-panel{max-width:480px;margin:12px auto;padding:16px;border:1px solid #625078;border-radius:22px;background:linear-gradient(145deg,#241d34,#15121f)}.casual-panel h3{font-size:22px;margin:0 0 10px}.casual-help,.casual-odds,.casual-status,.casual-note{font-size:13px;line-height:1.5;color:#c6bdd2}.casual-note{min-height:20px;color:#ffbfc8}.casual-reward{padding:10px 12px;background:#32273d;border-radius:12px;margin:12px 0;font-weight:750}.casual-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;max-width:330px;margin:18px auto}.casual-tile,.casual-crate{aspect-ratio:1;min-width:0;min-height:44px;border-radius:15px;border:1px solid #b19bc4;background:linear-gradient(145deg,#8a70a9,#5d466e);color:#fff;font-size:30px;font-weight:800;touch-action:manipulation;box-shadow:0 3px 0 #38273f;transition:transform .12s,background .2s}.casual-tile:active,.casual-crate:active{transform:scale(.95)}.casual-tile:disabled{opacity:.68}.casual-tile.empty{background:#100d18;box-shadow:inset 0 0 0 1px #54435e;border-color:transparent;opacity:1}.casual-crate{background:#33283b;border:1px solid #695276;font-size:22px}.casual-crate img{width:80%;height:80%;object-fit:contain;display:block;margin:auto}.casual-crate.opened{background:#294239;border-color:#527d66}.casual-crate.damaged{background:#50323c;border-color:#966070}.casual-start,.casual-collect,.legacy-cargo{width:100%;min-height:46px;border:1px solid #9979b3;border-radius:13px;background:#70518c;color:#fff;font-size:15px;font-weight:750;margin:7px 0}.casual-start:disabled,.casual-collect:disabled{opacity:.45}.legacy-cargo{background:#423440;font-size:13px}.work-sandbox-banner{margin:10px 0;padding:10px 12px;border-radius:12px;border:1px dashed #9074a5;color:#d7c4e4;background:#30243c;font-size:12px;line-height:1.5}.work-sandbox-banner[hidden]{display:none}#catch-basket.wide-active{width:38%;filter:drop-shadow(0 0 6px #9dc4df66)}#catch-basket .sprite{max-width:100%}.work-v2 #catch-basket{height:56px}.work-v2 #catch-basket>.sprite{width:100%;height:56px;object-fit:contain}.work-v2 #catch-field.slow-active{box-shadow:inset 0 0 22px #9ddaf233}.work-v2 #catch-field.slow-active:before{content:'❄';position:absolute;left:10px;top:10px;color:#b4e8fa;font-size:22px;pointer-events:none}
+#catch-basket.wide-active:before{content:'';position:absolute;inset:12px 0 0;border:1px dashed #abd4ea88;border-radius:16px;background:#a7d6f50c;pointer-events:none}.work-v2 #catch-basket{width:70px!important}.work-v2 #catch-basket.wide-active{width:102px!important}.work-v2 #catch-basket.wide-active>.sprite{transform:scaleX(1.4)}.work-v2 .catch-item .sprite{width:36px;height:36px}.work-v2 #tabs{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important}.work-v2 .casual-grid{max-width:270px}.work-v2 .warehouse-grid{max-width:258px}.work-v2 .casual-collect{position:sticky;bottom:8px;z-index:5;box-shadow:0 5px 18px #100d18bb}.work-v2 .casual-panel{padding:14px}.work-v2 .casual-help{font-size:12px}@media(max-width:340px){.work-v2 #tabs{grid-template-columns:repeat(3,minmax(0,1fr))!important}.work-v2 .casual-grid{max-width:240px}}</style>
 </head>
 <body>
   <div id="topbar">
@@ -16388,7 +16398,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
   var SPRITE_KEYS = [];
   var PERSON_KEYS = ["person_wave", "person_coffee", "person_arms", "person_point"];
   var SPRITES = {};
-  function setSprite(el,key,fallbackText){var aliases={catch_bomb:'bomb',catch_bighazard:'bomb',catch_bills:'bills',catch_coins:'coins',catch_magnet:'magnet',catch_slow:'slow',catch_double:'double',catch_shield:'shield',farm_bed_dry:'bed_dry',farm_bed_wet:'bed_wet',farm_drop:'drop',farm_can:'can',crop_seedling:'seedling',crop_young:'young',crop_pumpkin:'pumpkin',crop_carrot:'carrot',crop_wheat:'wheat',crop_tomato:'tomato',crop_corn:'corn',crop_melon:'melon',courier_parcel:'parcel'};var image=document.createElement('img');image.className='sprite';image.src='/assets/work_'+(aliases[key]||'parcel')+'.webp';image.alt='';image.draggable=false;el.textContent='';el.appendChild(image);}
+  function setSprite(el,key,fallbackText){var aliases={catch_bomb:'bomb',catch_bighazard:'bomb',catch_bills:'bills',catch_coins:'coins',catch_magnet:'magnet',catch_slow:'slow',catch_double:'double',catch_shield:'shield',farm_bed_dry:'bed_dry',farm_bed_wet:'bed_wet',farm_drop:'drop',farm_can:'can',crop_seedling:'seedling',crop_young:'young',crop_pumpkin:'pumpkin',crop_carrot:'carrot',crop_wheat:'wheat',crop_tomato:'tomato',crop_corn:'corn',crop_melon:'melon',courier_parcel:'parcel'};var image=document.createElement('img');image.className='sprite';var special=state&&state.work_v2?{catch_basket:'work_basket_v2',catch_slow:'work_freeze_v2',catch_wide:'work_wide_v2'}[key]:null;image.src='/assets/'+(special||'work_'+(aliases[key]||'parcel'))+'.webp';image.alt='';image.draggable=false;el.textContent='';el.appendChild(image);}
   var spritesPending = SPRITE_KEYS.length;
   SPRITE_KEYS.forEach(function (k) {
     var img = new Image();
@@ -16438,6 +16448,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
   var SLOWFALL_CHANCE = 0.04; // rolled only when the spawn didn't already roll a bomb
   var SLOWFALL_DURATION_MS = 5000;
   var SLOWFALL_MULTIPLIER = 1.6; // how much longer newly-spawned items take to fall while active
+  var wideUntil=0;
   var slowFallUntil = 0;
   var MAGNET_EMOJI = "🧲";
   var MAGNET_CHANCE = 0.035; // rolled only when the spawn didn't already roll a bomb/slowfall/big hazard
@@ -16484,13 +16495,13 @@ WORK_PAGE_HTML = r"""<!doctype html>
 
   function api(path, opts) {
     opts = opts || {};
-    opts.headers = Object.assign({"X-Telegram-Init-Data": initData()}, opts.headers || {});
+    opts.headers = Object.assign({"X-Telegram-Init-Data": initData(),"X-Work-Mode":state&&state.sandbox?"sandbox":"live"}, opts.headers || {});
     var controller = new AbortController();
     var timeoutId = setTimeout(function () { controller.abort(); }, 10000);
     opts.signal = controller.signal;
     return fetch(path, opts).then(function (r) {
       clearTimeout(timeoutId);
-      return r.json().then(function(res){if(res.code==='work_closed'&&res.state){state=res.state;applyWorkSchedule();}return res;});
+      return r.json().then(function(res){if(res.state&&state&&(opts.method||'GET')!=='GET'&&res.code!=='work_scope_changed'&&!!res.state.sandbox!==!!state.sandbox)return {ok:false,error:'Режим изменился. Повтори действие.'};if(res.state&&state&&(res.code==='work_scope_changed'||!!res.state.work_v2!==!!state.work_v2)){hitQueue=[];if(hitDrainTimer)clearTimeout(hitDrainTimer);hitDrainTimer=null;state=res.state;render();}if(res.code==='work_closed'&&res.state){state=res.state;applyWorkSchedule();}return res;});
     }, function (e) {
       clearTimeout(timeoutId);
       throw e;
@@ -16729,12 +16740,13 @@ WORK_PAGE_HTML = r"""<!doctype html>
       items.forEach(function (el) { el.remove(); });
       field.classList.remove("slow-active");
     }
+    wideUntil=0;
     slowFallUntil = 0;
     magnetUntil = 0;
     doubleUntil = 0;
     shieldCharges = 0;shieldUntil = 0;
     var catchBasketEl = document.getElementById("catch-basket");
-    if (catchBasketEl) catchBasketEl.classList.remove("magnet-active", "double-active", "shield-active", "shield-pop", "shield-expiring");
+    if (catchBasketEl) catchBasketEl.classList.remove("magnet-active", "double-active", "shield-active", "shield-pop", "shield-expiring", "wide-active");
     BUFF_ORDER.forEach(function (k) { setBuffOrbit(k, null); });
     if (catchBasketEl) setX2Label(catchBasketEl, false);
     recentCatchSpawns = [];
@@ -16937,7 +16949,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
 
   function setBasketLeft(pct) {
     var basket = document.getElementById("catch-basket");
-    var half = BASKET_WIDTH_PCT / 2;
+    var half=basket.offsetWidth/document.getElementById('catch-field').clientWidth*50;
     pct = Math.max(half, Math.min(100 - half, pct));
     basket.style.left = pct + "%";
     return pct;
@@ -16963,23 +16975,23 @@ WORK_PAGE_HTML = r"""<!doctype html>
   function appendFallingItem(field, x, className, text, dataset, sprite) {
     var item = document.createElement("div");
     item.className = className;
-    item.textContent = text;
+    item.textContent = text;if(state.work_v2&&(sprite==='catch_slow'||sprite==='catch_wide'))setSprite(item,sprite,text);
     Object.keys(dataset || {}).forEach(function (k) { item.dataset[k] = dataset[k]; });
     item.style.left = x + "%";
     var baseDuration = dataset && dataset.fast ? ROCKET_FALL_MIN_S + Math.random() * ROCKET_FALL_RANGE_S
       : CATCH_FALL_MIN_S + Math.random() * CATCH_FALL_RANGE_S;
-    item.style.animationDuration = (Date.now() < slowFallUntil ? baseDuration * SLOWFALL_MULTIPLIER : baseDuration) + "s";
+    item.style.animationDuration = (state.work_v2?baseDuration:(Date.now()<slowFallUntil?baseDuration*SLOWFALL_MULTIPLIER:baseDuration))+"s";
     item.addEventListener("animationend", function () {
       // Пропустил обычный (не баф, не угроза) предмет корзинкой -- минус деньги, см. фидбэк
       // "если пропустить еду корзинкой то минус деньги". Бафы/бомбы/большие угрозы сюда не
       // попадают -- для них штраф/награда уже решаются отдельно в catchCollisionTick.
-      var isPlain = !item.dataset.bomb && !item.dataset.bighazard && !item.dataset.slowfall && !item.dataset.magnet && !item.dataset.double && !item.dataset.shield;
+      var isPlain = !item.dataset.bomb && !item.dataset.bighazard && !item.dataset.slowfall && !item.dataset.magnet && !item.dataset.double && !item.dataset.shield && !item.dataset.wide;
       var missed = !item.dataset.caught && isPlain;
       var x0 = item.offsetLeft, y0 = item.offsetTop;
       if (item.parentNode) item.remove();
       if (missed) registerPenalty("catch", x0, y0, field);
     });
-    field.appendChild(item);
+    field.appendChild(item);if(state.work_v2&&Date.now()<slowFallUntil&&item.getAnimations)item.getAnimations().forEach(function(a){a.playbackRate=.45;});
   }
 
   // "Пушечное ядро"/большая бомба -- редкие и опасные: сперва мигающее предупреждение ❗ на том
@@ -17046,6 +17058,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
     var isMagnet = !isBomb && !isSlowFall && !isBigHazard && Math.random() < MAGNET_CHANCE;
     var isDouble = !isBomb && !isSlowFall && !isBigHazard && !isMagnet && Math.random() < DOUBLE_CHANCE;
     var isShield = !isBomb && !isSlowFall && !isBigHazard && !isMagnet && !isDouble && Math.random() < SHIELD_CHANCE;
+    var isWide=!!(state.work_v2&&!isBomb&&!isSlowFall&&!isBigHazard&&!isMagnet&&!isDouble&&!isShield&&Math.random()<0.03);
     if (isBigHazard) {
       spawnBigHazardWithWarning(field, x);
       return;
@@ -17053,11 +17066,13 @@ WORK_PAGE_HTML = r"""<!doctype html>
     if (isBomb) {
       appendFallingItem(field, x, "catch-item bomb", BOMB_EMOJI, { bomb: "1" }, "catch_bomb");
     } else if (isSlowFall) {
-      appendFallingItem(field, x, "catch-item", SLOWFALL_EMOJI, { slowfall: "1" }, "catch_slow");
+      appendFallingItem(field, x, "catch-item", state.work_v2?"❄️":SLOWFALL_EMOJI, { slowfall: "1" }, "catch_slow");
     } else if (isMagnet) {
       appendFallingItem(field, x, "catch-item", MAGNET_EMOJI, { magnet: "1" }, "catch_magnet");
     } else if (isDouble) {
       appendFallingItem(field, x, "catch-item", DOUBLE_EMOJI, { double: "1" }, "catch_double");
+    } else if (isWide) {
+      appendFallingItem(field,x,"catch-item","↔️",{wide:"1"},"catch_wide");
     } else if (isShield) {
       appendFallingItem(field, x, "catch-item", SHIELD_EMOJI, { shield: "1" }, "catch_shield");
     } else {
@@ -17068,11 +17083,13 @@ WORK_PAGE_HTML = r"""<!doctype html>
   function catchCollisionTick() {
     var field = document.getElementById("catch-field");
     var basket = document.getElementById("catch-basket");
+    if(basket&&Date.now()>=wideUntil)basket.classList.remove('wide-active');
     if (basket && shieldCharges) {
       var shieldLeft=shieldUntil-Date.now();
       basket.classList.toggle('shield-expiring',shieldLeft>0&&shieldLeft<=3000);
       if(shieldLeft<=0){shieldCharges=0;basket.classList.remove('shield-active','shield-expiring');setBuffOrbit('shield',null);}
     }
+    if(state&&state.work_v2&&field&&Date.now()>=slowFallUntil&&field.classList.contains('slow-active')){field.classList.remove('slow-active');field.querySelectorAll('.catch-item').forEach(function(it){if(it.getAnimations)it.getAnimations().forEach(function(a){a.playbackRate=1;});});}
     if (field && basket && !debuffState.catch) {
       var basketRect = basket.getBoundingClientRect();
       var fieldRect = field.getBoundingClientRect();
@@ -17103,8 +17120,9 @@ WORK_PAGE_HTML = r"""<!doctype html>
         var r = item.getBoundingClientRect();
         var itemBottom = r.top + r.height * 0.7;
         var itemCenterX = r.left + r.width * 0.5;
-        var left = basketRect.left - marginPx;
-        var right = basketRect.right + marginPx;
+        var hazardWidth=state.work_v2&&Date.now()<wideUntil&&(item.dataset.bomb==='1'||isBig)?70:basketRect.width;
+        var center=(basketRect.left+basketRect.right)/2;
+        var left=center-hazardWidth/2-marginPx,right=center+hazardWidth/2+marginPx;
         if (itemBottom >= basketRect.top && itemBottom <= basketRect.bottom + 10 &&
             itemCenterX >= left && itemCenterX <= right) {
           item.dataset.caught = "1";
@@ -17132,17 +17150,19 @@ WORK_PAGE_HTML = r"""<!doctype html>
           } else {
             item.classList.add("caught");
             (function (el) { setTimeout(function () { if (el.parentNode) el.remove(); }, 160); })(item);
-            if (!item.dataset.slowfall && !item.dataset.magnet && !item.dataset.double && !item.dataset.shield) {
+            if (!item.dataset.slowfall && !item.dataset.magnet && !item.dataset.double && !item.dataset.shield && !item.dataset.wide) {
               registerHit("catch", basket.offsetLeft + basket.offsetWidth / 2, basket.offsetTop,
                 document.getElementById("catch-field"));
             }
             if (item.dataset.slowfall || item.dataset.magnet || item.dataset.double || item.dataset.shield) fx("power");
-            if (item.dataset.slowfall === "1") {
+            if(item.dataset.wide==='1'){
+              wideUntil=Date.now()+8000;basket.classList.add('wide-active');setBuffOrbit('wide','↔️',8000);setBasketLeft(parseFloat(basket.style.left)||50);
+            } else if (item.dataset.slowfall === "1") {
               slowFallUntil = Date.now() + SLOWFALL_DURATION_MS;
               fx("freeze");
-              field.classList.add("slow-active");
+              field.classList.add('slow-active');if(state.work_v2&&field.querySelectorAll)field.querySelectorAll('.catch-item').forEach(function(it){if(it.getAnimations)it.getAnimations().forEach(function(a){a.playbackRate=.45;});});
               setTimeout(function () {
-                if (Date.now() >= slowFallUntil) field.classList.remove("slow-active");
+                if (!state.work_v2&&Date.now() >= slowFallUntil) field.classList.remove("slow-active");
               }, SLOWFALL_DURATION_MS);
             } else if (item.dataset.magnet === "1") {
               magnetUntil = Date.now() + MAGNET_DURATION_MS;
@@ -17167,7 +17187,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
 
   // Значок активного буста кружит вокруг корзины, у каждого свой; ms -- через сколько убрать (без ms -- до снятия вручную).
   var buffOrbitTimers = {};
-  var BUFF_ORDER = ["magnet", "double", "shield", "slow"];
+  var BUFF_ORDER = ["magnet", "double", "shield", "slow", "wide"];
   function setBuffOrbit(kind, emoji, ms) {
     var basket = document.getElementById("catch-basket");
     if (!basket) return;
@@ -17208,6 +17228,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
   }
 
   function startCatch() {
+    var basket=document.getElementById('catch-basket');if(state.work_v2)setSprite(basket,'catch_basket','🧺');else basket.textContent='🧺';
     setBasketLeft(50);
     catchSpawnInterval = setInterval(spawnCatchItem, 600);
     catchCollisionTick();
@@ -17236,10 +17257,11 @@ WORK_PAGE_HTML = r"""<!doctype html>
     road.addEventListener('pointerup',function(e){e.preventDefault();if(!start||!courierRun)return;var dx=e.clientX-start.x,dy=e.clientY-start.y;start=null;if(Math.max(Math.abs(dx),Math.abs(dy))>18){if(Math.abs(dx)>Math.abs(dy))setCourierDirection(dx>0?1:-1,0);else setCourierDirection(0,dy>0?1:-1);lastTap=0;}else{var now=Date.now();if(now-lastTap<360){pressCourierStopline();lastTap=0;}else lastTap=now;}});road.addEventListener('pointercancel',function(){start=null;});}
 
   function jobOpen(name){return name==='farm'||!state||!state.rotation||state.rotation.active.indexOf(name)>=0;}
-  function canFinishJob(name){return !!(state&&(name==='dig'&&state.dig&&state.dig.run||name==='mine'&&state.mine&&state.mine.run));}
+  function canFinishJob(name){if(state&&state.work_v2){var r=name==='mine'?state.puzzle.run:name==='dig'?state.warehouse.run:null,old=state[name]&&state[name].run;return !!(r&&(name==='mine'?r.status==='active':r.pending>0&&(r.status==='active'||r.status==='ready'))||old&&old.bag&&old.bag.length);}return !!(state&&(name==='dig'&&state.dig&&state.dig.run||name==='mine'&&state.mine&&state.mine.run));}
   function applyWorkSchedule(){
     if(!state)return;var jobs=['clicker','catch','courier','workshop','dig','mine','farm'];jobs.forEach(function(name){var tab=document.getElementById('tab-'+name);if(tab){tab.style.display=jobOpen(name)||canFinishJob(name)?'':'none';tab.classList.toggle('finish-only',!jobOpen(name));}});
     var banner=document.getElementById('work-schedule');if(!banner){banner=document.createElement('div');banner.id='work-schedule';document.getElementById('tabs').after(banner);}if(state.rotation){banner.textContent=(state.rotation.bypass?'Главный админ · доступны все работы. ':'Работы дня · смена в 00:00 МСК. ')+(state.rotation.next_active?'Завтра: '+state.rotation.next_active.map(function(k){return state.rotation.names[k]||k;}).join(', ')+'. ':'')+'Ферма доступна всегда.';}else banner.hidden=true;
+    if(state.sandbox&&banner)banner.textContent=courierWords('Доступны все работы · тестовые награды','All jobs available · test rewards','Alle Aufgaben verfügbar · Testbelohnungen');
     if(activeGame&&!jobOpen(activeGame)&&!canFinishJob(activeGame))switchGame((state.rotation&&state.rotation.active[0])||'farm');
   }
   var workArtCache={},mineSceneDraw=null,digSceneDraw=null,workHeld=null,mineAimTimer=null,mineAimBusy=false,mineAimLatest=90,mineSceneFrame=null,digSceneFrame=null;
@@ -17248,7 +17270,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
   function stopWorkInput(cancelAim){if(workHeld)clearInterval(workHeld);workHeld=null;if(cancelAim===true){if(mineAimTimer)clearTimeout(mineAimTimer);mineAimTimer=null;}}
   document.addEventListener('pointerup',stopWorkInput);document.addEventListener('pointercancel',stopWorkInput);
   function workDpad(container,kind,run){var pad=document.createElement('div');pad.className='work-dpad';[['up','↑','Наверх'],['left','←','Налево'],['down','↓',kind==='dig'?'Копать вниз':'Вниз'],['right','→','Направо']].forEach(function(d){var b=document.createElement('button');b.type='button';b.className='pad-'+d[0];b.textContent=d[1];b.setAttribute('aria-label',d[2]);function act(){if(activeGame!==kind)return;if(kind==='mine')mineAction({action:'move',id:run.id,direction:d[0]});else digAction({action:'step',id:run.id,direction:d[0],tool:digTool});}b.onpointerdown=function(e){e.preventDefault();stopWorkInput();act();workHeld=setInterval(act,280);};b.onclick=function(e){e.preventDefault();if(e.detail===0)act();};pad.appendChild(b);});container.appendChild(pad);return pad;}
-  document.addEventListener('keydown',function(e){if(e.target.closest('input,textarea,select')||!state||e.repeat)return;var direction={ArrowLeft:'left',ArrowRight:'right',ArrowDown:'down',ArrowUp:'up'}[e.key];if(!direction)return;if(activeGame==='mine'&&state.mine&&state.mine.run){e.preventDefault();mineAction({action:'move',id:state.mine.run.id,direction:direction});}if(activeGame==='dig'&&state.dig&&state.dig.run){e.preventDefault();digAction({action:'step',id:state.dig.run.id,direction:direction,tool:digTool});}});
+  document.addEventListener('keydown',function(e){if(e.target.closest('input,textarea,select')||!state||e.repeat)return;var direction={ArrowLeft:'left',ArrowRight:'right',ArrowDown:'down',ArrowUp:'up'}[e.key];if(!direction||state.work_v2)return;if(activeGame==='mine'&&state.mine&&state.mine.run){e.preventDefault();mineAction({action:'move',id:state.mine.run.id,direction:direction});}if(activeGame==='dig'&&state.dig&&state.dig.run){e.preventDefault();digAction({action:'step',id:state.dig.run.id,direction:direction,tool:digTool});}});
   function queueMineAim(angle){mineAimLatest=(angle+360)%360;if(mineSceneDraw)mineSceneDraw();var knob=document.querySelector('.mine-aim-knob');if(knob)knob.style.transform='translate('+Math.cos(angle*Math.PI/180)*29+'px,'+Math.sin(angle*Math.PI/180)*29+'px)';if(mineAimTimer)clearTimeout(mineAimTimer);mineAimTimer=setTimeout(sendMineAim,140);}
   function sendMineAim(){if(mineAimBusy||activeGame!=='mine'||!state.mine||!state.mine.run)return;mineAimBusy=true;var angle=mineAimLatest,id=state.mine.run.id;api('/api/work/mine',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'aim',id:id,angle:angle})}).then(function(res){mineAimBusy=false;if(activeGame!=='mine'||!state.mine.run||state.mine.run.id!==id)return;if(res.ok&&res.mine&&res.mine.run&&(!state.mine.run.revision||res.mine.run.revision>=state.mine.run.revision)){state.mine.run=res.mine.run;if(mineSceneDraw)mineSceneDraw();}if(Math.abs(angle-mineAimLatest)>.5)mineAimTimer=setTimeout(sendMineAim,100);}).catch(function(){mineAimBusy=false;});}
   function buildMineWorld(panel,run){var scene=document.createElement('div');scene.className='mine-world';var canvas=document.createElement('canvas');canvas.className='mine-world-canvas';canvas.setAttribute('aria-label','Шахта с видом сверху. Управление стрелками, свет — круговым регулятором.');scene.appendChild(canvas);panel.appendChild(scene);var scale=2,w=342,h=418;canvas.width=w*scale;canvas.height=h*scale;var ctx=canvas.getContext('2d');ctx.scale(scale,scale);var m=run.maze;mineAimLatest=typeof m.angle==='number'?m.angle:90;
@@ -17269,7 +17291,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
   }
 
   var mineBusy=false,mineNextAt=0;
-  function mineAction(body){if(mineBusy||performance.now()<mineNextAt)return;mineBusy=true;api('/api/work/mine',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){var previousMine=state.mine&&state.mine.run;mineBusy=false;if(res.state){state=res.state;setBalance(state.bucks);applyWorkSchedule();}if(res.mine)state.mine=res.mine;if(previousMine&&state.mine.run&&previousMine.id===state.mine.run.id&&previousMine.revision>state.mine.run.revision)state.mine.run=previousMine;var run=state.mine&&state.mine.run;mineNextAt=performance.now()+(run&&run.ready_ms||0);renderMine();if(!res.ok)document.getElementById('mine-note').textContent=res.error||'Попробуй ещё раз';else if(body.action==='strike'||body.action==='excavate'){fx('impact');haptic('light');}if(mineNextAt>performance.now())setTimeout(function(){if(activeGame==='mine')renderMine();},Math.max(0,mineNextAt-performance.now())+25);}).catch(function(){mineBusy=false;renderMine();document.getElementById('mine-note').textContent='Нет связи. Попробуй ещё раз.';});}
+  function mineAction(body){if(mineBusy||performance.now()<mineNextAt)return;mineBusy=true;api('/api/work/mine',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){var previousMine=state.mine&&state.mine.run;mineBusy=false;if(res.state){state=res.state;setBalance(state.bucks);applyWorkSchedule();}if(res.mine)state.mine=res.mine;if(previousMine&&state.mine.run&&previousMine.id===state.mine.run.id&&previousMine.revision>state.mine.run.revision)state.mine.run=previousMine;var run=state.mine&&state.mine.run;mineNextAt=performance.now()+(run&&run.ready_ms||0);renderMine();if(state.work_v2)return;if(!res.ok)document.getElementById('mine-note').textContent=res.error||'Попробуй ещё раз';else if(body.action==='strike'||body.action==='excavate'){fx('impact');haptic('light');}if(mineNextAt>performance.now())setTimeout(function(){if(activeGame==='mine')renderMine();},Math.max(0,mineNextAt-performance.now())+25);}).catch(function(){mineBusy=false;renderMine();var note=document.getElementById('mine-note');if(note)note.textContent='Нет связи. Попробуй ещё раз.';});}
   function renderMine(){
     var panel=document.getElementById('game-mine');panel.innerHTML='';var data=state.mine||{},run=data.run;
     function node(tag,text,cls){var e=document.createElement(tag);e.textContent=text||'';if(cls)e.className=cls;return e;}
@@ -17559,6 +17581,39 @@ WORK_PAGE_HTML = r"""<!doctype html>
     }
   }
 
+  var casualBusy=false,casualStateRef=null,casualReceivedAt=Date.now();
+  function casualClock(){if(casualStateRef!==state){casualStateRef=state;casualReceivedAt=Date.now();}}
+  function casualReady(game){casualClock();return Math.max(0,Math.ceil((state[game].ready_in||0)-(Date.now()-casualReceivedAt)/1000));}
+  function casualEl(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e;}
+  function casualAction(game,action,index){
+    if(casualBusy)return;var run=state[game].run,body={game:game,action:action};if(run){body.id=run.id;body.revision=run.revision;}if(index!==undefined)body.index=index;
+    casualBusy=true;var panel=document.getElementById(game==='puzzle'?'game-mine':'game-dig');panel.querySelectorAll('button').forEach(function(b){b.disabled=true;});
+    api('/api/work/casual',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(res){casualBusy=false;if(res.state){state=res.state;setBalance(state.bucks);applyWorkSchedule();}if(res.awarded){fx('win');haptic('success');}else if(res.ok){haptic('light');}if(activeGame===(game==='puzzle'?'mine':'dig')){renderCasual(game);var note=panel.querySelector('.casual-note');if(!res.ok&&note)note.textContent=res.error||courierWords('Попробуй ещё раз','Try again','Erneut versuchen');}}).catch(function(){casualBusy=false;if(activeGame===(game==='puzzle'?'mine':'dig')){renderCasual(game);var note=panel.querySelector('.casual-note');if(note)note.textContent=courierWords('Нет связи. Ход можно повторить.','No connection. You can retry.','Keine Verbindung. Erneut versuchen.');}});
+  }
+  function legacyWorkCashout(kind){if(casualBusy)return;casualBusy=true;var r=state[kind].run;api('/api/work/'+kind,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:kind==='mine'?'haul':'cashout',id:r.id})}).then(function(res){casualBusy=false;if(res.state){state=res.state;setBalance(state.bucks);}renderCasual(kind==='mine'?'puzzle':'warehouse');}).catch(function(){casualBusy=false;});}
+  function renderCasual(game){
+    if(!state||!state.work_v2)return;casualClock();var isPuzzle=game==='puzzle',job=isPuzzle?'mine':'dig',meta=state[game],run=meta.run,active=run&&(run.status==='active'||run.status==='ready'),panel=document.getElementById('game-'+job);panel.innerHTML='';panel.classList.add('casual-panel');
+    panel.appendChild(casualEl('h3',null,isPuzzle?courierWords('Мозаика','Mosaic','Mosaik'):courierWords('Склад находок','Finds depot','Fundlager')));
+    panel.appendChild(casualEl('p','casual-help',isPuzzle?courierWords('Собери числа от 1 до 8. Нажимай плитку рядом с пустым местом. На ПК работают стрелки.','Arrange 1–8. Tap a tile next to the empty space or use arrow keys.','Ordne 1–8. Tippe neben das leere Feld oder nutze Pfeiltasten.'):courierWords('Вход бесплатный. В 9 ящиках — 2 повреждённых: такой ящик сбросит находки этого захода. После целого можно забрать награду или открыть следующий.','Free entry. Two of nine crates are damaged and clear this run’s finds. Collect after a safe crate or try another.','Kostenlos. Zwei von neun Kisten sind beschädigt: Fundstücke dieser Runde gehen verloren. Nach einer intakten Kiste auszahlen oder weitersuchen.')));
+    var value=run&&!isPuzzle?Math.round(run.pending*state.multiplier):Math.round(meta.reward*state.multiplier);panel.appendChild(casualEl('div','casual-reward',isPuzzle?courierWords('За решение: ','Solve reward: ','Belohnung: ')+value+' 💵':courierWords('Накоплено: ','Collected: ','Gesammelt: ')+value+' 💵'));
+    if(run){
+      var grid=casualEl('div','casual-grid '+(isPuzzle?'puzzle-grid':'warehouse-grid'));grid.setAttribute('aria-label',isPuzzle?'Мозаика 3 на 3':'Девять ящиков');
+      if(isPuzzle){var blank=run.board.indexOf(0);run.board.forEach(function(n,i){var b=casualEl('button','casual-tile'+(!n?' empty':''),n?String(n):'');b.type='button';b.dataset.index=i;b.disabled=casualBusy||!active||!n||Math.abs(Math.floor(i/3)-Math.floor(blank/3))+Math.abs(i%3-blank%3)!==1;b.setAttribute('aria-label',n?courierWords('Плитка ','Tile ','Feld ')+n:courierWords('Пустое место','Empty space','Leeres Feld'));b.onclick=function(){casualAction(game,'move',i);};grid.appendChild(b);});}
+      else{for(var i=0;i<9;i++){(function(i){var opened=Object.prototype.hasOwnProperty.call(run.opened,String(i)),revealed=run.revealed&&run.revealed[i],v=opened?run.opened[String(i)]:revealed,b=casualEl('button','casual-crate'+(opened?' opened':'')+(v===0&&(opened||run.revealed)?' damaged':''));b.type='button';b.dataset.index=i;b.disabled=casualBusy||!active||run.status==='ready'||opened||!jobOpen(job);b.setAttribute('aria-label',courierWords('Ящик ','Crate ','Kiste ')+(i+1));if(opened||run.revealed)b.appendChild(casualEl('span',null,v===0?'⚠️':'+'+Math.round(v*state.multiplier)));else{var im=casualEl('img');im.src='/assets/work_parcel.webp';im.alt='';b.appendChild(im);}b.onclick=function(){casualAction(game,'open',i);};grid.appendChild(b);})(i);}}
+      panel.appendChild(grid);
+      if(!isPuzzle&&active){if(run.status==='active'&&jobOpen(job))panel.appendChild(casualEl('p','casual-odds',courierWords('Следующий ящик целый: ','Next crate intact: ','Nächste Kiste intakt: ')+run.safe_left+'/'+run.unopened+' · '+Math.round(run.safe_left/run.unopened*100)+'%'));var cash=casualEl('button','casual-collect',courierWords('Забрать ','Collect ','Auszahlen ')+value+' 💵');cash.type='button';cash.disabled=casualBusy||!run.pending;cash.onclick=function(){casualAction(game,'cashout');};panel.appendChild(cash);}
+      var status=run.status==='won'?courierWords('Готово! Награда начислена.','Solved! Reward credited.','Gelöst! Belohnung gutgeschrieben.'):run.status==='damaged'?courierWords('Повреждённый ящик. Находки этого захода потеряны.','Damaged crate. This run’s finds were lost.','Beschädigte Kiste. Die Fundstücke dieser Runde sind verloren.'):run.status==='paid'?courierWords('Награда забрана.','Reward collected.','Belohnung ausgezahlt.'):run.status==='ready'?courierWords('Пять целых ящиков — забирай награду.','Five intact crates — collect your reward.','Fünf intakte Kisten — hole die Belohnung.'):isPuzzle?courierWords('Ходов: ','Moves: ','Züge: ')+run.moves:'';panel.appendChild(casualEl('p','casual-status',status));
+    }
+    if(!active){var start=casualEl('button','casual-start');start.type='button';start.dataset.game=game;var left=casualReady(game);start.disabled=casualBusy||left>0||!jobOpen(job);start.textContent=left?courierWords('Новое задание через ','Next job in ','Nächster Auftrag in ')+left+' '+courierWords('с','s','s'):courierWords('Начать задание','Start job','Auftrag starten');start.onclick=function(){casualAction(game,'start');};panel.appendChild(start);}
+    panel.appendChild(casualEl('p','casual-note',''));
+    var old=state[job]&&state[job].run;if(old&&old.bag&&old.bag.length){var legacy=casualEl('button','legacy-cargo',courierWords('Забрать старую добычу · ','Collect previous cargo · ','Alte Funde abholen · ')+Math.round(old.bag_value*state.multiplier)+' 💵');legacy.onclick=function(){legacyWorkCashout(job);};panel.appendChild(legacy);}
+  }
+  setInterval(function(){if(!state||!state.work_v2)return;document.querySelectorAll('.casual-start').forEach(function(b){var g=b.dataset.game,left=casualReady(g);b.disabled=casualBusy||left>0||!jobOpen(g==='puzzle'?'mine':'dig');b.textContent=left?courierWords('Новое задание через ','Next job in ','Nächster Auftrag in ')+left+' '+courierWords('с','s','s'):courierWords('Начать задание','Start job','Auftrag starten');});},1000);
+  document.addEventListener('keydown',function(e){if(!state||!state.work_v2||activeGame!=='mine'||casualBusy||e.repeat||e.target.closest('input,textarea,select'))return;var r=state.puzzle.run,delta={ArrowLeft:-1,ArrowRight:1,ArrowUp:-3,ArrowDown:3}[e.key];if(!r||r.status!=='active'||delta===undefined)return;var b=r.board.indexOf(0),n=b+delta;if(n<0||n>8||Math.abs(Math.floor(n/3)-Math.floor(b/3))+Math.abs(n%3-b%3)!==1)return;e.preventDefault();casualAction('puzzle','move',n);});
+  var oldRenderMine=renderMine,oldRenderDig=renderDig;
+  renderMine=function(){if(state&&state.work_v2)renderCasual('puzzle');else oldRenderMine();};
+  renderDig=function(){if(state&&state.work_v2)renderCasual('warehouse');else oldRenderDig();};
+
   // ---------- Tabs ----------
   // Пауза: свернули приложение или ушли на другую вкладку -- игра не идёт дальше без игрока.
   var pausedGame = null;
@@ -17607,10 +17662,13 @@ WORK_PAGE_HTML = r"""<!doctype html>
     if (name === "courier") startCourier();
     if (name === "farm") renderFarm();
     if (name === "workshop") startPipes();
-    if(name==='dig')renderDig();if(name==='mine'){renderMine();load();}
+    if(name==='dig')renderDig();if(name==='mine')renderMine();
   }
 
   function render() {
+    document.body.classList.toggle('work-v2',!!state.work_v2);
+    var sandbox=document.getElementById('work-sandbox-banner');if(!sandbox){sandbox=document.createElement('div');sandbox.id='work-sandbox-banner';sandbox.className='work-sandbox-banner';document.getElementById('tabs').before(sandbox);}sandbox.hidden=!state.sandbox;sandbox.textContent=courierWords('🧪 Песочница работы · отдельный баланс','🧪 Work preview · separate balance. Rewards and spending stay in this test profile.','🧪 Arbeitstest · separates Guthaben. Belohnungen und Ausgaben bleiben im Testprofil.');
+    document.getElementById('tab-mine').textContent=state.work_v2?courierWords('🧩 Мозаика','🧩 Mosaic','🧩 Mosaik'):courierWords('Шахта','Mine','Mine');document.getElementById('tab-dig').textContent=state.work_v2?courierWords('📦 Склад','📦 Depot','📦 Lager'):courierWords('Раскопки','Excavation','Ausgrabung');
     document.getElementById("title").textContent = state.ui.title;
     setBalance(state.bucks);
     var badge = document.getElementById("multiplier-badge");
@@ -17651,7 +17709,7 @@ WORK_PAGE_HTML = r"""<!doctype html>
         showFullScreen((res.message || res.error || "Error") + extra);
         return;
       }
-      var first = !state;
+      var first=!state||!!state.sandbox!==!!res.state.sandbox||!!state.work_v2!==!!res.state.work_v2;if(first){hitQueue=[];if(hitDrainTimer)clearTimeout(hitDrainTimer);hitDrainTimer=null;}
       state = res.state;applyWorkSchedule();
       if (first) {
         render();
@@ -22533,21 +22591,103 @@ async def api_spin_paid_result_handler(request):
     return web.json_response({"ok": True, "ready": True, "state": serialize_spin_state(user), **pending})
 
 
+def work_profile(user):
+    return work_preview.profile(user, MAIN_ADMIN_ID)
+
+
+def work_v2(user):
+    return work_preview.version_two(user, user_data.get('__settings__', {}))
+
+
+def resolve_workapp_user(init_data, request=None):
+    uid, user, error = resolve_webapp_user(init_data)
+    if error:return uid,user,error
+    user=work_profile(user)
+    expected='sandbox' if user.get('_work_sandbox') else 'live'
+    if request is not None and request.method!='GET':
+        supplied=request.headers.get('X-Work-Mode','live')
+        if supplied!=expected:
+            return uid,user,{'ok':False,'code':'work_scope_changed','error':'Режим работы изменился. Страница обновлена, повтори действие.','state':serialize_work_state(user)}
+    return uid,user,None
+
+
+async def _work_request(request):
+    uid,user,error=resolve_workapp_user(request.headers.get('X-Telegram-Init-Data',''),request)
+    if error:return None,None,None,web.json_response(error,status=401 if error.get('error')=='auth' else 200)
+    try:body=await request.json()
+    except Exception:body={}
+    return uid,user,body if isinstance(body,dict) else {},None
+
+
+@dp.message(Command('test_mode', 'work_release'))
+async def work_testing_cmd(message: types.Message):
+    if message.from_user.id!=MAIN_ADMIN_ID or message.chat.type!='private':
+        return
+    args=(message.text or '').split()
+    if len(args)!=2 or args[1] not in ('on','off','reset'):
+        await message.answer('/test_mode on|off — тестовая работа с отдельным балансом\n/test_mode reset — сбросить тестовые задания и баланс\n/work_release on|off — новые игры для всех или откат',parse_mode=None)
+        return
+    user=get_user(message.from_user.id)
+    if args[0].split('@')[0]=='/work_release':
+        if args[1]=='reset':
+            await message.answer('Для публикации: /work_release on или /work_release off')
+            return
+        user_data.setdefault('__settings__',{})['work_games_v2']=args[1]=='on'
+        text='Новые игры включены для всех.' if args[1]=='on' else 'Для пользователей возвращены прежние игры. Состояния и покупки сохранены.'
+    else:
+        if args[1]=='reset':
+            user.pop('work_preview_profile',None)
+            user['work_preview_enabled']=True
+        else:
+            user['work_preview_enabled']=args[1]=='on'
+        text=('Тестовый режим работы включён. Баланс, ферма, награды и задания работы отдельные; основные ресурсы не меняются.'
+              if user['work_preview_enabled'] else 'Тестовый режим выключен. В работе виден основной профиль.')
+    save_data(user_data)
+    await message.answer(text+' Открой работу заново.',parse_mode=None)
+
+
+async def api_work_casual_handler(request):
+    uid, user, error=resolve_workapp_user(request.headers.get('X-Telegram-Init-Data',''),request)
+    if error:
+        return web.json_response(error,status=401 if error['error']=='auth' else 200)
+    if not work_v2(user):
+        return web.json_response({'ok':False,'code':'work_version_changed','error':'Новые задания пока не опубликованы.','state':serialize_work_state(user)})
+    try:
+        body=await request.json()
+        if not isinstance(body,dict):raise casual_work.GameError('Неверный запрос')
+        game=body.get('game')
+        if game not in ('puzzle','warehouse'):raise casual_work.GameError('Неизвестная игра')
+        job={'puzzle':'mine','warehouse':'dig'}[game]
+        run=user.get(str(game)+'_job') or {}
+        finishing=(game=='puzzle' and body.get('action')=='move' and run.get('status')=='active') or (game=='warehouse' and body.get('action')=='cashout' and run.get('pending',0)>0)
+        if not job or not work_is_open(job,user) and not finishing:return work_closed_reply(user)
+        payout=casual_work.action(user,game,body)
+        amount=credit_work_bucks(user,payout) if payout else 0
+        if payout:quest_event(user,job,1)
+        save_data(user_data)
+        return web.json_response({'ok':True,'awarded':amount,'state':serialize_work_state(user)})
+    except (ValueError,casual_work.GameError) as exc:
+        return web.json_response({'ok':False,'error':str(exc),'state':serialize_work_state(user)})
+
+
 async def work_page_handler(request):
     return page_response(request, WORK_PAGE_HTML)
 
 
 async def api_work_state_handler(request):
     init_data = request.headers.get("X-Telegram-Init-Data", "")
-    user_id, user, error = resolve_webapp_user(init_data)
+    user_id, user, error = resolve_workapp_user(init_data,request)
     if error:
         return web.json_response(error, status=401 if error["error"] == "auth" else 200)
     return web.json_response({"ok": True, "state": serialize_work_state(user)})
 
 
 async def api_work_mine_handler(request):
-    uid,user,body,err=await _play_request(request)
+    uid,user,body,err=await _work_request(request)
     if err:return err
+    user=work_profile(user)
+    if work_v2(user) and body.get('action') not in ('haul','cashout'):
+        return web.json_response({'ok':False,'error':'Эта игра заменена. Обнови страницу работы.','state':serialize_work_state(user)})
     if not work_is_open('mine', user) and body.get('action')!='haul':return work_closed_reply(user)
     try:
         payout,count=mine.action(user,body)
@@ -22560,8 +22700,11 @@ async def api_work_mine_handler(request):
 
 
 async def api_work_dig_handler(request):
-    uid,user,body,err=await _play_request(request)
+    uid,user,body,err=await _work_request(request)
     if err:return err
+    user=work_profile(user)
+    if work_v2(user) and body.get('action') not in ('haul','cashout'):
+        return web.json_response({'ok':False,'error':'Эта игра заменена. Обнови страницу работы.','state':serialize_work_state(user)})
     if not work_is_open('dig', user) and body.get('action')!='cashout':return work_closed_reply(user)
     try:
         count=len((user.get('dig_run') or {}).get('bag',[])) if body.get('action')=='cashout' else 0
@@ -22574,7 +22717,7 @@ async def api_work_dig_handler(request):
 
 
 async def api_work_workshop_handler(request):
-    _,user,error=resolve_webapp_user(request.headers.get('X-Telegram-Init-Data',''))
+    _,user,error=resolve_workapp_user(request.headers.get('X-Telegram-Init-Data',''),request)
     if error:return web.json_response(error,status=401 if error['error']=='auth' else 200)
     if not work_is_open('workshop', user):return work_closed_reply(user)
     try:body=await request.json()
@@ -22596,7 +22739,7 @@ async def api_work_hit_handler(request):
     платит баксы, без таймера и без сессии. game передаётся телом запроса ({"game": "clicker"|
     "catch"|"courier"})."""
     init_data = request.headers.get("X-Telegram-Init-Data", "")
-    user_id, user, error = resolve_webapp_user(init_data)
+    user_id, user, error = resolve_workapp_user(init_data,request)
     if error:
         return web.json_response(error, status=401 if error["error"] == "auth" else 200)
     try:
@@ -22628,7 +22771,7 @@ async def api_work_powerup_handler(request):
     WORK_DOUBLE_SECONDS. Сервер не видит, поймал ли игрок бонус на самом деле, поэтому просто не
     выдаёт его чаще, чем раз в WORK_DOUBLE_COOLDOWN_SECONDS."""
     init_data = request.headers.get("X-Telegram-Init-Data", "")
-    user_id, user, error = resolve_webapp_user(init_data)
+    user_id, user, error = resolve_workapp_user(init_data,request)
     if error:
         return web.json_response(error, status=401 if error["error"] == "auth" else 200)
     if not work_is_open('catch', user):return work_closed_reply(user)
@@ -22649,7 +22792,7 @@ async def api_work_penalty_handler(request):
     таймера, может сработать сразу после обычного хита. game передаётся телом запроса, тем же
     набором значений, что и у /api/work/hit."""
     init_data = request.headers.get("X-Telegram-Init-Data", "")
-    user_id, user, error = resolve_webapp_user(init_data)
+    user_id, user, error = resolve_workapp_user(init_data,request)
     if error:
         return web.json_response(error, status=401 if error["error"] == "auth" else 200)
     try:
@@ -22672,7 +22815,7 @@ def _body_slot(body):
 
 async def api_work_farm_plant_handler(request):
     init_data = request.headers.get("X-Telegram-Init-Data", "")
-    user_id, user, error = resolve_webapp_user(init_data)
+    user_id, user, error = resolve_workapp_user(init_data,request)
     if error:
         return web.json_response(error, status=401 if error["error"] == "auth" else 200)
     try:
@@ -22686,7 +22829,7 @@ async def api_work_farm_plant_handler(request):
 
 async def api_work_farm_water_handler(request):
     init_data = request.headers.get("X-Telegram-Init-Data", "")
-    user_id, user, error = resolve_webapp_user(init_data)
+    user_id, user, error = resolve_workapp_user(init_data,request)
     if error:
         return web.json_response(error, status=401 if error["error"] == "auth" else 200)
     try:
@@ -22699,7 +22842,7 @@ async def api_work_farm_water_handler(request):
 
 async def api_work_farm_harvest_handler(request):
     init_data = request.headers.get("X-Telegram-Init-Data", "")
-    user_id, user, error = resolve_webapp_user(init_data)
+    user_id, user, error = resolve_workapp_user(init_data,request)
     if error:
         return web.json_response(error, status=401 if error["error"] == "auth" else 200)
     try:
@@ -22712,7 +22855,7 @@ async def api_work_farm_harvest_handler(request):
 
 async def api_work_farm_buy_slot_handler(request):
     init_data = request.headers.get("X-Telegram-Init-Data", "")
-    user_id, user, error = resolve_webapp_user(init_data)
+    user_id, user, error = resolve_workapp_user(init_data,request)
     if error:
         return web.json_response(error, status=401 if error["error"] == "auth" else 200)
     farm_buy_slot(user)
@@ -22787,6 +22930,7 @@ async def run_webapp_server():
     app_web.router.add_post("/api/work/mine", api_work_mine_handler)
     app_web.router.add_post("/api/work/workshop", api_work_workshop_handler)
     app_web.router.add_get("/work", work_page_handler)
+    app_web.router.add_post("/api/work/casual", api_work_casual_handler)
     app_web.router.add_get("/api/work/state", api_work_state_handler)
     app_web.router.add_post("/api/work/hit", api_work_hit_handler)
     app_web.router.add_post("/api/work/penalty", api_work_penalty_handler)
@@ -23157,11 +23301,16 @@ def quest_chat(user, text):
 def daily_quest_state(user):
     if ensure_quests(user):
         save_data(user_data)
+    items=daily_quests.snapshot(user,user.get('lang','ru'),has_active_subscription(user))
+    if work_v2(user):
+        for item in items:
+            if item['id']=='mine6':item['title']={'ru':'Собери 6 мозаик','de':'Löse 6 Mosaike'}.get(user.get('lang'),'Solve 6 mosaics')
+            if item['id']=='dig4':item['title']={'ru':'Забери находки со склада 4 раза','de':'Hole 4-mal Lagerfunde ab'}.get(user.get('lang'),'Collect depot finds 4 times')
     return {'day':local_today().isoformat(), 'reset_at':daily_reset_timestamp(),
             'bucks_multiplier':2 if has_active_subscription(user) else 1,
             'locked':not (user.get('channel_quest_completed') or user.get('channel_reward_claimed')),
             'channel':None if user.get('channel_reward_claimed') else {'url':CHANNEL_URL,'title':{'ru':'Подпишись на канал · 500 баксов + 1 фото + 1 сцена','de':'Abonniere unseren Kanal'}.get(user.get('lang'),'Subscribe to our channel')},
-            'items':daily_quests.snapshot(user, user.get('lang','ru'), has_active_subscription(user))}
+            'items':items}
 
 
 async def api_app_task_handler(request):

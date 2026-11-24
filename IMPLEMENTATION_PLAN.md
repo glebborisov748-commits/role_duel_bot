@@ -1,15 +1,24 @@
+# November 24 update
+
+- DeepSeek V3.2 is pinned for normal chat. Chief-only `/ai_models` switches normal and scene models independently without restart; a new premium scene model is still unselected.
+- Shop savings/countdown, support queue, creation accessories and chat-motion fixes are delivered; 16 generated whole mannequin images were added.
+- Small work games and order bonuses are ready in the chief's isolated Work preview: Mosaic, Finds depot, generated basket, freeze icon/effect, and an eight-second wider-basket bonus. Public release is off until `/work_release on`. `/test_mode on|off|reset` controls the separate work profile; no second bot is needed for these feature/data checks. Shared code/hosting remain shared. See [work preview details](audit/WORK_V2_PREVIEW.md).
+- Next work: four-lane courier overhaul, then farm crops/splash/fertilizer, wardrobe curtains/fitting, and subscriber photo-to-character creation. Premium scene-model testing remains a separate task. A fully independent staging deployment/outage page is optional infrastructure work, not required for the current Work preview.
+
+The older checklists below record previous stages and their limits.
+
 # November 23 scope update
 
 The November 18 checklist below is historical. Current behavior and limits are recorded in [the first-pass audit](audit/NOVEMBER_23_FIRST_PASS.md).
 
 Completed in this pass: room joining, death recovery, action-based onboarding, can proportions/shorter pull/delayed gestures, message flash/desktop width, currency/avatar shortcuts, single 48-hour calendar offer, compact doorless wardrobe, starter/base clothing (including the final white male T-shirt correction), replacement police keys, level-9 preview-only toys catalog, two classic wire variants, admin help and isolated staging setup.
 
-Model comparison tooling is ready via chief-only `/model_test`; see [comparison workflow](audit/MODEL_COMPARISON.md). Live candidate responses and production model selection remain pending the authenticated host-side run.
+The first model comparison has been reviewed and normal chat is pinned to DeepSeek V3.2. `/ai_models` switches the saved chat/scene routes. Further scene-model comparison remains pending; see [comparison workflow](audit/MODEL_COMPARISON.md).
 
 Next agreed stages, still outstanding:
-- Choose models after the user supplies their available model/provider price list; benchmark Russian roleplay quality, context, latency and cost.
-- Deploy the separate test bot using a dedicated token/domain/storage. An outage status page needs independent hosting.
-- Replace mine/archaeology with two small 2D games; overhaul four-lane courier intersections, pedestrian crossings, speed rules, varied hazards, deliveries/tips and generated city art; order basket/freeze/additional bonus.
+- Compare additional scene-model candidates against the selected DeepSeek V3.2 baseline: Russian quality, context, latency and cost.
+- Optional independent staging/outage hosting. Current Work testing already uses a chief-only data sandbox and feature flag in the existing bot.
+- Publish/review the delivered Mosaic/depot and basket/freeze/wide-bonus preview. Next: four-lane courier intersections, pedestrian crossings, speed rules, varied hazards, deliveries/tips and generated city art.
 - Add crops, a lateral droplet splash and single-plant fertilizer with a use-triggered two-hour refill and optional 5-Star purchase.
 - Build the crimson curtain/podium generation scene, expanded coherent whole-look art and better underwear/accessory fitting. Add further adult-shop wearable accessories.
 - Deliver recognizable neutral product cards for the toys catalog after an allowed art approach is available; define toy interactions before enabling any purchases.
