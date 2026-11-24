@@ -24,6 +24,8 @@ TREE = ast.parse(SOURCE.read_text())
 def load_functions(names, namespace):
     for module in ("fandom_catalog","roleplay_voice","scene_photos"):
         namespace.setdefault(module,__import__(module))
+    namespace.setdefault("photo_reference", __import__("photo_reference"))
+    namespace.setdefault("farm_upgrade", __import__("farm_upgrade"))
     namespace.setdefault("courier_city", __import__("courier_city"))
     namespace.setdefault("courier_v2",lambda u:False)
     namespace.setdefault("casual_work", __import__("casual_work"))

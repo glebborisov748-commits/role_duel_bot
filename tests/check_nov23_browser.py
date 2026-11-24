@@ -33,7 +33,7 @@ with sync_playwright() as pw:
  for width in (320,390,430):
   page=make(OWNER,width);reset(page,mode='chat',level=8,inventory={});page.goto(BASE+'/shop?wardrobe=1');page.wait_for_selector('.fitting-stage');assert page.locator('.cabinet-doors:visible').count()==0;assert page.locator('.tailor-base').get_attribute('src').endswith('fitting_catalog_female___base__.webp');assert page.locator('.complete-look').count()==0
   page.get_by_role('button',name='🔞 Игрушки 18+',exact=True).click();assert '9' in page.locator('#items').inner_text();assert page.locator('.preview-only').count()==0
-  reset(page,mode='chat',level=9);page.reload();page.wait_for_selector('#tabs');page.get_by_role('button',name='🔞 Игрушки 18+',exact=True).click();assert page.locator('.preview-only').count()==7;assert page.locator('.preview-only .buy-btn').count()==0
+  reset(page,mode='chat',level=9);page.reload();page.wait_for_selector('#tabs');page.get_by_role('button',name='🔞 Игрушки 18+',exact=True).click();assert page.locator('#items .card').count()==7;assert page.locator('#items .collection-favorite').count()==7
   reset(page,mode='chat');page.goto(BASE+'/app');page.wait_for_selector('#h-bucks');page.locator('#h-bucks').click();page.wait_for_selector('#sheet.on');assert 'бакс' in page.locator('#sheet-box').inner_text().lower();page.locator('#sheet').evaluate("e=>e.classList.remove('on')")
   page.locator('#energy-action').click();page.wait_for_selector('.energy-can-wrap');can=page.locator('.energy-can-wrap').bounding_box();assert abs(can['height']-can['width'])<2,can;assert can['y']>150
   assert page.locator('.energy-gesture').evaluate("e=>Number(getComputedStyle(e).opacity)")==0

@@ -1,3 +1,20 @@
+# Current checkpoint — 24 November 2026
+
+Completed and locally verified in this stage:
+- Farm: strawberry, chili, pineapple and mango; lateral water splash; one targeted fertilizer charge for 2000 bucks or 5 Stars. It halves the selected plant's remaining time once; the two-hour stock timer starts on use. Chief Work sandbox has isolated instant-ready/restock and simulated Stars controls.
+- Wardrobe: the complete generated wearable catalog from the previous stage, plus crimson curtains and podium around the existing paid photo-generation action. Pending reveal follows the real job; failures retain the existing refund handling.
+- Subscriber photo reference: upload, bounded visible-feature extraction, editable review and explicit apply. No automatic character photo generation or photo-credit spend. The bot does not persist raw reference photos. Three analysis attempts per day; drafts expire after 15 minutes. Provider processing is still external.
+- Level-9 verified adult collection: one-time bucks purchases and one favorite gift. Normal chat receives neutral owned-gift context. No detailed toy-use scene mechanic was added. Product cards show generated closed packaging with an explicit caption because the image generator rejected actual toy illustrations.
+- Chat presence: offline/gray dot after 15 seconds of inactivity; a delayed return online after a new message, 3.2-second closed-eye phase, then read/typing stages. AI requests start immediately; only a fast reply's display is held until 4.8 seconds. Reused message nodes, reserved receipt space, stable textarea sizing and stale-poll guards reduce sending jitter and preserve manual scrolling.
+
+Validation: 270 unit checks, signed local API/payment-replay/refund/sandbox tests and mobile browser checks at 320/390/430 px. Local payment and vision tests use mocks; production Telegram payments, live vision-provider compatibility and physical-device motion remain unverified.
+
+Vision configuration: `VISION_MODEL` defaults to `gpt-4o-mini`. The chief can set an exact provider catalog ID with `/photo_model ID` without restarting. This is independent of the DeepSeek V3.2 text route. The general message handler now excludes slash commands so later admin handlers can receive them.
+
+Still pending: paid comparison of additional text/scene models (the budget question is unanswered), choosing a premium scene model, and public release/review of the chief-only Work preview. DeepSeek V3.2 remains selected. SBP/card integration is excluded from this stage. A separate staging deployment/outage host remains optional infrastructure work.
+
+The sections below are historical snapshots; their pending lists do not override this checkpoint.
+
 # November 24 update
 
 - DeepSeek V3.2 is pinned for normal chat. Chief-only `/ai_models` switches normal and scene models independently without restart; a new premium scene model is still unselected.

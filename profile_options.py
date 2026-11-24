@@ -532,3 +532,14 @@ def seed_starter_clothes(user):
 OUTFIT_FACTS['lace_panties']=WARDROBE['lace_panties']['fact']
 
 for _key in ('police_male','police_female'):OUTFIT_FACTS[_key]=WARDROBE[_key]['fact']
+
+# Collection purchases are distinct from wearable slots and image generation.
+TOY_PRICES={'vibrator':3000,'anal_plug':1800,'dildo':2500,'padded_cuffs':1500,'ball_gag':1400,'male_stroker':3200,'prostate_massager':2800}
+for _key,_price in TOY_PRICES.items():WARDROBE[_key].update(price=_price,catalog_only=False)
+
+def collection_memory(user):
+ """Neutral gift-collection context for ordinary conversation only."""
+ owned=[TOYS[k][0] for k in TOYS if (user.get('inventory') or {}).get(k)]
+ if not owned:return ''
+ favorite=user.get('favorite_collection_item');label=TOYS.get(favorite,('',))[0] if favorite in TOYS and (user.get('inventory') or {}).get(favorite) else ''
+ return ' В твоей коллекции подарков: '+', '.join(owned)+'. '+('Любимый коллекционный подарок: '+label+'. ' if label else '')+'Упоминай коллекцию только при разговоре о подарках; без описания, инструкций или сцен использования предметов. '

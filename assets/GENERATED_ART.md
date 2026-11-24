@@ -54,3 +54,10 @@ Generated 17 eight-cell atlases covering all **96 wearable catalog keys** and ev
 `fitting_catalog.json` records each cell's item, sex, slot, description and original source filename. One atlas with a partly opaque studio backdrop was corrected with the image generator; the manifest points to the corrected source. Originals remain in `/workspace/generated_images`. `python scripts/export_fitting_catalog.py` only crops, registers and resizes generated figures, exports 320×512 WebPs and measures fitting anchors. Use `--force-sheet N` to re-export a corrected sheet. Export rejects atlases without transparent source backgrounds. No runtime AI call or payment is required for these previews.
 
 Existing prepared combination keys remain valid. Each single wearable has a whole render; combinations without an exact prepared render still use generated clothing/accessory layers registered to the chosen mannequin. This is catalog coverage, not a pre-render of every possible combination of 96 clothes.
+
+
+## Farm, photo stage and collection packaging — 24 November 2026
+
+`exec-897d420c-0bf9-4bf1-817a-65cb5d85ada8.png` supplies four crop sprites (strawberry, chili, pineapple, mango), fertilizer packaging/scoop and two growth states. `exec-71a8a6a3-fa65-47d0-a99f-41af5513b354.png` supplies the crimson curtain halves, podium and spotlight. `exec-458f58f4-c2b5-4087-be83-a8c313f6daa4.png` supplies eight generic closed gift packages for collection cards. Actual sex-toy illustration generation was rejected; these exports represent packaging, not depictions of the products, and the UI says so.
+
+`scripts/export_remaining_art.py` crops/resizes these generated originals into `work_{strawberry,chili,pineapple,mango,fertilizer,fertilizer_scoop,farm_v3_seedling,farm_v3_young}.webp`, `stage_{left,right,podium,spotlight}.webp` and `collection_*.webp`. Source originals are preserved in `/workspace/generated_images`. Water splash, curtain opening and receipt animation are implemented in the UI.
